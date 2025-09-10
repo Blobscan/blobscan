@@ -36,18 +36,18 @@ export const getBySlot = publicProcedure
   .query(async ({ ctx: { prisma, filters, expands }, input: { slot } }) => {
     const blockIdField: BlockIdField = { type: "slot", value: slot };
 
-    const prismaBlock = await fetchBlock(blockIdField, {
+    const res = await fetchBlock(blockIdField, {
       prisma,
       filters,
       expands,
     });
 
-    if (!prismaBlock) {
+    if (!res) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `Block with slot ${slot} not found`,
       });
     }
 
-    return toResponseBlock(prismaBlock);
+    return toResponseBlock(res.block, res.ethUsdPrice?.price);
   });

@@ -85,12 +85,15 @@ describe("Indexer router", async () => {
         );
         expect(remainingParams).toMatchInlineSnapshot(`
           {
+            "blobGasBaseFee": "10000",
             "blobGasUsed": "10000",
+            "computeUsdFields": [Function],
             "excessBlobGas": "5000",
             "hash": "blockHash2010",
             "number": 2010,
             "slot": 130,
             "timestamp": 2023-09-01T13:50:21.000Z,
+            Symbol(nodejs.util.inspect.custom): [Function],
           }
         `);
       });
@@ -138,8 +141,12 @@ describe("Indexer router", async () => {
           //   (tx) => tx.blobAsCalldataGasUsed
           // );
           const remainingParams = indexedTxs.map(
-            ({ blobAsCalldataGasUsed: _, ...remainingParams }) =>
-              remainingParams
+            ({
+              blobAsCalldataGasUsed: _,
+              computeFeeFields: __,
+              computeUsdFields: ___,
+              ...remainingParams
+            }) => remainingParams
           );
 
           // TODO: Fix this test
@@ -161,6 +168,7 @@ describe("Indexer router", async () => {
                 "index": 0,
                 "maxFeePerBlobGas": "1800",
                 "toId": "address10",
+                Symbol(nodejs.util.inspect.custom): [Function],
               },
               {
                 "blobGasUsed": "262144",
@@ -174,6 +182,7 @@ describe("Indexer router", async () => {
                 "index": 1,
                 "maxFeePerBlobGas": "20000",
                 "toId": "address2",
+                Symbol(nodejs.util.inspect.custom): [Function],
               },
             ]
           `);

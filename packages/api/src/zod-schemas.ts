@@ -1,4 +1,8 @@
 import {
+  blockAllComputedFieldsSchema,
+  transactionAllComputedFieldsSchema,
+} from "@blobscan/db/prisma/extensions";
+import {
   AddressModel,
   BlobDataStorageReferenceModel,
   BlobModel,
@@ -9,7 +13,6 @@ import {
 import {
   blobStorageSchema,
   dbCategorySchema,
-  decimalSchema,
   hexSchema,
   lowercaseToUppercaseDBCategorySchema,
   lowercaseToUpercaseDBRollupSchema,
@@ -116,16 +119,8 @@ export const prismaBlockSchema = BlockModel.omit({
   updatedAt: true,
 });
 
-export const blockDerivedFieldsSchema = z.object({
-  blobBaseFee: decimalSchema,
-  blobBaseUsdFee: z.string().optional(),
-  blobGasUsdPrice: z.string().optional(),
-});
-
-export type BlockDerivedFields = z.output<typeof blockDerivedFieldsSchema>;
-
 export const baseBlockSchema = prismaBlockSchema.merge(
-  blockDerivedFieldsSchema
+  blockAllComputedFieldsSchema
 );
 
 export const prismaBlobSchema = BlobModel.omit({
@@ -157,7 +152,7 @@ export const prismaTransactionSchema = TransactionModel.omit({
   from: AddressModel.pick({
     address: true,
     rollup: true,
-  }),
+  }).extend({ category: dbCategorySchema }),
 });
 
 export type PrismaTransaction = z.infer<typeof prismaTransactionSchema>;
@@ -167,27 +162,13 @@ export const prismaTransactionBlob = BlobsOnTransactionsModel.extend({
 });
 export const prismaBlobOnTransactionSchema = BlobsOnTransactionsModel;
 
-export const transactionDerivedFieldsSchema = z.object({
-  blobAsCalldataGasFee: decimalSchema,
-  blobAsCalldataGasUsdFee: z.string().optional(),
-  blobGasBaseFee: decimalSchema,
-  blobGasBaseUsdFee: z.string().optional(),
-  blobGasMaxFee: decimalSchema,
-  blobGasMaxUsdFee: z.string().optional(),
-  blobGasUsdPrice: z.string().optional(),
-});
-
-export type TransactionDerivedFields = z.output<
-  typeof transactionDerivedFieldsSchema
->;
-
 export const baseTransactionSchema = prismaTransactionSchema
   .omit({
     fromId: true,
     toId: true,
     gasPrice: true,
   })
-  .merge(transactionDerivedFieldsSchema)
+  .merge(transactionAllComputedFieldsSchema)
   .extend({
     blobGasPrice: prismaBlockSchema.shape.blobGasPrice,
     category: dbCategorySchema,

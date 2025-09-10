@@ -16,7 +16,7 @@ import {
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import { countBlobs } from "./getCount";
-import type { CompletePrismaBlobOnTransaction } from "./helpers";
+import type { CompletedPrismaBlobOnTransaction } from "./helpers";
 import {
   responseBlobOnTransactionSchema,
   createBlobsOnTransactionsSelect,
@@ -99,7 +99,7 @@ export const getAll = publicProcedure
       return {
         blobs: prismaBlobsOnTxs.map((prismaBlobOnTx) =>
           toResponseBlobOnTransaction(
-            prismaBlobOnTx as unknown as CompletePrismaBlobOnTransaction
+            prismaBlobOnTx as unknown as CompletedPrismaBlobOnTransaction
           )
         ),
         ...(count ? { totalBlobs } : {}),

@@ -16,7 +16,7 @@ import {
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import { countTxs } from "./getCount";
-import type { CompletePrismaTransaction } from "./helpers";
+import type { CompletedPrismaTransaction } from "./helpers";
 import {
   createTransactionSelect,
   responseTransactionSchema,
@@ -98,7 +98,7 @@ export const getAll = publicProcedure
 
       return {
         transactions: prismaTxs.map((tx) =>
-          toResponseTransaction(tx as unknown as CompletePrismaTransaction)
+          toResponseTransaction(tx as unknown as CompletedPrismaTransaction)
         ),
         ...(count ? { totalTransactions: txCountOrStats } : {}),
       };

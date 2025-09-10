@@ -8,7 +8,7 @@ import {
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
-import type { CompletePrismaBlob } from "./helpers";
+import type { CompletedPrismaBlob } from "./helpers";
 import {
   responseBlobSchema,
   createBlobSelect,
@@ -46,7 +46,7 @@ export const getByBlobId = publicProcedure
         where: {
           OR: [{ versionedHash: id }, { commitment: id }],
         },
-      }) as unknown as Promise<CompletePrismaBlob | null>,
+      }) as unknown as Promise<CompletedPrismaBlob | null>,
       isExpandEnabled ? prisma.blob.findEthUsdPrices(id) : Promise.resolve([]),
     ]);
 
@@ -57,9 +57,8 @@ export const getByBlobId = publicProcedure
       });
     }
 
-    prismaBlob.transactions.forEach((bTx, i) => {
-      bTx.ethUsdPrice = ethUsdPrices[i];
-    });
-
-    return toResponseBlob(prismaBlob);
+    return toResponseBlob(
+      prismaBlob,
+      ethUsdPrices.map(({ price }) => price)
+    );
   });

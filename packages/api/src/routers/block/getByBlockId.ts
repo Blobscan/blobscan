@@ -38,18 +38,18 @@ export const getByBlockId = publicProcedure
   .use(withFilters)
   .output(outputSchema)
   .query(async ({ ctx: { prisma, expands, filters }, input: { id } }) => {
-    const prismaBlock = await fetchBlock(id, {
+    const res = await fetchBlock(id, {
       prisma,
       filters,
       expands,
     });
 
-    if (!prismaBlock) {
+    if (!res) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `Block with id "${id.value}" not found`,
       });
     }
 
-    return toResponseBlock(prismaBlock);
+    return toResponseBlock(res.block, res.ethUsdPrice?.price);
   });

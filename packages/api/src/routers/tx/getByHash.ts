@@ -8,7 +8,7 @@ import {
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
-import type { CompletePrismaTransaction } from "./helpers";
+import type { CompletedPrismaTransaction } from "./helpers";
 import {
   createTransactionSelect,
   responseTransactionSchema,
@@ -40,7 +40,7 @@ export const getByHash = publicProcedure
       prisma.transaction.findUnique({
         select: createTransactionSelect(expands),
         where: { hash },
-      }) as unknown as Promise<CompletePrismaTransaction | null>,
+      }) as unknown as Promise<CompletedPrismaTransaction | null>,
       prisma.transaction.findEthUsdPrice(hash),
     ]);
 
@@ -51,7 +51,5 @@ export const getByHash = publicProcedure
       });
     }
 
-    prismaTx.ethUsdPrice = ethUsdPrice;
-
-    return toResponseTransaction(prismaTx);
+    return toResponseTransaction(prismaTx, ethUsdPrice?.price);
   });
