@@ -117,6 +117,7 @@
     "VITEST_MAINNET_FORK_URL",
     "WEAVEVM_STORAGE_API_BASE_URL",
     "TS_NODE",
-    "MODE"
+    "MODE",
+    "LOG_LEVEL"
   ]
 }
