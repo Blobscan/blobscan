@@ -24,7 +24,7 @@
     "@blobscan/eth-format": "workspace:^0.1.0",
     "@blobscan/network-blob-config": "workspace:^0.3.0",
     "@blobscan/open-telemetry": "workspace:^0.0.10",
-    "@blobscan/rollups": "workspace:^1.0.0",
+    "@blobscan/rollups": "workspace:^0.3.6",
     "@floating-ui/react": "^0.26.23",
     "@fontsource/inter": "^4.5.15",
     "@fontsource/public-sans": "^4.5.12",

@@ -281,7 +281,7 @@ importers:
         specifier: workspace:^0.0.10
         version: link:../../packages/open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.3.6
         version: link:../../packages/rollups
       '@floating-ui/react':
         specifier: ^0.26.23
@@ -411,7 +411,7 @@ importers:
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.6.0
         version: link:../../packages/blob-propagator
       '@blobscan/dayjs':
         specifier: workspace:^0.1.0
@@ -474,7 +474,7 @@ importers:
         specifier: workspace:^0.0.10
         version: link:../open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.3.6
         version: link:../rollups
       '@blobscan/zod':
         specifier: workspace:^0.1.0
