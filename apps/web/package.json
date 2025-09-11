@@ -15,7 +15,7 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@blobscan/api": "workspace:^2.0.0",
+    "@blobscan/api": "workspace:^0.28.1",
     "@blobscan/blob-decoder": "workspace:^0.2.2",
     "@blobscan/dates": "workspace:*",
     "@blobscan/dayjs": "workspace:^0.1.0",

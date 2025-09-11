@@ -17,9 +17,9 @@
   "keywords": [],
   "license": "MIT",
   "dependencies": {
-    "@blobscan/api": "workspace:^2.0.0",
-    "@blobscan/blob-propagator": "workspace:^1.1.0",
-    "@blobscan/blob-storage-manager": "workspace:^1.0.0",
+    "@blobscan/api": "workspace:^0.28.1",
+    "@blobscan/blob-propagator": "workspace:^0.6.0",
+    "@blobscan/blob-storage-manager": "workspace:^0.6.4",
     "@blobscan/db": "workspace:^0.21.0",
     "@blobscan/env": "workspace:^0.2.0",
     "@blobscan/logger": "workspace:^0.1.3",
