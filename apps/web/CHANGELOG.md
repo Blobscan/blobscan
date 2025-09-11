@@ -1,5 +1,12 @@
 # @blobscan/web
 
+## 0.38.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @blobscan/api@2.0.0
+
 ## 0.38.0
 
 ### Minor Changes

@@ -175,10 +175,10 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^2.0.0
         version: link:../../packages/api
       '@blobscan/blob-propagator':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^1.1.0
         version: link:../../packages/blob-propagator
       '@blobscan/blob-storage-manager':
         specifier: workspace:^1.0.0
@@ -254,7 +254,7 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^2.0.0
         version: link:../../packages/api
       '@blobscan/blob-decoder':
         specifier: workspace:^0.2.2
@@ -496,7 +496,7 @@ importers:
         version: 1.2.0(@trpc/server@10.45.2)(zod@3.23.8)
     devDependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^1.1.0
         version: link:../blob-propagator
       '@types/jsonwebtoken':
         specifier: ^9.0.2
