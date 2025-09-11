@@ -6,11 +6,12 @@ import {
   SwarmStorage,
   WeaveVMStorage,
 } from "@blobscan/blob-storage-manager";
-import { getPrisma } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 import type { Environment } from "@blobscan/env";
 import { logger } from "@blobscan/logger";
+
+import { prisma } from "./prisma";
 
 function isBlobStorageEnabled(storageName: BlobStorageName) {
   const storageEnabledKey =
@@ -74,7 +75,7 @@ export async function createStorageFromEnv(
       return SwarmStorage.create({
         chainId,
         beeEndpoint: env.BEE_ENDPOINT,
-        prisma: getPrisma(),
+        prisma,
       });
     }
     case BlobStorageName.WEAVEVM: {
