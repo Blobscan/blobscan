@@ -239,7 +239,7 @@ export const env = createEnv({
     );
 
     console.log(
-      `Blob propagator configuration: primaryBlobStorage=${env.PRIMARY_BLOB_STORAGE} completedJobsAge=${env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE} seconds failedJobsAge=${env.BLOB_PROPAGATOR_FAILED_JOBS_AGE} seconds reconcilerCronPattern=${env.BLOB_RECONCILER_CRON_PATTERN}`
+      `Blob propagator configuration: primaryBlobStorage=${env.PRIMARY_BLOB_STORAGE} completedJobsAge=${env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE} seconds, failedJobsAge=${env.BLOB_PROPAGATOR_FAILED_JOBS_AGE} seconds, reconcilerEnabled=${env.BLOB_RECONCILER_ENABLED}, reconcilerCronPattern=${env.BLOB_RECONCILER_CRON_PATTERN}`
     );
 
     console.log(

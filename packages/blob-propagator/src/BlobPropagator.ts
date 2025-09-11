@@ -126,6 +126,8 @@ export class BlobPropagator {
         },
         workerOptions_
       );
+
+      logger.debug("Blob reconciler created!");
     }
 
     this.prisma = prisma;
