@@ -1,6 +1,13 @@
 # @blobscan/api
 
-## 1.0.0
+## 0.28.1
+
+### Patch Changes
+
+- Updated dependencies [[`64ac4eb`](https://github.com/Blobscan/blobscan/commit/64ac4eb9a5b832e8b68c580c179d1c83f291f6cc)]:
+  - @blobscan/blob-propagator@0.6.0
+
+## 0.28.0
 
 ### Minor Changes
 
@@ -9,9 +16,9 @@
 ### Patch Changes
 
 - Updated dependencies [[`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad), [`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a), [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad), [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad)]:
-  - @blobscan/blob-propagator@1.0.0
+  - @blobscan/blob-propagator@0.5.1
   - @blobscan/db@0.21.0
-  - @blobscan/rollups@1.0.0
+  - @blobscan/rollups@0.3.6
 
 ## 0.27.0
 

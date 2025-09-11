@@ -175,13 +175,13 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.28.1
         version: link:../../packages/api
       '@blobscan/blob-propagator':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.6.0
         version: link:../../packages/blob-propagator
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.6.4
         version: link:../../packages/blob-storage-manager
       '@blobscan/db':
         specifier: workspace:^0.21.0
@@ -254,7 +254,7 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.28.1
         version: link:../../packages/api
       '@blobscan/blob-decoder':
         specifier: workspace:^0.2.2
@@ -281,7 +281,7 @@ importers:
         specifier: workspace:^0.0.10
         version: link:../../packages/open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.3.6
         version: link:../../packages/rollups
       '@floating-ui/react':
         specifier: ^0.26.23
@@ -411,7 +411,7 @@ importers:
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.6.0
         version: link:../../packages/blob-propagator
       '@blobscan/dayjs':
         specifier: workspace:^0.1.0
@@ -474,7 +474,7 @@ importers:
         specifier: workspace:^0.0.10
         version: link:../open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.3.6
         version: link:../rollups
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -496,7 +496,7 @@ importers:
         version: 1.2.0(@trpc/server@10.45.2)(zod@3.23.8)
     devDependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.6.0
         version: link:../blob-propagator
       '@types/jsonwebtoken':
         specifier: ^9.0.2
@@ -560,7 +560,7 @@ importers:
         version: 5.4.1
     devDependencies:
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.6.4
         version: link:../blob-storage-manager
       '@blobscan/db':
         specifier: workspace:^0.21.0
@@ -13160,7 +13160,7 @@ snapshots:
       debug: 4.3.5
       enhanced-resolve: 5.17.0
       eslint: 8.57.0
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.2
@@ -13172,7 +13172,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.8.0(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0):
+  eslint-module-utils@2.8.0(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -13193,7 +13193,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
       hasown: 2.0.2
       is-core-module: 2.13.1
       is-glob: 4.0.3
@@ -13220,7 +13220,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
       hasown: 2.0.2
       is-core-module: 2.13.1
       is-glob: 4.0.3

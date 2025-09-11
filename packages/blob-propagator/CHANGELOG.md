@@ -1,6 +1,12 @@
 # @blobscan/blob-propagator
 
-## 1.0.1
+## 0.6.0
+
+### Minor Changes
+
+- [#889](https://github.com/Blobscan/blobscan/pull/889) [`64ac4eb`](https://github.com/Blobscan/blobscan/commit/64ac4eb9a5b832e8b68c580c179d1c83f291f6cc) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for toggling reconciler
+
+## 0.5.1
 
 ### Patch Changes
 
@@ -8,7 +14,7 @@
 
 - [#884](https://github.com/Blobscan/blobscan/pull/884) [`53881e0`](https://github.com/Blobscan/blobscan/commit/53881e0ff6e9f371e861395170f61622c9aa06dc) Thanks [@PJColombo](https://github.com/PJColombo)! - Bubbled up blob propagator creation errors
 
-## 1.0.0
+## 0.5.0
 
 ### Minor Changes
 
@@ -22,7 +28,7 @@
 
 - Updated dependencies [[`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a)]:
   - @blobscan/db@0.21.0
-  - @blobscan/blob-storage-manager@1.0.0
+  - @blobscan/blob-storage-manager@0.6.4
 
 ## 0.4.2
 
