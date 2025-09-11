@@ -18,7 +18,7 @@ import {
   BlobPropagatorCreationError,
   BlobPropagatorError,
 } from "../src/errors";
-import type { BlobPropagationInput } from "../src/types";
+import type { BlobPropagationInput, Reconciler } from "../src/types";
 import {
   computeLinearPriority,
   createBlobPropagationJob,
@@ -61,13 +61,14 @@ export class MockedBlobPropagator extends BlobPropagator {
 
       const propagator = new MockedBlobPropagator({
         ...config,
-        reconcilerOpts,
+        enableReconciler: config.enableReconciler ?? true,
+        reconcilerConfig: reconcilerOpts,
         highestBlockNumber: fixtures.blockchainSyncState[0]?.lastFinalizedBlock,
       });
 
       const pattern = reconcilerOpts?.cronPattern ?? "*/30 * * * *";
 
-      await propagator.reconciler.queue.add("reconciler-job", null, {
+      await propagator.reconciler?.queue.add("reconciler-job", null, {
         repeat: {
           pattern,
         },
@@ -127,28 +128,61 @@ describe("BlobPropagator", () => {
   });
 
   describe("when creating a blob propagator", () => {
-    it("should start reconciler queue", async () => {
-      const queue = blobPropagator.getReconciler().queue;
+    describe("when reconciler is enabled", () => {
+      let reconciler: Reconciler;
 
-      await expect(queue.isPaused()).resolves.toBeFalsy();
+      beforeEach(() => {
+        const r = blobPropagator.getReconciler();
+
+        if (!r) {
+          throw new Error("Reconciler not created");
+        }
+
+        reconciler = r;
+      });
+      it("should start reconciler queue", async () => {
+        const queue = reconciler?.queue;
+
+        await expect(queue?.isPaused()).resolves.toBeFalsy();
+      });
+
+      it("should start reconciler worker", () => {
+        const worker = reconciler?.worker;
+
+        expect(worker?.isRunning()).toBeTruthy();
+      });
+
+      it("should start reconciler cron job", async () => {
+        const jobs = (await reconciler.queue.getJobs()).filter((j) => !!j);
+
+        expect(jobs.length, "more than one cron job started").toBe(1);
+
+        const job = jobs[0];
+
+        expect(job?.name).toBe("reconciler-job");
+      });
     });
 
-    it("should start reconciler worker", () => {
-      const worker = blobPropagator.getReconciler().worker;
+    describe("when reconciler is disabled", () => {
+      let propagator: MockedBlobPropagator;
 
-      expect(worker.isRunning()).toBeTruthy();
-    });
+      beforeEach(async () => {
+        propagator = await MockedBlobPropagator.create({
+          blobStorages,
+          primaryBlobStorage,
+          enableReconciler: false,
+          redisConnectionOrUri: env.REDIS_URI,
+          prisma,
+        });
 
-    it("should start reconciler cron job", async () => {
-      const jobs = (
-        await blobPropagator.getReconciler().queue.getJobs()
-      ).filter((j) => !!j);
+        return async () => {
+          await propagator.close();
+        };
+      });
 
-      expect(jobs.length, "more than one cron job started").toBe(1);
-
-      const job = jobs[0];
-
-      expect(job?.name).toBe("reconciler-job");
+      it("should not create it", async () => {
+        expect(propagator.getReconciler()).toBeUndefined();
+      });
     });
 
     it("should return an instance with the highest block number set to the last finalized block", async () => {
@@ -481,7 +515,7 @@ describe("BlobPropagator", () => {
       const propagatorWorkersClosed = propagators.every(
         ({ worker }) => !worker.isRunning()
       );
-      const reconcilerWorkerClosed = !reconciler.worker.isRunning();
+      const reconcilerWorkerClosed = !reconciler?.worker.isRunning();
 
       expect(propagatorWorkersClosed, "Storage workers still running").toBe(
         true
@@ -515,7 +549,11 @@ describe("BlobPropagator", () => {
     testValidError(
       "should throw a valid error when the reconciler worker closing operation fails",
       async () => {
-        const reconciler = closingBlobPropagator.getReconciler().worker;
+        const reconciler = closingBlobPropagator.getReconciler()?.worker;
+
+        if (!reconciler) {
+          throw new Error("reconciler not enabled");
+        }
 
         vi.spyOn(reconciler, "close").mockImplementationOnce(() => {
           throw new Error("Closing reconciler worker failed");

@@ -43,7 +43,8 @@ export type BlobPropagatorConfig = {
   redisConnectionOrUri: IORedis | string;
   workerOptions?: Partial<Omit<WorkerOptions, "connection">>;
   jobOptions?: Partial<JobsOptions>;
-  reconcilerOpts: {
+  enableReconciler?: boolean;
+  reconcilerConfig?: {
     batchSize: number;
     cronPattern: string;
   };
@@ -65,13 +66,14 @@ export class BlobPropagator {
   protected primaryBlobStorage: BlobStorage;
 
   protected propagators: StoragePropagator[];
-  protected reconciler: Reconciler;
+  protected reconciler?: Reconciler;
 
   protected jobOptions: Partial<JobsOptions>;
 
   protected highestBlockNumber?: number;
 
   protected constructor({
+    enableReconciler,
     prisma,
     redisConnectionOrUri,
     highestBlockNumber,
@@ -79,7 +81,7 @@ export class BlobPropagator {
     primaryBlobStorage,
     jobOptions: jobOptions_ = {},
     workerOptions = {},
-    reconcilerOpts,
+    reconcilerConfig,
   }: BlobPropagatorConfig) {
     const connection =
       typeof redisConnectionOrUri === "string"
@@ -107,16 +109,24 @@ export class BlobPropagator {
     };
     this.highestBlockNumber = highestBlockNumber;
 
-    this.reconciler = this.#createReconciler(
-      {
-        batchSize: reconcilerOpts.batchSize,
-        prisma,
-        primaryBlobStorage,
-        propagatorQueues: this.propagators.map(({ queue }) => queue),
-        highestBlockNumber: this.highestBlockNumber,
-      },
-      workerOptions_
-    );
+    if (enableReconciler) {
+      if (!reconcilerConfig) {
+        throw new Error(
+          "Reconciler is enabled, but no reconcilerConfig was provided"
+        );
+      }
+
+      this.reconciler = this.#createReconciler(
+        {
+          batchSize: reconcilerConfig.batchSize,
+          prisma,
+          primaryBlobStorage,
+          propagatorQueues: this.propagators.map(({ queue }) => queue),
+          highestBlockNumber: this.highestBlockNumber,
+        },
+        workerOptions_
+      );
+    }
 
     this.prisma = prisma;
 
@@ -126,7 +136,7 @@ export class BlobPropagator {
   static async create(
     config: Omit<BlobPropagatorConfig, "highestBlockNumber">
   ) {
-    const { prisma, reconcilerOpts } = config;
+    const { prisma, reconcilerConfig } = config;
 
     try {
       const lastFinalizedBlock = await prisma.blockchainSyncState
@@ -138,11 +148,16 @@ export class BlobPropagator {
         highestBlockNumber: lastFinalizedBlock,
       });
 
-      await blobPropagator.reconciler.queue.add("reconciler-job", null, {
-        repeat: {
-          pattern: reconcilerOpts.cronPattern,
-        },
-      });
+      if (blobPropagator.reconciler) {
+        if (!reconcilerConfig?.cronPattern) {
+          throw new Error("No cron pattern provided for reconciler");
+        }
+        await blobPropagator.reconciler.queue.add("reconciler-job", null, {
+          repeat: {
+            pattern: reconcilerConfig.cronPattern,
+          },
+        });
+      }
 
       return blobPropagator;
     } catch (err) {
@@ -263,17 +278,19 @@ export class BlobPropagator {
       });
     });
 
-    teardownPromise = teardownPromise
-      .finally(async () => {
-        await this.#performClosingOperation(() =>
-          this.reconciler.worker.close()
-        );
-      })
-      .finally(async () => {
-        await this.#performClosingOperation(() =>
-          this.reconciler.queue.obliterate({ force: true })
-        );
-      });
+    const reconcilier = this.reconciler;
+
+    if (reconcilier) {
+      teardownPromise = teardownPromise
+        .finally(async () => {
+          await this.#performClosingOperation(() => reconcilier.worker.close());
+        })
+        .finally(async () => {
+          await this.#performClosingOperation(() =>
+            reconcilier.queue.obliterate({ force: true })
+          );
+        });
+    }
 
     await teardownPromise;
 

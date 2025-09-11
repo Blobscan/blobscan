@@ -101,11 +101,12 @@ export const env = createEnv({
       BLOB_PROPAGATOR_FAILED_JOBS_AGE: z.coerce
         .number()
         .default(7 * 24 * 60 * 60),
+      BLOB_RECONCILER_BATCH_SIZE: z.coerce.number().default(200),
       BLOB_RECONCILER_CRON_PATTERN: z
         .string()
         // Every hour
         .default("0 * * * *"),
-      BLOB_RECONCILER_BATCH_SIZE: z.coerce.number().default(200),
+      BLOB_RECONCILER_ENABLED: booleanSchema.default("false"),
       // PostHog
       POSTHOG_ID: z.string().optional(),
       POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
