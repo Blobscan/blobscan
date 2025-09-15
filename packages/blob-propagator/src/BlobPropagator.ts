@@ -12,7 +12,7 @@ import { logger } from "@blobscan/logger";
 import {
   DEFAULT_JOB_OPTIONS,
   DEFAULT_WORKER_OPTIONS,
-  RECONCILIATOR_WORKER_NAME,
+  RECONCILER_WORKER_NAME,
   STORAGE_WORKER_NAMES,
 } from "./constants";
 import { BlobPropagatorCreationError, BlobPropagatorError } from "./errors";
@@ -20,9 +20,9 @@ import type {
   BlobPropagationInput,
   BlobPropagationWorkerParams,
   BlobPropagationWorkerProcessor,
-  Reconciliator,
-  ReconciliatorProcessorParams,
-  ReconciliatorProcessorResult,
+  Reconciler,
+  ReconcilerProcessorParams,
+  ReconcilerProcessorResult,
   StoragePropagator,
 } from "./types";
 import { createBlobPropagationJob, computeLinearPriority } from "./utils";
@@ -32,7 +32,7 @@ import {
   s3Processor,
   swarmProcessor,
 } from "./worker-processors";
-import { reconciliatorProcessor } from "./worker-processors/reconciliator";
+import { reconcilerProcessor } from "./worker-processors/reconciler";
 
 export type BlobPropagatorConfig = {
   highestBlockNumber?: number;
@@ -42,7 +42,8 @@ export type BlobPropagatorConfig = {
   redisConnectionOrUri: IORedis | string;
   workerOptions?: Partial<Omit<WorkerOptions, "connection">>;
   jobOptions?: Partial<JobsOptions>;
-  reconciliatorOpts: {
+  enableReconciler?: boolean;
+  reconcilerConfig?: {
     batchSize: number;
     cronPattern: string;
   };
@@ -64,13 +65,14 @@ export class BlobPropagator {
   protected primaryBlobStorage: BlobStorage;
 
   protected propagators: StoragePropagator[];
-  protected reconciliator: Reconciliator;
+  protected reconciler?: Reconciler;
 
   protected jobOptions: Partial<JobsOptions>;
 
   protected highestBlockNumber?: number;
 
   protected constructor({
+    enableReconciler,
     prisma,
     redisConnectionOrUri,
     highestBlockNumber,
@@ -78,7 +80,7 @@ export class BlobPropagator {
     primaryBlobStorage,
     jobOptions: jobOptions_ = {},
     workerOptions = {},
-    reconciliatorOpts,
+    reconcilerConfig,
   }: BlobPropagatorConfig) {
     const connection =
       typeof redisConnectionOrUri === "string"
@@ -106,16 +108,26 @@ export class BlobPropagator {
     };
     this.highestBlockNumber = highestBlockNumber;
 
-    this.reconciliator = this.#createReconciliator(
-      {
-        batchSize: reconciliatorOpts.batchSize,
-        prisma,
-        primaryBlobStorage,
-        propagatorQueues: this.propagators.map(({ queue }) => queue),
-        highestBlockNumber: this.highestBlockNumber,
-      },
-      workerOptions_
-    );
+    if (enableReconciler) {
+      if (!reconcilerConfig) {
+        throw new Error(
+          "Reconciler is enabled, but no reconcilerConfig was provided"
+        );
+      }
+
+      this.reconciler = this.#createReconciler(
+        {
+          batchSize: reconcilerConfig.batchSize,
+          prisma,
+          primaryBlobStorage,
+          propagatorQueues: this.propagators.map(({ queue }) => queue),
+          highestBlockNumber: this.highestBlockNumber,
+        },
+        workerOptions_
+      );
+
+      logger.debug("Blob reconciler created!");
+    }
 
     this.prisma = prisma;
   }
@@ -123,24 +135,37 @@ export class BlobPropagator {
   static async create(
     config: Omit<BlobPropagatorConfig, "highestBlockNumber">
   ) {
-    const { prisma, reconciliatorOpts } = config;
+    const { prisma, reconcilerConfig } = config;
 
-    const lastFinalizedBlock = await prisma.blockchainSyncState
-      .findFirst()
-      .then((s) => s?.lastFinalizedBlock ?? undefined);
+    try {
+      const lastFinalizedBlock = await prisma.blockchainSyncState
+        .findFirst()
+        .then((s) => s?.lastFinalizedBlock ?? undefined);
 
-    const blobPropagator = new BlobPropagator({
-      ...config,
-      highestBlockNumber: lastFinalizedBlock,
-    });
+      const blobPropagator = new BlobPropagator({
+        ...config,
+        highestBlockNumber: lastFinalizedBlock,
+      });
 
-    await blobPropagator.reconciliator.queue.add("reconciliator-job", null, {
-      repeat: {
-        pattern: reconciliatorOpts.cronPattern,
-      },
-    });
+      if (blobPropagator.reconciler) {
+        if (!reconcilerConfig?.cronPattern) {
+          throw new Error("No cron pattern provided for reconciler");
+        }
+        await blobPropagator.reconciler.queue.add("reconciler-job", null, {
+          repeat: {
+            pattern: reconcilerConfig.cronPattern,
+          },
+        });
+      }
 
-    return blobPropagator;
+      return blobPropagator;
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new BlobPropagatorCreationError(err);
+      }
+
+      throw new BlobPropagatorCreationError(`Unknown cause: ${err}`);
+    }
   }
 
   async propagateBlob({
@@ -252,17 +277,19 @@ export class BlobPropagator {
       });
     });
 
-    teardownPromise = teardownPromise
-      .finally(async () => {
-        await this.#performClosingOperation(() =>
-          this.reconciliator.worker.close()
-        );
-      })
-      .finally(async () => {
-        await this.#performClosingOperation(() =>
-          this.reconciliator.queue.obliterate({ force: true })
-        );
-      });
+    const reconcilier = this.reconciler;
+
+    if (reconcilier) {
+      teardownPromise = teardownPromise
+        .finally(async () => {
+          await this.#performClosingOperation(() => reconcilier.worker.close());
+        })
+        .finally(async () => {
+          await this.#performClosingOperation(() =>
+            reconcilier.queue.obliterate({ force: true })
+          );
+        });
+    }
 
     await teardownPromise;
   }
@@ -292,19 +319,19 @@ export class BlobPropagator {
     });
   }
 
-  #createReconciliator(
-    params: ReconciliatorProcessorParams,
+  #createReconciler(
+    params: ReconcilerProcessorParams,
     opts: WorkerOptions
-  ): Reconciliator {
-    const queue = new Queue(RECONCILIATOR_WORKER_NAME, {
+  ): Reconciler {
+    const queue = new Queue(RECONCILER_WORKER_NAME, {
       connection: opts.connection,
     });
-    const worker = new Worker<null, ReconciliatorProcessorResult>(
-      RECONCILIATOR_WORKER_NAME,
-      reconciliatorProcessor(params),
+    const worker = new Worker<null, ReconcilerProcessorResult>(
+      RECONCILER_WORKER_NAME,
+      reconcilerProcessor(params),
       opts
     );
-    const workerLogger = logger.child({ service: "reconciliator" });
+    const workerLogger = logger.child({ service: "reconciler" });
 
     worker.on("completed", (_, { jobsCreated, blobTimestamps }) => {
       if (!jobsCreated) {
@@ -335,12 +362,22 @@ export class BlobPropagator {
     params: Omit<BlobPropagationWorkerParams, "targetBlobStorage">,
     opts: WorkerOptions
   ): StoragePropagator[] {
-    return blobStorages.map((targetBlobStorage) => {
+    const supportedBlobStorages = blobStorages.filter((s) => {
+      const workerProcessor = STORAGE_WORKER_PROCESSORS[s.name];
+
+      if (!workerProcessor) {
+        logger.warn(`Skipping torage ${s.name}: no worker processor supported`);
+      }
+
+      return !!workerProcessor;
+    });
+
+    return supportedBlobStorages.map((targetBlobStorage) => {
       const storageName = targetBlobStorage.name;
       const workerProcessor = STORAGE_WORKER_PROCESSORS[storageName];
 
       if (!workerProcessor) {
-        throw new BlobPropagatorCreationError(
+        throw new Error(
           `Storage ${storageName} not supported: no worker processor defined`
         );
       }

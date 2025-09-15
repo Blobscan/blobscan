@@ -1,13 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`BlobPropagator > when closing > should throw a valid error when the reconciliator worker closing operation fails 1`] = `"Blob propagator failed: Failed to perform closing operation"`;
+exports[`BlobPropagator > when closing > should throw a valid error when the reconciler worker closing operation fails 1`] = `"Blob propagator failed: Failed to perform closing operation"`;
 
-exports[`BlobPropagator > when closing > should throw a valid error when the reconciliator worker closing operation fails 2`] = `[Error: Closing reconciliator worker failed]`;
+exports[`BlobPropagator > when closing > should throw a valid error when the reconciler worker closing operation fails 2`] = `[Error: Closing reconciler worker failed]`;
 
 exports[`BlobPropagator > when closing > should throw a valid error when the storage worker operation fails 1`] = `"Blob propagator failed: Failed to perform closing operation"`;
 
 exports[`BlobPropagator > when closing > should throw a valid error when the storage worker operation fails 2`] = `[Error: Closing storage worker failed]`;
-
-exports[`BlobPropagator > when creating a blob propagator > should throw a valid error when creating it with blob storages without worker processors 1`] = `"Blob propagator failed: Failed to create blob propagator"`;
-
-exports[`BlobPropagator > when creating a blob propagator > should throw a valid error when creating it with blob storages without worker processors 2`] = `"Storage WEAVEVM not supported: no worker processor defined"`;

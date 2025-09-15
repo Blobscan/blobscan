@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.21.0
+
+### Minor Changes
+
+- [#878](https://github.com/Blobscan/blobscan/pull/878) [`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for retrieving latest and oldest block
+
 ## 0.20.0
 
 ### Minor Changes

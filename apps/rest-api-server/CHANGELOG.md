@@ -1,5 +1,32 @@
 # @blobscan/rest-api-server
 
+## 0.8.1
+
+### Patch Changes
+
+- Updated dependencies [[`64ac4eb`](https://github.com/Blobscan/blobscan/commit/64ac4eb9a5b832e8b68c580c179d1c83f291f6cc)]:
+  - @blobscan/blob-propagator@0.6.0
+  - @blobscan/api@0.28.1
+
+## 0.8.0
+
+### Minor Changes
+
+- [#876](https://github.com/Blobscan/blobscan/pull/876) [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for blob propagation reconciliation worker
+
+- [#882](https://github.com/Blobscan/blobscan/pull/882) [`f483bcc`](https://github.com/Blobscan/blobscan/commit/f483bcc6fe2412b059ee4bc16d9029e836372e6a) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue where exceptions occuring during REST API setup weren't being captured
+
+### Patch Changes
+
+- [#879](https://github.com/Blobscan/blobscan/pull/879) [`b0ca3c0`](https://github.com/Blobscan/blobscan/commit/b0ca3c09527cbb961921bd6298afd116e9b60482) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where the primary blob storage for the blob propagator was created even if it was not enabled
+
+- Updated dependencies [[`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad), [`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a), [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad), [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad)]:
+  - @blobscan/blob-propagator@1.0.0
+  - @blobscan/api@1.0.0
+  - @blobscan/db@0.21.0
+  - @blobscan/blob-storage-manager@1.0.0
+  - @blobscan/syncers@0.5.3
+
 ## 0.7.3
 
 ### Patch Changes

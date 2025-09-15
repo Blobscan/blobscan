@@ -3,6 +3,7 @@ import * as Sentry from "@sentry/node";
 import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
+import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
@@ -17,7 +18,6 @@ import { logger } from "@blobscan/logger";
 import { appRouter } from "./app-router";
 import { printBanner } from "./banner";
 import { getBlobPropagator } from "./blob-propagator";
-import { morganMiddleware } from "./morgan";
 import { openApiDocument } from "./openapi";
 import { prisma } from "./prisma";
 import { setUpSyncers } from "./syncers";
@@ -38,7 +38,7 @@ async function main() {
 
   app.use(cors());
   app.use(bodyParser.json({ limit: "3mb" }));
-  app.use(morganMiddleware);
+  app.use(morgan("short"));
 
   app.get("/metrics", (req, res) => {
     if (!env.METRICS_ENABLED) {
@@ -90,7 +90,7 @@ async function main() {
     await prisma
       .$disconnect()
       .finally(async () => {
-        await blobPropagator.close();
+        await blobPropagator?.close();
       })
       .finally(async () => {
         await closeSyncers();
@@ -113,4 +113,8 @@ async function main() {
   });
 }
 
-main();
+main().catch((err) => {
+  Sentry.captureException(err);
+
+  logger.error(err);
+});

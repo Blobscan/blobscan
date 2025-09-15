@@ -17,7 +17,7 @@ import {
   BlobPropagatorCreationError,
   BlobPropagatorError,
 } from "../src/errors";
-import type { BlobPropagationInput } from "../src/types";
+import type { BlobPropagationInput, Reconciler } from "../src/types";
 import {
   computeLinearPriority,
   createBlobPropagationJob,
@@ -33,8 +33,8 @@ export class MockedBlobPropagator extends BlobPropagator {
     return this.propagators;
   }
 
-  getReconciliator() {
-    return this.reconciliator;
+  getReconciler() {
+    return this.reconciler;
   }
 
   getHighestBlockNumber() {
@@ -50,31 +50,37 @@ export class MockedBlobPropagator extends BlobPropagator {
   }
 
   static async create(
-    config: Omit<
-      BlobPropagatorConfig,
-      "highestBlockNumber" | "reconciliatorOpts"
-    >
+    config: Omit<BlobPropagatorConfig, "highestBlockNumber" | "reconcilerOpts">
   ) {
-    const reconciliatorOpts = {
-      batchSize: 200,
-      cronPattern: "*/30 * * * *",
-    };
+    try {
+      const reconcilerOpts = {
+        batchSize: 200,
+        cronPattern: "*/30 * * * *",
+      };
 
-    const propagator = new MockedBlobPropagator({
-      ...config,
-      reconciliatorOpts,
-      highestBlockNumber: fixtures.blockchainSyncState[0]?.lastFinalizedBlock,
-    });
+      const propagator = new MockedBlobPropagator({
+        ...config,
+        enableReconciler: config.enableReconciler ?? true,
+        reconcilerConfig: reconcilerOpts,
+        highestBlockNumber: fixtures.blockchainSyncState[0]?.lastFinalizedBlock,
+      });
 
-    const pattern = reconciliatorOpts?.cronPattern ?? "*/30 * * * *";
+      const pattern = reconcilerOpts?.cronPattern ?? "*/30 * * * *";
 
-    await propagator.reconciliator.queue.add("reconciliator-job", null, {
-      repeat: {
-        pattern,
-      },
-    });
+      await propagator.reconciler?.queue.add("reconciler-job", null, {
+        repeat: {
+          pattern,
+        },
+      });
 
-    return propagator;
+      return propagator;
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new BlobPropagatorCreationError(err);
+      }
+
+      throw new BlobPropagatorCreationError(`Unknown cause: ${err}`);
+    }
   }
 }
 
@@ -122,28 +128,61 @@ describe("BlobPropagator", () => {
   });
 
   describe("when creating a blob propagator", () => {
-    it("should start reconciliator queue", async () => {
-      const queue = blobPropagator.getReconciliator().queue;
+    describe("when reconciler is enabled", () => {
+      let reconciler: Reconciler;
 
-      await expect(queue.isPaused()).resolves.toBeFalsy();
+      beforeEach(() => {
+        const r = blobPropagator.getReconciler();
+
+        if (!r) {
+          throw new Error("Reconciler not created");
+        }
+
+        reconciler = r;
+      });
+      it("should start reconciler queue", async () => {
+        const queue = reconciler?.queue;
+
+        await expect(queue?.isPaused()).resolves.toBeFalsy();
+      });
+
+      it("should start reconciler worker", () => {
+        const worker = reconciler?.worker;
+
+        expect(worker?.isRunning()).toBeTruthy();
+      });
+
+      it("should start reconciler cron job", async () => {
+        const jobs = (await reconciler.queue.getJobs()).filter((j) => !!j);
+
+        expect(jobs.length, "more than one cron job started").toBe(1);
+
+        const job = jobs[0];
+
+        expect(job?.name).toBe("reconciler-job");
+      });
     });
 
-    it("should start reconciliator worker", () => {
-      const worker = blobPropagator.getReconciliator().worker;
+    describe("when reconciler is disabled", () => {
+      let propagator: MockedBlobPropagator;
 
-      expect(worker.isRunning()).toBeTruthy();
-    });
+      beforeEach(async () => {
+        propagator = await MockedBlobPropagator.create({
+          blobStorages,
+          primaryBlobStorage,
+          enableReconciler: false,
+          redisConnectionOrUri: env.REDIS_URI,
+          prisma,
+        });
 
-    it("should start reconciliator cron job", async () => {
-      const jobs = (
-        await blobPropagator.getReconciliator().queue.getJobs()
-      ).filter((j) => !!j);
+        return async () => {
+          await propagator.close();
+        };
+      });
 
-      expect(jobs.length, "more than one cron job started").toBe(1);
-
-      const job = jobs[0];
-
-      expect(job?.name).toBe("reconciliator-job");
+      it("should not create it", async () => {
+        expect(propagator.getReconciler()).toBeUndefined();
+      });
     });
 
     it("should return an instance with the highest block number set to the last finalized block", async () => {
@@ -156,23 +195,18 @@ describe("BlobPropagator", () => {
       );
     });
 
-    testValidError(
-      "should throw a valid error when creating it with blob storages without worker processors",
-      async () => {
-        const weavevmStorage = new MockedWeaveVMStorage();
+    it("should skip unsupported blob storages", async () => {
+      const weavevmStorage = new MockedWeaveVMStorage();
 
-        await MockedBlobPropagator.create({
-          blobStorages: [weavevmStorage],
-          prisma,
-          primaryBlobStorage,
-          redisConnectionOrUri: env.REDIS_URI,
-        });
-      },
-      BlobPropagatorCreationError,
-      {
-        checkCause: true,
-      }
-    );
+      const blobPropagator = await MockedBlobPropagator.create({
+        blobStorages: [weavevmStorage],
+        prisma,
+        primaryBlobStorage,
+        redisConnectionOrUri: env.REDIS_URI,
+      });
+
+      expect(blobPropagator.getPropagators().length).toBe(0);
+    });
   });
 
   describe("when storage propagator jobs", async () => {
@@ -477,19 +511,18 @@ describe("BlobPropagator", () => {
       await closingBlobPropagator.close();
 
       const propagators = closingBlobPropagator.getPropagators();
-      const reconciliator = closingBlobPropagator.getReconciliator();
+      const reconciler = closingBlobPropagator.getReconciler();
       const propagatorWorkersClosed = propagators.every(
         ({ worker }) => !worker.isRunning()
       );
-      const reconciliatorWorkerClosed = !reconciliator.worker.isRunning();
+      const reconcilerWorkerClosed = !reconciler?.worker.isRunning();
 
       expect(propagatorWorkersClosed, "Storage workers still running").toBe(
         true
       );
-      expect(
-        reconciliatorWorkerClosed,
-        "Reconciliator worker still running"
-      ).toBe(true);
+      expect(reconcilerWorkerClosed, "Reconciler worker still running").toBe(
+        true
+      );
     });
 
     testValidError(
@@ -514,12 +547,16 @@ describe("BlobPropagator", () => {
     );
 
     testValidError(
-      "should throw a valid error when the reconciliator worker closing operation fails",
+      "should throw a valid error when the reconciler worker closing operation fails",
       async () => {
-        const reconciliator = closingBlobPropagator.getReconciliator().worker;
+        const reconciler = closingBlobPropagator.getReconciler()?.worker;
 
-        vi.spyOn(reconciliator, "close").mockImplementationOnce(() => {
-          throw new Error("Closing reconciliator worker failed");
+        if (!reconciler) {
+          throw new Error("reconciler not enabled");
+        }
+
+        vi.spyOn(reconciler, "close").mockImplementationOnce(() => {
+          throw new Error("Closing reconciler worker failed");
         });
 
         await closingBlobPropagator.close();

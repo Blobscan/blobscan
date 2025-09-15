@@ -1,5 +1,35 @@
 # @blobscan/blob-propagator
 
+## 0.6.0
+
+### Minor Changes
+
+- [#889](https://github.com/Blobscan/blobscan/pull/889) [`64ac4eb`](https://github.com/Blobscan/blobscan/commit/64ac4eb9a5b832e8b68c580c179d1c83f291f6cc) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for toggling reconciler
+
+## 0.5.1
+
+### Patch Changes
+
+- [#886](https://github.com/Blobscan/blobscan/pull/886) [`427cf7e`](https://github.com/Blobscan/blobscan/commit/427cf7e78a79216fbba04d6e8453d1b38837ab56) Thanks [@PJColombo](https://github.com/PJColombo)! - Skipped unsupported blob storages instead of throwing errors when creating blob propagator
+
+- [#884](https://github.com/Blobscan/blobscan/pull/884) [`53881e0`](https://github.com/Blobscan/blobscan/commit/53881e0ff6e9f371e861395170f61622c9aa06dc) Thanks [@PJColombo](https://github.com/PJColombo)! - Bubbled up blob propagator creation errors
+
+## 0.5.0
+
+### Minor Changes
+
+- [#876](https://github.com/Blobscan/blobscan/pull/876) [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad) Thanks [@PJColombo](https://github.com/PJColombo)! - Added a new worker to the blob propagator (reconciler) that periodically scans for orphaned blobs (not propagated to any storage) and re-creates propagation jobs to retry propagation.
+
+- [#876](https://github.com/Blobscan/blobscan/pull/876) [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad) Thanks [@PJColombo](https://github.com/PJColombo)! - Introduced primary blob storage
+
+- [#876](https://github.com/Blobscan/blobscan/pull/876) [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed flow jobs and finalizer queue
+
+### Patch Changes
+
+- Updated dependencies [[`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a)]:
+  - @blobscan/db@0.21.0
+  - @blobscan/blob-storage-manager@0.6.4
+
 ## 0.4.2
 
 ### Patch Changes

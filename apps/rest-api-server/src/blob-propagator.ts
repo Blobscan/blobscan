@@ -35,9 +35,10 @@ async function createBlobPropagator() {
     prisma,
     primaryBlobStorage,
     redisConnectionOrUri: env.REDIS_URI,
-    reconciliatorOpts: {
-      cronPattern: env.BLOB_RECONCILIATOR_CRON_PATTERN,
-      batchSize: env.BLOB_RECONCILIATOR_BATCH_SIZE,
+    enableReconciler: env.BLOB_RECONCILER_ENABLED,
+    reconcilerConfig: {
+      cronPattern: env.BLOB_RECONCILER_CRON_PATTERN,
+      batchSize: env.BLOB_RECONCILER_BATCH_SIZE,
     },
     workerOptions: {
       removeOnComplete: {
