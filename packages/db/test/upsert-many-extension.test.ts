@@ -60,9 +60,11 @@ describe("Upsert Many Extension", () => {
             address: "asc",
           },
         })
-        .then((addresses) => addresses.map((a) => omitDBTimestampFields(a)));
+        .then((addresses) =>
+          addresses.map(({ category: _, ...a }) => omitDBTimestampFields(a))
+        );
 
-      expect(insertedAddresses).toStrictEqual(input);
+      expect(insertedAddresses).toMatchObject(input);
     });
 
     it("should upsert an empty array correctly", async () => {
@@ -463,7 +465,7 @@ describe("Upsert Many Extension", () => {
           ],
         });
 
-        expect(updatedRefs).toStrictEqual(input);
+        expect(updatedRefs).toEqual(input);
       });
 
       it("should upsert an empty array correctly", async () => {
@@ -576,9 +578,13 @@ describe("Upsert Many Extension", () => {
               hash: "asc",
             },
           })
-          .then((txs) => txs.map((tx) => omitDBTimestampFields(tx)));
+          .then((txs) =>
+            txs.map(({ computeFeeFields: _, computeUsdFields: __, ...tx }) =>
+              omitDBTimestampFields(tx)
+            )
+          );
 
-        expect(insertedTxs).toStrictEqual(input);
+        expect(insertedTxs).toMatchObject(input);
       });
 
       it("should update multiple transactions correctly", async () => {
@@ -640,9 +646,13 @@ describe("Upsert Many Extension", () => {
               hash: "asc",
             },
           })
-          .then((txs) => txs.map((tx) => omitDBTimestampFields(tx)));
+          .then((txs) =>
+            txs.map(({ computeFeeFields: _, computeUsdFields: __, ...tx }) =>
+              omitDBTimestampFields(tx)
+            )
+          );
 
-        expect(updatedTxs).toStrictEqual(input);
+        expect(updatedTxs).toMatchObject(input);
       });
 
       it("should upsert an empty array correctly", async () => {

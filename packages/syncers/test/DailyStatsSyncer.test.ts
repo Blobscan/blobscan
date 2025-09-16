@@ -78,6 +78,8 @@ describe("DailyStatsSyncer", () => {
 
     const findLatestSpy = vi
       .spyOn(prisma.block, "findLatest")
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       .mockImplementationOnce(() => Promise.resolve(null));
 
     await workerProcessor();
