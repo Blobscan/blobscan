@@ -2,7 +2,7 @@ import type { NextApiRequest } from "next";
 import { Redis } from "ioredis";
 import { RateLimiterRedis } from "rate-limiter-flexible";
 
-import { env } from "@blobscan/env";
+import { env } from "../../../env.mjs";
 
 const redis = new Redis(env.REDIS_URI);
 

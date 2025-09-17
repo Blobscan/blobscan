@@ -11,10 +11,11 @@ import { describe, it, expect, beforeEach } from "vitest";
 
 import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
-import { prisma } from "../prisma";
+import { getPrisma } from "../prisma";
 import type { WithoutTimestampFields } from "../prisma/types";
 
-describe("Base Extension", () => {
+describe("Upsert Many Extension", () => {
+  const prisma = getPrisma();
   const expectedEmptyInputRes = [
     {
       count: 0,
@@ -59,9 +60,11 @@ describe("Base Extension", () => {
             address: "asc",
           },
         })
-        .then((addresses) => addresses.map((a) => omitDBTimestampFields(a)));
+        .then((addresses) =>
+          addresses.map(({ category: _, ...a }) => omitDBTimestampFields(a))
+        );
 
-      expect(insertedAddresses).toStrictEqual(input);
+      expect(insertedAddresses).toMatchObject(input);
     });
 
     it("should upsert an empty array correctly", async () => {
@@ -401,6 +404,11 @@ describe("Base Extension", () => {
         await prisma.blobDataStorageReference.upsertMany(input);
 
         const insertedRefs = await prisma.blobDataStorageReference.findMany({
+          select: {
+            blobHash: true,
+            blobStorage: true,
+            dataReference: true,
+          },
           where: {
             blobHash: newBlob.versionedHash,
           },
@@ -437,6 +445,11 @@ describe("Base Extension", () => {
           new Set(input.map((r) => r.blobHash))
         );
         const updatedRefs = await prisma.blobDataStorageReference.findMany({
+          select: {
+            blobHash: true,
+            blobStorage: true,
+            dataReference: true,
+          },
           where: {
             blobHash: {
               in: updatedBlobVersionedHashes,
@@ -452,7 +465,7 @@ describe("Base Extension", () => {
           ],
         });
 
-        expect(updatedRefs).toStrictEqual(input);
+        expect(updatedRefs).toEqual(input);
       });
 
       it("should upsert an empty array correctly", async () => {
@@ -473,16 +486,6 @@ describe("Base Extension", () => {
         await expect(
           prisma.blobDataStorageReference.upsertMany(input)
         ).rejects.toThrowErrorMatchingSnapshot();
-      });
-    });
-  });
-
-  describe("Block model", () => {
-    describe("findLatest()", () => {
-      it("should find the latest block correctly", async () => {
-        const result = await prisma.block.findLatest();
-
-        expect(result).toMatchSnapshot();
       });
     });
   });
@@ -575,9 +578,14 @@ describe("Base Extension", () => {
               hash: "asc",
             },
           })
-          .then((txs) => txs.map((tx) => omitDBTimestampFields(tx)));
+          .then((txs) =>
+            txs.map(
+              ({ computeBlobGasBaseFee: _, computeUsdFields: __, ...tx }) =>
+                omitDBTimestampFields(tx)
+            )
+          );
 
-        expect(insertedTxs).toStrictEqual(input);
+        expect(insertedTxs).toMatchObject(input);
       });
 
       it("should update multiple transactions correctly", async () => {
@@ -639,9 +647,14 @@ describe("Base Extension", () => {
               hash: "asc",
             },
           })
-          .then((txs) => txs.map((tx) => omitDBTimestampFields(tx)));
+          .then((txs) =>
+            txs.map(
+              ({ computeBlobGasBaseFee: _, computeUsdFields: __, ...tx }) =>
+                omitDBTimestampFields(tx)
+            )
+          );
 
-        expect(updatedTxs).toStrictEqual(input);
+        expect(updatedTxs).toMatchObject(input);
       });
 
       it("should upsert an empty array correctly", async () => {

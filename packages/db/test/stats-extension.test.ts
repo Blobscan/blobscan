@@ -11,7 +11,7 @@ import dayjs, {
 } from "@blobscan/dayjs";
 import { fixtures } from "@blobscan/test";
 
-import { prisma } from "../prisma";
+import { getPrisma } from "../prisma";
 import type { BlockNumberRange } from "../prisma/types";
 import {
   getElementByAggregableType,
@@ -30,6 +30,7 @@ const AVG_METRICS: (keyof OverallStats)[] = [
 ] as const;
 
 describe("Stats Extension", () => {
+  const prisma = getPrisma();
   describe("Daily Stats Model", () => {
     async function assertDailyStats(datePeriod: DatePeriodLike) {
       const allDailyStats = await prisma.dailyStats.findMany();

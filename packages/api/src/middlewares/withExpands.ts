@@ -1,6 +1,12 @@
-import type { Prisma } from "@blobscan/db";
+import type {
+  BlobscanPrismaClient,
+  ExtendedBlockSelect,
+  ExtendedTransactionSelect,
+  Prisma,
+} from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
+import type { ExtendedPrismaTransaction } from "../routers/tx/helpers";
 import { t } from "../trpc-client";
 
 const zodExpandEnums = ["blob", "block", "transaction"] as const;
@@ -8,13 +14,16 @@ const zodExpandEnums = ["blob", "block", "transaction"] as const;
 export type ZodExpandEnum = (typeof zodExpandEnums)[number];
 
 const expandedTransactionSelect = {
+  blobAsCalldataGasFee: true,
   blobAsCalldataGasUsed: true,
   blobGasUsed: true,
+  blobGasMaxFee: true,
   fromId: true,
   from: {
     select: {
       address: true,
       rollup: true,
+      category: true,
     },
   },
   toId: true,
@@ -22,7 +31,9 @@ const expandedTransactionSelect = {
   maxFeePerBlobGas: true,
   index: true,
   decodedFields: true,
-} satisfies Prisma.TransactionSelect;
+  computeBlobGasBaseFee: true,
+  computeUsdFields: true,
+} satisfies ExtendedTransactionSelect;
 
 export const expandedBlobSelect = {
   commitment: true,
@@ -37,24 +48,25 @@ const expandedBlockSelect = {
   blobGasUsed: true,
   excessBlobGas: true,
   slot: true,
-} satisfies Prisma.BlockSelect;
+  blobGasBaseFee: true,
+  computeUsdFields: true,
+} satisfies ExtendedBlockSelect;
 
-export type ExpandedBlock = Prisma.BlockGetPayload<{
-  select: typeof expandedBlockSelect;
-}>;
+export type ExpandedBlock = NonNullable<
+  Prisma.Result<
+    BlobscanPrismaClient["block"],
+    { select: typeof expandedBlockSelect },
+    "findFirst"
+  >
+>;
 
-export type ExpandedBaseTransaction = Prisma.TransactionGetPayload<{
-  select: typeof expandedTransactionSelect;
-}>;
-export type ExpandedTransaction = Prisma.TransactionGetPayload<{
-  select: typeof expandedTransactionSelect;
-}> & {
-  decodedFields: NonNullable<
-    Prisma.TransactionGetPayload<{
-      select: typeof expandedTransactionSelect;
-    }>["decodedFields"]
-  >;
-};
+export type ExpandedTransaction = NonNullable<
+  Prisma.Result<
+    BlobscanPrismaClient["transaction"],
+    { select: typeof expandedTransactionSelect },
+    "findFirst"
+  >
+> & { decodedFields: NonNullable<ExtendedPrismaTransaction["decodedFields"]> };
 
 export type ExpandedBlob = Prisma.BlobGetPayload<{
   select: typeof expandedBlobSelect;

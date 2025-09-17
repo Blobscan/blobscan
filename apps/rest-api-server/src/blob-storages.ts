@@ -6,12 +6,12 @@ import {
   SwarmStorage,
   WeaveVMStorage,
 } from "@blobscan/blob-storage-manager";
-import { prisma } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 import type { Environment } from "@blobscan/env";
+import { logger } from "@blobscan/logger";
 
-import { logger } from "./logger";
+import { prisma } from "./prisma";
 
 function isBlobStorageEnabled(storageName: BlobStorageName) {
   const storageEnabledKey =

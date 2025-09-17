@@ -1,0 +1,33 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Upsert Many Extension > BlobDataStorageReference model > upsertMany() > should fail when upserting a reference for a non-existent blob 1`] = `
+"
+Invalid \`prisma.$executeRaw()\` invocation:
+
+
+Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"blob_data_storage_reference\\" violates foreign key constraint \\"blob_data_storage_reference_blob_hash_fkey\\"\`"
+`;
+
+exports[`Upsert Many Extension > Transaction model > upsertMany() > should fail when upserting a transaction with a non-existent block 1`] = `
+"
+Invalid \`prisma.$executeRaw()\` invocation:
+
+
+Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"transaction\\" violates foreign key constraint \\"transaction_block_hash_fkey\\"\`"
+`;
+
+exports[`Upsert Many Extension > Transaction model > upsertMany() > should fail when upserting a transaction with a non-existent receiver address 1`] = `
+"
+Invalid \`prisma.$executeRaw()\` invocation:
+
+
+Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"transaction\\" violates foreign key constraint \\"transaction_to_id_fkey\\"\`"
+`;
+
+exports[`Upsert Many Extension > Transaction model > upsertMany() > should fail when upserting a transaction with a non-existent sender address 1`] = `
+"
+Invalid \`prisma.$executeRaw()\` invocation:
+
+
+Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"transaction\\" violates foreign key constraint \\"transaction_from_id_fkey\\"\`"
+`;

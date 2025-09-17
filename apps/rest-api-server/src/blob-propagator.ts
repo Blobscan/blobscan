@@ -1,9 +1,9 @@
 import { BlobPropagator } from "@blobscan/blob-propagator";
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
-import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
 import { createBlobStorages } from "./blob-storages";
+import { prisma } from "./prisma";
 
 let blobPropagator: BlobPropagator | undefined;
 
@@ -39,6 +39,14 @@ async function createBlobPropagator() {
     reconcilerConfig: {
       cronPattern: env.BLOB_RECONCILER_CRON_PATTERN,
       batchSize: env.BLOB_RECONCILER_BATCH_SIZE,
+    },
+    workerOptions: {
+      removeOnComplete: {
+        age: env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE,
+      },
+      removeOnFail: {
+        age: env.BLOB_PROPAGATOR_FAILED_JOBS_AGE,
+      },
     },
   });
 }

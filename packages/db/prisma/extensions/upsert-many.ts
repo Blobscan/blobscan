@@ -6,22 +6,14 @@ import type {
   BlobsOnTransactions,
   PrismaPromise,
   Transaction,
-  EthUsdPrice,
 } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 
-import { curryPrismaExtensionFnSpan } from "../instrumentation";
 import type { WithoutTimestampFields } from "../types";
-import type { BlockId, BlockIdField } from "../zod-utils";
-import {
-  blobCommitmentSchema,
-  blobVersionedHashSchema,
-  parsedBlockIdSchema,
-} from "../zod-utils";
+import type { ZeroOpResult } from "./helpers";
 
 const NOW_SQL = Prisma.sql`NOW()`;
 
-type ZeroOpResult = { count: number }[];
 export type RawBlob = {
   versionedHash: string;
   commitment: string;
@@ -31,19 +23,10 @@ export type RawBlob = {
   data: string;
 };
 
-const startExtensionFnSpan = curryPrismaExtensionFnSpan("base");
-
-const startBlockModelFnSpan = startExtensionFnSpan("block");
-
-export const baseExtension = Prisma.defineExtension((prisma) =>
+export const upsertManyExtension = Prisma.defineExtension((prisma) =>
   prisma.$extends({
-    name: "Base Extension",
+    name: "Upsert Many Operation Extension",
     model: {
-      $allModels: {
-        zero() {
-          return prisma.$queryRaw<ZeroOpResult>`SELECT 0 as count`;
-        },
-      },
       address: {
         upsertMany(addresses: WithoutTimestampFields<Address>[]) {
           if (!addresses.length) {
@@ -90,30 +73,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
       },
       blob: {
-        findEthUsdPrices(blobId: string) {
-          let whereClause: Prisma.Sql;
-          const isCommitment = blobCommitmentSchema.safeParse(blobId);
-          const isVersionedHash = blobVersionedHashSchema.safeParse(blobId);
-
-          if (!isCommitment || !isVersionedHash) {
-            throw new Error(
-              `Couldn't retrieve ETH/USD price for blob: id "${blobId}" is not a valid versioned hash nor commitment.`
-            );
-          }
-
-          if (isCommitment) {
-            whereClause = Prisma.sql`b.versioned_hash = ${blobId}`;
-          } else {
-            whereClause = Prisma.sql`b.commitment = ${blobId}`;
-          }
-
-          return prisma.$queryRaw<EthUsdPrice[]>`
-            SELECT p.id, p.price, p.timestamp
-            FROM blob b join blobs_on_transactions btx on b.versioned_hash = btx.blob_hash join eth_usd_price p on DATE_TRUNC('minute', btx.block_timestamp) = p.timestamp
-            WHERE ${whereClause}
-            ORDER BY btx.block_timestamp DESC
-          `;
-        },
         upsertMany(blobs: WithoutTimestampFields<Blob>[]) {
           if (!blobs.length) {
             return (
@@ -247,86 +206,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
           `;
         },
       },
-      block: {
-        findEthUsdPrice(blockIdOrBlockIdField: BlockId | BlockIdField) {
-          let blockIdField: BlockIdField;
-
-          if (typeof blockIdOrBlockIdField === "object") {
-            blockIdField = blockIdOrBlockIdField;
-          } else {
-            const res = parsedBlockIdSchema.safeParse(blockIdOrBlockIdField);
-
-            if (!res.success) {
-              throw new Error(
-                `Couldn't retrieve ETH/USD price for block: id "${blockIdOrBlockIdField}" is invalid`
-              );
-            }
-
-            blockIdField = res.data;
-          }
-
-          const { type, value } = blockIdField;
-          let whereClause: Prisma.Sql = Prisma.empty;
-          let orderBy: Prisma.Sql = Prisma.empty;
-
-          switch (type) {
-            case "hash": {
-              whereClause = Prisma.sql`WHERE b.hash = ${value}`;
-              break;
-            }
-            case "number": {
-              whereClause = Prisma.sql`WHERE b.number = ${value}`;
-              break;
-            }
-            case "slot": {
-              whereClause = Prisma.sql`WHERE b.slot = ${value}`;
-              break;
-            }
-            case "label": {
-              const direction =
-                value === "latest" ? Prisma.sql`DESC` : Prisma.sql`ASC`;
-
-              orderBy = Prisma.sql`ORDER BY b.number ${direction} LIMIT 1`;
-              break;
-            }
-          }
-
-          return startBlockModelFnSpan("findEthUsdPrice", async () => {
-            const ethUsdPrice = await prisma.$queryRaw<EthUsdPrice[]>`
-              SELECT p.id, p.price, p.timestamp
-              FROM block b join eth_usd_price p on DATE_TRUNC('minute', b.timestamp) = p.timestamp
-              ${whereClause}
-              ${orderBy}
-            `;
-
-            return ethUsdPrice[0];
-          });
-        },
-
-        findLatest() {
-          return startBlockModelFnSpan("findLatest", () => {
-            return prisma.block.findFirst({
-              where: {
-                transactionForks: {
-                  none: {},
-                },
-              },
-              orderBy: { number: "desc" },
-            });
-          });
-        },
-      },
       transaction: {
-        async findEthUsdPrice(txHash: string) {
-          const ethUsdPrice = await prisma.$queryRaw<EthUsdPrice[]>`
-              SELECT p.id, p.price, p.timestamp
-              FROM transaction tx join eth_usd_price p on DATE_TRUNC('minute', tx.block_timestamp) = p.timestamp
-              WHERE tx.hash = ${txHash}
-            `;
-
-          return ethUsdPrice[0];
-        },
-
         upsertMany(transactions: WithoutTimestampFields<Transaction>[]) {
           if (!transactions.length) {
             return (
@@ -428,4 +308,4 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
   })
 );
 
-export type BaseExtendedPrismaClient = ReturnType<typeof baseExtension>;
+export type BaseExtendedPrismaClient = ReturnType<typeof upsertManyExtension>;

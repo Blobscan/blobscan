@@ -1,6 +1,14 @@
 import { Prisma } from "@blobscan/db";
 import { dbEnumSchema } from "@blobscan/db/prisma/zod-utils";
-import type { DBEnum } from "@blobscan/db/prisma/zod-utils";
+import type {
+  DBEnum,
+  optimismDecodedFieldsSchema,
+} from "@blobscan/db/prisma/zod-utils";
+import type { z } from "@blobscan/zod";
+
+import type { ExtendedBlobDataStorageReference } from "../routers/blob/helpers";
+import type { PrismaTransaction } from "../zod-schemas";
+import { hasProperties } from "./identifiers";
 
 export type Normalized<T> = T extends DBEnum
   ? Lowercase<T>
@@ -41,4 +49,31 @@ export function normalize<T>(v: T): Normalized<T> {
   }
 
   return v as Normalized<T>;
+}
+
+export function normalizePrismaTransactionFields({
+  from,
+  fromId,
+  toId,
+  decodedFields,
+}: Pick<PrismaTransaction, "from" | "fromId" | "toId" | "decodedFields">) {
+  return {
+    category: from.category,
+    rollup: from.rollup,
+    from: fromId,
+    to: toId,
+    decodedFields:
+      decodedFields && hasProperties(decodedFields)
+        ? (decodedFields as z.output<typeof optimismDecodedFieldsSchema>)
+        : null,
+  };
+}
+
+export function normalizePrismaBlobDataStorageReferencesFields(
+  dataStorageReferences: ExtendedBlobDataStorageReference[]
+) {
+  return dataStorageReferences.map(({ blobStorage, url }) => ({
+    storage: blobStorage,
+    url,
+  }));
 }

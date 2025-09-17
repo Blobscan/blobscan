@@ -11,7 +11,7 @@ const inputSchema = z.object({
 
 const outputSchema = z.void();
 
-export const createWeaveVMReferences = createAuthedProcedure("weavevm")
+export const createWeaveVMReferences = createAuthedProcedure("load-network")
   .meta({
     openapi: {
       method: "POST",

@@ -5,8 +5,8 @@ import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import type { Blob } from "@blobscan/db";
-import { prisma } from "@blobscan/db";
-import { env } from "@blobscan/env";
+import { getPrisma } from "@blobscan/db";
+import { env } from "@blobscan/test";
 
 import type {
   BlobPropagationJob,
@@ -18,6 +18,7 @@ import { reconcilerProcessor } from "../src/worker-processors/reconciler";
 import { createStorageFromEnv } from "./helpers";
 
 describe("Reconciler Worker", () => {
+  const prisma = getPrisma();
   let propagatorQueues: PropagationQueue[];
   let primaryBlobStorage: BlobStorage;
   const batchSize = 2;

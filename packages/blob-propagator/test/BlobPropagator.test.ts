@@ -6,9 +6,8 @@ import type {
   BlobStorage,
   PostgresStorage,
 } from "@blobscan/blob-storage-manager";
-import { prisma } from "@blobscan/db";
-import { env } from "@blobscan/env";
-import { fixtures, testValidError } from "@blobscan/test";
+import { getPrisma } from "@blobscan/db";
+import { env, fixtures, testValidError } from "@blobscan/test";
 
 import { buildJobId } from "../src";
 import type { BlobPropagatorConfig } from "../src/BlobPropagator";
@@ -95,6 +94,7 @@ class MockedWeaveVMStorage extends WeaveVMStorage {
 }
 
 describe("BlobPropagator", () => {
+  const prisma = getPrisma();
   let blobStorages: BlobStorage[];
   let primaryBlobStorage: PostgresStorage;
 

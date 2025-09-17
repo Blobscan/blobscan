@@ -126,7 +126,7 @@ const Blocks: NextPage = function () {
       ({
         blobGasPrice,
         blobGasUsed,
-        blobBaseFee,
+        blobGasBaseFee,
         number,
         slot,
         timestamp,
@@ -249,7 +249,10 @@ const Blocks: NextPage = function () {
               ),
             },
             {
-              item: formatWei(blobBaseFee, { toUnit: "Gwei", hideUnit: true }),
+              item: formatWei(blobGasBaseFee, {
+                toUnit: "Gwei",
+                hideUnit: true,
+              }),
             },
             {
               item: formatWei(blobGasPrice, { toUnit: "Gwei", hideUnit: true }),

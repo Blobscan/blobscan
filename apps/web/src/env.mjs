@@ -35,13 +35,30 @@ export const env = createEnv({
    * built with invalid env vars.
    */
   server: {
+    CHAIN_ID: z.coerce.number().positive().default(1),
     DATABASE_URL: z.string().url(),
     DIRECT_URL: z.string().url(),
     FEEDBACK_WEBHOOK_URL: z.string().optional(),
+    BLOB_DATA_API_ENABLED: booleanSchema.default("true"),
     BLOB_DATA_API_KEY: z.string().optional(),
     NODE_ENV: z.enum(["development", "test", "production"]),
     METRICS_ENABLED: booleanSchema.default("false"),
+    REDIS_URI: z.string().default("redis://localhost:6379"),
     TRACES_ENABLED: booleanSchema.default("false"),
+    OTEL_DIAG_ENABLED: z.boolean().default(false),
+    OTLP_AUTH_USERNAME: z.coerce.string().optional(),
+    OTLP_AUTH_PASSWORD: z.string().optional(),
+
+    BLOBSCAN_API_BASE_URL: z
+      .string()
+      .url()
+      .default(`http://localhost:${process.env.BLOBSCAN_API_PORT ?? 3001}`),
+    GOOGLE_STORAGE_BUCKET_NAME: z.string().optional(),
+    GOOGLE_STORAGE_API_ENDPOINT: z.string().url().optional(),
+    S3_STORAGE_BUCKET_NAME: z.string().optional(),
+    S3_STORAGE_ENDPOINT: z.string().url().optional(),
+    WEAVEVM_STORAGE_API_BASE_URL: z.string().optional(),
+
     ...clientEnvVars,
   },
   client: {
@@ -52,13 +69,26 @@ export const env = createEnv({
    * Destructure all variables from `process.env` to make sure they aren't tree-shaken away.
    */
   runtimeEnv: {
+    CHAIN_ID: process.env.CHAIN_ID,
     DATABASE_URL: process.env.DATABASE_URL,
     DIRECT_URL: process.env.DIRECT_URL,
     FEEDBACK_WEBHOOK_URL: process.env.FEEDBACK_WEBHOOK_URL,
+    BLOB_DATA_API_ENABLED: process.env.BLOB_DATA_API_ENABLED,
     BLOB_DATA_API_KEY: process.env.BLOB_DATA_API_KEY,
     METRICS_ENABLED: process.env.METRICS_ENABLED,
     NODE_ENV: process.env.NODE_ENV,
+    REDIS_URI: process.env.REDIS_URI,
     TRACES_ENABLED: process.env.TRACES_ENABLED,
+    OTEL_DIAG_ENABLED: process.env.OTEL_DIAG_ENABLED,
+    OTLP_AUTH_USERNAME: process.env.OTLP_AUTH_USERNAME,
+    OTLP_AUTH_PASSWORD: process.env.OTLP_AUTH_PASSWORD,
+
+    BLOBSCAN_API_BASE_URL: process.env.BLOBSCAN_API_BASE_URL,
+    GOOGLE_STORAGE_API_ENDPOINT: process.env.GOOGLE_STORAGE_API_ENDPOINT,
+    GOOGLE_STORAGE_BUCKET_NAME: process.env.GOOGLE_STORAGE_BUCKET_NAME,
+    S3_STORAGE_BUCKET_NAME: process.env.S3_STORAGE_BUCKET_NAME,
+    S3_STORAGE_ENDPOINT: process.env.S3_STORAGE_ENDPOINT,
+    WEAVEVM_STORAGE_API_BASE_URL: process.env.WEAVEVM_STORAGE_API_BASE_URL,
 
     PUBLIC_BEACON_BASE_URL: process.env.PUBLIC_BEACON_BASE_URL,
     PUBLIC_EXPLORER_BASE_URL: process.env.PUBLIC_EXPLORER_BASE_URL,

@@ -1,4 +1,5 @@
 import { logger } from "@blobscan/logger";
+import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 import { z } from "@blobscan/zod";
 
 import { createAuthedProcedure } from "../../procedures";
@@ -68,18 +69,19 @@ export const indexData = createAuthedProcedure("indexer")
   })
   .input(inputSchema)
   .output(outputSchema)
-  .mutation(async ({ ctx: { prisma, blobPropagator }, input }) => {
+  .mutation(async ({ ctx: { prisma, blobPropagator, chainId }, input }) => {
+    const networkConfig = getNetworkBlobConfigBySlot(chainId, input.block.slot);
     const operations = [];
 
     // TODO: Create an upsert extension that set the `insertedAt` and the `updatedAt` field
     const now = new Date();
 
     // 1. Prepare address, block, transaction and blob insertions
-    const dbTxs = createDBTransactions(input);
-    const dbBlock = createDBBlock(input, dbTxs);
+    const dbTxs = createDBTransactions(input, networkConfig);
+    const dbBlock = createDBBlock(input, dbTxs, networkConfig);
     const dbBlobs = createDBBlobs(input);
     const dbBlobsOnTransactions = createDBBlobsOnTransactions(input);
-    const dbAddress = createDBAddresses(input);
+    const dbAddress = createDBAddresses(chainId, input);
 
     let p0 = performance.now();
 

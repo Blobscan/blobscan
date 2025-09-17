@@ -3,7 +3,6 @@ import axios from "axios";
 
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
-import { env } from "@blobscan/env";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
@@ -12,6 +11,12 @@ import { StorageCreationError } from "../errors";
 export interface SwarmStorageConfig extends BlobStorageConfig {
   batchId: string;
   beeEndpoint: string;
+}
+
+export interface SwarmStorageOpts {
+  chunkstormEnabled?: boolean;
+  chunkstormUrl?: string;
+  deferredUpload?: boolean;
 }
 
 async function getBatchId(prisma: BlobscanPrismaClient) {
@@ -41,10 +46,26 @@ export class SwarmStorage extends BlobStorage {
   _beeClient: Bee;
   batchId: string;
 
-  protected constructor({ batchId, beeEndpoint, chainId }: SwarmStorageConfig) {
+  _opts: SwarmStorageOpts;
+
+  protected constructor(
+    { batchId, beeEndpoint, chainId }: SwarmStorageConfig,
+    opts: SwarmStorageOpts = {}
+  ) {
     super(BlobStorageName.SWARM, chainId);
 
     this.batchId = batchId;
+
+    this._opts = {
+      deferredUpload: true,
+      chunkstormEnabled: false,
+      ...opts,
+    };
+
+    if (this._opts.chunkstormEnabled && !this._opts.chunkstormUrl) {
+      throw new Error("Chunkstorm enabled but no url was provided");
+    }
+
     try {
       this._beeClient = new Bee(beeEndpoint);
     } catch (err) {
@@ -76,15 +97,19 @@ export class SwarmStorage extends BlobStorage {
 
   protected async _storeBlob(versionedHash: string, data: Buffer) {
     return this.#performBeeAPICall(async () => {
-      return env.SWARM_CHUNKSTORM_ENABLED
+      return this._opts?.chunkstormEnabled
         ? this.#sendToChunkstorm(data)
         : this.#sendToBeeNode(versionedHash, data);
     });
   }
 
   async #sendToChunkstorm(buffer: Buffer) {
+    if (!this._opts?.chunkstormUrl) {
+      throw new Error(`Failed to send to chunkstorm: no url defined`);
+    }
+
     const response = await axios.post(
-      `${env.SWARM_CHUNKSTORM_URL}/upload`,
+      `${this._opts?.chunkstormUrl}/upload`,
       buffer,
       {
         headers: {
@@ -104,7 +129,7 @@ export class SwarmStorage extends BlobStorage {
       versionedHash,
       {
         contentType: "application/octet-stream",
-        deferred: env.SWARM_DEFERRED_UPLOAD,
+        deferred: this._opts?.deferredUpload,
       }
     );
     return response.reference.toHex();

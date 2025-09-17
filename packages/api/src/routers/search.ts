@@ -1,5 +1,4 @@
 import type { Prisma } from "@blobscan/db";
-import { prisma } from "@blobscan/db";
 import {
   AddressModel,
   BlobModel,
@@ -106,7 +105,7 @@ export const search = publicProcedure
     })
   )
   .output(outputSchema)
-  .query(async ({ input: { query } }) => {
+  .query(async ({ input: { query }, ctx: { prisma } }) => {
     const isAddress = addressSchema.safeParse(query).success;
     if (isAddress) {
       const dbAddress = await prisma.address.findUnique({

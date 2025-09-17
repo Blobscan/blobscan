@@ -1,14 +1,20 @@
 import { normalizeDate, toDailyDate } from "@blobscan/dayjs";
-import { prisma } from "@blobscan/db";
+import type { BlobscanPrismaClient } from "@blobscan/db";
 
 import { BaseSyncer } from "../BaseSyncer";
 import type { CommonSyncerConfig } from "../BaseSyncer";
 import { formatDate } from "../utils";
 
-export type DailyStatsSyncerConfig = CommonSyncerConfig;
+export interface DailyStatsSyncerConfig extends CommonSyncerConfig {
+  prisma: BlobscanPrismaClient;
+}
 
 export class DailyStatsSyncer extends BaseSyncer {
-  constructor({ redisUriOrConnection, cronPattern }: DailyStatsSyncerConfig) {
+  constructor({
+    prisma,
+    redisUriOrConnection,
+    cronPattern,
+  }: DailyStatsSyncerConfig) {
     const name = "daily-stats";
 
     super({

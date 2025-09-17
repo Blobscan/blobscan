@@ -67,6 +67,7 @@ const Home: NextPage = () => {
         refetchOnWindowFocus: false,
       }
     );
+  console.log(blocksData);
 
   const dailyStats = useMemo(() => {
     if (!dailyStatsData) {

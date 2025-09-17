@@ -2,9 +2,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 import type { DeepMockProxy } from "vitest-mock-extended";
 import { mockDeep } from "vitest-mock-extended";
 
-import { prisma } from "@blobscan/db";
-import { env } from "@blobscan/env";
-import { testValidError } from "@blobscan/test";
+import { getPrisma } from "@blobscan/db";
+import { env, testValidError } from "@blobscan/test";
 
 import { BlobStorageManager } from "../src/BlobStorageManager";
 import { BlobStorageError, BlobStorageManagerError } from "../src/errors";
@@ -18,6 +17,7 @@ if (!env.BEE_ENDPOINT) {
 const BEE_ENDPOINT = env.BEE_ENDPOINT;
 
 describe("BlobStorageManager", () => {
+  const prisma = getPrisma();
   let blobStorageManager: BlobStorageManager;
   let postgresStorage: PostgresStorage;
   let googleStorage: GoogleStorage;

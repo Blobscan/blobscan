@@ -11,9 +11,9 @@ import {
 } from "vitest";
 
 import { Category, Rollup } from "@blobscan/db/prisma/enums";
-import { env } from "@blobscan/env";
+import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 import { ADDRESS_TO_ROLLUP_MAPPINGS } from "@blobscan/rollups";
-import { omitDBTimestampFields, testValidError } from "@blobscan/test";
+import { env, omitDBTimestampFields, testValidError } from "@blobscan/test";
 
 import { indexerRouter } from "../src/routers/indexer";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
@@ -33,7 +33,7 @@ describe("Indexer router", async () => {
     const ctx = await createTestContext();
 
     authorizedContext = await createTestContext({
-      apiClient: { type: "indexer" },
+      apiClient: "indexer",
     });
 
     nonAuthorizedIndexerCaller = indexerRouter.createCaller(ctx);
@@ -69,9 +69,13 @@ describe("Indexer router", async () => {
         //   (acc, b) => acc + getEIP2028CalldataGas(b.data),
         //   0
         // );
+        const config = getNetworkBlobConfigBySlot(
+          env.CHAIN_ID,
+          INPUT.block.slot
+        );
         const expectedBlobGasPrice = calculateBlobGasPrice(
-          INPUT.block.slot,
-          BigInt(INPUT.block.excessBlobGas)
+          BigInt(INPUT.block.excessBlobGas),
+          config
         );
 
         // TODO: Fix this test
@@ -81,12 +85,15 @@ describe("Indexer router", async () => {
         );
         expect(remainingParams).toMatchInlineSnapshot(`
           {
+            "blobGasBaseFee": "10000",
             "blobGasUsed": "10000",
+            "computeUsdFields": [Function],
             "excessBlobGas": "5000",
             "hash": "blockHash2010",
             "number": 2010,
             "slot": 130,
             "timestamp": 2023-09-01T13:50:21.000Z,
+            Symbol(nodejs.util.inspect.custom): [Function],
           }
         `);
       });
@@ -134,8 +141,14 @@ describe("Indexer router", async () => {
           //   (tx) => tx.blobAsCalldataGasUsed
           // );
           const remainingParams = indexedTxs.map(
-            ({ blobAsCalldataGasUsed: _, ...remainingParams }) =>
-              remainingParams
+            ({
+              blobAsCalldataGasUsed: _,
+              computeBlobGasBaseFee: __,
+              computeUsdFields: ___,
+              blobAsCalldataGasFee: ____,
+              blobGasMaxFee: _____,
+              ...remainingParams
+            }) => remainingParams
           );
 
           // TODO: Fix this test
@@ -157,6 +170,7 @@ describe("Indexer router", async () => {
                 "index": 0,
                 "maxFeePerBlobGas": "1800",
                 "toId": "address10",
+                Symbol(nodejs.util.inspect.custom): [Function],
               },
               {
                 "blobGasUsed": "262144",
@@ -170,6 +184,7 @@ describe("Indexer router", async () => {
                 "index": 1,
                 "maxFeePerBlobGas": "20000",
                 "toId": "address2",
+                Symbol(nodejs.util.inspect.custom): [Function],
               },
             ]
           `);
@@ -399,7 +414,7 @@ describe("Indexer router", async () => {
 
           beforeAll(async () => {
             ctxWithBlobPropagator = await createTestContext({
-              apiClient: { type: "indexer" },
+              apiClient: "indexer",
               withBlobPropagator: true,
             });
 
@@ -559,11 +574,13 @@ describe("Indexer router", async () => {
       );
     });
 
-    it("should fail when calling procedure without auth", async () => {
-      await expect(nonAuthorizedIndexerCaller.indexData(INPUT)).rejects.toThrow(
-        new TRPCError({ code: "UNAUTHORIZED" })
-      );
-    });
+    testValidError(
+      "should fail when calling procedure without auth",
+      async () => {
+        await nonAuthorizedIndexerCaller.indexData(INPUT);
+      },
+      TRPCError
+    );
   });
 
   describe("handleReorg", () => {

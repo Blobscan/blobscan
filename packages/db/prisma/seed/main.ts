@@ -3,7 +3,7 @@ import ora from "ora";
 
 import dayjs from "@blobscan/dayjs";
 
-import { prisma } from "..";
+import { getPrisma } from "..";
 import type { Rollup } from "../enums";
 import type { WithoutTimestampFields } from "../types";
 import { DataGenerator } from "./DataGenerator";
@@ -11,6 +11,7 @@ import { seedParams } from "./params";
 import { performPrismaUpsertManyInBatches } from "./utils";
 import { ROLLUP_ADDRESSES } from "./web3";
 
+const prisma = getPrisma();
 let spinner = ora("Seeding database…").start();
 
 async function measureExecutionTime(fn: () => Promise<void> | void) {

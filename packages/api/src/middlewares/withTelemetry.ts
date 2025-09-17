@@ -42,7 +42,11 @@ function getTRPCProcedure(url: URL) {
 }
 
 export const withTelemetry = t.middleware(
-  async ({ ctx: { req, res, scope }, next }) => {
+  async ({ ctx: { req, res, scope, enableTracing }, next }) => {
+    if (!enableTracing) {
+      return next();
+    }
+
     const url = buildURL(req);
     const endpoint = url.pathname;
     const procedureName = getTRPCProcedure(url);

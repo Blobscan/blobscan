@@ -567,6 +567,16 @@
       "dataReference": "1/ob/Ha/sh/obHash001.bin"
     },
     {
+      "blobHash": "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734",
+      "blobStorage": "S3",
+      "dataReference": "1/ob/Ha/sh/obHash001.bin"
+    },
+    {
+      "blobHash": "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734",
+      "blobStorage": "WEAVEVM",
+      "dataReference": "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734"
+    },
+    {
       "blobHash": "blobHash001",
       "blobStorage": "SWARM",
       "dataReference": "bzz://some-hash-for-blobHash001"

@@ -1,4 +1,9 @@
-import type { EthUsdPrice, Prisma } from "@blobscan/db";
+import type {
+  BlobscanPrismaClient,
+  EthUsdPrice,
+  ExtendedBlobDataStorageReferenceSelect,
+  Prisma,
+} from "@blobscan/db";
 import { EthUsdPriceModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
@@ -11,11 +16,9 @@ import type {
 import type { Prettify } from "../../types";
 import { isFullyDefined } from "../../utils";
 import {
-  deriveBlockFields,
-  deriveTransactionFields,
-  normalizePrismaBlobFields,
+  normalizePrismaBlobDataStorageReferencesFields,
   normalizePrismaTransactionFields,
-} from "../../utils/transformers";
+} from "../../utils";
 import {
   baseBlobSchema,
   baseBlockSchema,
@@ -23,23 +26,27 @@ import {
   prismaBlobOnTransactionSchema,
 } from "../../zod-schemas";
 
-const dataStorageReferenceSelect = {
+const blobDataStorageReferenceSelect = {
   blobStorage: true,
-  dataReference: true,
-} satisfies Prisma.BlobDataStorageReferenceSelect;
-5;
+  url: true,
+} satisfies ExtendedBlobDataStorageReferenceSelect;
+
+export const extendedBlobDataStorageReferenceArgs: Prisma.Args<
+  BlobscanPrismaClient["blobDataStorageReference"],
+  "findFirstOrThrow"
+> = {
+  select: blobDataStorageReferenceSelect,
+  orderBy: {
+    blobStorage: "asc",
+  },
+};
+
 export const baseBlobSelect = {
   commitment: true,
   proof: true,
   size: true,
   usageSize: true,
   versionedHash: true,
-  dataStorageReferences: {
-    select: dataStorageReferenceSelect,
-    orderBy: {
-      blobStorage: "asc",
-    },
-  },
 } satisfies Prisma.BlobSelect;
 
 export const baseBlobOnTransactionSelect = {
@@ -52,19 +59,24 @@ export const baseBlobOnTransactionSelect = {
   txIndex: true,
 } satisfies Prisma.BlobsOnTransactionsSelect;
 
+export type ExtendedBlobDataStorageReference = NonNullable<
+  Prisma.Result<
+    BlobscanPrismaClient["blobDataStorageReference"],
+    { select: typeof blobDataStorageReferenceSelect },
+    "findFirst"
+  >
+>;
 type PrismaBlob = Prisma.BlobGetPayload<{
   select: typeof baseBlobSelect;
-}>;
+}> & {
+  dataStorageReferences: ExtendedBlobDataStorageReference[];
+};
 
 type PrismaBlobOnTransaction = Prisma.BlobsOnTransactionsGetPayload<{
   select: typeof baseBlobOnTransactionSelect;
 }>;
 
-type DataStorageReference = Prisma.BlobDataStorageReferenceGetPayload<{
-  select: typeof dataStorageReferenceSelect;
-}>;
-
-export type CompletePrismaBlob = Prettify<
+export type CompletedPrismaBlob = Prettify<
   PrismaBlob & {
     transactions: Prettify<
       PrismaBlobOnTransaction & {
@@ -72,15 +84,15 @@ export type CompletePrismaBlob = Prettify<
         transaction?: ExpandedTransaction & {
           block: { blobGasPrice: ExpandedBlock["blobGasPrice"] };
         };
-      } & { ethUsdPrice?: EthUsdPrice }
+      }
     >[];
   }
 >;
 
-export type CompletePrismaBlobOnTransaction = Prettify<
+export type CompletedPrismaBlobOnTransaction = Prettify<
   PrismaBlobOnTransaction & {
     blob: {
-      dataStorageReferences: DataStorageReference[];
+      dataStorageReferences: ExtendedBlobDataStorageReference[];
     } & ExpandedBlob;
     block?: ExpandedBlock;
     transaction?: ExpandedTransaction & {
@@ -107,6 +119,7 @@ export function createBlobSelect(expands: Expands) {
 
   return {
     ...baseBlobSelect,
+    dataStorageReferences: extendedBlobDataStorageReferenceArgs,
     transactions: {
       select: {
         ...baseBlobOnTransactionSelect,
@@ -140,7 +153,10 @@ export function createBlobsOnTransactionsSelect(expands: Expands) {
   return {
     ...baseBlobOnTransactionSelect,
     blob: {
-      select: baseBlobSelect,
+      select: {
+        ...baseBlobSelect,
+        dataStorageReferences: extendedBlobDataStorageReferenceArgs,
+      },
     },
     ...txExpand,
     ...blockExpand,
@@ -178,6 +194,10 @@ export const responseBlobSchema = baseBlobSchema.extend({
             number: true,
             timestamp: true,
           })
+          .partial({
+            blobGasBaseUsdFee: true,
+            blobGasUsdPrice: true,
+          })
           .optional(),
         ethUsdPrice: EthUsdPriceModel.shape.price.optional(),
       })
@@ -209,82 +229,143 @@ export type ResponseBlobOnTransaction = z.input<
   typeof responseBlobOnTransactionSchema
 >;
 
-export function toResponseBlob(prismaBlob: CompletePrismaBlob): ResponseBlob {
-  const normalizedPrismaBlob = normalizePrismaBlobFields(prismaBlob);
-  const transactions = prismaBlob.transactions.map(
-    ({ block, transaction: prismaTx = {}, ethUsdPrice, ...restBlobOnTx }) => {
-      const { block: prismaTxBlock, index: _, ...restPrismaTx } = prismaTx;
+export function toResponseBlob(
+  {
+    dataStorageReferences,
+    transactions: blobOnTxs,
+    ...prismaBlob
+  }: CompletedPrismaBlob,
+  ethUsdPrices: EthUsdPrice["price"][]
+): ResponseBlob {
+  const responseBlob: ResponseBlob = {
+    ...prismaBlob,
+    dataStorageReferences: normalizePrismaBlobDataStorageReferencesFields(
+      dataStorageReferences
+    ),
+    transactions: blobOnTxs.map(
+      (
+        {
+          block: { computeUsdFields, ...restBlock } = {},
+          transaction: prismaTx = {},
+          ...restBlobOnTx
+        },
+        i
+      ) => {
+        const txEthUsdPrice = ethUsdPrices[i];
 
-      return {
-        ...restBlobOnTx,
-        ...(isFullyDefined(restPrismaTx) && prismaTxBlock
-          ? {
-              ...restPrismaTx,
-              ...normalizePrismaTransactionFields(restPrismaTx),
-              ...deriveTransactionFields({
-                ...restPrismaTx,
-                blobGasPrice: prismaTxBlock.blobGasPrice,
-                ethUsdPrice,
-              }),
-            }
-          : {}),
-        ...(block
-          ? {
-              block: {
-                ...block,
-                ...deriveBlockFields({
+        const blockUsdFields =
+          txEthUsdPrice && computeUsdFields
+            ? computeUsdFields(txEthUsdPrice)
+            : undefined;
+        const txBlock = {
+          ...restBlock,
+          ...(blockUsdFields ?? {}),
+        };
+
+        let responseBlobOnTx: ResponseBlob["transactions"][number] = {
+          ...restBlobOnTx,
+          ...txBlock,
+          ethUsdPrice: txEthUsdPrice?.toNumber(),
+        };
+
+        if (isFullyDefined(prismaTx)) {
+          const {
+            block,
+            decodedFields,
+            from,
+            fromId,
+            toId,
+            computeBlobGasBaseFee,
+            computeUsdFields,
+            ...restPrismaTx
+          } = prismaTx;
+
+          responseBlobOnTx = {
+            ...responseBlobOnTx,
+            ...restPrismaTx,
+            ...normalizePrismaTransactionFields({
+              decodedFields,
+              from,
+              fromId,
+              toId,
+            }),
+            blobGasBaseFee: computeBlobGasBaseFee(block.blobGasPrice),
+            ...(txEthUsdPrice
+              ? computeUsdFields({
                   blobGasPrice: block.blobGasPrice,
-                  blobGasUsed: block.blobGasUsed,
-                  ethUsdPrice,
-                }),
-              },
-            }
-          : {}),
-        ethUsdPrice: ethUsdPrice?.price.toNumber(),
-      };
-    }
-  );
+                  ethUsdPrice: txEthUsdPrice,
+                })
+              : {}),
+          };
+        }
 
-  return {
-    ...normalizedPrismaBlob,
-    transactions,
+        return responseBlobOnTx;
+      }
+    ),
   };
+
+  return responseBlob;
 }
 
-export function toResponseBlobOnTransaction({
-  blobHash,
-  blob,
-  transaction,
-  block,
-  ...restBlobOnTransaction
-}: CompletePrismaBlobOnTransaction): ResponseBlobOnTransaction {
-  const normalizedPrismaBlob = normalizePrismaBlobFields({
-    versionedHash: blobHash,
-    ...blob,
-  });
-  const transformedTransaction = transaction
-    ? {
-        transaction: {
-          ...transaction,
-          ...normalizePrismaTransactionFields(transaction),
-          ...deriveTransactionFields({
-            ...transaction,
-            blobGasPrice: transaction.block.blobGasPrice,
-          }),
-        },
-      }
-    : {};
-  const expandedBlock = block
-    ? {
-        ...block,
-        ...deriveBlockFields(block),
-      }
-    : undefined;
+export function toResponseBlobOnTransaction(
+  prismaBlobOnTransaction: CompletedPrismaBlobOnTransaction,
+  ethUsdPrice?: EthUsdPrice["price"]
+): ResponseBlobOnTransaction {
+  const {
+    blobHash,
+    blob: { dataStorageReferences, ...blob },
+    transaction,
+    block,
+    ...restBlobOnTransaction
+  } = prismaBlobOnTransaction;
 
-  return {
+  const responseBlobOnTx: ResponseBlobOnTransaction = {
+    ...blob,
+    versionedHash: blobHash,
+    dataStorageReferences: normalizePrismaBlobDataStorageReferencesFields(
+      dataStorageReferences
+    ),
     ...restBlobOnTransaction,
-    ...normalizedPrismaBlob,
-    ...transformedTransaction,
-    ...(expandedBlock ? { block: expandedBlock } : {}),
   };
+
+  if (transaction) {
+    const {
+      block: txBlock,
+      decodedFields,
+      from,
+      fromId,
+      toId,
+      computeBlobGasBaseFee,
+      computeUsdFields,
+      ...restTx
+    } = transaction;
+
+    responseBlobOnTx.transaction = {
+      ...restTx,
+      blobGasPrice: txBlock.blobGasPrice,
+      ...normalizePrismaTransactionFields({
+        decodedFields,
+        from,
+        fromId,
+        toId,
+      }),
+      blobGasBaseFee: computeBlobGasBaseFee(txBlock.blobGasPrice),
+      ...(ethUsdPrice
+        ? computeUsdFields({
+            blobGasPrice: txBlock.blobGasPrice,
+            ethUsdPrice,
+          })
+        : {}),
+    };
+  }
+
+  if (block) {
+    const { computeUsdFields, ...restBlock } = block;
+    responseBlobOnTx.block = {
+      ...restBlock,
+      ...(ethUsdPrice ? computeUsdFields(ethUsdPrice) : {}),
+    };
+  }
+
+  return responseBlobOnTx;
 }

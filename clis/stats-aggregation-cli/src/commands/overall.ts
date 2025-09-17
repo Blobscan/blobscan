@@ -2,9 +2,9 @@ import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
 import type { BlockNumberRange } from "@blobscan/db";
-import { prisma } from "@blobscan/db";
 
 import { CommandError } from "../error";
+import { prisma } from "../prisma";
 import type { Command } from "../types";
 import { commandLog, deleteOptionDef, helpOptionDef } from "../utils";
 

@@ -2,7 +2,6 @@ import dayjs from "@blobscan/dayjs";
 import type { Prisma } from "@blobscan/db";
 import type { Category, Rollup } from "@blobscan/db/prisma/enums";
 import { DailyStatsModel } from "@blobscan/db/prisma/zod";
-import { env } from "@blobscan/env";
 import { getNetworkForkTimestamp } from "@blobscan/network-blob-config";
 import { z } from "@blobscan/zod";
 
@@ -102,15 +101,21 @@ export const withAllStatFiltersSchema = withStatsFilterSchema
 
 export type StatFiltersOutputSchema = z.output<typeof withAllStatFiltersSchema>;
 
-function buildDayWhereClause(
-  scope: ContextScope,
-  timeFrame: TimeFrame,
-  selectedStats: StatFiltersOutputSchema["stats"]
-): DayStatFilter["day"] {
+function buildDayWhereClause({
+  chainId,
+  scope,
+  timeFrame,
+  selectedStats,
+}: {
+  chainId: number;
+  scope: ContextScope;
+  timeFrame: TimeFrame;
+  selectedStats: StatFiltersOutputSchema["stats"];
+}): DayStatFilter["day"] {
   let days: number;
 
   if (timeFrame === "All") {
-    const firstDate = dayjs(getNetworkForkTimestamp(env.NETWORK_NAME));
+    const firstDate = dayjs(getNetworkForkTimestamp(chainId));
 
     days = dayjs().diff(firstDate, "D");
   } else {
@@ -152,7 +157,7 @@ function buildDayWhereClause(
 }
 
 export const withStatFilters = t.middleware(
-  ({ next, input = {}, ctx: { scope } }) => {
+  ({ next, input = {}, ctx: { chainId, scope } }) => {
     const { categories, rollups, timeFrame, stats } =
       input as StatFiltersOutputSchema;
     let select: StatsFilters["select"];
@@ -169,7 +174,12 @@ export const withStatFilters = t.middleware(
     }
 
     if (timeFrame) {
-      where.day = buildDayWhereClause(scope, timeFrame, stats);
+      where.day = buildDayWhereClause({
+        chainId,
+        scope,
+        timeFrame,
+        selectedStats: stats,
+      });
     }
 
     const isAllCategoriesEnabled = categories === "all";
