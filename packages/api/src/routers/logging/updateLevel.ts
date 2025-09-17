@@ -23,7 +23,6 @@ export const updateLevel = createAuthedProcedure("admin")
     z.object({
       level: logLevelEnum,
       previousLevel: logLevelEnum,
-      success: z.boolean(),
     })
   )
   .mutation(({ input }) => {
@@ -35,6 +34,5 @@ export const updateLevel = createAuthedProcedure("admin")
     return {
       level,
       previousLevel,
-      success: true,
     };
   });

@@ -17,14 +17,10 @@ export const getLevel = createAuthedProcedure("admin")
   .output(
     z.object({
       level: logLevelEnum,
-      success: z.boolean(),
     })
   )
   .query(() => {
-    const currentLevel = logger.level as LoggerLevel;
-
     return {
-      level: currentLevel,
-      success: true,
+      level: logger.level as LoggerLevel,
     };
   });

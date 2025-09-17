@@ -39,7 +39,6 @@ describe("Logging Router", () => {
 
       expect(result).toEqual({
         level: "info",
-        success: true,
       });
     });
 
@@ -59,7 +58,6 @@ describe("Logging Router", () => {
       expect(result).toEqual({
         level: "debug",
         previousLevel: "info",
-        success: true,
       });
     });
 
