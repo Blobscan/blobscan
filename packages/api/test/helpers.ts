@@ -334,7 +334,7 @@ export function runExpandsTestsSuite(
   });
 }
 
-export async function unauthorizedRPCCallTest(rpcCall: () => Promise<unknown>) {
+export function unauthorizedRPCCallTest(rpcCall: () => Promise<unknown>) {
   it("should fail when calling procedure without auth", async () => {
     await expect(rpcCall()).rejects.toThrow(
       new TRPCError({ code: "UNAUTHORIZED" })

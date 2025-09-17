@@ -1,5 +1,11 @@
 import winston from "winston";
 
+import { z } from "@blobscan/zod";
+
+export const logLevelEnum = z.enum(["error", "warn", "info", "http", "debug"]);
+
+export type LoggerLevel = z.output<typeof logLevelEnum>;
+
 function buildErrorCause(err: Error) {
   let msg = `\n - Cause: ${err.message}`;
 
@@ -50,5 +56,3 @@ export const logger = winston.createLogger({
 });
 
 export type Logger = typeof logger;
-
-export type LoggerLevel = "error" | "warn" | "info" | "http" | "debug";

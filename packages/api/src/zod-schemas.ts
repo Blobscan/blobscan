@@ -18,8 +18,25 @@ import {
   lowercaseToUpercaseDBRollupSchema,
   optimismDecodedFieldsSchema,
 } from "@blobscan/db/prisma/zod-utils";
+import { logLevelEnum } from "@blobscan/logger";
 import { z } from "@blobscan/zod";
 
+export const toLogLevelSchema = z.string().transform((value, ctx) => {
+  const result = logLevelEnum.safeParse(value);
+  if (!result.success) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      params: {
+        value,
+      },
+      message: "Log level provided is invalid",
+    });
+
+    return z.NEVER;
+  }
+
+  return result.data;
+});
 export const toBigIntSchema = z.string().transform((value) => BigInt(value));
 
 export const commaSeparatedValuesSchema = z
