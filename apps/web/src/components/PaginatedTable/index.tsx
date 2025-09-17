@@ -132,7 +132,6 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
     >
       <div className="flex flex-col gap-6">
         <Table
-          fixedColumnsWidth={true}
           expandableRowsMode={isExpandable}
           headers={headers}
           rows={
@@ -144,6 +143,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
                 )
               : rows
           }
+          fixedColumnsWidth
         />
         <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
           <div className="flex items-center justify-start gap-2">

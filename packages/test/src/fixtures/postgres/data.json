@@ -21,7 +21,7 @@
   ],
   "blocks": [
     {
-      "hash": "blockHash001",
+      "hash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "number": 1001,
       "timestamp": "2022-10-16T12:00:00Z",
       "slot": 101,
@@ -190,7 +190,7 @@
       "hash": "txHash001",
       "fromId": "address1",
       "toId": "address2",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "index": 0,
@@ -205,7 +205,7 @@
       "hash": "txHash002",
       "fromId": "address3",
       "toId": "address4",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "index": 1,
@@ -220,7 +220,7 @@
       "hash": "txHash003",
       "fromId": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
       "toId": "address6",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "index": 2,
@@ -448,6 +448,7 @@
       "commitment": "commitment001",
       "proof": "proof001",
       "size": 1000,
+      "usageSize": 1000,
       "firstBlockNumber": 1001,
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
@@ -457,6 +458,7 @@
       "commitment": "commitment002",
       "proof": "proof002",
       "size": 1100,
+      "usageSize": 1000,
       "firstBlockNumber": 1001,
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
@@ -466,6 +468,7 @@
       "commitment": "commitment003",
       "proof": "proof003",
       "size": 1200,
+      "usageSize": 124,
       "firstBlockNumber": 1001,
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
@@ -475,6 +478,7 @@
       "commitment": "commitment004",
       "proof": "proof004",
       "size": 1300,
+      "usageSize": 1300,
       "firstBlockNumber": 1007,
       "insertedAt": "2023-05-10T12:10:00Z",
       "updatedAt": "2023-05-10T12:10:00Z"
@@ -484,6 +488,7 @@
       "commitment": "commitment005",
       "proof": "proof005",
       "size": 1400,
+      "usageSize": 100,
       "firstBlockNumber": 1004,
       "insertedAt": "2023-05-10T12:10:00Z",
       "updatedAt": "2023-05-10T12:10:00Z"
@@ -493,11 +498,12 @@
       "commitment": "commitment006",
       "proof": "proof006",
       "size": 1500,
+      "usageSize": 1496,
       "insertedAt": "2023-05-10T12:10:00Z",
       "updatedAt": "2023-05-10T12:10:00Z"
     },
     {
-      "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
+      "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
       "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b1",
       "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab1",
       "size": 131072,
@@ -506,7 +512,7 @@
       "updatedAt": "2023-05-10T12:10:00Z"
     },
     {
-      "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
+      "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b2",
       "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b2",
       "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab2",
       "size": 131072,
@@ -515,7 +521,7 @@
       "updatedAt": "2023-05-10T12:10:00Z"
     },
     {
-      "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
+      "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b3",
       "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b3",
       "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab3",
       "size": 131072,
@@ -526,7 +532,7 @@
     {
       "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
-      "proof": "89cf91c4c8be6f2a390d4262425f79dffb74c174fb15a210182184543bf7394e5a7970a774ee8e0dabc315424c22df0f",
+      "proof": "0x89cf91c4c8be6f2a390d4262425f79dffb74c174fb15a210182184543bf7394e5a7970a774ee8e0dabc315424c22df0f",
       "size": 1500,
       "firstBlockNumber": 1002,
       "insertedAt": "2023-08-26T12:10:00Z",
@@ -559,6 +565,16 @@
       "blobHash": "blobHash001",
       "blobStorage": "GOOGLE",
       "dataReference": "1/ob/Ha/sh/obHash001.bin"
+    },
+    {
+      "blobHash": "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734",
+      "blobStorage": "S3",
+      "dataReference": "1/ob/Ha/sh/obHash001.bin"
+    },
+    {
+      "blobHash": "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734",
+      "blobStorage": "WEAVEVM",
+      "dataReference": "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734"
     },
     {
       "blobHash": "blobHash001",
@@ -601,19 +617,19 @@
       "dataReference": "blobHash006"
     },
     {
-      "blobHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
+      "blobHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
       "blobStorage": "POSTGRES",
-      "dataReference": "0x000000000000000000000000000000000000000000000000000000000000b1"
+      "dataReference": "0x01000000000000000000000000000000000000000000000000000000000000b1"
     },
     {
-      "blobHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
+      "blobHash": "0x01000000000000000000000000000000000000000000000000000000000000b2",
       "blobStorage": "POSTGRES",
-      "dataReference": "0x000000000000000000000000000000000000000000000000000000000000b2"
+      "dataReference": "0x01000000000000000000000000000000000000000000000000000000000000b2"
     },
     {
-      "blobHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
+      "blobHash": "0x01000000000000000000000000000000000000000000000000000000000000b3",
       "blobStorage": "POSTGRES",
-      "dataReference": "0x000000000000000000000000000000000000000000000000000000000000b3"
+      "dataReference": "0x01000000000000000000000000000000000000000000000000000000000000b3"
     },
     {
       "blobHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
@@ -634,6 +650,11 @@
       "blobHash": "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734",
       "blobStorage": "POSTGRES",
       "dataReference": "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734"
+    },
+    {
+      "blobHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
+      "blobStorage": "SWARM",
+      "dataReference": "bzz://sfsfsdfsdfsdfs"
     }
   ],
   "blobDatas": [
@@ -666,15 +687,15 @@
       "data": "cc4d7802def45b483ffedd310430bacf929d0160261691dd9cdecfdb6d920586991bd058e7d25020"
     },
     {
-      "id": "0x000000000000000000000000000000000000000000000000000000000000b1",
+      "id": "0x01000000000000000000000000000000000000000000000000000000000000b1",
       "data": "f9530408b74b2803432879b5e7fb5fdcbbcf7e71660f2f6a7cbd182eb9db7a026e0d0b"
     },
     {
-      "id": "0x000000000000000000000000000000000000000000000000000000000000b2",
+      "id": "0x01000000000000000000000000000000000000000000000000000000000000b2",
       "data": "682a4f046bbcf3a56762c7e719b030ff9c7c0df9181015daffe724296c59d6bb8dfd5c"
     },
     {
-      "id": "0x000000000000000000000000000000000000000000000000000000000000b3",
+      "id": "0x01000000000000000000000000000000000000000000000000000000000000b3",
       "data": "6eff1a27d044dc0d6f1d072c75ce47ccc63b5305b424eb4bafd250ad1de4985cd69fbc"
     }
   ],
@@ -682,7 +703,7 @@
     {
       "blobHash": "blobHash001",
       "txHash": "txHash001",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 0,
@@ -691,7 +712,7 @@
     {
       "blobHash": "blobHash002",
       "txHash": "txHash001",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 0,
@@ -700,7 +721,7 @@
     {
       "blobHash": "blobHash003",
       "txHash": "txHash001",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 0,
@@ -709,7 +730,7 @@
     {
       "blobHash": "blobHash001",
       "txHash": "txHash002",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 1,
@@ -718,7 +739,7 @@
     {
       "blobHash": "blobHash001",
       "txHash": "txHash003",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 2,
@@ -727,7 +748,7 @@
     {
       "blobHash": "blobHash002",
       "txHash": "txHash003",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 2,
@@ -914,7 +935,7 @@
       "index": 0
     },
     {
-      "blobHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
+      "blobHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
       "txHash": "txHash004",
       "blockHash": "blockHash002",
       "blockNumber": 1002,
@@ -923,7 +944,7 @@
       "index": 0
     },
     {
-      "blobHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
+      "blobHash": "0x01000000000000000000000000000000000000000000000000000000000000b2",
       "txHash": "txHash004",
       "blockHash": "blockHash002",
       "blockNumber": 1002,
@@ -932,7 +953,7 @@
       "index": 1
     },
     {
-      "blobHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
+      "blobHash": "0x01000000000000000000000000000000000000000000000000000000000000b3",
       "txHash": "txHash004",
       "blockHash": "blockHash002",
       "blockNumber": 1002,
@@ -950,6 +971,7 @@
       "index": 0
     }
   ],
+  "ethUsdPrices": [],
   "transactionForks": [
     {
       "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",

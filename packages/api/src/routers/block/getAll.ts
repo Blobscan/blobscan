@@ -15,7 +15,7 @@ import {
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import { countBlocks } from "./getCount";
-import type { CompletePrismaBlock } from "./helpers";
+import type { CompletedPrismaBlock } from "./helpers";
 import {
   responseBlockSchema,
   createBlockSelect,
@@ -75,7 +75,7 @@ export const getAll = publicProcedure
 
     return {
       blocks: prismaBlocks.map((prismaBlock) =>
-        toResponseBlock(prismaBlock as unknown as CompletePrismaBlock)
+        toResponseBlock(prismaBlock as unknown as CompletedPrismaBlock)
       ),
       ...(count ? { totalBlocks } : {}),
     };

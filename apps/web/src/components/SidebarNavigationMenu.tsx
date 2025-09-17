@@ -10,6 +10,7 @@ import type { ExpandibleNavigationItem, NavigationItem } from "../content";
 import { isExpandibleNavigationItem, getNavigationItems } from "../content";
 import { BlobscanLogo } from "./BlobscanLogo";
 import { Collapsable } from "./Collapsable";
+import { Icon } from "./Icon";
 import { IconButton } from "./IconButton";
 import { Rotable } from "./Rotable";
 import { SidePanel, useSidePanel } from "./SidePanel";
@@ -19,11 +20,7 @@ export function SidebarNavigationMenu({ className }: { className?: string }) {
   const { env } = useEnv();
   const [open, setOpen] = useState(false);
   const navigationItems = useMemo(
-    () =>
-      getNavigationItems({
-        networkName: env?.PUBLIC_NETWORK_NAME,
-        publicSupportedNetworks: env?.PUBLIC_SUPPORTED_NETWORKS,
-      }),
+    () => getNavigationItems(env?.PUBLIC_NETWORK_NAME),
     [env]
   );
 
@@ -91,7 +88,7 @@ function NavigationLink({
       href={href}
       onClick={onClick}
     >
-      <div className="h-5 w-5">{icon}</div>
+      <Icon src={icon} />
       {label}
     </Link>
   );
@@ -130,28 +127,30 @@ function ExpandableNavigationLinks({
         }`}
       >
         <Rotable angle={90} rotated={open}>
-          <ChevronDownIcon className="mb-2 h-5 w-5 -rotate-90" />
+          <Icon src={ChevronDownIcon} className="-rotate-90" />
         </Rotable>
         <div className="flex items-center gap-1">
-          <div className="h-5 w-5">{icon}</div>
+          <Icon src={icon} />
           {label}
         </div>
       </button>
       <Collapsable opened={open}>
         <div className="flex flex-col gap-2 pb-4 pl-10 pt-2">
-          {items.map(({ href, label }, index) => (
-            <Link
-              key={index}
-              href={href}
-              className={`text-sm ${
-                href === pathname
-                  ? "text-iconHighlight-light dark:text-iconHighlight-dark"
-                  : "hover:text-iconHighlight-light hover:dark:text-iconHighlight-dark"
-              }`}
-              onClick={onClick}
-            >
-              {label}
-            </Link>
+          {items.map(({ icon, href, label }) => (
+            <div key={href} className="flex items-center gap-2">
+              {icon && <Icon src={icon} />}
+              <Link
+                href={href}
+                className={`text-sm ${
+                  href === pathname
+                    ? "text-iconHighlight-light dark:text-iconHighlight-dark"
+                    : "hover:text-iconHighlight-light hover:dark:text-iconHighlight-dark"
+                }`}
+                onClick={onClick}
+              >
+                {label}
+              </Link>
+            </div>
           ))}
         </div>
       </Collapsable>

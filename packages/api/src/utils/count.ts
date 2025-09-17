@@ -1,8 +1,7 @@
 import { toDailyDatePeriod } from "@blobscan/dayjs";
-import { env } from "@blobscan/env";
+import type { Category, Rollup } from "@blobscan/db/prisma/enums";
 import { getRollupByAddress } from "@blobscan/rollups";
 
-import type { Category, Rollup } from "../../enums";
 import type { Filters } from "../middlewares/withFilters";
 
 /**
@@ -18,16 +17,15 @@ import type { Filters } from "../middlewares/withFilters";
  *
  * @returns A boolean indicating if a direct count is required.
  */
-export function requiresDirectCount({
-  blockFilters = {},
-  blockType,
-  transactionFilters = {},
-}: Filters) {
+export function requiresDirectCount(
+  { blockFilters = {}, blockType, transactionFilters = {} }: Filters,
+  chainId: number
+) {
   const blockNumberRangeFilterEnabled = !!blockFilters?.number;
   const reorgedFilterEnabled = !!blockType?.some;
   const slotRangeFilterEnabled = !!blockFilters.slot;
   const nonRollupAddressesExists = transactionFilters.fromId?.in
-    .map((addr) => getRollupByAddress(addr, env.CHAIN_ID))
+    .map((addr) => getRollupByAddress(addr, chainId))
     .some((r) => !r);
 
   return (
@@ -39,10 +37,10 @@ export function requiresDirectCount({
   );
 }
 
-export function buildStatsWhereClause({
-  blockFilters,
-  transactionFilters,
-}: Filters) {
+export function buildStatsWhereClause(
+  { blockFilters, transactionFilters }: Filters,
+  chainId: number
+) {
   const clauses = [];
   const fromAddressFilter = transactionFilters?.fromId?.in;
   let categoryClause: Category | null = null;
@@ -54,7 +52,7 @@ export function buildStatsWhereClause({
       transactionFilters.from.rollup === null ? "OTHER" : "ROLLUP";
   } else if (fromAddressFilter?.length) {
     const resolvedRollups = fromAddressFilter
-      .map((addr) => getRollupByAddress(addr, env.CHAIN_ID))
+      .map((addr) => getRollupByAddress(addr, chainId))
       .filter((r): r is Rollup => !!r);
 
     rollupClause = { in: Array.from(new Set(resolvedRollups)) };

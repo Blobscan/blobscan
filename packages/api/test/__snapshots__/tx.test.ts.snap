@@ -12,9 +12,15 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobs": [
       {
         "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
         "size": 1500,
+        "usageSize": 0,
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -26,6 +32,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -46,7 +53,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -55,6 +62,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         ],
         "proof": "proof004",
         "size": 1300,
+        "usageSize": 1300,
         "versionedHash": "blobHash004",
       },
       {
@@ -62,7 +70,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -71,6 +79,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         ],
         "proof": "proof004",
         "size": 1300,
+        "usageSize": 1300,
         "versionedHash": "blobHash004",
       },
       {
@@ -78,7 +87,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -87,6 +96,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         ],
         "proof": "proof004",
         "size": 1300,
+        "usageSize": 1300,
         "versionedHash": "blobHash004",
       },
     ],
@@ -98,6 +108,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -119,12 +130,18 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobGasBaseFee": 121000000n,
       "blobGasPrice": 22n,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
@@ -135,6 +152,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -154,7 +172,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -167,7 +185,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -180,7 +198,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -192,6 +210,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     ],
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobGasBaseFee": 121000000n,
       "blobGasPrice": 22n,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
@@ -202,6 +221,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -224,14 +244,21 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobs": [
       {
         "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
         "size": 1500,
+        "usageSize": 0,
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobGasBaseFee": 121000000n,
       "blobGasPrice": 22n,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
@@ -242,6 +269,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -262,7 +290,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -271,6 +299,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         ],
         "proof": "proof004",
         "size": 1300,
+        "usageSize": 1300,
         "versionedHash": "blobHash004",
       },
       {
@@ -278,7 +307,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -287,6 +316,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         ],
         "proof": "proof004",
         "size": 1300,
+        "usageSize": 1300,
         "versionedHash": "blobHash004",
       },
       {
@@ -294,7 +324,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -303,11 +333,13 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         ],
         "proof": "proof004",
         "size": 1300,
+        "usageSize": 1300,
         "versionedHash": "blobHash004",
       },
     ],
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobGasBaseFee": 121000000n,
       "blobGasPrice": 22n,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
@@ -318,6 +350,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -342,28 +375,28 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "postgres",
-            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
+            "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b1/data",
           },
         ],
-        "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
+        "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
       },
       {
         "dataStorageReferences": [
           {
             "storage": "postgres",
-            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
+            "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b2/data",
           },
         ],
-        "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
+        "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b2",
       },
       {
         "dataStorageReferences": [
           {
             "storage": "postgres",
-            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
+            "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b3/data",
           },
         ],
-        "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
+        "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b3",
       },
     ],
     "block": {
@@ -374,6 +407,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-05-10T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash004",
     "index": 0,
@@ -393,11 +427,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -406,7 +440,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -415,11 +449,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
@@ -439,11 +474,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -452,11 +487,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address3",
     "hash": "txHash002",
     "index": 1,
@@ -476,11 +512,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -489,7 +525,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -498,11 +534,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
           },
         ],
         "versionedHash": "blobHash003",
@@ -511,11 +547,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
@@ -537,7 +574,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -549,6 +591,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -568,7 +611,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -581,7 +624,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -594,7 +637,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -612,6 +655,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -635,7 +679,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash006",
           },
         ],
         "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
@@ -649,6 +693,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address5",
     "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
     "index": 0,
@@ -673,11 +718,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -686,7 +731,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -695,11 +740,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
           },
         ],
         "versionedHash": "blobHash003",
@@ -708,11 +753,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
@@ -732,11 +778,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -745,11 +791,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address3",
     "hash": "txHash002",
     "index": 1,
@@ -769,11 +816,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -782,7 +829,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -791,11 +838,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
@@ -820,7 +868,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -833,7 +881,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -846,7 +894,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -864,6 +912,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -883,11 +932,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -896,11 +945,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -909,11 +958,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -927,6 +976,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash012",
     "index": 0,
@@ -946,11 +996,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -964,6 +1014,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
@@ -983,11 +1034,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -996,7 +1047,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -1005,11 +1056,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
@@ -1048,6 +1100,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T15:50:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
     "index": 0,
@@ -1076,7 +1129,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash006",
           },
         ],
         "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
@@ -1090,6 +1143,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address5",
     "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
     "index": 0,
@@ -1109,11 +1163,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -1127,6 +1181,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address5",
     "hash": "txHash013",
     "index": 1,
@@ -1146,11 +1201,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -1159,11 +1214,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -1172,11 +1227,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -1190,6 +1245,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash012",
     "index": 0,
@@ -1223,6 +1279,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash011",
     "index": 4,
@@ -1242,11 +1299,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
           },
         ],
         "versionedHash": "blobHash003",
@@ -1260,6 +1317,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address3",
     "hash": "txHash010",
     "index": 3,
@@ -1279,11 +1337,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
           },
         ],
         "versionedHash": "blobHash003",
@@ -1297,6 +1355,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address5",
     "hash": "txHash009",
     "index": 2,
@@ -1316,7 +1375,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -1330,6 +1389,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0xc1b634853cb333d3ad8663715b08f41a3aec47cc",
     "hash": "txHash008",
     "index": 1,
@@ -1349,11 +1409,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -1367,6 +1427,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
@@ -1405,6 +1466,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash011",
     "index": 4,
@@ -1424,11 +1486,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
           },
         ],
         "versionedHash": "blobHash003",
@@ -1442,6 +1504,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address3",
     "hash": "txHash010",
     "index": 3,
@@ -1461,11 +1524,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
           },
         ],
         "versionedHash": "blobHash003",
@@ -1479,6 +1542,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address5",
     "hash": "txHash009",
     "index": 2,
@@ -1498,7 +1562,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -1512,6 +1576,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0xc1b634853cb333d3ad8663715b08f41a3aec47cc",
     "hash": "txHash008",
     "index": 1,
@@ -1531,11 +1596,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -1549,6 +1614,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
@@ -1568,11 +1634,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -1581,11 +1647,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -1594,11 +1660,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -1612,6 +1678,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-03T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash006",
     "index": 1,
@@ -1631,7 +1698,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -1640,7 +1707,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -1649,11 +1716,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -1667,6 +1734,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-03T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash005",
     "index": 0,
@@ -1691,11 +1759,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -1709,6 +1777,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
@@ -1728,11 +1797,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -1741,7 +1810,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -1750,11 +1819,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
           },
         ],
         "versionedHash": "blobHash003",
@@ -1763,11 +1832,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
@@ -1792,11 +1862,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -1805,7 +1875,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -1814,11 +1884,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
           },
         ],
         "versionedHash": "blobHash003",
@@ -1827,11 +1897,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
@@ -1856,11 +1927,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -1869,7 +1940,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -1878,11 +1949,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
           },
         ],
         "versionedHash": "blobHash003",
@@ -1891,11 +1962,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
@@ -1920,28 +1992,28 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "postgres",
-            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
+            "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b1/data",
           },
         ],
-        "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
+        "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
       },
       {
         "dataStorageReferences": [
           {
             "storage": "postgres",
-            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
+            "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b2/data",
           },
         ],
-        "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
+        "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b2",
       },
       {
         "dataStorageReferences": [
           {
             "storage": "postgres",
-            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
+            "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b3/data",
           },
         ],
-        "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
+        "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b3",
       },
     ],
     "block": {
@@ -1952,6 +2024,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-05-10T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash004",
     "index": 0,
@@ -1971,11 +2044,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -1984,7 +2057,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -1993,11 +2066,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
@@ -2017,11 +2091,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -2030,11 +2104,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address3",
     "hash": "txHash002",
     "index": 1,
@@ -2054,11 +2129,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -2067,7 +2142,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -2076,11 +2151,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
           },
         ],
         "versionedHash": "blobHash003",
@@ -2089,11 +2164,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
@@ -2118,11 +2194,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -2131,7 +2207,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -2140,11 +2216,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
@@ -2164,11 +2241,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -2177,11 +2254,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address3",
     "hash": "txHash002",
     "index": 1,
@@ -2201,11 +2279,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -2214,7 +2292,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
           },
         ],
         "versionedHash": "blobHash002",
@@ -2223,11 +2301,11 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
           },
         ],
         "versionedHash": "blobHash003",
@@ -2236,11 +2314,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
@@ -2262,7 +2341,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -2274,6 +2358,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -2293,7 +2378,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -2306,7 +2391,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -2319,7 +2404,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -2337,6 +2422,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -2358,7 +2444,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -2370,6 +2461,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -2389,7 +2481,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -2402,7 +2494,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -2415,7 +2507,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -2433,6 +2525,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -2456,7 +2549,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash006",
           },
         ],
         "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
@@ -2470,6 +2563,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address5",
     "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
     "index": 0,
@@ -2491,7 +2585,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -2503,6 +2602,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -2522,7 +2622,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -2535,7 +2635,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -2548,7 +2648,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -2566,6 +2666,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -2587,7 +2688,12 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blobGasUsed": 131072n,
     "blobs": [
       {
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -2599,6 +2705,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -2618,7 +2725,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -2631,7 +2738,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -2644,7 +2751,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
           },
           {
             "storage": "postgres",
@@ -2662,6 +2769,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -2686,11 +2794,11 @@ exports[`Transaction router > getAll > when getting paginated transaction result
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -2699,11 +2807,11 @@ exports[`Transaction router > getAll > when getting paginated transaction result
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -2712,11 +2820,11 @@ exports[`Transaction router > getAll > when getting paginated transaction result
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+            "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
           },
           {
             "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
           },
         ],
         "versionedHash": "blobHash001",
@@ -2730,6 +2838,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash012",
     "index": 0,
@@ -2763,6 +2872,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash011",
     "index": 4,
@@ -2790,11 +2900,11 @@ exports[`Transaction router > getByHash > should get a transaction by hash corre
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
         },
         {
           "storage": "swarm",
-          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
         },
       ],
       "versionedHash": "blobHash001",
@@ -2803,7 +2913,7 @@ exports[`Transaction router > getByHash > should get a transaction by hash corre
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
         },
       ],
       "versionedHash": "blobHash002",
@@ -2812,11 +2922,11 @@ exports[`Transaction router > getByHash > should get a transaction by hash corre
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
         },
         {
           "storage": "swarm",
-          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
         },
       ],
       "versionedHash": "blobHash003",
@@ -2825,11 +2935,12 @@ exports[`Transaction router > getByHash > should get a transaction by hash corre
   "block": {
     "blobGasPrice": 22n,
   },
-  "blockHash": "blockHash001",
+  "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
   "blockNumber": 1001,
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
   "decodedFields": null,
+  "ethUsdPrice": undefined,
   "from": "address1",
   "hash": "txHash001",
   "index": 0,
@@ -2853,15 +2964,16 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
         },
         {
           "storage": "swarm",
-          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
         },
       ],
       "proof": "proof001",
       "size": 1000,
+      "usageSize": 1000,
       "versionedHash": "blobHash001",
     },
     {
@@ -2869,11 +2981,12 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
         },
       ],
       "proof": "proof002",
       "size": 1100,
+      "usageSize": 1000,
       "versionedHash": "blobHash002",
     },
     {
@@ -2881,26 +2994,28 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
         },
         {
           "storage": "swarm",
-          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
         },
       ],
       "proof": "proof003",
       "size": 1200,
+      "usageSize": 124,
       "versionedHash": "blobHash003",
     },
   ],
   "block": {
     "blobGasPrice": 22n,
   },
-  "blockHash": "blockHash001",
+  "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
   "blockNumber": 1001,
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
   "decodedFields": null,
+  "ethUsdPrice": undefined,
   "from": "address1",
   "hash": "txHash001",
   "index": 0,
@@ -2923,11 +3038,11 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
         },
         {
           "storage": "swarm",
-          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
         },
       ],
       "versionedHash": "blobHash001",
@@ -2936,7 +3051,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
         },
       ],
       "versionedHash": "blobHash002",
@@ -2945,11 +3060,11 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
         },
         {
           "storage": "swarm",
-          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
         },
       ],
       "versionedHash": "blobHash003",
@@ -2957,16 +3072,18 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
   ],
   "block": {
     "blobAsCalldataGasUsed": 2042780n,
+    "blobGasBaseFee": 17301504n,
     "blobGasPrice": 22n,
     "blobGasUsed": 786432n,
     "excessBlobGas": 15000n,
     "slot": 101,
   },
-  "blockHash": "blockHash001",
+  "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
   "blockNumber": 1001,
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
   "decodedFields": null,
+  "ethUsdPrice": undefined,
   "from": "address1",
   "hash": "txHash001",
   "index": 0,
@@ -2990,15 +3107,16 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
         },
         {
           "storage": "swarm",
-          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
         },
       ],
       "proof": "proof001",
       "size": 1000,
+      "usageSize": 1000,
       "versionedHash": "blobHash001",
     },
     {
@@ -3006,11 +3124,12 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
         },
       ],
       "proof": "proof002",
       "size": 1100,
+      "usageSize": 1000,
       "versionedHash": "blobHash002",
     },
     {
@@ -3018,30 +3137,33 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
         },
         {
           "storage": "swarm",
-          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
         },
       ],
       "proof": "proof003",
       "size": 1200,
+      "usageSize": 124,
       "versionedHash": "blobHash003",
     },
   ],
   "block": {
     "blobAsCalldataGasUsed": 2042780n,
+    "blobGasBaseFee": 17301504n,
     "blobGasPrice": 22n,
     "blobGasUsed": 786432n,
     "excessBlobGas": 15000n,
     "slot": 101,
   },
-  "blockHash": "blockHash001",
+  "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
   "blockNumber": 1001,
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
   "decodedFields": null,
+  "ethUsdPrice": undefined,
   "from": "address1",
   "hash": "txHash001",
   "index": 0,

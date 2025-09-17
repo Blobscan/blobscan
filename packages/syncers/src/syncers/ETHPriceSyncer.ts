@@ -1,11 +1,12 @@
 import dayjs, { normalizeDate } from "@blobscan/dayjs";
-import { prisma } from "@blobscan/db";
+import type { BlobscanPrismaClient } from "@blobscan/db";
 import type { PriceFeed } from "@blobscan/price-feed";
 
 import { BaseSyncer } from "../BaseSyncer";
 import type { CommonSyncerConfig } from "../BaseSyncer";
 
 export interface ETHPriceSyncerConfig extends CommonSyncerConfig {
+  prisma: BlobscanPrismaClient;
   ethUsdPriceFeed: PriceFeed;
 }
 
@@ -57,7 +58,7 @@ export class ETHPriceSyncer extends BaseSyncer {
           timestamp: priceTimestamp,
         };
 
-        await prisma.ethUsdPrice.upsert({
+        await config.prisma.ethUsdPrice.upsert({
           create: priceRow,
           update: priceRow,
           where: {

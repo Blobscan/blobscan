@@ -1,11 +1,11 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import dayjs from "@blobscan/dayjs";
-import { prisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
 import { create, createCommandUsage } from "../../src/commands";
 import { context } from "../../src/context-instance";
+import { prisma } from "../../src/prisma";
 import { argHelpTest, assertCreatedJobs } from "../helpers";
 
 async function fetchBlobHashes({
@@ -53,7 +53,6 @@ describe("Create command", () => {
     const consoleLogSpy = vi
       .spyOn(console, "log")
       .mockImplementation(() => void {});
-
     return () => {
       consoleLogSpy.mockRestore();
     };
@@ -160,7 +159,7 @@ describe("Create command", () => {
     expect(
       create(["-q", "invalid-storage-name"])
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Invalid queue 'invalid-storage-name'. Valid values are finalizer, file_system, google, postgres, swarm, s3."`
+      `"Invalid queue 'invalid-storage-name'. Valid values are google, postgres, swarm, s3."`
     );
   });
 

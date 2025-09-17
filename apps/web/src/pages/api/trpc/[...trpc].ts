@@ -1,16 +1,34 @@
-import * as Sentry from "@sentry/nextjs";
-import { createNextApiHandler } from "@trpc/server/adapters/next";
+import { captureException } from "@sentry/nextjs";
 
-import { appRouter, createTRPCContext } from "@blobscan/api";
+import { createAppRouter, createTRPCContext } from "@blobscan/api";
+import { createNextApiHandler } from "@blobscan/api";
+
+import { env } from "~/env.mjs";
+import { prisma } from "~/prisma";
+
+const appRouter = createAppRouter({
+  blobRouter: {
+    blobDataProcedure: {
+      enabled: env.BLOB_DATA_API_ENABLED,
+      protected: !!env.BLOB_DATA_API_KEY?.length,
+    },
+  },
+});
 
 // export API handler
 export default createNextApiHandler({
   router: appRouter,
   createContext: createTRPCContext({
     scope: "web",
+    chainId: env.CHAIN_ID,
+    prisma,
+    enableTracing: env.TRACES_ENABLED,
+    serviceApiKeys: {
+      blobDataReadKey: env.BLOB_DATA_API_KEY,
+    },
   }),
   onError({ error }) {
-    Sentry.captureException(error);
+    captureException(error);
 
     if (error.code === "INTERNAL_SERVER_ERROR") {
       console.error(error);

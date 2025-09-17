@@ -1,13 +1,16 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
 import NextError from "~/pages/_error";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useQuery } from "@tanstack/react-query";
+import classNames from "classnames";
 
 import type { Decoder } from "@blobscan/blob-decoder";
+import dayjs from "@blobscan/dayjs";
 
+import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
@@ -16,23 +19,26 @@ import { ErrorMessage } from "~/components/BlobViewer/ErrorMessage";
 import { Card } from "~/components/Cards/Card";
 import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { Copyable } from "~/components/Copyable";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Dropdown } from "~/components/Dropdown";
 import type { Option } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
-import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
-import type { Rollup } from "~/types";
+import { useBreakpoint } from "~/hooks/useBreakpoint";
 import {
   buildBlockRoute,
   buildTransactionRoute,
   formatBytes,
+  formatTimestamp,
   isValidDecoder,
+  TIMESTAMP_FORMAT,
 } from "~/utils";
 
 const Blob: NextPage = function () {
   const router = useRouter();
+  const breakpoint = useBreakpoint();
   const versionedHash = (router.query.hash as string | undefined) ?? "0";
   const {
     data: blob,
@@ -56,37 +62,26 @@ const Blob: NextPage = function () {
 
       for (const { storage, url } of blob.dataStorageReferences) {
         try {
-          const isBlobscanStorageRef =
-            storage === "postgres" || storage === "file_system";
-          const blobDataUrl = isBlobscanStorageRef
-            ? `/api/blob-data?url=${url}`
-            : url;
-          const response = await fetch(blobDataUrl);
+          const response = await fetch(
+            `/api/blob-data?storage=${storage}&url=${url}`
+          );
 
           if (!response.ok) {
             const error = await response.json();
-            throw new Error(error.message ?? "Couldn't retrieve blob data");
+            throw new Error(
+              error.message ?? "Couldn't retrieve blob data: unknown reason"
+            );
           }
 
-          let blobData: string;
+          const blobBytes = await response.arrayBuffer();
 
-          if (isBlobscanStorageRef) {
-            blobData = await response.json();
-          } else {
-            if (blobDataUrl.endsWith(".bin")) {
-              const blobBytes = await response.arrayBuffer();
-              blobData = `0x${Buffer.from(blobBytes).toString("hex")}`;
-            } else {
-              blobData = await response.text();
-            }
-          }
-
-          return blobData;
+          return `0x${Buffer.from(blobBytes).toString("hex")}`;
         } catch (err) {
           console.warn(
             `Failed to fetch data of blob "${versionedHash}" from storage ${storage}:`,
             err
           );
+
           continue;
         }
       }
@@ -136,18 +131,7 @@ const Blob: NextPage = function () {
   const detailsFields: DetailsLayoutProps["fields"] = [];
 
   if (blob) {
-    const rollups = blob.transactions
-      .filter(({ rollup }) => !!rollup)
-      .map(({ rollup }) => rollup as Rollup);
-
-    if (rollups.length > 0) {
-      detailsFields.push({
-        name: "Rollup",
-        value: rollups.map((rollup) => (
-          <RollupBadge key={rollup} rollup={rollup} />
-        )),
-      });
-    }
+    const isUnique = blob.transactions.length === 1;
 
     detailsFields.push({
       name: "Versioned Hash",
@@ -163,8 +147,57 @@ const Blob: NextPage = function () {
       detailsFields.push({
         name: "Status",
         value: blob.transactions[0] && (
-          <BlockStatus blockNumber={blob.transactions[0].blockNumber} />
+          <BlockStatusBadge blockNumber={blob.transactions[0].blockNumber} />
         ),
+      });
+    }
+
+    if (isUnique && blob.transactions[0]) {
+      const { blockNumber, blockTimestamp, txHash, index, rollup } =
+        blob.transactions[0];
+
+      detailsFields.push(
+        {
+          name: "Block",
+          value: (
+            <div className="flex items-center gap-2 truncate">
+              <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
+              <CopyToClipboard
+                value={blockNumber}
+                tooltipText="Copy block number"
+              />
+            </div>
+          ),
+        },
+        {
+          name: "Transaction",
+          value: (
+            <div className="flex items-center gap-2 truncate" title={txHash}>
+              {<Link href={buildTransactionRoute(txHash)}>{txHash}</Link>}
+              <CopyToClipboard value={txHash} tooltipText="Copy tx hash" />
+            </div>
+          ),
+        },
+        {
+          name: "Timestamp",
+          value: (
+            <div className="whitespace-break-spaces">
+              {formatTimestamp(blockTimestamp)}
+            </div>
+          ),
+        }
+      );
+
+      if (rollup) {
+        detailsFields.push({
+          name: "Rollup",
+          value: <RollupBadge key={rollup} rollup={rollup} />,
+        });
+      }
+
+      detailsFields.push({
+        name: "Position In Transaction",
+        value: index,
       });
     }
 
@@ -178,53 +211,89 @@ const Blob: NextPage = function () {
       {
         name: "Proof",
         value: <Copyable value={blob.proof} tooltipText="Copy proof" />,
+      },
+      { name: "Size", value: formatBytes(blob.size) },
+      {
+        name: "Usage",
+        value: (
+          <BlobUsageDisplay
+            blobSize={blob.size}
+            blobUsage={blob.usageSize}
+            variant="minimal"
+          />
+        ),
       }
     );
-
-    detailsFields.push({ name: "Size", value: formatBytes(blob.size) });
 
     if (blob.dataStorageReferences.length > 0) {
       detailsFields.push({
         name: "Storages",
         value: (
-          <div className="flex items-center gap-x-2">
-            {blob.dataStorageReferences.map(({ storage, url }, index) => (
-              <StorageBadge key={index} storage={storage} url={url} />
+          <div className="flex flex-wrap items-center gap-2">
+            {blob.dataStorageReferences.map(({ storage, url }) => (
+              <StorageBadge key={storage} storage={storage} url={url} />
             ))}
           </div>
         ),
       });
     }
 
-    detailsFields.push({
-      name: "Transactions and Blocks",
-      value: (
-        <div className="grid w-full grid-cols-3 gap-x-6 gap-y-3">
-          {blob.transactions.map(({ txHash, blockNumber }) => (
-            <Fragment key={`${txHash}-${blockNumber}`}>
-              <div className="col-span-2 flex gap-1">
-                <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
-                  Tx{" "}
-                </div>
+    if (!isUnique) {
+      const rollupTxsExist = blob.transactions.find((tx) => !!tx.rollup);
+
+      detailsFields.push({
+        name: `Blocks And Transactions (${blob.transactions.length})`,
+        value: (
+          <div className="flex flex-col gap-6 md:gap-3">
+            {blob.transactions.map(
+              ({ txHash, blockNumber, blockTimestamp, rollup }) => (
                 <div
-                  className="flex items-center gap-2 truncate"
-                  title={txHash}
+                  key={`${txHash}-${blockNumber}`}
+                  className="flex-start flex max-w-full flex-col gap-1 2xl:flex-row 2xl:items-center"
                 >
-                  {<Link href={buildTransactionRoute(txHash)}>{txHash}</Link>}
-                  <CopyToClipboard value={txHash} tooltipText="Copy tx hash" />
+                  <div className="flex w-[100px]">
+                    <div className="flex items-center gap-1">
+                      <Link href={buildBlockRoute(blockNumber)}>
+                        {blockNumber}
+                      </Link>
+                      <CopyToClipboard
+                        value={blockNumber}
+                        tooltipText="Copy block number"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className={classNames("flex w-full items-center gap-2 ", {
+                      "lg:w-[580px]": !rollupTxsExist,
+                      "lg:w-[600px]": rollupTxsExist,
+                    })}
+                  >
+                    {rollup ? (
+                      <RollupBadge rollup={rollup} compact />
+                    ) : rollupTxsExist ? (
+                      <div className="hidden size-4 md:block" />
+                    ) : null}
+                    <div
+                      className="flex items-center gap-1 truncate"
+                      title={txHash}
+                    >
+                      <Link href={buildTransactionRoute(txHash)}>{txHash}</Link>
+                      <CopyToClipboard
+                        value={txHash}
+                        tooltipText="Copy tx hash"
+                      />
+                    </div>
+                  </div>
+                  {dayjs(blockTimestamp).format(
+                    breakpoint === "sm" ? "YY/MM/DD hh:mm:ss" : TIMESTAMP_FORMAT
+                  )}
                 </div>
-              </div>
-              <div className="flex gap-1">
-                <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
-                  Block{" "}
-                </div>
-                <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
-              </div>
-            </Fragment>
-          ))}
-        </div>
-      ),
-    });
+              )
+            )}
+          </div>
+        ),
+      });
+    }
   }
 
   return (
@@ -232,6 +301,14 @@ const Blob: NextPage = function () {
       <DetailsLayout
         header="Blob Details"
         fields={blob ? detailsFields : undefined}
+        resource={
+          blob
+            ? {
+                type: "blob",
+                value: blob.versionedHash,
+              }
+            : undefined
+        }
       />
       <Card
         header={

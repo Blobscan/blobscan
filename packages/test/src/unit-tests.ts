@@ -1,7 +1,6 @@
 import { expect, it } from "vitest";
 
-export function testValidError<T extends Error>(
-  name: string,
+export async function assertError<T extends Error>(
   failingOperation: () => Promise<unknown> | unknown,
   ErrorClass: new (...args: any[]) => T,
   {
@@ -12,23 +11,35 @@ export function testValidError<T extends Error>(
     checkCause?: boolean;
   } = {}
 ) {
-  it(name, async () => {
-    try {
-      await failingOperation();
+  try {
+    await failingOperation();
 
-      expect.fail("Function should have thrown error");
-    } catch (e) {
-      const e_ = e as T;
-      expect(e_, "Error class mismatch").instanceOf(ErrorClass);
+    expect.fail("Function should have thrown error");
+  } catch (e) {
+    const e_ = e as T;
+    expect(e_, "Error class mismatch").instanceOf(ErrorClass);
 
-      if (checkMessage) {
-        expect(e_.message, `Error message mistmach`).toMatchSnapshot();
-      }
-
-      if (checkCause) {
-        expect(e_).toHaveProperty("cause");
-        expect(e_.cause, `Error cause mismatch`).toMatchSnapshot();
-      }
+    if (checkMessage) {
+      expect(e_.message, `Error message mistmach`).toMatchSnapshot();
     }
+
+    if (checkCause) {
+      expect(e_).toHaveProperty("cause");
+      expect(e_.cause, `Error cause mismatch`).toMatchSnapshot();
+    }
+  }
+}
+
+export function testValidError<T extends Error>(
+  name: string,
+  failingOperation: () => Promise<unknown> | unknown,
+  ErrorClass: new (...args: any[]) => T,
+  opts: {
+    checkMessage?: boolean;
+    checkCause?: boolean;
+  } = {}
+) {
+  it(name, async () => {
+    await assertError(failingOperation, ErrorClass, opts);
   });
 }

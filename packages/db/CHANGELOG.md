@@ -1,5 +1,31 @@
 # @blobscan/db
 
+## 0.21.0
+
+### Minor Changes
+
+- [#878](https://github.com/Blobscan/blobscan/pull/878) [`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for retrieving latest and oldest block
+
+## 0.20.0
+
+### Minor Changes
+
+- [#861](https://github.com/Blobscan/blobscan/pull/861) [`77437ef`](https://github.com/Blobscan/blobscan/commit/77437ef5b3cfd26dfed0becd7d6f313373f8e4f4) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob usage size
+
+## 0.19.0
+
+### Minor Changes
+
+- [#854](https://github.com/Blobscan/blobscan/pull/854) [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b) Thanks [@PJColombo](https://github.com/PJColombo)! - Added a new method to block and tx model to retrieve the eth usd price for a given block id or tx hash
+
+## 0.18.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @blobscan/logger@0.1.3
+  - @blobscan/open-telemetry@0.0.10
+
 ## 0.18.0
 
 ### Minor Changes

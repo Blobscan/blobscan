@@ -1,30 +1,13 @@
-import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+export * from "@trpc/server/adapters/next";
 
-import type { AppRouter } from "./app-router";
-
-export * from "@trpc/server/adapters/express";
-
-export { appRouter, type AppRouter } from "./app-router";
 export { createTRPCContext, createTRPCInnerContext } from "./context";
 export type {
   TRPCInnerContext as TRCInnerContext,
   TRPCContext,
 } from "./context";
 
-export { gracefulShutdown } from "./graceful-shutdown";
-export { metricsHandler } from "./instrumentation";
+export { createMetricsHandler } from "./instrumentation";
 
-export { searchByTerm } from "./routers/search/byTerm";
-export { loggingRouter } from "./routers/logging";
+export type { TimeFrame } from "./middlewares/withTimeFrame";
 
-/**
- * Inference helpers for input types
- * @example type HelloInput = RouterInputs['example']['hello']
- **/
-export type RouterInputs = inferRouterInputs<AppRouter>;
-
-/**
- * Inference helpers for output types
- * @example type HelloOutput = RouterOutputs['example']['hello']
- **/
-export type RouterOutputs = inferRouterOutputs<AppRouter>;
+export * from "./app-router";

@@ -4,9 +4,11 @@ import type { FC } from "react";
 import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
+import { Separator } from "~/components/Separator";
 import { Skeleton } from "~/components/Skeleton";
 import type { Block, Rollup } from "~/types";
-import { buildBlockRoute, normalizeTimestamp } from "~/utils";
+import { buildBlockRoute, normalizeTimestamp, pluralize } from "~/utils";
 import { Link } from "../../Link";
 import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
@@ -28,15 +30,30 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
   block: { blobGasPrice, blobGasUsed, number, timestamp, transactions } = {},
   className,
 }) {
-  const hasOneTx = transactions?.length === 1;
   const blobCount = useMemo(
     () => transactions?.reduce((acc, tx) => acc + tx.blobs.length, 0),
     [transactions]
   );
-  const rollups =
-    (transactions?.map((tx) => tx.rollup).filter(Boolean) as Rollup[]) ?? [];
+  const totalBlobSize = transactions
+    ?.flatMap((tx) => tx.blobs)
+    .reduce((acc, { size }) => acc + (size ?? 0), 0);
+  const totalBlobUsage = transactions
+    ?.flatMap((tx) => tx.blobs)
+    .reduce((acc, { usageSize }) => acc + (usageSize ?? 0), 0);
+  const rollupToAmount =
+    transactions?.reduce<Partial<Record<Rollup, number>>>(
+      (amounts, { blobs, rollup }) => {
+        if (!rollup) {
+          return amounts;
+        }
+        const amount = amounts[rollup] ?? 0;
 
-  const hasOneBlob = blobCount === 1;
+        amounts[rollup] = amount + blobs.length;
+
+        return amounts;
+      },
+      {} as Partial<Record<Rollup, number>>
+    ) ?? [];
 
   return (
     <SurfaceCardBase className={className}>
@@ -51,8 +68,13 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
           )}
         </div>
         <div className="flex items-center gap-2">
-          {rollups.map((rollup, i) => (
-            <RollupBadge key={i} rollup={rollup} compact />
+          {Object.entries(rollupToAmount).map(([rollup, amount], i) => (
+            <RollupBadge
+              key={i}
+              rollup={rollup as Rollup}
+              amount={amount}
+              compact
+            />
           ))}
         </div>
       </div>
@@ -71,6 +93,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
                 name={<div title="Blob Gas Price">B. Gas Price</div>}
                 value={formatWei(blobGasPrice)}
               />
+              <Separator />
               <CardField
                 name={<div title="Blob Gas Used">B. Gas Used</div>}
                 value={blobGasUsed.toString()}
@@ -81,14 +104,24 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
           )}
         </div>
         {transactions ? (
-          <div className="flex">
+          <div className="flex gap-1">
             <span>
-              {transactions.length} Blob Tx{hasOneTx ? "" : "s"}
+              {transactions.length} {pluralize("Tx", transactions.length)}
             </span>
-            <span className="mx-1 inline-block">･</span>
+            <Separator />
             <span>
-              {blobCount} Blob{hasOneBlob ? "" : "s"}
+              {blobCount} {pluralize("Blob", blobCount ?? 0)}
             </span>
+            {totalBlobSize !== undefined && totalBlobUsage !== undefined && (
+              <>
+                <Separator />
+                <BlobUsageDisplay
+                  blobSize={totalBlobSize}
+                  blobUsage={totalBlobUsage}
+                  variant="inline"
+                />
+              </>
+            )}
           </div>
         ) : (
           <Skeleton width={170} size="xs" />

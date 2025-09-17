@@ -2,7 +2,6 @@ import { TRPCError } from "@trpc/server";
 import type { SpyInstance } from "vitest";
 import {
   afterAll,
-  afterEach,
   beforeAll,
   beforeEach,
   describe,
@@ -11,14 +10,12 @@ import {
   vi,
 } from "vitest";
 
-import type { Blob as PropagatorBlob } from "@blobscan/blob-propagator";
-import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { Category, Rollup } from "@blobscan/db/prisma/enums";
-import { env } from "@blobscan/env";
+import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 import { ADDRESS_TO_ROLLUP_MAPPINGS } from "@blobscan/rollups";
-import { omitDBTimestampFields, testValidError } from "@blobscan/test";
+import { env, omitDBTimestampFields, testValidError } from "@blobscan/test";
 
-import { appRouter } from "../src/app-router";
+import { indexerRouter } from "../src/routers/indexer";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
 import { createTestContext, unauthorizedRPCCallTest } from "./helpers";
 import {
@@ -28,19 +25,19 @@ import {
 } from "./indexer.test.fixtures";
 
 describe("Indexer router", async () => {
-  let nonAuthorizedCaller: ReturnType<typeof appRouter.createCaller>;
-  let authorizedCaller: ReturnType<typeof appRouter.createCaller>;
+  let nonAuthorizedIndexerCaller: ReturnType<typeof indexerRouter.createCaller>;
+  let authorizedIndexerCaller: ReturnType<typeof indexerRouter.createCaller>;
   let authorizedContext: Awaited<ReturnType<typeof createTestContext>>;
 
   beforeAll(async () => {
     const ctx = await createTestContext();
 
     authorizedContext = await createTestContext({
-      apiClient: { type: "indexer" },
+      apiClient: "indexer",
     });
 
-    nonAuthorizedCaller = appRouter.createCaller(ctx);
-    authorizedCaller = appRouter.createCaller(authorizedContext);
+    nonAuthorizedIndexerCaller = indexerRouter.createCaller(ctx);
+    authorizedIndexerCaller = indexerRouter.createCaller(authorizedContext);
   });
 
   afterAll(async () => {
@@ -51,7 +48,7 @@ describe("Indexer router", async () => {
   describe("indexData", () => {
     describe("when authorized", () => {
       beforeEach(async () => {
-        await authorizedCaller.indexer.indexData(INPUT);
+        await authorizedIndexerCaller.indexData(INPUT);
       });
 
       it("should index a block correctly", async () => {
@@ -72,9 +69,13 @@ describe("Indexer router", async () => {
         //   (acc, b) => acc + getEIP2028CalldataGas(b.data),
         //   0
         // );
+        const config = getNetworkBlobConfigBySlot(
+          env.CHAIN_ID,
+          INPUT.block.slot
+        );
         const expectedBlobGasPrice = calculateBlobGasPrice(
-          INPUT.block.slot,
-          BigInt(INPUT.block.excessBlobGas)
+          BigInt(INPUT.block.excessBlobGas),
+          config
         );
 
         // TODO: Fix this test
@@ -84,12 +85,15 @@ describe("Indexer router", async () => {
         );
         expect(remainingParams).toMatchInlineSnapshot(`
           {
+            "blobGasBaseFee": "10000",
             "blobGasUsed": "10000",
+            "computeUsdFields": [Function],
             "excessBlobGas": "5000",
             "hash": "blockHash2010",
             "number": 2010,
             "slot": 130,
             "timestamp": 2023-09-01T13:50:21.000Z,
+            Symbol(nodejs.util.inspect.custom): [Function],
           }
         `);
       });
@@ -137,8 +141,14 @@ describe("Indexer router", async () => {
           //   (tx) => tx.blobAsCalldataGasUsed
           // );
           const remainingParams = indexedTxs.map(
-            ({ blobAsCalldataGasUsed: _, ...remainingParams }) =>
-              remainingParams
+            ({
+              blobAsCalldataGasUsed: _,
+              computeBlobGasBaseFee: __,
+              computeUsdFields: ___,
+              blobAsCalldataGasFee: ____,
+              blobGasMaxFee: _____,
+              ...remainingParams
+            }) => remainingParams
           );
 
           // TODO: Fix this test
@@ -160,6 +170,7 @@ describe("Indexer router", async () => {
                 "index": 0,
                 "maxFeePerBlobGas": "1800",
                 "toId": "address10",
+                Symbol(nodejs.util.inspect.custom): [Function],
               },
               {
                 "blobGasUsed": "262144",
@@ -173,13 +184,14 @@ describe("Indexer router", async () => {
                 "index": 1,
                 "maxFeePerBlobGas": "20000",
                 "toId": "address2",
+                Symbol(nodejs.util.inspect.custom): [Function],
               },
             ]
           `);
         });
 
         it("should identify rollup transactions correctly", async () => {
-          await authorizedCaller.indexer.indexData(
+          await authorizedIndexerCaller.indexData(
             ROLLUP_BLOB_TRANSACTION_INPUT
           );
 
@@ -210,7 +222,7 @@ describe("Indexer router", async () => {
         });
 
         it("should categorize a rollup transaction correctly", async () => {
-          await authorizedCaller.indexer.indexData(
+          await authorizedIndexerCaller.indexData(
             ROLLUP_BLOB_TRANSACTION_INPUT
           );
 
@@ -281,6 +293,63 @@ describe("Indexer router", async () => {
       });
 
       describe("when indexing blobs", () => {
+        it("should calculate and store blob size correctly", async () => {
+          const expectedBlobSizes = INPUT.blobs.map((b) => ({
+            versionedHash: b.versionedHash,
+            size: b.data.slice(2).length / 2,
+          }));
+
+          const dbBlobSizes = await authorizedContext.prisma.blob.findMany({
+            select: {
+              versionedHash: true,
+              size: true,
+            },
+            where: {
+              versionedHash: {
+                in: expectedBlobSizes.map((b) => b.versionedHash),
+              },
+            },
+          });
+
+          expect(dbBlobSizes).toEqual(expectedBlobSizes);
+        });
+
+        it("should calculate and store blob usage size correctly", async () => {
+          const expectedBlobUsageSizes = INPUT.blobs.map((b) => {
+            let trailingZeroes = 0;
+            let i = b.data.length - 1;
+
+            while (i > 0 && b.data[i - 1] === "0") {
+              trailingZeroes++;
+              i--;
+            }
+
+            const totalBytes = b.data.slice(2).length / 2;
+            const paddingBytes = trailingZeroes / 2;
+
+            return {
+              versionedHash: b.versionedHash,
+              usageSize: totalBytes - paddingBytes,
+            };
+          });
+
+          const dbBlobUsageSizes = await authorizedContext.prisma.blob.findMany(
+            {
+              select: {
+                versionedHash: true,
+                usageSize: true,
+              },
+              where: {
+                versionedHash: {
+                  in: expectedBlobUsageSizes.map((b) => b.versionedHash),
+                },
+              },
+            }
+          );
+
+          expect(dbBlobUsageSizes).toEqual(expectedBlobUsageSizes);
+        });
+
         it("should index them correctly", async () => {
           const txHashes = INPUT.transactions.map((tx) => tx.hash);
           const indexedBlobs = (
@@ -327,154 +396,29 @@ describe("Indexer router", async () => {
         });
 
         describe("when indexing blob data", () => {
-          const blobVersionedHashes = INPUT.blobs.map((b) => b.versionedHash);
-
-          describe("when blob propagator is disabled", () => {
-            it("should store it on the db correctly", async () => {
-              const dbBlobData = await authorizedContext.prisma.blobData
-                .findMany({
-                  where: {
-                    id: {
-                      in: blobVersionedHashes,
-                    },
-                  },
-                })
-                .then((res) =>
-                  res
-                    .sort((a, b) => a.id.localeCompare(b.id))
-                    .map((b) => `0x${b.data.toString("hex")}`)
-                );
-
-              expect(dbBlobData).toMatchInlineSnapshot(`
-              [
-                "0x34567890abcdef1234567890abcdef",
-                "0x34567890abcdef1234567890abcdef1234567890abcdef",
-                "0x1234abcdeff123456789ab",
-              ]
-            `);
-            });
-
-            it("should store it on google storage correctly", async () => {
-              const blobDataStorageRefs =
-                await authorizedContext.prisma.blobDataStorageReference.findMany(
-                  {
-                    where: {
-                      AND: {
-                        blobHash: {
-                          in: blobVersionedHashes,
-                        },
-                        blobStorage: "GOOGLE",
-                      },
-                    },
-                  }
-                );
-              const blobRefs = blobDataStorageRefs.map<BlobReference>(
-                (ref) => ({
-                  reference: ref.dataReference,
-                  storage: "GOOGLE",
-                })
-              );
-              const gcsBlobData = await Promise.all(
-                blobRefs.map((ref) =>
-                  authorizedContext.blobStorageManager.getBlobByReferences(ref)
-                )
-              ).then((res) =>
-                res.sort((a, b) => (a && b ? a.data.localeCompare(b.data) : 0))
-              );
-
-              expect(gcsBlobData).toMatchInlineSnapshot(`
-                [
-                  {
-                    "data": "0x1234abcdeff123456789ab",
-                    "storage": "GOOGLE",
-                  },
-                  {
-                    "data": "0x34567890abcdef1234567890abcdef",
-                    "storage": "GOOGLE",
-                  },
-                  {
-                    "data": "0x34567890abcdef1234567890abcdef1234567890abcdef",
-                    "storage": "GOOGLE",
-                  },
-                ]
-              `);
-            });
-
-            it("should create blob storage references correctly", async () => {
-              const indexedBlobHashes = INPUT.blobs.map(
-                (blob) => blob.versionedHash
-              );
-              const blobStorageRefs =
-                await authorizedContext.prisma.blobDataStorageReference.findMany(
-                  {
-                    orderBy: {
-                      blobHash: "asc",
-                    },
-                    where: {
-                      blobHash: {
-                        in: indexedBlobHashes,
-                      },
-                    },
-                  }
-                );
-
-              expect(blobStorageRefs).toMatchInlineSnapshot(`
-                [
-                  {
-                    "blobHash": "blobHash1000",
-                    "blobStorage": "GOOGLE",
-                    "dataReference": "1/ob/Ha/sh/obHash1000.bin",
-                  },
-                  {
-                    "blobHash": "blobHash1000",
-                    "blobStorage": "POSTGRES",
-                    "dataReference": "blobHash1000",
-                  },
-                  {
-                    "blobHash": "blobHash1001",
-                    "blobStorage": "GOOGLE",
-                    "dataReference": "1/ob/Ha/sh/obHash1001.bin",
-                  },
-                  {
-                    "blobHash": "blobHash1001",
-                    "blobStorage": "POSTGRES",
-                    "dataReference": "blobHash1001",
-                  },
-                  {
-                    "blobHash": "blobHash999",
-                    "blobStorage": "GOOGLE",
-                    "dataReference": "1/ob/Ha/sh/obHash999.bin",
-                  },
-                  {
-                    "blobHash": "blobHash999",
-                    "blobStorage": "POSTGRES",
-                    "dataReference": "blobHash999",
-                  },
-                ]
-              `);
-            });
-          });
-        });
-
-        describe("when blob propagator is enabled", () => {
           let ctxWithBlobPropagator: Awaited<
             ReturnType<typeof createTestContext>
           >;
-          let callerWithBlobPropagator: ReturnType<
-            typeof appRouter.createCaller
+          let indexerCallerWithBlobPropagator: ReturnType<
+            typeof indexerRouter.createCaller
           >;
           let blobPropagatorSpy: SpyInstance<
-            [blobs: PropagatorBlob[]],
+            [
+              blobs: {
+                versionedHash: string;
+                data: string;
+              }[]
+            ],
             Promise<void>
           >;
 
           beforeAll(async () => {
             ctxWithBlobPropagator = await createTestContext({
-              apiClient: { type: "indexer" },
+              apiClient: "indexer",
               withBlobPropagator: true,
             });
 
-            callerWithBlobPropagator = appRouter.createCaller(
+            indexerCallerWithBlobPropagator = indexerRouter.createCaller(
               ctxWithBlobPropagator
             );
 
@@ -485,20 +429,23 @@ describe("Indexer router", async () => {
             );
           });
 
-          afterEach(async () => {
-            const blobPropagator = ctxWithBlobPropagator.blobPropagator;
-
-            if (blobPropagator) {
-              await blobPropagator.close();
-            }
-          });
-
           it("should call blob propagator", async () => {
-            await callerWithBlobPropagator.indexer.indexData(
+            const expectedInput = INPUT_WITH_DUPLICATED_BLOBS.blobs.map(
+              (b) => ({
+                ...b,
+                blockNumber: INPUT_WITH_DUPLICATED_BLOBS.block.number,
+              })
+            );
+
+            await indexerCallerWithBlobPropagator.indexData(
               INPUT_WITH_DUPLICATED_BLOBS
             );
 
             expect(blobPropagatorSpy).toHaveBeenCalledOnce();
+            expect(
+              blobPropagatorSpy,
+              "Propagator called with invalid blobs"
+            ).toHaveBeenCalledWith(expectedInput);
           });
         });
       });
@@ -600,14 +547,14 @@ describe("Indexer router", async () => {
       it("should be idempotent", async () => {
         // Index the same block again
         await expect(
-          authorizedCaller.indexer.indexData(INPUT)
+          authorizedIndexerCaller.indexData(INPUT)
         ).resolves.toBeUndefined();
       });
 
       testValidError(
         "should fail when receiving an empty array of transactions",
         async () => {
-          await authorizedCaller.indexer.indexData({
+          await authorizedIndexerCaller.indexData({
             ...INPUT,
             transactions: [] as unknown as typeof INPUT.transactions,
           });
@@ -618,7 +565,7 @@ describe("Indexer router", async () => {
       testValidError(
         "should fail when receiving an empty array of blobs",
         async () => {
-          await authorizedCaller.indexer.indexData({
+          await authorizedIndexerCaller.indexData({
             ...INPUT,
             blobs: [] as unknown as typeof INPUT.blobs,
           });
@@ -627,11 +574,13 @@ describe("Indexer router", async () => {
       );
     });
 
-    it("should fail when calling procedure without auth", async () => {
-      await expect(
-        nonAuthorizedCaller.indexer.indexData(INPUT)
-      ).rejects.toThrow(new TRPCError({ code: "UNAUTHORIZED" }));
-    });
+    testValidError(
+      "should fail when calling procedure without auth",
+      async () => {
+        await nonAuthorizedIndexerCaller.indexData(INPUT);
+      },
+      TRPCError
+    );
   });
 
   describe("handleReorg", () => {
@@ -646,7 +595,7 @@ describe("Indexer router", async () => {
 
       describe("when handling rewinded blocks", () => {
         it("should mark them as reorged", async () => {
-          await authorizedCaller.indexer.handleReorg({
+          await authorizedIndexerCaller.handleReorg({
             rewindedBlocks: rewindedBlockHashes,
             forwardedBlocks: [],
           });
@@ -722,7 +671,7 @@ describe("Indexer router", async () => {
                 },
               });
 
-            await authorizedCaller.indexer.handleReorg({
+            await authorizedIndexerCaller.handleReorg({
               rewindedBlocks: rewindedBlockHashes,
             });
 
@@ -764,7 +713,7 @@ describe("Indexer router", async () => {
                 },
               });
 
-            await authorizedCaller.indexer.handleReorg({
+            await authorizedIndexerCaller.handleReorg({
               rewindedBlocks: rewindedBlockHashes,
             });
 
@@ -805,7 +754,7 @@ describe("Indexer router", async () => {
             },
           });
 
-        await authorizedCaller.indexer.handleReorg({
+        await authorizedIndexerCaller.handleReorg({
           forwardedBlocks: forwardedBlockHashes,
         });
 
@@ -837,7 +786,7 @@ describe("Indexer router", async () => {
 
     it("should skip if receiving empty forwarded and rewinded block arrays", async () => {
       await expect(
-        authorizedCaller.indexer.handleReorg({
+        authorizedIndexerCaller.handleReorg({
           rewindedBlocks: [],
           forwardedBlocks: [],
         })
@@ -846,7 +795,7 @@ describe("Indexer router", async () => {
 
     it("should skip non-existent rewinded blocks", async () => {
       await expect(
-        authorizedCaller.indexer.handleReorg({
+        authorizedIndexerCaller.handleReorg({
           rewindedBlocks: [
             "0x992372cef5b4b0f1eee8589218fcd29908f6b19a76d23d0ad4e497479125aa85",
           ],
@@ -854,6 +803,6 @@ describe("Indexer router", async () => {
       ).resolves.toBeUndefined();
     });
 
-    unauthorizedRPCCallTest(() => nonAuthorizedCaller.indexer.handleReorg({}));
+    unauthorizedRPCCallTest(() => nonAuthorizedIndexerCaller.handleReorg({}));
   });
 });

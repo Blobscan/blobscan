@@ -1,10 +1,10 @@
-import { prisma } from "@blobscan/db";
-import type { BlockNumberRange } from "@blobscan/db";
+import type { BlobscanPrismaClient, BlockNumberRange } from "@blobscan/db";
 
 import { BaseSyncer } from "../BaseSyncer";
 import type { CommonSyncerConfig } from "../BaseSyncer";
 
 export interface OverallStatsSyncerConfig extends CommonSyncerConfig {
+  prisma: BlobscanPrismaClient;
   batchSize?: number;
   lowestSlot?: number;
 }
@@ -19,6 +19,7 @@ function isUnset<T>(value: T | undefined | null): value is null | undefined {
 export class OverallStatsSyncer extends BaseSyncer {
   constructor({
     cronPattern,
+    prisma,
     redisUriOrConnection,
     batchSize = DEFAULT_BATCH_SIZE,
     lowestSlot = DEFAULT_INITIAL_SLOT,

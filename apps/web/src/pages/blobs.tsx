@@ -7,6 +7,7 @@ import dayjs from "@blobscan/dayjs";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Copyable } from "~/components/Copyable";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
@@ -17,15 +18,17 @@ import type { TimestampFormat } from "~/components/TimestampToggle";
 import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import type { BlobWithExpandedTransaction } from "~/types";
+import type { ByteUnit } from "~/utils";
 import {
   buildBlobRoute,
   buildBlockRoute,
   buildTransactionRoute,
-  formatBytes,
   formatNumber,
   formatTimestamp,
-  shortenAddress,
+  shortenHash,
 } from "~/utils";
+
+const BYTES_UNIT: ByteUnit = "KiB";
 
 const Blobs: NextPage = function () {
   const { paginationParams, filterParams } = useQueryParams();
@@ -67,28 +70,26 @@ const Blobs: NextPage = function () {
         },
         {
           item: "Versioned Hash",
-          className: "2xl:w-[312px] xl:w-[276px] lg:w-[215px] w-[170px]",
+          className: "w-[170px]",
         },
         {
           item: "Transaction Hash",
-          className: "2xl:w-[318px] xl:w-[276px] lg:w-[218px] w-[172px]",
+          className: "w-[172px]",
         },
         {
           item: "Block Number",
-          className: "2xl:w-[221px] xl:w-[191px] lg:w-[152px] w-[120px]",
+          className: "w-[120px]",
         },
         {
           item: (
             <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
           ),
-          className: "2xl:w-[185px] w-[170px]",
+          className: "w-[150px]",
         },
+
+        { item: `Blob Usage (${BYTES_UNIT})`, className: "w-[180px]" },
         {
-          item: "Size",
-          className: "2xl:w-[178px] xl:w-[145px] lg:w-[101px] w-[66px]",
-        },
-        {
-          item: "Storage",
+          item: "Storages",
           className: "w-[86px]",
         },
       ],
@@ -100,6 +101,7 @@ const Blobs: NextPage = function () {
         ? blobs.map(
             ({
               versionedHash,
+              usageSize,
               size,
               dataStorageReferences,
               txHash,
@@ -122,7 +124,7 @@ const Blobs: NextPage = function () {
                       tooltipText="Copy versioned hash"
                     >
                       <Link href={buildBlobRoute(versionedHash)}>
-                        {shortenAddress(versionedHash, 8)}
+                        {shortenHash(versionedHash, 8)}
                       </Link>
                     </Copyable>
                   ),
@@ -134,7 +136,7 @@ const Blobs: NextPage = function () {
                       tooltipText="Copy transaction hash"
                     >
                       <Link href={buildTransactionRoute(txHash)}>
-                        {shortenAddress(txHash, 8)}
+                        {shortenHash(txHash, 8)}
                       </Link>
                     </Copyable>
                   ),
@@ -161,9 +163,13 @@ const Blobs: NextPage = function () {
                 },
                 {
                   item: (
-                    <div className="flex gap-2">
-                      <span>{formatBytes(size)}</span>
-                    </div>
+                    <BlobUsageDisplay
+                      blobSize={size}
+                      blobUsage={usageSize}
+                      byteUnit={BYTES_UNIT}
+                      hideUnit
+                      width={130}
+                    />
                   ),
                 },
                 {

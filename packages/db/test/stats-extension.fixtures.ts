@@ -1,7 +1,7 @@
 export const NEW_DATA = {
   blocks: [
     {
-      hash: "newBlockHash001",
+      hash: "new0x1000000000000000000000000000000000000000000000000000000000000000",
       number: 2001,
       timestamp: "2023-09-01T10:00:00Z",
       slot: 300,
@@ -31,7 +31,8 @@ export const NEW_DATA = {
       fromId: "address6",
       toId: "address5",
       index: 0,
-      blockHash: "newBlockHash001",
+      blockHash:
+        "new0x1000000000000000000000000000000000000000000000000000000000000000",
       blockNumber: 2001,
       blockTimestamp: "2023-09-01T10:00:00Z",
       maxFeePerBlobGas: 100,
@@ -81,7 +82,8 @@ export const NEW_DATA = {
     {
       blobHash: "newBlobHash001",
       txHash: "newTxHash001",
-      blockHash: "newBlockHash001",
+      blockHash:
+        "new0x1000000000000000000000000000000000000000000000000000000000000000",
       blockNumber: 2001,
       blockTimestamp: "2023-09-01T10:00:00Z",
       txIndex: 0,

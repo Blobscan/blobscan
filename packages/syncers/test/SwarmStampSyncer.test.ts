@@ -4,7 +4,7 @@ import { setupServer } from "msw/node";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import type { BlobStoragesState } from "@blobscan/db";
-import { prisma } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
 import { fixtures, testValidError } from "@blobscan/test";
 
 import type { SwarmStampSyncerConfig } from "../src/syncers/SwarmStampSyncer";
@@ -12,9 +12,12 @@ import { SwarmStampSyncer } from "../src/syncers/SwarmStampSyncer";
 
 const BEE_ENDPOINT = process.env.BEE_ENDPOINT ?? "http://localhost:1633";
 
+const prisma = getPrisma();
+
 class SwarmStampSyncerMock extends SwarmStampSyncer {
   constructor({ batchId, cronPattern }: Partial<SwarmStampSyncerConfig> = {}) {
     super({
+      prisma,
       redisUriOrConnection: process.env.REDIS_URI ?? "",
       cronPattern: cronPattern ?? "* * * * *",
       batchId: batchId ?? process.env.SWARM_BATCH_ID ?? "",

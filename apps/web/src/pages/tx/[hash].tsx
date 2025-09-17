@@ -1,20 +1,22 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
+import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { Copyable } from "~/components/Copyable";
-import { EtherWithGweiDisplay } from "~/components/Displays/EtherWithGweiDisplay";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
+import { EtherDisplay } from "~/components/Displays/EtherDisplay";
+import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
 import { OptimismCard } from "~/components/OptimismCard";
-import { BlockStatus } from "~/components/Status";
+import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
-import { useEnv } from "~/providers/Env";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import {
   buildAddressRoute,
@@ -23,10 +25,10 @@ import {
   formatBytes,
   formatNumber,
   performDiv,
+  pluralize,
 } from "~/utils";
 
 const Tx: NextPage = () => {
-  const { env } = useEnv();
   const router = useRouter();
   const hash = (router.query.hash as string | undefined) ?? "";
 
@@ -84,10 +86,14 @@ const Tx: NextPage = () => {
       from,
       to,
       rollup,
+      blobGasUsdPrice,
       blobGasUsed,
       blobGasBaseFee,
+      blobGasBaseUsdFee,
       blobGasMaxFee,
+      blobGasMaxUsdFee,
       blobAsCalldataGasFee,
+      ethUsdPrice,
     } = tx;
 
     detailsFields = [
@@ -95,7 +101,7 @@ const Tx: NextPage = () => {
         name: "Hash",
         value: <Copyable value={hash} tooltipText="Copy Hash" />,
       },
-      { name: "Status", value: <BlockStatus blockNumber={blockNumber} /> },
+      { name: "Status", value: <BlockStatusBadge blockNumber={blockNumber} /> },
       {
         name: "Block",
         value: <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>,
@@ -138,15 +144,43 @@ const Tx: NextPage = () => {
     }
 
     const totalBlobSize = blobs.reduce((acc, b) => acc + b.size, 0);
+    const totalBlobUsageSize = blobs.reduce((acc, b) => acc + b.usageSize, 0);
 
     detailsFields.push(
       {
-        name: "Total Blob Size",
-        value: formatBytes(totalBlobSize),
+        name: "Blob Size",
+        value: (
+          <span>
+            {formatBytes(totalBlobSize)}{" "}
+            <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+              ({blobs.length} {pluralize("blob", blobs.length)})
+            </span>
+          </span>
+        ),
       },
       {
+        name: "Blob Usage",
+
+        value: (
+          <BlobUsageDisplay
+            blobSize={totalBlobSize}
+            blobUsage={totalBlobUsageSize}
+            variant="minimal"
+          />
+        ),
+      },
+
+      {
         name: "Blob Gas Price",
-        value: <EtherWithGweiDisplay amount={block.blobGasPrice} />,
+        value: (
+          <EtherDisplay
+            weiAmount={block.blobGasPrice}
+            usdAmount={blobGasUsdPrice}
+            opts={{
+              toUnit: "Gwei",
+            }}
+          />
+        ),
       },
       {
         name: "Blob Fee",
@@ -157,14 +191,20 @@ const Tx: NextPage = () => {
                 <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                   Base:
                 </div>
-                <EtherWithGweiDisplay amount={blobGasBaseFee} />
+                <EtherDisplay
+                  weiAmount={blobGasBaseFee}
+                  usdAmount={blobGasBaseUsdFee}
+                />
               </div>
             ) : null}
             <div className=" flex gap-1">
               <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Max:
               </div>
-              <EtherWithGweiDisplay amount={blobGasMaxFee} />
+              <EtherDisplay
+                weiAmount={blobGasMaxFee}
+                usdAmount={blobGasMaxUsdFee}
+              />
             </div>
           </div>
         ),
@@ -179,7 +219,7 @@ const Tx: NextPage = () => {
           <div>
             {formatNumber(blobAsCalldataGasUsed)}{" "}
             <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-              |{" "}
+              (
               <strong>
                 {formatNumber(
                   performDiv(blobAsCalldataGasUsed, blobGasUsed),
@@ -189,7 +229,7 @@ const Tx: NextPage = () => {
                   }
                 )}
               </strong>{" "}
-              times larger
+              times larger)
             </span>
           </div>
         ),
@@ -198,9 +238,9 @@ const Tx: NextPage = () => {
         name: "Blob As Calldata Gas Fee",
         value: (
           <div className="display flex gap-1">
-            {<EtherWithGweiDisplay amount={blobAsCalldataGasFee} />}
+            {<EtherDisplay weiAmount={blobAsCalldataGasFee} />}
             <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-              |{" "}
+              <Separator />
               <strong>
                 {formatNumber(
                   performDiv(blobAsCalldataGasFee, blobGasBaseFee),
@@ -216,6 +256,13 @@ const Tx: NextPage = () => {
         ),
       }
     );
+
+    if (ethUsdPrice) {
+      detailsFields.push({
+        name: "ETH Price",
+        value: <FiatDisplay amount={ethUsdPrice} />,
+      });
+    }
   }
 
   return (
@@ -236,8 +283,13 @@ const Tx: NextPage = () => {
             />
           </div>
         }
-        externalLink={
-          tx ? `${env?.PUBLIC_EXPLORER_BASE_URL}/tx/${tx.hash}` : undefined
+        resource={
+          tx
+            ? {
+                type: "tx",
+                value: tx.hash,
+              }
+            : undefined
         }
         fields={detailsFields}
       />

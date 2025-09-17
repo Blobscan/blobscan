@@ -8,11 +8,9 @@ import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
-import { useEnv } from "~/providers/Env";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 
 const Address: NextPage = () => {
-  const { env } = useEnv();
   const router = useRouter();
   const { paginationParams } = useQueryParams();
   const address = (router.query.address as string | undefined) ?? "";
@@ -38,7 +36,10 @@ const Address: NextPage = () => {
     <>
       <DetailsLayout
         header="Address Details"
-        externalLink={`${env?.PUBLIC_EXPLORER_BASE_URL}/address/${address}`}
+        resource={{
+          type: "address",
+          value: address,
+        }}
         fields={[
           {
             name: "Address",

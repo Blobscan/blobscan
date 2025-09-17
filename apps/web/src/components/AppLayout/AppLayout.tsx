@@ -1,8 +1,6 @@
-import { useState } from "react";
 import cn from "classnames";
 
 import { useIsHomepage } from "~/hooks/useIsHomePage";
-import { OctantBanner } from "../OctantBanner";
 import { BottomBarLayout } from "./BottomBarLayout";
 import { TopBarLayout } from "./TopBarLayout";
 
@@ -13,15 +11,9 @@ interface LayoutProps {
 
 const AppLayout = ({ children }: LayoutProps) => {
   const isHomepage = useIsHomepage();
-  const [bannerOpened, setBannerOpened] = useState(true);
 
   return (
     <div className="flex min-h-screen flex-col">
-      {bannerOpened && (
-        <OctantBanner
-          onClose={() => setBannerOpened((prevOpened) => !prevOpened)}
-        />
-      )}
       <TopBarLayout />
       <main
         className={cn("container mx-auto grow", {

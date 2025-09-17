@@ -93,11 +93,20 @@ export class DataGenerator {
     const proof = faker.string.hexadecimal({ length: 96 });
     const versionedHash = `0x01${sha256(commitment).slice(2)}`;
     const size = Number(GAS_PER_BLOB);
+    let usageSize = faker.number.int({
+      min: 2,
+      max: size,
+    });
+
+    if (usageSize % 2 !== 0) {
+      usageSize--;
+    }
 
     return {
       commitment,
       proof,
       size,
+      usageSize,
       versionedHash,
       firstBlockNumber: Infinity,
       insertedAt: now,

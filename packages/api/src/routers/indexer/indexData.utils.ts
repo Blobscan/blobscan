@@ -7,8 +7,7 @@ import type {
   WithoutTimestampFields,
 } from "@blobscan/db";
 import { Prisma } from "@blobscan/db";
-import { env } from "@blobscan/env";
-import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
+import type { NetworkBlobConfig } from "@blobscan/network-blob-config";
 import { getRollupByAddress } from "@blobscan/rollups";
 
 import type { IndexDataFormattedInput } from "./indexData";
@@ -56,27 +55,42 @@ export function getEIP2028CalldataGas(hexData: string) {
   return gasCost;
 }
 
-export function calculateBlobSize(blob: string): number {
-  return blob.slice(2).length / 2;
+export function calculateBlobBytesSize(blob: string) {
+  // Remove 0x prefix
+  const blobLength = blob.length - 2;
+
+  return blobLength / 2;
+}
+
+export function calculateBlobUsageSize(blob: string) {
+  let paddingBytes = 0;
+  let i = blob.length - 1;
+
+  while (i > 1 && blob[i] === "0" && blob[i - 1] === "0") {
+    paddingBytes += 1;
+    i -= 2;
+  }
+
+  const blobBytesSize = calculateBlobBytesSize(blob);
+
+  return blobBytesSize - paddingBytes;
 }
 
 export function calculateBlobGasPrice(
-  slot: number,
-  excessBlobGas: bigint
+  excessBlobGas: bigint,
+  config: NetworkBlobConfig
 ): bigint {
-  const { minBlobBaseFee, blobBaseFeeUpdateFraction } =
-    getNetworkBlobConfigBySlot(env.CHAIN_ID, slot);
+  const { minBlobBaseFee, blobBaseFeeUpdateFraction } = config;
 
   return BigInt(
     fakeExponential(minBlobBaseFee, excessBlobGas, blobBaseFeeUpdateFraction)
   );
 }
 
-export function createDBTransactions({
-  blobs,
-  block,
-  transactions,
-}: IndexDataFormattedInput): WithoutTimestampFields<Transaction>[] {
+export function createDBTransactions(
+  { blobs, block, transactions }: IndexDataFormattedInput,
+  config: NetworkBlobConfig
+): WithoutTimestampFields<Transaction>[] {
   return transactions.map<WithoutTimestampFields<Transaction>>(
     ({ from, gasPrice, hash, maxFeePerBlobGas, to, index }) => {
       const txBlobs = blobs.filter((b) => b.txHash === hash);
@@ -90,14 +104,7 @@ export function createDBTransactions({
         BigInt(0)
       );
 
-      const ethereumConfig = getNetworkBlobConfigBySlot(
-        env.CHAIN_ID,
-        block.slot
-      );
-      const blobGasPrice = calculateBlobGasPrice(
-        block.slot,
-        block.excessBlobGas
-      );
+      const blobGasPrice = calculateBlobGasPrice(block.excessBlobGas, config);
 
       return {
         blockHash: block.hash,
@@ -109,7 +116,7 @@ export function createDBTransactions({
         index,
         gasPrice: bigIntToDecimal(gasPrice),
         blobGasUsed: bigIntToDecimal(
-          BigInt(txBlobs.length) * ethereumConfig.gasPerBlob
+          BigInt(txBlobs.length) * config.gasPerBlob
         ),
         blobGasPrice: bigIntToDecimal(blobGasPrice),
         maxFeePerBlobGas: bigIntToDecimal(maxFeePerBlobGas),
@@ -124,17 +131,17 @@ export function createDBBlock(
   {
     block: { blobGasUsed, excessBlobGas, hash, number, slot, timestamp },
   }: IndexDataFormattedInput,
-  dbTxs: Pick<Transaction, "blobAsCalldataGasUsed">[]
+  dbTxs: Pick<Transaction, "blobAsCalldataGasUsed">[],
+  config: NetworkBlobConfig
 ): WithoutTimestampFields<Block> {
   const blobAsCalldataGasUsed = dbTxs.reduce(
     (acc, tx) => acc.add(tx.blobAsCalldataGasUsed),
     new Prisma.Decimal(0)
   );
-  const blobGasPrice = calculateBlobGasPrice(slot, excessBlobGas);
+  const blobGasPrice = calculateBlobGasPrice(excessBlobGas, config);
 
   return {
     number,
-
     hash,
     timestamp: timestampToDate(timestamp),
     slot,
@@ -166,7 +173,8 @@ export function createDBBlobs({
         versionedHash: blob.versionedHash,
         commitment: blob.commitment,
         proof: blob.proof,
-        size: calculateBlobSize(blob.data),
+        size: calculateBlobBytesSize(blob.data),
+        usageSize: calculateBlobUsageSize(blob.data),
         firstBlockNumber: block.number,
       };
     }
@@ -197,9 +205,10 @@ export function createDBBlobsOnTransactions({
   });
 }
 
-export function createDBAddresses({
-  transactions,
-}: IndexDataFormattedInput): WithoutTimestampFields<Address>[] {
+export function createDBAddresses(
+  chainId: number,
+  { transactions }: IndexDataFormattedInput
+): WithoutTimestampFields<Address>[] {
   const addresses = transactions.reduce<
     Record<string, WithoutTimestampFields<Address>>
   >((addressToEntity, { from, to, blockNumber }) => {
@@ -209,13 +218,13 @@ export function createDBAddresses({
       address: from,
       firstBlockNumberAsReceiver: null,
       firstBlockNumberAsSender: null,
-      rollup: getRollupByAddress(from, env.CHAIN_ID),
+      rollup: getRollupByAddress(from, chainId),
     };
     const toEntity: WithoutTimestampFields<Address> = addressToEntity[to] ?? {
       address: to,
       firstBlockNumberAsReceiver: null,
       firstBlockNumberAsSender: null,
-      rollup: getRollupByAddress(to, env.CHAIN_ID),
+      rollup: getRollupByAddress(to, chainId),
     };
 
     fromEntity.firstBlockNumberAsSender = fromEntity.firstBlockNumberAsSender

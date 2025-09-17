@@ -16,7 +16,7 @@ import {
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import { countTxs } from "./getCount";
-import type { CompletePrismaTransaction } from "./helpers";
+import type { CompletedPrismaTransaction } from "./helpers";
 import {
   createTransactionSelect,
   responseTransactionSchema,
@@ -46,57 +46,61 @@ export const getAll = publicProcedure
   .input(withPaginationSchema)
   .use(withPagination)
   .output(outputSchema)
-  .query(async ({ ctx: { prisma, expands, filters, pagination, count } }) => {
-    const {
-      transactionFilters = {},
-      blockFilters = {},
-      blockType,
-      sort,
-    } = filters;
+  .query(
+    async ({
+      ctx: { prisma, expands, filters, pagination, count, chainId },
+    }) => {
+      const {
+        transactionFilters = {},
+        blockFilters = {},
+        blockType,
+        sort,
+      } = filters;
 
-    let leadingOrderColumn: Prisma.TransactionOrderByWithRelationInput = {
-      blockTimestamp: sort,
-    };
+      let leadingOrderColumn: Prisma.TransactionOrderByWithRelationInput = {
+        blockTimestamp: sort,
+      };
 
-    if (blockFilters.number) {
-      leadingOrderColumn = {
-        blockNumber: sort,
+      if (blockFilters.number) {
+        leadingOrderColumn = {
+          blockNumber: sort,
+        };
+      }
+
+      const prismaTxsOp = prisma.transaction.findMany({
+        select: createTransactionSelect(expands),
+        where: {
+          ...transactionFilters,
+          blockNumber: blockFilters.number,
+          blockTimestamp: blockFilters.timestamp,
+          block: {
+            slot: blockFilters.slot,
+            transactionForks: blockType,
+          },
+        },
+        orderBy: [
+          leadingOrderColumn,
+          {
+            index: sort,
+          },
+        ],
+        ...pagination,
+      });
+
+      const countOp = count
+        ? countTxs(prisma, filters, chainId)
+        : Promise.resolve(undefined);
+
+      const [prismaTxs, txCountOrStats] = await Promise.all([
+        prismaTxsOp,
+        countOp,
+      ]);
+
+      return {
+        transactions: prismaTxs.map((tx) =>
+          toResponseTransaction(tx as unknown as CompletedPrismaTransaction)
+        ),
+        ...(count ? { totalTransactions: txCountOrStats } : {}),
       };
     }
-
-    const prismaTxsOp = prisma.transaction.findMany({
-      select: createTransactionSelect(expands),
-      where: {
-        ...transactionFilters,
-        blockNumber: blockFilters.number,
-        blockTimestamp: blockFilters.timestamp,
-        block: {
-          slot: blockFilters.slot,
-          transactionForks: blockType,
-        },
-      },
-      orderBy: [
-        leadingOrderColumn,
-        {
-          index: sort,
-        },
-      ],
-      ...pagination,
-    });
-
-    const countOp = count
-      ? countTxs(prisma, filters)
-      : Promise.resolve(undefined);
-
-    const [prismaTxs, txCountOrStats] = await Promise.all([
-      prismaTxsOp,
-      countOp,
-    ]);
-
-    return {
-      transactions: prismaTxs.map((tx) =>
-        toResponseTransaction(tx as unknown as CompletePrismaTransaction)
-      ),
-      ...(count ? { totalTransactions: txCountOrStats } : {}),
-    };
-  });
+  );

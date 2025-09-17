@@ -2,7 +2,7 @@
 import { Queue, Worker } from "bullmq";
 import type { Redis } from "ioredis";
 
-import { createModuleLogger } from "@blobscan/logger";
+import { logger } from "@blobscan/logger";
 import type { Logger } from "@blobscan/logger";
 
 import { ErrorException, SyncerError } from "./errors";
@@ -37,7 +37,7 @@ export class BaseSyncer {
   }: BaseSyncerConfig) {
     this.name = `${name}-syncer`;
     this.cronPattern = cronPattern;
-    this.logger = createModuleLogger(this.name);
+    this.logger = logger.child({ job: name });
 
     let connection: Redis;
 

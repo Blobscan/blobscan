@@ -3,7 +3,7 @@ import { AxiosError } from "axios";
 import axios from "axios";
 
 import { formatTtl } from "@blobscan/dates";
-import { prisma } from "@blobscan/db";
+import type { BlobscanPrismaClient } from "@blobscan/db";
 
 import { BaseSyncer } from "../BaseSyncer";
 import type { CommonSyncerConfig } from "../BaseSyncer";
@@ -15,6 +15,7 @@ type BatchData = {
 };
 
 export interface SwarmStampSyncerConfig extends CommonSyncerConfig {
+  prisma: BlobscanPrismaClient;
   beeEndpoint: string;
   batchId: string;
 }
@@ -22,6 +23,7 @@ export interface SwarmStampSyncerConfig extends CommonSyncerConfig {
 export class SwarmStampSyncer extends BaseSyncer {
   constructor({
     cronPattern,
+    prisma,
     redisUriOrConnection,
     batchId,
     beeEndpoint,

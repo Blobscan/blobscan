@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@blobscan/dayjs": "workspace:^0.1.0",
+    "@blobscan/env": "workspace:^0.2.0",
     "@prisma/client": "^5.19.1",
     "prool": "^0.0.23",
     "viem": "^2.17.4"

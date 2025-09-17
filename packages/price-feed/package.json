@@ -11,11 +11,9 @@
     "type-check": "tsc --noEmit",
     "test": "pnpm with-env:test vitest",
     "test:ui": "pnpm with-env:test vitest --ui",
-    "with-env:test": "dotenv -e ../../.env.test --"
-  },
-  "dependencies": {
-    "@blobscan/env": "workspace:^0.1.0",
-    "@blobscan/logger": "workspace:^0.1.2"
+    "with-env:test": "dotenv -e ../../.env.test --",
+    "with-env": "dotenv -e ../../.env --",
+    "populate": "pnpm with-env tsx ./populate-eth-prices.ts"
   },
   "peerDependencies": {
     "viem": "^2.17.4"

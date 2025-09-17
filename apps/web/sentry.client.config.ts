@@ -2,7 +2,7 @@
 // The config you add here will be used whenever a user loads a page in their browser.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-import * as Sentry from "@sentry/nextjs";
+import { init as SentryInit } from "@sentry/nextjs";
 import type { z } from "zod";
 
 import type { clientEnvVarsSchema } from "~/env.mjs";
@@ -17,7 +17,7 @@ const initSentry = async () => {
     const dns = env.PUBLIC_SENTRY_DSN_WEB;
     const environment = env.PUBLIC_NETWORK_NAME;
 
-    Sentry.init({
+    SentryInit({
       dsn: dns,
       environment,
       tracesSampleRate: 1,

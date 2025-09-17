@@ -1,12 +1,15 @@
 import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 
+import type { EtherUnit } from "@blobscan/eth-format";
 import { formatWei } from "@blobscan/eth-format";
 import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
+import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
@@ -19,14 +22,19 @@ import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
 import { useEnv } from "~/providers/Env";
-import type { BlockWithExpandedTransactions } from "~/types";
+import type { BlockWithExpandedBlobsAndTransactions, Rollup } from "~/types";
+import type { ByteUnit } from "~/utils";
 import {
   buildBlobRoute,
   buildBlockRoute,
   buildTransactionRoute,
   formatNumber,
   normalizeTimestamp,
+  shortenHash,
 } from "~/utils";
+
+const BYTES_UNIT: ByteUnit = "KiB";
+const ETHER_UNIT: EtherUnit = "Gwei";
 
 const Blocks: NextPage = function () {
   const { env } = useEnv();
@@ -37,11 +45,13 @@ const Blocks: NextPage = function () {
     data: blocksData,
     isLoading: blocksIsLoading,
     error: blocksError,
-  } = api.block.getAll.useQuery<{ blocks: BlockWithExpandedTransactions[] }>({
+  } = api.block.getAll.useQuery<{
+    blocks: BlockWithExpandedBlobsAndTransactions[];
+  }>({
     ...paginationParams,
     ...filterParams,
     rollups,
-    expand: "transaction",
+    expand: "transaction,blob",
   });
   const {
     data: countData,
@@ -65,37 +75,43 @@ const Blocks: NextPage = function () {
       cells: [
         {
           item: "",
-          className: "w-[100px]",
+          className: "w-[80px]",
         },
         {
           item: "Block number",
-          className: "2xl:w-[187px] lg:w-[158px] w-[118px]",
+          className: "w-[118px]",
         },
         {
           item: (
             <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
           ),
-          className: "2xl:w-[237px] lg:w-[200px] w-[170px]",
+          className: "w-[170px]",
         },
         {
           item: "Slot",
-          className: "2xl:w-[136px] lg:w-[115px] w-[96px]",
+          className: "w-[150px]",
         },
         {
           item: "Txs",
-          className: "2xl:w-[77px] w-[66px]",
+          className: "w-[66px]",
         },
         {
           item: "Blobs",
-          className: "2xl:w-[98px] w-[83px]",
+          className: "w-[83px]",
         },
         {
-          item: "Blob Gas Price",
-          className: "2xl:w-[195px] w-[165px]",
+          item: `Blob Usage (${BYTES_UNIT})`,
+          className: "w-[155px]",
         },
         {
-          item: "Blob Gas Used",
-          className: "2xl:w-full w-[240px]",
+          item: "Blob Gas Usage",
+          className: "w-[175px]",
+        },
+
+        { item: `Blob Base Fees (${ETHER_UNIT})`, className: "w-[170px]" },
+        {
+          item: `Blob Gas Price (${ETHER_UNIT})`,
+          className: "w-[160px]",
         },
       ],
     },
@@ -110,6 +126,7 @@ const Blocks: NextPage = function () {
       ({
         blobGasPrice,
         blobGasUsed,
+        blobGasBaseFee,
         number,
         slot,
         timestamp,
@@ -120,31 +137,54 @@ const Blocks: NextPage = function () {
           (acc, tx) => acc + tx.blobs.length,
           0
         );
+        const totalBlobSize = transactions
+          ?.flatMap((tx) => tx.blobs)
+          .reduce((acc, { size }) => acc + size, 0);
+        const totalBlobUsage = transactions
+          ?.flatMap((tx) => tx.blobs)
+          .reduce((acc, { usageSize }) => acc + usageSize, 0);
         const txsBlobs = transactions.flatMap((tx) =>
-          tx.blobs.map((blob) => ({
-            transactionHash: tx.hash,
-            blobVersionedHash: blob.versionedHash,
-            category: tx.category,
-            rollup: tx.rollup,
-          }))
+          tx.blobs.map(
+            ({ dataStorageReferences, versionedHash, size, usageSize }, i) => ({
+              transactionHash: tx.hash,
+              blobVersionedHash: versionedHash,
+              blobIndex: i,
+              category: tx.category,
+              rollup: tx.rollup,
+              dataStorageReferences,
+              size,
+              usageSize,
+            })
+          )
+        );
+        const rollupToAmount = txsBlobs.reduce<Partial<Record<Rollup, number>>>(
+          (amounts, { rollup }) => {
+            if (!rollup) {
+              return amounts;
+            }
+            const amount = amounts[rollup] ?? 0;
+
+            amounts[rollup] = amount + 1;
+
+            return amounts;
+          },
+          {} as Partial<Record<Rollup, number>>
         );
 
         return {
           cells: [
             {
               item: (
-                <div className="relative flex">
-                  {[...new Set(transactions.map((tx) => tx.rollup))].map(
-                    (rollup, i) => {
-                      return rollup ? (
-                        <div key={i} className="-ml-1 first-of-type:ml-0">
-                          <RollupBadge rollup={rollup} compact />
-                        </div>
-                      ) : (
-                        <></>
-                      );
-                    }
-                  )}
+                <div className="relative flex gap-1">
+                  {Object.entries(rollupToAmount).map(([rollup, amount]) => (
+                    <div key={rollup} className="-ml-0.5">
+                      <RollupBadge
+                        amount={amount}
+                        rollup={rollup as Rollup}
+                        compact
+                      />
+                    </div>
+                  ))}
                 </div>
               ),
             },
@@ -166,12 +206,9 @@ const Blocks: NextPage = function () {
             },
             {
               item: (
-                <Link
-                  href={`${env?.PUBLIC_BEACON_BASE_URL}/slot/${slot}`}
-                  isExternal
-                >
+                <Copyable value={slot.toString()} tooltipText="Copy Slot">
                   {slot}
-                </Link>
+                </Copyable>
               ),
             },
             {
@@ -189,7 +226,14 @@ const Blocks: NextPage = function () {
               ),
             },
             {
-              item: formatWei(blobGasPrice, { toUnit: "Gwei" }),
+              item: (
+                <BlobUsageDisplay
+                  blobSize={totalBlobSize}
+                  blobUsage={totalBlobUsage}
+                  byteUnit={BYTES_UNIT}
+                  hideUnit
+                />
+              ),
             },
             {
               item: (
@@ -199,9 +243,19 @@ const Blocks: NextPage = function () {
                     slot
                   )}
                   blobGasUsed={blobGasUsed}
-                  compact
+                  width={100}
+                  variant="minimal"
                 />
               ),
+            },
+            {
+              item: formatWei(blobGasBaseFee, {
+                toUnit: "Gwei",
+                hideUnit: true,
+              }),
+            },
+            {
+              item: formatWei(blobGasPrice, { toUnit: "Gwei", hideUnit: true }),
             },
           ],
           expandItem: (
@@ -212,12 +266,23 @@ const Blocks: NextPage = function () {
               headers={[
                 {
                   cells: [
-                    { item: "" },
+                    { item: "", className: "w-[70px]" },
                     {
                       item: "Tx Hash",
+                      className: "w-[200px]",
+                    },
+                    {
+                      item: "Position",
+                      className: "w-[200px]",
                     },
                     {
                       item: "Blob Versioned Hash",
+                      className: "w-[100px]",
+                    },
+                    { item: `Usage (${BYTES_UNIT})` },
+                    {
+                      item: "Storages",
+                      className: "w-[200px]",
                     },
                   ],
                   className: "dark:border-border-dark/20",
@@ -225,7 +290,16 @@ const Blocks: NextPage = function () {
                 },
               ]}
               rows={txsBlobs.map(
-                ({ transactionHash, blobVersionedHash, rollup, category }) => ({
+                ({
+                  transactionHash,
+                  blobIndex,
+                  blobVersionedHash,
+                  rollup,
+                  category,
+                  dataStorageReferences,
+                  size,
+                  usageSize,
+                }) => ({
                   cells: [
                     {
                       item:
@@ -242,10 +316,13 @@ const Blocks: NextPage = function () {
                           tooltipText="Copy transaction hash"
                         >
                           <Link href={buildTransactionRoute(transactionHash)}>
-                            {transactionHash}
+                            {shortenHash(transactionHash, 27)}
                           </Link>
                         </Copyable>
                       ),
+                    },
+                    {
+                      item: blobIndex,
                     },
                     {
                       item: (
@@ -254,9 +331,34 @@ const Blocks: NextPage = function () {
                           tooltipText="Copy blob versioned hash"
                         >
                           <Link href={buildBlobRoute(blobVersionedHash)}>
-                            {blobVersionedHash}
+                            {shortenHash(blobVersionedHash, 27)}
                           </Link>
                         </Copyable>
+                      ),
+                    },
+                    {
+                      item: (
+                        <BlobUsageDisplay
+                          variant="inline"
+                          blobSize={size}
+                          blobUsage={usageSize}
+                          byteUnit={BYTES_UNIT}
+                          hideUnit
+                        />
+                      ),
+                    },
+                    {
+                      item: dataStorageReferences && (
+                        <div className="flex items-center gap-2">
+                          {dataStorageReferences.map(({ storage, url }) => (
+                            <StorageBadge
+                              key={storage}
+                              storage={storage}
+                              url={url}
+                              compact
+                            />
+                          ))}
+                        </div>
                       ),
                     },
                   ],
@@ -305,7 +407,6 @@ const Blocks: NextPage = function () {
           page: paginationParams.p,
         }}
         isExpandable
-        rowSkeletonHeight={44}
       />
     </>
   );

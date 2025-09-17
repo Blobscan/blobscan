@@ -8,7 +8,7 @@ import {
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
-import type { CompletePrismaBlob } from "./helpers";
+import type { CompletedPrismaBlob } from "./helpers";
 import {
   responseBlobSchema,
   createBlobSelect,
@@ -38,13 +38,17 @@ export const getByBlobId = publicProcedure
   .output(outputSchema)
   .query(async ({ ctx: { prisma, expands }, input }) => {
     const { id } = input;
+    const isExpandEnabled = !!expands.block || !!expands.transaction;
 
-    const prismaBlob = (await prisma.blob.findFirst({
-      select: createBlobSelect(expands),
-      where: {
-        OR: [{ versionedHash: id }, { commitment: id }],
-      },
-    })) as unknown as CompletePrismaBlob | null;
+    const [prismaBlob, ethUsdPrices] = await Promise.all([
+      prisma.blob.findFirst({
+        select: createBlobSelect(expands),
+        where: {
+          OR: [{ versionedHash: id }, { commitment: id }],
+        },
+      }) as unknown as Promise<CompletedPrismaBlob | null>,
+      isExpandEnabled ? prisma.blob.findEthUsdPrices(id) : Promise.resolve([]),
+    ]);
 
     if (!prismaBlob) {
       throw new TRPCError({
@@ -53,5 +57,8 @@ export const getByBlobId = publicProcedure
       });
     }
 
-    return toResponseBlob(prismaBlob);
+    return toResponseBlob(
+      prismaBlob,
+      ethUsdPrices.map(({ price }) => price)
+    );
   });

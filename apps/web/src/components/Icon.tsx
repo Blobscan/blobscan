@@ -1,12 +1,13 @@
-import type { FC, SVGProps } from "react";
+import type { FC } from "react";
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
 
 import type { Size } from "~/types";
+import type { RenderableIcon } from "~/types/icons";
 
 export type IconProps = {
   className?: string;
-  src: FC<SVGProps<SVGElement>> | string;
+  src: RenderableIcon;
   title?: string;
   size?: Size;
 };
@@ -57,7 +58,7 @@ const ICON_CLASSES: Record<
     },
   },
   "2xl": {
-    className: "h-7 w-7",
+    className: "h-8 w-8",
     css: {
       width: 28,
       height: 28,

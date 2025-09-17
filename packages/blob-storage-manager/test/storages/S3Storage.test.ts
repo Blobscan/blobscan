@@ -1,8 +1,7 @@
 import type { S3Client } from "@aws-sdk/client-s3";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { env } from "@blobscan/env";
-import { testValidError } from "@blobscan/test";
+import { env, testValidError } from "@blobscan/test";
 
 import { S3Storage } from "../../src";
 import { BlobStorageError } from "../../src/errors";

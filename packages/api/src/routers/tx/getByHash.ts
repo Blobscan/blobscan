@@ -8,7 +8,7 @@ import {
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
-import type { CompletePrismaTransaction } from "./helpers";
+import type { CompletedPrismaTransaction } from "./helpers";
 import {
   createTransactionSelect,
   responseTransactionSchema,
@@ -36,10 +36,13 @@ export const getByHash = publicProcedure
   .use(withExpands)
   .output(outputSchema)
   .query(async ({ ctx: { expands, prisma }, input: { hash } }) => {
-    const prismaTx = (await prisma.transaction.findUnique({
-      select: createTransactionSelect(expands),
-      where: { hash },
-    })) as unknown as CompletePrismaTransaction | null;
+    const [prismaTx, ethUsdPrice] = await Promise.all([
+      prisma.transaction.findUnique({
+        select: createTransactionSelect(expands),
+        where: { hash },
+      }) as unknown as Promise<CompletedPrismaTransaction | null>,
+      prisma.transaction.findEthUsdPrice(hash),
+    ]);
 
     if (!prismaTx) {
       throw new TRPCError({
@@ -48,5 +51,5 @@ export const getByHash = publicProcedure
       });
     }
 
-    return toResponseTransaction(prismaTx);
+    return toResponseTransaction(prismaTx, ethUsdPrice?.price);
   });

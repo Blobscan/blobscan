@@ -1,5 +1,160 @@
 # @blobscan/web
 
+## 0.38.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @blobscan/api@0.28.1
+
+## 0.38.0
+
+### Minor Changes
+
+- [#871](https://github.com/Blobscan/blobscan/pull/871) [`dd8b996`](https://github.com/Blobscan/blobscan/commit/dd8b9968e5af5782e7fe8275301c60cb7ad5a8b3) Thanks [@PJColombo](https://github.com/PJColombo)! - Added Blobscan Hoodi instance to network dropdown
+
+### Patch Changes
+
+- Updated dependencies [[`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a)]:
+  - @blobscan/api@0.28.0
+  - @blobscan/db@0.21.0
+  - @blobscan/rollups@0.3.6
+
+## 0.37.0
+
+### Minor Changes
+
+- [#870](https://github.com/Blobscan/blobscan/pull/870) [`50117fd`](https://github.com/Blobscan/blobscan/commit/50117fdd48f87759f5e62ef353ff303bde218fea) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed blob usage size for each block's blob on blocks page
+
+- [#870](https://github.com/Blobscan/blobscan/pull/870) [`50117fd`](https://github.com/Blobscan/blobscan/commit/50117fdd48f87759f5e62ef353ff303bde218fea) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed blob base fees on blocks page
+
+### Patch Changes
+
+- [#868](https://github.com/Blobscan/blobscan/pull/868) [`c36c314`](https://github.com/Blobscan/blobscan/commit/c36c31418e25a37c2ab7063f59ab659705fbdb85) Thanks [@PJColombo](https://github.com/PJColombo)! - Smoothed `SlidableList` animations on home page.
+
+## 0.36.0
+
+### Minor Changes
+
+- [#866](https://github.com/Blobscan/blobscan/pull/866) [`30e8109`](https://github.com/Blobscan/blobscan/commit/30e8109875d6dbf5bf276862eba253e58b81f250) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed donation address on bottom bar
+
+## 0.35.0
+
+### Minor Changes
+
+- [#861](https://github.com/Blobscan/blobscan/pull/861) [`77437ef`](https://github.com/Blobscan/blobscan/commit/77437ef5b3cfd26dfed0becd7d6f313373f8e4f4) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob usage size
+
+### Patch Changes
+
+- [#863](https://github.com/Blobscan/blobscan/pull/863) [`6b640f7`](https://github.com/Blobscan/blobscan/commit/6b640f7c5e52eb7686fb8a45d2e1d87992f6e8ac) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed number formatting logic to truncate values instead of rounding when a specific number of decimal places is provided.
+
+- Updated dependencies [[`77437ef`](https://github.com/Blobscan/blobscan/commit/77437ef5b3cfd26dfed0becd7d6f313373f8e4f4)]:
+  - @blobscan/api@0.27.0
+  - @blobscan/db@0.20.0
+  - @blobscan/rollups@0.3.5
+
+## 0.34.0
+
+### Minor Changes
+
+- [#854](https://github.com/Blobscan/blobscan/pull/854) [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed ETH USD price on block and tx pages
+
+- [#854](https://github.com/Blobscan/blobscan/pull/854) [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed excess blob gas field in block details page
+
+- [#855](https://github.com/Blobscan/blobscan/pull/855) [`09894b1`](https://github.com/Blobscan/blobscan/commit/09894b14a2ca326da41dca4eef9644c272169eed) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob icon to blob price indicator on top bar
+
+- [#859](https://github.com/Blobscan/blobscan/pull/859) [`50d4d9b`](https://github.com/Blobscan/blobscan/commit/50d4d9bb71ca1c8151a8ee37e4ca01e40b1b8733) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed Octant banner
+
+- [#854](https://github.com/Blobscan/blobscan/pull/854) [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed blob gas price in usd and blob gas base fee fields in block details page
+
+### Patch Changes
+
+- [#857](https://github.com/Blobscan/blobscan/pull/857) [`ecfbe3b`](https://github.com/Blobscan/blobscan/commit/ecfbe3bfc9f049be854d0b8062773adef03b6232) Thanks [@PJColombo](https://github.com/PJColombo)! - Aligned block and transaction rows for blobs included in multiple transactions
+
+- [#857](https://github.com/Blobscan/blobscan/pull/857) [`ecfbe3b`](https://github.com/Blobscan/blobscan/commit/ecfbe3bfc9f049be854d0b8062773adef03b6232) Thanks [@PJColombo](https://github.com/PJColombo)! - Added compact rollup badges beside transaction hashes for multi-transaction blobs
+
+- Updated dependencies [[`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b), [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b), [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b)]:
+  - @blobscan/db@0.19.0
+  - @blobscan/api@0.26.0
+  - @blobscan/rollups@0.3.4
+
+## 0.33.0
+
+### Minor Changes
+
+- [#852](https://github.com/Blobscan/blobscan/pull/852) [`bd0efa3`](https://github.com/Blobscan/blobscan/commit/bd0efa3d3e3ee46305e45cac552c238d0568b6fa) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved the search input by displaying additional data (blob commitment, blob proof, rollup, timestamp, etc)
+
+### Patch Changes
+
+- Updated dependencies [[`bd0efa3`](https://github.com/Blobscan/blobscan/commit/bd0efa3d3e3ee46305e45cac552c238d0568b6fa)]:
+  - @blobscan/api@0.25.0
+
+## 0.32.0
+
+### Minor Changes
+
+- [#850](https://github.com/Blobscan/blobscan/pull/850) [`c074f8a`](https://github.com/Blobscan/blobscan/commit/c074f8ab07397ff300954eda8c0f829ea38495ba) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blockscout links
+
+## 0.31.0
+
+### Minor Changes
+
+- [#847](https://github.com/Blobscan/blobscan/pull/847) [`2a4f612`](https://github.com/Blobscan/blobscan/commit/2a4f612422d1080b1b06276c851622be0a808e85) Thanks [@PJColombo](https://github.com/PJColombo)! - Added display of rollup counts on block cards, block table, and rollup badges to indicate multiple instances of the same rollup.
+
+### Patch Changes
+
+- [#849](https://github.com/Blobscan/blobscan/pull/849) [`d8b5340`](https://github.com/Blobscan/blobscan/commit/d8b53406065211ddda568eb9b20204306e30fcc0) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where requested blob data from swarm storage URLs wasn't being handled properly
+
+- Updated dependencies [[`d8b5340`](https://github.com/Blobscan/blobscan/commit/d8b53406065211ddda568eb9b20204306e30fcc0)]:
+  - @blobscan/api@0.24.2
+
+## 0.30.0
+
+### Minor Changes
+
+- [#842](https://github.com/Blobscan/blobscan/pull/842) [`02ef0a0`](https://github.com/Blobscan/blobscan/commit/02ef0a00401dc5f0d9f591f23ed0187060189431) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed blob's position in transaction on blob page
+
+- [#839](https://github.com/Blobscan/blobscan/pull/839) [`5c786c5`](https://github.com/Blobscan/blobscan/commit/5c786c5c521a7f44f8bc88d5622fc26f311a2dfb) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated blob page layout to show block number, timestamp, and transaction hash on separate lines
+
+- [#842](https://github.com/Blobscan/blobscan/pull/842) [`02ef0a0`](https://github.com/Blobscan/blobscan/commit/02ef0a00401dc5f0d9f591f23ed0187060189431) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed blob index in all subtables
+
+- [#843](https://github.com/Blobscan/blobscan/pull/843) [`6a94415`](https://github.com/Blobscan/blobscan/commit/6a94415699195441662f40b62e7cd03ac370412a) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blobs count column to transactions table
+
+- [#842](https://github.com/Blobscan/blobscan/pull/842) [`02ef0a0`](https://github.com/Blobscan/blobscan/commit/02ef0a00401dc5f0d9f591f23ed0187060189431) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed blob storage badges in subtables
+
+- [#844](https://github.com/Blobscan/blobscan/pull/844) [`d398eab`](https://github.com/Blobscan/blobscan/commit/d398eabfa255a692fb573971c30e12f041c628a5) Thanks [@PJColombo](https://github.com/PJColombo)! - Added a custom icon for blobs and updated the icon for transactions to improve visual clarity.
+
+### Patch Changes
+
+- [#841](https://github.com/Blobscan/blobscan/pull/841) [`434e1b1`](https://github.com/Blobscan/blobscan/commit/434e1b1d9aadb9d1d70102baa627cf4a6c6429a8) Thanks [@PJColombo](https://github.com/PJColombo)! - Inlined blob gas target when compact is enabled
+
+- [#840](https://github.com/Blobscan/blobscan/pull/840) [`6d37aad`](https://github.com/Blobscan/blobscan/commit/6d37aad3d6cdd853eee26d30d8310789c3c0d70f) Thanks [@PJColombo](https://github.com/PJColombo)! - Aligned status badge styling with other badges
+
+- Updated dependencies [[`02ef0a0`](https://github.com/Blobscan/blobscan/commit/02ef0a00401dc5f0d9f591f23ed0187060189431), [`5c786c5`](https://github.com/Blobscan/blobscan/commit/5c786c5c521a7f44f8bc88d5622fc26f311a2dfb)]:
+  - @blobscan/api@0.24.1
+
+## 0.29.0
+
+### Minor Changes
+
+- [#834](https://github.com/Blobscan/blobscan/pull/834) [`0f60c60`](https://github.com/Blobscan/blobscan/commit/0f60c60b8833917815620ff2e428add19c7af5c9) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated Octant banner message to reflect the start of the current funding round
+
+## 0.28.0
+
+### Minor Changes
+
+- [#831](https://github.com/Blobscan/blobscan/pull/831) [`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e) Thanks [@PJColombo](https://github.com/PJColombo)! - Added separate router entrypoints for Web and REST API apps
+
+### Patch Changes
+
+- Updated dependencies [[`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e), [`095564d`](https://github.com/Blobscan/blobscan/commit/095564d18b1200243ea272df1be55c4567978834), [`a550799`](https://github.com/Blobscan/blobscan/commit/a550799462d4d657ef6e1f50155c3efe55e39759), [`52b89d6`](https://github.com/Blobscan/blobscan/commit/52b89d6a90200eea5647c49bb5fba8c0b0ff1529), [`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e), [`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e)]:
+  - @blobscan/api@0.24.0
+  - @blobscan/network-blob-config@0.3.0
+  - @blobscan/env@0.2.0
+  - @blobscan/db@0.18.1
+  - @blobscan/open-telemetry@0.0.10
+  - @blobscan/blob-decoder@0.2.2
+
 ## 0.27.0
 
 ### Minor Changes

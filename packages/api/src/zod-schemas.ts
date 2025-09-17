@@ -1,4 +1,8 @@
 import {
+  blockAllComputedFieldsSchema,
+  transactionAllComputedFieldsSchema,
+} from "@blobscan/db/prisma/extensions";
+import {
   AddressModel,
   BlobDataStorageReferenceModel,
   BlobModel,
@@ -9,7 +13,6 @@ import {
 import {
   blobStorageSchema,
   dbCategorySchema,
-  decimalSchema,
   hexSchema,
   lowercaseToUppercaseDBCategorySchema,
   lowercaseToUpercaseDBRollupSchema,
@@ -116,7 +119,9 @@ export const prismaBlockSchema = BlockModel.omit({
   updatedAt: true,
 });
 
-export const baseBlockSchema = prismaBlockSchema;
+export const baseBlockSchema = prismaBlockSchema.merge(
+  blockAllComputedFieldsSchema
+);
 
 export const prismaBlobSchema = BlobModel.omit({
   firstBlockNumber: true,
@@ -147,7 +152,7 @@ export const prismaTransactionSchema = TransactionModel.omit({
   from: AddressModel.pick({
     address: true,
     rollup: true,
-  }),
+  }).extend({ category: dbCategorySchema }),
 });
 
 export type PrismaTransaction = z.infer<typeof prismaTransactionSchema>;
@@ -157,19 +162,13 @@ export const prismaTransactionBlob = BlobsOnTransactionsModel.extend({
 });
 export const prismaBlobOnTransactionSchema = BlobsOnTransactionsModel;
 
-export const transactionFeeFieldsSchema = z.object({
-  blobGasBaseFee: decimalSchema,
-  blobGasMaxFee: decimalSchema,
-  blobAsCalldataGasFee: decimalSchema,
-});
-
 export const baseTransactionSchema = prismaTransactionSchema
   .omit({
     fromId: true,
     toId: true,
     gasPrice: true,
   })
-  .merge(transactionFeeFieldsSchema)
+  .merge(transactionAllComputedFieldsSchema)
   .extend({
     blobGasPrice: prismaBlockSchema.shape.blobGasPrice,
     category: dbCategorySchema,

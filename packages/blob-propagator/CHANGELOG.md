@@ -1,5 +1,76 @@
 # @blobscan/blob-propagator
 
+## 0.6.0
+
+### Minor Changes
+
+- [#889](https://github.com/Blobscan/blobscan/pull/889) [`64ac4eb`](https://github.com/Blobscan/blobscan/commit/64ac4eb9a5b832e8b68c580c179d1c83f291f6cc) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for toggling reconciler
+
+## 0.5.1
+
+### Patch Changes
+
+- [#886](https://github.com/Blobscan/blobscan/pull/886) [`427cf7e`](https://github.com/Blobscan/blobscan/commit/427cf7e78a79216fbba04d6e8453d1b38837ab56) Thanks [@PJColombo](https://github.com/PJColombo)! - Skipped unsupported blob storages instead of throwing errors when creating blob propagator
+
+- [#884](https://github.com/Blobscan/blobscan/pull/884) [`53881e0`](https://github.com/Blobscan/blobscan/commit/53881e0ff6e9f371e861395170f61622c9aa06dc) Thanks [@PJColombo](https://github.com/PJColombo)! - Bubbled up blob propagator creation errors
+
+## 0.5.0
+
+### Minor Changes
+
+- [#876](https://github.com/Blobscan/blobscan/pull/876) [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad) Thanks [@PJColombo](https://github.com/PJColombo)! - Added a new worker to the blob propagator (reconciler) that periodically scans for orphaned blobs (not propagated to any storage) and re-creates propagation jobs to retry propagation.
+
+- [#876](https://github.com/Blobscan/blobscan/pull/876) [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad) Thanks [@PJColombo](https://github.com/PJColombo)! - Introduced primary blob storage
+
+- [#876](https://github.com/Blobscan/blobscan/pull/876) [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed flow jobs and finalizer queue
+
+### Patch Changes
+
+- Updated dependencies [[`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a)]:
+  - @blobscan/db@0.21.0
+  - @blobscan/blob-storage-manager@0.6.4
+
+## 0.4.2
+
+### Patch Changes
+
+- Updated dependencies [[`77437ef`](https://github.com/Blobscan/blobscan/commit/77437ef5b3cfd26dfed0becd7d6f313373f8e4f4)]:
+  - @blobscan/db@0.20.0
+  - @blobscan/blob-storage-manager@0.6.3
+
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [[`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b)]:
+  - @blobscan/db@0.19.0
+  - @blobscan/blob-storage-manager@0.6.2
+
+## 0.4.0
+
+### Minor Changes
+
+- [#837](https://github.com/Blobscan/blobscan/pull/837) [`3518952`](https://github.com/Blobscan/blobscan/commit/3518952f41d9c0a221e30c33a58578dde6fd1ed9) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for prioritizing blob propagation jobs
+
+## 0.3.0
+
+### Minor Changes
+
+- [#831](https://github.com/Blobscan/blobscan/pull/831) [`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed exposed singleton instance of Blob Propagator; consumers must now instantiate it manually
+
+- [#820](https://github.com/Blobscan/blobscan/pull/820) [`f64d961`](https://github.com/Blobscan/blobscan/commit/f64d961a166cc6fe4ae9397d2d54b24c3764f13d) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added AWS S3 blob storage
+
+- [#833](https://github.com/Blobscan/blobscan/pull/833) [`52b89d6`](https://github.com/Blobscan/blobscan/commit/52b89d6a90200eea5647c49bb5fba8c0b0ff1529) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for configurating blob retention mode on blob propagator
+
+### Patch Changes
+
+- Updated dependencies [[`d579a78`](https://github.com/Blobscan/blobscan/commit/d579a788f6baa152ffca3344fc5207ecd2d104a4), [`f64d961`](https://github.com/Blobscan/blobscan/commit/f64d961a166cc6fe4ae9397d2d54b24c3764f13d), [`52b89d6`](https://github.com/Blobscan/blobscan/commit/52b89d6a90200eea5647c49bb5fba8c0b0ff1529), [`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e), [`d579a78`](https://github.com/Blobscan/blobscan/commit/d579a788f6baa152ffca3344fc5207ecd2d104a4)]:
+  - @blobscan/blob-storage-manager@0.6.0
+  - @blobscan/env@0.2.0
+  - @blobscan/db@0.18.1
+  - @blobscan/logger@0.1.3
+  - @blobscan/open-telemetry@0.0.10
+
 ## 0.2.13
 
 ### Patch Changes

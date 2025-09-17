@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 
 // Hook from https://usehooks-ts.com/react-hook/use-debounce
-export function useDebounce<T>(value: T, delay?: number): T {
+export function useDebounce<T>(
+  value: T,
+  delay?: number
+): { value: T; isDebouncing: boolean } {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
   useEffect(() => {
@@ -12,5 +15,5 @@ export function useDebounce<T>(value: T, delay?: number): T {
     };
   }, [value, delay]);
 
-  return debouncedValue;
+  return { value: debouncedValue, isDebouncing: debouncedValue !== value };
 }

@@ -1,5 +1,52 @@
 # @blobscan/blob-storage-manager
 
+## 0.6.4
+
+### Patch Changes
+
+- Updated dependencies [[`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a)]:
+  - @blobscan/db@0.21.0
+
+## 0.6.3
+
+### Patch Changes
+
+- Updated dependencies [[`77437ef`](https://github.com/Blobscan/blobscan/commit/77437ef5b3cfd26dfed0becd7d6f313373f8e4f4)]:
+  - @blobscan/db@0.20.0
+
+## 0.6.2
+
+### Patch Changes
+
+- Updated dependencies [[`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b)]:
+  - @blobscan/db@0.19.0
+
+## 0.6.1
+
+### Patch Changes
+
+- [#849](https://github.com/Blobscan/blobscan/pull/849) [`d8b5340`](https://github.com/Blobscan/blobscan/commit/d8b53406065211ddda568eb9b20204306e30fcc0) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where the blob data being fetched by the swarm storage wasn't being prefixed with `0x` when converting it to hex
+
+## 0.6.0
+
+### Minor Changes
+
+- [#829](https://github.com/Blobscan/blobscan/pull/829) [`d579a78`](https://github.com/Blobscan/blobscan/commit/d579a788f6baa152ffca3344fc5207ecd2d104a4) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add support for S3_STORAGE_FORCE_PATH_STYLE environment variable
+
+- [#820](https://github.com/Blobscan/blobscan/pull/820) [`f64d961`](https://github.com/Blobscan/blobscan/commit/f64d961a166cc6fe4ae9397d2d54b24c3764f13d) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added AWS S3 blob storage
+
+- [#831](https://github.com/Blobscan/blobscan/pull/831) [`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed exposed singleton instance of Blob Storage Manager; consumers must now instantiate it manually
+
+- [#829](https://github.com/Blobscan/blobscan/pull/829) [`d579a78`](https://github.com/Blobscan/blobscan/commit/d579a788f6baa152ffca3344fc5207ecd2d104a4) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Changed default behavior to make uploaded S3 files publicly accessible.
+
+### Patch Changes
+
+- Updated dependencies [[`52b89d6`](https://github.com/Blobscan/blobscan/commit/52b89d6a90200eea5647c49bb5fba8c0b0ff1529)]:
+  - @blobscan/env@0.2.0
+  - @blobscan/db@0.18.1
+  - @blobscan/logger@0.1.3
+  - @blobscan/open-telemetry@0.0.10
+
 ## 0.5.1
 
 ### Patch Changes

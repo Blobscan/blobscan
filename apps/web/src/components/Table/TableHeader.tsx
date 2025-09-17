@@ -27,6 +27,7 @@ export const TableHeader: FC<TableHeaderProps> = function ({
         z-9
         sticky
         top-0
+        w-full
         border-b
         border-border-light
         text-sm

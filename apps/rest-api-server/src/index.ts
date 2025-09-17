@@ -3,24 +3,23 @@ import * as Sentry from "@sentry/node";
 import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
+import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
 import "./bigint";
-import {
-  appRouter,
-  createTRPCContext,
-  metricsHandler,
-  gracefulShutdown as apiGracefulShutdown,
-} from "@blobscan/api";
+import { createTRPCContext, createMetricsHandler } from "@blobscan/api";
 import { env } from "@blobscan/env";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 
 import "./instrumentation";
+import { logger } from "@blobscan/logger";
+
+import { appRouter } from "./app-router";
 import { printBanner } from "./banner";
-import { logger } from "./logger";
-import { morganMiddleware } from "./morgan";
+import { getBlobPropagator } from "./blob-propagator";
 import { openApiDocument } from "./openapi";
+import { prisma } from "./prisma";
 import { setUpSyncers } from "./syncers";
 
 collectDefaultMetrics();
@@ -28,15 +27,29 @@ collectDefaultMetrics();
 printBanner();
 
 async function main() {
+  const metricsHandler = createMetricsHandler(prisma);
   const closeSyncers = await setUpSyncers();
+
+  const blobPropagator = await getBlobPropagator();
+
+  logger.info("Blob propagator service set up!");
 
   const app = express();
 
   app.use(cors());
   app.use(bodyParser.json({ limit: "3mb" }));
-  app.use(morganMiddleware);
+  app.use(morgan("short"));
 
-  app.get("/metrics", metricsHandler);
+  app.get("/metrics", (req, res) => {
+    if (!env.METRICS_ENABLED) {
+      res.statusCode = 403;
+      res.end("Metrics are disabled");
+
+      return;
+    }
+
+    return metricsHandler(req, res);
+  });
 
   // Serve Swagger UI with our OpenAPI schema
   app.use("/", swaggerUi.serve);
@@ -48,7 +61,16 @@ async function main() {
     createOpenApiExpressMiddleware({
       router: appRouter,
       createContext: createTRPCContext({
+        blobPropagator,
+        chainId: env.CHAIN_ID,
+        enableTracing: env.TRACES_ENABLED,
+        prisma,
         scope: "rest-api",
+        serviceApiKeys: {
+          blobDataReadKey: env.BLOB_DATA_API_KEY,
+          indexerServiceSecret: env.SECRET_KEY,
+          loadNetworkServiceKey: env.WEAVEVM_API_KEY,
+        },
       }),
       onError({ error }) {
         Sentry.captureException(error);
@@ -65,7 +87,11 @@ async function main() {
   async function gracefulShutdown(signal: string) {
     logger.debug(`Received ${signal}. Shutting down...`);
 
-    await apiGracefulShutdown()
+    await prisma
+      .$disconnect()
+      .finally(async () => {
+        await blobPropagator?.close();
+      })
       .finally(async () => {
         await closeSyncers();
       })
@@ -87,4 +113,8 @@ async function main() {
   });
 }
 
-main();
+main().catch((err) => {
+  Sentry.captureException(err);
+
+  logger.error(err);
+});

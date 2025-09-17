@@ -9,7 +9,7 @@ generator client {
 }
 
 generator enum {
-  provider = "ts-node --transpile-only ./prisma/enum-generator"
+  provider = "tsx ./prisma/enum-generator"
 }
 
 generator zod {
@@ -26,12 +26,11 @@ datasource db {
 }
 
 enum BlobStorage {
-  FILE_SYSTEM @map("file_system")
-  GOOGLE      @map("google")
-  POSTGRES    @map("postgres")
-  SWARM       @map("swarm")
-  WEAVEVM     @map("weavevm")
-  S3          @map("s3")
+  GOOGLE   @map("google")
+  POSTGRES @map("postgres")
+  SWARM    @map("swarm")
+  WEAVEVM  @map("weavevm")
+  S3       @map("s3")
 
   @@map("blob_storage")
 }
@@ -168,6 +167,7 @@ model Blob {
   versionedHash    String   @id @map("versioned_hash")
   commitment       String   @unique
   proof            String
+  usageSize        Int      @default(0) @map("usage_size")
   size             Int
   /// @zod.nonnegative()
   firstBlockNumber Int?     @map("first_block_number")

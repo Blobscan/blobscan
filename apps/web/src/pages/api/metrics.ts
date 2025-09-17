@@ -1,3 +1,19 @@
-import { metricsHandler } from "@blobscan/api";
+import type { NextApiRequest, NextApiResponse } from "next";
 
-export default metricsHandler;
+import { createMetricsHandler } from "@blobscan/api";
+
+import { env } from "~/env.mjs";
+import { prisma } from "~/prisma";
+
+const metricsHandler = createMetricsHandler(prisma);
+
+export default (req: NextApiRequest, res: NextApiResponse) => {
+  if (!env.METRICS_ENABLED) {
+    res.statusCode = 403;
+    res.end("Metrics are disabled");
+
+    return;
+  }
+
+  return metricsHandler(req, res);
+};

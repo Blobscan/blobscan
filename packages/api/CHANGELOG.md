@@ -1,5 +1,98 @@
 # @blobscan/api
 
+## 0.28.1
+
+### Patch Changes
+
+- Updated dependencies [[`64ac4eb`](https://github.com/Blobscan/blobscan/commit/64ac4eb9a5b832e8b68c580c179d1c83f291f6cc)]:
+  - @blobscan/blob-propagator@0.6.0
+
+## 0.28.0
+
+### Minor Changes
+
+- [#878](https://github.com/Blobscan/blobscan/pull/878) [`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for retrieving latest and oldest block
+
+### Patch Changes
+
+- Updated dependencies [[`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad), [`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a), [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad), [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad)]:
+  - @blobscan/blob-propagator@0.5.1
+  - @blobscan/db@0.21.0
+  - @blobscan/rollups@0.3.6
+
+## 0.27.0
+
+### Minor Changes
+
+- [#861](https://github.com/Blobscan/blobscan/pull/861) [`77437ef`](https://github.com/Blobscan/blobscan/commit/77437ef5b3cfd26dfed0becd7d6f313373f8e4f4) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob usage size
+
+### Patch Changes
+
+- Updated dependencies [[`77437ef`](https://github.com/Blobscan/blobscan/commit/77437ef5b3cfd26dfed0becd7d6f313373f8e4f4)]:
+  - @blobscan/db@0.20.0
+  - @blobscan/blob-propagator@0.4.2
+  - @blobscan/rollups@0.3.5
+
+## 0.26.0
+
+### Minor Changes
+
+- [#854](https://github.com/Blobscan/blobscan/pull/854) [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob gas price in USD and blob base fee and fee in USD fields to block response
+
+- [#854](https://github.com/Blobscan/blobscan/pull/854) [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob base and max USD fee fields to tx response
+
+### Patch Changes
+
+- Updated dependencies [[`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b)]:
+  - @blobscan/db@0.19.0
+  - @blobscan/blob-propagator@0.4.1
+  - @blobscan/rollups@0.3.4
+
+## 0.25.0
+
+### Minor Changes
+
+- [#852](https://github.com/Blobscan/blobscan/pull/852) [`bd0efa3`](https://github.com/Blobscan/blobscan/commit/bd0efa3d3e3ee46305e45cac552c238d0568b6fa) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated search procedure to return additional data such as block timestamp, block hash, blob commitment, block proof and rollup
+
+## 0.24.2
+
+### Patch Changes
+
+- [#849](https://github.com/Blobscan/blobscan/pull/849) [`d8b5340`](https://github.com/Blobscan/blobscan/commit/d8b53406065211ddda568eb9b20204306e30fcc0) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where the blob data url for swarm storage references wasn't being built with the correct base url
+
+## 0.24.1
+
+### Patch Changes
+
+- [#842](https://github.com/Blobscan/blobscan/pull/842) [`02ef0a0`](https://github.com/Blobscan/blobscan/commit/02ef0a00401dc5f0d9f591f23ed0187060189431) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where blob index was being overwritten by transaction index when returning a single blob
+
+- [#839](https://github.com/Blobscan/blobscan/pull/839) [`5c786c5`](https://github.com/Blobscan/blobscan/commit/5c786c5c521a7f44f8bc88d5622fc26f311a2dfb) Thanks [@PJColombo](https://github.com/PJColombo)! - Sorted blob data storage references in blob response
+
+- Updated dependencies [[`3518952`](https://github.com/Blobscan/blobscan/commit/3518952f41d9c0a221e30c33a58578dde6fd1ed9)]:
+  - @blobscan/blob-propagator@0.4.0
+
+## 0.24.0
+
+### Minor Changes
+
+- [#831](https://github.com/Blobscan/blobscan/pull/831) [`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed exposed singleton instance of Blob Propagator; consumers must now instantiate it manually
+
+- [#831](https://github.com/Blobscan/blobscan/pull/831) [`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e) Thanks [@PJColombo](https://github.com/PJColombo)! - Added separate router entrypoints for Web and REST API apps
+
+- [#831](https://github.com/Blobscan/blobscan/pull/831) [`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed exposed singleton instance of Blob Storage Manager; consumers must now instantiate it manually
+
+### Patch Changes
+
+- [#814](https://github.com/Blobscan/blobscan/pull/814) [`095564d`](https://github.com/Blobscan/blobscan/commit/095564d18b1200243ea272df1be55c4567978834) Thanks [@xFJA](https://github.com/xFJA)! - Updated Chunkstorm endpoint
+
+- Updated dependencies [[`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e), [`f64d961`](https://github.com/Blobscan/blobscan/commit/f64d961a166cc6fe4ae9397d2d54b24c3764f13d), [`a550799`](https://github.com/Blobscan/blobscan/commit/a550799462d4d657ef6e1f50155c3efe55e39759), [`52b89d6`](https://github.com/Blobscan/blobscan/commit/52b89d6a90200eea5647c49bb5fba8c0b0ff1529)]:
+  - @blobscan/blob-propagator@0.3.0
+  - @blobscan/network-blob-config@0.3.0
+  - @blobscan/env@0.2.0
+  - @blobscan/db@0.18.1
+  - @blobscan/logger@0.1.3
+  - @blobscan/open-telemetry@0.0.10
+
 ## 0.23.0
 
 ### Minor Changes

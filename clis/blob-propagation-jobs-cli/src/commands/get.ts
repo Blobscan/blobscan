@@ -5,10 +5,10 @@ import commandLineUsage from "command-line-usage";
 import { buildJobId } from "@blobscan/blob-propagator";
 import type { BlobPropagationJob } from "@blobscan/blob-propagator";
 import dayjs from "@blobscan/dayjs";
-import { prisma } from "@blobscan/db";
 
-import type { QueueHumanName } from "../Context";
+import type { HumanQueueName } from "../Context";
 import { context } from "../context-instance";
+import { prisma } from "../prisma";
 import type { Command } from "../types";
 import {
   blobHashOptionDef,
@@ -152,7 +152,7 @@ export const get: Command = async function (argv) {
   }) as {
     blobHash?: string[];
     help?: boolean;
-    queue?: QueueHumanName[];
+    queue?: HumanQueueName[];
     fromBlock: number;
     toBlock: number;
     fromDate?: string;

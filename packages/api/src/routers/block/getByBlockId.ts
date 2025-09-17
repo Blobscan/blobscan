@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
-import { blockHashSchema } from "@blobscan/db/prisma/zod-utils";
+import { parsedBlockIdSchema } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
 import {
@@ -13,34 +13,11 @@ import {
 } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
-import type { BlockIdField } from "./helpers";
 import { fetchBlock, toResponseBlock, responseBlockSchema } from "./helpers";
-
-const blockNumberSchema = z.coerce.number().int().positive();
-
-// We use zod's string schema and then parse the value by applying block hash or block number
-// schemas as `trpc-opeanpi` doesn't support union types yet.
-const blockIdSchema = z.string().transform((value, ctx) => {
-  const parsedHash = blockHashSchema.safeParse(value);
-  const parsedBlockNumber = blockNumberSchema.safeParse(value);
-
-  if (parsedHash.success) {
-    return parsedHash.data;
-  }
-
-  if (parsedBlockNumber.success) {
-    return parsedBlockNumber.data;
-  }
-
-  ctx.addIssue({
-    code: z.ZodIssueCode.custom,
-    message: "Block id must be a valid block number or block hash",
-  });
-});
 
 const inputSchema = z
   .object({
-    id: blockIdSchema,
+    id: parsedBlockIdSchema,
   })
   .merge(withTypeFilterSchema)
   .merge(createExpandsSchema(["transaction", "blob"]));
@@ -60,43 +37,19 @@ export const getByBlockId = publicProcedure
   .use(withExpands)
   .use(withFilters)
   .output(outputSchema)
-  .query(
-    async ({
-      ctx: { blobStorageManager, prisma, expands, filters },
-      input: { id },
-    }) => {
-      let blockIdField: BlockIdField | undefined;
+  .query(async ({ ctx: { prisma, expands, filters }, input: { id } }) => {
+    const res = await fetchBlock(id, {
+      prisma,
+      filters,
+      expands,
+    });
 
-      const parsedHash = blockHashSchema.safeParse(id);
-      const parsedBlockNumber = blockNumberSchema.safeParse(id);
-
-      if (parsedHash.success) {
-        blockIdField = { type: "hash", value: parsedHash.data };
-      } else if (parsedBlockNumber.success) {
-        blockIdField = { type: "number", value: parsedBlockNumber.data };
-      }
-
-      if (!blockIdField) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: `Invalid block id "${id}"`,
-        });
-      }
-
-      const prismaBlock = await fetchBlock(blockIdField, {
-        blobStorageManager,
-        prisma,
-        filters,
-        expands,
+    if (!res) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: `Block with id "${id.value}" not found`,
       });
-
-      if (!prismaBlock) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `Block with id "${id}" not found`,
-        });
-      }
-
-      return toResponseBlock(prismaBlock);
     }
-  );
+
+    return toResponseBlock(res.block, res.ethUsdPrice?.price);
+  });

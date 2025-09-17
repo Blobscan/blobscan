@@ -1,7 +1,7 @@
 import type { GetServerSideProps } from "next";
 import z from "zod";
 
-import { prisma } from "@blobscan/db";
+import { prisma } from "~/prisma";
 
 const QuerySchema = z.object({
   blockNumber: z.coerce.number().nonnegative().int(),

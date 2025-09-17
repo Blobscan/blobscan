@@ -4,110 +4,132 @@ import { useRouter } from "next/router";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
 import { api } from "~/api-client";
-import type { RouterOutputs } from "~/api-client";
 import { useClickOutside } from "~/hooks/useClickOutside";
 import { useDebounce } from "~/hooks/useDebounce";
-import EmptyBox from "~/icons/empty-box.svg";
 import Loading from "~/icons/loading.svg";
 import NextError from "~/pages/_error";
-import { getRouteBySearchCategory } from "~/utils";
+import type { SearchCategory } from "~/types";
+import {
+  buildAddressRoute,
+  buildBlobRoute,
+  buildBlockRoute,
+  buildTransactionRoute,
+} from "~/utils";
 import { Button } from "../Button";
 import { Input } from "../Inputs/Input";
-import { SearchResults } from "./SearchResults";
-import type { SearchResultsProps } from "./SearchResults";
+import { ResultsModal } from "./ResultsModal";
+import type { ResultsModalProps } from "./ResultsModal";
 
-type SearchOutput = RouterOutputs["search"]["byTerm"];
-type SearchCategory = keyof SearchOutput;
 type SearchInputProps = {
   className?: HTMLAttributes<HTMLInputElement>["className"];
   noIconButton?: boolean;
 };
 
+function buildSearchResultRoute(category: SearchCategory, id: string | number) {
+  const id_ = id.toString();
+
+  switch (category) {
+    case "addresses":
+      return buildAddressRoute(id_);
+    case "blobs":
+      return buildBlobRoute(id_);
+    case "blocks":
+      return buildBlockRoute(id_);
+    case "transactions":
+      return buildTransactionRoute(id_);
+  }
+}
+
 export const SearchInput: React.FC<SearchInputProps> = function ({
   className,
 }: SearchInputProps) {
   const router = useRouter();
-  const [term, setTerm] = useState("");
-  const debouncedTerm = useDebounce(term, 200);
+  const [searchQuery, setSearchQuery] = useState("");
+  const trimmedSearchQuery = searchQuery.trim();
+  const { value: debouncedSearchQuery, isDebouncing } = useDebounce(
+    trimmedSearchQuery,
+    200
+  );
   const searchRef = useRef<HTMLFormElement>(null);
-  const clickOutside = useClickOutside(searchRef);
-
-  const searchQuery = api.search.byTerm.useQuery(
+  const outsideClicked = useClickOutside(searchRef);
+  const {
+    data: searchData,
+    error: searchError,
+    isFetching: isSearchFetching,
+  } = api.search.useQuery(
     {
-      term: debouncedTerm,
+      query: debouncedSearchQuery,
     },
     {
-      queryKey: ["search.byTerm", { term: debouncedTerm }],
-      enabled: Boolean(debouncedTerm),
+      queryKey: ["search", { query: debouncedSearchQuery }],
+      enabled: Boolean(debouncedSearchQuery),
       staleTime: Infinity,
     }
   );
+
+  const displayResults =
+    !isDebouncing &&
+    !outsideClicked &&
+    trimmedSearchQuery &&
+    searchData !== undefined;
 
   const handleSubmit: FormEventHandler<HTMLFormElement | HTMLButtonElement> = (
     e
   ) => {
     e.preventDefault();
 
-    const searchResults = searchQuery.data;
-
-    setTerm("");
-
-    if (!searchResults || !Object.keys(searchResults).length) {
-      void router.push(`/search?q=${term}`);
+    if (!trimmedSearchQuery) {
       return;
     }
 
-    const categories = Object.keys(searchResults) as SearchCategory[];
+    setSearchQuery("");
 
-    if (categories.length > 1) {
-      void router.push(`/search?q=${term}`);
-      return;
+    let route = `/search?q=${trimmedSearchQuery}`;
+
+    if (searchData && !isDebouncing) {
+      const { addresses, blobs, blocks, transactions } = searchData;
+      let category: SearchCategory | undefined;
+      let id: string | number | undefined;
+
+      if (addresses?.length && addresses[0]) {
+        category = "addresses";
+        id = addresses[0].address;
+      } else if (blobs?.length && blobs[0]) {
+        category = "blobs";
+        id = blobs[0].versionedHash;
+      } else if (blocks?.length && blocks[0]) {
+        category = "blocks";
+        id = blocks[0].hash;
+      } else if (transactions?.length && transactions[0]) {
+        category = "transactions";
+        id = transactions[0].hash;
+      }
+
+      if (category && id) {
+        route = buildSearchResultRoute(category, id);
+      }
     }
 
-    const category = categories[0] as SearchCategory;
-    const results = searchResults[category];
-
-    if (!results || !results.length || results.length > 1 || !results[0]?.id) {
-      void router.push(`/search?q=${term}`);
-      return;
-    }
-
-    void router.push(getRouteBySearchCategory(category, results[0].id));
+    void router.push(route);
   };
 
-  const handleResultClick = useCallback<SearchResultsProps["onResultClick"]>(
+  const handleResultClick = useCallback<ResultsModalProps["onResultClick"]>(
     (category, id) => {
-      setTerm("");
-      void router.push(getRouteBySearchCategory(category, id));
+      setSearchQuery("");
+
+      void router.push(buildSearchResultRoute(category, id));
     },
     [router]
   );
 
-  if (searchQuery.error) {
+  if (searchError) {
     return (
       <NextError
-        title={searchQuery.error.message}
-        statusCode={searchQuery.error.data?.httpStatus ?? 500}
+        title={searchError.message}
+        statusCode={searchError.data?.httpStatus ?? 500}
       />
     );
   }
-
-  const debouncing = term !== debouncedTerm;
-
-  const searchResults = searchQuery.data;
-  const displayResults =
-    !!searchResults &&
-    !!Object.keys(searchResults).length &&
-    !clickOutside &&
-    term;
-
-  const displayNotFound =
-    !debouncing &&
-    !searchQuery.isFetching &&
-    searchResults &&
-    !Object.keys(searchResults).length &&
-    !clickOutside &&
-    term;
 
   return (
     <form ref={searchRef} onSubmit={handleSubmit}>
@@ -120,23 +142,21 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
             type="text"
             name="search"
             id="search"
-            value={term}
-            onChange={(e) => setTerm(e.target.value)}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className={"rounded-none rounded-l-md"}
-            placeholder={`Search by Blob / KZG / Txn / Block / Slot / Address`}
+            placeholder={`Search by Hash / KZG / Proof / Block Number / Slot / Address`}
           />
         </div>
 
-        {displayNotFound && <NotFound />}
-
-        {displayResults && searchResults && (
-          <div className="absolute inset-x-0 top-11 z-10 rounded-md border border-border-light dark:border-border-dark">
-            <SearchResults
-              searchResults={searchResults}
-              onResultClick={handleResultClick}
-            />
-          </div>
+        {displayResults && (
+          <ResultsModal
+            searchQuery={trimmedSearchQuery}
+            results={searchData}
+            onResultClick={handleResultClick}
+          />
         )}
+
         <Button
           type="submit"
           variant="primary"
@@ -154,7 +174,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
           ring-inset
           `}
         >
-          {(searchQuery.isFetching || debouncing) && term ? (
+          {(isSearchFetching || isDebouncing) && trimmedSearchQuery ? (
             <Loading className="-ml-0.5 h-5 w-5 animate-spin" />
           ) : (
             <MagnifyingGlassIcon
@@ -167,14 +187,3 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
     </form>
   );
 };
-
-function NotFound() {
-  return (
-    <div className="absolute top-11 z-10 w-full rounded-md border border-border-light bg-surface-light p-8 dark:border-border-dark dark:bg-surface-dark">
-      <div className="flex flex-col items-center justify-center gap-2">
-        <EmptyBox className="h-8 w-8" strokeWidth={1} />
-        <div className="text-sm font-medium">No results found</div>
-      </div>
-    </div>
-  );
-}

@@ -67,6 +67,7 @@ const Home: NextPage = () => {
         refetchOnWindowFocus: false,
       }
     );
+  console.log(blocksData);
 
   const dailyStats = useMemo(() => {
     if (!dailyStatsData) {
@@ -119,9 +120,9 @@ const Home: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
-      <div className=" flex flex-col items-center justify-center gap-8 md:w-8/12">
+      <div className=" flex flex-col items-center justify-center gap-8 md:w-[650px]">
         <BlobscanLogo className="w-64 md:w-80" />
-        <div className="flex w-full max-w-lg flex-col items-stretch justify-center space-y-2">
+        <div className="flex w-full  flex-col items-stretch justify-center space-y-2">
           <SearchInput />
           <span className="text-center text-sm  text-contentSecondary-light dark:text-contentSecondary-dark">
             Blob transaction explorer for the{" "}
@@ -196,6 +197,7 @@ const Home: NextPage = () => {
         </div>
         <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-3">
           <Card
+            className="h-[750px]"
             header={
               <div className="flex flex-col flex-wrap justify-between gap-3 2xl:flex-row 2xl:items-center">
                 <div>Latest Blocks</div>
@@ -229,6 +231,7 @@ const Home: NextPage = () => {
             )}
           </Card>
           <Card
+            className="h-[750px]"
             header={
               <div className="flex flex-col flex-wrap justify-between gap-3 2xl:flex-row 2xl:items-center">
                 <div>Latest Blob Transactions</div>
@@ -281,6 +284,7 @@ const Home: NextPage = () => {
             )}
           </Card>
           <Card
+            className="h-[750px]"
             header={
               <div className="flex flex-col flex-wrap justify-between gap-3 2xl:flex-row 2xl:items-center">
                 <div>Latest Blobs</div>

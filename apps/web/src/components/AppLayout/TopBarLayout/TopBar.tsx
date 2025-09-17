@@ -41,11 +41,11 @@ export const TopBar: React.FC = () => {
           <div className="flex grow items-center gap-12">
             <BlobscanLogo className="w-40" />
           </div>
-          <div className="flex grow-[3] items-center justify-end gap-5">
+          <div className="flex w-full items-center justify-end gap-5">
             <div className="hidden xl:block">
               <NavigationMenus />
             </div>
-            <div className="w-full sm:max-w-xl">
+            <div className="w-full sm:max-w-md md:max-w-2xl">
               <SearchInput />
             </div>
             <div className="hidden xl:block">

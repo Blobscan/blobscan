@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { FC, ReactNode } from "react";
-import { animated, config, useTransition } from "@react-spring/web";
+import { animated, useTransition } from "@react-spring/web";
 
 const DEFAULT_MAX_ITEMS = 5;
 
@@ -19,21 +19,37 @@ export const SlidableList: FC<SlidableListProps> = function ({
   maxItems = DEFAULT_MAX_ITEMS,
 }) {
   const refMap = useMemo(() => new WeakMap(), []);
-  const [items, setItems] = useState<ListItem[]>([]);
+  const [items, setItems] = useState<(ListItem & { index: number })[]>([]);
 
   const transitions = useTransition(items, {
     keys: (item) => item.id,
-    from: { opacity: 0, height: 0 },
-    enter: (item) => async (next) => {
-      await next({ opacity: 1, height: refMap.get(item).offsetHeight });
-    },
-    leave: [{ opacity: 0 }, { height: 0 }],
-    config: config.gentle,
-    onStart: () => {
-      // Remove oldest items if the list exceeds the maxItems limit
+    onStart() {
       if (items.length > maxItems) {
         setItems((currentItems) => currentItems.slice(0, maxItems));
       }
+    },
+    from: (item) => ({
+      opacity: 0,
+      height: 0,
+      marginTop: 0,
+      transform: `translateY(-${(items.length - 1 - item.index) * 150}px)`,
+    }),
+    enter: (item) => (next) =>
+      next({
+        opacity: 1,
+        height: refMap.get(item)?.offsetHeight ?? 0,
+        transform: "translateY(0px)",
+        marginTop: 12,
+        delay: (items.length - 1 - item.index) * 200,
+      }),
+    leave: (item) => ({
+      height: 0,
+      opacity: 0,
+      transform: `translateY(${(items.length - item.index) * 150}px)`,
+      delay: (items.length - 1 - item.index) * 200,
+    }),
+    config: {
+      duration: 450,
     },
   });
 
@@ -45,14 +61,14 @@ export const SlidableList: FC<SlidableListProps> = function ({
     setItems((currentItems) => {
       const newItems = itemsProp
         .filter(({ id }) => !currentItems.some((item) => item.id === id))
-        .map(({ element, id }) => ({ element, id }));
+        .map(({ element, id }, i) => ({ element, id, index: i }));
 
       return newItems.length ? [...newItems, ...currentItems] : currentItems;
     });
   }, [itemsProp]);
 
   return (
-    <div className="relative flex h-full w-full flex-col gap-3">
+    <div className="relative flex h-full w-full flex-col overflow-hidden">
       {transitions((style, item) => (
         <animated.div
           style={{

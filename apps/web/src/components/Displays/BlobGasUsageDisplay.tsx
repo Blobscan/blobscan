@@ -9,7 +9,8 @@ import { PercentageBar } from "../PercentageBar";
 type BlobGasUsageDisplayProps = {
   networkBlobConfig: NetworkBlobConfig;
   blobGasUsed: bigint;
-  compact?: boolean;
+  width?: number;
+  variant?: "detailed" | "minimal";
 };
 
 function getTargetSign(
@@ -36,14 +37,16 @@ function calculateBlobGasTarget(
     blobsInBlock < targetBlobsPerBlock
       ? blobsInBlock
       : blobsInBlock - targetBlobsPerBlock,
-    targetBlobsPerBlock
+    targetBlobsPerBlock,
+    { returnComplement: blobsInBlock < targetBlobsPerBlock }
   );
 }
 
 export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
   networkBlobConfig,
   blobGasUsed,
-  compact = false,
+  width,
+  variant = "detailed",
 }) {
   const {
     gasPerBlob,
@@ -51,59 +54,55 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
     targetBlobsPerBlock,
     targetBlobGasPerBlock,
   } = networkBlobConfig;
-  const blobGasUsedPercentage = calculatePercentage(blobGasUsed, blobGasLimit);
   const blobGasTarget = calculateBlobGasTarget(
     blobGasUsed,
     targetBlobsPerBlock,
     gasPerBlob
   );
+  const isDetailedMode = variant === "detailed";
   const targetSign = getTargetSign(blobGasUsed, targetBlobGasPerBlock);
   const isPositive = targetSign === "+";
   const isNegative = targetSign === "-";
+  const isZero = !isPositive && !isNegative;
 
   return (
-    <div
-      className={cn("flex flex-col gap-2 md:flex-row", {
-        "md:flex-col": compact,
-      })}
-    >
-      <div>
-        {formatNumber(blobGasUsed)}
-        <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-          (
-          {formatNumber(blobGasUsedPercentage, "standard", {
-            maximumFractionDigits: 2,
-          })}
-          %)
-        </span>
+    <div className="relative flex flex-col">
+      <div className="flex items-center gap-1">
+        {formatNumber(blobGasUsed)}{" "}
+        {!isDetailedMode && (
+          <span className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+            ({calculatePercentage(blobGasUsed, blobGasLimit)}%)
+          </span>
+        )}
       </div>
-      <div className={`flex flex-col gap-2 md:flex-row md:items-center`}>
+      <div
+        className={cn("flex items-center gap-1", {
+          "absolute top-4": !isDetailedMode,
+          "gap-1": !isZero,
+          "gap-3": isZero,
+        })}
+      >
         <PercentageBar
-          className={
-            isPositive
-              ? "bg-positive-light dark:bg-positive-dark"
-              : isNegative
-              ? "bg-negative-light dark:bg-negative-dark"
-              : "bg-contentTertiary-light dark:bg-contentTertiary-dark"
-          }
-          percentage={blobGasUsedPercentage / 100}
-          compact={compact}
+          color={isPositive ? "green" : isNegative ? "red" : "grey"}
+          value={blobGasUsed}
+          total={blobGasLimit}
+          compact={!isDetailedMode}
+          width={width ?? 140}
+          hidePercentage={!isDetailedMode}
         />
         <div
-          className={cn(
-            isPositive
-              ? "text-positive-light dark:text-positive-dark"
-              : isNegative
-              ? "text-negative-light dark:text-negative-dark"
-              : "text-contentTertiary-light dark:text-contentTertiary-dark",
-            {
-              "text-xs": compact,
-            }
-          )}
+          title={isDetailedMode ? "Blob Gas Target" : undefined}
+          className={cn({
+            "text-positive-light dark:text-positive-dark": isPositive,
+            "text-negative-light dark:text-negative-dark": isNegative,
+            "text-contentTertiary-light dark:text-contentTertiary-dark": isZero,
+            "text-sm": isDetailedMode,
+            "text-[10px]": !isDetailedMode,
+          })}
         >
           {targetSign}
-          {blobGasTarget > 0 ? blobGasTarget.toFixed(2) : blobGasTarget}% Blob
-          Gas Target
+          {blobGasTarget > 0 ? Number(blobGasTarget.toFixed(2)) : blobGasTarget}
+          % {isDetailedMode ? "Blob Gas Target" : ""}
         </div>
       </div>
     </div>

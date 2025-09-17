@@ -8,10 +8,10 @@ import {
   vi,
 } from "vitest";
 
-import { prisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
 import { daily, dailyCommandUsage } from "../../src/commands/daily";
+import { prisma } from "../../src/prisma";
 import {
   getDailyStats,
   getDailyStatsByDateRange,

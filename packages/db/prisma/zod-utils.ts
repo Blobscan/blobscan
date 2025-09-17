@@ -8,20 +8,82 @@ import {
 } from "./enums";
 import { Category as DBCategoryEnum } from "./enums";
 
+export type BlockId = number | `0x${string}` | "latest" | "oldest";
+export type BlockIdField =
+  | { type: "hash"; value: string }
+  | { type: "number"; value: number }
+  | { type: "slot"; value: number }
+  | { type: "label"; value: "latest" | "oldest" };
+
+const latestLabelSchema = z.literal("latest");
+const oldestLabelSchema = z.literal("oldest");
+
+// We use zod's string schema and then parse the value by applying block hash or block number
+// schemas as `trpc-opeanpi` doesn't support union types yet.
+export const parsedBlockIdSchema = z
+  .string()
+  .transform<BlockIdField>((value, ctx) => {
+    const parsedLabel = latestLabelSchema
+      .or(oldestLabelSchema)
+      .safeParse(value);
+
+    if (parsedLabel.success) {
+      return {
+        type: "label",
+        value: parsedLabel.data,
+      };
+    }
+
+    const parsedHash = blockHashSchema.safeParse(value);
+
+    if (parsedHash.success) {
+      return {
+        type: "hash",
+        value: parsedHash.data,
+      };
+    }
+
+    const parsedBlockNumber = blockNumberSchema.safeParse(value);
+
+    if (parsedBlockNumber.success) {
+      return {
+        type: "number",
+        value: parsedBlockNumber.data,
+      };
+    }
+
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message:
+        'Block id must be: "latest", "earliest", a block number or block hash',
+    });
+
+    return z.NEVER;
+  });
+
 export const hexSchema = z.string().regex(/^0x[0-9a-fA-F]+$/, {
   message: "Invalid hexadecimal string",
 });
+
+export const hashSchema = hexSchema.length(66);
 
 export const blockHashSchema = hexSchema.length(
   66,
   "Invalid block hash length"
 );
 
+export const blockNumberSchema = z.coerce.number().int().positive();
+
 export const addressSchema = hexSchema.length(42, "Invalid address length");
+
+export const blobProofSchema = hexSchema.length(
+  98,
+  "Invalid blob proof length"
+);
 
 export const blobCommitmentSchema = hexSchema.length(
   98,
-  "Invalid blob commitment length"
+  "Invalid blob commitment or proof length"
 );
 
 export const blobVersionedHashSchema = hexSchema.length(66).startsWith("0x01");
@@ -170,5 +232,7 @@ export const optimismDecodedFieldsSchema = z.object({
   totalTxs: z.number(),
   contractCreationTxsNumber: z.number(),
 });
+
+export type OptimismDecodedFields = z.input<typeof optimismDecodedFieldsSchema>;
 
 export const decodedFieldsSchema = optimismDecodedFieldsSchema.or(z.object({}));

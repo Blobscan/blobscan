@@ -10,18 +10,30 @@ import {
 
 const nodeEnvSchema = z.enum(["development", "test", "production"]);
 
-const blobStorageSchema = z.enum([
-  "FILE_SYSTEM",
-  "GOOGLE",
-  "POSTGRES",
-  "SWARM",
-  "S3",
-  "WEAVEVM",
-] as const);
+const BLOB_STORAGE = ["GOOGLE", "POSTGRES", "SWARM", "S3", "WEAVEVM"] as const;
+const blobStorageSchema = z.enum(BLOB_STORAGE);
+
+export const blobStorageCoercionSchema = z.string().transform((value, ctx) => {
+  const result = blobStorageSchema.safeParse(value.toUpperCase());
+
+  if (!result.success) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `Unknown blob storage "${value}". Supported values are: ${BLOB_STORAGE.map(
+        (s) => s.toLowerCase()
+      ).join(", ")}`,
+    });
+
+    return z.NEVER;
+  }
+
+  return result.data;
+});
 
 const networkSchema = z.enum([
   "mainnet",
   "holesky",
+  "hoodi",
   "sepolia",
   "gnosis",
   "chiado",
@@ -90,7 +102,12 @@ export const env = createEnv({
       BLOB_PROPAGATOR_FAILED_JOBS_AGE: z.coerce
         .number()
         .default(7 * 24 * 60 * 60),
-
+      BLOB_RECONCILER_BATCH_SIZE: z.coerce.number().default(200),
+      BLOB_RECONCILER_CRON_PATTERN: z
+        .string()
+        // Every hour
+        .default("0 * * * *"),
+      BLOB_RECONCILER_ENABLED: booleanSchema.default("false"),
       // PostHog
       POSTHOG_ID: z.string().optional(),
       POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
@@ -134,12 +151,7 @@ export const env = createEnv({
        */
 
       // General storage settings
-      BLOB_PROPAGATOR_TMP_BLOB_STORAGE:
-        blobStorageSchema.default("FILE_SYSTEM"),
-
-      // File system storage
-      FILE_SYSTEM_STORAGE_ENABLED: booleanSchema.default("false"),
-      FILE_SYSTEM_STORAGE_PATH: z.string().default("/tmp/blobscan-blobs"),
+      PRIMARY_BLOB_STORAGE: blobStorageCoercionSchema.default("POSTGRES"),
 
       // Postgres blob storage
       POSTGRES_STORAGE_ENABLED: booleanSchema.default("false"),
@@ -187,6 +199,7 @@ export const env = createEnv({
       S3_STORAGE_ACCESS_KEY_ID: z.string().optional(),
       S3_STORAGE_SECRET_ACCESS_KEY: z.string().optional(),
       S3_STORAGE_ENDPOINT: z.string().url().optional(),
+      S3_STORAGE_FORCE_PATH_STYLE: booleanSchema.optional(),
 
       // WeaveVM storage
       WEAVEVM_STORAGE_ENABLED: booleanSchema.default("false"),
@@ -213,13 +226,7 @@ export const env = createEnv({
     console.log(
       `API configuration: secretKey: ${maskSensitiveData(
         env.SECRET_KEY
-      )} redisUri=${maskPassword(env.REDIS_URI)} temporalBlobStorage=${
-        env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
-      } completedJobsAge=${
-        env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE
-      } seconds failedJobsAge=${
-        env.BLOB_PROPAGATOR_FAILED_JOBS_AGE
-      } seconds Configuration: network=${
+      )} redisUri=${maskPassword(env.REDIS_URI)} Configuration: network=${
         env.NETWORK_NAME
       } sentryEnabled=${!!env.SENTRY_DSN_API} metrics=${
         env.METRICS_ENABLED
@@ -233,7 +240,11 @@ export const env = createEnv({
     );
 
     console.log(
-      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, file_system=${env.FILE_SYSTEM_STORAGE_ENABLED} postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}`
+      `Blob propagator configuration: primaryBlobStorage=${env.PRIMARY_BLOB_STORAGE} completedJobsAge=${env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE} seconds, failedJobsAge=${env.BLOB_PROPAGATOR_FAILED_JOBS_AGE} seconds, reconcilerEnabled=${env.BLOB_RECONCILER_ENABLED}, reconcilerCronPattern=${env.BLOB_RECONCILER_CRON_PATTERN}`
+    );
+
+    console.log(
+      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}`
     );
 
     if (env.GOOGLE_STORAGE_ENABLED) {
@@ -258,17 +269,13 @@ export const env = createEnv({
       );
     }
 
-    if (env.FILE_SYSTEM_STORAGE_ENABLED) {
-      console.log(
-        `File system configuration: blobDirPath=${env.FILE_SYSTEM_STORAGE_PATH}`
-      );
-    }
-
     if (env.S3_STORAGE_ENABLED) {
       console.log(
         `S3 configuration: bucketName=${env.S3_STORAGE_BUCKET_NAME}, region=${
           env.S3_STORAGE_REGION
-        }, endpoint=${env.S3_STORAGE_ENDPOINT || "default"}`
+        }, endpoint=${env.S3_STORAGE_ENDPOINT || "default"}, forcePathStyle=${
+          env.S3_STORAGE_FORCE_PATH_STYLE || false
+        }`
       );
     }
     console.log(

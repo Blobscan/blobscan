@@ -9,6 +9,7 @@ import { convertWei, prettyFormatWei } from "@blobscan/eth-format";
 import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
 import { api } from "~/api-client";
+import BlobIcon from "~/icons/blob.svg";
 import EthereumIcon from "~/icons/ethereum.svg";
 import GasIcon from "~/icons/gas.svg";
 import { useEnv } from "~/providers/Env";
@@ -16,7 +17,9 @@ import { capitalize, formatTimestamp } from "~/utils";
 import { DeltaPercentageChange } from "../DeltaPercentage";
 import { FiatDisplay } from "../Displays/FiatDisplay";
 import { Icon } from "../Icon";
-import { IndicatorsStrip } from "../Indicators";
+import { Indicator } from "../Indicator";
+import { Scrollable } from "../Scrollable";
+import { Separator } from "../Separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
 
 export function NetworkIndicators() {
@@ -65,104 +68,114 @@ export function NetworkIndicators() {
     latestUsdPriceTimestamp &&
     dayjs().diff(latestUsdPriceTimestamp, "minutes") > 5;
 
-  return (
-    <IndicatorsStrip
-      indicators={[
-        {
-          name: "Network",
-          value: env ? (
-            capitalize(env.PUBLIC_NETWORK_NAME)
-          ) : (
-            <Skeleton height={14} width={48} />
-          ),
-        },
-        {
-          icon: <Icon src={EthereumIcon} />,
-          name: "ETH Price",
-          value:
-            latestUsdPrice !== undefined ? (
-              <div className="flex items-center gap-1">
-                <FiatDisplay amount={latestUsdPrice} />
+  const indicators = [
+    {
+      name: "Network",
+      value: env ? (
+        capitalize(env.PUBLIC_NETWORK_NAME)
+      ) : (
+        <Skeleton height={14} width={48} />
+      ),
+    },
+    {
+      icon: <Icon src={EthereumIcon} />,
+      name: "ETH Price",
+      value:
+        latestUsdPrice !== undefined ? (
+          <div className="flex items-center gap-1">
+            <FiatDisplay amount={latestUsdPrice} />
 
-                {past24hUsdPrice ? (
-                  <>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <DeltaPercentageChange
-                          initialValue={past24hUsdPrice}
-                          finalValue={latestUsdPrice}
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent>Last 24 hours changes</TooltipContent>
-                    </Tooltip>
-                  </>
-                ) : undefined}
-                {isOutdated && (
-                  <>
-                    <Tooltip>
-                      <TooltipContent>
-                        Outdated price (last updated{" "}
-                        {latestUsdPriceTimestamp
-                          ? formatTimestamp(latestUsdPriceTimestamp, true)
-                          : ""}
-                        )
-                      </TooltipContent>
-                      <TooltipTrigger>
-                        <ExclamationTriangleIcon className="h-3 w-3 text-yellow-600 dark:text-yellow-300" />
-                      </TooltipTrigger>
-                    </Tooltip>
-                  </>
-                )}
-              </div>
-            ) : undefined,
-        },
-        {
-          name: "Blob Gas Price",
-          icon: <Icon src={GasIcon} />,
-          value: latestBlobGasPrice && (
-            <div>
-              {prettyFormatWei(latestBlobGasPrice, {
-                numberFormatOpts: {
-                  notation: "standard",
-                  maximumFractionDigits: 4,
-                },
-              })}{" "}
-              {past24hBlobGasPrice ? (
-                <>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <DeltaPercentageChange
-                        initialValue={latestBlobGasPrice}
-                        finalValue={past24hBlobGasPrice}
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent>Last 24 hours changes</TooltipContent>
-                  </Tooltip>
-                </>
-              ) : undefined}
-            </div>
-          ),
-          secondaryValue: latestBlobGasUsdPrice !== undefined && (
-            <FiatDisplay amount={latestBlobGasUsdPrice} />
-          ),
-        },
-        {
-          name: "Blob Price",
-          value: blobPrice && (
-            <span>
-              {prettyFormatWei(blobPrice, {
-                numberFormatOpts: {
-                  notation: "standard",
-                  maximumFractionDigits: 4,
-                },
-              })}
-            </span>
-          ),
-          secondaryValue: blobUsdPrice !== undefined && (
-            <FiatDisplay amount={blobUsdPrice} />
-          ),
-        },
-      ]}
-    />
+            {past24hUsdPrice ? (
+              <>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <DeltaPercentageChange
+                      initialValue={past24hUsdPrice}
+                      finalValue={latestUsdPrice}
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>Last 24 hours changes</TooltipContent>
+                </Tooltip>
+              </>
+            ) : undefined}
+            {isOutdated && (
+              <>
+                <Tooltip>
+                  <TooltipContent>
+                    Outdated price (last updated{" "}
+                    {latestUsdPriceTimestamp
+                      ? formatTimestamp(latestUsdPriceTimestamp, true)
+                      : ""}
+                    )
+                  </TooltipContent>
+                  <TooltipTrigger>
+                    <ExclamationTriangleIcon className="h-3 w-3 text-yellow-600 dark:text-yellow-300" />
+                  </TooltipTrigger>
+                </Tooltip>
+              </>
+            )}
+          </div>
+        ) : undefined,
+    },
+    {
+      name: "Blob Gas Price",
+      icon: <Icon src={GasIcon} />,
+      value: latestBlobGasPrice && (
+        <div>
+          {prettyFormatWei(latestBlobGasPrice, {
+            numberFormatOpts: {
+              notation: "standard",
+              maximumFractionDigits: 4,
+            },
+          })}{" "}
+          {past24hBlobGasPrice ? (
+            <>
+              <Tooltip>
+                <TooltipTrigger>
+                  <DeltaPercentageChange
+                    initialValue={latestBlobGasPrice}
+                    finalValue={past24hBlobGasPrice}
+                  />
+                </TooltipTrigger>
+                <TooltipContent>Last 24 hours changes</TooltipContent>
+              </Tooltip>
+            </>
+          ) : undefined}
+        </div>
+      ),
+      secondaryValue: latestBlobGasUsdPrice !== undefined && (
+        <FiatDisplay amount={latestBlobGasUsdPrice} />
+      ),
+    },
+    {
+      name: "Blob Price",
+      icon: <Icon src={BlobIcon} />,
+      value: blobPrice && (
+        <span>
+          {prettyFormatWei(blobPrice, {
+            numberFormatOpts: {
+              notation: "standard",
+              maximumFractionDigits: 4,
+            },
+          })}
+        </span>
+      ),
+      secondaryValue: blobUsdPrice !== undefined && (
+        <FiatDisplay amount={blobUsdPrice} />
+      ),
+    },
+  ];
+
+  return (
+    <Scrollable>
+      <div className="flex w-full  gap-1 text-xs">
+        {indicators.map((props, i) => (
+          <>
+            <Indicator key={props.name} {...props} />
+            {i < indicators.length - 1 && <Separator />}
+          </>
+        ))}
+      </div>
+    </Scrollable>
   );
 }

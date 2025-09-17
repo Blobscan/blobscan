@@ -29,11 +29,12 @@ const outputSchema = z
  */
 export async function countBlobs(
   prisma: BlobscanPrismaClient,
+  chainId: number,
   filters: Filters
 ) {
   const { blockFilters = {}, transactionFilters, blockType } = filters;
 
-  if (requiresDirectCount(filters)) {
+  if (requiresDirectCount(filters, chainId)) {
     return prisma.blobsOnTransactions.count({
       where: {
         blockNumber: blockFilters.number,
@@ -47,7 +48,7 @@ export async function countBlobs(
     });
   }
 
-  const where = buildStatsWhereClause(filters);
+  const where = buildStatsWhereClause(filters, chainId);
 
   // Get count by summing daily total transaction stats data if a date range is provided in filters
   if (blockFilters.timestamp) {
@@ -75,8 +76,8 @@ export const getCount = publicProcedure
   .input(inputSchema)
   .use(withFilters)
   .output(outputSchema)
-  .query(async ({ ctx: { filters, prisma } }) => {
-    const blobsCount = await countBlobs(prisma, filters);
+  .query(async ({ ctx: { filters, prisma, chainId } }) => {
+    const blobsCount = await countBlobs(prisma, chainId, filters);
 
     return {
       totalBlobs: blobsCount,

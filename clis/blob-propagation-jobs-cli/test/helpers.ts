@@ -92,7 +92,7 @@ export function argInvalidQueueTests(c: Command) {
     expect(
       c(["-q", "invalid-queue-name"])
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Invalid queue 'invalid-queue-name'. Valid values are finalizer, file_system, google, postgres, swarm, s3."`
+      `"Invalid queue 'invalid-queue-name'. Valid values are google, postgres, swarm, s3."`
     );
   });
 }

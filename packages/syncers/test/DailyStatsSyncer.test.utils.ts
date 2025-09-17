@@ -1,10 +1,12 @@
-import { prisma } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
 import type { Prisma } from "@blobscan/db";
 
 import { formatDate } from "../src/utils";
 
+const prisma = getPrisma();
+
 export async function getDailyStatsDates() {
-  const dailyStats = await prisma.dailyStats.findMany({
+  const dailyStats = await getPrisma().dailyStats.findMany({
     orderBy: [{ day: "asc" }, { category: "asc" }, { rollup: "asc" }],
   });
 

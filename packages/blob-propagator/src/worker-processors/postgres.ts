@@ -3,4 +3,4 @@ import { propagateBlob } from "../utils";
 
 export const postgresProcessor: BlobPropagationWorkerProcessor =
   (processorParams) => (job) =>
-    propagateBlob(job.data, "POSTGRES", processorParams);
+    propagateBlob(job.data, processorParams);

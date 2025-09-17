@@ -1,4 +1,4 @@
-import { prisma } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
 
 import type { OptimismDecodedData } from "./decoder";
 
@@ -9,7 +9,7 @@ export function saveDecodedOptimismDataToDB({
   hash: string;
   data: OptimismDecodedData;
 }) {
-  return prisma.transaction.update({
+  return getPrisma().transaction.update({
     where: {
       hash,
       //rollup: "OPTIMISM",

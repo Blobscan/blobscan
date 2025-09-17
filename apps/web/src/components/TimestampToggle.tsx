@@ -19,7 +19,7 @@ export const TimestampToggle: FC<TimestampProps> = ({ format, onChange }) => {
           onChange(format === "relative" ? "absolute" : "relative")
         }
       >
-        Timestamp
+        {format === "relative" ? "Age" : "Date Time"}
       </TooltipTrigger>
     </Tooltip>
   );

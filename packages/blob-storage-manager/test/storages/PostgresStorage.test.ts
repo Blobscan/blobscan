@@ -1,16 +1,16 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
-import type { BlobscanPrismaClient, PrismaClient } from "@blobscan/db";
-import { prisma } from "@blobscan/db";
-import { env } from "@blobscan/env";
-import { testValidError } from "@blobscan/test";
+import type { BlobscanPrismaClient } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
+import { env, testValidError } from "@blobscan/test";
 
 import { PostgresStorage } from "../../src";
 import { BlobStorageError } from "../../src/errors";
+import { bytesToHex } from "../../src/utils";
 import { NEW_BLOB_HASH, HEX_DATA } from "../fixtures";
 
 class PostgresStorageMock extends PostgresStorage {
-  constructor(prisma?: PrismaClient | BlobscanPrismaClient) {
+  constructor(prisma?: BlobscanPrismaClient | BlobscanPrismaClient) {
     super({ chainId: env.CHAIN_ID, prisma });
   }
 
@@ -24,6 +24,7 @@ class PostgresStorageMock extends PostgresStorage {
 }
 
 describe("PostgresStorage", () => {
+  const prisma = getPrisma();
   let storage: PostgresStorageMock;
   const expectedStoredBlobHash = "blobHash004";
   const expectedStoredBlobUri = expectedStoredBlobHash;
@@ -80,11 +81,15 @@ describe("PostgresStorage", () => {
   });
 
   it("should store a blob", async () => {
-    await storage.storeBlob(NEW_BLOB_HASH, HEX_DATA);
+    const blobReference = await storage.storeBlob(NEW_BLOB_HASH, HEX_DATA);
 
-    const blob = await storage.getBlob(NEW_BLOB_HASH);
+    const res = await prisma.blobData.findUnique({
+      where: {
+        id: blobReference,
+      },
+    });
 
-    expect(blob).toBe(HEX_DATA);
+    expect(res?.data ? bytesToHex(res?.data) : "").toBe(HEX_DATA);
   });
 
   it("should return an uri when storing a blob", async () => {

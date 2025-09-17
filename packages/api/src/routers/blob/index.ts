@@ -1,14 +1,23 @@
 import { t } from "../../trpc-client";
+import type { ProcedureConfig } from "../../types";
 import { createWeaveVMReferences } from "./createWeaveVMReferences";
 import { getAll } from "./getAll";
-import { getBlobDataByBlobId } from "./getBlobDataByBlobId";
+import { createBlobDataByBlobIdProcedure } from "./getBlobDataByBlobId";
 import { getByBlobId } from "./getByBlobId";
 import { getCount } from "./getCount";
 
-export const blobRouter = t.router({
-  createWeaveVMReferences,
-  getAll,
-  getBlobDataByBlobId,
-  getByBlobId,
-  getCount,
-});
+export type BlobRouterConfig = {
+  blobDataProcedure: ProcedureConfig;
+};
+
+export function createBlobRouter(config?: BlobRouterConfig) {
+  return t.router({
+    createWeaveVMReferences,
+    getAll,
+    getByBlobId,
+    getCount,
+    getBlobDataByBlobId: createBlobDataByBlobIdProcedure(
+      config?.blobDataProcedure
+    ),
+  });
+}

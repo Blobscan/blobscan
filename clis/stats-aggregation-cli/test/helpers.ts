@@ -1,7 +1,8 @@
 import { expect, it, vi } from "vitest";
 
 import dayjs from "@blobscan/dayjs";
-import { prisma } from "@blobscan/db";
+
+import { prisma } from "../src/prisma";
 
 export function runHelpArgTests(
   command: (argv?: string[]) => unknown,

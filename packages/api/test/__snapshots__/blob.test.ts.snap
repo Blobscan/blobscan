@@ -9,6 +9,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
   {
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobGasBaseFee": 121000000n,
       "blobGasPrice": 22n,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
@@ -18,17 +19,24 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobGasBaseFee": 121000000n,
       "blobGasPrice": 22n,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
@@ -41,7 +49,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -53,6 +61,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
 ]
@@ -63,6 +72,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
   {
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobGasBaseFee": 121000000n,
       "blobGasPrice": 22n,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
@@ -72,7 +82,12 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
@@ -93,11 +108,13 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     },
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobGasBaseFee": 121000000n,
       "blobGasPrice": 22n,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
@@ -110,7 +127,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -137,6 +154,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     },
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
 ]
@@ -149,7 +167,12 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
@@ -170,6 +193,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     },
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
@@ -180,7 +204,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -207,6 +231,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     },
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
 ]
@@ -222,7 +247,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
+        "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b3/data",
       },
     ],
     "index": 2,
@@ -230,7 +255,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 131072,
     "txHash": "txHash004",
     "txIndex": 0,
-    "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
+    "usageSize": 0,
+    "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b3",
   },
   {
     "blockHash": "blockHash002",
@@ -240,7 +266,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
+        "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b2/data",
       },
     ],
     "index": 1,
@@ -248,7 +274,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 131072,
     "txHash": "txHash004",
     "txIndex": 0,
-    "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
+    "usageSize": 0,
+    "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b2",
   },
   {
     "blockHash": "blockHash002",
@@ -258,7 +285,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
+        "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b1/data",
       },
     ],
     "index": 0,
@@ -266,17 +293,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 131072,
     "txHash": "txHash004",
     "txIndex": 0,
-    "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
+    "usageSize": 0,
+    "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
       },
     ],
     "index": 1,
@@ -284,21 +312,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -306,21 +335,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -328,21 +358,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash002",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -350,17 +381,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
       },
     ],
     "index": 1,
@@ -368,21 +400,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -390,6 +423,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -402,12 +436,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
@@ -418,7 +458,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -430,6 +470,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -440,7 +481,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -452,6 +493,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
 ]
@@ -460,18 +502,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the oldest results when ascending order is specified 1`] = `
 [
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -479,17 +521,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
       },
     ],
     "index": 1,
@@ -497,21 +540,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -519,6 +563,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
 ]
@@ -534,7 +579,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -546,6 +591,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -556,7 +602,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -568,6 +614,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -578,7 +625,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -590,6 +637,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -600,11 +648,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 2,
@@ -612,6 +660,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash012",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -622,11 +671,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 1,
@@ -634,6 +683,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash012",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -644,11 +694,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -656,6 +706,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash012",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -666,11 +717,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -678,17 +729,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash007",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
       },
     ],
     "index": 1,
@@ -696,21 +748,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -718,6 +771,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -741,6 +795,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 128000,
     "txHash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
   },
 ]
@@ -760,14 +815,15 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash006",
       },
     ],
     "index": 0,
-    "proof": "89cf91c4c8be6f2a390d4262425f79dffb74c174fb15a210182184543bf7394e5a7970a774ee8e0dabc315424c22df0f",
+    "proof": "0x89cf91c4c8be6f2a390d4262425f79dffb74c174fb15a210182184543bf7394e5a7970a774ee8e0dabc315424c22df0f",
     "size": 1500,
     "txHash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
   },
   {
@@ -778,11 +834,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -790,6 +846,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash013",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -800,11 +857,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 2,
@@ -812,6 +869,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash012",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -822,11 +880,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 1,
@@ -834,6 +892,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash012",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -844,11 +903,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -856,6 +915,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash012",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -874,6 +934,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1400,
     "txHash": "txHash011",
     "txIndex": 4,
+    "usageSize": 100,
     "versionedHash": "blobHash005",
   },
   {
@@ -884,11 +945,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 0,
@@ -896,6 +957,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash010",
     "txIndex": 3,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
@@ -906,11 +968,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 0,
@@ -918,6 +980,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash009",
     "txIndex": 2,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
@@ -928,7 +991,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
       },
     ],
     "index": 0,
@@ -936,6 +999,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash008",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -946,11 +1010,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -958,6 +1022,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash007",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -981,6 +1046,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1400,
     "txHash": "txHash011",
     "txIndex": 4,
+    "usageSize": 100,
     "versionedHash": "blobHash005",
   },
   {
@@ -991,11 +1057,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 0,
@@ -1003,6 +1069,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash010",
     "txIndex": 3,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
@@ -1013,11 +1080,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 0,
@@ -1025,6 +1092,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash009",
     "txIndex": 2,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
@@ -1035,7 +1103,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
       },
     ],
     "index": 0,
@@ -1043,6 +1111,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash008",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -1053,11 +1122,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1065,6 +1134,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash007",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -1075,11 +1145,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 2,
@@ -1087,6 +1157,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash006",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -1097,11 +1168,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 1,
@@ -1109,6 +1180,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash006",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -1119,11 +1191,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1131,6 +1203,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash006",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -1141,11 +1214,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 2,
@@ -1153,6 +1226,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash005",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -1163,7 +1237,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
       },
     ],
     "index": 1,
@@ -1171,6 +1245,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash005",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -1181,7 +1256,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
       },
     ],
     "index": 0,
@@ -1189,6 +1264,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash005",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
 ]
@@ -1204,11 +1280,11 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1216,21 +1292,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash007",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -1238,17 +1315,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
       },
     ],
     "index": 1,
@@ -1256,21 +1334,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1278,6 +1357,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1286,18 +1366,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to the sender address specified 1`] = `
 [
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -1305,17 +1385,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
       },
     ],
     "index": 1,
@@ -1323,21 +1404,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1345,6 +1427,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1353,18 +1436,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to the sender and receiver addresses specified 1`] = `
 [
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -1372,17 +1455,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
       },
     ],
     "index": 1,
@@ -1390,21 +1474,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1412,6 +1497,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1427,7 +1513,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
+        "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b3/data",
       },
     ],
     "index": 2,
@@ -1435,7 +1521,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 131072,
     "txHash": "txHash004",
     "txIndex": 0,
-    "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
+    "usageSize": 0,
+    "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b3",
   },
   {
     "blockHash": "blockHash002",
@@ -1445,7 +1532,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
+        "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b2/data",
       },
     ],
     "index": 1,
@@ -1453,7 +1540,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 131072,
     "txHash": "txHash004",
     "txIndex": 0,
-    "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
+    "usageSize": 0,
+    "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b2",
   },
   {
     "blockHash": "blockHash002",
@@ -1463,7 +1551,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
+        "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b1/data",
       },
     ],
     "index": 0,
@@ -1471,17 +1559,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 131072,
     "txHash": "txHash004",
     "txIndex": 0,
-    "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
+    "usageSize": 0,
+    "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
       },
     ],
     "index": 1,
@@ -1489,21 +1578,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1511,21 +1601,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1533,21 +1624,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash002",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -1555,17 +1647,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
       },
     ],
     "index": 1,
@@ -1573,21 +1666,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1595,6 +1689,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1603,14 +1698,14 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results ending at the date specified without including it 1`] = `
 [
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
       },
     ],
     "index": 1,
@@ -1618,21 +1713,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1640,21 +1736,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1662,21 +1759,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash002",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -1684,17 +1782,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
       },
     ],
     "index": 1,
@@ -1702,21 +1801,22 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1724,6 +1824,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1736,12 +1837,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
@@ -1752,7 +1859,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -1764,6 +1871,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -1774,7 +1882,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -1786,6 +1894,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -1796,7 +1905,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -1808,6 +1917,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
 ]
@@ -1820,12 +1930,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
@@ -1836,7 +1952,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -1848,6 +1964,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -1858,7 +1975,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -1870,6 +1987,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -1880,7 +1998,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -1892,6 +2010,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -1906,14 +2025,15 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash006",
       },
     ],
     "index": 0,
-    "proof": "89cf91c4c8be6f2a390d4262425f79dffb74c174fb15a210182184543bf7394e5a7970a774ee8e0dabc315424c22df0f",
+    "proof": "0x89cf91c4c8be6f2a390d4262425f79dffb74c174fb15a210182184543bf7394e5a7970a774ee8e0dabc315424c22df0f",
     "size": 1500,
     "txHash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
   },
 ]
@@ -1926,12 +2046,18 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
@@ -1942,7 +2068,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -1954,6 +2080,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -1964,7 +2091,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -1976,6 +2103,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -1986,7 +2114,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -1998,6 +2126,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
 ]
@@ -2010,12 +2139,18 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
@@ -2026,7 +2161,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
       },
       {
         "storage": "postgres",
@@ -2038,6 +2173,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
 ]
@@ -2057,14 +2193,15 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash006",
       },
     ],
     "index": 0,
-    "proof": "89cf91c4c8be6f2a390d4262425f79dffb74c174fb15a210182184543bf7394e5a7970a774ee8e0dabc315424c22df0f",
+    "proof": "0x89cf91c4c8be6f2a390d4262425f79dffb74c174fb15a210182184543bf7394e5a7970a774ee8e0dabc315424c22df0f",
     "size": 1500,
     "txHash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
   },
   {
@@ -2075,11 +2212,11 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.bin",
+        "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
       },
       {
         "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -2087,6 +2224,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "size": 1000,
     "txHash": "txHash013",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -2094,7 +2232,11 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
 
 exports[`Blob router > getAll > when getting paginated blob results > should return the total number of items when count is provided 1`] = `29`;
 
-exports[`Blob router > getBlobDataByBlobId > when authorized > should fail when no blob data is found for the provided id 1`] = `"No blob data found for blob with id '0x0130c6c0b2ed8e4951560d6c996ccab18486de35aee7a9064c957605c80d90d1'."`;
+exports[`Blob router > getBlobDataByBlobId > when authorized > should fail when no blob data is found for the provided id 1`] = `"No blob data storage URLs found for blob with id '0x0130c6c0b2ed8e4951560d6c996ccab18486de35aee7a9064c957605c80d90d1'."`;
+
+exports[`Blob router > getBlobDataByBlobId > when authorized > should fail when the blob data wasn't retrieved from any of the storages 1`] = `"Failed to fetch data for blob with id '0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734' from any of the storages"`;
+
+exports[`Blob router > getBlobDataByBlobId > when authorized > should fail when the blob data wasn't retrieved from any of the storages 2`] = `undefined`;
 
 exports[`Blob router > getBlobDataByBlobId > when authorized > when providing an invalid blob id > should fail when providing a hex string with invalid length 1`] = `
 "[
@@ -2145,7 +2287,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
   "dataStorageReferences": [
     {
       "storage": "google",
-      "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+      "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
     },
     {
       "storage": "postgres",
@@ -2159,6 +2301,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
+      "ethUsdPrice": undefined,
       "index": 0,
       "txHash": "txHash015",
       "txIndex": 0,
@@ -2167,6 +2310,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
+      "ethUsdPrice": undefined,
       "index": 1,
       "txHash": "txHash015",
       "txIndex": 0,
@@ -2175,11 +2319,13 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
+      "ethUsdPrice": undefined,
       "index": 2,
       "txHash": "txHash015",
       "txIndex": 0,
     },
   ],
+  "usageSize": 1300,
   "versionedHash": "blobHash004",
 }
 `;
@@ -2190,7 +2336,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
   "dataStorageReferences": [
     {
       "storage": "google",
-      "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.bin",
+      "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
     },
     {
       "storage": "postgres",
@@ -2204,6 +2350,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
+      "ethUsdPrice": undefined,
       "index": 0,
       "txHash": "txHash015",
       "txIndex": 0,
@@ -2212,6 +2359,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
+      "ethUsdPrice": undefined,
       "index": 1,
       "txHash": "txHash015",
       "txIndex": 0,
@@ -2220,11 +2368,13 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
+      "ethUsdPrice": undefined,
       "index": 2,
       "txHash": "txHash015",
       "txIndex": 0,
     },
   ],
+  "usageSize": 1300,
   "versionedHash": "blobHash004",
 }
 `;
