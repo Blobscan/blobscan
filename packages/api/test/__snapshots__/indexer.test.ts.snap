@@ -1,5 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Indexer router > indexData > should fail when calling procedure without auth 1`] = `"UNAUTHORIZED"`;
+
 exports[`Indexer router > indexData > when authorized > should fail when receiving an empty array of blobs 1`] = `
 "[
   {

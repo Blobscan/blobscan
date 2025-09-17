@@ -1,5 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Blob router > createWeaveVmReferences > when authorized > should fail when calling procedure without auth 1`] = `"Couldn't found the following blobs: \\"nonExistingBlobHash\\""`;
+
+exports[`Blob router > createWeaveVmReferences > when authorized > should fail when calling procedure without auth 2`] = `undefined`;
+
 exports[`Blob router > createWeaveVmReferences > when authorized > should fail when one or more provided blobs do not exist 1`] = `"Couldn't found the following blobs: \\"nonExistingBlobHash\\""`;
 
 exports[`Blob router > createWeaveVmReferences > when authorized > should fail when one or more provided blobs do not exist 2`] = `undefined`;

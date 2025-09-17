@@ -143,8 +143,10 @@ describe("Indexer router", async () => {
           const remainingParams = indexedTxs.map(
             ({
               blobAsCalldataGasUsed: _,
-              computeFeeFields: __,
+              computeBlobGasBaseFee: __,
               computeUsdFields: ___,
+              blobAsCalldataGasFee: ____,
+              blobGasMaxFee: _____,
               ...remainingParams
             }) => remainingParams
           );
@@ -572,11 +574,13 @@ describe("Indexer router", async () => {
       );
     });
 
-    it("should fail when calling procedure without auth", async () => {
-      await expect(nonAuthorizedIndexerCaller.indexData(INPUT)).rejects.toThrow(
-        new TRPCError({ code: "UNAUTHORIZED" })
-      );
-    });
+    testValidError(
+      "should fail when calling procedure without auth",
+      async () => {
+        await nonAuthorizedIndexerCaller.indexData(INPUT);
+      },
+      TRPCError
+    );
   });
 
   describe("handleReorg", () => {

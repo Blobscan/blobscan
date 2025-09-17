@@ -29,7 +29,9 @@ const transactionSelect = {
   hash: true,
   fromId: true,
   toId: true,
+  blobGasMaxFee: true,
   blobGasUsed: true,
+  blobAsCalldataGasFee: true,
   blobAsCalldataGasUsed: true,
   gasPrice: true,
   maxFeePerBlobGas: true,
@@ -45,7 +47,7 @@ const transactionSelect = {
       category: true,
     },
   },
-  computeFeeFields: true,
+  computeBlobGasBaseFee: true,
   computeUsdFields: true,
 } satisfies ExtendedTransactionSelect;
 
@@ -74,6 +76,7 @@ export type CompletedPrismaTransaction = Prettify<
     >[];
   }
 >;
+
 export function createTransactionSelect(expands: Expands) {
   const blockExpand = expands.block?.select;
   const blobExpand = expands.blob?.select;
@@ -131,6 +134,8 @@ export function toResponseTransaction(
     fromId,
     toId,
     decodedFields,
+    computeBlobGasBaseFee,
+    computeUsdFields,
     ...restTx
   } = prismaTx;
   const normalizedTxFields = normalizePrismaTransactionFields({
@@ -143,9 +148,9 @@ export function toResponseTransaction(
     block.computeUsdFields && ethUsdPrice
       ? block.computeUsdFields(ethUsdPrice)
       : undefined;
-  const txFeeFields = prismaTx.computeFeeFields(block.blobGasPrice);
+  const blobGasBaseFee = computeBlobGasBaseFee(block.blobGasPrice);
   const txFeeUsdFields = ethUsdPrice
-    ? prismaTx.computeUsdFields({
+    ? computeUsdFields({
         ethUsdPrice,
         blobGasPrice: block.blobGasPrice,
       })
@@ -164,8 +169,8 @@ export function toResponseTransaction(
   return {
     ...restTx,
     ...normalizedTxFields,
-    ...txFeeFields,
     ...(txFeeUsdFields ?? {}),
+    blobGasBaseFee,
     blobGasPrice: block.blobGasPrice,
     block: {
       ...prismaTx.block,

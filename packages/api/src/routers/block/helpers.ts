@@ -165,7 +165,7 @@ export function toResponseBlock(
             from,
             fromId,
             toId,
-            computeFeeFields,
+            computeBlobGasBaseFee,
             computeUsdFields,
             ...restPrismaTx
           } = prismaTx;
@@ -175,7 +175,6 @@ export function toResponseBlock(
             fromId,
             toId,
           });
-          const txFeeFields = computeFeeFields(blobGasPrice);
           const txUsdFields = ethUsdPrice
             ? computeUsdFields({ ethUsdPrice, blobGasPrice })
             : undefined;
@@ -184,7 +183,7 @@ export function toResponseBlock(
             ...responseTransaction,
             ...restPrismaTx,
             ...normalizedFields,
-            ...txFeeFields,
+            blobGasBaseFee: computeBlobGasBaseFee(blobGasPrice),
             ...(txUsdFields ?? {}),
           };
         }

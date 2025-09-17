@@ -179,33 +179,31 @@ export const createComputedFieldsExtension = ({
             },
           },
           transaction: {
-            computeFeeFields: {
+            blobAsCalldataGasFee: {
+              needs: {
+                gasPrice: true,
+                blobAsCalldataGasUsed: true,
+              },
+              compute({ blobAsCalldataGasUsed, gasPrice }) {
+                return blobAsCalldataGasUsed.mul(gasPrice);
+              },
+            },
+            blobGasMaxFee: {
               needs: {
                 blobGasUsed: true,
-                blobAsCalldataGasUsed: true,
                 maxFeePerBlobGas: true,
-                gasPrice: true,
               },
-              compute({
-                blobAsCalldataGasUsed,
-                blobGasUsed,
-                maxFeePerBlobGas,
-                gasPrice,
-              }) {
+              compute({ blobGasUsed, maxFeePerBlobGas }) {
+                return blobGasUsed.mul(maxFeePerBlobGas);
+              },
+            },
+            computeBlobGasBaseFee: {
+              needs: {
+                blobGasUsed: true,
+              },
+              compute({ blobGasUsed }) {
                 return (blobGasPrice: Block["blobGasPrice"]) => {
-                  const blobAsCalldataGasFee = gasPrice.mul(
-                    blobAsCalldataGasUsed
-                  );
-
-                  const blobGasBaseFee = blobGasPrice.mul(blobGasUsed);
-
-                  const blobGasMaxFee = maxFeePerBlobGas.mul(blobGasUsed);
-
-                  return {
-                    blobAsCalldataGasFee,
-                    blobGasBaseFee,
-                    blobGasMaxFee,
-                  };
+                  return blobGasPrice.mul(blobGasUsed);
                 };
               },
             },
@@ -224,9 +222,9 @@ export const createComputedFieldsExtension = ({
               compute({ blobGasPrice, blobGasBaseFee }) {
                 return (ethUsdPrice: EthUsdPrice["price"]) => {
                   const weiUsdPrice = calculateWeiUsdPrice(ethUsdPrice);
-                  const blobGasUsdPrice = weiUsdPrice?.mul(blobGasPrice);
+                  const blobGasUsdPrice = weiUsdPrice.mul(blobGasPrice);
                   const blobGasBaseUsdFee = blobGasUsdPrice
-                    ?.mul(blobGasBaseFee)
+                    .mul(blobGasBaseFee)
                     .toFixed();
 
                   return {
@@ -240,9 +238,15 @@ export const createComputedFieldsExtension = ({
           transaction: {
             computeUsdFields: {
               needs: {
-                computeFeeFields: true,
+                blobAsCalldataGasFee: true,
+                computeBlobGasBaseFee: true,
+                blobGasMaxFee: true,
               },
-              compute({ computeFeeFields }) {
+              compute({
+                blobAsCalldataGasFee,
+                computeBlobGasBaseFee,
+                blobGasMaxFee,
+              }) {
                 return ({
                   ethUsdPrice,
                   blobGasPrice,
@@ -251,23 +255,18 @@ export const createComputedFieldsExtension = ({
                   blobGasPrice: Block["blobGasPrice"];
                 }) => {
                   const usdWeiPrice = calculateWeiUsdPrice(ethUsdPrice);
-                  const {
-                    blobAsCalldataGasFee,
-                    blobGasBaseFee,
-                    blobGasMaxFee,
-                  } = computeFeeFields(blobGasPrice);
 
                   const blobAsCalldataGasUsdFee = usdWeiPrice
-                    ?.mul(blobAsCalldataGasFee)
+                    .mul(blobAsCalldataGasFee)
                     .toFixed();
                   const blobGasBaseUsdFee = usdWeiPrice
-                    ?.mul(blobGasBaseFee)
+                    .mul(computeBlobGasBaseFee(blobGasPrice))
                     .toFixed();
                   const blobGasMaxUsdFee = usdWeiPrice
-                    ?.mul(blobGasMaxFee)
+                    .mul(blobGasMaxFee)
                     .toFixed();
                   const blobGasUsdPrice = usdWeiPrice
-                    ?.mul(blobGasPrice)
+                    .mul(blobGasPrice)
                     .toFixed();
 
                   return {

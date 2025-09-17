@@ -14,8 +14,10 @@ const zodExpandEnums = ["blob", "block", "transaction"] as const;
 export type ZodExpandEnum = (typeof zodExpandEnums)[number];
 
 const expandedTransactionSelect = {
+  blobAsCalldataGasFee: true,
   blobAsCalldataGasUsed: true,
   blobGasUsed: true,
+  blobGasMaxFee: true,
   fromId: true,
   from: {
     select: {
@@ -29,7 +31,7 @@ const expandedTransactionSelect = {
   maxFeePerBlobGas: true,
   index: true,
   decodedFields: true,
-  computeFeeFields: true,
+  computeBlobGasBaseFee: true,
   computeUsdFields: true,
 } satisfies ExtendedTransactionSelect;
 

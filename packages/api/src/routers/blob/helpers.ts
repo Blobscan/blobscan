@@ -275,7 +275,7 @@ export function toResponseBlob(
             from,
             fromId,
             toId,
-            computeFeeFields,
+            computeBlobGasBaseFee,
             computeUsdFields,
             ...restPrismaTx
           } = prismaTx;
@@ -289,7 +289,7 @@ export function toResponseBlob(
               fromId,
               toId,
             }),
-            ...computeFeeFields(block.blobGasPrice),
+            blobGasBaseFee: computeBlobGasBaseFee(block.blobGasPrice),
             ...(txEthUsdPrice
               ? computeUsdFields({
                   blobGasPrice: block.blobGasPrice,
@@ -335,7 +335,7 @@ export function toResponseBlobOnTransaction(
       from,
       fromId,
       toId,
-      computeFeeFields,
+      computeBlobGasBaseFee,
       computeUsdFields,
       ...restTx
     } = transaction;
@@ -349,7 +349,7 @@ export function toResponseBlobOnTransaction(
         fromId,
         toId,
       }),
-      ...computeFeeFields(txBlock.blobGasPrice),
+      blobGasBaseFee: computeBlobGasBaseFee(txBlock.blobGasPrice),
       ...(ethUsdPrice
         ? computeUsdFields({
             blobGasPrice: txBlock.blobGasPrice,
