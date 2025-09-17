@@ -46,9 +46,9 @@ export function createApiClient(
     }
 
     if (indexerKey) {
-      const decoded = jwt.verify(token, indexerKey) as string;
+      const decodedPayload = jwt.verify(token, indexerKey);
 
-      if (decoded === token) {
+      if (decodedPayload) {
         return "indexer";
       }
     }
