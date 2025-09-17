@@ -66,10 +66,14 @@ async function main() {
         enableTracing: env.TRACES_ENABLED,
         prisma,
         scope: "rest-api",
-        serviceApiKeys: {
-          blobDataReadKey: env.BLOB_DATA_API_KEY,
-          indexerServiceSecret: env.SECRET_KEY,
-          loadNetworkServiceKey: env.WEAVEVM_API_KEY,
+        apiKeys: {
+          accesses: {
+            blobDataRead: env.BLOB_DATA_API_KEY,
+          },
+          services: {
+            indexer: env.SECRET_KEY,
+            loadNetwork: env.WEAVEVM_API_KEY,
+          },
         },
       }),
       onError({ error }) {

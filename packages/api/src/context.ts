@@ -10,23 +10,31 @@ import type {
 import type { BlobPropagator } from "@blobscan/blob-propagator";
 import type { BlobscanPrismaClient } from "@blobscan/db";
 
-import type { ServiceClient } from "./utils";
-import { createServiceClient } from "./utils";
+import type { ApiClient } from "./utils";
+import { createApiClient } from "./utils";
 
 export type CreateContextOptions =
   | NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>
   | CreateNextContextOptions;
 
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
-  serviceClient?: ServiceClient;
+  apiClient?: ApiClient;
   blobPropagator?: BlobPropagator;
   prisma: BlobscanPrismaClient;
 };
 
 export type ServiceApiKeys = Partial<{
-  indexerServiceSecret: string;
-  loadNetworkServiceKey: string;
-  blobDataReadKey: string;
+  indexer: string;
+  loadNetwork: string;
+}>;
+
+export type AccessKeys = Partial<{
+  blobDataRead: string;
+}>;
+
+export type ApiKeys = Partial<{
+  services: ServiceApiKeys;
+  accesses: AccessKeys;
 }>;
 
 export type CreateContextParams = {
@@ -35,20 +43,20 @@ export type CreateContextParams = {
   prisma: BlobscanPrismaClient;
   enableTracing?: boolean;
   scope: ContextScope;
-  serviceApiKeys?: ServiceApiKeys;
+  apiKeys?: ApiKeys;
 };
 
 export type TRPCInnerContext = {
   prisma: BlobscanPrismaClient;
   blobPropagator?: BlobPropagator;
-  apiClient?: ServiceClient;
+  apiClient?: ApiClient;
 };
 
 export function createTRPCInnerContext(opts: CreateInnerContextOptions) {
   return {
     prisma: opts.prisma,
     blobPropagator: opts.blobPropagator,
-    apiClient: opts.serviceClient,
+    apiClient: opts.apiClient,
   };
 }
 
@@ -60,17 +68,17 @@ export function createTRPCContext({
   chainId,
   enableTracing,
   scope,
-  serviceApiKeys,
+  apiKeys,
 }: CreateContextParams) {
   return async (opts: CreateContextOptions) => {
     try {
-      const serviceClient = serviceApiKeys
-        ? createServiceClient(serviceApiKeys, opts.req)
+      const apiClient = apiKeys
+        ? createApiClient(apiKeys, opts.req)
         : undefined;
 
       const innerContext = createTRPCInnerContext({
         prisma,
-        serviceClient,
+        apiClient,
         blobPropagator,
       });
 

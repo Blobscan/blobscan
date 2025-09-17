@@ -8,6 +8,7 @@ import { blockchainSyncStateRouter } from "./routers/blockchain-sync-state";
 import { ethPriceRouter } from "./routers/eth-price";
 import { healthcheck } from "./routers/healthcheck";
 import { indexerRouter } from "./routers/indexer";
+import { loggingRouter } from "./routers/logging";
 import { search } from "./routers/search";
 import { stateRouter } from "./routers/state";
 import { statsRouter } from "./routers/stats";
@@ -25,6 +26,7 @@ export function createAppRouter(config?: AppRouterConfig) {
     blob: createBlobRouter(config?.blobRouter),
     blobStoragesState: blobStoragesStateRouter,
     block: blockRouter,
+    loggingRouter,
     syncState: blockchainSyncStateRouter,
     ethPrice: ethPriceRouter,
     indexer: indexerRouter,

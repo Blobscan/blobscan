@@ -32,6 +32,7 @@ nextjs:
 
 | Variable                                               | Description                                                                                               | Required                        | Default value                                |
 | ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | ------------------------------- | -------------------------------------------- |
+| `ADMIN_API_KEY`                                        | API key used to authenticate requests to admin endpoints (e.g., logging level management)                 | No                              | (empty)                                      |
 | `BLOB_DATA_API_ENABLED`                                | Controls whether the blob data API endpoint is enabled                                                    | No                              | `true`                                       |
 | `BLOB_DATA_API_KEY`                                    | API key used to authenticate requests to retrieve blob data from the blobscan API                         | No                              | (empty)                                      |
 | `CHAIN_ID`                                             | EVM chain id                                                                                              | Yes                             | `1`                                          |
