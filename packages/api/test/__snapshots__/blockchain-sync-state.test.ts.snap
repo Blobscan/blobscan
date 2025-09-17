@@ -32,38 +32,6 @@ exports[`Blockchain sync state route > updateState > when authorized > should fa
 ]]
 `;
 
-exports[`Blockchain sync state route > updateState > when authorized > should fail when trying to update last lower synced slot to a value greater than last upper synced slot 1`] = `
-"[
-  {
-    \\"code\\": \\"too_small\\",
-    \\"minimum\\": 0,
-    \\"type\\": \\"number\\",
-    \\"inclusive\\": true,
-    \\"exact\\": false,
-    \\"message\\": \\"Number must be greater than or equal to 0\\",
-    \\"path\\": [
-      \\"lastUpperSyncedBlockSlot\\"
-    ]
-  }
-]"
-`;
-
-exports[`Blockchain sync state route > updateState > when authorized > should fail when trying to update last lower synced slot to a value greater than last upper synced slot 2`] = `
-[ZodError: [
-  {
-    "code": "too_small",
-    "minimum": 0,
-    "type": "number",
-    "inclusive": true,
-    "exact": false,
-    "message": "Number must be greater than or equal to 0",
-    "path": [
-      "lastUpperSyncedBlockSlot"
-    ]
-  }
-]]
-`;
-
 exports[`Blockchain sync state route > updateState > when authorized > should fail when trying to update last lower synced slot to an invalid slot 1`] = `
 "[
   {

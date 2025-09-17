@@ -579,8 +579,9 @@ describe("Upsert Many Extension", () => {
             },
           })
           .then((txs) =>
-            txs.map(({ computeFeeFields: _, computeUsdFields: __, ...tx }) =>
-              omitDBTimestampFields(tx)
+            txs.map(
+              ({ computeBlobGasBaseFee: _, computeUsdFields: __, ...tx }) =>
+                omitDBTimestampFields(tx)
             )
           );
 
@@ -647,8 +648,9 @@ describe("Upsert Many Extension", () => {
             },
           })
           .then((txs) =>
-            txs.map(({ computeFeeFields: _, computeUsdFields: __, ...tx }) =>
-              omitDBTimestampFields(tx)
+            txs.map(
+              ({ computeBlobGasBaseFee: _, computeUsdFields: __, ...tx }) =>
+                omitDBTimestampFields(tx)
             )
           );
 
