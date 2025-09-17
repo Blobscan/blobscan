@@ -1,6 +1,8 @@
+import { TRPCError } from "@trpc/server";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { logger } from "@blobscan/logger";
+import { testValidError } from "@blobscan/test";
 
 import type { TRPCContext } from "../src";
 import { loggingRouter } from "../src/routers/logging";
@@ -65,6 +67,19 @@ describe("Logging Router", () => {
       nonAuthorizedLoggingCaller.updateLevel({
         level: "debug",
       })
+    );
+
+    testValidError(
+      "should fail when providing an invalid log level",
+      async () => {
+        await loggingCaller.updateLevel({
+          level: "unknown-level",
+        });
+      },
+      TRPCError,
+      {
+        checkCause: true,
+      }
     );
   });
 });
