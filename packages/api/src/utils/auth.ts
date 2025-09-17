@@ -3,7 +3,7 @@ import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import type { NodeHTTPRequest } from "@trpc/server/adapters/node-http";
 import jwt from "jsonwebtoken";
 
-import type { ServiceApiKeys } from "../context";
+import type { ApiKeys } from "../context";
 
 type NextHTTPRequest = CreateNextContextOptions["req"];
 
@@ -11,12 +11,12 @@ type HTTPRequest = NodeHTTPRequest | NextHTTPRequest;
 
 export type ServiceClient = "indexer" | "load-network" | "blob-data" | "admin";
 
-export function createServiceClient(
-  {
-    blobDataReadKey,
-    indexerServiceSecret,
-    loadNetworkServiceKey,
-  }: ServiceApiKeys,
+export type AccessClient = "blob-data";
+
+export type ApiClient = ServiceClient | AccessClient | "admin";
+
+export function createApiClient(
+  apiKeys: ApiKeys,
   req: HTTPRequest
 ): ServiceClient | undefined {
   const authHeader = req.headers.authorization;
@@ -31,17 +31,22 @@ export function createServiceClient(
     return;
   }
 
+  const {
+    accesses: { blobDataRead: blobDataReadKey } = {},
+    services: { indexer: indexerKey, loadNetwork: loadNetworkKey } = {},
+  } = apiKeys;
+
   try {
     if (blobDataReadKey && blobDataReadKey === token) {
       return "blob-data";
     }
 
-    if (loadNetworkServiceKey && loadNetworkServiceKey === token) {
+    if (loadNetworkKey && loadNetworkKey === token) {
       return "load-network";
     }
 
-    if (indexerServiceSecret) {
-      const decoded = jwt.verify(token, indexerServiceSecret) as string;
+    if (indexerKey) {
+      const decoded = jwt.verify(token, indexerKey) as string;
 
       if (decoded === token) {
         return "indexer";

@@ -23,8 +23,10 @@ export default createNextApiHandler({
     chainId: env.CHAIN_ID,
     prisma,
     enableTracing: env.TRACES_ENABLED,
-    serviceApiKeys: {
-      blobDataReadKey: env.BLOB_DATA_API_KEY,
+    apiKeys: {
+      accesses: {
+        blobDataRead: env.BLOB_DATA_API_KEY,
+      },
     },
   }),
   onError({ error }) {
