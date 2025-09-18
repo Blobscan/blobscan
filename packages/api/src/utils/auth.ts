@@ -9,7 +9,7 @@ type NextHTTPRequest = CreateNextContextOptions["req"];
 
 type HTTPRequest = NodeHTTPRequest | NextHTTPRequest;
 
-export type ServiceClient = "indexer" | "load-network" | "blob-data" | "admin";
+export type ServiceClient = "indexer" | "load-network";
 
 export type AccessClient = "blob-data";
 
@@ -18,7 +18,7 @@ export type ApiClient = ServiceClient | AccessClient | "admin";
 export function createApiClient(
   apiKeys: ApiKeys,
   req: HTTPRequest
-): ServiceClient | undefined {
+): ApiClient | undefined {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
@@ -32,11 +32,16 @@ export function createApiClient(
   }
 
   const {
+    admin: adminKey,
     accesses: { blobDataRead: blobDataReadKey } = {},
     services: { indexer: indexerKey, loadNetwork: loadNetworkKey } = {},
   } = apiKeys;
 
   try {
+    if (adminKey && adminKey === token) {
+      return "admin";
+    }
+
     if (blobDataReadKey && blobDataReadKey === token) {
       return "blob-data";
     }

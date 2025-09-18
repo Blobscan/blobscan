@@ -17,7 +17,7 @@ import type { ZodExpandEnum } from "../src/middlewares/withExpands";
 import type { FiltersInputSchema } from "../src/middlewares/withFilters";
 import type { WithPaginationSchema } from "../src/middlewares/withPagination";
 import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
-import type { ServiceClient } from "../src/utils";
+import type { ApiClient } from "../src/utils";
 
 type TRPCContext = ReturnType<ReturnType<Awaited<typeof createTRPCContext>>>;
 
@@ -50,7 +50,7 @@ export async function createTestContext({
   apiClient,
   withBlobPropagator = false,
 }: Partial<{
-  apiClient?: ServiceClient;
+  apiClient?: ApiClient;
   withBlobPropagator: boolean;
 }> = {}): TRPCContext {
   const req = {
@@ -68,6 +68,8 @@ export async function createTestContext({
       req.headers.authorization = `Bearer ${env.WEAVEVM_API_KEY}`;
     } else if (apiClient === "blob-data") {
       req.headers.authorization = `Bearer ${env.BLOB_DATA_API_KEY}`;
+    } else if (apiClient === "admin") {
+      req.headers.authorization = `Bearer ${env.ADMIN_API_KEY}`;
     }
   }
 

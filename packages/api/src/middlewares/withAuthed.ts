@@ -1,9 +1,9 @@
 import { TRPCError } from "@trpc/server";
 
 import { t } from "../trpc-client";
-import type { ServiceClient } from "../utils";
+import type { ApiClient } from "../utils";
 
-export const withAuthed = (expectedApiClientType: ServiceClient) =>
+export const withAuthed = (expectedApiClientType: ApiClient) =>
   t.middleware(({ ctx, next }) => {
     if (ctx.apiClient !== expectedApiClientType) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
