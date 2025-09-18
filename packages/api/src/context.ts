@@ -33,6 +33,7 @@ export type AccessKeys = Partial<{
 }>;
 
 export type ApiKeys = Partial<{
+  admin: string;
   services: ServiceApiKeys;
   accesses: AccessKeys;
 }>;

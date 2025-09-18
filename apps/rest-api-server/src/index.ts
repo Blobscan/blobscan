@@ -67,6 +67,7 @@ async function main() {
         prisma,
         scope: "rest-api",
         apiKeys: {
+          admin: env.ADMIN_API_KEY,
           accesses: {
             blobDataRead: env.BLOB_DATA_API_KEY,
           },

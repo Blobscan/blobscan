@@ -1,6 +1,6 @@
 import { withAuthed } from "../middlewares/withAuthed";
-import type { ServiceClient } from "../utils";
+import type { ApiClient } from "../utils";
 import { publicProcedure } from "./public";
 
-export const createAuthedProcedure = (expectedServiceClient: ServiceClient) =>
+export const createAuthedProcedure = (expectedServiceClient: ApiClient) =>
   publicProcedure.use(withAuthed(expectedServiceClient));
