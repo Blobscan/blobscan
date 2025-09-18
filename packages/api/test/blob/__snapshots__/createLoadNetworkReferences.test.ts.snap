@@ -1,0 +1,5 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`createLoadNetworkReferences > when authorized > should fail when one or more provided blobs do not exist 1`] = `"Couldn't found the following blobs: \\"nonExistingBlobHash\\""`;
+
+exports[`createLoadNetworkReferences > when authorized > should fail when one or more provided blobs do not exist 2`] = `undefined`;

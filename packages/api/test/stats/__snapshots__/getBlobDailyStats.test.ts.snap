@@ -1,0 +1,201 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 1d 1`] = `
+{
+  "days": [
+    2023-08-31T00:00:00.000Z,
+  ],
+  "totalBlobSizes": [
+    "6900",
+  ],
+  "totalBlobs": [
+    5,
+  ],
+  "totalUniqueBlobs": [
+    2,
+  ],
+}
+`;
+
+exports[`getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 7d 1`] = `
+{
+  "days": [
+    2023-08-28T00:00:00.000Z,
+    2023-08-31T00:00:00.000Z,
+  ],
+  "totalBlobSizes": [
+    "4000",
+    "6900",
+  ],
+  "totalBlobs": [
+    4,
+    5,
+  ],
+  "totalUniqueBlobs": [
+    0,
+    2,
+  ],
+}
+`;
+
+exports[`getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 15d 1`] = `
+{
+  "days": [
+    2023-08-20T00:00:00.000Z,
+    2023-08-28T00:00:00.000Z,
+    2023-08-31T00:00:00.000Z,
+  ],
+  "totalBlobSizes": [
+    "5900",
+    "4000",
+    "6900",
+  ],
+  "totalBlobs": [
+    5,
+    4,
+    5,
+  ],
+  "totalUniqueBlobs": [
+    1,
+    0,
+    2,
+  ],
+}
+`;
+
+exports[`getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 30d 1`] = `
+{
+  "days": [
+    2023-08-03T00:00:00.000Z,
+    2023-08-20T00:00:00.000Z,
+    2023-08-28T00:00:00.000Z,
+    2023-08-31T00:00:00.000Z,
+  ],
+  "totalBlobSizes": [
+    "6200",
+    "5900",
+    "4000",
+    "6900",
+  ],
+  "totalBlobs": [
+    6,
+    5,
+    4,
+    5,
+  ],
+  "totalUniqueBlobs": [
+    0,
+    1,
+    0,
+    2,
+  ],
+}
+`;
+
+exports[`getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 90d 1`] = `
+{
+  "days": [
+    2023-08-03T00:00:00.000Z,
+    2023-08-20T00:00:00.000Z,
+    2023-08-28T00:00:00.000Z,
+    2023-08-31T00:00:00.000Z,
+  ],
+  "totalBlobSizes": [
+    "6200",
+    "5900",
+    "4000",
+    "6900",
+  ],
+  "totalBlobs": [
+    6,
+    5,
+    4,
+    5,
+  ],
+  "totalUniqueBlobs": [
+    0,
+    1,
+    0,
+    2,
+  ],
+}
+`;
+
+exports[`getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 180d 1`] = `
+{
+  "days": [
+    2023-05-10T00:00:00.000Z,
+    2023-08-03T00:00:00.000Z,
+    2023-08-20T00:00:00.000Z,
+    2023-08-28T00:00:00.000Z,
+    2023-08-31T00:00:00.000Z,
+  ],
+  "totalBlobSizes": [
+    "393216",
+    "6200",
+    "5900",
+    "4000",
+    "6900",
+  ],
+  "totalBlobs": [
+    3,
+    6,
+    5,
+    4,
+    5,
+  ],
+  "totalUniqueBlobs": [
+    3,
+    0,
+    1,
+    0,
+    2,
+  ],
+}
+`;
+
+exports[`getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 365d 1`] = `
+{
+  "days": [
+    2022-10-16T00:00:00.000Z,
+    2023-05-10T00:00:00.000Z,
+    2023-08-03T00:00:00.000Z,
+    2023-08-20T00:00:00.000Z,
+    2023-08-28T00:00:00.000Z,
+    2023-08-31T00:00:00.000Z,
+  ],
+  "totalBlobSizes": [
+    "6400",
+    "393216",
+    "6200",
+    "5900",
+    "4000",
+    "6900",
+  ],
+  "totalBlobs": [
+    6,
+    3,
+    6,
+    5,
+    4,
+    5,
+  ],
+  "totalUniqueBlobs": [
+    3,
+    3,
+    0,
+    1,
+    0,
+    2,
+  ],
+}
+`;
+
+exports[`getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for All 1`] = `
+{
+  "days": [],
+  "totalBlobSizes": [],
+  "totalBlobs": [],
+  "totalUniqueBlobs": [],
+}
+`;

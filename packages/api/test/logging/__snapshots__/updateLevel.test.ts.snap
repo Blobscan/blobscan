@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`updateLevel > should fail when providing an invalid log level 1`] = `
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"params\\": {
+      \\"value\\": \\"unknown-level\\"
+    },
+    \\"message\\": \\"Log level provided is invalid\\",
+    \\"path\\": [
+      \\"level\\"
+    ]
+  }
+]"
+`;
+
+exports[`updateLevel > should fail when providing an invalid log level 2`] = `
+[ZodError: [
+  {
+    "code": "custom",
+    "params": {
+      "value": "unknown-level"
+    },
+    "message": "Log level provided is invalid",
+    "path": [
+      "level"
+    ]
+  }
+]]
+`;
