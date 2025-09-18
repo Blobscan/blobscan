@@ -1,0 +1,289 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`getByHash > should fail when providing a non-existent hash > [TRPCError: No transaction with hash 'nonExistingHash' found] 1`] = `[TRPCError: No transaction with hash 'nonExistingHash'.]`;
+
+exports[`getByHash > should get a transaction by hash correctly 1`] = `
+{
+  "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsed": 1000n,
+  "blobGasBaseFee": 8650752n,
+  "blobGasMaxFee": 39321600n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 393216n,
+  "blobs": [
+    {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+        },
+      ],
+      "versionedHash": "blobHash001",
+    },
+    {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+        },
+      ],
+      "versionedHash": "blobHash002",
+    },
+    {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
+        },
+      ],
+      "versionedHash": "blobHash003",
+    },
+  ],
+  "block": {
+    "blobGasPrice": 22n,
+  },
+  "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
+  "blockNumber": 1001,
+  "blockTimestamp": 2022-10-16T12:00:00.000Z,
+  "category": "other",
+  "decodedFields": null,
+  "ethUsdPrice": undefined,
+  "from": "address1",
+  "hash": "txHash001",
+  "index": 0,
+  "maxFeePerBlobGas": 100n,
+  "rollup": null,
+  "to": "address2",
+}
+`;
+
+exports[`getByHash > when getting expanded transaction results > should return the correct expanded blob 1`] = `
+{
+  "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsed": 1000n,
+  "blobGasBaseFee": 8650752n,
+  "blobGasMaxFee": 39321600n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 393216n,
+  "blobs": [
+    {
+      "commitment": "commitment001",
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+        },
+      ],
+      "proof": "proof001",
+      "size": 1000,
+      "usageSize": 1000,
+      "versionedHash": "blobHash001",
+    },
+    {
+      "commitment": "commitment002",
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+        },
+      ],
+      "proof": "proof002",
+      "size": 1100,
+      "usageSize": 1000,
+      "versionedHash": "blobHash002",
+    },
+    {
+      "commitment": "commitment003",
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
+        },
+      ],
+      "proof": "proof003",
+      "size": 1200,
+      "usageSize": 124,
+      "versionedHash": "blobHash003",
+    },
+  ],
+  "block": {
+    "blobGasPrice": 22n,
+  },
+  "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
+  "blockNumber": 1001,
+  "blockTimestamp": 2022-10-16T12:00:00.000Z,
+  "category": "other",
+  "decodedFields": null,
+  "ethUsdPrice": undefined,
+  "from": "address1",
+  "hash": "txHash001",
+  "index": 0,
+  "maxFeePerBlobGas": 100n,
+  "rollup": null,
+  "to": "address2",
+}
+`;
+
+exports[`getByHash > when getting expanded transaction results > should return the correct expanded block 1`] = `
+{
+  "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsed": 1000n,
+  "blobGasBaseFee": 8650752n,
+  "blobGasMaxFee": 39321600n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 393216n,
+  "blobs": [
+    {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+        },
+      ],
+      "versionedHash": "blobHash001",
+    },
+    {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+        },
+      ],
+      "versionedHash": "blobHash002",
+    },
+    {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
+        },
+      ],
+      "versionedHash": "blobHash003",
+    },
+  ],
+  "block": {
+    "blobAsCalldataGasUsed": 2042780n,
+    "blobGasBaseFee": 17301504n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 786432n,
+    "excessBlobGas": 15000n,
+    "slot": 101,
+  },
+  "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
+  "blockNumber": 1001,
+  "blockTimestamp": 2022-10-16T12:00:00.000Z,
+  "category": "other",
+  "decodedFields": null,
+  "ethUsdPrice": undefined,
+  "from": "address1",
+  "hash": "txHash001",
+  "index": 0,
+  "maxFeePerBlobGas": 100n,
+  "rollup": null,
+  "to": "address2",
+}
+`;
+
+exports[`getByHash > when getting expanded transaction results > should return the correct expanded results when multiple expands are requested 1`] = `
+{
+  "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsed": 1000n,
+  "blobGasBaseFee": 8650752n,
+  "blobGasMaxFee": 39321600n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 393216n,
+  "blobs": [
+    {
+      "commitment": "commitment001",
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+        },
+      ],
+      "proof": "proof001",
+      "size": 1000,
+      "usageSize": 1000,
+      "versionedHash": "blobHash001",
+    },
+    {
+      "commitment": "commitment002",
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+        },
+      ],
+      "proof": "proof002",
+      "size": 1100,
+      "usageSize": 1000,
+      "versionedHash": "blobHash002",
+    },
+    {
+      "commitment": "commitment003",
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
+        },
+      ],
+      "proof": "proof003",
+      "size": 1200,
+      "usageSize": 124,
+      "versionedHash": "blobHash003",
+    },
+  ],
+  "block": {
+    "blobAsCalldataGasUsed": 2042780n,
+    "blobGasBaseFee": 17301504n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 786432n,
+    "excessBlobGas": 15000n,
+    "slot": 101,
+  },
+  "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
+  "blockNumber": 1001,
+  "blockTimestamp": 2022-10-16T12:00:00.000Z,
+  "category": "other",
+  "decodedFields": null,
+  "ethUsdPrice": undefined,
+  "from": "address1",
+  "hash": "txHash001",
+  "index": 0,
+  "maxFeePerBlobGas": 100n,
+  "rollup": null,
+  "to": "address2",
+}
+`;
