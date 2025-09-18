@@ -3,9 +3,9 @@ import { beforeEach, describe, expect, it, test } from "vitest";
 
 import { assertError, env } from "@blobscan/test";
 
-import { getPrisma } from "../prisma";
-import type { BlobStorage } from "../prisma/enums";
-import { createComputedFieldsExtension } from "../prisma/extensions";
+import { getPrisma } from "../../prisma";
+import type { BlobStorage } from "../../prisma/enums";
+import { createComputedFieldsExtension } from "../../prisma/extensions";
 
 const ONE_ETH_IN_WEI = new Prisma.Decimal(1e-18);
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getPrisma } from "../prisma";
+import { getPrisma } from "../../prisma";
 
 describe("Helpers Extension", () => {
   const prisma = getPrisma();

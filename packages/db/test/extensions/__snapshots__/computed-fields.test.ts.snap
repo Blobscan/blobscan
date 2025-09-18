@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Computed Fields Extension > Blob Data Storage Reference Model > url > should fail when returning a GOOGLE url without a configured bucket name 1`] = `"Couldn't compute gcs blob data url field: bucket name not provided"`;
+
+exports[`Computed Fields Extension > Blob Data Storage Reference Model > url > should fail when returning a POSTGRES url without a configured api base url 1`] = `"Couldn't compute postgres blob data url field: api base url not provided"`;
+
+exports[`Computed Fields Extension > Blob Data Storage Reference Model > url > should fail when returning a S3 url without a configured api base url or bucket name 1`] = `"Couldn't compute load network blob data url field: api base url or bucket name not provided"`;
+
+exports[`Computed Fields Extension > Blob Data Storage Reference Model > url > should fail when returning a WEAVEVM url without a configured api base url 1`] = `"Couldn't compute load network blob data url field: api base url not provided"`;

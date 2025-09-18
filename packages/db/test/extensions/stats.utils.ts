@@ -1,9 +1,9 @@
 import { toDailyDate } from "@blobscan/dayjs";
 
-import { getPrisma } from "../prisma";
-import { Category } from "../prisma/enums";
-import type { Rollup } from "../prisma/enums";
-import { NEW_DATA } from "./stats-extension.fixtures";
+import { getPrisma } from "../../prisma";
+import { Category } from "../../prisma/enums";
+import type { Rollup } from "../../prisma/enums";
+import { NEW_DATA } from "./stats.fixtures";
 
 export type AggregableType = Category | Rollup | "TOTAL" | "ROLLUPS_TOTAL";
 

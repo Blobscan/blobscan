@@ -11,8 +11,8 @@ import { describe, it, expect, beforeEach } from "vitest";
 
 import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
-import { getPrisma } from "../prisma";
-import type { WithoutTimestampFields } from "../prisma/types";
+import { getPrisma } from "../../prisma";
+import type { WithoutTimestampFields } from "../../prisma/types";
 
 describe("Upsert Many Extension", () => {
   const prisma = getPrisma();

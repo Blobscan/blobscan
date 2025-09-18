@@ -11,14 +11,14 @@ import dayjs, {
 } from "@blobscan/dayjs";
 import { fixtures } from "@blobscan/test";
 
-import { getPrisma } from "../prisma";
-import type { BlockNumberRange } from "../prisma/types";
+import { getPrisma } from "../../prisma";
+import type { BlockNumberRange } from "../../prisma/types";
 import {
   getElementByAggregableType,
   groupElementsByAggregableType,
   groupElementsByDay,
   indexBlock,
-} from "./stats-extension.utils";
+} from "./stats.utils";
 
 const AVG_METRICS: (keyof OverallStats)[] = [
   "avgBlobAsCalldataFee",
