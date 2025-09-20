@@ -43,30 +43,32 @@ export function cacheTRPCQuery<In, Out, Ctx extends TRPCContext = TRPCContext>(
       input,
     })}`;
 
-    const [res, getTiming] = await perfOperation(() => redis.get(cacheKey));
+    const [res, getDuration] = await perfOperation(() => redis.get(cacheKey));
 
     if (res) {
-      logger.debug(`Cache hit (${getTiming}ms) key=${cacheKey}`);
+      logger.debug(`Cache hit (${getDuration}ms) key=${cacheKey}`);
 
       return superjson.parse(res) as Out;
     }
 
-    logger.debug(`Cache miss (${getTiming}ms) key=${cacheKey}`);
+    logger.debug(`Cache miss (${getDuration}ms) key=${cacheKey}`);
 
-    const [data, resolverTiming] = await perfOperation(() =>
+    const [data, resolverDuration] = await perfOperation(() =>
       resolver({ ctx, input })
     );
 
     const resolvedTtl = resolveTTL(ttl);
 
-    const [_, setTiming] = await perfOperation(() =>
+    const [_, setDuration] = await perfOperation(() =>
       redis.set(cacheKey, superjson.stringify(data), "EX", resolvedTtl)
     );
 
     logger.debug(
       `Cache set (${
-        resolverTiming + setTiming
-      }ms) [dataFetching=${resolverTiming}ms | redisSet=${setTiming}ms] key=${cacheKey} ttl=${ttl}s`
+        resolverDuration + setDuration
+      }ms) [dataFetching=${resolverDuration}ms | redisSet=${setDuration}ms] key=${cacheKey} ttl=${ttl}${
+        typeof ttl === "number" ? "s" : ""
+      }`
     );
 
     return data;
