@@ -1,6 +1,5 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { Prisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
 import type { TRPCContext } from "../src/context";
@@ -44,7 +43,7 @@ describe("getAppState", () => {
           number: latestBlock.number,
           slot: latestBlock.slot,
           timestamp: new Date(latestBlock.timestamp),
-          blobGasPrice: new Prisma.Decimal(latestBlock.blobGasPrice),
+          blobGasPrice: BigInt(latestBlock.blobGasPrice),
         }
       : {};
 

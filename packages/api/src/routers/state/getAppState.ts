@@ -1,6 +1,7 @@
 import type { Prisma } from "@blobscan/db";
 
 import { publicProcedure } from "../../procedures";
+import { normalize } from "../../utils";
 
 type StateQuery = {
   lastAggregatedBlock: number;
@@ -77,7 +78,7 @@ export const getAppState = publicProcedure.query(
     const [latestPrice, past24hPrice] = ethPricesQuery;
     const [latestBlock, past24hBlock] = blocksQuery;
 
-    return {
+    return normalize({
       ethPrices: {
         latest: latestPrice
           ? {
@@ -97,6 +98,6 @@ export const getAppState = publicProcedure.query(
         past24h: past24hBlock,
       },
       syncState: stateQuery[0],
-    };
+    });
   }
 );

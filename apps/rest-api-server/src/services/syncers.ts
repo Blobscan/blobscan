@@ -14,8 +14,8 @@ import {
   createRedisConnection,
 } from "@blobscan/syncers";
 
-import { prisma } from "./prisma";
-import { getNetworkDencunForkSlot } from "./utils";
+import { prisma } from "../clients/prisma";
+import { getNetworkDencunForkSlot } from "../utils";
 
 export async function setUpSyncers() {
   const connection = createRedisConnection(env.REDIS_URI);

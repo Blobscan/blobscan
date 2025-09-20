@@ -55,4 +55,16 @@ export const logger = winston.createLogger({
   silent: process.env.MODE === "test",
 });
 
+export async function perfOperation<T>(
+  operation: () => T
+): Promise<[Awaited<T>, number]> {
+  const p0 = performance.now();
+
+  const res = await operation();
+
+  const p1 = performance.now();
+
+  return [res, Number((p1 - p0).toFixed(2))];
+}
+
 export type Logger = typeof logger;

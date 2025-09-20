@@ -5,6 +5,7 @@ import { createNextApiHandler } from "@blobscan/api";
 
 import { env } from "~/env.mjs";
 import { prisma } from "~/prisma";
+import { redis } from "~/redis";
 
 const appRouter = createAppRouter({
   blobRouter: {
@@ -22,6 +23,7 @@ export default createNextApiHandler({
     scope: "web",
     chainId: env.CHAIN_ID,
     prisma,
+    redis,
     enableTracing: env.TRACES_ENABLED,
     apiKeys: {
       accesses: {

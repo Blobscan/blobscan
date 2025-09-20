@@ -10,16 +10,14 @@ import type { BlobPropagator } from "@blobscan/blob-propagator";
 import type { DatePeriod } from "@blobscan/dayjs";
 import dayjs, { toDailyDate } from "@blobscan/dayjs";
 import { getPrisma } from "@blobscan/db";
-import { env } from "@blobscan/test";
+import { env, redis } from "@blobscan/test";
 
-import type { createTRPCContext } from "../src/context";
+import type { TRPCContext } from "../src/context";
 import type { ZodExpandEnum } from "../src/middlewares/withExpands";
 import type { FiltersInputSchema } from "../src/middlewares/withFilters";
 import type { WithPaginationSchema } from "../src/middlewares/withPagination";
 import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
 import type { ApiClient } from "../src/utils";
-
-type TRPCContext = ReturnType<ReturnType<Awaited<typeof createTRPCContext>>>;
 
 type FilterAndPagination = FiltersInputSchema & WithPaginationSchema;
 
@@ -49,10 +47,12 @@ const prisma = getPrisma({
 export async function createTestContext({
   apiClient,
   withBlobPropagator = false,
+  withRedis = false,
 }: Partial<{
   apiClient?: ApiClient;
-  withBlobPropagator: boolean;
-}> = {}): TRPCContext {
+  withBlobPropagator?: boolean;
+  withRedis?: boolean;
+}> = {}): Promise<TRPCContext> {
   const req = {
     headers: {
       host: "localhost:3000",
@@ -77,7 +77,7 @@ export async function createTestContext({
     statusCode: 200,
   } as NodeHTTPResponse;
 
-  const ctx: Awaited<TRPCContext> = {
+  const ctx: TRPCContext = {
     chainId: env.CHAIN_ID,
     enableTracing: false,
     scope: "rest-api",
@@ -86,6 +86,7 @@ export async function createTestContext({
     apiClient,
     prisma,
     blobPropagator: undefined,
+    redis: undefined,
   };
 
   if (withBlobPropagator) {
@@ -94,6 +95,10 @@ export async function createTestContext({
         return Promise.resolve();
       },
     } as BlobPropagator;
+  }
+
+  if (withRedis) {
+    ctx.redis = redis;
   }
 
   return ctx;
