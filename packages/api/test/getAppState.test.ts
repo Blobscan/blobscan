@@ -1,6 +1,5 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { Prisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
 import type { TRPCContext } from "../src/context";
