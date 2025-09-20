@@ -3,9 +3,9 @@ import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import { env } from "@blobscan/env";
 import { logger } from "@blobscan/logger";
 
+import { prisma } from "../clients/prisma";
+import { redis } from "../clients/redis";
 import { createBlobStorages } from "./blob-storages";
-import { prisma } from "./clients/prisma";
-import { redis } from "./clients/redis";
 
 let blobPropagator: BlobPropagator | undefined;
 

@@ -14,10 +14,10 @@ import "./instrumentation";
 import { logger } from "@blobscan/logger";
 
 import { printBanner } from "./banner";
-import { getBlobPropagator } from "./blob-propagator";
 import { prisma } from "./clients/prisma";
 import { setUpOpenApiTRPC } from "./openapi-trpc";
-import { setUpSyncers } from "./syncers";
+import { getBlobPropagator } from "./services/blob-propagator";
+import { setUpSyncers } from "./services/syncers";
 
 collectDefaultMetrics();
 
