@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/api",
-  "version": "1.0.0",
+  "version": "0.29.0",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -20,7 +20,7 @@
     "@blobscan/logger": "workspace:^0.1.3",
     "@blobscan/network-blob-config": "workspace:^0.3.0",
     "@blobscan/open-telemetry": "workspace:^0.0.10",
-    "@blobscan/rollups": "workspace:^1.0.0",
+    "@blobscan/rollups": "workspace:^0.3.7",
     "@blobscan/zod": "workspace:^0.1.0",
     "@trpc/server": "^10.43.2",
     "ioredis": "^5.3.2",
@@ -30,11 +30,11 @@
     "trpc-openapi": "^1.2.0"
   },
   "devDependencies": {
-    "@blobscan/blob-propagator": "workspace:^1.0.0",
+    "@blobscan/blob-propagator": "workspace:^0.6.1",
     "@types/jsonwebtoken": "^9.0.2"
   },
   "peerDependencies": {
-    "@blobscan/blob-propagator": "workspace:^1.0.0"
+    "@blobscan/blob-propagator": "workspace:^0.6.1"
   },
   "eslintConfig": {
     "root": true,

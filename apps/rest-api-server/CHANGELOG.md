@@ -7,11 +7,11 @@
 - [#895](https://github.com/Blobscan/blobscan/pull/895) [`c497d51`](https://github.com/Blobscan/blobscan/commit/c497d51241512dc5c09f19cba65f0424295e146a) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated to use a singleton Redis client for trpc middleware and blob propagator service
 
 - Updated dependencies [[`5df65d3`](https://github.com/Blobscan/blobscan/commit/5df65d3387b2e66ef40aa941aebcd2f239405874), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b), [`c497d51`](https://github.com/Blobscan/blobscan/commit/c497d51241512dc5c09f19cba65f0424295e146a), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b)]:
-  - @blobscan/api@1.0.0
+  - @blobscan/api@0.29.0
   - @blobscan/db@0.22.0
-  - @blobscan/blob-storage-manager@1.0.0
+  - @blobscan/blob-storage-manager@0.7.0
   - @blobscan/syncers@0.6.0
-  - @blobscan/blob-propagator@1.0.0
+  - @blobscan/blob-propagator@0.6.1
 
 ## 0.8.1
 
@@ -34,10 +34,10 @@
 - [#879](https://github.com/Blobscan/blobscan/pull/879) [`b0ca3c0`](https://github.com/Blobscan/blobscan/commit/b0ca3c09527cbb961921bd6298afd116e9b60482) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where the primary blob storage for the blob propagator was created even if it was not enabled
 
 - Updated dependencies [[`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad), [`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a), [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad), [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad)]:
-  - @blobscan/blob-propagator@1.0.0
-  - @blobscan/api@1.0.0
+  - @blobscan/blob-propagator@0.6.1
+  - @blobscan/api@0.29.0
   - @blobscan/db@0.21.0
-  - @blobscan/blob-storage-manager@1.0.0
+  - @blobscan/blob-storage-manager@0.7.0
   - @blobscan/syncers@0.5.3
 
 ## 0.7.3

@@ -1,6 +1,6 @@
 # @blobscan/rollups
 
-## 1.0.0
+## 0.3.7
 
 ### Patch Changes
 
