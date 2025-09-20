@@ -43,19 +43,15 @@ export function NetworkIndicators() {
     blocks?.latest && env?.PUBLIC_NETWORK_NAME
       ? getNetworkBlobConfigBySlot(env.PUBLIC_NETWORK_NAME, blocks.latest.slot)
       : undefined;
-  const past24hBlobGasPrice = blocks?.past24h?.blobGasPrice
-    ? BigInt(blocks.past24h.blobGasPrice.toString())
-    : undefined;
-  const latestBlobGasPrice = blocks?.latest?.blobGasPrice
-    ? BigInt(blocks.latest.blobGasPrice.toString())
-    : undefined;
+  const past24hBlobGasPrice = blocks?.past24h?.blobGasPrice;
+  const latestBlobGasPrice = blocks?.latest?.blobGasPrice;
   const latestBlobGasUsdPrice =
     latestBlobGasPrice && latestUsdPrice !== undefined
       ? Number(convertWei(latestBlobGasPrice, "ether")) * latestUsdPrice
       : undefined;
   const blobPrice =
     latestBlobGasPrice && networkConfig
-      ? BigInt(latestBlobGasPrice) * networkConfig.gasPerBlob
+      ? latestBlobGasPrice * networkConfig.gasPerBlob
       : undefined;
   const ethBlobPrice = blobPrice
     ? convertWei(blobPrice.toString(), "ether")
@@ -133,8 +129,8 @@ export function NetworkIndicators() {
               <Tooltip>
                 <TooltipTrigger>
                   <DeltaPercentageChange
-                    initialValue={latestBlobGasPrice}
-                    finalValue={past24hBlobGasPrice}
+                    initialValue={past24hBlobGasPrice}
+                    finalValue={latestBlobGasPrice}
                   />
                 </TooltipTrigger>
                 <TooltipContent>Last 24 hours changes</TooltipContent>
