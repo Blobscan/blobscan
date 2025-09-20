@@ -1,5 +1,16 @@
 # @blobscan/blob-storage-manager
 
+## 1.0.0
+
+### Minor Changes
+
+- [#888](https://github.com/Blobscan/blobscan/pull/888) [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b) Thanks [@PJColombo](https://github.com/PJColombo)! - Allowed passing chunkstorm config params to swarm storage
+
+### Patch Changes
+
+- Updated dependencies [[`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b)]:
+  - @blobscan/db@0.22.0
+
 ## 0.6.4
 
 ### Patch Changes

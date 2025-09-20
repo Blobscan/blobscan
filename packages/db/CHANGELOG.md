@@ -1,5 +1,15 @@
 # @blobscan/db
 
+## 0.22.0
+
+### Minor Changes
+
+- [#888](https://github.com/Blobscan/blobscan/pull/888) [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b) Thanks [@PJColombo](https://github.com/PJColombo)! - Created an extension for computing extra fields for different models
+
+### Patch Changes
+
+- [#888](https://github.com/Blobscan/blobscan/pull/888) [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b) Thanks [@PJColombo](https://github.com/PJColombo)! - Separated upsert many and eth usd fetching functions into new extensions
+
 ## 0.21.0
 
 ### Minor Changes

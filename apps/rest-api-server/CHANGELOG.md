@@ -1,5 +1,18 @@
 # @blobscan/rest-api-server
 
+## 0.8.2
+
+### Patch Changes
+
+- [#895](https://github.com/Blobscan/blobscan/pull/895) [`c497d51`](https://github.com/Blobscan/blobscan/commit/c497d51241512dc5c09f19cba65f0424295e146a) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated to use a singleton Redis client for trpc middleware and blob propagator service
+
+- Updated dependencies [[`5df65d3`](https://github.com/Blobscan/blobscan/commit/5df65d3387b2e66ef40aa941aebcd2f239405874), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b), [`c497d51`](https://github.com/Blobscan/blobscan/commit/c497d51241512dc5c09f19cba65f0424295e146a), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b)]:
+  - @blobscan/api@1.0.0
+  - @blobscan/db@0.22.0
+  - @blobscan/blob-storage-manager@1.0.0
+  - @blobscan/syncers@0.6.0
+  - @blobscan/blob-propagator@1.0.0
+
 ## 0.8.1
 
 ### Patch Changes
