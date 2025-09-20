@@ -4,22 +4,19 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
 import morgan from "morgan";
-import swaggerUi from "swagger-ui-express";
-import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
 import "./bigint";
-import { createTRPCContext, createMetricsHandler } from "@blobscan/api";
+import { createMetricsHandler } from "@blobscan/api";
 import { env } from "@blobscan/env";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 
 import "./instrumentation";
 import { logger } from "@blobscan/logger";
 
-import { appRouter } from "./app-router";
 import { printBanner } from "./banner";
 import { getBlobPropagator } from "./blob-propagator";
-import { openApiDocument } from "./openapi";
-import { prisma } from "./prisma";
+import { prisma } from "./clients/prisma";
+import { setUpOpenApiTRPC } from "./openapi-trpc";
 import { setUpSyncers } from "./syncers";
 
 collectDefaultMetrics();
@@ -29,10 +26,6 @@ printBanner();
 async function main() {
   const metricsHandler = createMetricsHandler(prisma);
   const closeSyncers = await setUpSyncers();
-
-  const blobPropagator = await getBlobPropagator();
-
-  logger.info("Blob propagator service set up!");
 
   const app = express();
 
@@ -51,39 +44,7 @@ async function main() {
     return metricsHandler(req, res);
   });
 
-  // Serve Swagger UI with our OpenAPI schema
-  app.use("/", swaggerUi.serve);
-  app.get("/", swaggerUi.setup(openApiDocument));
-
-  // Handle incoming OpenAPI requests
-  app.use(
-    "/",
-    createOpenApiExpressMiddleware({
-      router: appRouter,
-      createContext: createTRPCContext({
-        blobPropagator,
-        chainId: env.CHAIN_ID,
-        enableTracing: env.TRACES_ENABLED,
-        prisma,
-        scope: "rest-api",
-        apiKeys: {
-          admin: env.ADMIN_API_KEY,
-          accesses: {
-            blobDataRead: env.BLOB_DATA_API_KEY,
-          },
-          services: {
-            indexer: env.SECRET_KEY,
-            loadNetwork: env.WEAVEVM_API_KEY,
-          },
-        },
-      }),
-      onError({ error }) {
-        Sentry.captureException(error);
-
-        logger.error(error);
-      },
-    })
-  );
+  await setUpOpenApiTRPC(app);
 
   const server = app.listen(env.BLOBSCAN_API_PORT, () => {
     logger.info(`Server started on http://0.0.0.0:${env.BLOBSCAN_API_PORT}`);
@@ -95,7 +56,7 @@ async function main() {
     await prisma
       .$disconnect()
       .finally(async () => {
-        await blobPropagator?.close();
+        (await getBlobPropagator()).close();
       })
       .finally(async () => {
         await closeSyncers();

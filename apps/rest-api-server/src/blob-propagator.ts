@@ -1,15 +1,19 @@
 import { BlobPropagator } from "@blobscan/blob-propagator";
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import { env } from "@blobscan/env";
+import { logger } from "@blobscan/logger";
 
 import { createBlobStorages } from "./blob-storages";
-import { prisma } from "./prisma";
+import { prisma } from "./clients/prisma";
+import { redis } from "./clients/redis";
 
 let blobPropagator: BlobPropagator | undefined;
 
 async function getBlobPropagator() {
   if (!blobPropagator) {
     blobPropagator = await createBlobPropagator();
+
+    logger.info("Blob propagator service set up!");
   }
 
   return blobPropagator;
@@ -34,7 +38,7 @@ async function createBlobPropagator() {
     blobStorages,
     prisma,
     primaryBlobStorage,
-    redisConnectionOrUri: env.REDIS_URI,
+    redisConnectionOrUri: redis,
     enableReconciler: env.BLOB_RECONCILER_ENABLED,
     reconcilerConfig: {
       cronPattern: env.BLOB_RECONCILER_CRON_PATTERN,
