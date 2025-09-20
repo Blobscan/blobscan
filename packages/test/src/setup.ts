@@ -1,10 +1,10 @@
 import "./polyfill";
-import fs from "fs";
 import { afterAll, beforeAll, beforeEach, vi } from "vitest";
 
 import { fixtures } from "./fixtures";
 import { getAnvil } from "./services/anvil";
 import { getPrisma } from "./services/prisma";
+import { redis } from "./services/redis";
 
 const { anvil, server } = getAnvil();
 const prisma = getPrisma();
@@ -25,6 +25,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  await redis.flushdb();
   await fixtures.create(prisma);
 });
 
@@ -40,5 +41,9 @@ afterAll(async () => {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     .finally(async () => {
       await server.stop();
+    })
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    .finally(async () => {
+      await redis.flushdb();
     });
 });

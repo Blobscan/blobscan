@@ -15,7 +15,7 @@ import {
 
 // Number of days to subtract when the time frame is larger than 30 days
 // and the scope is web. This is to avoid fetching too many days of data at once.
-const DAYS_INTERVAL_GRANULARITY = 4;
+const DAYS_INTERVAL_GRANULARITY = 5;
 
 export const timeFrameSchema = z.enum([
   "1d",

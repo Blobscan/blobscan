@@ -6,6 +6,7 @@ import type {
   NodeHTTPRequest,
   NodeHTTPResponse,
 } from "@trpc/server/adapters/node-http";
+import type IORedis from "ioredis";
 
 import type { BlobPropagator } from "@blobscan/blob-propagator";
 import type { BlobscanPrismaClient } from "@blobscan/db";
@@ -20,6 +21,7 @@ export type CreateContextOptions =
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
   apiClient?: ApiClient;
   blobPropagator?: BlobPropagator;
+  redis?: IORedis;
   prisma: BlobscanPrismaClient;
 };
 
@@ -33,31 +35,39 @@ export type AccessKeys = Partial<{
 }>;
 
 export type ApiKeys = Partial<{
+  accesses: AccessKeys;
   admin: string;
   services: ServiceApiKeys;
-  accesses: AccessKeys;
 }>;
 
 export type CreateContextParams = {
+  apiKeys?: ApiKeys;
   blobPropagator?: BlobPropagator;
   chainId: number;
-  prisma: BlobscanPrismaClient;
   enableTracing?: boolean;
+  prisma: BlobscanPrismaClient;
+  redis?: IORedis;
   scope: ContextScope;
-  apiKeys?: ApiKeys;
 };
 
 export type TRPCInnerContext = {
   prisma: BlobscanPrismaClient;
   blobPropagator?: BlobPropagator;
+  redis?: IORedis;
   apiClient?: ApiClient;
 };
 
-export function createTRPCInnerContext(opts: CreateInnerContextOptions) {
+export function createTRPCInnerContext({
+  prisma,
+  blobPropagator,
+  apiClient,
+  redis,
+}: CreateInnerContextOptions) {
   return {
-    prisma: opts.prisma,
-    blobPropagator: opts.blobPropagator,
-    apiClient: opts.apiClient,
+    prisma,
+    blobPropagator,
+    apiClient,
+    redis,
   };
 }
 
@@ -70,6 +80,7 @@ export function createTRPCContext({
   enableTracing,
   scope,
   apiKeys,
+  redis,
 }: CreateContextParams) {
   return async (opts: CreateContextOptions) => {
     try {
@@ -81,6 +92,7 @@ export function createTRPCContext({
         prisma,
         apiClient,
         blobPropagator,
+        redis,
       });
 
       return {
