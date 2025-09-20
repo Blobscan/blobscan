@@ -44,7 +44,7 @@ describe("getAppState", () => {
           number: latestBlock.number,
           slot: latestBlock.slot,
           timestamp: new Date(latestBlock.timestamp),
-          blobGasPrice: new Prisma.Decimal(latestBlock.blobGasPrice),
+          blobGasPrice: BigInt(latestBlock.blobGasPrice),
         }
       : {};
 
