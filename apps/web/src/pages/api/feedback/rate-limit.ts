@@ -1,14 +1,7 @@
 import type { NextApiRequest } from "next";
-import { Redis } from "ioredis";
 import { RateLimiterRedis } from "rate-limiter-flexible";
 
-import { env } from "../../../env.mjs";
-
-const redis = new Redis(env.REDIS_URI);
-
-redis.on("error", (error) => {
-  console.error("Redis error:", error);
-});
+import { redis } from "~/redis";
 
 const ratelimit = new RateLimiterRedis({
   storeClient: redis,
