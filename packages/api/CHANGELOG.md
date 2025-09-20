@@ -1,5 +1,26 @@
 # @blobscan/api
 
+## 0.29.0
+
+### Minor Changes
+
+- [#825](https://github.com/Blobscan/blobscan/pull/825) [`5df65d3`](https://github.com/Blobscan/blobscan/commit/5df65d3387b2e66ef40aa941aebcd2f239405874) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added procedures to retrieve and update the logger's level
+
+- [#888](https://github.com/Blobscan/blobscan/pull/888) [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b) Thanks [@PJColombo](https://github.com/PJColombo)! - Renamed block response field `blobBaseFees` to `blobGasBaseFee`
+
+- [#888](https://github.com/Blobscan/blobscan/pull/888) [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b) Thanks [@PJColombo](https://github.com/PJColombo)! - Allowed passing chain ID and service keys when creating tRPC context
+
+### Patch Changes
+
+- [#888](https://github.com/Blobscan/blobscan/pull/888) [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b) Thanks [@PJColombo](https://github.com/PJColombo)! - Use prisma extension functions to compute extra fields instead of calculating them at api level
+
+- [#895](https://github.com/Blobscan/blobscan/pull/895) [`c497d51`](https://github.com/Blobscan/blobscan/commit/c497d51241512dc5c09f19cba65f0424295e146a) Thanks [@PJColombo](https://github.com/PJColombo)! - Cached daily stats responses
+
+- Updated dependencies [[`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b), [`54cdc87`](https://github.com/Blobscan/blobscan/commit/54cdc8763def3ee798e8b34c39eef4a5a93f8d1b)]:
+  - @blobscan/db@0.22.0
+  - @blobscan/blob-propagator@0.6.1
+  - @blobscan/rollups@0.3.7
+
 ## 0.28.1
 
 ### Patch Changes
