@@ -1,3 +1,5 @@
+import { TRPCError } from "@trpc/server";
+
 import { logger } from "@blobscan/logger";
 import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 import { z } from "@blobscan/zod";
@@ -70,6 +72,13 @@ export const indexData = createAuthedProcedure("indexer")
   .input(inputSchema)
   .output(outputSchema)
   .mutation(async ({ ctx: { prisma, blobPropagator, chainId }, input }) => {
+    if (!blobPropagator) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Blob propagator is missing",
+      });
+    }
+
     const networkConfig = getNetworkBlobConfigBySlot(chainId, input.block.slot);
     const operations = [];
 
@@ -128,7 +137,7 @@ export const indexData = createAuthedProcedure("indexer")
       ...b,
       blockNumber: input.block.number,
     }));
-    await blobPropagator?.propagateBlobs(propagatorInput);
+    await blobPropagator.propagateBlobs(propagatorInput);
 
     p1 = performance.now();
 

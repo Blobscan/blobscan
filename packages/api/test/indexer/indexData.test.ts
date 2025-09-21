@@ -29,17 +29,27 @@ import {
 describe("indexData", () => {
   let nonAuthorizedCaller: IndexerCaller;
   let authorizedCaller: IndexerCaller;
+  let noPropagatorCaller: IndexerCaller;
   let authorizedCtx: TRPCContext;
 
   beforeAll(async () => {
-    const ctx = await createTestContext();
+    const ctx = await createTestContext({
+      withBlobPropagator: true,
+    });
 
     authorizedCtx = await createTestContext({
       apiClient: "indexer",
+      withBlobPropagator: true,
     });
 
     nonAuthorizedCaller = createIndexerCaller(ctx);
     authorizedCaller = createIndexerCaller(authorizedCtx);
+    noPropagatorCaller = createIndexerCaller(
+      await createTestContext({
+        apiClient: "indexer",
+        withBlobPropagator: false,
+      })
+    );
   });
 
   afterAll(async () => {
@@ -528,6 +538,17 @@ describe("indexData", () => {
       // Index the same block again
       await expect(authorizedCaller.indexData(INPUT)).resolves.toBeUndefined();
     });
+
+    testValidError(
+      "should fail when no blob propagator is defined",
+      async () => {
+        await noPropagatorCaller.indexData(INPUT);
+      },
+      TRPCError,
+      {
+        checkCause: true,
+      }
+    );
 
     testValidError(
       "should fail when receiving an empty array of transactions",
