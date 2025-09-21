@@ -2,6 +2,10 @@
 
 exports[`indexData > should fail when calling procedure without auth 1`] = `"UNAUTHORIZED"`;
 
+exports[`indexData > when authorized > should fail when no blob propagator is defined 1`] = `"Blob propagator is missing"`;
+
+exports[`indexData > when authorized > should fail when no blob propagator is defined 2`] = `undefined`;
+
 exports[`indexData > when authorized > should fail when receiving an empty array of blobs 1`] = `
 "[
   {
