@@ -41,21 +41,13 @@ const Tx: NextPage = () => {
     { enabled: router.isReady }
   );
 
-  const { data: neighbors } = api.tx.getTxNeighbors.useQuery(
-    tx
-      ? {
-          senderAddress: tx.from,
-          blockNumber: tx.blockNumber,
-          index: tx.index as number,
-        }
-      : {
-          senderAddress: "",
-          blockNumber: 0,
-          index: 0,
-        },
+  const { data: adjacentTxs } = api.tx.getAdjacentsByAddress.useQuery(
     {
-      enabled: Boolean(tx),
-    }
+      blockTimestamp: tx?.blockTimestamp ?? new Date(),
+      senderAddress: tx?.from ?? "",
+      txIndex: tx?.index ?? 0,
+    },
+    { enabled: !!tx }
   );
 
   if (error) {
@@ -273,11 +265,15 @@ const Tx: NextPage = () => {
             Transaction Details
             <NavArrows
               prev={{
-                href: neighbors?.prev ? `/tx/${neighbors.prev}` : undefined,
+                href: adjacentTxs?.prevTxHash
+                  ? `/tx/${adjacentTxs.prevTxHash}`
+                  : undefined,
                 tooltip: "Previous transaction from this sender",
               }}
               next={{
-                href: neighbors?.next ? `/tx/${neighbors.next}` : undefined,
+                href: adjacentTxs?.nextTxHash
+                  ? `/tx/${adjacentTxs.nextTxHash}`
+                  : undefined,
                 tooltip: "Next transaction from this sender",
               }}
             />
