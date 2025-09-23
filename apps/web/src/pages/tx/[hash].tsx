@@ -26,6 +26,7 @@ import {
   formatNumber,
   performDiv,
   pluralize,
+  buildTransactionRoute,
 } from "~/utils";
 
 const Tx: NextPage = () => {
@@ -45,7 +46,7 @@ const Tx: NextPage = () => {
     {
       blockTimestamp: tx?.blockTimestamp ?? new Date(),
       senderAddress: tx?.from ?? "",
-      txIndex: tx?.index ?? 0,
+      txIndex: tx?.index ?? (0 as number),
     },
     { enabled: !!tx }
   );
@@ -230,7 +231,7 @@ const Tx: NextPage = () => {
         name: "Blob As Calldata Gas Fee",
         value: (
           <div className="display flex gap-1">
-            {<EtherDisplay weiAmount={blobAsCalldataGasFee} />}
+            <EtherDisplay weiAmount={blobAsCalldataGasFee} />
             <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
               <Separator />
               <strong>
@@ -264,17 +265,18 @@ const Tx: NextPage = () => {
           <div className="flex items-center justify-start gap-4">
             Transaction Details
             <NavArrows
+              size="lg"
               prev={{
                 href: adjacentTxs?.prevTxHash
-                  ? `/tx/${adjacentTxs.prevTxHash}`
+                  ? buildTransactionRoute(adjacentTxs.prevTxHash)
                   : undefined,
-                tooltip: "Previous transaction from this sender",
+                tooltip: "Previous Transaction from This Sender",
               }}
               next={{
                 href: adjacentTxs?.nextTxHash
-                  ? `/tx/${adjacentTxs.nextTxHash}`
+                  ? buildTransactionRoute(adjacentTxs.nextTxHash)
                   : undefined,
-                tooltip: "Next transaction from this sender",
+                tooltip: "Next Transaction from This Sender",
               }}
             />
           </div>

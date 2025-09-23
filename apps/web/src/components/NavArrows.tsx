@@ -2,69 +2,55 @@ import { useRouter } from "next/router";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 import { IconButton } from "./IconButton";
+import type { IconButtonProps } from "./IconButton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
 
-export function NavArrows({
-  next,
-  prev,
-}: {
-  next: {
-    href?: string;
-    tooltip?: string;
-  };
-  prev: {
-    href?: string;
-    tooltip?: string;
-  };
-}) {
-  return (
-    <div className="flex items-center justify-center gap-1">
-      <Tooltip>
-        <TooltipTrigger
-          className={prev.href ? "cursor-pointer" : "cursor-default"}
-        >
-          <NavArrow type="prev" href={prev.href} />
-        </TooltipTrigger>
-        <TooltipContent>{prev.tooltip || "Previous"}</TooltipContent>
-      </Tooltip>
-      <Tooltip>
-        <TooltipTrigger
-          className={next.href ? "cursor-pointer" : "cursor-default"}
-        >
-          <NavArrow type="next" href={next.href} />
-        </TooltipTrigger>
-        <TooltipContent>{next.tooltip || "Next"}</TooltipContent>
-      </Tooltip>
-    </div>
-  );
+interface NavData {
+  href?: string;
+  tooltip?: string;
 }
 
-function NavArrow({ type, href }: { type: "next" | "prev"; href?: string }) {
+export interface NavArrowProps extends NavData {
+  type: "prev" | "next";
+  size: IconButtonProps["size"];
+}
+
+function NavArrow({ type, size, href, tooltip }: NavArrowProps) {
   const router = useRouter();
 
   return (
-    <IconButton
-      size="sm"
-      onClick={() => {
-        if (href) {
-          router.push(href);
-        }
-      }}
-      className={`
-          dark:bg-neutral-850
-          bg-border-border-dark
-          rounded-md
-          border
-          border-border-light
-          bg-white
-          p-[3px]
-          dark:border-border-dark
-          dark:bg-border-dark
-          ${href ? "" : "cursor-default opacity-50"}
-      `}
-      disabled={!href}
-    >
-      {type === "next" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-    </IconButton>
+    <Tooltip>
+      <TooltipTrigger className={href ? "cursor-pointer" : "cursor-default"}>
+        <IconButton
+          size={size}
+          variant={href ? "default" : "disabled"}
+          onClick={
+            href
+              ? () => {
+                  router.push(href);
+                }
+              : undefined
+          }
+          disabled={!href}
+        >
+          {type === "next" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+        </IconButton>
+        {!!href && <TooltipContent>{tooltip || "Next"}</TooltipContent>}
+      </TooltipTrigger>
+    </Tooltip>
+  );
+}
+
+export interface NavArrowsProps {
+  size?: IconButtonProps["size"];
+  prev: NavData;
+  next: NavData;
+}
+export function NavArrows({ size = "md", next, prev }: NavArrowsProps) {
+  return (
+    <div className="flex items-center justify-center gap-3">
+      <NavArrow type="prev" size={size} {...prev} />
+      <NavArrow type="next" size={size} {...next} />
+    </div>
   );
 }
