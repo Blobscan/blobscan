@@ -3,17 +3,14 @@ import { ClockIcon } from "@heroicons/react/24/solid";
 
 import { formatTtl } from "@blobscan/dates";
 
-import { api } from "~/api-client";
+import { useAppState } from "~/providers/AppState";
 import { formatNumber } from "~/utils";
 import type { IndicatorProps } from "../Indicator";
 import { Indicator } from "../Indicator";
 
 export const SyncIndicators: FC = function () {
-  const { data } = api.state.getAppState.useQuery(undefined, {
-    refetchInterval: 60_000,
-    refetchOnWindowFocus: false,
-  });
-  const state = data?.syncState;
+  const { appState } = useAppState();
+  const state = appState?.syncState;
 
   const items: IndicatorProps[] = [
     {

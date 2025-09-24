@@ -62,3 +62,5 @@ export type OverallStats = AppRouterOutputs["stats"]["getOverallStats"][number];
 export type SearchOutput = NonNullable<AppRouterOutputs["search"]>;
 
 export type SearchCategory = keyof SearchOutput;
+
+export type AppState = AppRouterOutputs["state"]["getAppState"];
