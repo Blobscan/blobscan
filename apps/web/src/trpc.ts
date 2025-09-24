@@ -1,4 +1,12 @@
-import { createAppRouter, createTRPCContext } from "@blobscan/api";
+import { createServerSideHelpers as _createServerSideHelepers } from "@trpc/react-query/server";
+import superjson from "superjson";
+
+import {
+  createAppRouter,
+  createTRPCContext,
+  createTRPCInnerContext,
+} from "@blobscan/api";
+import type { TRPCContext } from "@blobscan/api";
 
 import { env } from "./env.mjs";
 import { prisma } from "./prisma";
@@ -25,3 +33,14 @@ export const createContext = createTRPCContext({
     },
   },
 });
+
+export function createServerSideHelpers() {
+  return _createServerSideHelepers({
+    router: appRouter,
+    transformer: superjson,
+    ctx: createTRPCInnerContext({
+      chainId: env.CHAIN_ID,
+      prisma,
+    }) as TRPCContext,
+  });
+}

@@ -21,6 +21,7 @@ export type CreateContextOptions =
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
   apiClient?: ApiClient;
   blobPropagator?: BlobPropagator;
+  chainId: number;
   redis?: IORedis;
   prisma: BlobscanPrismaClient;
 };
@@ -51,6 +52,7 @@ export type CreateContextParams = {
 };
 
 export type TRPCInnerContext = {
+  chainId: number;
   prisma: BlobscanPrismaClient;
   blobPropagator?: BlobPropagator;
   redis?: IORedis;
@@ -58,12 +60,14 @@ export type TRPCInnerContext = {
 };
 
 export function createTRPCInnerContext({
+  chainId,
   prisma,
   blobPropagator,
   apiClient,
   redis,
 }: CreateInnerContextOptions) {
   return {
+    chainId,
     prisma,
     blobPropagator,
     apiClient,
@@ -89,6 +93,7 @@ export function createTRPCContext({
         : undefined;
 
       const innerContext = createTRPCInnerContext({
+        chainId,
         prisma,
         apiClient,
         blobPropagator,
@@ -97,7 +102,6 @@ export function createTRPCContext({
 
       return {
         ...innerContext,
-        chainId,
         enableTracing,
         scope,
         req: opts.req,

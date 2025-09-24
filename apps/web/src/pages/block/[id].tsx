@@ -42,10 +42,10 @@ const Block: NextPage = function () {
     isLoading,
   } = api.block.getByBlockId.useQuery<BlockWithExpandedBlobsAndTransactions>(
     { id: blockNumberOrHash ?? "", expand: "transaction,blob" },
-    { enabled: isReady }
+    { enabled: isReady, refetchOnMount: false }
   );
 
-  const { data: latestBlock } = api.block.getLatestBlock.useQuery();
+  const { data: appState } = api.state.getAppState.useQuery();
   const blockNumber = blockData ? blockData.number : undefined;
 
   const { env } = useEnv();
@@ -109,7 +109,7 @@ const Block: NextPage = function () {
 
     const previousBlockHref =
       firstBlobNumber && blockNumber && firstBlobNumber < blockNumber
-        ? `/block_neighbor?blockNumber=${blockNumber}&direction=prev`
+        ? `/adjacent-block?blockNumber=${blockNumber}&direction=prev`
         : undefined;
 
     detailsFields = [
@@ -122,6 +122,7 @@ const Block: NextPage = function () {
             {blockData.number}
             {!!blockNumber && previousBlockHref && (
               <NavArrows
+                size="lg"
                 prev={{
                   tooltip: "Previous Block",
                   href: previousBlockHref,
@@ -129,8 +130,9 @@ const Block: NextPage = function () {
                 next={{
                   tooltip: "Next Block",
                   href:
-                    latestBlock && blockNumber < latestBlock.number
-                      ? `/block_neighbor?blockNumber=${blockNumber}&direction=next`
+                    appState?.blocks.latest &&
+                    blockNumber < appState.blocks.latest.number
+                      ? `/adjacent-block?blockNumber=${blockNumber}&direction=next`
                       : undefined,
                 }}
               />
