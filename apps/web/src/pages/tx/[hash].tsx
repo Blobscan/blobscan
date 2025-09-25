@@ -20,7 +20,7 @@ import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import type {
-  GetAdjacentTxByAddressIbput,
+  GetAdjacentTxByAddressInput,
   TransactionWithExpandedBlockAndBlob,
 } from "~/types";
 import {
@@ -51,7 +51,7 @@ const Tx: NextPage = () => {
       blockTimestamp: tx?.blockTimestamp,
       senderAddress: tx?.from,
       txIndex: tx?.index,
-    } as GetAdjacentTxByAddressIbput,
+    } as GetAdjacentTxByAddressInput,
     {
       enabled: !!tx,
       refetchOnMount: false,
