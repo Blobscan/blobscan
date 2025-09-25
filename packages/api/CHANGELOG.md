@@ -1,5 +1,17 @@
 # @blobscan/api
 
+## 0.30.0
+
+### Minor Changes
+
+- [#898](https://github.com/Blobscan/blobscan/pull/898) [`b03b099`](https://github.com/Blobscan/blobscan/commit/b03b09921556f30bb7c0aad6f06215161e7e12a3) Thanks [@PJColombo](https://github.com/PJColombo)! - Added a procedure to fetch a transaction adjacent to another made by the same sender
+
+- [#898](https://github.com/Blobscan/blobscan/pull/898) [`b03b099`](https://github.com/Blobscan/blobscan/commit/b03b09921556f30bb7c0aad6f06215161e7e12a3) Thanks [@PJColombo](https://github.com/PJColombo)! - Added procedure to fetch a block adjacent to another
+
+### Patch Changes
+
+- [#896](https://github.com/Blobscan/blobscan/pull/896) [`606c2c0`](https://github.com/Blobscan/blobscan/commit/606c2c0faa054be1848f89901c25b4f70196f396) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated indexing procedure to throw an error if it gets called without a blob propagator
+
 ## 0.29.0
 
 ### Minor Changes
