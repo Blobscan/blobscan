@@ -20,6 +20,7 @@ import AppLayout from "~/components/AppLayout/AppLayout";
 import { FeedbackWidget } from "~/components/FeedbackWidget/FeedbackWidget";
 import { api } from "~/api-client";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import { AppStateProvider } from "~/providers/AppState";
 import { BlobDecoderWorkerProvider } from "~/providers/BlobDecoderWorker";
 import { EnvProvider, useEnv } from "~/providers/Env";
 
@@ -99,7 +100,9 @@ function AppWrapper(props: NextAppProps) {
     <ThemeProvider attribute="class">
       <BlobDecoderWorkerProvider>
         <EnvProvider>
-          <App {...props} />
+          <AppStateProvider>
+            <App {...props} />
+          </AppStateProvider>
         </EnvProvider>
       </BlobDecoderWorkerProvider>
     </ThemeProvider>

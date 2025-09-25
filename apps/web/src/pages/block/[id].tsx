@@ -1,7 +1,6 @@
+import { useCallback, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-
-import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { Card } from "~/components/Cards/Card";
@@ -14,15 +13,16 @@ import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import type { NavArrowsProps } from "~/components/NavArrows";
 import { NavArrows } from "~/components/NavArrows";
 import { api } from "~/api-client";
-import { getFirstBlobNumber } from "~/content";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { useExternalExplorers } from "~/hooks/useExternalExplorers";
+import { useNetworkConfig } from "~/hooks/useNetworkConfig";
 import NextError from "~/pages/_error";
-import { useEnv } from "~/providers/Env";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
+  buildBlockRoute,
   formatBytes,
   formatNumber,
   formatTimestamp,
@@ -30,28 +30,78 @@ import {
   pluralize,
 } from "~/utils";
 
+const EXPAND_QUERY_PARAM = "transaction,blob";
+
 const Block: NextPage = function () {
   const router = useRouter();
+  const utils = api.useUtils();
   const { buildResourceUrl } = useExternalExplorers("consensus");
+  const [adjacentBlockLoading, setAdjacentBlockLoading] = useState(false);
 
   const isReady = router.isReady;
   const blockNumberOrHash = router.query.id as string | undefined;
+  const { data: latestBlock } = api.block.getLatest.useQuery(undefined, {
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
   const {
     data: blockData,
     error,
     isLoading,
   } = api.block.getByBlockId.useQuery<BlockWithExpandedBlobsAndTransactions>(
-    { id: blockNumberOrHash ?? "", expand: "transaction,blob" },
-    { enabled: isReady }
+    { id: blockNumberOrHash ?? "", expand: EXPAND_QUERY_PARAM },
+    {
+      enabled: isReady,
+      staleTime: Infinity,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    }
   );
-
-  const { data: latestBlock } = api.block.getLatestBlock.useQuery();
-  const blockNumber = blockData ? blockData.number : undefined;
-
-  const { env } = useEnv();
+  const blockNumber = blockData?.number;
+  const { config: networkBlobConfig, firstBlock } =
+    useNetworkConfig(blockNumber);
   const breakpoint = useBreakpoint();
   const isCompact = breakpoint === "sm";
-  const networkName = env ? env.PUBLIC_NETWORK_NAME : undefined;
+  const isFirstBlock =
+    blockNumber && firstBlock ? blockNumber <= firstBlock.number : false;
+  const isLatestBlock =
+    blockNumber && latestBlock ? blockNumber >= latestBlock.number : false;
+
+  const handleNavClick = useCallback<NavArrowsProps["onClick"]>(
+    async function (direction) {
+      if (!blockNumber) {
+        return;
+      }
+
+      setAdjacentBlockLoading(true);
+
+      try {
+        const adjacentBlock = await utils.block.getAdjacentBlock.ensureData(
+          {
+            blockNumber,
+            direction,
+            expand: EXPAND_QUERY_PARAM,
+          },
+          {
+            staleTime: Infinity,
+          }
+        );
+
+        utils.block.getByBlockId.setData(
+          {
+            id: adjacentBlock.number.toString(),
+            expand: EXPAND_QUERY_PARAM,
+          },
+          adjacentBlock
+        );
+
+        router.push(buildBlockRoute(adjacentBlock.number));
+      } finally {
+        setAdjacentBlockLoading(false);
+      }
+    },
+    [utils, router, blockNumber]
+  );
 
   if (error) {
     return (
@@ -68,11 +118,7 @@ const Block: NextPage = function () {
 
   let detailsFields: DetailsLayoutProps["fields"] | undefined;
 
-  if (blockData && env) {
-    const networkBlobConfig = getNetworkBlobConfigBySlot(
-      env.PUBLIC_NETWORK_NAME,
-      blockData.slot
-    );
+  if (blockData && networkBlobConfig) {
     const {
       bytesPerFieldElement,
       fieldElementsPerBlob,
@@ -103,15 +149,6 @@ const Block: NextPage = function () {
     );
     const blobCount = totalBlobSize / blobSize;
 
-    const firstBlobNumber = networkName
-      ? getFirstBlobNumber(networkName)
-      : undefined;
-
-    const previousBlockHref =
-      firstBlobNumber && blockNumber && firstBlobNumber < blockNumber
-        ? `/block_neighbor?blockNumber=${blockNumber}&direction=prev`
-        : undefined;
-
     detailsFields = [
       {
         name: "Block Height",
@@ -120,21 +157,6 @@ const Block: NextPage = function () {
         value: (
           <div className="flex items-center justify-start gap-4">
             {blockData.number}
-            {!!blockNumber && previousBlockHref && (
-              <NavArrows
-                prev={{
-                  tooltip: "Previous Block",
-                  href: previousBlockHref,
-                }}
-                next={{
-                  tooltip: "Next Block",
-                  href:
-                    latestBlock && blockNumber < latestBlock.number
-                      ? `/block_neighbor?blockNumber=${blockNumber}&direction=next`
-                      : undefined,
-                }}
-              />
-            )}
           </div>
         ),
       },
@@ -303,7 +325,27 @@ const Block: NextPage = function () {
   return (
     <>
       <DetailsLayout
-        header="Block Details"
+        header={
+          <div className="flex items-center justify-start gap-4">
+            Block Details
+            <NavArrows
+              size="lg"
+              arrows={{
+                prev: {
+                  tooltip: "Prev Block",
+                  disabled:
+                    isFirstBlock || adjacentBlockLoading || !blockNumber,
+                },
+                next: {
+                  tooltip: "Next Block",
+                  disabled:
+                    isLatestBlock || adjacentBlockLoading || !blockNumber,
+                },
+              }}
+              onClick={handleNavClick}
+            />
+          </div>
+        }
         resource={
           blockData
             ? {

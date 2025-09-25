@@ -1,0 +1,354 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`getAdjacentByAddress > should fail when no next tx was found 1`] = `"No prev transaction found for address 0x6887246668a3b87f54deb3b94ba47a6f63f32985"`;
+
+exports[`getAdjacentByAddress > should fail when no next tx was found 2`] = `undefined`;
+
+exports[`getAdjacentByAddress > should fail when no previous tx was found 1`] = `"No prev transaction found for address 0x6887246668a3b87f54deb3b94ba47a6f63f32985"`;
+
+exports[`getAdjacentByAddress > should fail when no previous tx was found 2`] = `undefined`;
+
+exports[`getAdjacentByAddress > should ignore reorged transactions 1`] = `[TRPCError: No next transaction found for address 0x6887246668a3b87f54deb3b94ba47a6f63f32985]`;
+
+exports[`getAdjacentByAddress > should return next transaction 1`] = `
+{
+  "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsed": 1000n,
+  "blobGasBaseFee": 8650752n,
+  "blobGasMaxFee": 39321600n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 393216n,
+  "blobs": [
+    {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+        },
+        {
+          "storage": "postgres",
+          "url": "http://localhost:3001/blobs/blobHash004/data",
+        },
+      ],
+      "versionedHash": "blobHash004",
+    },
+    {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+        },
+        {
+          "storage": "postgres",
+          "url": "http://localhost:3001/blobs/blobHash004/data",
+        },
+      ],
+      "versionedHash": "blobHash004",
+    },
+    {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+        },
+        {
+          "storage": "postgres",
+          "url": "http://localhost:3001/blobs/blobHash004/data",
+        },
+      ],
+      "versionedHash": "blobHash004",
+    },
+  ],
+  "block": {
+    "blobGasPrice": 22n,
+  },
+  "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
+  "blockNumber": 1007,
+  "blockTimestamp": 2023-08-31T14:00:00.000Z,
+  "category": "rollup",
+  "decodedFields": null,
+  "ethUsdPrice": undefined,
+  "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
+  "hash": "txHash015",
+  "index": 0,
+  "maxFeePerBlobGas": 100n,
+  "rollup": "optimism",
+  "to": "address4",
+}
+`;
+
+exports[`getAdjacentByAddress > should return prev transaction 1`] = `
+{
+  "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsed": 1000n,
+  "blobGasBaseFee": 2883584n,
+  "blobGasMaxFee": 13107200n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 131072n,
+  "blobs": [
+    {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+        },
+      ],
+      "versionedHash": "blobHash001",
+    },
+  ],
+  "block": {
+    "blobGasPrice": 22n,
+  },
+  "blockHash": "blockHash004",
+  "blockNumber": 1004,
+  "blockTimestamp": 2023-08-20T12:00:00.000Z,
+  "category": "rollup",
+  "decodedFields": null,
+  "ethUsdPrice": undefined,
+  "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
+  "hash": "txHash007",
+  "index": 0,
+  "maxFeePerBlobGas": 100n,
+  "rollup": "optimism",
+  "to": "address2",
+}
+`;
+
+exports[`getAdjacentByAddress > when getting expanded transaction results > should return the correct expanded blob 1`] = `
+{
+  "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsed": 1000n,
+  "blobGasBaseFee": 8650752n,
+  "blobGasMaxFee": 39321600n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 393216n,
+  "blobs": [
+    {
+      "commitment": "commitment004",
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+        },
+        {
+          "storage": "postgres",
+          "url": "http://localhost:3001/blobs/blobHash004/data",
+        },
+      ],
+      "proof": "proof004",
+      "size": 1300,
+      "usageSize": 1300,
+      "versionedHash": "blobHash004",
+    },
+    {
+      "commitment": "commitment004",
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+        },
+        {
+          "storage": "postgres",
+          "url": "http://localhost:3001/blobs/blobHash004/data",
+        },
+      ],
+      "proof": "proof004",
+      "size": 1300,
+      "usageSize": 1300,
+      "versionedHash": "blobHash004",
+    },
+    {
+      "commitment": "commitment004",
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+        },
+        {
+          "storage": "postgres",
+          "url": "http://localhost:3001/blobs/blobHash004/data",
+        },
+      ],
+      "proof": "proof004",
+      "size": 1300,
+      "usageSize": 1300,
+      "versionedHash": "blobHash004",
+    },
+  ],
+  "block": {
+    "blobGasPrice": 22n,
+  },
+  "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
+  "blockNumber": 1007,
+  "blockTimestamp": 2023-08-31T14:00:00.000Z,
+  "category": "rollup",
+  "decodedFields": null,
+  "ethUsdPrice": undefined,
+  "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
+  "hash": "txHash015",
+  "index": 0,
+  "maxFeePerBlobGas": 100n,
+  "rollup": "optimism",
+  "to": "address4",
+}
+`;
+
+exports[`getAdjacentByAddress > when getting expanded transaction results > should return the correct expanded block 1`] = `
+{
+  "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsed": 1000n,
+  "blobGasBaseFee": 8650752n,
+  "blobGasMaxFee": 39321600n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 393216n,
+  "blobs": [
+    {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+        },
+        {
+          "storage": "postgres",
+          "url": "http://localhost:3001/blobs/blobHash004/data",
+        },
+      ],
+      "versionedHash": "blobHash004",
+    },
+    {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+        },
+        {
+          "storage": "postgres",
+          "url": "http://localhost:3001/blobs/blobHash004/data",
+        },
+      ],
+      "versionedHash": "blobHash004",
+    },
+    {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+        },
+        {
+          "storage": "postgres",
+          "url": "http://localhost:3001/blobs/blobHash004/data",
+        },
+      ],
+      "versionedHash": "blobHash004",
+    },
+  ],
+  "block": {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
+    "slot": 107,
+  },
+  "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
+  "blockNumber": 1007,
+  "blockTimestamp": 2023-08-31T14:00:00.000Z,
+  "category": "rollup",
+  "decodedFields": null,
+  "ethUsdPrice": undefined,
+  "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
+  "hash": "txHash015",
+  "index": 0,
+  "maxFeePerBlobGas": 100n,
+  "rollup": "optimism",
+  "to": "address4",
+}
+`;
+
+exports[`getAdjacentByAddress > when getting expanded transaction results > should return the correct expanded results when multiple expands are requested 1`] = `
+{
+  "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsed": 1000n,
+  "blobGasBaseFee": 8650752n,
+  "blobGasMaxFee": 39321600n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 393216n,
+  "blobs": [
+    {
+      "commitment": "commitment004",
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+        },
+        {
+          "storage": "postgres",
+          "url": "http://localhost:3001/blobs/blobHash004/data",
+        },
+      ],
+      "proof": "proof004",
+      "size": 1300,
+      "usageSize": 1300,
+      "versionedHash": "blobHash004",
+    },
+    {
+      "commitment": "commitment004",
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+        },
+        {
+          "storage": "postgres",
+          "url": "http://localhost:3001/blobs/blobHash004/data",
+        },
+      ],
+      "proof": "proof004",
+      "size": 1300,
+      "usageSize": 1300,
+      "versionedHash": "blobHash004",
+    },
+    {
+      "commitment": "commitment004",
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+        },
+        {
+          "storage": "postgres",
+          "url": "http://localhost:3001/blobs/blobHash004/data",
+        },
+      ],
+      "proof": "proof004",
+      "size": 1300,
+      "usageSize": 1300,
+      "versionedHash": "blobHash004",
+    },
+  ],
+  "block": {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
+    "slot": 107,
+  },
+  "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
+  "blockNumber": 1007,
+  "blockTimestamp": 2023-08-31T14:00:00.000Z,
+  "category": "rollup",
+  "decodedFields": null,
+  "ethUsdPrice": undefined,
+  "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
+  "hash": "txHash015",
+  "index": 0,
+  "maxFeePerBlobGas": 100n,
+  "rollup": "optimism",
+  "to": "address4",
+}
+`;

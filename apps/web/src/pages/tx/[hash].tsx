@@ -1,3 +1,4 @@
+import { useCallback, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
@@ -12,12 +13,16 @@ import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import type { NavArrowsProps } from "~/components/NavArrows";
 import { NavArrows } from "~/components/NavArrows";
 import { OptimismCard } from "~/components/OptimismCard";
 import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
-import type { TransactionWithExpandedBlockAndBlob } from "~/types";
+import type {
+  GetAdjacentTxByAddressInput,
+  TransactionWithExpandedBlockAndBlob,
+} from "~/types";
 import {
   buildAddressRoute,
   buildBlockRoute,
@@ -26,36 +31,61 @@ import {
   formatNumber,
   performDiv,
   pluralize,
+  buildTransactionRoute,
 } from "~/utils";
 
 const Tx: NextPage = () => {
   const router = useRouter();
+  const utils = api.useUtils();
   const hash = (router.query.hash as string | undefined) ?? "";
-
   const {
     data: tx,
     error,
     isLoading,
   } = api.tx.getByHash.useQuery<TransactionWithExpandedBlockAndBlob>(
     { hash, expand: "block,blob" },
-    { enabled: router.isReady }
+    { enabled: router.isReady, staleTime: Infinity }
   );
-
-  const { data: neighbors } = api.tx.getTxNeighbors.useQuery(
-    tx
-      ? {
-          senderAddress: tx.from,
-          blockNumber: tx.blockNumber,
-          index: tx.index as number,
-        }
-      : {
-          senderAddress: "",
-          blockNumber: 0,
-          index: 0,
-        },
+  const { data: adjacentTxs } = api.tx.getAdjacentsByAddress.useQuery(
     {
-      enabled: Boolean(tx),
+      blockTimestamp: tx?.blockTimestamp,
+      senderAddress: tx?.from,
+      txIndex: tx?.index,
+    } as GetAdjacentTxByAddressInput,
+    {
+      enabled: !!tx,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
     }
+  );
+  const [adjacentTxLoading, setAdjacentTxLoading] = useState(false);
+
+  const handleNavClick = useCallback<NavArrowsProps["onClick"]>(
+    async (direction) => {
+      const adjacentTx =
+        direction === "next"
+          ? adjacentTxs?.nextTxHash
+          : adjacentTxs?.prevTxHash;
+
+      if (!adjacentTx) {
+        return;
+      }
+
+      setAdjacentTxLoading(true);
+
+      try {
+        await utils.tx.getByHash.ensureData({
+          hash: adjacentTx,
+          expand: "block,blob",
+        });
+
+        router.push(buildTransactionRoute(adjacentTx));
+      } finally {
+        setAdjacentTxLoading(false);
+      }
+    },
+    [utils, router, adjacentTxs]
   );
 
   if (error) {
@@ -238,7 +268,7 @@ const Tx: NextPage = () => {
         name: "Blob As Calldata Gas Fee",
         value: (
           <div className="display flex gap-1">
-            {<EtherDisplay weiAmount={blobAsCalldataGasFee} />}
+            <EtherDisplay weiAmount={blobAsCalldataGasFee} />
             <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
               <Separator />
               <strong>
@@ -272,14 +302,18 @@ const Tx: NextPage = () => {
           <div className="flex items-center justify-start gap-4">
             Transaction Details
             <NavArrows
-              prev={{
-                href: neighbors?.prev ? `/tx/${neighbors.prev}` : undefined,
-                tooltip: "Previous transaction from this sender",
+              size="lg"
+              arrows={{
+                prev: {
+                  disabled: !adjacentTxs?.prevTxHash || adjacentTxLoading,
+                  tooltip: "Previous Transaction from This Sender",
+                },
+                next: {
+                  disabled: !adjacentTxs?.nextTxHash || adjacentTxLoading,
+                  tooltip: "Next Transaction from This Sender",
+                },
               }}
-              next={{
-                href: neighbors?.next ? `/tx/${neighbors.next}` : undefined,
-                tooltip: "Next transaction from this sender",
-              }}
+              onClick={handleNavClick}
             />
           </div>
         }

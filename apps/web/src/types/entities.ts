@@ -1,4 +1,4 @@
-import type { AppRouterOutputs } from "@blobscan/api";
+import type { AppRouterInputs, AppRouterOutputs } from "@blobscan/api";
 import type {
   BlobStorage as BlobStorageEnum,
   Rollup as RollupEnum,
@@ -62,3 +62,8 @@ export type OverallStats = AppRouterOutputs["stats"]["getOverallStats"][number];
 export type SearchOutput = NonNullable<AppRouterOutputs["search"]>;
 
 export type SearchCategory = keyof SearchOutput;
+
+export type AppState = AppRouterOutputs["state"]["getAppState"];
+
+export type GetAdjacentTxByAddressInput =
+  AppRouterInputs["tx"]["getAdjacentsByAddress"];

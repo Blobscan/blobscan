@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
@@ -6,12 +6,12 @@ import Skeleton from "react-loading-skeleton";
 
 import dayjs from "@blobscan/dayjs";
 import { convertWei, prettyFormatWei } from "@blobscan/eth-format";
-import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
-import { api } from "~/api-client";
+import { useNetworkConfig } from "~/hooks/useNetworkConfig";
 import BlobIcon from "~/icons/blob.svg";
 import EthereumIcon from "~/icons/ethereum.svg";
 import GasIcon from "~/icons/gas.svg";
+import { useAppState } from "~/providers/AppState";
 import { useEnv } from "~/providers/Env";
 import { capitalize, formatTimestamp } from "~/utils";
 import { DeltaPercentageChange } from "../DeltaPercentage";
@@ -24,11 +24,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
 
 export function NetworkIndicators() {
   const { env } = useEnv();
-  const { data } = api.state.getAppState.useQuery(undefined, {
-    refetchInterval: 60_000,
-    refetchOnWindowFocus: false,
-  });
-  const { ethPrices, blocks } = data || {};
+  const { appState } = useAppState();
+  const ethPrices = appState?.ethPrices;
+  const blocks = appState?.blocks;
+  const { config } = useNetworkConfig(blocks?.latest?.slot);
   const latestEthPrice = ethPrices?.latest;
   const { usdPrice: latestUsdPrice, timestamp: latestUsdPriceTimestamp } =
     latestEthPrice ||
@@ -39,10 +38,6 @@ export function NetworkIndicators() {
         }
       : {});
   const { usdPrice: past24hUsdPrice } = ethPrices?.past24h || {};
-  const networkConfig =
-    blocks?.latest && env?.PUBLIC_NETWORK_NAME
-      ? getNetworkBlobConfigBySlot(env.PUBLIC_NETWORK_NAME, blocks.latest.slot)
-      : undefined;
   const past24hBlobGasPrice = blocks?.past24h?.blobGasPrice;
   const latestBlobGasPrice = blocks?.latest?.blobGasPrice;
   const latestBlobGasUsdPrice =
@@ -50,8 +45,8 @@ export function NetworkIndicators() {
       ? Number(convertWei(latestBlobGasPrice, "ether")) * latestUsdPrice
       : undefined;
   const blobPrice =
-    latestBlobGasPrice && networkConfig
-      ? latestBlobGasPrice * networkConfig.gasPerBlob
+    latestBlobGasPrice && config
+      ? latestBlobGasPrice * config.gasPerBlob
       : undefined;
   const ethBlobPrice = blobPrice
     ? convertWei(blobPrice.toString(), "ether")
@@ -166,10 +161,10 @@ export function NetworkIndicators() {
     <Scrollable>
       <div className="flex w-full  gap-1 text-xs">
         {indicators.map((props, i) => (
-          <>
-            <Indicator key={props.name} {...props} />
+          <Fragment key={props.name}>
+            <Indicator {...props} />
             {i < indicators.length - 1 && <Separator />}
-          </>
+          </Fragment>
         ))}
       </div>
     </Scrollable>

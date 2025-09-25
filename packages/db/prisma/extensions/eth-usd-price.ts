@@ -79,10 +79,10 @@ export const ethUsdPriceExtension = Prisma.defineExtension((prisma) =>
               break;
             }
             case "label": {
-              const direction =
+              const sortDirection =
                 value === "latest" ? Prisma.sql`DESC` : Prisma.sql`ASC`;
 
-              orderBy = Prisma.sql`ORDER BY b.number ${direction} LIMIT 1`;
+              orderBy = Prisma.sql`ORDER BY b.number ${sortDirection} LIMIT 1`;
               break;
             }
           }
@@ -93,6 +93,31 @@ export const ethUsdPriceExtension = Prisma.defineExtension((prisma) =>
               FROM block b join eth_usd_price p on DATE_TRUNC('minute', b.timestamp) = p.timestamp
               ${whereClause}
               ${orderBy}
+            `;
+
+            return ethUsdPrice[0];
+          });
+        },
+
+        findAdjacentEthUsdPrice(
+          blockNumber: number,
+          direction: "next" | "prev"
+        ) {
+          return startBlockModelFnSpan("firndAdjacentEthUsdPrice", async () => {
+            const whereClause =
+              direction === "next"
+                ? Prisma.sql`WHERE b.number > ${blockNumber}`
+                : Prisma.sql`WHERE b.number < ${blockNumber}`;
+            const sortDirection =
+              direction === "next" ? Prisma.sql`ASC` : Prisma.sql`DESC`;
+            const orderByClause = Prisma.sql`ORDER BY b.number ${sortDirection}`;
+
+            const ethUsdPrice = await prisma.$queryRaw<EthUsdPrice[]>`
+              SELECT p.id, p.price, p.timestamp
+              FROM block b join eth_usd_price p on DATE_TRUNC('minute', b.timestamp) = p.timestamp
+              ${whereClause}
+              ${orderByClause}
+              LIMIT 1
             `;
 
             return ethUsdPrice[0];
