@@ -69,16 +69,17 @@ const Block: NextPage = function () {
 
   const handleNavClick = useCallback<NavArrowsProps["onClick"]>(
     async function (direction) {
-      if (!blockNumber) {
+      if (!blockData) {
         return;
       }
 
       setAdjacentBlockLoading(true);
 
+      const currentBlockNumber = blockData.number;
       try {
         const adjacentBlock = await utils.block.getAdjacentBlock.ensureData(
           {
-            blockNumber,
+            blockNumber: currentBlockNumber,
             direction,
             expand: EXPAND_QUERY_PARAM,
           },
@@ -95,12 +96,21 @@ const Block: NextPage = function () {
           adjacentBlock
         );
 
+        utils.block.getAdjacentBlock.setData(
+          {
+            blockNumber: adjacentBlock.number,
+            direction: direction === "next" ? "prev" : "next",
+            expand: EXPAND_QUERY_PARAM,
+          },
+          blockData
+        );
+
         router.push(buildBlockRoute(adjacentBlock.number));
       } finally {
         setAdjacentBlockLoading(false);
       }
     },
-    [utils, router, blockNumber]
+    [utils, router, blockData]
   );
 
   if (error) {
