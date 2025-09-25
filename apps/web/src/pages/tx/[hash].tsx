@@ -1,3 +1,4 @@
+import { useCallback, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
@@ -12,12 +13,16 @@ import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import type { NavArrowsProps } from "~/components/NavArrows";
 import { NavArrows } from "~/components/NavArrows";
 import { OptimismCard } from "~/components/OptimismCard";
 import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
-import type { TransactionWithExpandedBlockAndBlob } from "~/types";
+import type {
+  GetAdjacentTxByAddressIbput,
+  TransactionWithExpandedBlockAndBlob,
+} from "~/types";
 import {
   buildAddressRoute,
   buildBlockRoute,
@@ -31,24 +36,56 @@ import {
 
 const Tx: NextPage = () => {
   const router = useRouter();
+  const utils = api.useUtils();
   const hash = (router.query.hash as string | undefined) ?? "";
-
   const {
     data: tx,
     error,
     isLoading,
   } = api.tx.getByHash.useQuery<TransactionWithExpandedBlockAndBlob>(
     { hash, expand: "block,blob" },
-    { enabled: router.isReady }
+    { enabled: router.isReady, staleTime: Infinity }
   );
-
   const { data: adjacentTxs } = api.tx.getAdjacentsByAddress.useQuery(
     {
-      blockTimestamp: tx?.blockTimestamp ?? new Date(),
-      senderAddress: tx?.from ?? "",
-      txIndex: tx?.index ?? (0 as number),
+      blockTimestamp: tx?.blockTimestamp,
+      senderAddress: tx?.from,
+      txIndex: tx?.index,
+    } as GetAdjacentTxByAddressIbput,
+    {
+      enabled: !!tx,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
+    }
+  );
+  const [adjacentTxLoading, setAdjacentTxLoading] = useState(false);
+
+  const handleNavClick = useCallback<NavArrowsProps["onClick"]>(
+    async (direction) => {
+      const adjacentTx =
+        direction === "next"
+          ? adjacentTxs?.nextTxHash
+          : adjacentTxs?.prevTxHash;
+
+      if (!adjacentTx) {
+        return;
+      }
+
+      setAdjacentTxLoading(true);
+
+      try {
+        await utils.tx.getByHash.ensureData({
+          hash: adjacentTx,
+          expand: "block,blob",
+        });
+
+        router.push(buildTransactionRoute(adjacentTx));
+      } finally {
+        setAdjacentTxLoading(false);
+      }
     },
-    { enabled: !!tx }
+    [utils, router, adjacentTxs]
   );
 
   if (error) {
@@ -266,18 +303,17 @@ const Tx: NextPage = () => {
             Transaction Details
             <NavArrows
               size="lg"
-              prev={{
-                href: adjacentTxs?.prevTxHash
-                  ? buildTransactionRoute(adjacentTxs.prevTxHash)
-                  : undefined,
-                tooltip: "Previous Transaction from This Sender",
+              arrows={{
+                prev: {
+                  disabled: !adjacentTxs?.prevTxHash || adjacentTxLoading,
+                  tooltip: "Previous Transaction from This Sender",
+                },
+                next: {
+                  disabled: !adjacentTxs?.nextTxHash || adjacentTxLoading,
+                  tooltip: "Next Transaction from This Sender",
+                },
               }}
-              next={{
-                href: adjacentTxs?.nextTxHash
-                  ? buildTransactionRoute(adjacentTxs.nextTxHash)
-                  : undefined,
-                tooltip: "Next Transaction from This Sender",
-              }}
+              onClick={handleNavClick}
             />
           </div>
         }

@@ -6,7 +6,6 @@ export type Network =
   | "hoodi"
   | "sepolia"
   | "gnosis"
-  | "chiado"
   | "devnet";
 
 export type NetworkBlobConfig = {
@@ -28,7 +27,7 @@ const COMMON_NETWORK_BLOB_CONFIG = {
   minBlobBaseFee: BigInt(1),
 };
 
-export const FORK_BLOB_CONFIGS: Record<NetworkFork, NetworkBlobConfig> = {
+export const FORK_BLOB_CONFIG: Record<NetworkFork, NetworkBlobConfig> = {
   dencun: {
     ...COMMON_NETWORK_BLOB_CONFIG,
     targetBlobsPerBlock: 3,
@@ -45,6 +44,15 @@ export const FORK_BLOB_CONFIGS: Record<NetworkFork, NetworkBlobConfig> = {
     blobBaseFeeUpdateFraction: BigInt(5007716),
     blobGasLimit: BigInt(1_179_648),
   },
+};
+
+export const NETWORK_FIRST_BLOCK: Record<Network, { number: number }> = {
+  devnet: { number: 0 },
+  gnosis: { number: 32880709 },
+  holesky: { number: 894735 },
+  hoodi: { number: 0 },
+  mainnet: { number: 19426589 },
+  sepolia: { number: 5187052 },
 };
 
 export function getNetworkForkBySlot(
@@ -128,5 +136,5 @@ export function getNetworkBlobConfigBySlot(
       : networkNameOrId;
   const upgrade = getNetworkForkBySlot(network, slot);
 
-  return FORK_BLOB_CONFIGS[upgrade];
+  return FORK_BLOB_CONFIG[upgrade];
 }
