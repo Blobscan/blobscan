@@ -90,7 +90,7 @@ export const ethUsdPriceExtension = Prisma.defineExtension((prisma) =>
           return startBlockModelFnSpan("findEthUsdPrice", async () => {
             const ethUsdPrice = await prisma.$queryRaw<EthUsdPrice[]>`
               SELECT p.id, p.price, p.timestamp
-              FROM block b join eth_usd_price p on DATE_TRUNC('minute', b.timestamp) = p.timestamp
+              FROM block b left join eth_usd_price p on DATE_TRUNC('minute', b.timestamp) = p.timestamp
               ${whereClause}
               ${orderBy}
             `;
@@ -114,7 +114,7 @@ export const ethUsdPriceExtension = Prisma.defineExtension((prisma) =>
 
             const ethUsdPrice = await prisma.$queryRaw<EthUsdPrice[]>`
               SELECT p.id, p.price, p.timestamp
-              FROM block b join eth_usd_price p on DATE_TRUNC('minute', b.timestamp) = p.timestamp
+              FROM block b left join eth_usd_price p on DATE_TRUNC('minute', b.timestamp) = p.timestamp
               ${whereClause}
               ${orderByClause}
               LIMIT 1
@@ -128,7 +128,7 @@ export const ethUsdPriceExtension = Prisma.defineExtension((prisma) =>
         async findEthUsdPrice(txHash: string) {
           const ethUsdPrice = await prisma.$queryRaw<EthUsdPrice[]>`
               SELECT p.id, p.price, p.timestamp
-              FROM transaction tx join eth_usd_price p on DATE_TRUNC('minute', tx.block_timestamp) = p.timestamp
+              FROM transaction tx left join eth_usd_price p on DATE_TRUNC('minute', tx.block_timestamp) = p.timestamp
               WHERE tx.hash = ${txHash}
             `;
 
