@@ -1,5 +1,20 @@
 # @blobscan/web
 
+## 0.40.0
+
+### Minor Changes
+
+- [#898](https://github.com/Blobscan/blobscan/pull/898) [`b03b099`](https://github.com/Blobscan/blobscan/commit/b03b09921556f30bb7c0aad6f06215161e7e12a3) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved nav arrow components and displayed them right next to header
+
+### Patch Changes
+
+- [#898](https://github.com/Blobscan/blobscan/pull/898) [`b03b099`](https://github.com/Blobscan/blobscan/commit/b03b09921556f30bb7c0aad6f06215161e7e12a3) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where block next nav arrow was always disabled
+
+- [#898](https://github.com/Blobscan/blobscan/pull/898) [`b03b099`](https://github.com/Blobscan/blobscan/commit/b03b09921556f30bb7c0aad6f06215161e7e12a3) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved adjacent block navigation by reducing multiple fetches to a single request
+
+- Updated dependencies [[`b03b099`](https://github.com/Blobscan/blobscan/commit/b03b09921556f30bb7c0aad6f06215161e7e12a3), [`606c2c0`](https://github.com/Blobscan/blobscan/commit/606c2c0faa054be1848f89901c25b4f70196f396), [`b03b099`](https://github.com/Blobscan/blobscan/commit/b03b09921556f30bb7c0aad6f06215161e7e12a3)]:
+  - @blobscan/api@0.30.0
+
 ## 0.39.0
 
 ### Minor Changes
