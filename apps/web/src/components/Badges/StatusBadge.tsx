@@ -29,7 +29,10 @@ interface StatusBadgeProps {
   status: Status;
 }
 
-export const StatusBadge: FC<StatusBadgeProps> = ({ status, ...props }) => {
+export const StatusBadge: FC<StatusBadgeProps> = ({
+  status = "unfinalized",
+  ...props
+}) => {
   const { style, icon } = STATUSES[status];
   const statusIcon = icon ? <Icon src={icon} /> : null;
   return (
