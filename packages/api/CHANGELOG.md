@@ -1,5 +1,14 @@
 # @blobscan/api
 
+## 0.30.1
+
+### Patch Changes
+
+- [#901](https://github.com/Blobscan/blobscan/pull/901) [`04dd07c`](https://github.com/Blobscan/blobscan/commit/04dd07cc5fb03a38a0abc98ea4444bcf29b53d98) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where the app state wasn't being returned if the blob storage state is absent
+
+- Updated dependencies [[`4a98059`](https://github.com/Blobscan/blobscan/commit/4a98059612e27be8faa63c3110d530d8b5fbca3a)]:
+  - @blobscan/db@0.22.1
+
 ## 0.30.0
 
 ### Minor Changes
