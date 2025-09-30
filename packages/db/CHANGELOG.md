@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.22.1
+
+### Patch Changes
+
+- [#899](https://github.com/Blobscan/blobscan/pull/899) [`4a98059`](https://github.com/Blobscan/blobscan/commit/4a98059612e27be8faa63c3110d530d8b5fbca3a) Thanks [@PJColombo](https://github.com/PJColombo)! - Optimized eth usd price queries with a `LEFT JOIN` to short-circuit lookups
+
 ## 0.22.0
 
 ### Minor Changes

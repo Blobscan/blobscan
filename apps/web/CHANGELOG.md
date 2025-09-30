@@ -1,5 +1,19 @@
 # @blobscan/web
 
+## 0.41.0
+
+### Minor Changes
+
+- [#902](https://github.com/Blobscan/blobscan/pull/902) [`8c5cfa5`](https://github.com/Blobscan/blobscan/commit/8c5cfa5877ab6556e9e7b09c88958b9922ecd765) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed network name display
+
+- [#902](https://github.com/Blobscan/blobscan/pull/902) [`8c5cfa5`](https://github.com/Blobscan/blobscan/commit/8c5cfa5877ab6556e9e7b09c88958b9922ecd765) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed eth usd price on non-testnet chains only
+
+### Patch Changes
+
+- Updated dependencies [[`4a98059`](https://github.com/Blobscan/blobscan/commit/4a98059612e27be8faa63c3110d530d8b5fbca3a), [`04dd07c`](https://github.com/Blobscan/blobscan/commit/04dd07cc5fb03a38a0abc98ea4444bcf29b53d98)]:
+  - @blobscan/db@0.22.1
+  - @blobscan/api@0.30.1
+
 ## 0.40.0
 
 ### Minor Changes
