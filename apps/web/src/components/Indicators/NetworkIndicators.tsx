@@ -62,114 +62,112 @@ export function NetworkIndicators() {
 
   const indicators: IndicatorProps[] = [];
 
-  if (env) {
-    if (env.PUBLIC_NETWORK_NAME === "devnet") {
-      indicators.push({
-        name: "Network",
-        value: env ? (
-          capitalize(env.PUBLIC_NETWORK_NAME)
-        ) : (
-          <Skeleton height={14} width={48} />
-        ),
-      });
-    }
+  if (env?.PUBLIC_NETWORK_NAME === "devnet") {
+    indicators.push({
+      name: "Network",
+      value: env ? (
+        capitalize(env.PUBLIC_NETWORK_NAME)
+      ) : (
+        <Skeleton height={14} width={48} />
+      ),
+    });
+  }
 
-    if (
-      env.PUBLIC_NETWORK_NAME === "mainnet" ||
-      env.PUBLIC_NETWORK_NAME === "gnosis"
-    ) {
-      indicators.push({
-        icon: <Icon src={EthereumIcon} />,
-        name: "ETH Price",
-        value:
-          latestUsdPrice !== undefined ? (
-            <div className="flex items-center gap-1">
-              <FiatDisplay amount={latestUsdPrice} />
+  if (
+    env?.PUBLIC_NETWORK_NAME === "mainnet" ||
+    env?.PUBLIC_NETWORK_NAME === "gnosis"
+  ) {
+    indicators.push({
+      icon: <Icon src={EthereumIcon} />,
+      name: "ETH Price",
+      value:
+        latestUsdPrice !== undefined ? (
+          <div className="flex items-center gap-1">
+            <FiatDisplay amount={latestUsdPrice} />
 
-              {past24hUsdPrice ? (
-                <>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <DeltaPercentageChange
-                        initialValue={past24hUsdPrice}
-                        finalValue={latestUsdPrice}
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent>Last 24 hours changes</TooltipContent>
-                  </Tooltip>
-                </>
-              ) : undefined}
-              {isOutdated && (
-                <>
-                  <Tooltip>
-                    <TooltipContent>
-                      Outdated price (last updated{" "}
-                      {latestUsdPriceTimestamp
-                        ? formatTimestamp(latestUsdPriceTimestamp, true)
-                        : ""}
-                      )
-                    </TooltipContent>
-                    <TooltipTrigger>
-                      <ExclamationTriangleIcon className="h-3 w-3 text-yellow-600 dark:text-yellow-300" />
-                    </TooltipTrigger>
-                  </Tooltip>
-                </>
-              )}
-            </div>
-          ) : undefined,
-      });
-    }
-
-    indicators.push(
-      {
-        name: "Blob Gas Price",
-        icon: <Icon src={GasIcon} />,
-        value: latestBlobGasPrice && (
-          <div>
-            {prettyFormatWei(latestBlobGasPrice, {
-              numberFormatOpts: {
-                notation: "standard",
-                maximumFractionDigits: 4,
-              },
-            })}{" "}
-            {past24hBlobGasPrice ? (
+            {past24hUsdPrice ? (
               <>
                 <Tooltip>
                   <TooltipTrigger>
                     <DeltaPercentageChange
-                      initialValue={past24hBlobGasPrice}
-                      finalValue={latestBlobGasPrice}
+                      initialValue={past24hUsdPrice}
+                      finalValue={latestUsdPrice}
                     />
                   </TooltipTrigger>
                   <TooltipContent>Last 24 hours changes</TooltipContent>
                 </Tooltip>
               </>
             ) : undefined}
+            {isOutdated && (
+              <>
+                <Tooltip>
+                  <TooltipContent>
+                    Outdated price (last updated{" "}
+                    {latestUsdPriceTimestamp
+                      ? formatTimestamp(latestUsdPriceTimestamp, true)
+                      : ""}
+                    )
+                  </TooltipContent>
+                  <TooltipTrigger>
+                    <ExclamationTriangleIcon className="h-3 w-3 text-yellow-600 dark:text-yellow-300" />
+                  </TooltipTrigger>
+                </Tooltip>
+              </>
+            )}
           </div>
-        ),
-        secondaryValue: latestBlobGasUsdPrice !== undefined && (
-          <FiatDisplay amount={latestBlobGasUsdPrice} />
-        ),
-      },
-      {
-        name: "Blob Price",
-        icon: <Icon src={BlobIcon} />,
-        value: blobPrice && (
-          <span>
-            {prettyFormatWei(blobPrice, {
-              numberFormatOpts: {
-                notation: "standard",
-                maximumFractionDigits: 4,
-              },
-            })}
-          </span>
-        ),
-        secondaryValue: blobUsdPrice !== undefined && (
-          <FiatDisplay amount={blobUsdPrice} />
-        ),
-      }
-    );
+        ) : undefined,
+    });
   }
+
+  indicators.push(
+    {
+      name: "Blob Gas Price",
+      icon: <Icon src={GasIcon} />,
+      value: latestBlobGasPrice && (
+        <div>
+          {prettyFormatWei(latestBlobGasPrice, {
+            numberFormatOpts: {
+              notation: "standard",
+              maximumFractionDigits: 4,
+            },
+          })}{" "}
+          {past24hBlobGasPrice ? (
+            <>
+              <Tooltip>
+                <TooltipTrigger>
+                  <DeltaPercentageChange
+                    initialValue={past24hBlobGasPrice}
+                    finalValue={latestBlobGasPrice}
+                  />
+                </TooltipTrigger>
+                <TooltipContent>Last 24 hours changes</TooltipContent>
+              </Tooltip>
+            </>
+          ) : undefined}
+        </div>
+      ),
+      secondaryValue: latestBlobGasUsdPrice !== undefined && (
+        <FiatDisplay amount={latestBlobGasUsdPrice} />
+      ),
+    },
+    {
+      name: "Blob Price",
+      icon: <Icon src={BlobIcon} />,
+      value: blobPrice && (
+        <span>
+          {prettyFormatWei(blobPrice, {
+            numberFormatOpts: {
+              notation: "standard",
+              maximumFractionDigits: 4,
+            },
+          })}
+        </span>
+      ),
+      secondaryValue: blobUsdPrice !== undefined && (
+        <FiatDisplay amount={blobUsdPrice} />
+      ),
+    }
+  );
 
   return (
     <Scrollable>
