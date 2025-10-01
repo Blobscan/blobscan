@@ -1,5 +1,11 @@
 # @blobscan/api
 
+## 0.30.2
+
+### Patch Changes
+
+- [#903](https://github.com/Blobscan/blobscan/pull/903) [`779fafa`](https://github.com/Blobscan/blobscan/commit/779fafafc590ff2b0e98d72feb3af003095a8cf6) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where the blob response incorrectly included the transaction index instead of the actual blob index
+
 ## 0.30.1
 
 ### Patch Changes
