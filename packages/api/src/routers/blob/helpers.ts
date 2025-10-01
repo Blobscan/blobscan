@@ -277,12 +277,13 @@ export function toResponseBlob(
             toId,
             computeBlobGasBaseFee,
             computeUsdFields,
+            index: _,
             ...restPrismaTx
           } = prismaTx;
 
           responseBlobOnTx = {
-            ...responseBlobOnTx,
             ...restPrismaTx,
+            ...responseBlobOnTx,
             ...normalizePrismaTransactionFields({
               decodedFields,
               from,
