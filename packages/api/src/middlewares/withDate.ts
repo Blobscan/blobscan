@@ -17,7 +17,8 @@ export const dateSchema = z.object({
 });
 
 export const withDatePeriod = t.middleware(({ next, input }) => {
-  const { from, to } = datePeriodSchema.parse(input) || {};
+  const parsed = datePeriodSchema.parse(input);
+  const { from, to } = parsed || {};
   const hasAtLeastOneDate = Boolean(from || to);
 
   const datePeriod = hasAtLeastOneDate
