@@ -26,11 +26,12 @@ datasource db {
 }
 
 enum BlobStorage {
-  GOOGLE   @map("google")
-  POSTGRES @map("postgres")
-  SWARM    @map("swarm")
-  WEAVEVM  @map("weavevm")
-  S3       @map("s3")
+  GOOGLE      @map("google")
+  POSTGRES    @map("postgres")
+  SWARM       @map("swarm")
+  SWARMYCLOUD @map("swarmycloud")
+  WEAVEVM     @map("weavevm")
+  S3          @map("s3")
 
   @@map("blob_storage")
 }

@@ -10,7 +10,7 @@ import {
 
 const nodeEnvSchema = z.enum(["development", "test", "production"]);
 
-const BLOB_STORAGE = ["GOOGLE", "POSTGRES", "SWARM", "S3", "WEAVEVM"] as const;
+const BLOB_STORAGE = ["GOOGLE", "POSTGRES", "SWARM", "SWARMYCLOUD", "S3", "WEAVEVM"] as const;
 const blobStorageSchema = z.enum(BLOB_STORAGE);
 
 export const blobStorageCoercionSchema = z.string().transform((value, ctx) => {
@@ -201,6 +201,13 @@ export const env = createEnv({
       S3_STORAGE_ENDPOINT: z.string().url().optional(),
       S3_STORAGE_FORCE_PATH_STYLE: booleanSchema.optional(),
 
+      // SwarmyCloud storage
+      SWARMY_STORAGE_ENABLED: booleanSchema.default("false"),
+      SWARMY_API_KEY: z
+        .string()
+        .optional()
+        .superRefine(requireIfEnvEnabled("SWARMY_STORAGE_ENABLED")),
+
       // WeaveVM storage
       WEAVEVM_STORAGE_ENABLED: booleanSchema.default("false"),
       WEAVEVM_STORAGE_API_BASE_URL: z
@@ -244,7 +251,7 @@ export const env = createEnv({
     );
 
     console.log(
-      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}`
+      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, swarmy=${env.SWARMY_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}`
     );
 
     if (env.GOOGLE_STORAGE_ENABLED) {
