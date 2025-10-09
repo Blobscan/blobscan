@@ -4,6 +4,7 @@ import {
   PostgresStorage,
   S3Storage,
   SwarmStorage,
+  SwarmyCloudStorage,
   WeaveVMStorage,
 } from "@blobscan/blob-storage-manager";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
@@ -76,6 +77,18 @@ export async function createStorageFromEnv(
         chainId,
         beeEndpoint: env.BEE_ENDPOINT,
         prisma,
+      });
+    }
+    case BlobStorageName.SWARMYCLOUD: {
+      if (!env.SWARMY_API_KEY) {
+        throw new Error(
+          "Missing required env variable for SwarmyCloudStorage: SWARMY_API_KEY"
+        );
+      }
+
+      return SwarmyCloudStorage.create({
+        chainId,
+        apiKey: env.SWARMY_API_KEY,
       });
     }
     case BlobStorageName.WEAVEVM: {

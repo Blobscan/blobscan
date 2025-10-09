@@ -1,6 +1,6 @@
 import type { BlobPropagationWorkerProcessor } from "../types";
 import { propagateBlob } from "../utils";
 
-export const s3Processor: BlobPropagationWorkerProcessor =
+export const blobPropagatorProcessor: BlobPropagationWorkerProcessor =
   (processorParams) => (job) =>
     propagateBlob(job.data, processorParams);

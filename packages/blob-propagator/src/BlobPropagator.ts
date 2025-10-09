@@ -6,7 +6,6 @@ import IORedis from "ioredis";
 
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import type { BlobscanPrismaClient } from "@blobscan/db";
-import type { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { logger } from "@blobscan/logger";
 
 import {
@@ -19,19 +18,13 @@ import { BlobPropagatorCreationError, BlobPropagatorError } from "./errors";
 import type {
   BlobPropagationInput,
   BlobPropagationWorkerParams,
-  BlobPropagationWorkerProcessor,
   Reconciler,
   ReconcilerProcessorParams,
   ReconcilerProcessorResult,
   StoragePropagator,
 } from "./types";
 import { createBlobPropagationJob, computeLinearPriority } from "./utils";
-import {
-  gcsProcessor,
-  postgresProcessor,
-  s3Processor,
-  swarmProcessor,
-} from "./worker-processors";
+import { blobPropagatorProcessor } from "./worker-processors/propagator";
 import { reconcilerProcessor } from "./worker-processors/reconciler";
 
 export type BlobPropagatorConfig = {
@@ -47,17 +40,6 @@ export type BlobPropagatorConfig = {
     batchSize: number;
     cronPattern: string;
   };
-};
-
-export const STORAGE_WORKER_PROCESSORS: Record<
-  BlobStorageName,
-  BlobPropagationWorkerProcessor | undefined
-> = {
-  GOOGLE: gcsProcessor,
-  SWARM: swarmProcessor,
-  POSTGRES: postgresProcessor,
-  S3: s3Processor,
-  WEAVEVM: undefined,
 };
 
 export class BlobPropagator {
@@ -362,32 +344,19 @@ export class BlobPropagator {
     params: Omit<BlobPropagationWorkerParams, "targetBlobStorage">,
     opts: WorkerOptions
   ): StoragePropagator[] {
-    const supportedBlobStorages = blobStorages.filter((s) => {
-      const workerProcessor = STORAGE_WORKER_PROCESSORS[s.name];
-
-      if (!workerProcessor) {
-        logger.warn(`Skipping torage ${s.name}: no worker processor supported`);
-      }
-
-      return !!workerProcessor;
-    });
+    const supportedBlobStorages = blobStorages.filter(
+      (s) => s.name !== "WEAVEVM"
+    );
 
     return supportedBlobStorages.map((targetBlobStorage) => {
       const storageName = targetBlobStorage.name;
-      const workerProcessor = STORAGE_WORKER_PROCESSORS[storageName];
-
-      if (!workerProcessor) {
-        throw new Error(
-          `Storage ${storageName} not supported: no worker processor defined`
-        );
-      }
 
       const workerName = STORAGE_WORKER_NAMES[storageName];
 
       const queue = new Queue(workerName, opts);
       const worker = this.#createWorker(
         workerName,
-        workerProcessor({
+        blobPropagatorProcessor({
           ...params,
           targetBlobStorage,
         }),

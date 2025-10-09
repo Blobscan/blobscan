@@ -17,12 +17,12 @@ import type {
 } from "@blobscan/db";
 import { env, testValidError } from "@blobscan/test";
 
-import { STORAGE_WORKER_PROCESSORS } from "../src/BlobPropagator";
 import type {
   BlobPropagationJob,
   BlobPropagationWorkerParams,
   BlobPropagationWorkerProcessor,
 } from "../src/types";
+import { blobPropagatorProcessor } from "../src/worker-processors/propagator";
 import { createBlobStorages } from "./helpers";
 
 function runWorkerTests(
@@ -49,15 +49,7 @@ function runWorkerTests(
     beforeEach(async () => {
       const workerParams = await getWorkerParams();
 
-      const storageWorker = STORAGE_WORKER_PROCESSORS[storageName];
-
-      if (!storageWorker) {
-        throw new Error(
-          `No worker processor found for the "${storageName}" storage`
-        );
-      }
-
-      storageWorkerProcessor = storageWorker(workerParams);
+      storageWorkerProcessor = blobPropagatorProcessor(workerParams);
 
       targetBlobStorage = workerParams.targetBlobStorage;
 

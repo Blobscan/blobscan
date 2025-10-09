@@ -135,6 +135,7 @@ export const createComputedFieldsExtension = ({
 
                     return `${postgres.apiBaseUrl}/blobs/${dataReference}/data`;
                   }
+                  case "SWARMYCLOUD":
                   case "SWARM":
                     return `https://api.gateway.ethswarm.org/bzz/${dataReference}`;
                   case "WEAVEVM": {
