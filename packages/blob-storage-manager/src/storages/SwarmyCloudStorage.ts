@@ -14,9 +14,13 @@ interface SwarmyCloudUploadResponse {
   swarmReference: string;
 }
 
+export const SWARMY_BASE_URL = "https://api.swarmy.cloud";
+export const SWARMY_UPLOAD_URL = `${SWARMY_BASE_URL}/api/data/bin`;
+export const SWARMY_FETCH_URL = `${SWARMY_BASE_URL}/files`;
+
 export class SwarmyCloudStorage extends BlobStorage {
-  private readonly apiKey: string;
-  private readonly uploadUrl = "https://api.swarmy.cloud/api/data/bin";
+  protected readonly apiKey: string;
+  protected readonly uploadUrl = "https://api.swarmy.cloud/api/data/bin";
 
   protected constructor({ chainId, apiKey }: SwarmyCloudStorageConfig) {
     super(BlobStorageName.SWARMYCLOUD, chainId);
@@ -33,7 +37,7 @@ export class SwarmyCloudStorage extends BlobStorage {
   ): Promise<string> {
     try {
       const response = await fetch(
-        `https://api.swarmy.cloud/files/${uri}?k=${this.apiKey}`,
+        `${SWARMY_FETCH_URL}/${uri}?k=${this.apiKey}`,
         {
           method: "GET",
         }
@@ -46,7 +50,7 @@ export class SwarmyCloudStorage extends BlobStorage {
       }
 
       const buffer = await response.arrayBuffer();
-      const dataBuffer = Buffer.from(buffer);
+
       return fileType === "text" ? buffer.toString() : bytesToHex(buffer);
     } catch (err) {
       throw new Error(
@@ -60,16 +64,15 @@ export class SwarmyCloudStorage extends BlobStorage {
 
   protected async _storeBlob(hash: string, data: Buffer): Promise<string> {
     try {
-      const blobUri = this.getBlobUri(hash);
       const base64Data = data.toString("base64");
 
-      const response = await fetch(`${this.uploadUrl}?k=${this.apiKey}`, {
+      const response = await fetch(`${SWARMY_UPLOAD_URL}?k=${this.apiKey}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: `${blobUri}.bin`,
+          name: `${hash}.bin`,
           contentType: "application/octet-stream",
           base64: base64Data,
         }),
@@ -102,16 +105,6 @@ export class SwarmyCloudStorage extends BlobStorage {
     throw new Error(
       "Remove blob operation not supported by SwarmyCloud storage"
     );
-  }
-
-  getBlobUri(hash: string): string {
-    // For SwarmyCloud, we can't predict the swarmReference beforehand
-    // This method is kept for compatibility but the actual URI will be the swarmReference
-    // returned from the upload operation
-    return `${this.chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
-      4,
-      6
-    )}/${hash.slice(6, 8)}/${hash.slice(2)}`;
   }
 
   static async create(
