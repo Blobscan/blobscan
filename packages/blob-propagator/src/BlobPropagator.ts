@@ -363,6 +363,8 @@ export class BlobPropagator {
         opts
       );
 
+      logger.debug(`Queue and worker created for storage ${targetBlobStorage}`);
+
       return {
         queue,
         worker,
