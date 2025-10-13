@@ -38,10 +38,6 @@ class SwarmyCloudStorageMock extends SwarmyCloudStorage {
   getApiKey(): string {
     return this.apiKey;
   }
-
-  getBaseUrl(): string {
-    return this.uploadUrl;
-  }
 }
 
 describe("SwarmyCloudStorage", () => {
@@ -117,9 +113,6 @@ describe("SwarmyCloudStorage", () => {
       expect(storage.name).toBe("SWARMYCLOUD");
       expect(storage.chainId).toBe(env.CHAIN_ID);
       expect(storage.getApiKey()).toBe(mockApiKey);
-      expect(storage.getBaseUrl()).toBe(
-        "https://api.swarmy.cloud/api/data/bin"
-      );
     });
   });
 

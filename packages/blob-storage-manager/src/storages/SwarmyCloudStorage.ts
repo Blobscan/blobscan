@@ -20,7 +20,6 @@ export const SWARMY_FETCH_URL = `${SWARMY_BASE_URL}/files`;
 
 export class SwarmyCloudStorage extends BlobStorage {
   protected readonly apiKey: string;
-  protected readonly uploadUrl = "https://api.swarmy.cloud/api/data/bin";
 
   protected constructor({ chainId, apiKey }: SwarmyCloudStorageConfig) {
     super(BlobStorageName.SWARMYCLOUD, chainId);
