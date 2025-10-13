@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SwarmyCloudStorage > getBlob > should handle non-existing blob retrieval 1`] = `"SwarmyCloudStorageMock failed: Failed to get blob with uri \\"2131244123\\""`;
+
+exports[`SwarmyCloudStorage > getBlob > should handle non-existing blob retrieval 2`] = `[Error: Failed to get blob from SwarmyCloud: Failed to retrieve blob: 404 Not Found]`;
+
+exports[`SwarmyCloudStorage > should fail when trying to get blob uri 1`] = `"SwarmyCloudStorageMock failed: Failed to get blob uri for blob with versioned hash \\"0x\\""`;
+
+exports[`SwarmyCloudStorage > should fail when trying to get blob uri 2`] = `[Error: "getBlobUri" not implemented]`;
+
+exports[`SwarmyCloudStorage > should fail when trying to remove blob 1`] = `"SwarmyCloudStorageMock failed: Failed to remove blob with uri \\"10a73599366736e2b7a9b3a2bf2ef61f45a74486cf9153ed294bd87ae5b20883\\""`;
+
+exports[`SwarmyCloudStorage > should fail when trying to remove blob 2`] = `[Error: Remove blob operation not supported by SwarmyCloud storage]`;
+
+exports[`SwarmyCloudStorage > storeBlob > should handle upload failure 1`] = `"SwarmyCloudStorageMock failed: Failed to store blob with hash \\"0x0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174\\""`;
+
+exports[`SwarmyCloudStorage > storeBlob > should handle upload failure 2`] = `[Error: Failed to store blob in SwarmyCloud: Failed to upload blob: 500 Internal Server Error]`;

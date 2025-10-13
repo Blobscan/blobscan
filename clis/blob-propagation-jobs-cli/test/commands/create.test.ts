@@ -159,7 +159,7 @@ describe("Create command", () => {
     expect(
       create(["-q", "invalid-storage-name"])
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Invalid queue 'invalid-storage-name'. Valid values are google, postgres, swarm, s3."`
+      '"Invalid queue \'invalid-storage-name\'. Valid values are google, postgres, swarm, swarmycloud, s3."'
     );
   });
 

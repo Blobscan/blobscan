@@ -13,5 +13,6 @@ export const ICONS: BlobStorageSVGRegistry = {
   postgres,
   s3,
   swarm,
+  swarmycloud: swarm,
   weavevm,
 };
