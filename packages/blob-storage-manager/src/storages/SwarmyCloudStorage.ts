@@ -1,4 +1,5 @@
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
+import { logger } from "@blobscan/logger";
 
 import type { BlobStorageConfig, GetBlobOpts } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
@@ -42,6 +43,12 @@ export class SwarmyCloudStorage extends BlobStorage {
         }
       );
 
+      logger.debug("SwarmyCloud retrieve response", {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+      });
+
       if (!response.ok) {
         throw new Error(
           `Failed to retrieve blob: ${response.status} ${response.statusText}`
@@ -75,6 +82,12 @@ export class SwarmyCloudStorage extends BlobStorage {
           contentType: "application/octet-stream",
           base64: base64Data,
         }),
+      });
+
+      logger.debug("SwarmyCloud upload response", {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
       });
 
       if (!response.ok) {
