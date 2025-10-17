@@ -1,19 +1,11 @@
 import type { AxiosError } from "axios";
 
+import { ErrorException } from "@blobscan/errors";
+import type { ErrorCause } from "@blobscan/errors";
 import { z } from "@blobscan/zod";
 
-export class ErrorException extends Error {
-  constructor(message: string, cause?: unknown) {
-    super(message, {
-      cause,
-    });
-
-    this.name = this.constructor.name;
-  }
-}
-
 export class SyncerError extends ErrorException {
-  constructor(syncerName: string, message: string, cause: unknown) {
+  constructor(syncerName: string, message: string, cause: ErrorCause) {
     super(`Syncer "${syncerName}" failed: ${message}`, cause);
   }
 }
@@ -42,7 +34,7 @@ export class SwarmNodeError extends ErrorException {
       message = error.message;
     }
 
-    super(message, { cause: error.cause });
+    super(message, error.cause);
 
     this.code = code;
     this.reasons = reasons;

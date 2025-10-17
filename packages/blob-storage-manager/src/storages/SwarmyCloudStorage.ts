@@ -35,82 +35,64 @@ export class SwarmyCloudStorage extends BlobStorage {
     uri: string,
     { fileType }: GetBlobOpts = {}
   ): Promise<string> {
-    try {
-      const response = await fetch(
-        `${SWARMY_FETCH_URL}/${uri}?k=${this.apiKey}`,
-        {
-          method: "GET",
-        }
-      );
-
-      logger.debug("SwarmyCloud retrieve response", {
-        status: response.status,
-        statusText: response.statusText,
-        headers: Object.fromEntries(response.headers.entries()),
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to retrieve blob: ${response.status} ${response.statusText}`
-        );
+    const response = await fetch(
+      `${SWARMY_FETCH_URL}/${uri}?k=${this.apiKey}`,
+      {
+        method: "GET",
       }
+    );
 
-      const buffer = await response.arrayBuffer();
+    logger.debug("SwarmyCloud retrieve response", {
+      status: response.status,
+      statusText: response.statusText,
+      headers: Object.fromEntries(response.headers.entries()),
+    });
 
-      return fileType === "text" ? buffer.toString() : bytesToHex(buffer);
-    } catch (err) {
+    if (!response.ok) {
       throw new Error(
-        `Failed to get blob from SwarmyCloud: ${(err as Error).message}`,
-        {
-          cause: err,
-        }
+        `Failed to retrieve blob: ${response.status} ${response.statusText}`
       );
     }
+
+    const buffer = await response.arrayBuffer();
+
+    return fileType === "text" ? buffer.toString() : bytesToHex(buffer);
   }
 
   protected async _storeBlob(hash: string, data: Buffer): Promise<string> {
-    try {
-      const base64Data = data.toString("base64");
+    const base64Data = data.toString("base64");
 
-      const response = await fetch(`${SWARMY_UPLOAD_URL}?k=${this.apiKey}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: `${hash}.bin`,
-          contentType: "application/octet-stream",
-          base64: base64Data,
-        }),
-      });
+    const response = await fetch(`${SWARMY_UPLOAD_URL}?k=${this.apiKey}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: `${hash}.bin`,
+        contentType: "application/octet-stream",
+        base64: base64Data,
+      }),
+    });
 
-      logger.debug("SwarmyCloud upload response", {
-        status: response.status,
-        statusText: response.statusText,
-        headers: Object.fromEntries(response.headers.entries()),
-      });
+    logger.debug("SwarmyCloud upload response", {
+      status: response.status,
+      statusText: response.statusText,
+      headers: Object.fromEntries(response.headers.entries()),
+    });
 
-      if (!response.ok) {
-        throw new Error(
-          `Failed to upload blob: ${response.status} ${response.statusText}`
-        );
-      }
-
-      const result: SwarmyCloudUploadResponse = await response.json();
-
-      if (!result.swarmReference) {
-        throw new Error("SwarmyCloud API error: No swarmReference returned");
-      }
-
-      return result.swarmReference;
-    } catch (err) {
+    if (!response.ok) {
       throw new Error(
-        `Failed to store blob in SwarmyCloud: ${(err as Error).message}`,
-        {
-          cause: err,
-        }
+        `Failed to upload blob: ${response.status} ${response.statusText}`
       );
     }
+
+    const result: SwarmyCloudUploadResponse = await response.json();
+
+    if (!result.swarmReference) {
+      throw new Error("SwarmyCloud API error: No swarmReference returned");
+    }
+
+    return result.swarmReference;
   }
 
   protected async _removeBlob(_uri: string): Promise<void> {

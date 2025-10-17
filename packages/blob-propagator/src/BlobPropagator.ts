@@ -6,7 +6,7 @@ import IORedis from "ioredis";
 
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import type { BlobscanPrismaClient } from "@blobscan/db";
-import { logger } from "@blobscan/logger";
+import { createLogger, logger } from "@blobscan/logger";
 
 import {
   DEFAULT_JOB_OPTIONS,
@@ -146,7 +146,9 @@ export class BlobPropagator {
         throw new BlobPropagatorCreationError(err);
       }
 
-      throw new BlobPropagatorCreationError(`Unknown cause: ${err}`);
+      throw new BlobPropagatorCreationError(
+        new Error("Unknown cause", { cause: err })
+      );
     }
   }
 
@@ -313,7 +315,7 @@ export class BlobPropagator {
       reconcilerProcessor(params),
       opts
     );
-    const workerLogger = logger.child({ service: "reconciler" });
+    const workerLogger = createLogger(RECONCILER_WORKER_NAME);
 
     worker.on("completed", (_, { jobsCreated, blobTimestamps }) => {
       if (!jobsCreated) {
@@ -378,14 +380,14 @@ export class BlobPropagator {
     opts: WorkerOptions = {}
   ) {
     const worker = new Worker(workerName, workerProcessor, opts);
-    const workerLogger = logger.child({ service: workerName });
+    const workerLogger = createLogger(workerName);
 
     worker.on("completed", (job) => {
       workerLogger?.debug(`Job ${job.id} completed`);
     });
 
     worker.on("failed", (_, err) => {
-      workerLogger?.error(err);
+      workerLogger.error(err);
     });
 
     return worker;

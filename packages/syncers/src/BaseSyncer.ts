@@ -2,10 +2,11 @@
 import { Queue, Worker } from "bullmq";
 import type { Redis } from "ioredis";
 
-import { logger } from "@blobscan/logger";
+import { ErrorException } from "@blobscan/errors";
+import { createLogger } from "@blobscan/logger";
 import type { Logger } from "@blobscan/logger";
 
-import { ErrorException, SyncerError } from "./errors";
+import { SyncerError } from "./errors";
 import { createRedisConnection } from "./utils";
 
 export interface CommonSyncerConfig {
@@ -37,7 +38,7 @@ export class BaseSyncer {
   }: BaseSyncerConfig) {
     this.name = `${name}-syncer`;
     this.cronPattern = cronPattern;
-    this.logger = logger.child({ job: name });
+    this.logger = createLogger(this.name, { defaultMeta: { job: name } });
 
     let connection: Redis;
 
@@ -83,7 +84,7 @@ export class BaseSyncer {
       throw new SyncerError(
         this.name,
         "An error ocurred when starting syncer",
-        err
+        err as Error
       );
     }
   }
@@ -118,7 +119,7 @@ export class BaseSyncer {
       const err_ = new SyncerError(
         this.name,
         "An error ocurred when performing closing operation",
-        err
+        err as Error
       );
 
       throw err_;
