@@ -1,12 +1,4 @@
-export class ErrorException extends Error {
-  constructor(message: string, cause?: Error | Error[]) {
-    super(message, {
-      cause,
-    });
-
-    this.name = this.constructor.name;
-  }
-}
+import { ErrorException } from "@blobscan/errors";
 
 export class BlobStorageError extends ErrorException {
   constructor(storageName: string, message: string, cause?: Error) {
@@ -19,7 +11,7 @@ export class StorageCreationError extends BlobStorageError {
     super(
       storageName,
       `Creation failed${message.length ? `: ${message}` : ""}`,
-      cause,
+      cause
     );
   }
 }

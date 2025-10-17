@@ -79,7 +79,9 @@ export class MockedBlobPropagator extends BlobPropagator {
         throw new BlobPropagatorCreationError(err);
       }
 
-      throw new BlobPropagatorCreationError(`Unknown cause: ${err}`);
+      throw new BlobPropagatorCreationError(
+        new Error("Unknown cause", { cause: err })
+      );
     }
   }
 }

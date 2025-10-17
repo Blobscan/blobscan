@@ -1,14 +1,5 @@
-type ErrorCause = Error | string;
-
-export class ErrorException extends Error {
-  constructor(message: string, cause?: ErrorCause) {
-    super(message, {
-      cause,
-    });
-
-    this.name = this.constructor.name;
-  }
-}
+import type { ErrorCause } from "@blobscan/errors";
+import { ErrorException } from "@blobscan/errors";
 
 export class BlobPropagatorError extends ErrorException {
   constructor(message: string, cause: ErrorCause) {

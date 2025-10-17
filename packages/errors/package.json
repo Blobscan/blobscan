@@ -1,6 +1,6 @@
 {
-  "name": "@blobscan/logger",
-  "version": "0.1.3",
+  "name": "@blobscan/errors",
+  "version": "0.0.1",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -10,10 +10,6 @@
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@blobscan/zod": "workspace:^0.1.0",
-    "winston": "^3.18.3"
   },
   "eslintConfig": {
     "root": true,

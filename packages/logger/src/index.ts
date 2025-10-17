@@ -26,19 +26,27 @@ const colorFormat = winston.format.colorize({
     info: "green",
     http: "magenta",
     debug: "white",
-    module: "blue",
+    service: "blue",
   },
 });
 
 const format = winston.format.combine(
+  winston.format.errors({ cause: true, stack: true }),
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
   winston.format.printf((info) => {
-    const { timestamp, level, message, cause, module } = info;
-    const formattedLevel = colorFormat.colorize(level, level.toUpperCase());
-    const formattedModule = colorFormat.colorize("module", module ?? "app");
-    const formattedMessage = colorFormat.colorize(level, message);
+    const { timestamp, level, message, cause, service } = info;
 
-    let msg = `${timestamp} ${formattedLevel} ${formattedModule}: ${formattedMessage}`;
+    const formattedLevel = colorFormat.colorize(level, level.toUpperCase());
+    const formattedService =
+      typeof service === "string"
+        ? colorFormat.colorize("service", service ?? "app")
+        : "";
+    const formattedMessage =
+      typeof message === "string"
+        ? colorFormat.colorize(level, message)
+        : message;
+
+    let msg = `${timestamp} ${formattedLevel} ${formattedService}: ${formattedMessage}`;
 
     if (cause instanceof Error) {
       msg += colorFormat.colorize(level, buildErrorCause(cause));
@@ -48,12 +56,21 @@ const format = winston.format.combine(
   })
 );
 
-export const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL ?? "info",
-  format,
-  transports: [new winston.transports.Console()],
-  silent: process.env.MODE === "test",
-});
+export function createLogger(name?: string, opts: winston.LoggerOptions = {}) {
+  return winston.createLogger({
+    level: process.env.LOG_LEVEL ?? "info",
+    format,
+    transports: [new winston.transports.Console()],
+    silent: process.env.MODE === "test",
+    ...opts,
+    defaultMeta: {
+      ...opts.defaultMeta,
+      ...(name ? { service: name } : {}),
+    },
+  });
+}
+
+export const logger = createLogger();
 
 export async function perfOperation<T>(
   operation: () => T
