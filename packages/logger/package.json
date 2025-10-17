@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@blobscan/zod": "workspace:^0.1.0",
-    "winston": "^3.10.0"
+    "winston": "^3.18.3"
   },
   "eslintConfig": {
     "root": true,
