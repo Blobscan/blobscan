@@ -1,7 +1,7 @@
 import { BlobPropagator } from "@blobscan/blob-propagator";
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import { env } from "@blobscan/env";
-import { logger } from "@blobscan/logger";
+import { logger } from "../logger";
 
 import { prisma } from "../clients/prisma";
 import { redis } from "../clients/redis";

@@ -10,7 +10,7 @@ import { env } from "@blobscan/env";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 
 import "./instrumentation";
-import { logger } from "@blobscan/logger";
+import { logger } from "./logger";
 
 import { printBanner } from "./banner";
 import { prisma } from "./clients/prisma";

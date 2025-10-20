@@ -3,7 +3,7 @@ import { createPublicClient, http } from "viem";
 import * as chains from "viem/chains";
 
 import { env } from "@blobscan/env";
-import { logger } from "@blobscan/logger";
+import { logger } from "../logger";
 import { PriceFeed } from "@blobscan/price-feed";
 import type { BaseSyncer } from "@blobscan/syncers";
 import {

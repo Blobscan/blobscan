@@ -1,7 +1,8 @@
-import logfmt from "logfmt";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const logfmt = require("logfmt");
 import morgan from "morgan";
 
-import { logger } from "@blobscan/logger";
+import { logger } from "./logger";
 
 const stream = {
   write: (message: string) => logger.http(message),
