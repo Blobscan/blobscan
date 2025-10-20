@@ -3,7 +3,6 @@ import * as Sentry from "@sentry/node";
 import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
-import morgan from "morgan";
 
 import "./bigint";
 import { createMetricsHandler } from "@blobscan/api";
@@ -15,6 +14,7 @@ import { logger } from "@blobscan/logger";
 
 import { printBanner } from "./banner";
 import { prisma } from "./clients/prisma";
+import { morganMiddleware } from "./morgan";
 import { setUpOpenApiTRPC } from "./openapi-trpc";
 import { getBlobPropagator } from "./services/blob-propagator";
 import { setUpSyncers } from "./services/syncers";
@@ -31,7 +31,7 @@ async function main() {
 
   app.use(cors());
   app.use(bodyParser.json({ limit: "3mb" }));
-  app.use(morgan("short"));
+  app.use(morganMiddleware);
 
   app.get("/metrics", (req, res) => {
     if (!env.METRICS_ENABLED) {

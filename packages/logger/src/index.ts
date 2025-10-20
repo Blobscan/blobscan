@@ -19,6 +19,14 @@ function buildErrorCause(err: Error) {
   return msg;
 }
 
+const LOG_LEVELS = {
+  error: 0,
+  warn: 1,
+  http: 2,
+  info: 3,
+  debug: 4,
+};
+
 const colorFormat = winston.format.colorize({
   colors: {
     error: "red",
@@ -59,6 +67,7 @@ const format = winston.format.combine(
 export function createLogger(name?: string, opts: winston.LoggerOptions = {}) {
   return winston.createLogger({
     level: process.env.LOG_LEVEL ?? "info",
+    levels: LOG_LEVELS,
     format,
     transports: [new winston.transports.Console()],
     silent: process.env.MODE === "test",

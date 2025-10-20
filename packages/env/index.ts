@@ -85,7 +85,7 @@ export const env = createEnv({
       // Logging
       LOG_LEVEL: z
         .enum(["debug", "http", "info", "warn", "error"])
-        .default("http"),
+        .default("info"),
       METRICS_ENABLED: booleanSchema.default("false"),
       TRACES_ENABLED: booleanSchema.default("false"),
 
