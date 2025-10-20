@@ -3,7 +3,6 @@ import * as Sentry from "@sentry/node";
 import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
-import morgan from "morgan";
 
 import "./bigint";
 import { createMetricsHandler } from "@blobscan/api";
@@ -18,8 +17,7 @@ import { prisma } from "./clients/prisma";
 import { morganMiddleware } from "./morgan";
 import { setUpOpenApiTRPC } from "./openapi-trpc";
 import { getBlobPropagator } from "./services/blob-propagator";
-
-// import { setUpSyncers } from "./services/syncers";
+import { setUpSyncers } from "./services/syncers";
 
 collectDefaultMetrics();
 
@@ -27,7 +25,7 @@ printBanner();
 
 async function main() {
   const metricsHandler = createMetricsHandler(prisma);
-  // const closeSyncers = await setUpSyncers();
+  const closeSyncers = await setUpSyncers();
 
   const app = express();
 
@@ -60,9 +58,9 @@ async function main() {
       .finally(async () => {
         (await getBlobPropagator()).close();
       })
-      // .finally(async () => {
-      //   await closeSyncers();
-      // })
+      .finally(async () => {
+        await closeSyncers();
+      })
       .finally(() => {
         server.close(() => {
           logger.debug("Server shut down successfully");
