@@ -15,9 +15,11 @@ import { logger } from "@blobscan/logger";
 
 import { printBanner } from "./banner";
 import { prisma } from "./clients/prisma";
+import { morganMiddleware } from "./morgan";
 import { setUpOpenApiTRPC } from "./openapi-trpc";
 import { getBlobPropagator } from "./services/blob-propagator";
-import { setUpSyncers } from "./services/syncers";
+
+// import { setUpSyncers } from "./services/syncers";
 
 collectDefaultMetrics();
 
@@ -25,13 +27,13 @@ printBanner();
 
 async function main() {
   const metricsHandler = createMetricsHandler(prisma);
-  const closeSyncers = await setUpSyncers();
+  // const closeSyncers = await setUpSyncers();
 
   const app = express();
 
   app.use(cors());
   app.use(bodyParser.json({ limit: "3mb" }));
-  app.use(morgan("short"));
+  app.use(morganMiddleware);
 
   app.get("/metrics", (req, res) => {
     if (!env.METRICS_ENABLED) {
@@ -58,9 +60,9 @@ async function main() {
       .finally(async () => {
         (await getBlobPropagator()).close();
       })
-      .finally(async () => {
-        await closeSyncers();
-      })
+      // .finally(async () => {
+      //   await closeSyncers();
+      // })
       .finally(() => {
         server.close(() => {
           logger.debug("Server shut down successfully");
