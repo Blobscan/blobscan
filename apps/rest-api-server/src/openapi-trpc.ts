@@ -8,7 +8,7 @@ import {
 
 import { createAppRouter, createTRPCContext } from "@blobscan/api";
 import { env } from "@blobscan/env";
-import { logger } from "./logger";
+import { logger } from "@blobscan/logger";
 
 import { prisma } from "./clients/prisma";
 import { redis } from "./clients/redis";

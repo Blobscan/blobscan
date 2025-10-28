@@ -1,25 +1,26 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const logfmt = require("logfmt");
+import logfmt from "logfmt";
 import morgan from "morgan";
 
-import { logger } from "./logger";
+import { logger } from "@blobscan/logger";
 
 const stream = {
   write: (message: string) => logger.http(message),
 };
 
-const logfmtFormat = (tokens: any, req: any, res: any) => {
-  const logData = {
-    ip: tokens["remote-addr"](req, res),
-    method: tokens.method(req, res),
-    url: tokens.url(req, res),
-    status: tokens.status(req, res),
-    res_time: `${tokens["response-time"](req, res)}ms`,
-    res_length: tokens.res(req, res, "content-length") || "-",
-    level: "http",
-  };
+export const morganMiddleware = morgan(
+  (tokens, req, res) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const get = (name: string, ...args: any[]) =>
+      tokens[name]?.(req, res, ...args);
 
-  return logfmt.stringify(logData);
-};
-
-export const morganMiddleware = morgan(logfmtFormat, { stream });
+    return logfmt.stringify({
+      ip: get("remote-addr"),
+      method: get("method"),
+      url: get("url"),
+      status: get("status"),
+      res_time: get("response-time") ? `${get("response-time")}ms` : undefined,
+      res_length: get("res", "content-length") ?? "-",
+    });
+  },
+  { stream }
+);
