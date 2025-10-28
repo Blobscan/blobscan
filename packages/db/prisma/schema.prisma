@@ -263,6 +263,7 @@ model Transaction {
   @@index([blockTimestamp, index])
   @@index([blockNumber, index])
   @@index([fromId, blockTimestamp, index])
+  @@index([fromId, blockTimestamp]) // Rollup queries by time
   @@index([toId, blockTimestamp, index])
   @@index([insertedAt])
   @@map("transaction")
@@ -290,6 +291,8 @@ model BlobsOnTransactions {
   @@index([blobHash])
   @@index([blockHash])
   @@index([txHash])
+  @@index([txHash, blobHash]) // Transaction-blob joins
+  @@index([blockTimestamp, txHash]) // Time-based blob queries
   @@map("blobs_on_transactions")
 }
 
