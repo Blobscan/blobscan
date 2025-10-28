@@ -1,3 +1,4 @@
+import logfmt from "logfmt";
 import winston from "winston";
 
 import { z } from "@blobscan/zod";
@@ -5,19 +6,6 @@ import { z } from "@blobscan/zod";
 export const logLevelEnum = z.enum(["error", "warn", "info", "http", "debug"]);
 
 export type LoggerLevel = z.output<typeof logLevelEnum>;
-
-function buildErrorCause(err: Error) {
-  let msg = `\n - Cause: ${err.message}`;
-
-  const cause = err.cause;
-  if (cause instanceof Error || typeof cause === "string") {
-    const errorCause = typeof cause === "string" ? new Error(cause) : cause;
-
-    msg += buildErrorCause(errorCause);
-  }
-
-  return msg;
-}
 
 const LOG_LEVELS = {
   error: 0,
@@ -38,29 +26,51 @@ const colorFormat = winston.format.colorize({
   },
 });
 
-const format = winston.format.combine(
+// Logfmt formatter for Winston
+const logfmtFormat = winston.format.combine(
   winston.format.errors({ cause: true, stack: true }),
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
   winston.format.printf((info) => {
-    const { timestamp, level, message, cause, service } = info;
+    const { timestamp, level, message, service, cause, ...meta } = info;
 
-    const formattedLevel = colorFormat.colorize(level, level.toUpperCase());
-    const formattedService =
-      typeof service === "string"
-        ? colorFormat.colorize("service", service ?? "app")
-        : "";
-    const formattedMessage =
-      typeof message === "string"
-        ? colorFormat.colorize(level, message)
-        : message;
+    const logData: Record<string, string | number | boolean> = {
+      ts: String(timestamp),
+      level: colorFormat.colorize(level, level),
+      message: colorFormat.colorize(
+        level,
+        typeof message === "string" ? message : JSON.stringify(message)
+      ),
+    };
 
-    let msg = `${timestamp} ${formattedLevel} ${formattedService}: ${formattedMessage}`;
-
-    if (cause instanceof Error) {
-      msg += colorFormat.colorize(level, buildErrorCause(cause));
+    if (typeof service === "string") {
+      logData.service = colorFormat.colorize("service", service);
     }
 
-    return msg;
+    // Add any additional metadata
+    Object.keys(meta).forEach((key) => {
+      const value = meta[key];
+      if (value !== undefined && key !== "cause") {
+        if (
+          typeof value === "string" ||
+          typeof value === "number" ||
+          typeof value === "boolean"
+        ) {
+          logData[key] = value;
+        } else {
+          logData[key] = JSON.stringify(value);
+        }
+      }
+    });
+
+    // Handle error causes
+    if (cause instanceof Error) {
+      logData.error_cause = cause.message;
+      if (cause.stack) {
+        logData.error_stack = cause.stack;
+      }
+    }
+
+    return logfmt.stringify(logData);
   })
 );
 
@@ -68,7 +78,7 @@ export function createLogger(name?: string, opts: winston.LoggerOptions = {}) {
   return winston.createLogger({
     level: process.env.LOG_LEVEL ?? "info",
     levels: LOG_LEVELS,
-    format,
+    format: logfmtFormat,
     transports: [new winston.transports.Console()],
     silent: process.env.MODE === "test",
     ...opts,
@@ -79,7 +89,7 @@ export function createLogger(name?: string, opts: winston.LoggerOptions = {}) {
   });
 }
 
-export const logger = createLogger();
+export const logger = createLogger("rest-api-server");
 
 export async function perfOperation<T>(
   operation: () => T

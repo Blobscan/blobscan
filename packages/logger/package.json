@@ -13,7 +13,11 @@
   },
   "dependencies": {
     "@blobscan/zod": "workspace:^0.1.0",
+    "logfmt": "^1.4.0",
     "winston": "^3.18.3"
+  },
+  "devDependencies": {
+    "@types/logfmt": "^1.2.1"
   },
   "eslintConfig": {
     "root": true,
