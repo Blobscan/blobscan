@@ -1,5 +1,18 @@
 # @blobscan/db
 
+## 0.23.0
+
+### Minor Changes
+
+- [#905](https://github.com/Blobscan/blobscan/pull/905) [`183ff80`](https://github.com/Blobscan/blobscan/commit/183ff805884a17e56d84bf7710a1ccaa122b117c) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added swarmy support
+
+- [`96fd3b9`](https://github.com/Blobscan/blobscan/commit/96fd3b9ba660f48b3329ba019abd244fe9d82c9c) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - add indexes to optimize rollup blob count queries
+
+### Patch Changes
+
+- Updated dependencies [[`5f30a43`](https://github.com/Blobscan/blobscan/commit/5f30a435c2ded5d3c36b3c39b88ca8a582f19def)]:
+  - @blobscan/logger@0.1.4
+
 ## 0.22.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/db",
-  "version": "0.22.1",
+  "version": "0.23.0",
   "private": true,
   "main": "./index.ts",
   "types": "./index.ts",
@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@blobscan/dayjs": "workspace:^0.1.0",
-    "@blobscan/logger": "workspace:^0.1.3",
+    "@blobscan/logger": "workspace:^0.1.4",
     "@blobscan/open-telemetry": "workspace:^0.0.10",
     "@blobscan/zod": "workspace:^0.1.0",
     "@prisma/client": "^5.19.1",
