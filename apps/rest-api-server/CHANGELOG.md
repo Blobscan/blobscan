@@ -1,5 +1,23 @@
 # @blobscan/rest-api-server
 
+## 0.9.0
+
+### Minor Changes
+
+- [#905](https://github.com/Blobscan/blobscan/pull/905) [`183ff80`](https://github.com/Blobscan/blobscan/commit/183ff805884a17e56d84bf7710a1ccaa122b117c) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added support for swarmy cloud blob storage
+
+### Patch Changes
+
+- [#911](https://github.com/Blobscan/blobscan/pull/911) [`85772c4`](https://github.com/Blobscan/blobscan/commit/85772c4e6cb493ef0f5c3bbb3f540b6c0c63dc7b) Thanks [@PJColombo](https://github.com/PJColombo)! - Increased request body size limit
+
+- Updated dependencies [[`183ff80`](https://github.com/Blobscan/blobscan/commit/183ff805884a17e56d84bf7710a1ccaa122b117c), [`183ff80`](https://github.com/Blobscan/blobscan/commit/183ff805884a17e56d84bf7710a1ccaa122b117c), [`779fafa`](https://github.com/Blobscan/blobscan/commit/779fafafc590ff2b0e98d72feb3af003095a8cf6), [`96fd3b9`](https://github.com/Blobscan/blobscan/commit/96fd3b9ba660f48b3329ba019abd244fe9d82c9c), [`5f30a43`](https://github.com/Blobscan/blobscan/commit/5f30a435c2ded5d3c36b3c39b88ca8a582f19def)]:
+  - @blobscan/db@0.23.0
+  - @blobscan/blob-storage-manager@1.0.0
+  - @blobscan/api@1.0.0
+  - @blobscan/blob-propagator@1.0.0
+  - @blobscan/syncers@0.6.1
+  - @blobscan/logger@0.1.4
+
 ## 0.8.3
 
 ### Patch Changes
