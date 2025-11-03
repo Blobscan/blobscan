@@ -61,7 +61,7 @@ export class BaseSyncer {
     });
 
     this.worker.on("failed", (_, err) => {
-      this.logger.error(new ErrorException("A worker error ocurred", err));
+      this.logger.error(new ErrorException("A worker error occurred", err));
     });
 
     this.connection = connection;
@@ -83,7 +83,7 @@ export class BaseSyncer {
     } catch (err) {
       throw new SyncerError(
         this.name,
-        "An error ocurred when starting syncer",
+        "An error occurred when starting syncer",
         err as Error
       );
     }
@@ -118,7 +118,7 @@ export class BaseSyncer {
     } catch (err) {
       const err_ = new SyncerError(
         this.name,
-        "An error ocurred when performing closing operation",
+        "An error occurred when performing closing operation",
         err as Error
       );
 
