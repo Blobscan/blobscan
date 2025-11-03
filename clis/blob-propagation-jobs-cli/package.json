@@ -17,7 +17,7 @@
     "with-env:test": "dotenv -e ../../.env.test --"
   },
   "dependencies": {
-    "@blobscan/blob-propagator": "workspace:^1.0.0",
+    "@blobscan/blob-propagator": "workspace:^0.6.2",
     "@blobscan/dayjs": "workspace:^0.1.0",
     "@blobscan/db": "workspace:^0.23.0",
     "@blobscan/env": "workspace:^0.2.0",
