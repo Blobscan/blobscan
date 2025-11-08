@@ -9,6 +9,7 @@ import {
 import type { TRPCContext } from "@blobscan/api";
 
 import { env } from "./env.mjs";
+import { network } from "./network";
 import { prisma } from "./prisma";
 import { redis } from "./redis";
 
@@ -23,7 +24,7 @@ export const appRouter = createAppRouter({
 
 export const createContext = createTRPCContext({
   scope: "web",
-  chainId: env.CHAIN_ID,
+  network,
   prisma,
   redis,
   enableTracing: env.TRACES_ENABLED,
@@ -39,7 +40,7 @@ export function createServerSideHelpers() {
     router: appRouter,
     transformer: superjson,
     ctx: createTRPCInnerContext({
-      chainId: env.CHAIN_ID,
+      network,
       prisma,
     }) as TRPCContext,
   });
