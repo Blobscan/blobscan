@@ -11,7 +11,6 @@ import {
 } from "vitest";
 
 import { Category, Rollup } from "@blobscan/db/prisma/enums";
-import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 import { ADDRESS_TO_ROLLUP_MAPPINGS } from "@blobscan/rollups";
 import { env, omitDBTimestampFields, testValidError } from "@blobscan/test";
 
@@ -80,10 +79,10 @@ describe("indexData", () => {
       //   (acc, b) => acc + getEIP2028CalldataGas(b.data),
       //   0
       // );
-      const config = getNetworkBlobConfigBySlot(env.CHAIN_ID, INPUT.block.slot);
+      const fork = authorizedCtx.network.forks[0].blobParams;
       const expectedBlobGasPrice = calculateBlobGasPrice(
         BigInt(INPUT.block.excessBlobGas),
-        config
+        fork
       );
 
       // TODO: Fix this test

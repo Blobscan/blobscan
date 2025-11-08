@@ -76,8 +76,8 @@ export const getCount = publicProcedure
   .input(inputSchema)
   .use(withFilters)
   .output(outputSchema)
-  .query(async ({ ctx: { filters, prisma, chainId } }) => {
-    const blobsCount = await countBlobs(prisma, chainId, filters);
+  .query(async ({ ctx: { filters, prisma, network } }) => {
+    const blobsCount = await countBlobs(prisma, network.id, filters);
 
     return {
       totalBlobs: blobsCount,

@@ -11,7 +11,7 @@ import { Category, Prisma } from "@prisma/client";
 import { sha256 } from "js-sha256";
 
 import dayjs from "@blobscan/dayjs";
-import { FORK_BLOB_CONFIG } from "@blobscan/network-blob-config";
+import { getNetwork } from "@blobscan/network-blob-config";
 
 import type { Rollup } from "../enums";
 import { BlobStorage } from "../enums";
@@ -23,7 +23,7 @@ import {
   ROLLUP_ADDRESSES,
 } from "./web3";
 
-const GAS_PER_BLOB = FORK_BLOB_CONFIG["dencun"].gasPerBlob;
+const GAS_PER_BLOB = getNetwork("mainnet").forks[0].blobParams.gasPerBlob;
 
 export type FullBlock = Block & {
   transactions: (Transaction & {

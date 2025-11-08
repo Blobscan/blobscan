@@ -48,7 +48,7 @@ export const getAll = publicProcedure
   .output(outputSchema)
   .query(
     async ({
-      ctx: { filters, expands, pagination, prisma, count, chainId },
+      ctx: { filters, expands, pagination, prisma, count, network },
     }) => {
       const {
         blockFilters = {},
@@ -89,7 +89,9 @@ export const getAll = publicProcedure
         ],
         ...pagination,
       });
-      const countOp = count ? countBlobs(prisma, chainId, filters) : undefined;
+      const countOp = count
+        ? countBlobs(prisma, network.id, filters)
+        : undefined;
 
       const [prismaBlobsOnTxs, totalBlobs] = await Promise.all([
         blobsOnTransactinonsOp,

@@ -1,7 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
 import { logger } from "@blobscan/logger";
-import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 import { z } from "@blobscan/zod";
 
 import { createAuthedProcedure } from "../../procedures";
@@ -71,7 +70,7 @@ export const indexData = createAuthedProcedure("indexer")
   })
   .input(inputSchema)
   .output(outputSchema)
-  .mutation(async ({ ctx: { prisma, blobPropagator, chainId }, input }) => {
+  .mutation(async ({ ctx: { prisma, blobPropagator, network }, input }) => {
     if (!blobPropagator) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
@@ -79,18 +78,28 @@ export const indexData = createAuthedProcedure("indexer")
       });
     }
 
-    const networkConfig = getNetworkBlobConfigBySlot(chainId, input.block.slot);
+    const forkBlobParams = network.getActiveForkBySlot(
+      input.block.slot
+    )?.blobParams;
+
+    if (!forkBlobParams) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `Slot ${input.block.slot} is before the first fork activation slot`,
+      });
+    }
+
     const operations = [];
 
     // TODO: Create an upsert extension that set the `insertedAt` and the `updatedAt` field
     const now = new Date();
 
     // 1. Prepare address, block, transaction and blob insertions
-    const dbTxs = createDBTransactions(input, networkConfig);
-    const dbBlock = createDBBlock(input, dbTxs, networkConfig);
+    const dbTxs = createDBTransactions(input, forkBlobParams);
+    const dbBlock = createDBBlock(input, dbTxs, forkBlobParams);
     const dbBlobs = createDBBlobs(input);
     const dbBlobsOnTransactions = createDBBlobsOnTransactions(input);
-    const dbAddress = createDBAddresses(chainId, input);
+    const dbAddress = createDBAddresses(network.id, input);
 
     let p0 = performance.now();
 

@@ -10,6 +10,7 @@ import type { BlobPropagator } from "@blobscan/blob-propagator";
 import type { DatePeriod } from "@blobscan/dayjs";
 import dayjs, { toDailyDate } from "@blobscan/dayjs";
 import { getPrisma } from "@blobscan/db";
+import { getNetwork } from "@blobscan/network-blob-config";
 import { env, redis } from "@blobscan/test";
 
 import type { TRPCContext } from "../src/context";
@@ -77,8 +78,10 @@ export async function createTestContext({
     statusCode: 200,
   } as NodeHTTPResponse;
 
+  const network = getNetwork(env.CHAIN_ID);
+
   const ctx: TRPCContext = {
-    chainId: env.CHAIN_ID,
+    network,
     enableTracing: false,
     scope: "rest-api",
     req,

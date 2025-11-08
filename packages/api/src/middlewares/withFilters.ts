@@ -112,7 +112,7 @@ export function hasCustomFilters(filters: Filters) {
 }
 
 export const withFilters = t.middleware(
-  ({ next, input = {}, ctx: { chainId } }) => {
+  ({ next, input = {}, ctx: { network } }) => {
     const filters: Filters = {
       sort: "desc",
     };
@@ -170,7 +170,7 @@ export const withFilters = t.middleware(
 
     if (rollups?.length) {
       const resolvedAddresses = rollups
-        .flatMap((r) => getAddressesByRollup(r, chainId))
+        .flatMap((r) => getAddressesByRollup(r, network.id))
         .filter((r): r is string => !!r);
 
       transactionFilters.fromId = { in: resolvedAddresses };

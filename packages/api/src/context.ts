@@ -10,6 +10,7 @@ import type IORedis from "ioredis";
 
 import type { BlobPropagator } from "@blobscan/blob-propagator";
 import type { BlobscanPrismaClient } from "@blobscan/db";
+import { getNetwork } from "@blobscan/network-blob-config";
 
 import type { ApiClient } from "./utils";
 import { createApiClient } from "./utils";
@@ -66,8 +67,17 @@ export function createTRPCInnerContext({
   apiClient,
   redis,
 }: CreateInnerContextOptions) {
+  const network = getNetwork(chainId);
+
+  if (!network) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: `Unsupported network with chainId ${chainId}`,
+    });
+  }
+
   return {
-    chainId,
+    network,
     prisma,
     blobPropagator,
     apiClient,
