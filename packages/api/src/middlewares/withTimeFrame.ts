@@ -31,10 +31,10 @@ function getTimeFrameDatePeriod(
   const final = dayjs().subtract(1, "day").endOf("day");
 
   if (timeFrame === "All") {
-    const initialTimestamp = network.forks[0].activationTimestamp;
+    const initialDate = network.forks[0].activationDate;
 
     return {
-      initial: dayjs.unix(initialTimestamp),
+      initial: dayjs(initialDate),
       final,
     };
   }

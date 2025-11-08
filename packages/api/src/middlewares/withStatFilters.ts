@@ -115,7 +115,7 @@ function buildDayWhereClause({
   let days: number;
 
   if (timeFrame === "All") {
-    const activeFork = network.forks[0].activationTimestamp;
+    const activeFork = network.forks[0].activationDate;
     const firstDate = dayjs(activeFork);
 
     days = dayjs().diff(firstDate, "D");
