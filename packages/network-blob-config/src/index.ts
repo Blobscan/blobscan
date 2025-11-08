@@ -2,10 +2,10 @@ import * as networks from "./networks";
 
 export function getNetwork(nameOrChainId: string | number) {
   const network = Object.values(networks).find((network) => {
-    if (typeof nameOrChainId === "string") {
+    if (typeof nameOrChainId === "string" && isNaN(Number(nameOrChainId))) {
       return network.name === nameOrChainId.toLowerCase();
     } else {
-      return network.id === nameOrChainId;
+      return network.id === Number(nameOrChainId);
     }
   });
 
