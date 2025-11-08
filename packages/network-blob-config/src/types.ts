@@ -1,12 +1,6 @@
-export type ForkName = "dencun" | "pectra";
+import type * as forks from "./forks";
 
-export type NetworkName =
-  | "mainnet"
-  | "holesky"
-  | "hoodi"
-  | "sepolia"
-  | "gnosis";
-// | "devnet";
+export type ForkName = keyof typeof forks;
 
 export interface BaseNetworkBlobParams {
   blobBaseFeeUpdateFraction: bigint;

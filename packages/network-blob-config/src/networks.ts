@@ -13,6 +13,14 @@ export const mainnet = new Network(
       activationDate: new Date("2025-05-07T10:05:11Z"),
       activationSlot: 11_649_024,
     },
+    bpo1: {
+      activationDate: new Date("2025-12-17T13:29:59Z"),
+      activationSlot: 13_262_848,
+    },
+    bpo2: {
+      activationDate: new Date("2026-01-07T01:01:11Z"),
+      activationSlot: 13_410_304,
+    },
   }
 );
 
@@ -28,6 +36,14 @@ export const holesky = new Network(
     pectra: {
       activationDate: new Date("2025-02-24T21:55:12Z"),
       activationSlot: 3_710_976,
+    },
+    bpo1: {
+      activationDate: new Date("2025-10-07T01:20:00Z"),
+      activationSlot: 5_324_800,
+    },
+    bpo2: {
+      activationDate: new Date("2025-10-13T21:10:24Z"),
+      activationSlot: 5_373_952,
     },
   }
 );
@@ -45,6 +61,14 @@ export const hoodi = new Network(
       activationDate: new Date("2025-03-26T14:37:12Z"),
       activationSlot: 65_536,
     },
+    bpo1: {
+      activationDate: new Date("2025-11-05T18:02:00Z"),
+      activationSlot: 1_679_360,
+    },
+    bpo2: {
+      activationDate: new Date("2025-11-12T13:52:24Z"),
+      activationSlot: 1_728_512,
+    },
   }
 );
 
@@ -60,6 +84,14 @@ export const sepolia = new Network(
     pectra: {
       activationDate: new Date("2025-03-05T07:29:36Z"),
       activationSlot: 7_118_848,
+    },
+    bpo1: {
+      activationDate: new Date("2025-10-21T03:26:24Z"),
+      activationSlot: 8_773_632,
+    },
+    bpo2: {
+      activationDate: new Date("2025-10-27T23:16:48Z"),
+      activationSlot: 8_882_784,
     },
   }
 );

@@ -55,3 +55,15 @@ export const pectra = createForkBlobParams({
   maxBlobsPerBlock: 9,
   targetBlobsPerBlock: 6,
 });
+
+export const bpo1 = createForkBlobParams({
+  blobBaseFeeUpdateFraction: BigInt(8_346_193),
+  maxBlobsPerBlock: 15,
+  targetBlobsPerBlock: 10,
+});
+
+export const bpo2 = createForkBlobParams({
+  blobBaseFeeUpdateFraction: BigInt(11_684_671),
+  maxBlobsPerBlock: 21,
+  targetBlobsPerBlock: 14,
+});
