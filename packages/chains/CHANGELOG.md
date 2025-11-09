@@ -1,5 +1,17 @@
 # @blobscan/chains
 
+## 0.4.0
+
+### Minor Changes
+
+- [#913](https://github.com/Blobscan/blobscan/pull/913) [`6a40ea2`](https://github.com/Blobscan/blobscan/commit/6a40ea282f9e55ff54a4e17b8ab19491b79c44b9) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for fusaka upgrade
+
+- [#913](https://github.com/Blobscan/blobscan/pull/913) [`6a40ea2`](https://github.com/Blobscan/blobscan/commit/6a40ea282f9e55ff54a4e17b8ab19491b79c44b9) Thanks [@PJColombo](https://github.com/PJColombo)! - Added fusaka upgrade support
+
+### Patch Changes
+
+- [#915](https://github.com/Blobscan/blobscan/pull/915) [`ee9f18d`](https://github.com/Blobscan/blobscan/commit/ee9f18d7451c9cf58f581aceea6687eba814df33) Thanks [@PJColombo](https://github.com/PJColombo)! - Renamed `network-blob-config` package to `chains
+
 ## 0.3.0
 
 ### Minor Changes

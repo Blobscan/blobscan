@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/db",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "private": true,
   "main": "./index.ts",
   "types": "./index.ts",
@@ -40,7 +40,7 @@
     "zod-prisma": "^0.5.4"
   },
   "devDependencies": {
-    "@blobscan/chains": "workspace:^0.3.0",
+    "@blobscan/chains": "workspace:^0.4.0",
     "@faker-js/faker": "^8.0.2",
     "js-sha256": "^0.9.0",
     "ora": "^8.1.1",

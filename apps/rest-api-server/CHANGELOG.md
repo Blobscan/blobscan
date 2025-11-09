@@ -1,5 +1,23 @@
 # @blobscan/rest-api-server
 
+## 0.10.0
+
+### Minor Changes
+
+- [#913](https://github.com/Blobscan/blobscan/pull/913) [`6a40ea2`](https://github.com/Blobscan/blobscan/commit/6a40ea282f9e55ff54a4e17b8ab19491b79c44b9) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated all network blob params calls
+
+### Patch Changes
+
+- [#915](https://github.com/Blobscan/blobscan/pull/915) [`ee9f18d`](https://github.com/Blobscan/blobscan/commit/ee9f18d7451c9cf58f581aceea6687eba814df33) Thanks [@PJColombo](https://github.com/PJColombo)! - Renamed `network-blob-config` package to `chains
+
+- Updated dependencies [[`6a40ea2`](https://github.com/Blobscan/blobscan/commit/6a40ea282f9e55ff54a4e17b8ab19491b79c44b9), [`6a40ea2`](https://github.com/Blobscan/blobscan/commit/6a40ea282f9e55ff54a4e17b8ab19491b79c44b9), [`ee9f18d`](https://github.com/Blobscan/blobscan/commit/ee9f18d7451c9cf58f581aceea6687eba814df33), [`6a40ea2`](https://github.com/Blobscan/blobscan/commit/6a40ea282f9e55ff54a4e17b8ab19491b79c44b9)]:
+  - @blobscan/chains@0.4.0
+  - @blobscan/api@0.31.0
+  - @blobscan/db@0.24.0
+  - @blobscan/blob-propagator@0.6.3
+  - @blobscan/blob-storage-manager@0.8.1
+  - @blobscan/syncers@0.6.2
+
 ## 0.9.0
 
 ### Minor Changes
