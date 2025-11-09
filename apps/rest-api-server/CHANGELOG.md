@@ -1,5 +1,19 @@
 # @blobscan/rest-api-server
 
+## 0.11.0
+
+### Minor Changes
+
+- [#916](https://github.com/Blobscan/blobscan/pull/916) [`dc1c80b`](https://github.com/Blobscan/blobscan/commit/dc1c80b1d1e584265e9021bd22a6500801073e55) Thanks [@PJColombo](https://github.com/PJColombo)! - Bumped request body size limit to 8MB to support Fusaka's increased blob payload size
+
+- [#916](https://github.com/Blobscan/blobscan/pull/916) [`dc1c80b`](https://github.com/Blobscan/blobscan/commit/dc1c80b1d1e584265e9021bd22a6500801073e55) Thanks [@PJColombo](https://github.com/PJColombo)! - Adds an Express error-handling middleware and process-level handlers for uncaught exceptions and unhandled promise rejections.
+
+### Patch Changes
+
+- [#916](https://github.com/Blobscan/blobscan/pull/916) [`dc1c80b`](https://github.com/Blobscan/blobscan/commit/dc1c80b1d1e584265e9021bd22a6500801073e55) Thanks [@PJColombo](https://github.com/PJColombo)! - Prevented leaking internal 500 error details by returning a generic internal server error message to clients.
+
+- [#916](https://github.com/Blobscan/blobscan/pull/916) [`dc1c80b`](https://github.com/Blobscan/blobscan/commit/dc1c80b1d1e584265e9021bd22a6500801073e55) Thanks [@PJColombo](https://github.com/PJColombo)! - Prevented logging non-500 errors as error-level logs.
+
 ## 0.10.0
 
 ### Minor Changes
