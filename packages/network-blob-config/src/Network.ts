@@ -28,35 +28,29 @@ export class Network {
 
     if (forks_.length === 0) {
       throw new Error(
-        `Network ${name} must have at least one active fork defined`
+        `"${name}" network must have at least one active fork defined`
       );
     }
 
     this.forks = forks_ as [Fork, ...Fork[]];
   }
 
-  getFork(forkName: ForkName): Fork | undefined {
+  getFork(forkName: ForkName) {
     return this.forks.find((fork) => fork.forkName === forkName);
   }
 
-  get latestFork(): Fork {
-    const latestFork = this.forks[this.forks.length - 1];
-
-    if (!latestFork) {
-      throw new Error(`Network ${this.name} has no forks defined`);
-    }
-
-    return latestFork;
+  get latestFork() {
+    return this.forks[this.forks.length - 1] ?? this.forks[0];
   }
 
-  getActiveForkBySlot(slot: number): Fork | undefined {
+  getActiveForkBySlot(slot: number) {
     return (
       this.forks.findLast((fork) => slot >= fork.activationSlot) ??
       this.latestFork
     );
   }
 
-  getActiveForkByDate(dateOrTimestamp: Date): Fork | undefined {
+  getActiveForkByDate(dateOrTimestamp: Date | number) {
     const timestamp =
       typeof dateOrTimestamp === "number"
         ? dateOrTimestamp
