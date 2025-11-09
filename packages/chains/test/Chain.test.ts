@@ -7,11 +7,11 @@ import { mainnet } from "../src/chains";
 import * as forks from "../src/forks";
 import type { Fork } from "../src/types";
 
-describe("Network", () => {
-  const network = mainnet;
+describe("Chain", () => {
+  const chain = mainnet;
 
   it("should get a fork", async () => {
-    const fork = network.getFork("dencun");
+    const fork = chain.getFork("dencun");
     const expectedFork: Fork = {
       forkName: "dencun",
       activationSlot: 8_626_176,
@@ -23,22 +23,22 @@ describe("Network", () => {
   });
 
   it("should get latest fork", () => {
-    let expectedLatestFork = network.forks[0];
+    let expectedLatestFork = chain.forks[0];
 
-    network.forks.forEach((f) => {
+    chain.forks.forEach((f) => {
       if (f.activationSlot >= expectedLatestFork.activationSlot) {
         expectedLatestFork = f;
       }
     });
 
-    expect(network.latestFork).toEqual(expectedLatestFork);
+    expect(chain.latestFork).toEqual(expectedLatestFork);
   });
 
   describe("when getting active fork given a slot", () => {
-    test.each(network.forks.map((f) => [f.forkName, f]))(
+    test.each(chain.forks.map((f) => [f.forkName, f]))(
       "should get %s fork",
       (_, expectedFork) => {
-        const activeFork = network.getActiveForkBySlot(
+        const activeFork = chain.getActiveForkBySlot(
           expectedFork.activationSlot
         );
 
@@ -48,15 +48,15 @@ describe("Network", () => {
   });
 
   describe("when getting active fork given a date", () => {
-    test.each(network.forks.map((f) => [f.forkName, f]))(
+    test.each(chain.forks.map((f) => [f.forkName, f]))(
       "should get %s fork",
       (_, expectedFork) => {
         const afterForkMs = expectedFork.activationDate.getTime() + 1000;
 
-        const activeForkByDate = network.getActiveForkByDate(
+        const activeForkByDate = chain.getActiveForkByDate(
           new Date(afterForkMs)
         );
-        const activeForkByTimestamp = network.getActiveForkByDate(afterForkMs);
+        const activeForkByTimestamp = chain.getActiveForkByDate(afterForkMs);
 
         expect(activeForkByDate, "active fork by date mismatch").toEqual(
           expectedFork
@@ -70,7 +70,7 @@ describe("Network", () => {
   });
 
   testValidError(
-    "should throw an error when instantiating a network without providing any forks",
+    "should throw an error when instantiating a chain without providing any forks",
     () => {
       new Chain(11, "test", { number: 0 }, {});
     },
