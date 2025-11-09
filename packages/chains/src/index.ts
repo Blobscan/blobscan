@@ -1,19 +1,19 @@
 import * as chains from "./chains";
 
 export function getChain(nameOrChainId: string | number) {
-  const network = Object.values(chains).find((network) => {
+  const chain = Object.values(chains).find((chain) => {
     if (typeof nameOrChainId === "string" && isNaN(Number(nameOrChainId))) {
-      return network.name === nameOrChainId.toLowerCase();
+      return chain.name === nameOrChainId.toLowerCase();
     } else {
-      return network.id === Number(nameOrChainId);
+      return chain.id === Number(nameOrChainId);
     }
   });
 
-  if (!network) {
-    throw new Error(`Unsupported network: ${nameOrChainId.toString()}`);
+  if (!chain) {
+    throw new Error(`Unsupported chain: ${nameOrChainId.toString()}`);
   }
 
-  return network;
+  return chain;
 }
 
 export * as chains from "./chains";
