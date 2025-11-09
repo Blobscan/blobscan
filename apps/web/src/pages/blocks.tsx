@@ -3,7 +3,6 @@ import type { NextPage } from "next";
 
 import type { EtherUnit } from "@blobscan/eth-format";
 import { formatWei } from "@blobscan/eth-format";
-import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
@@ -19,9 +18,9 @@ import { Table } from "~/components/Table";
 import type { TimestampFormat } from "~/components/TimestampToggle";
 import { TimestampToggle } from "~/components/TimestampToggle";
 import { api } from "~/api-client";
+import { useNetworkConfig } from "~/hooks/useNetworkConfig";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
-import { useEnv } from "~/providers/Env";
 import type { BlockWithExpandedBlobsAndTransactions, Rollup } from "~/types";
 import type { ByteUnit } from "~/utils";
 import {
@@ -37,7 +36,7 @@ const BYTES_UNIT: ByteUnit = "KiB";
 const ETHER_UNIT: EtherUnit = "Gwei";
 
 const Blocks: NextPage = function () {
-  const { env } = useEnv();
+  const { config } = useNetworkConfig();
   const { paginationParams, filterParams } = useQueryParams();
   const rollups = filterParams?.rollups?.join(",");
 
@@ -118,7 +117,7 @@ const Blocks: NextPage = function () {
   ];
 
   const blocksRows = useMemo(() => {
-    if (!blocks || !env) {
+    if (!blocks || !config) {
       return;
     }
 
@@ -238,10 +237,7 @@ const Blocks: NextPage = function () {
             {
               item: (
                 <BlobGasUsageDisplay
-                  networkBlobConfig={getNetworkBlobConfigBySlot(
-                    env.PUBLIC_NETWORK_NAME,
-                    slot
-                  )}
+                  networkBlobConfig={config}
                   blobGasUsed={blobGasUsed}
                   width={100}
                   variant="minimal"
@@ -369,7 +365,7 @@ const Blocks: NextPage = function () {
         };
       }
     );
-  }, [blocks, timeFormat, env]);
+  }, [blocks, timeFormat, config]);
 
   if (error) {
     return (

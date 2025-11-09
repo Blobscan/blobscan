@@ -7,7 +7,7 @@ import type {
   WithoutTimestampFields,
 } from "@blobscan/db";
 import { Prisma } from "@blobscan/db";
-import type { NetworkBlobConfig } from "@blobscan/network-blob-config";
+import type { NetworkBlobParams } from "@blobscan/network-blob-config";
 import { getRollupByAddress } from "@blobscan/rollups";
 
 import type { IndexDataFormattedInput } from "./indexData";
@@ -78,9 +78,9 @@ export function calculateBlobUsageSize(blob: string) {
 
 export function calculateBlobGasPrice(
   excessBlobGas: bigint,
-  config: NetworkBlobConfig
+  params: NetworkBlobParams
 ): bigint {
-  const { minBlobBaseFee, blobBaseFeeUpdateFraction } = config;
+  const { minBlobBaseFee, blobBaseFeeUpdateFraction } = params;
 
   return BigInt(
     fakeExponential(minBlobBaseFee, excessBlobGas, blobBaseFeeUpdateFraction)
@@ -89,7 +89,7 @@ export function calculateBlobGasPrice(
 
 export function createDBTransactions(
   { blobs, block, transactions }: IndexDataFormattedInput,
-  config: NetworkBlobConfig
+  params: NetworkBlobParams
 ): WithoutTimestampFields<Transaction>[] {
   return transactions.map<WithoutTimestampFields<Transaction>>(
     ({ from, gasPrice, hash, maxFeePerBlobGas, to, index }) => {
@@ -104,7 +104,7 @@ export function createDBTransactions(
         BigInt(0)
       );
 
-      const blobGasPrice = calculateBlobGasPrice(block.excessBlobGas, config);
+      const blobGasPrice = calculateBlobGasPrice(block.excessBlobGas, params);
 
       return {
         blockHash: block.hash,
@@ -116,7 +116,7 @@ export function createDBTransactions(
         index,
         gasPrice: bigIntToDecimal(gasPrice),
         blobGasUsed: bigIntToDecimal(
-          BigInt(txBlobs.length) * config.gasPerBlob
+          BigInt(txBlobs.length) * params.gasPerBlob
         ),
         blobGasPrice: bigIntToDecimal(blobGasPrice),
         maxFeePerBlobGas: bigIntToDecimal(maxFeePerBlobGas),
@@ -132,13 +132,13 @@ export function createDBBlock(
     block: { blobGasUsed, excessBlobGas, hash, number, slot, timestamp },
   }: IndexDataFormattedInput,
   dbTxs: Pick<Transaction, "blobAsCalldataGasUsed">[],
-  config: NetworkBlobConfig
+  params: NetworkBlobParams
 ): WithoutTimestampFields<Block> {
   const blobAsCalldataGasUsed = dbTxs.reduce(
     (acc, tx) => acc.add(tx.blobAsCalldataGasUsed),
     new Prisma.Decimal(0)
   );
-  const blobGasPrice = calculateBlobGasPrice(excessBlobGas, config);
+  const blobGasPrice = calculateBlobGasPrice(excessBlobGas, params);
 
   return {
     number,

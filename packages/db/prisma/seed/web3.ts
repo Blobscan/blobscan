@@ -1,6 +1,7 @@
-import { FORK_BLOB_CONFIG } from "@blobscan/network-blob-config";
-
 import { Rollup } from "../enums";
+import { network } from "./network";
+
+const BLOB_PARAMS = network.latestFork.blobParams;
 
 export const COMMON_MAX_FEE_PER_BLOB_GAS = [
   1000000000, 2, 150000000000, 10, 2000000000, 26000000000, 1, 4000000000, 4,
@@ -72,8 +73,7 @@ export function getEIP2028CalldataGas(hexData: string) {
 }
 
 export function calculateBlobGasPrice(excessBlobGas: bigint): bigint {
-  const { minBlobBaseFee, blobBaseFeeUpdateFraction } =
-    FORK_BLOB_CONFIG["pectra"];
+  const { minBlobBaseFee, blobBaseFeeUpdateFraction } = BLOB_PARAMS;
 
   return BigInt(
     fakeExponential(minBlobBaseFee, excessBlobGas, blobBaseFeeUpdateFraction)
@@ -84,8 +84,7 @@ export function calculateExcessBlobGas(
   parentExcessBlobGas: bigint,
   parentBlobGasUsed: bigint
 ) {
-  const targetBlobGasPerBlock =
-    FORK_BLOB_CONFIG["pectra"].targetBlobGasPerBlock;
+  const targetBlobGasPerBlock = BLOB_PARAMS.targetBlobGasPerBlock;
   const excessBlobGas = BigInt(parentExcessBlobGas.toString());
   const blobGasUsed = BigInt(parentBlobGasUsed.toString());
 

@@ -23,6 +23,7 @@
     "@blobscan/db": "workspace:^0.23.0",
     "@blobscan/env": "workspace:^0.2.0",
     "@blobscan/logger": "workspace:^0.1.4",
+    "@blobscan/network-blob-config": "workspace:^0.3.0",
     "@blobscan/open-telemetry": "workspace:^0.0.10",
     "@blobscan/price-feed": "workspace:^0.1.0",
     "@blobscan/syncers": "workspace:^0.6.1",

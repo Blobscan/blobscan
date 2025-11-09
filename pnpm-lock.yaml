@@ -192,6 +192,9 @@ importers:
       '@blobscan/logger':
         specifier: workspace:^0.1.4
         version: link:../../packages/logger
+      '@blobscan/network-blob-config':
+        specifier: workspace:^0.3.0
+        version: link:../../packages/network-blob-config
       '@blobscan/open-telemetry':
         specifier: workspace:^0.0.10
         version: link:../../packages/open-telemetry

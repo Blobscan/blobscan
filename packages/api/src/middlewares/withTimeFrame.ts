@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import dayjs from "@blobscan/dayjs";
-import { getNetworkForkTimestamp } from "@blobscan/network-blob-config";
+import type { Network } from "@blobscan/network-blob-config";
 
 import { t } from "../trpc-client";
 
@@ -25,14 +25,16 @@ export type TimeInterval = {
 };
 
 function getTimeFrameDatePeriod(
-  chainId: number,
+  network: Network,
   timeFrame: TimeFrame
 ): TimeInterval {
   const final = dayjs().subtract(1, "day").endOf("day");
 
   if (timeFrame === "All") {
+    const initialDate = network.forks[0].activationDate;
+
     return {
-      initial: dayjs.unix(getNetworkForkTimestamp(chainId)),
+      initial: dayjs(initialDate),
       final,
     };
   }
@@ -57,12 +59,12 @@ export const withTimeFrameSchema = z.object({
 });
 
 export const withTimeFrame = t.middleware(
-  ({ next, input, ctx: { chainId } }) => {
+  ({ next, input, ctx: { network } }) => {
     const { timeFrame } = withTimeFrameSchema.parse(input);
 
     return next({
       ctx: {
-        timeFrame: getTimeFrameDatePeriod(chainId, timeFrame),
+        timeFrame: getTimeFrameDatePeriod(network, timeFrame),
       },
     });
   }
