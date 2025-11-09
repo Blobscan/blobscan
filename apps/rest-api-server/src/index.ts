@@ -14,6 +14,7 @@ import { logger } from "@blobscan/logger";
 
 import { printBanner } from "./banner";
 import { prisma } from "./clients/prisma";
+import { errorHandler } from "./errors/handler";
 import { morganMiddleware } from "./morgan";
 import { setUpOpenApiTRPC } from "./openapi-trpc";
 import { getBlobPropagator } from "./services/blob-propagator";
@@ -45,6 +46,8 @@ async function main() {
   });
 
   await setUpOpenApiTRPC(app);
+
+  app.use(errorHandler);
 
   const server = app.listen(env.BLOBSCAN_API_PORT, () => {
     logger.info(`Server started on http://0.0.0.0:${env.BLOBSCAN_API_PORT}`);
