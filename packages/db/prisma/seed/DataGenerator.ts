@@ -10,8 +10,8 @@ import type {
 import { Category, Prisma } from "@prisma/client";
 import { sha256 } from "js-sha256";
 
+import { getChain } from "@blobscan/chains";
 import dayjs from "@blobscan/dayjs";
-import { getNetwork } from "@blobscan/network-blob-config";
 
 import type { Rollup } from "../enums";
 import { BlobStorage } from "../enums";
@@ -23,7 +23,7 @@ import {
   ROLLUP_ADDRESSES,
 } from "./web3";
 
-const GAS_PER_BLOB = getNetwork("mainnet").forks[0].blobParams.gasPerBlob;
+const GAS_PER_BLOB = getChain("mainnet").forks[0].blobParams.gasPerBlob;
 
 export type FullBlock = Block & {
   transactions: (Transaction & {

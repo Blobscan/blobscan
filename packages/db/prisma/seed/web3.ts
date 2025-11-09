@@ -1,7 +1,7 @@
 import { Rollup } from "../enums";
-import { network } from "./network";
+import { chain } from "./chain";
 
-const BLOB_PARAMS = network.latestFork.blobParams;
+const BLOB_PARAMS = chain.latestFork.blobParams;
 
 export const COMMON_MAX_FEE_PER_BLOB_GAS = [
   1000000000, 2, 150000000000, 10, 2000000000, 26000000000, 1, 4000000000, 4,

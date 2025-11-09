@@ -1,13 +1,13 @@
 import type { FC } from "react";
 import cn from "classnames";
 
-import type { NetworkBlobParams } from "@blobscan/network-blob-config";
+import type { ChainBlobParams } from "@blobscan/chains";
 
 import { calculatePercentage, formatNumber, performDiv } from "~/utils";
 import { PercentageBar } from "../PercentageBar";
 
 type BlobGasUsageDisplayProps = {
-  networkBlobConfig: NetworkBlobParams;
+  networkBlobConfig: ChainBlobParams;
   blobGasUsed: bigint;
   width?: number;
   variant?: "detailed" | "minimal";

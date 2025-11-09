@@ -1,7 +1,7 @@
 import * as forkBlobParams from "./forks";
 import type { ForkActivationParams, ForkName, Fork } from "./types";
 
-export class Network {
+export class Chain {
   public readonly forks: [Fork, ...Fork[]];
 
   constructor(

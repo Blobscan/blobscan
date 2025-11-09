@@ -8,8 +8,8 @@ import {
 } from "@blobscan/api";
 import type { TRPCContext } from "@blobscan/api";
 
+import { chain } from "./chain";
 import { env } from "./env.mjs";
-import { network } from "./network";
 import { prisma } from "./prisma";
 import { redis } from "./redis";
 
@@ -24,7 +24,7 @@ export const appRouter = createAppRouter({
 
 export const createContext = createTRPCContext({
   scope: "web",
-  network,
+  chain,
   prisma,
   redis,
   enableTracing: env.TRACES_ENABLED,
@@ -40,7 +40,7 @@ export function createServerSideHelpers() {
     router: appRouter,
     transformer: superjson,
     ctx: createTRPCInnerContext({
-      network,
+      chain,
       prisma,
     }) as TRPCContext,
   });

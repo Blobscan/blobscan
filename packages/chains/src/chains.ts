@@ -1,6 +1,6 @@
-import { Network } from "./Network";
+import { Chain } from "./Chain";
 
-export const mainnet = new Network(
+export const mainnet = new Chain(
   1,
   "mainnet",
   { number: 19_426_589 },
@@ -24,7 +24,7 @@ export const mainnet = new Network(
   }
 );
 
-export const holesky = new Network(
+export const holesky = new Chain(
   167004,
   "holesky",
   { number: 894_735 },
@@ -48,7 +48,7 @@ export const holesky = new Network(
   }
 );
 
-export const hoodi = new Network(
+export const hoodi = new Chain(
   560048,
   "hoodi",
   { number: 0 },
@@ -72,7 +72,7 @@ export const hoodi = new Network(
   }
 );
 
-export const sepolia = new Network(
+export const sepolia = new Chain(
   11155111,
   "sepolia",
   { number: 5_187_052 },
@@ -96,7 +96,7 @@ export const sepolia = new Network(
   }
 );
 
-export const gnosis = new Network(
+export const gnosis = new Chain(
   100,
   "gnosis",
   { number: 32_880_709 },

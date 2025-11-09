@@ -206,7 +206,7 @@
 
 - Updated dependencies [[`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e), [`095564d`](https://github.com/Blobscan/blobscan/commit/095564d18b1200243ea272df1be55c4567978834), [`a550799`](https://github.com/Blobscan/blobscan/commit/a550799462d4d657ef6e1f50155c3efe55e39759), [`52b89d6`](https://github.com/Blobscan/blobscan/commit/52b89d6a90200eea5647c49bb5fba8c0b0ff1529), [`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e), [`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e)]:
   - @blobscan/api@0.24.0
-  - @blobscan/network-blob-config@0.3.0
+  - @blobscan/chains@0.3.0
   - @blobscan/env@0.2.0
   - @blobscan/db@0.18.1
   - @blobscan/open-telemetry@0.0.10
@@ -246,7 +246,7 @@
 
 - Updated dependencies [[`783216a`](https://github.com/Blobscan/blobscan/commit/783216ad98c611c84642fa776a9ea35db3d97d5e), [`783216a`](https://github.com/Blobscan/blobscan/commit/783216ad98c611c84642fa776a9ea35db3d97d5e), [`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2), [`46a9699`](https://github.com/Blobscan/blobscan/commit/46a96994f5fd01ff1cf109f2c561203bfb475f50), [`46a9699`](https://github.com/Blobscan/blobscan/commit/46a96994f5fd01ff1cf109f2c561203bfb475f50), [`9a78399`](https://github.com/Blobscan/blobscan/commit/9a783998bac9c6e9f929a89f0e685b8745edd3ac), [`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2), [`052da7e`](https://github.com/Blobscan/blobscan/commit/052da7e93a3c3289ec67097b8f8bc34315d84b2e)]:
   - @blobscan/api@0.23.0
-  - @blobscan/network-blob-config@0.2.0
+  - @blobscan/chains@0.2.0
   - @blobscan/db@0.18.0
   - @blobscan/rollups@0.3.3
 

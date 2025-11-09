@@ -83,8 +83,8 @@ export const getCount = publicProcedure
   .input(inputSchema)
   .use(withFilters)
   .output(outputSchema)
-  .query(async ({ ctx: { filters, prisma, network } }) => {
-    const txsCount = await countTxs(prisma, filters, network.id);
+  .query(async ({ ctx: { filters, prisma, chain } }) => {
+    const txsCount = await countTxs(prisma, filters, chain.id);
 
     return {
       totalTransactions: txsCount,

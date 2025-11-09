@@ -1,8 +1,8 @@
+import type { Chain } from "@blobscan/chains";
 import dayjs from "@blobscan/dayjs";
 import type { Prisma } from "@blobscan/db";
 import type { Category, Rollup } from "@blobscan/db/prisma/enums";
 import { DailyStatsModel } from "@blobscan/db/prisma/zod";
-import type { Network } from "@blobscan/network-blob-config";
 import { z } from "@blobscan/zod";
 
 import type { ContextScope } from "../context";
@@ -102,12 +102,12 @@ export const withAllStatFiltersSchema = withStatsFilterSchema
 export type StatFiltersOutputSchema = z.output<typeof withAllStatFiltersSchema>;
 
 function buildDayWhereClause({
-  network,
+  chain,
   scope,
   timeFrame,
   selectedStats,
 }: {
-  network: Network;
+  chain: Chain;
   scope: ContextScope;
   timeFrame: TimeFrame;
   selectedStats: StatFiltersOutputSchema["stats"];
@@ -115,7 +115,7 @@ function buildDayWhereClause({
   let days: number;
 
   if (timeFrame === "All") {
-    const activeFork = network.forks[0].activationDate;
+    const activeFork = chain.forks[0].activationDate;
     const firstDate = dayjs(activeFork);
 
     days = dayjs().diff(firstDate, "D");
@@ -158,7 +158,7 @@ function buildDayWhereClause({
 }
 
 export const withStatFilters = t.middleware(
-  ({ next, input = {}, ctx: { network, scope } }) => {
+  ({ next, input = {}, ctx: { chain, scope } }) => {
     const { categories, rollups, timeFrame, stats } =
       input as StatFiltersOutputSchema;
     let select: StatsFilters["select"];
@@ -176,7 +176,7 @@ export const withStatFilters = t.middleware(
 
     if (timeFrame) {
       where.day = buildDayWhereClause({
-        network,
+        chain,
         scope,
         timeFrame,
         selectedStats: stats,

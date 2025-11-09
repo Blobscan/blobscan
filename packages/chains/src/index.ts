@@ -1,7 +1,7 @@
-import * as networks from "./networks";
+import * as chains from "./chains";
 
-export function getNetwork(nameOrChainId: string | number) {
-  const network = Object.values(networks).find((network) => {
+export function getChain(nameOrChainId: string | number) {
+  const network = Object.values(chains).find((network) => {
     if (typeof nameOrChainId === "string" && isNaN(Number(nameOrChainId))) {
       return network.name === nameOrChainId.toLowerCase();
     } else {
@@ -16,6 +16,6 @@ export function getNetwork(nameOrChainId: string | number) {
   return network;
 }
 
-export * as networks from "./networks";
-export type { Network } from "./Network";
+export * as chains from "./chains";
+export type { Chain } from "./Chain";
 export * from "./types";

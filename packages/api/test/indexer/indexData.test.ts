@@ -79,7 +79,7 @@ describe("indexData", () => {
       //   (acc, b) => acc + getEIP2028CalldataGas(b.data),
       //   0
       // );
-      const fork = authorizedCtx.network.forks[0].blobParams;
+      const fork = authorizedCtx.chain.forks[0].blobParams;
       const expectedBlobGasPrice = calculateBlobGasPrice(
         BigInt(INPUT.block.excessBlobGas),
         fork

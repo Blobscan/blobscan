@@ -1,6 +1,6 @@
 import type { Environment } from "@blobscan/env";
 
-export function getNetworkDencunForkSlot(
+export function getChainDencunForkSlot(
   networkName: Environment["NETWORK_NAME"]
 ): number {
   switch (networkName) {

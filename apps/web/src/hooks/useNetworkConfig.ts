@@ -1,10 +1,10 @@
-import { getNetwork } from "@blobscan/network-blob-config";
+import { getChain } from "@blobscan/chains";
 
 import { useEnv } from "~/providers/Env";
 
 export function useNetworkConfig(slot?: number) {
   const { env } = useEnv();
-  const network = env && slot ? getNetwork(env.PUBLIC_NETWORK_NAME) : undefined;
+  const network = env && slot ? getChain(env.PUBLIC_NETWORK_NAME) : undefined;
 
   return {
     config:

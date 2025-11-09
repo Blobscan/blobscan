@@ -2,9 +2,9 @@ import { describe, expect, it, test } from "vitest";
 
 import { testValidError } from "@blobscan/test";
 
-import { Network } from "../src/Network";
+import { Chain } from "../src/Chain";
+import { mainnet } from "../src/chains";
 import * as forks from "../src/forks";
-import { mainnet } from "../src/networks";
 import type { Fork } from "../src/types";
 
 describe("Network", () => {
@@ -72,7 +72,7 @@ describe("Network", () => {
   testValidError(
     "should throw an error when instantiating a network without providing any forks",
     () => {
-      new Network(11, "test", { number: 0 }, {});
+      new Chain(11, "test", { number: 0 }, {});
     },
     Error
   );

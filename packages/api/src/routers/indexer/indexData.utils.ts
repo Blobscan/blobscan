@@ -1,3 +1,4 @@
+import type { ChainBlobParams } from "@blobscan/chains";
 import type {
   Address,
   Blob,
@@ -7,7 +8,6 @@ import type {
   WithoutTimestampFields,
 } from "@blobscan/db";
 import { Prisma } from "@blobscan/db";
-import type { NetworkBlobParams } from "@blobscan/network-blob-config";
 import { getRollupByAddress } from "@blobscan/rollups";
 
 import type { IndexDataFormattedInput } from "./indexData";
@@ -78,7 +78,7 @@ export function calculateBlobUsageSize(blob: string) {
 
 export function calculateBlobGasPrice(
   excessBlobGas: bigint,
-  params: NetworkBlobParams
+  params: ChainBlobParams
 ): bigint {
   const { minBlobBaseFee, blobBaseFeeUpdateFraction } = params;
 
@@ -89,7 +89,7 @@ export function calculateBlobGasPrice(
 
 export function createDBTransactions(
   { blobs, block, transactions }: IndexDataFormattedInput,
-  params: NetworkBlobParams
+  params: ChainBlobParams
 ): WithoutTimestampFields<Transaction>[] {
   return transactions.map<WithoutTimestampFields<Transaction>>(
     ({ from, gasPrice, hash, maxFeePerBlobGas, to, index }) => {
@@ -132,7 +132,7 @@ export function createDBBlock(
     block: { blobGasUsed, excessBlobGas, hash, number, slot, timestamp },
   }: IndexDataFormattedInput,
   dbTxs: Pick<Transaction, "blobAsCalldataGasUsed">[],
-  params: NetworkBlobParams
+  params: ChainBlobParams
 ): WithoutTimestampFields<Block> {
   const blobAsCalldataGasUsed = dbTxs.reduce(
     (acc, tx) => acc.add(tx.blobAsCalldataGasUsed),

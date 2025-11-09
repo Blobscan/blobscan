@@ -1,6 +1,6 @@
-import type { BaseNetworkBlobParams, NetworkBlobParams } from "./types";
+import type { BaseChainBlobParams, ChainBlobParams } from "./types";
 
-const DEFAULT_BLOB_PARAMS: Omit<BaseNetworkBlobParams, "forkName"> = {
+const DEFAULT_BLOB_PARAMS: Omit<BaseChainBlobParams, "forkName"> = {
   bytesPerFieldElement: 32,
   fieldElementsPerBlob: 4096,
   gasPerBlob: BigInt(131_072),
@@ -11,8 +11,8 @@ const DEFAULT_BLOB_PARAMS: Omit<BaseNetworkBlobParams, "forkName"> = {
 };
 
 function createForkBlobParams(
-  params: Partial<BaseNetworkBlobParams>
-): NetworkBlobParams {
+  params: Partial<BaseChainBlobParams>
+): ChainBlobParams {
   const bytesPerFieldElement =
     params.bytesPerFieldElement ?? DEFAULT_BLOB_PARAMS.bytesPerFieldElement;
   const fieldElementsPerBlob =

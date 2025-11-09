@@ -18,7 +18,7 @@
     "@blobscan/dayjs": "workspace:^0.1.0",
     "@blobscan/db": "workspace:^0.23.0",
     "@blobscan/logger": "workspace:^0.1.4",
-    "@blobscan/network-blob-config": "workspace:^0.3.0",
+    "@blobscan/chains": "workspace:^0.3.0",
     "@blobscan/open-telemetry": "workspace:^0.0.10",
     "@blobscan/rollups": "workspace:^0.3.8",
     "@blobscan/zod": "workspace:^0.1.0",
