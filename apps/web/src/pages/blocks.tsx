@@ -18,7 +18,7 @@ import { Table } from "~/components/Table";
 import type { TimestampFormat } from "~/components/TimestampToggle";
 import { TimestampToggle } from "~/components/TimestampToggle";
 import { api } from "~/api-client";
-import { useNetworkConfig } from "~/hooks/useNetworkConfig";
+import { useChain } from "~/hooks/useChain";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
 import type { BlockWithExpandedBlobsAndTransactions, Rollup } from "~/types";
@@ -36,7 +36,7 @@ const BYTES_UNIT: ByteUnit = "KiB";
 const ETHER_UNIT: EtherUnit = "Gwei";
 
 const Blocks: NextPage = function () {
-  const { config } = useNetworkConfig();
+  const chain = useChain();
   const { paginationParams, filterParams } = useQueryParams();
   const rollups = filterParams?.rollups?.join(",");
 
@@ -117,7 +117,7 @@ const Blocks: NextPage = function () {
   ];
 
   const blocksRows = useMemo(() => {
-    if (!blocks || !config) {
+    if (!blocks || !chain) {
       return;
     }
 
@@ -131,6 +131,7 @@ const Blocks: NextPage = function () {
         timestamp,
         transactions,
       }) => {
+        const blobParams = chain.getActiveForkBySlot(slot).blobParams;
         const formattedTimestamp = normalizeTimestamp(timestamp);
         const blobCount = transactions?.reduce(
           (acc, tx) => acc + tx.blobs.length,
@@ -237,7 +238,7 @@ const Blocks: NextPage = function () {
             {
               item: (
                 <BlobGasUsageDisplay
-                  networkBlobConfig={config}
+                  blobParams={blobParams}
                   blobGasUsed={blobGasUsed}
                   width={100}
                   variant="minimal"
@@ -365,7 +366,7 @@ const Blocks: NextPage = function () {
         };
       }
     );
-  }, [blocks, timeFormat, config]);
+  }, [blocks, timeFormat, chain]);
 
   if (error) {
     return (

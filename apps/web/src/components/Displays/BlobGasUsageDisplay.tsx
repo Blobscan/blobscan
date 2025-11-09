@@ -7,7 +7,7 @@ import { calculatePercentage, formatNumber, performDiv } from "~/utils";
 import { PercentageBar } from "../PercentageBar";
 
 type BlobGasUsageDisplayProps = {
-  networkBlobConfig: ChainBlobParams;
+  blobParams: ChainBlobParams;
   blobGasUsed: bigint;
   width?: number;
   variant?: "detailed" | "minimal";
@@ -43,7 +43,7 @@ function calculateBlobGasTarget(
 }
 
 export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
-  networkBlobConfig,
+  blobParams,
   blobGasUsed,
   width,
   variant = "detailed",
@@ -53,7 +53,7 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
     blobGasLimit,
     targetBlobsPerBlock,
     targetBlobGasPerBlock,
-  } = networkBlobConfig;
+  } = blobParams;
   const blobGasTarget = calculateBlobGasTarget(
     blobGasUsed,
     targetBlobsPerBlock,

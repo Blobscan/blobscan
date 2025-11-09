@@ -7,7 +7,7 @@ import Skeleton from "react-loading-skeleton";
 import dayjs from "@blobscan/dayjs";
 import { convertWei, prettyFormatWei } from "@blobscan/eth-format";
 
-import { useNetworkConfig } from "~/hooks/useNetworkConfig";
+import { useChain } from "~/hooks/useChain";
 import BlobIcon from "~/icons/blob.svg";
 import EthereumIcon from "~/icons/ethereum.svg";
 import GasIcon from "~/icons/gas.svg";
@@ -26,9 +26,15 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
 export function NetworkIndicators() {
   const { env } = useEnv();
   const { appState } = useAppState();
-  const ethPrices = appState?.ethPrices;
+  const chain = useChain();
+
   const blocks = appState?.blocks;
-  const { config } = useNetworkConfig(blocks?.latest?.slot);
+  const latestSlot = blocks?.latest?.slot;
+  const blobParams =
+    chain && latestSlot
+      ? chain.getActiveForkBySlot(latestSlot).blobParams
+      : undefined;
+  const ethPrices = appState?.ethPrices;
   const latestEthPrice = ethPrices?.latest;
   const { usdPrice: latestUsdPrice, timestamp: latestUsdPriceTimestamp } =
     latestEthPrice ||
@@ -46,8 +52,8 @@ export function NetworkIndicators() {
       ? Number(convertWei(latestBlobGasPrice, "ether")) * latestUsdPrice
       : undefined;
   const blobPrice =
-    latestBlobGasPrice && config
-      ? latestBlobGasPrice * config.gasPerBlob
+    latestBlobGasPrice && blobParams
+      ? latestBlobGasPrice * blobParams.gasPerBlob
       : undefined;
   const ethBlobPrice = blobPrice
     ? convertWei(blobPrice.toString(), "ether")

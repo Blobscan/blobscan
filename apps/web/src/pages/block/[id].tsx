@@ -17,8 +17,8 @@ import type { NavArrowsProps } from "~/components/NavArrows";
 import { NavArrows } from "~/components/NavArrows";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
+import { useChain } from "~/hooks/useChain";
 import { useExternalExplorers } from "~/hooks/useExternalExplorers";
-import { useNetworkConfig } from "~/hooks/useNetworkConfig";
 import NextError from "~/pages/_error";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
@@ -58,12 +58,11 @@ const Block: NextPage = function () {
     }
   );
   const blockNumber = blockData?.number;
-  const { config: networkBlobConfig, firstBlock } =
-    useNetworkConfig(blockNumber);
+  const chain = useChain();
   const breakpoint = useBreakpoint();
   const isCompact = breakpoint === "sm";
   const isFirstBlock =
-    blockNumber && firstBlock ? blockNumber <= firstBlock.number : false;
+    blockNumber && chain ? blockNumber <= chain.firstBlobBlock.number : false;
   const isLatestBlock =
     blockNumber && latestBlock ? blockNumber >= latestBlock.number : false;
 
@@ -128,14 +127,15 @@ const Block: NextPage = function () {
 
   let detailsFields: DetailsLayoutProps["fields"] | undefined;
 
-  if (blockData && networkBlobConfig) {
+  if (blockData && chain) {
+    const activeFork = chain.getActiveForkBySlot(blockData.slot);
     const {
       bytesPerFieldElement,
       fieldElementsPerBlob,
       blobGasLimit,
       maxBlobsPerBlock,
       targetBlobGasPerBlock,
-    } = networkBlobConfig;
+    } = activeFork.blobParams;
     const blobSize = bytesPerFieldElement * fieldElementsPerBlob;
 
     const totalBlobSize = blockData?.transactions.reduce((acc, { blobs }) => {
@@ -237,7 +237,7 @@ const Block: NextPage = function () {
         } KB).`,
         value: (
           <BlobGasUsageDisplay
-            networkBlobConfig={networkBlobConfig}
+            blobParams={activeFork.blobParams}
             blobGasUsed={blockData.blobGasUsed}
             variant={isCompact ? "minimal" : "detailed"}
           />
