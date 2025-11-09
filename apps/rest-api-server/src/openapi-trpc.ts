@@ -10,9 +10,9 @@ import { createAppRouter, createTRPCContext } from "@blobscan/api";
 import { env } from "@blobscan/env";
 import { logger } from "@blobscan/logger";
 
+import { chain } from "./chain";
 import { prisma } from "./clients/prisma";
 import { redis } from "./clients/redis";
-import { network } from "./network";
 import { getBlobPropagator } from "./services/blob-propagator";
 
 export async function setUpOpenApiTRPC(app: Express): Promise<void> {
@@ -36,7 +36,7 @@ export async function setUpOpenApiTRPC(app: Express): Promise<void> {
   const blobPropagator = await getBlobPropagator();
   const createContext = createTRPCContext({
     blobPropagator,
-    network,
+    chain: chain,
     enableTracing: env.TRACES_ENABLED,
     prisma,
     redis,

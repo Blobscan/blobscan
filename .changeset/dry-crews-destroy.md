@@ -1,5 +1,5 @@
 ---
-"@blobscan/network-blob-config": minor
+"@blobscan/chains": minor
 ---
 
 Added support for fusaka upgrade

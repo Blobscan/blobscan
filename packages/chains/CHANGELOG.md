@@ -1,4 +1,4 @@
-# @blobscan/network-blob-config
+# @blobscan/chains
 
 ## 0.3.0
 

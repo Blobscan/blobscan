@@ -7,10 +7,10 @@ import jwt from "jsonwebtoken";
 import { describe, expect, it } from "vitest";
 
 import type { BlobPropagator } from "@blobscan/blob-propagator";
+import { getChain } from "@blobscan/chains";
 import type { DatePeriod } from "@blobscan/dayjs";
 import dayjs, { toDailyDate } from "@blobscan/dayjs";
 import { getPrisma } from "@blobscan/db";
-import { getNetwork } from "@blobscan/network-blob-config";
 import { env, redis } from "@blobscan/test";
 
 import type { TRPCContext } from "../src/context";
@@ -78,10 +78,10 @@ export async function createTestContext({
     statusCode: 200,
   } as NodeHTTPResponse;
 
-  const network = getNetwork(env.CHAIN_ID);
+  const chain = getChain(env.CHAIN_ID);
 
   const ctx: TRPCContext = {
-    network,
+    chain,
     enableTracing: false,
     scope: "rest-api",
     req,

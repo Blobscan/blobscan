@@ -2,7 +2,7 @@ import type * as forks from "./forks";
 
 export type ForkName = keyof typeof forks;
 
-export interface BaseNetworkBlobParams {
+export interface BaseChainBlobParams {
   blobBaseFeeUpdateFraction: bigint;
   bytesPerFieldElement: number;
   fieldElementsPerBlob: number;
@@ -12,12 +12,11 @@ export interface BaseNetworkBlobParams {
   targetBlobsPerBlock: number;
 }
 
-export interface DerivedNetworkBlobParams {
+export interface DerivedChainBlobParams {
   blobGasLimit: bigint;
   targetBlobGasPerBlock: bigint;
 }
-export type NetworkBlobParams = BaseNetworkBlobParams &
-  DerivedNetworkBlobParams;
+export type ChainBlobParams = BaseChainBlobParams & DerivedChainBlobParams;
 
 export type ForkActivationParams = {
   activationSlot: number;
@@ -26,5 +25,5 @@ export type ForkActivationParams = {
 
 export type Fork = {
   forkName: ForkName;
-  blobParams: NetworkBlobParams;
+  blobParams: ChainBlobParams;
 } & ForkActivationParams;

@@ -70,7 +70,7 @@ export const indexData = createAuthedProcedure("indexer")
   })
   .input(inputSchema)
   .output(outputSchema)
-  .mutation(async ({ ctx: { prisma, blobPropagator, network }, input }) => {
+  .mutation(async ({ ctx: { prisma, blobPropagator, chain }, input }) => {
     if (!blobPropagator) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
@@ -78,7 +78,7 @@ export const indexData = createAuthedProcedure("indexer")
       });
     }
 
-    const forkBlobParams = network.getActiveForkBySlot(
+    const forkBlobParams = chain.getActiveForkBySlot(
       input.block.slot
     )?.blobParams;
 
@@ -99,7 +99,7 @@ export const indexData = createAuthedProcedure("indexer")
     const dbBlock = createDBBlock(input, dbTxs, forkBlobParams);
     const dbBlobs = createDBBlobs(input);
     const dbBlobsOnTransactions = createDBBlobsOnTransactions(input);
-    const dbAddress = createDBAddresses(network.id, input);
+    const dbAddress = createDBAddresses(chain.id, input);
 
     let p0 = performance.now();
 

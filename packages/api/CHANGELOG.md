@@ -141,7 +141,7 @@
 
 - Updated dependencies [[`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e), [`f64d961`](https://github.com/Blobscan/blobscan/commit/f64d961a166cc6fe4ae9397d2d54b24c3764f13d), [`a550799`](https://github.com/Blobscan/blobscan/commit/a550799462d4d657ef6e1f50155c3efe55e39759), [`52b89d6`](https://github.com/Blobscan/blobscan/commit/52b89d6a90200eea5647c49bb5fba8c0b0ff1529)]:
   - @blobscan/blob-propagator@0.3.0
-  - @blobscan/network-blob-config@0.3.0
+  - @blobscan/chains@0.3.0
   - @blobscan/env@0.2.0
   - @blobscan/db@0.18.1
   - @blobscan/logger@0.1.3
@@ -167,7 +167,7 @@
 
 - Updated dependencies [[`ec6f24f`](https://github.com/Blobscan/blobscan/commit/ec6f24f9a24114be0fd973f30eb1d67b683e0f73), [`9a78399`](https://github.com/Blobscan/blobscan/commit/9a783998bac9c6e9f929a89f0e685b8745edd3ac), [`052da7e`](https://github.com/Blobscan/blobscan/commit/052da7e93a3c3289ec67097b8f8bc34315d84b2e)]:
   - @blobscan/blob-storage-manager@0.5.0
-  - @blobscan/network-blob-config@0.2.0
+  - @blobscan/chains@0.2.0
   - @blobscan/db@0.18.0
   - @blobscan/blob-propagator@0.2.13
   - @blobscan/rollups@0.3.3

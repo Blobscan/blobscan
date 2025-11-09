@@ -1,5 +1,5 @@
 {
-  "name": "@blobscan/network-blob-config",
+  "name": "@blobscan/chains",
   "version": "0.3.0",
   "private": true,
   "main": "./src/index.ts",

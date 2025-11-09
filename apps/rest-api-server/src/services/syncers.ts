@@ -15,7 +15,7 @@ import {
 } from "@blobscan/syncers";
 
 import { prisma } from "../clients/prisma";
-import { getNetworkDencunForkSlot } from "../utils";
+import { getChainDencunForkSlot } from "../utils";
 
 export async function setUpSyncers() {
   const connection = createRedisConnection(env.REDIS_URI);
@@ -55,7 +55,7 @@ export async function setUpSyncers() {
       prisma,
       redisUriOrConnection: connection,
       lowestSlot:
-        env.DENCUN_FORK_SLOT ?? getNetworkDencunForkSlot(env.NETWORK_NAME),
+        env.DENCUN_FORK_SLOT ?? getChainDencunForkSlot(env.NETWORK_NAME),
     })
   );
 
