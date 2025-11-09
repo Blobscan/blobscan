@@ -8,7 +8,10 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "pnpm with-env:test vitest",
+    "test:ui": "pnpm with-env:test vitest --ui",
+    "with-env:test": "dotenv -e ../../.env.test --"
   },
   "eslintConfig": {
     "root": true,
