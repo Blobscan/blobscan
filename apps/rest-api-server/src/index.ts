@@ -33,10 +33,9 @@ async function main() {
 
   const app = express();
 
+  app.use(morganMiddleware);
   app.use(cors());
   app.use(bodyParser.json({ limit: REQUEST_BODY_LIMIT }));
-
-  app.use(morganMiddleware);
 
   app.get("/metrics", (req, res) => {
     if (!env.METRICS_ENABLED) {
