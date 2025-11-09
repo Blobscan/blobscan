@@ -65,9 +65,11 @@ export async function setUpOpenApiTRPC(app: Express): Promise<void> {
       router: appRouter,
       createContext,
       onError({ error }) {
-        Sentry.captureException(error);
+        if (error.code === "INTERNAL_SERVER_ERROR") {
+          Sentry.captureException(error);
 
-        logger.error(error);
+          logger.error(error);
+        }
       },
     })
   );
