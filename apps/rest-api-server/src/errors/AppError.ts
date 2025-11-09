@@ -1,3 +1,5 @@
+import type { Response } from "express";
+
 import { ErrorException } from "@blobscan/errors";
 
 export const ERROR_CODES_BY_KEY = {
@@ -27,5 +29,12 @@ export class AppError extends ErrorException {
     this.code = code;
     this.status = ERROR_CODES_BY_KEY[code];
     this.stack = opts?.stack;
+  }
+
+  toJSONResponse(res: Response) {
+    return res.status(this.status).json({
+      code: this.code,
+      message: this.message,
+    });
   }
 }
