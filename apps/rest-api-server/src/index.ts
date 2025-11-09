@@ -24,6 +24,8 @@ collectDefaultMetrics();
 
 printBanner();
 
+const REQUEST_BODY_LIMIT = "8mb";
+
 async function main() {
   const metricsHandler = createMetricsHandler(prisma);
   const closeSyncers = await setUpSyncers();
@@ -31,7 +33,8 @@ async function main() {
   const app = express();
 
   app.use(cors());
-  app.use(bodyParser.json({ limit: "5mb" }));
+  app.use(bodyParser.json({ limit: REQUEST_BODY_LIMIT }));
+
   app.use(morganMiddleware);
 
   app.get("/metrics", (req, res) => {
