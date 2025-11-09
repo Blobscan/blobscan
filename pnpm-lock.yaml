@@ -192,6 +192,9 @@ importers:
       '@blobscan/env':
         specifier: workspace:^0.2.0
         version: link:../../packages/env
+      '@blobscan/errors':
+        specifier: workspace:^0.0.2
+        version: link:../../packages/errors
       '@blobscan/logger':
         specifier: workspace:^0.1.4
         version: link:../../packages/logger

@@ -10,10 +10,12 @@ import { env } from "@blobscan/env";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 
 import "./instrumentation";
+import { ErrorException } from "@blobscan/errors";
 import { logger } from "@blobscan/logger";
 
 import { printBanner } from "./banner";
 import { prisma } from "./clients/prisma";
+import { errorHandler } from "./errors/handler";
 import { morganMiddleware } from "./morgan";
 import { setUpOpenApiTRPC } from "./openapi-trpc";
 import { getBlobPropagator } from "./services/blob-propagator";
@@ -23,15 +25,17 @@ collectDefaultMetrics();
 
 printBanner();
 
+const REQUEST_BODY_LIMIT = "8mb";
+
 async function main() {
   const metricsHandler = createMetricsHandler(prisma);
   const closeSyncers = await setUpSyncers();
 
   const app = express();
 
-  app.use(cors());
-  app.use(bodyParser.json({ limit: "5mb" }));
   app.use(morganMiddleware);
+  app.use(cors());
+  app.use(bodyParser.json({ limit: REQUEST_BODY_LIMIT }));
 
   app.get("/metrics", (req, res) => {
     if (!env.METRICS_ENABLED) {
@@ -45,6 +49,8 @@ async function main() {
   });
 
   await setUpOpenApiTRPC(app);
+
+  app.use(errorHandler);
 
   const server = app.listen(env.BLOBSCAN_API_PORT, () => {
     logger.info(`Server started on http://0.0.0.0:${env.BLOBSCAN_API_PORT}`);
@@ -67,6 +73,20 @@ async function main() {
         });
       });
   }
+
+  process.on("uncaughtException", (err) => {
+    logger.error(new ErrorException("Uncaught exception", err));
+
+    process.exit(1); // Exit to prevent an unstable state
+  });
+
+  // Handle unhandled promise rejections (async errors outside Express)
+  process.on("unhandledRejection", (err) => {
+    const cause = err instanceof Error ? err : new Error(err as string);
+    logger.error(new ErrorException("Unhandled promise rejection", cause));
+
+    process.exit(1);
+  });
 
   // Listen for TERM signal .e.g. kill
   process.on("SIGTERM", async () => {
