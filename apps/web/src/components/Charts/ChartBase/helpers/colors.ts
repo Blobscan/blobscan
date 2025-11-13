@@ -1,5 +1,4 @@
-import { ROLLUP_REGISTRY } from "@blobscan/rollups";
-
+import { ROLLUP_STYLES } from "~/rollups";
 import type { Rollup } from "~/types";
 
 export const DEFAULT_COLOR = "#505050";
@@ -26,7 +25,7 @@ function getCategoryRollupSeriesColor(
     return DEFAULT_COLOR;
   }
 
-  const rollupSettings = ROLLUP_REGISTRY[seriesName as Rollup];
+  const rollupSettings = ROLLUP_STYLES[seriesName as Rollup];
 
   if (rollupSettings) {
     return rollupSettings.color[themeMode];

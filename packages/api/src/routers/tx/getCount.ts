@@ -1,4 +1,5 @@
 import type { BlobscanPrismaClient } from "@blobscan/db";
+import type { RollupRegistry } from "@blobscan/rollups";
 import { z } from "@blobscan/zod";
 
 import type { Filters } from "../../middlewares/withFilters";
@@ -23,11 +24,11 @@ import { buildStatsWhereClause, requiresDirectCount } from "../../utils/count";
 export async function countTxs(
   prisma: BlobscanPrismaClient,
   filters: Filters,
-  chainId: number
+  rollupRegistry: RollupRegistry
 ) {
   const { blockFilters = {}, blockType, transactionFilters } = filters;
 
-  if (requiresDirectCount(filters, chainId)) {
+  if (requiresDirectCount(filters, rollupRegistry)) {
     return prisma.transaction.count({
       where: {
         ...transactionFilters,
@@ -41,7 +42,7 @@ export async function countTxs(
     });
   }
 
-  const where = buildStatsWhereClause(filters, chainId);
+  const where = buildStatsWhereClause(filters, rollupRegistry);
 
   // Get count by summing daily total transaction stats data if a date range is provided in filters
   if (blockFilters.timestamp) {
@@ -83,8 +84,8 @@ export const getCount = publicProcedure
   .input(inputSchema)
   .use(withFilters)
   .output(outputSchema)
-  .query(async ({ ctx: { filters, prisma, chain } }) => {
-    const txsCount = await countTxs(prisma, filters, chain.id);
+  .query(async ({ ctx: { filters, prisma, rollupRegistry } }) => {
+    const txsCount = await countTxs(prisma, filters, rollupRegistry);
 
     return {
       totalTransactions: txsCount,

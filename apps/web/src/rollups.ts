@@ -1,8 +1,14 @@
-import type { Rollup } from "@blobscan/db/prisma/enums";
+import type { Rollup } from "./types";
 
-export const ROLLUP_REGISTRY: Record<
-  Lowercase<Rollup>,
-  { label: string; color: { light: string; dark: string } }
+export const ROLLUP_STYLES: Record<
+  Rollup,
+  {
+    label: string;
+    color: {
+      light: string;
+      dark: string;
+    };
+  }
 > = {
   abstract: {
     label: "Abstract",

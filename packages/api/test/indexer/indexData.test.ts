@@ -11,8 +11,7 @@ import {
 } from "vitest";
 
 import { Category, Rollup } from "@blobscan/db/prisma/enums";
-import { ADDRESS_TO_ROLLUP_MAPPINGS } from "@blobscan/rollups";
-import { env, omitDBTimestampFields, testValidError } from "@blobscan/test";
+import { omitDBTimestampFields, testValidError } from "@blobscan/test";
 
 import type { TRPCContext } from "../../src";
 import { calculateBlobGasPrice } from "../../src/routers/indexer/indexData.utils";
@@ -107,21 +106,6 @@ describe("indexData", () => {
 
     describe("when indexing transactions", () => {
       const expectedRollup = Rollup.ARBITRUM;
-
-      beforeAll(() => {
-        ADDRESS_TO_ROLLUP_MAPPINGS.set(
-          env.CHAIN_ID,
-          new Map([
-            ...ROLLUP_BLOB_TRANSACTION_INPUT.transactions.map(
-              (tx) => [tx.from, expectedRollup] as [string, Rollup]
-            ),
-          ])
-        );
-      });
-
-      afterAll(() => {
-        ADDRESS_TO_ROLLUP_MAPPINGS.delete(env.CHAIN_ID);
-      });
 
       it("should index transactions correctly", async () => {
         const indexedTxs = await authorizedCtx.prisma.transaction

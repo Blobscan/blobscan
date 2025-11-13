@@ -11,6 +11,7 @@ import { getChain } from "@blobscan/chains";
 import type { DatePeriod } from "@blobscan/dayjs";
 import dayjs, { toDailyDate } from "@blobscan/dayjs";
 import { getPrisma } from "@blobscan/db";
+import { RollupRegistry } from "@blobscan/rollups";
 import { env, redis } from "@blobscan/test";
 
 import type { TRPCContext } from "../src/context";
@@ -79,17 +80,23 @@ export async function createTestContext({
   } as NodeHTTPResponse;
 
   const chain = getChain(env.CHAIN_ID);
+  const rollupRegistry = new RollupRegistry({
+    OPTIMISM: ["0x6887246668a3b87f54deb3b94ba47a6f63f32985"],
+    ARBITRUM: ["0xc1b634853cb333d3ad8663715b08f41a3aec47cc"],
+    BASE: ["0x5050f69a9786f081509234f1a7f4684b5e5b76c9"],
+  });
 
   const ctx: TRPCContext = {
+    apiClient,
+    blobPropagator: undefined,
     chain,
     enableTracing: false,
-    scope: "rest-api",
     req,
     res,
-    apiClient,
     prisma,
-    blobPropagator: undefined,
     redis: undefined,
+    rollupRegistry,
+    scope: "rest-api",
   };
 
   if (withBlobPropagator) {

@@ -1,14 +1,12 @@
 import { useEffect, useMemo } from "react";
 import type { FC } from "react";
 
-import { getChainRollups } from "@blobscan/rollups";
-
 import { Dropdown } from "~/components/Dropdown";
 import type { DropdownProps, Option } from "~/components/Dropdown";
 import { useQueryParams } from "~/hooks/useQueryParams";
-import { useEnv } from "~/providers/Env";
+import { useRollupRegistry } from "~/hooks/useRollupRegistry";
 import type { Rollup } from "~/types";
-import { capitalize, getChainIdByName } from "~/utils";
+import { capitalize } from "~/utils";
 import { RollupBadge } from "../Badges/RollupBadge";
 
 export type RollupOption = Option<Rollup>;
@@ -23,13 +21,15 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
   selected,
   disabled,
 }) {
-  const { env } = useEnv();
+  const rollupRegistry = useRollupRegistry();
+
   const { params } = useQueryParams();
   const rollupOptions = useMemo<RollupOption[]>(() => {
-    const chainId = env && getChainIdByName(env.PUBLIC_NETWORK_NAME);
-    const rollups = chainId ? getChainRollups(chainId) : [];
+    if (!rollupRegistry) {
+      return [];
+    }
 
-    return rollups.map(
+    return rollupRegistry.geAll().map(
       ([name]) =>
         ({
           value: name.toLowerCase() as Rollup,
@@ -44,7 +44,7 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
           ),
         } satisfies RollupOption)
     );
-  }, [env]);
+  }, [rollupRegistry]);
 
   useEffect(() => {
     const rollups = params?.rollups;
