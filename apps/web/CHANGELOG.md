@@ -1,5 +1,17 @@
 # @blobscan/web
 
+## 0.43.1
+
+### Patch Changes
+
+- [#918](https://github.com/Blobscan/blobscan/pull/918) [`d752744`](https://github.com/Blobscan/blobscan/commit/d752744ac75f65bc53ceb32dc181d11b1f020ef4) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated rollup registry usages
+
+- [#918](https://github.com/Blobscan/blobscan/pull/918) [`d752744`](https://github.com/Blobscan/blobscan/commit/d752744ac75f65bc53ceb32dc181d11b1f020ef4) Thanks [@PJColombo](https://github.com/PJColombo)! - Refactored rollup styles by centralizing them within a single file
+
+- Updated dependencies [[`d752744`](https://github.com/Blobscan/blobscan/commit/d752744ac75f65bc53ceb32dc181d11b1f020ef4), [`d752744`](https://github.com/Blobscan/blobscan/commit/d752744ac75f65bc53ceb32dc181d11b1f020ef4)]:
+  - @blobscan/api@0.31.1
+  - @blobscan/rollups@0.4.0
+
 ## 0.43.0
 
 ### Minor Changes
