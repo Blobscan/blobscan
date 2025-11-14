@@ -11,6 +11,7 @@ import type IORedis from "ioredis";
 import type { BlobPropagator } from "@blobscan/blob-propagator";
 import type { Chain } from "@blobscan/chains";
 import type { BlobscanPrismaClient } from "@blobscan/db";
+import type { RollupRegistry } from "@blobscan/rollups/src/RollupRegistry";
 
 import type { ApiClient } from "./utils";
 import { createApiClient } from "./utils";
@@ -25,6 +26,7 @@ type CreateInnerContextOptions = Partial<CreateContextOptions> & {
   chain: Chain;
   redis?: IORedis;
   prisma: BlobscanPrismaClient;
+  rollupRegistry: RollupRegistry;
 };
 
 export type ServiceApiKeys = Partial<{
@@ -46,6 +48,7 @@ export type CreateContextParams = {
   apiKeys?: ApiKeys;
   blobPropagator?: BlobPropagator;
   chain: Chain;
+  rollupRegistry: RollupRegistry;
   enableTracing?: boolean;
   prisma: BlobscanPrismaClient;
   redis?: IORedis;
@@ -66,6 +69,7 @@ export function createTRPCInnerContext({
   blobPropagator,
   apiClient,
   redis,
+  rollupRegistry,
 }: CreateInnerContextOptions) {
   return {
     chain,
@@ -73,6 +77,7 @@ export function createTRPCInnerContext({
     blobPropagator,
     apiClient,
     redis,
+    rollupRegistry,
   };
 }
 
@@ -82,6 +87,7 @@ export function createTRPCContext({
   blobPropagator,
   prisma,
   chain,
+  rollupRegistry,
   enableTracing,
   scope,
   apiKeys,
@@ -99,6 +105,7 @@ export function createTRPCContext({
         apiClient,
         blobPropagator,
         redis,
+        rollupRegistry,
       });
 
       return {

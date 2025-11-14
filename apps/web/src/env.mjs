@@ -10,6 +10,13 @@ export const networkSchema = z.enum([
   "devnet",
 ]);
 
+export const chainIdSchema = z.enum([
+  "1",
+  "167004",
+  "11155111",
+  "560048",
+  "100",
+]);
 // See booleanSchema from packages/zod/src/schemas.ts
 // We need to redefine it because we can't import ts files from here
 const booleanSchema = z

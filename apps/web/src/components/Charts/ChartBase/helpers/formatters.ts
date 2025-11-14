@@ -1,6 +1,6 @@
 import dayjs from "@blobscan/dayjs";
-import { ROLLUP_REGISTRY } from "@blobscan/rollups";
 
+import { ROLLUP_STYLES } from "~/rollups";
 import type { Rollup } from "~/types";
 import { formatNumber, getHumanDate } from "~/utils";
 import type { Numerish } from "~/utils";
@@ -38,7 +38,7 @@ export function formatMetricValue(
 }
 
 export function formatSeriesName(name?: string) {
-  const rollupLabel = ROLLUP_REGISTRY[name as Rollup]?.label;
+  const rollupLabel = ROLLUP_STYLES[name as Rollup]?.label;
 
   if (rollupLabel) {
     return rollupLabel;

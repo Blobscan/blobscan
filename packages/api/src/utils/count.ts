@@ -1,6 +1,6 @@
 import { toDailyDatePeriod } from "@blobscan/dayjs";
 import type { Category, Rollup } from "@blobscan/db/prisma/enums";
-import { getRollupByAddress } from "@blobscan/rollups";
+import type { RollupRegistry } from "@blobscan/rollups";
 
 import type { Filters } from "../middlewares/withFilters";
 
@@ -19,13 +19,13 @@ import type { Filters } from "../middlewares/withFilters";
  */
 export function requiresDirectCount(
   { blockFilters = {}, blockType, transactionFilters = {} }: Filters,
-  chainId: number
+  rollupRegistry: RollupRegistry
 ) {
   const blockNumberRangeFilterEnabled = !!blockFilters?.number;
   const reorgedFilterEnabled = !!blockType?.some;
   const slotRangeFilterEnabled = !!blockFilters.slot;
   const nonRollupAddressesExists = transactionFilters.fromId?.in
-    .map((addr) => getRollupByAddress(addr, chainId))
+    .map((addr) => rollupRegistry.getRollup(addr))
     .some((r) => !r);
 
   return (
@@ -39,7 +39,7 @@ export function requiresDirectCount(
 
 export function buildStatsWhereClause(
   { blockFilters, transactionFilters }: Filters,
-  chainId: number
+  rollupRegistry: RollupRegistry
 ) {
   const clauses = [];
   const fromAddressFilter = transactionFilters?.fromId?.in;
@@ -52,7 +52,7 @@ export function buildStatsWhereClause(
       transactionFilters.from.rollup === null ? "OTHER" : "ROLLUP";
   } else if (fromAddressFilter?.length) {
     const resolvedRollups = fromAddressFilter
-      .map((addr) => getRollupByAddress(addr, chainId))
+      .map((addr) => rollupRegistry.getRollup(addr))
       .filter((r): r is Rollup => !!r);
 
     rollupClause = { in: Array.from(new Set(resolvedRollups)) };

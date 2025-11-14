@@ -4,7 +4,6 @@ import {
   dbCategoryCoercionSchema,
   dbRollupCoercionSchema,
 } from "@blobscan/db/prisma/zod-utils";
-import { getAddressesByRollup } from "@blobscan/rollups";
 import { z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
@@ -112,7 +111,7 @@ export function hasCustomFilters(filters: Filters) {
 }
 
 export const withFilters = t.middleware(
-  ({ next, input = {}, ctx: { chain } }) => {
+  ({ next, input = {}, ctx: { rollupRegistry } }) => {
     const filters: Filters = {
       sort: "desc",
     };
@@ -170,7 +169,7 @@ export const withFilters = t.middleware(
 
     if (rollups?.length) {
       const resolvedAddresses = rollups
-        .flatMap((r) => getAddressesByRollup(r, chain.id))
+        .flatMap((r) => rollupRegistry.getBlobPosters(r))
         .filter((r): r is string => !!r);
 
       transactionFilters.fromId = { in: resolvedAddresses };

@@ -1,8 +1,7 @@
 import type { MutableRefObject } from "react";
 import type { EChartOption } from "echarts";
 
-import { ROLLUP_REGISTRY } from "@blobscan/rollups";
-
+import { ROLLUP_STYLES } from "~/rollups";
 import type { Rollup } from "~/types";
 import { calculatePercentage, getNeighbouringElements } from "~/utils";
 import type { Numerish } from "~/utils";
@@ -106,7 +105,7 @@ export function createTooltip({
           : undefined;
 
         const rollupSeries = paramOrParams.filter(
-          (d) => !!ROLLUP_REGISTRY[d.seriesName as Rollup]
+          (d) => !!ROLLUP_STYLES[d.seriesName as Rollup]
         );
         const totalItems = 15;
         const filteredParams =

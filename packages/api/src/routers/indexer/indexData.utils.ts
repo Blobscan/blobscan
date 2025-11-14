@@ -8,7 +8,7 @@ import type {
   WithoutTimestampFields,
 } from "@blobscan/db";
 import { Prisma } from "@blobscan/db";
-import { getRollupByAddress } from "@blobscan/rollups";
+import type { RollupRegistry } from "@blobscan/rollups";
 
 import type { IndexDataFormattedInput } from "./indexData";
 
@@ -206,8 +206,8 @@ export function createDBBlobsOnTransactions({
 }
 
 export function createDBAddresses(
-  chainId: number,
-  { transactions }: IndexDataFormattedInput
+  { transactions }: IndexDataFormattedInput,
+  rollupRegistry: RollupRegistry
 ): WithoutTimestampFields<Address>[] {
   const addresses = transactions.reduce<
     Record<string, WithoutTimestampFields<Address>>
@@ -218,13 +218,13 @@ export function createDBAddresses(
       address: from,
       firstBlockNumberAsReceiver: null,
       firstBlockNumberAsSender: null,
-      rollup: getRollupByAddress(from, chainId),
+      rollup: rollupRegistry.getRollup(from) ?? null,
     };
     const toEntity: WithoutTimestampFields<Address> = addressToEntity[to] ?? {
       address: to,
       firstBlockNumberAsReceiver: null,
       firstBlockNumberAsSender: null,
-      rollup: getRollupByAddress(to, chainId),
+      rollup: rollupRegistry.getRollup(to) ?? null,
     };
 
     fromEntity.firstBlockNumberAsSender = fromEntity.firstBlockNumberAsSender
