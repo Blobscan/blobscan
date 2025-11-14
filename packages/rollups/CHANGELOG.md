@@ -1,5 +1,11 @@
 # @blobscan/rollups
 
+## 0.4.0
+
+### Minor Changes
+
+- [#918](https://github.com/Blobscan/blobscan/pull/918) [`d752744`](https://github.com/Blobscan/blobscan/commit/d752744ac75f65bc53ceb32dc181d11b1f020ef4) Thanks [@PJColombo](https://github.com/PJColombo)! - Refactored the rollup registry to improve code organization and maintainability
+
 ## 0.3.9
 
 ### Patch Changes
