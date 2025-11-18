@@ -63,12 +63,26 @@ const Stats: NextPage = function () {
     TIME_FRAME_OPTIONS[1]
   );
   const [selectedRollups, setSelectedRollups] = useState<RollupOption[]>([]);
-  const { data: dailyStatsData } = api.stats.getDailyStats.useQuery(
+  const { data: dailyStatsData } = api.stats.getDailyStatsForCharts.useQuery(
     {
       categories: "all",
       rollups: "all",
       timeFrame: timeFrameOption?.value,
       sort: "asc",
+      fields: [
+        "totalBlobs",
+        "totalBlobSize",
+        "totalBlocks",
+        "totalBlobGasUsed",
+        "avgBlobGasPrice",
+        "totalBlobFee",
+        "avgBlobFee",
+        "avgMaxBlobGasFee",
+        "totalTransactions",
+        "totalUniqueReceivers",
+        "totalUniqueSenders",
+        "totalBlobAsCalldataGasUsed",
+      ],
     },
     {
       refetchOnWindowFocus: false,

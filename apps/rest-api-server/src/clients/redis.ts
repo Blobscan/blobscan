@@ -3,7 +3,7 @@ import { Redis } from "ioredis";
 import { env } from "@blobscan/env";
 
 const redis = new Redis(env.REDIS_URI, {
-  maxRetriesPerRequest: null,
+  maxRetriesPerRequest: 1,
 });
 
 redis.on("error", (error) => {

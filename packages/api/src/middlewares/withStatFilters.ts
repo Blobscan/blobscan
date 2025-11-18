@@ -123,8 +123,8 @@ function buildDayWhereClause({
     days = parseInt(timeFrame.split("d")[0] ?? "1");
   }
 
-  const final = dayjs().subtract(1, "day").endOf("day");
-  const finalDate = final.toDate();
+  const final = dayjs().utc().subtract(1, "day").startOf("day");
+  const finalDate = final.utc().toISOString();
 
   if (days === 1) {
     return {
@@ -135,15 +135,15 @@ function buildDayWhereClause({
 
   const isLargeTimeFrame = days > 30;
 
-  let selectedDates: Date[] | undefined;
+  let selectedDates: string[] | undefined;
 
   if (scope === "web" && isLargeTimeFrame && !selectedStats?.length) {
-    const origin = final.subtract(days, "day").startOf("day");
-    const dates: Date[] = [];
+    const origin = final.subtract(days, "day").startOf("day").utc();
+    const dates: string[] = [];
 
     let current = final.clone();
     while (current.isAfter(origin) || current.isSame(origin)) {
-      dates.push(current.toDate());
+      dates.push(current.utc().toISOString());
       current = current.subtract(DAYS_INTERVAL_GRANULARITY, "day");
     }
 
@@ -151,7 +151,7 @@ function buildDayWhereClause({
   }
 
   return {
-    gte: final.subtract(days, "day").startOf("day").toDate(),
+    gte: final.subtract(days, "day").startOf("day").utc().toISOString(),
     lte: finalDate,
     in: selectedDates,
   };
