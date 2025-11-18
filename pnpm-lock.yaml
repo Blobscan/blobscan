@@ -649,9 +649,6 @@ importers:
       '@blobscan/chains':
         specifier: workspace:^0.4.0
         version: link:../chains
-      '@blobscan/rollups':
-        specifier: workspace:^0.3.9
-        version: link:../rollups
       '@faker-js/faker':
         specifier: ^8.0.2
         version: 8.4.1

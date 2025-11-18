@@ -1,9 +1,5 @@
-import { RollupRegistry } from "@blobscan/rollups";
-
-import type { Rollup } from "../enums";
+import { Rollup } from "../enums";
 import { Category } from "../enums";
-
-const rollupRegistry = RollupRegistry.create(1);
 
 export type SeedParams = {
   totalDays: number;
@@ -36,7 +32,7 @@ export const seedParams: SeedParams = {
       weight: 0.8,
     },
   ],
-  rollupWeights: rollupRegistry.geAll().map(([name]) => ({
+  rollupWeights: Object.values(Rollup).map(([name]) => ({
     value: name as Rollup,
     weight: 0.5,
   })),
