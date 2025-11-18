@@ -1,4 +1,4 @@
-import React, { cloneElement } from "react";
+import React from "react";
 
 import { ICONS } from "~/icons/rollups";
 import { ROLLUP_STYLES } from "~/rollups";
