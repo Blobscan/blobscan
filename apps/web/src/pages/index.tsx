@@ -55,9 +55,9 @@ const Home: NextPage = () => {
       select: (data) => data[0],
     });
   const { data: dailyStatsData, error: dailyStatsErr } =
-    api.stats.getDailyStats.useQuery(
+    api.stats.getDailyStatsForCharts.useQuery(
       {
-        stats: "totalBlobs,avgBlobGasPrice",
+        fields: ["totalBlobs", "avgBlobGasPrice"],
         timeFrame: "90d",
         categories: "all",
         rollups: "all",
@@ -67,7 +67,6 @@ const Home: NextPage = () => {
         refetchOnWindowFocus: false,
       }
     );
-  console.log(blocksData);
 
   const dailyStats = useMemo(() => {
     if (!dailyStatsData) {
