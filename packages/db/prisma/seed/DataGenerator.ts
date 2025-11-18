@@ -15,12 +15,12 @@ import dayjs from "@blobscan/dayjs";
 
 import type { Rollup } from "../enums";
 import { BlobStorage } from "../enums";
+import { mainnetRollupRegistry } from "./chain";
 import type { SeedParams } from "./params";
 import {
   calculateBlobGasPrice,
   calculateExcessBlobGas,
   COMMON_MAX_FEE_PER_BLOB_GAS,
-  ROLLUP_ADDRESSES,
 } from "./web3";
 
 const GAS_PER_BLOB = getChain("mainnet").forks[0].blobParams.gasPerBlob;
@@ -51,10 +51,7 @@ export class DataGenerator {
     const now = new Date();
     return addresses.map((address) => ({
       address,
-      rollup:
-        (ROLLUP_ADDRESSES[
-          address as keyof typeof ROLLUP_ADDRESSES
-        ] as Rollup) ?? null,
+      rollup: mainnetRollupRegistry.getRollup(address),
       firstBlockNumberAsReceiver:
         blocks.find(
           (b) => txs.find((tx) => tx.toId === address)?.blockHash === b.hash
@@ -76,10 +73,7 @@ export class DataGenerator {
       address,
       firstBlockNumberAsReceiver: tx.blockNumber,
       firstBlockNumberAsSender: tx.blockNumber,
-      rollup:
-        (ROLLUP_ADDRESSES[
-          address as keyof typeof ROLLUP_ADDRESSES
-        ] as Rollup) ?? null,
+      rollup: mainnetRollupRegistry.getRollup(address),
       insertedAt: now,
       updatedAt: now,
     }));
@@ -198,7 +192,7 @@ export class DataGenerator {
           : null;
 
       const fromId =
-        ROLLUP_ADDRESSES[rollup?.toString() as keyof typeof ROLLUP_ADDRESSES] ??
+        mainnetRollupRegistry.getBlobPosters(rollup as Rollup)[0] ??
         faker.helpers.arrayElement(uniqueAddresses);
 
       let toId = faker.helpers.arrayElement(uniqueAddresses);
@@ -244,7 +238,7 @@ export class DataGenerator {
     return Array.from({
       length: Number(tx.blobGasUsed) / Number(GAS_PER_BLOB),
     }).map(() => {
-      const isRollupTx = Object.values(ROLLUP_ADDRESSES).includes(tx.fromId);
+      const isRollupTx = mainnetRollupRegistry.getRollup(tx.fromId) !== null;
       const isUnique = isRollupTx
         ? true
         : faker.datatype.boolean({

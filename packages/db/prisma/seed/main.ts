@@ -4,12 +4,11 @@ import ora from "ora";
 import dayjs from "@blobscan/dayjs";
 
 import { getPrisma } from "..";
-import type { Rollup } from "../enums";
 import type { WithoutTimestampFields } from "../types";
 import { DataGenerator } from "./DataGenerator";
+import { mainnetRollupRegistry } from "./chain";
 import { seedParams } from "./params";
 import { performPrismaUpsertManyInBatches } from "./utils";
-import { ROLLUP_ADDRESSES } from "./web3";
 
 const prisma = getPrisma();
 let spinner = ora("Seeding database…").start();
@@ -73,17 +72,13 @@ async function main() {
 
           const fromAddress = addressToAddressEntity[tx.fromId] ?? {
             address: tx.fromId,
-            rollup: (Object.entries(ROLLUP_ADDRESSES).find(
-              ([_, address]) => address === tx.fromId
-            )?.[0] ?? null) as Rollup | null,
+            rollup: mainnetRollupRegistry.getRollup(tx.fromId),
             firstBlockNumberAsSender: null,
             firstBlockNumberAsReceiver: null,
           };
           const toAddress = addressToAddressEntity[tx.toId] ?? {
             address: tx.toId,
-            rollup: (Object.entries(ROLLUP_ADDRESSES).find(
-              ([_, address]) => address === tx.toId
-            )?.[0] ?? null) as Rollup | null,
+            rollup: mainnetRollupRegistry.getRollup(tx.toId),
             firstBlockNumberAsSender: null,
             firstBlockNumberAsReceiver: null,
           };
@@ -202,7 +197,9 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    spinner = spinner.fail(`Error seeding db : ${e}`);
+    spinner = spinner.fail(`Error seeding db`);
+
+    console.error(e);
 
     await prisma.$disconnect();
     process.exit(1);
