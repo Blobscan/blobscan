@@ -24,6 +24,12 @@ import { AppStateProvider } from "~/providers/AppState";
 import { BlobDecoderWorkerProvider } from "~/providers/BlobDecoderWorker";
 import { EnvProvider, useEnv } from "~/providers/Env";
 
+declare global {
+  interface Window {
+    _mtm: any[];
+  }
+}
+
 function App({ Component, pageProps }: NextAppProps) {
   const { resolvedTheme } = useTheme();
   const isMounted = useIsMounted();
@@ -66,6 +72,21 @@ function App({ Component, pageProps }: NextAppProps) {
       router.events.off("routeChangeComplete", handleRouteChange);
     };
   }, [router.events]);
+
+  useEffect(() => {
+    const _mtm = (window._mtm = window._mtm || []);
+    _mtm.push({ "mtm.startTime": new Date().getTime(), event: "mtm.Start" });
+    const d = document,
+      g = d.createElement("script"),
+      s = d.getElementsByTagName("script")[0];
+    g.async = true;
+    g.src =
+      "https://cdn.matomo.cloud/blobscan.matomo.cloud/container_jlmw3LAz.js";
+
+    if (s) {
+      s.parentNode?.insertBefore(g, s);
+    }
+  }, []);
 
   if (!isMounted) {
     return null;
