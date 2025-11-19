@@ -48,7 +48,7 @@ ON CONFLICT (category, rollup) DO UPDATE SET
   avg_blob_usage_size =
     CASE
       WHEN curr_stats.total_blobs + EXCLUDED.total_blobs = 0 THEN 0
-      ELSE (curr_stats.total_blob_usage_size + EXCLUDED.total_blob_usage_size) / (curr_stats.total_blobs + EXCLUDED.total_blobs)
+      ELSE (curr_stats.total_blob_usage_size + EXCLUDED.total_blob_usage_size)::FLOAT / (curr_stats.total_blobs + EXCLUDED.total_blobs)
     END,
 
   total_blobs = curr_stats.total_blobs + EXCLUDED.total_blobs,
