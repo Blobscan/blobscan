@@ -3,20 +3,30 @@
 INSERT INTO overall_stats as curr_stats (
   category,
   rollup,
+
+  avg_blob_usage_size,
+
   total_blobs,
   total_unique_blobs,
   total_blob_size,
+  total_blob_usage_size,
+
   updated_at
 )
 SELECT
   CASE WHEN f.rollup IS NOT NULL THEN 'rollup'::category ELSE 'other'::category END AS category,
   f.rollup,
+
+  COALESCE(AVG(bl.usage_size)::FLOAT, 0) AS avg_blob_usage_size,
+
   COALESCE(COUNT(bl_txs.blob_hash)::INT, 0) AS total_blobs,
   COALESCE(
     COUNT(DISTINCT CASE WHEN bl.first_block_number = bl_txs.block_number THEN bl.versioned_hash END)::INT,
     0
   ) AS total_unique_blobs,
   COALESCE(SUM(bl.size), 0) AS total_blob_size,
+  COALESCE(SUM(bl.usage_size), 0) AS total_blob_usage_size,
+
   NOW() AS updated_at
 FROM blob bl
   JOIN blobs_on_transactions bl_txs ON bl_txs.blob_hash = bl.versioned_hash
@@ -35,7 +45,15 @@ HAVING NOT (
   f.rollup IS NULL
 )
 ON CONFLICT (category, rollup) DO UPDATE SET
+  avg_blob_usage_size =
+    CASE
+      WHEN curr_stats.total_blobs + EXCLUDED.total_blobs = 0 THEN 0
+      ELSE (curr_stats.total_blob_usage_size + EXCLUDED.total_blob_usage_size)::FLOAT / (curr_stats.total_blobs + EXCLUDED.total_blobs)
+    END,
+
   total_blobs = curr_stats.total_blobs + EXCLUDED.total_blobs,
   total_unique_blobs = curr_stats.total_unique_blobs + EXCLUDED.total_unique_blobs,
   total_blob_size = curr_stats.total_blob_size + EXCLUDED.total_blob_size,
+  total_blob_usage_size = curr_stats.total_blob_usage_size + EXCLUDED.total_blob_usage_size,
+
   updated_at = EXCLUDED.updated_at

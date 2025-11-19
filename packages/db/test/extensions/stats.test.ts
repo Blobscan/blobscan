@@ -27,6 +27,7 @@ const AVG_METRICS: (keyof OverallStats)[] = [
   "avgBlobMaxFee",
   "avgBlobGasPrice",
   "avgMaxBlobGasFee",
+  "avgBlobUsageSize",
 ] as const;
 
 describe("Stats Extension", () => {
@@ -383,6 +384,10 @@ describe("Stats Extension", () => {
       (acc, b) => acc + BigInt(b.size),
       BigInt(0)
     );
+    const totalBlobUsageSize = txBlobs.reduce(
+      (acc, b) => acc + BigInt(b.usageSize ?? 0),
+      BigInt(0)
+    );
     const totalUniqueBlobs = new Set(
       transactions.flatMap((tx) =>
         tx.blobs
@@ -462,10 +467,12 @@ describe("Stats Extension", () => {
     const avgMaxBlobGasFee = totalBlobMaxGasFees
       .div(totalTransactions)
       .toNumber();
+    const avgBlobUsageSize = Number(totalBlobUsageSize) / Number(totalBlobs);
 
     return {
       totalBlobs,
       totalBlobSize,
+      totalBlobUsageSize,
       totalUniqueBlobs,
       totalBlocks,
       totalTransactions,
@@ -484,6 +491,7 @@ describe("Stats Extension", () => {
       avgBlobAsCalldataFee,
       avgBlobAsCalldataMaxFee,
       avgBlobGasPrice,
+      avgBlobUsageSize,
       avgMaxBlobGasFee,
     };
   }

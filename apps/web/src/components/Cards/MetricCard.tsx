@@ -17,16 +17,20 @@ import { Card } from "./Card";
 
 export type MetricType = "standard" | "bytes" | "ethereum" | "percentage";
 
-export type MetricProp = {
+type Metric = {
   value?: bigint | number;
   numberFormatOpts?: Intl.NumberFormatOptions;
   type?: MetricType;
+};
+
+export type MetricProp = {
+  primary: Metric;
+  secondary?: Metric;
 };
 export type MetricCardProps = Partial<{
   name: string;
   compact: boolean;
   metric: MetricProp;
-  secondaryMetric?: MetricProp;
 }>;
 
 /**
@@ -129,12 +133,12 @@ function MetricLayout({
 }
 
 function Metric({
-  value,
-  numberFormatOpts,
-  type = "standard",
+  primary,
+  secondary,
   compact,
-  isSecondary = false,
-}: MetricProp & { compact?: boolean; isSecondary?: boolean }) {
+}: MetricProp & { compact?: boolean }) {
+  const hasSecondary = secondary !== undefined;
+  const { value, numberFormatOpts, type = "standard" } = primary;
   const parsedMetric = parseMetricValue(value ?? 0, {
     type,
     compact,
@@ -152,7 +156,7 @@ function Metric({
     <div>
       {isValueSet ? (
         <div className="flex gap-2 dark:text-warmGray-50">
-          <MetricLayout compact={compact} isSecondary={isSecondary}>
+          <MetricLayout compact={compact}>
             {isValueSet ? (
               <animated.div>
                 {valueProps.value.to((v) => {
@@ -168,13 +172,13 @@ function Metric({
               0
             )}
           </MetricLayout>
-          <div className="absolute flex items-end gap-1">
+          <div className="absolute flex items-end  gap-1">
             {/* Render an invisible component that fills the maximum space the metric value is going
             to take up to prevent the metric unit from jumping around when the metric value animation
             is running
             */}
             <div className="invisible">
-              <MetricLayout compact={compact} isSecondary={isSecondary}>
+              <MetricLayout compact={compact}>
                 {createPlaceholder(parsedMetric.value ?? "")}
               </MetricLayout>
             </div>
@@ -183,12 +187,18 @@ function Metric({
                 "relative left-0.5 text-xs text-contentSecondary-light dark:text-contentSecondary-dark md:left-0",
                 { " sm:text-xs": compact },
                 { " sm:text-sm": !compact },
-                { "bottom-1": !isSecondary },
-                { "bottom-0.5 text-xs": isSecondary }
+                { "bottom-1": !hasSecondary },
+                { "bottom-0.5 text-xs": hasSecondary }
               )}
             >
               {parsedMetric?.unit}
             </div>
+            {secondary && (
+              <div className="relative bottom-1 text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+                ({secondary.value}
+                {secondary.type === "percentage" ? "%" : ""})
+              </div>
+            )}
           </div>
         </div>
       ) : (
@@ -202,7 +212,6 @@ export const MetricCard: FC<MetricCardProps> = function ({
   name,
   compact = false,
   metric,
-  secondaryMetric,
 }) {
   return (
     <Card compact={compact}>
@@ -223,12 +232,7 @@ export const MetricCard: FC<MetricCardProps> = function ({
         >
           {name ?? <Skeleton width={80} height={20} />}
         </div>
-        <div>
-          <Metric {...(metric || {})} compact={compact} />
-          {secondaryMetric && (
-            <Metric {...secondaryMetric} compact={compact} isSecondary />
-          )}
-        </div>
+        {metric && <Metric {...(metric ?? {})} compact={compact} />}
       </div>
     </Card>
   );

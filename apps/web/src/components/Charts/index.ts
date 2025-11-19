@@ -5,6 +5,7 @@ export * from "./DailyBlobFeeChart";
 export * from "./DailyBlobGasComparisonChart";
 export * from "./DailyBlobGasUsedChart";
 export * from "./DailyBlobSizeChart";
+export * from "./DailyBlobUsageSizeChart";
 export * from "./DailyBlobsChart";
 export * from "./DailyBlocksChart";
 export * from "./DailyTransactionsChart";
