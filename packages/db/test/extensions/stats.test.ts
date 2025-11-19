@@ -27,6 +27,7 @@ const AVG_METRICS: (keyof OverallStats)[] = [
   "avgBlobMaxFee",
   "avgBlobGasPrice",
   "avgMaxBlobGasFee",
+  "avgBlobUsageSize",
 ] as const;
 
 describe("Stats Extension", () => {
@@ -254,6 +255,7 @@ describe("Stats Extension", () => {
   describe("Overall Stats Model", () => {
     async function assertOverallStats(blockNumberRange?: BlockNumberRange) {
       const allOverallStats = await prisma.overallStats.findMany();
+      console.log(allOverallStats);
       const expectedElementsByAggregableType = groupElementsByAggregableType(
         fixtures.getTransactions({ blockNumberRange })
       );
@@ -295,7 +297,7 @@ describe("Stats Extension", () => {
     }
 
     describe("aggregate()", () => {
-      it("should increment stats for a specific block range correctly", async () => {
+      it.only("should increment stats for a specific block range correctly", async () => {
         const blockRange: BlockNumberRange = { from: 1000, to: 1001 };
 
         await prisma.overallStats.aggregate({ blockRange });

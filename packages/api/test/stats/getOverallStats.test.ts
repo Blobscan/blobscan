@@ -27,33 +27,35 @@ describe("getOverallStats", () => {
       .then((stats) => stats.map((s) => omitDBTimestampFields(s)));
 
     expect(overallStats).toMatchInlineSnapshot(`
-        [
-          {
-            "avgBlobAsCalldataFee": 22162.5,
-            "avgBlobAsCalldataMaxFee": 104062.5,
-            "avgBlobFee": 5160960,
-            "avgBlobGasPrice": 21.75,
-            "avgBlobMaxFee": 24166400,
-            "avgMaxBlobGasFee": 101.875,
-            "category": null,
-            "rollup": null,
-            "totalBlobAsCalldataFee": 354600n,
-            "totalBlobAsCalldataGasUsed": 16300n,
-            "totalBlobAsCalldataMaxFees": 1665000n,
-            "totalBlobFee": 82575360n,
-            "totalBlobGasPrice": 348n,
-            "totalBlobGasUsed": 3801088n,
-            "totalBlobMaxFees": 386662400n,
-            "totalBlobMaxGasFees": 1630n,
-            "totalBlobSize": 422616n,
-            "totalBlobs": 29,
-            "totalBlocks": 8,
-            "totalTransactions": 16,
-            "totalUniqueBlobs": 9,
-            "totalUniqueReceivers": 4,
-            "totalUniqueSenders": 7,
-          },
-        ]
-      `);
+      [
+        {
+          "avgBlobAsCalldataFee": 22162.5,
+          "avgBlobAsCalldataMaxFee": 104062.5,
+          "avgBlobFee": 5160960,
+          "avgBlobGasPrice": 21.75,
+          "avgBlobMaxFee": 24166400,
+          "avgBlobUsageSize": 0,
+          "avgMaxBlobGasFee": 101.875,
+          "category": null,
+          "rollup": null,
+          "totalBlobAsCalldataFee": 354600n,
+          "totalBlobAsCalldataGasUsed": 16300n,
+          "totalBlobAsCalldataMaxFees": 1665000n,
+          "totalBlobFee": 82575360n,
+          "totalBlobGasPrice": 348n,
+          "totalBlobGasUsed": 3801088n,
+          "totalBlobMaxFees": 386662400n,
+          "totalBlobMaxGasFees": 1630n,
+          "totalBlobSize": 422616n,
+          "totalBlobUsageSize": 0n,
+          "totalBlobs": 29,
+          "totalBlocks": 8,
+          "totalTransactions": 16,
+          "totalUniqueBlobs": 9,
+          "totalUniqueReceivers": 4,
+          "totalUniqueSenders": 7,
+        },
+      ]
+    `);
   });
 });
