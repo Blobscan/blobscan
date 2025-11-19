@@ -101,5 +101,7 @@ export function useAggregateOverallStats(
         totalBlobs
       );
     }
+
+    return aggregations;
   }, [overallStats, selectedRollups]);
 }
