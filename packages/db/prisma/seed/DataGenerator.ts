@@ -15,12 +15,12 @@ import dayjs from "@blobscan/dayjs";
 
 import type { Rollup } from "../enums";
 import { BlobStorage } from "../enums";
-import { mainnetRollupRegistry } from "./chain";
 import type { SeedParams } from "./params";
 import {
   calculateBlobGasPrice,
   calculateExcessBlobGas,
   COMMON_MAX_FEE_PER_BLOB_GAS,
+  ROLLUP_ADDRESSES,
 } from "./web3";
 
 const GAS_PER_BLOB = getChain("mainnet").forks[0].blobParams.gasPerBlob;
@@ -51,7 +51,9 @@ export class DataGenerator {
     const now = new Date();
     return addresses.map((address) => ({
       address,
-      rollup: mainnetRollupRegistry.getRollup(address),
+      rollup: (Object.entries(ROLLUP_ADDRESSES).find(([_, addresses]) =>
+        addresses.includes(address)
+      )?.[0] ?? null) as Rollup | null,
       firstBlockNumberAsReceiver:
         blocks.find(
           (b) => txs.find((tx) => tx.toId === address)?.blockHash === b.hash
@@ -73,7 +75,9 @@ export class DataGenerator {
       address,
       firstBlockNumberAsReceiver: tx.blockNumber,
       firstBlockNumberAsSender: tx.blockNumber,
-      rollup: mainnetRollupRegistry.getRollup(address),
+      rollup: (Object.entries(ROLLUP_ADDRESSES).find(([_, addresses]) =>
+        addresses.includes(address)
+      )?.[0] ?? null) as Rollup | null,
       insertedAt: now,
       updatedAt: now,
     }));
@@ -191,9 +195,11 @@ export class DataGenerator {
           ? faker.helpers.weightedArrayElement(this.#seedParams.rollupWeights)
           : null;
 
+      const blobPoster = ROLLUP_ADDRESSES[rollup as Rollup];
       const fromId =
-        mainnetRollupRegistry.getBlobPosters(rollup as Rollup)[0] ??
-        faker.helpers.arrayElement(uniqueAddresses);
+        blobPoster && blobPoster[0]
+          ? blobPoster[0]
+          : faker.helpers.arrayElement(uniqueAddresses);
 
       let toId = faker.helpers.arrayElement(uniqueAddresses);
 
@@ -238,7 +244,10 @@ export class DataGenerator {
     return Array.from({
       length: Number(tx.blobGasUsed) / Number(GAS_PER_BLOB),
     }).map(() => {
-      const isRollupTx = mainnetRollupRegistry.getRollup(tx.fromId) !== null;
+      const isRollupTx =
+        ((Object.entries(ROLLUP_ADDRESSES).find(([_, addresses]) =>
+          addresses.includes(tx.fromId)
+        )?.[0] ?? null) as Rollup | null) !== null;
       const isUnique = isRollupTx
         ? true
         : faker.datatype.boolean({

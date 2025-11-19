@@ -4,11 +4,12 @@ import ora from "ora";
 import dayjs from "@blobscan/dayjs";
 
 import { getPrisma } from "..";
+import type { Rollup } from "../enums";
 import type { WithoutTimestampFields } from "../types";
 import { DataGenerator } from "./DataGenerator";
-import { mainnetRollupRegistry } from "./chain";
 import { seedParams } from "./params";
 import { performPrismaUpsertManyInBatches } from "./utils";
+import { ROLLUP_ADDRESSES } from "./web3";
 
 const prisma = getPrisma();
 let spinner = ora("Seeding database…").start();
@@ -72,13 +73,17 @@ async function main() {
 
           const fromAddress = addressToAddressEntity[tx.fromId] ?? {
             address: tx.fromId,
-            rollup: mainnetRollupRegistry.getRollup(tx.fromId),
+            rollup: (Object.entries(ROLLUP_ADDRESSES).find(([_, address]) =>
+              address.includes(tx.fromId)
+            )?.[0] ?? null) as Rollup | null,
             firstBlockNumberAsSender: null,
             firstBlockNumberAsReceiver: null,
           };
           const toAddress = addressToAddressEntity[tx.toId] ?? {
             address: tx.toId,
-            rollup: mainnetRollupRegistry.getRollup(tx.toId),
+            rollup: (Object.entries(ROLLUP_ADDRESSES).find(([_, address]) =>
+              address.includes(tx.fromId)
+            )?.[0] ?? null) as Rollup | null,
             firstBlockNumberAsSender: null,
             firstBlockNumberAsReceiver: null,
           };
