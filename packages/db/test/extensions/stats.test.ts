@@ -297,7 +297,7 @@ describe("Stats Extension", () => {
     }
 
     describe("aggregate()", () => {
-      it.only("should increment stats for a specific block range correctly", async () => {
+      it("should increment stats for a specific block range correctly", async () => {
         const blockRange: BlockNumberRange = { from: 1000, to: 1001 };
 
         await prisma.overallStats.aggregate({ blockRange });
