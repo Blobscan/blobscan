@@ -255,7 +255,6 @@ describe("Stats Extension", () => {
   describe("Overall Stats Model", () => {
     async function assertOverallStats(blockNumberRange?: BlockNumberRange) {
       const allOverallStats = await prisma.overallStats.findMany();
-      console.log(allOverallStats);
       const expectedElementsByAggregableType = groupElementsByAggregableType(
         fixtures.getTransactions({ blockNumberRange })
       );
