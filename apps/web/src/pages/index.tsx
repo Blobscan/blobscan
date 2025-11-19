@@ -58,7 +58,7 @@ const Home: NextPage = () => {
     api.stats.getDailyStatsForCharts.useQuery(
       {
         fields: ["totalBlobs", "avgBlobGasPrice"],
-        timeFrame: "90d",
+        timeFrame: "30d",
         categories: "all",
         rollups: "all",
         sort: "asc",
