@@ -1,5 +1,18 @@
 # @blobscan/rollups
 
+## 1.0.0
+
+### Minor Changes
+
+- [#918](https://github.com/Blobscan/blobscan/pull/918) [`d752744`](https://github.com/Blobscan/blobscan/commit/d752744ac75f65bc53ceb32dc181d11b1f020ef4) Thanks [@PJColombo](https://github.com/PJColombo)! - Refactored the rollup registry to improve code organization and maintainability
+
+- [#923](https://github.com/Blobscan/blobscan/pull/923) [`52ed449`](https://github.com/Blobscan/blobscan/commit/52ed449be8721dcf9352a9222cf087be2e6ba6bc) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for codex, flynet, gravity, hpp, katana, lachain, lighter, plume, powerloom, settlus, spire, symbiosis and pegglecoin
+
+### Patch Changes
+
+- Updated dependencies [[`1e87f0e`](https://github.com/Blobscan/blobscan/commit/1e87f0ec6a9c94adb4fbecea7e6780f1ea1ff4ad), [`52ed449`](https://github.com/Blobscan/blobscan/commit/52ed449be8721dcf9352a9222cf087be2e6ba6bc)]:
+  - @blobscan/db@0.25.0
+
 ## 0.3.9
 
 ### Patch Changes

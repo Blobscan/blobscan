@@ -1,5 +1,26 @@
 # @blobscan/web
 
+## 0.44.0
+
+### Minor Changes
+
+- [#924](https://github.com/Blobscan/blobscan/pull/924) [`1e87f0e`](https://github.com/Blobscan/blobscan/commit/1e87f0ec6a9c94adb4fbecea7e6780f1ea1ff4ad) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob usage metrics (total blob usage size and avg blob usage size)
+
+- [#923](https://github.com/Blobscan/blobscan/pull/923) [`52ed449`](https://github.com/Blobscan/blobscan/commit/52ed449be8721dcf9352a9222cf087be2e6ba6bc) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for codex, flynet, gravity, hpp, katana, lachain, lighter, plume, powerloom, settlus, spire, symbiosis and pegglecoin
+
+### Patch Changes
+
+- [#918](https://github.com/Blobscan/blobscan/pull/918) [`d752744`](https://github.com/Blobscan/blobscan/commit/d752744ac75f65bc53ceb32dc181d11b1f020ef4) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated rollup registry usages
+
+- [#925](https://github.com/Blobscan/blobscan/pull/925) [`b1215ec`](https://github.com/Blobscan/blobscan/commit/b1215eccd80aa518fdfa794e9b8c5772c5b5baf0) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved homepage loading time by reducing the charts unit period to 30d
+
+- [#918](https://github.com/Blobscan/blobscan/pull/918) [`d752744`](https://github.com/Blobscan/blobscan/commit/d752744ac75f65bc53ceb32dc181d11b1f020ef4) Thanks [@PJColombo](https://github.com/PJColombo)! - Refactored rollup styles by centralizing them within a single file
+
+- Updated dependencies [[`d752744`](https://github.com/Blobscan/blobscan/commit/d752744ac75f65bc53ceb32dc181d11b1f020ef4), [`d752744`](https://github.com/Blobscan/blobscan/commit/d752744ac75f65bc53ceb32dc181d11b1f020ef4), [`1e87f0e`](https://github.com/Blobscan/blobscan/commit/1e87f0ec6a9c94adb4fbecea7e6780f1ea1ff4ad), [`52ed449`](https://github.com/Blobscan/blobscan/commit/52ed449be8721dcf9352a9222cf087be2e6ba6bc)]:
+  - @blobscan/api@1.0.0
+  - @blobscan/rollups@1.0.0
+  - @blobscan/db@0.25.0
+
 ## 0.43.0
 
 ### Minor Changes

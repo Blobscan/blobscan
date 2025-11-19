@@ -1,5 +1,13 @@
 # @blobscan/db
 
+## 0.25.0
+
+### Minor Changes
+
+- [#924](https://github.com/Blobscan/blobscan/pull/924) [`1e87f0e`](https://github.com/Blobscan/blobscan/commit/1e87f0ec6a9c94adb4fbecea7e6780f1ea1ff4ad) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob usage metrics (total blob usage size and avg blob usage size)
+
+- [#923](https://github.com/Blobscan/blobscan/pull/923) [`52ed449`](https://github.com/Blobscan/blobscan/commit/52ed449be8721dcf9352a9222cf087be2e6ba6bc) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for codex, flynet, gravity, hpp, katana, lachain, lighter, plume, powerloom, settlus, spire, symbiosis and pegglecoin
+
 ## 0.24.0
 
 ### Minor Changes
