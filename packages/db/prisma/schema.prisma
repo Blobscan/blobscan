@@ -419,7 +419,7 @@ model OverallStats {
   totalBlobs                 Int      @default(0) @map("total_blobs")
   /// @zod.nonnegative()
   totalBlobSize              BigInt   @default(0) @map("total_blob_size")
-  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  /// @zod.nonnegative()
   totalBlobUsageSize         BigInt   @default(0) @map("total_blob_usage_size")
   /// @zod.nonnegative()
   totalBlocks                Int      @default(0) @map("total_blocks")
