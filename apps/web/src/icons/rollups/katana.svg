@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 1000 1000">
+  <rect width="1000" height="1000" fill="url(#katana_svg__a)" rx="500"/>
+  <path fill="#F6FF0D" d="m485.626 439.897 123.739-215.932h123.742l-92.806 309.063h-92.022l247.486 123.625-124.516 186.982L485.626 626.29v153.987h-216.55l74.245-247.249h-74.245l92.807-309.063h123.743z"/>
+  <defs>
+    <linearGradient id="katana_svg__a" x1="500" x2="500" y1="0" y2="1416.5" gradientUnits="userSpaceOnUse">
+      <stop offset=".06" stop-color="#101631"/>
+      <stop offset=".39" stop-color="#0541B2"/>
+      <stop offset=".57" stop-color="#059EED"/>
+      <stop offset=".7" stop-color="#C5EAFC"/>
+    </linearGradient>
+  </defs>
+</svg>

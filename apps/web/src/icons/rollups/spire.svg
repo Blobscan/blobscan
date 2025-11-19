@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 145 144">
+  <g clip-path="url(#spire_svg__a)">
+    <path fill="#E188DD" d="M144.517 72.258h-36.129l-36.13 72.26z"/>
+    <path fill="#FFC1F8" d="M34.416 72.258H0l72.26 72.26z"/>
+    <path fill="#39C3FF" d="M144.517 72.259 72.258-.001l36.13 72.26z"/>
+    <path fill="#84B6EC" d="M72.259 0 34.416 72.26H0z"/>
+    <path fill="#EBA1E8" d="M108.388 72.258H34.416l37.843 72.26z"/>
+    <path fill="#01A7F0" d="m72.259 0 36.129 72.26H34.416z"/>
+    <path fill="#0955AE" fill-opacity=".1" d="M144.517 72.254 96.34 48.172l12.048 24.082z"/>
+    <path fill="#0955AE" fill-opacity=".1" d="M101.171 57.807 50.783 41 34.416 72.256h73.972z"/>
+    <path fill="#0955AE" fill-opacity=".1" d="M44.856 52.315 34.418 72.254H.001l24.097-24.082zm99.661 19.943L96.34 96.34l-24.082 48.178z"/>
+    <path fill="#0955AE" fill-opacity=".1" d="m101.16 86.703-28.898 57.81-21.476-41.019zm-56.306 5.478 27.405 52.336-48.163-48.178z"/>
+  </g>
+  <defs>
+    <clipPath id="spire_svg__a">
+      <path fill="#fff" d="M144.517 0v144h-144V0z"/>
+    </clipPath>
+  </defs>
+</svg>

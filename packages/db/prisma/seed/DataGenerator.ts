@@ -51,10 +51,9 @@ export class DataGenerator {
     const now = new Date();
     return addresses.map((address) => ({
       address,
-      rollup:
-        (ROLLUP_ADDRESSES[
-          address as keyof typeof ROLLUP_ADDRESSES
-        ] as Rollup) ?? null,
+      rollup: (Object.entries(ROLLUP_ADDRESSES).find(([_, addresses]) =>
+        addresses.includes(address)
+      )?.[0] ?? null) as Rollup | null,
       firstBlockNumberAsReceiver:
         blocks.find(
           (b) => txs.find((tx) => tx.toId === address)?.blockHash === b.hash
@@ -76,10 +75,9 @@ export class DataGenerator {
       address,
       firstBlockNumberAsReceiver: tx.blockNumber,
       firstBlockNumberAsSender: tx.blockNumber,
-      rollup:
-        (ROLLUP_ADDRESSES[
-          address as keyof typeof ROLLUP_ADDRESSES
-        ] as Rollup) ?? null,
+      rollup: (Object.entries(ROLLUP_ADDRESSES).find(([_, addresses]) =>
+        addresses.includes(address)
+      )?.[0] ?? null) as Rollup | null,
       insertedAt: now,
       updatedAt: now,
     }));
@@ -197,9 +195,11 @@ export class DataGenerator {
           ? faker.helpers.weightedArrayElement(this.#seedParams.rollupWeights)
           : null;
 
+      const blobPoster = ROLLUP_ADDRESSES[rollup as Rollup];
       const fromId =
-        ROLLUP_ADDRESSES[rollup?.toString() as keyof typeof ROLLUP_ADDRESSES] ??
-        faker.helpers.arrayElement(uniqueAddresses);
+        blobPoster && blobPoster[0]
+          ? blobPoster[0]
+          : faker.helpers.arrayElement(uniqueAddresses);
 
       let toId = faker.helpers.arrayElement(uniqueAddresses);
 
@@ -244,7 +244,10 @@ export class DataGenerator {
     return Array.from({
       length: Number(tx.blobGasUsed) / Number(GAS_PER_BLOB),
     }).map(() => {
-      const isRollupTx = Object.values(ROLLUP_ADDRESSES).includes(tx.fromId);
+      const isRollupTx =
+        ((Object.entries(ROLLUP_ADDRESSES).find(([_, addresses]) =>
+          addresses.includes(tx.fromId)
+        )?.[0] ?? null) as Rollup | null) !== null;
       const isUnique = isRollupTx
         ? true
         : faker.datatype.boolean({

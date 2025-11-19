@@ -73,16 +73,16 @@ async function main() {
 
           const fromAddress = addressToAddressEntity[tx.fromId] ?? {
             address: tx.fromId,
-            rollup: (Object.entries(ROLLUP_ADDRESSES).find(
-              ([_, address]) => address === tx.fromId
+            rollup: (Object.entries(ROLLUP_ADDRESSES).find(([_, address]) =>
+              address.includes(tx.fromId)
             )?.[0] ?? null) as Rollup | null,
             firstBlockNumberAsSender: null,
             firstBlockNumberAsReceiver: null,
           };
           const toAddress = addressToAddressEntity[tx.toId] ?? {
             address: tx.toId,
-            rollup: (Object.entries(ROLLUP_ADDRESSES).find(
-              ([_, address]) => address === tx.toId
+            rollup: (Object.entries(ROLLUP_ADDRESSES).find(([_, address]) =>
+              address.includes(tx.fromId)
             )?.[0] ?? null) as Rollup | null,
             firstBlockNumberAsSender: null,
             firstBlockNumberAsReceiver: null,
@@ -202,7 +202,9 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    spinner = spinner.fail(`Error seeding db : ${e}`);
+    spinner = spinner.fail(`Error seeding db`);
+
+    console.error(e);
 
     await prisma.$disconnect();
     process.exit(1);

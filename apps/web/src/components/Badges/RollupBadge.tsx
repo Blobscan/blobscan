@@ -25,10 +25,11 @@ export const RollupBadge: React.FC<RollupBadgeProps> = ({
     iconStyle,
     label = capitalize(rollup),
   } = ROLLUP_STYLES[rollup];
-  const rollupIcon = (
+  const rollupIconSrc = ICONS[rollup];
+  const rollupIcon = rollupIconSrc ? (
     <div className="relative">
       <Icon
-        src={ICONS[rollup]}
+        src={rollupIconSrc}
         title={label}
         className={iconStyle}
         size={props.size ?? "md"}
@@ -39,6 +40,8 @@ export const RollupBadge: React.FC<RollupBadgeProps> = ({
         </div>
       )}
     </div>
+  ) : (
+    <div className="h-4 w-4" />
   );
 
   return compact ? (
