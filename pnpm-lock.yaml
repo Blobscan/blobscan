@@ -175,13 +175,13 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.31.1
         version: link:../../packages/api
       '@blobscan/blob-propagator':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.6.4
         version: link:../../packages/blob-propagator
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.8.2
         version: link:../../packages/blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.4.0
@@ -205,7 +205,7 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../../packages/price-feed
       '@blobscan/rollups':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.4.0
         version: link:../../packages/rollups
       '@blobscan/syncers':
         specifier: workspace:^0.6.3
@@ -266,7 +266,7 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.31.1
         version: link:../../packages/api
       '@blobscan/blob-decoder':
         specifier: workspace:^0.2.2
@@ -290,7 +290,7 @@ importers:
         specifier: workspace:^0.0.10
         version: link:../../packages/open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.4.0
         version: link:../../packages/rollups
       '@floating-ui/react':
         specifier: ^0.26.23
@@ -426,7 +426,7 @@ importers:
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.6.4
         version: link:../../packages/blob-propagator
       '@blobscan/dayjs':
         specifier: workspace:^0.1.0
@@ -486,7 +486,7 @@ importers:
         specifier: workspace:^0.0.10
         version: link:../open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.4.0
         version: link:../rollups
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -511,7 +511,7 @@ importers:
         version: 1.2.0(@trpc/server@10.45.2)(zod@3.23.8)
     devDependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.6.4
         version: link:../blob-propagator
       '@types/jsonwebtoken':
         specifier: ^9.0.2
@@ -575,7 +575,7 @@ importers:
         version: 5.4.1
     devDependencies:
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^0.8.2
         version: link:../blob-storage-manager
       '@blobscan/db':
         specifier: workspace:^0.25.0

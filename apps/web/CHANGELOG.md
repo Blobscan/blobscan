@@ -17,8 +17,8 @@
 - [#918](https://github.com/Blobscan/blobscan/pull/918) [`d752744`](https://github.com/Blobscan/blobscan/commit/d752744ac75f65bc53ceb32dc181d11b1f020ef4) Thanks [@PJColombo](https://github.com/PJColombo)! - Refactored rollup styles by centralizing them within a single file
 
 - Updated dependencies [[`d752744`](https://github.com/Blobscan/blobscan/commit/d752744ac75f65bc53ceb32dc181d11b1f020ef4), [`d752744`](https://github.com/Blobscan/blobscan/commit/d752744ac75f65bc53ceb32dc181d11b1f020ef4), [`1e87f0e`](https://github.com/Blobscan/blobscan/commit/1e87f0ec6a9c94adb4fbecea7e6780f1ea1ff4ad), [`52ed449`](https://github.com/Blobscan/blobscan/commit/52ed449be8721dcf9352a9222cf087be2e6ba6bc)]:
-  - @blobscan/api@1.0.0
-  - @blobscan/rollups@1.0.0
+  - @blobscan/api@0.31.1
+  - @blobscan/rollups@0.4.0
   - @blobscan/db@0.25.0
 
 ## 0.43.0
