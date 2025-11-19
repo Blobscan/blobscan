@@ -146,11 +146,13 @@ const Home: NextPage = () => {
               <MetricCard
                 name="Total Tx Fees Saved"
                 metric={{
-                  value: overallStats
-                    ? overallStats.totalBlobAsCalldataFee -
-                      overallStats.totalBlobFee
-                    : undefined,
-                  type: "ethereum",
+                  primary: {
+                    value: overallStats
+                      ? overallStats.totalBlobAsCalldataFee -
+                        overallStats.totalBlobFee
+                      : undefined,
+                    type: "ethereum",
+                  },
                 }}
                 compact
               />
@@ -158,29 +160,37 @@ const Home: NextPage = () => {
             <MetricCard
               name="Total Blocks"
               metric={{
-                value: overallStats?.totalBlocks,
+                primary: {
+                  value: overallStats?.totalBlocks,
+                },
               }}
               compact
             />
             <MetricCard
               name="Total Txs"
               metric={{
-                value: overallStats?.totalTransactions,
+                primary: {
+                  value: overallStats?.totalTransactions,
+                },
               }}
               compact
             />
             <MetricCard
               name="Total Blobs"
               metric={{
-                value: overallStats?.totalBlobs,
+                primary: {
+                  value: overallStats?.totalBlobs,
+                },
               }}
               compact
             />
             <MetricCard
               name="Total Blob Size"
               metric={{
-                value: overallStats?.totalBlobSize,
-                type: "bytes",
+                primary: {
+                  value: overallStats?.totalBlobSize,
+                  type: "bytes",
+                },
               }}
               compact
             />

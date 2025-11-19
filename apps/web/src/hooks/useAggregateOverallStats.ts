@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
 import type { OverallStats, Rollup } from "~/types";
+import { performDiv } from "~/utils";
 
 export function useAggregateOverallStats(
   selectedRollups: Rollup[],
@@ -19,49 +20,26 @@ export function useAggregateOverallStats(
       s.rollup !== null ? selectedRollups.includes(s.rollup) : false
     );
 
-    return selectedOverallStats.reduce(
-      (acc, s) => {
-        acc.avgBlobAsCalldataFee =
-          acc.avgBlobAsCalldataFee === 0
-            ? s.avgBlobAsCalldataFee
-            : (acc.avgBlobAsCalldataFee + s.avgBlobAsCalldataFee) / 2;
-        acc.avgBlobAsCalldataMaxFee =
-          acc.avgBlobAsCalldataMaxFee === 0
-            ? s.avgBlobAsCalldataMaxFee
-            : (acc.avgBlobAsCalldataMaxFee + s.avgBlobAsCalldataMaxFee) / 2;
-        acc.avgBlobFee =
-          acc.avgBlobFee === 0
-            ? s.avgBlobFee
-            : (acc.avgBlobFee + s.avgBlobFee) / 2;
-        acc.avgBlobGasPrice =
-          acc.avgBlobGasPrice === 0
-            ? s.avgBlobGasPrice
-            : (acc.avgBlobGasPrice + s.avgBlobGasPrice) / 2;
-        acc.avgBlobMaxFee =
-          acc.avgBlobMaxFee === 0
-            ? s.avgBlobMaxFee
-            : (acc.avgBlobMaxFee + s.avgBlobMaxFee) / 2;
-        acc.avgMaxBlobGasFee =
-          acc.avgMaxBlobGasFee === 0
-            ? s.avgMaxBlobGasFee
-            : (acc.avgMaxBlobGasFee + s.avgMaxBlobGasFee) / 2;
-        acc.totalBlobAsCalldataFee += s.totalBlobAsCalldataFee;
-        acc.totalBlobAsCalldataGasUsed += s.totalBlobAsCalldataGasUsed;
-        acc.totalBlobAsCalldataMaxFees += s.totalBlobAsCalldataMaxFees;
-        acc.totalBlobGasPrice += s.totalBlobGasPrice;
-        acc.totalBlobFee += s.totalBlobFee;
-        acc.totalBlobGasUsed += s.totalBlobGasUsed;
-        acc.totalBlobMaxFees += s.totalBlobMaxFees;
-        acc.totalBlobMaxGasFees += s.totalBlobMaxGasFees;
-        acc.totalBlobs += s.totalBlobs;
-        acc.totalBlobSize += s.totalBlobSize;
-        acc.totalBlocks += s.totalBlocks;
-        acc.totalTransactions += s.totalTransactions;
-        acc.totalUniqueBlobs += s.totalUniqueBlobs;
-        acc.totalUniqueReceivers += s.totalUniqueReceivers;
-        acc.totalUniqueSenders += s.totalUniqueSenders;
+    const aggregations = selectedOverallStats.reduce(
+      (aggr, s) => {
+        aggr.totalBlobAsCalldataFee += s.totalBlobAsCalldataFee;
+        aggr.totalBlobAsCalldataGasUsed += s.totalBlobAsCalldataGasUsed;
+        aggr.totalBlobAsCalldataMaxFees += s.totalBlobAsCalldataMaxFees;
+        aggr.totalBlobGasPrice += s.totalBlobGasPrice;
+        aggr.totalBlobFee += s.totalBlobFee;
+        aggr.totalBlobGasUsed += s.totalBlobGasUsed;
+        aggr.totalBlobMaxFees += s.totalBlobMaxFees;
+        aggr.totalBlobMaxGasFees += s.totalBlobMaxGasFees;
+        aggr.totalBlobs += s.totalBlobs;
+        aggr.totalBlobSize += s.totalBlobSize;
+        aggr.totalBlobUsageSize += s.totalBlobUsageSize;
+        aggr.totalBlocks += s.totalBlocks;
+        aggr.totalTransactions += s.totalTransactions;
+        aggr.totalUniqueBlobs += s.totalUniqueBlobs;
+        aggr.totalUniqueReceivers += s.totalUniqueReceivers;
+        aggr.totalUniqueSenders += s.totalUniqueSenders;
 
-        return acc;
+        return aggr;
       },
       {
         category: null,
@@ -71,6 +49,7 @@ export function useAggregateOverallStats(
         avgBlobFee: 0,
         avgBlobGasPrice: 0,
         avgBlobMaxFee: 0,
+        avgBlobUsageSize: 0,
         avgMaxBlobGasFee: 0,
         totalBlobAsCalldataFee: BigInt(0),
         totalBlobAsCalldataGasUsed: BigInt(0),
@@ -82,6 +61,7 @@ export function useAggregateOverallStats(
         totalBlobMaxGasFees: BigInt(0),
         totalBlobs: 0,
         totalBlobSize: BigInt(0),
+        totalBlobUsageSize: BigInt(0),
         totalBlocks: 0,
         totalTransactions: 0,
         totalUniqueBlobs: 0,
@@ -89,5 +69,37 @@ export function useAggregateOverallStats(
         totalUniqueSenders: 0,
       } satisfies Omit<OverallStats, "updatedAt">
     );
+
+    const totalBlobs = BigInt(aggregations.totalBlobs);
+    if (totalBlobs > 0) {
+      aggregations.avgBlobFee = performDiv(
+        aggregations.totalBlobFee,
+        totalBlobs
+      );
+      aggregations.avgBlobMaxFee = performDiv(
+        aggregations.totalBlobMaxFees,
+        totalBlobs
+      );
+      aggregations.avgBlobAsCalldataFee = performDiv(
+        aggregations.totalBlobAsCalldataFee,
+        totalBlobs
+      );
+      aggregations.avgBlobAsCalldataMaxFee = performDiv(
+        aggregations.totalBlobAsCalldataMaxFees,
+        totalBlobs
+      );
+      aggregations.avgBlobGasPrice = performDiv(
+        aggregations.totalBlobGasPrice,
+        totalBlobs
+      );
+      aggregations.avgBlobUsageSize = performDiv(
+        aggregations.totalBlobUsageSize,
+        totalBlobs
+      );
+      aggregations.avgMaxBlobGasFee = performDiv(
+        aggregations.totalBlobMaxGasFees,
+        totalBlobs
+      );
+    }
   }, [overallStats, selectedRollups]);
 }

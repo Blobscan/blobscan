@@ -13,6 +13,7 @@ import {
   DailyBlobGasComparisonChart,
   DailyBlobGasUsedChart,
   DailyBlobSizeChart,
+  DailyBlobUsageSizeChart,
   DailyBlobsChart,
   DailyBlocksChart,
   DailyAvgMaxBlobGasFeeChart,
@@ -29,8 +30,9 @@ import { Header } from "~/components/Header";
 import { Scrollable } from "~/components/Scrollable";
 import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
+import { useChain } from "~/hooks/useChain";
 import type { DailyStats } from "~/types";
-import { splitArrayIntoChunks } from "~/utils";
+import { calculatePercentage, splitArrayIntoChunks } from "~/utils";
 
 type Section = "All" | "Blob" | "Block" | "Gas" | "Fee" | "Transaction";
 
@@ -56,6 +58,7 @@ const SECTION_OPTIONS = [
 ] as const;
 
 const Stats: NextPage = function () {
+  const chain = useChain();
   const [selectedSection, setSelectedSection] = useState<SectionOption>(
     SECTION_OPTIONS[0]
   );
@@ -72,11 +75,13 @@ const Stats: NextPage = function () {
       fields: [
         "totalBlobs",
         "totalBlobSize",
+        "totalBlobUsageSize",
         "totalBlocks",
         "totalBlobGasUsed",
         "avgBlobGasPrice",
         "totalBlobFee",
         "avgBlobFee",
+        "avgBlobUsageSize",
         "avgMaxBlobGasFee",
         "totalTransactions",
         "totalUniqueReceivers",
@@ -120,13 +125,17 @@ const Stats: NextPage = function () {
       return acc;
     }, {} as typeof series);
   }, [series, selectedRollups]);
-  const aggregatedOverallStats = useAggregateOverallStats(
+  const overallAggr = useAggregateOverallStats(
     selectedRollups.map((r) => r.value),
     allOverallStats
   );
   const selectedRollupOrTotalSeries = selectedRollups.length
     ? selectedRollupSeries
     : totalSeries;
+  const blobSize = chain
+    ? chain.latestFork.blobParams.bytesPerFieldElement *
+      chain.latestFork.blobParams.fieldElementsPerBlob
+    : undefined;
   const sections: {
     section: Section;
     metrics: MetricCardProps[];
@@ -138,20 +147,57 @@ const Stats: NextPage = function () {
         {
           name: "Total Blobs",
           metric: {
-            value: aggregatedOverallStats?.totalBlobs,
+            primary: {
+              value: overallAggr?.totalBlobs,
+            },
           },
         },
         {
           name: "Total Blob Size",
           metric: {
-            value: aggregatedOverallStats?.totalBlobSize,
-            type: "bytes",
+            primary: {
+              value: overallAggr?.totalBlobSize,
+              type: "bytes",
+            },
+          },
+        },
+        {
+          name: "Total Blob Usage Size",
+          metric: {
+            primary: {
+              value: overallAggr?.totalBlobUsageSize,
+              type: "bytes",
+            },
+          },
+        },
+        {
+          name: "Avg. Blob Usage Size",
+          metric: {
+            primary: {
+              value: overallAggr?.avgBlobUsageSize,
+              type: "bytes",
+            },
+            secondary:
+              blobSize && overallAggr?.avgBlobUsageSize
+                ? {
+                    value: calculatePercentage(
+                      overallAggr?.avgBlobUsageSize,
+                      blobSize,
+                      {
+                        decimals: 2,
+                      }
+                    ),
+                    type: "percentage",
+                  }
+                : undefined,
           },
         },
         {
           name: "Total Unique Blobs",
           metric: {
-            value: aggregatedOverallStats?.totalUniqueBlobs,
+            primary: {
+              value: overallAggr?.totalUniqueBlobs,
+            },
           },
         },
       ],
@@ -168,6 +214,12 @@ const Stats: NextPage = function () {
           series={selectedRollupSeries?.totalBlobSize}
           showLegend
         />,
+        <DailyBlobUsageSizeChart
+          key="daily-blob-usage-size"
+          days={days}
+          series={selectedRollupSeries?.totalBlobUsageSize}
+          showLegend
+        />,
       ],
     },
     {
@@ -176,7 +228,9 @@ const Stats: NextPage = function () {
         {
           name: "Total Blocks",
           metric: {
-            value: aggregatedOverallStats?.totalBlocks,
+            primary: {
+              value: overallAggr?.totalBlocks,
+            },
           },
         },
       ],
@@ -195,17 +249,21 @@ const Stats: NextPage = function () {
         {
           name: "Total Blob Gas Used",
           metric: {
-            value: aggregatedOverallStats?.totalBlobGasUsed,
-            type: "ethereum",
+            primary: {
+              value: overallAggr?.totalBlobGasUsed,
+              type: "ethereum",
+            },
           },
         },
         {
           name: "Total Gas Saved",
           metric: {
-            value: aggregatedOverallStats
-              ? aggregatedOverallStats.totalBlobAsCalldataGasUsed -
-                aggregatedOverallStats.totalBlobGasUsed
-              : undefined,
+            primary: {
+              value: overallAggr
+                ? overallAggr.totalBlobAsCalldataGasUsed -
+                  overallAggr.totalBlobGasUsed
+                : undefined,
+            },
           },
           // secondaryMetric={
           //   overallStats &&
@@ -223,12 +281,14 @@ const Stats: NextPage = function () {
         },
         {
           name: "Avg. Blob Gas Price",
-          metric: aggregatedOverallStats
+          metric: overallAggr
             ? {
-                value: aggregatedOverallStats.avgBlobGasPrice,
-                type: "ethereum",
-                numberFormatOpts: {
-                  maximumFractionDigits: 9,
+                primary: {
+                  value: overallAggr.avgBlobGasPrice,
+                  type: "ethereum",
+                  numberFormatOpts: {
+                    maximumFractionDigits: 9,
+                  },
                 },
               }
             : undefined,
@@ -261,18 +321,22 @@ const Stats: NextPage = function () {
         {
           name: "Total Blob Fees",
           metric: {
-            value: aggregatedOverallStats?.totalBlobFee,
-            type: "ethereum",
+            primary: {
+              value: overallAggr?.totalBlobFee,
+              type: "ethereum",
+            },
           },
         },
         {
           name: "Total Tx Fees Saved",
-          metric: aggregatedOverallStats
+          metric: overallAggr
             ? {
-                value:
-                  aggregatedOverallStats.totalBlobAsCalldataFee -
-                  aggregatedOverallStats.totalBlobFee,
-                type: "ethereum",
+                primary: {
+                  value:
+                    overallAggr.totalBlobAsCalldataFee -
+                    overallAggr.totalBlobFee,
+                  type: "ethereum",
+                },
               }
             : undefined,
           // secondaryMetric={
@@ -291,8 +355,10 @@ const Stats: NextPage = function () {
         {
           name: "Avg. Max Blob Gas Fee",
           metric: {
-            value: aggregatedOverallStats?.avgMaxBlobGasFee,
-            type: "ethereum",
+            primary: {
+              value: overallAggr?.avgMaxBlobGasFee,
+              type: "ethereum",
+            },
           },
         },
       ],
@@ -323,19 +389,25 @@ const Stats: NextPage = function () {
         {
           name: "Total Transactions",
           metric: {
-            value: aggregatedOverallStats?.totalTransactions,
+            primary: {
+              value: overallAggr?.totalTransactions,
+            },
           },
         },
         {
           name: "Total Unique Receivers",
           metric: {
-            value: aggregatedOverallStats?.totalUniqueReceivers,
+            primary: {
+              value: overallAggr?.totalUniqueReceivers,
+            },
           },
         },
         {
           name: "Total Unique Senders",
           metric: {
-            value: aggregatedOverallStats?.totalUniqueSenders,
+            primary: {
+              value: overallAggr?.totalUniqueSenders,
+            },
           },
         },
       ],
