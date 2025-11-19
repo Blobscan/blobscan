@@ -1,7 +1,7 @@
 {
   "name": "@blobscan/rollups",
   "private": true,
-  "version": "0.3.9",
+  "version": "0.4.0",
   "main": "./src/index.ts",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
@@ -13,10 +13,10 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "devDependencies": {
-    "@blobscan/db": "workspace:^0.24.0"
+    "@blobscan/db": "workspace:^0.25.0"
   },
   "peerDependencies": {
-    "@blobscan/db": "workspace:^0.24.0"
+    "@blobscan/db": "workspace:^0.25.0"
   },
   "eslintConfig": {
     "root": true,
