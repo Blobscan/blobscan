@@ -45,6 +45,8 @@ HAVING NOT (
   f.rollup IS NULL
 )
 ON CONFLICT (day, category, rollup) DO UPDATE SET
+  avg_blob_usage_size = EXCLUDED.avg_blob_usage_size,
   total_blobs = EXCLUDED.total_blobs,
   total_unique_blobs = EXCLUDED.total_unique_blobs,
-  total_blob_size = EXCLUDED.total_blob_size
+  total_blob_size = EXCLUDED.total_blob_size,
+  total_blob_usage_size = EXCLUDED.total_blob_usage_size
