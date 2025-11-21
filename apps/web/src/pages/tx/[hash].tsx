@@ -13,8 +13,8 @@ import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
-import type { NavArrowsProps } from "~/components/NavArrows";
-import { NavArrows } from "~/components/NavArrows";
+import { NavArrow } from "~/components/NavArrow";
+import type { NavArrowProps } from "~/components/NavArrow";
 import { OptimismCard } from "~/components/OptimismCard";
 import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
@@ -61,7 +61,7 @@ const Tx: NextPage = () => {
   );
   const [adjacentTxLoading, setAdjacentTxLoading] = useState(false);
 
-  const handleNavClick = useCallback<NavArrowsProps["onClick"]>(
+  const handleNavClick = useCallback<NavArrowProps["onClick"]>(
     async (direction) => {
       const adjacentTx =
         direction === "next"
@@ -300,20 +300,20 @@ const Tx: NextPage = () => {
       <DetailsLayout
         header={
           <div className="flex items-center justify-start gap-4">
-            Transaction Details
-            <NavArrows
+            <NavArrow
+              type="prev"
               size="lg"
-              arrows={{
-                prev: {
-                  disabled: !adjacentTxs?.prevTxHash || adjacentTxLoading,
-                  tooltip: "Previous Transaction from This Sender",
-                },
-                next: {
-                  disabled: !adjacentTxs?.nextTxHash || adjacentTxLoading,
-                  tooltip: "Next Transaction from This Sender",
-                },
-              }}
-              onClick={handleNavClick}
+              onClick={() => handleNavClick("prev")}
+              tooltip="Previous Transaction from This Sender"
+              disabled={!adjacentTxs?.prevTxHash || adjacentTxLoading}
+            />
+            Transaction Details
+            <NavArrow
+              type="next"
+              size="lg"
+              onClick={() => handleNavClick("next")}
+              tooltip="Next Transaction from This Sender"
+              disabled={!adjacentTxs?.nextTxHash || adjacentTxLoading}
             />
           </div>
         }
