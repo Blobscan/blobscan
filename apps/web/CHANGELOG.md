@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.44.1
+
+### Patch Changes
+
+- [#926](https://github.com/Blobscan/blobscan/pull/926) [`6a9d7ca`](https://github.com/Blobscan/blobscan/commit/6a9d7caf07c9c50e7cdda4c48d8615e41b308c9b) Thanks [@PJColombo](https://github.com/PJColombo)! - Shown navigation arrow icons on both right and left sides
+
 ## 0.44.0
 
 ### Minor Changes
