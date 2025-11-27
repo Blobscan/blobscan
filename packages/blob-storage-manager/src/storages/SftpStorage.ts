@@ -64,17 +64,14 @@ export class SftpStorage extends BlobStorage {
     }
   }
 
-  protected async _getBlob(
-    uri: string,
-    { fileType }: GetBlobOpts
-  ): Promise<string> {
+  protected async _getBlob(uri: string, _: GetBlobOpts): Promise<string> {
     const fullPath = `${this._config.path}/${uri}`;
 
     const buffer = await this._withClient(async (client) => {
       return (await client.get(fullPath)) as Buffer;
     });
 
-    return fileType === "text" ? buffer.toString() : bytesToHex(buffer);
+    return bytesToHex(buffer);
   }
 
   protected async _removeBlob(uri: string): Promise<void> {

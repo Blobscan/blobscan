@@ -226,6 +226,11 @@ export const env = createEnv({
         .string()
         .optional()
         .superRefine(requireIfEnvEnabled("SFTP_STORAGE_ENABLED")),
+      SFTP_STORAGE_API_BASE_URL: z
+        .string()
+        .url()
+        .optional()
+        .superRefine(requireIfEnvEnabled("SFTP_STORAGE_ENABLED")),
 
       // SwarmyCloud storage
       SWARMYCLOUD_STORAGE_ENABLED: booleanSchema.default("false"),

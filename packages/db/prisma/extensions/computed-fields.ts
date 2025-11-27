@@ -23,6 +23,9 @@ export type BlobUrlFieldParams = {
   postgres: Partial<{
     apiBaseUrl: string;
   }>;
+  sftp: Partial<{
+    apiBaseUrl: string;
+  }>;
 };
 
 export type ExtensionConfig = {
@@ -87,7 +90,7 @@ export type BlockAllComputedFields = z.output<
 export const createComputedFieldsExtension = ({
   blobUrlField,
 }: ExtensionConfig = {}) => {
-  const { gcs, loadNetwork, postgres, s3 } =
+  const { gcs, loadNetwork, postgres, s3, sftp } =
     blobUrlField ?? ({} as BlobUrlFieldParams);
   return Prisma.defineExtension((prisma) =>
     prisma
@@ -153,6 +156,15 @@ export const createComputedFieldsExtension = ({
                       );
                     }
                     return `${s3.apiBaseUrl}/${s3.bucketName}/${dataReference}`;
+                  }
+                  case "SFTP": {
+                    if (!sftp?.apiBaseUrl) {
+                      throw new Error(
+                        "Couldn't compute sftp blob data url field: api base url not provided"
+                      );
+                    }
+
+                    return `${sftp.apiBaseUrl}/blobs/${dataReference}/data`;
                   }
                 }
               },
