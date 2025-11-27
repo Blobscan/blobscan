@@ -21,10 +21,12 @@
     "@blobscan/open-telemetry": "workspace:^0.0.10",
     "@blobscan/zod": "workspace:^0.1.0",
     "@ethersphere/bee-js": "9.3.0",
-    "@google-cloud/storage": "^6.10.1"
+    "@google-cloud/storage": "^6.10.1",
+    "ssh2-sftp-client": "^12.0.1"
   },
   "devDependencies": {
-    "@blobscan/db": "workspace:^0.25.0"
+    "@blobscan/db": "workspace:^0.25.0",
+    "@types/ssh2-sftp-client": "^9.0.5"
   },
   "peerDependencies": {
     "@blobscan/db": "workspace:^0.25.0"
