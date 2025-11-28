@@ -6,4 +6,17 @@ exports[`Computed Fields Extension > Blob Data Storage Reference Model > url > s
 
 exports[`Computed Fields Extension > Blob Data Storage Reference Model > url > should fail when returning a S3 url without a configured api base url or bucket name 1`] = `"Couldn't compute load network blob data url field: api base url or bucket name not provided"`;
 
+exports[`Computed Fields Extension > Blob Data Storage Reference Model > url > should fail when returning a SFTP url without a configured api base url 1`] = `
+"
+Invalid \`prismaWithoutParams.blobDataStorageReference.findFirstOrThrow()\` invocation in
+/Users/elessar/Projects/Blobscan/blobscan/packages/db/test/extensions/computed-fields.test.ts:152:66
+
+  149 async (storage, _) => {
+  150   await assertError(async () => {
+  151     const ref =
+→ 152       await prismaWithoutParams.blobDataStorageReference.findFirstOrThrow(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: \\"22P02\\", message: \\"invalid input value for enum blob_storage: \\\\\\"sftp\\\\\\"\\", severity: \\"ERROR\\", detail: None, column: None, hint: None }), transient: false })"
+`;
+
 exports[`Computed Fields Extension > Blob Data Storage Reference Model > url > should fail when returning a WEAVEVM url without a configured api base url 1`] = `"Couldn't compute load network blob data url field: api base url not provided"`;
