@@ -2,6 +2,7 @@ import {
   GoogleStorage,
   PostgresStorage,
   S3Storage,
+  SftpStorage,
   SwarmStorage,
   WeaveVMStorage,
 } from "@blobscan/blob-storage-manager";
@@ -54,6 +55,27 @@ export async function createStorageFromEnv(
     }
     case BlobStorageName.POSTGRES: {
       return PostgresStorage.create({ chainId });
+    }
+    case BlobStorageName.SFTP: {
+      if (
+        !env.SFTP_STORAGE_HOST ||
+        !env.SFTP_STORAGE_USERNAME ||
+        !env.SFTP_STORAGE_PATH
+      ) {
+        throw new Error(
+          "Missing required env variables for SftpStorage: SFTP_STORAGE_HOST, SFTP_STORAGE_USERNAME, SFTP_STORAGE_PATH"
+        );
+      }
+
+      return SftpStorage.create({
+        chainId,
+        host: env.SFTP_STORAGE_HOST,
+        port: env.SFTP_STORAGE_PORT,
+        username: env.SFTP_STORAGE_USERNAME,
+        path: env.SFTP_STORAGE_PATH,
+        password: env.SFTP_STORAGE_PASSWORD,
+        privateKey: env.SFTP_STORAGE_PRIVATE_KEY,
+      });
     }
     case BlobStorageName.SWARM: {
       if (!env.BEE_ENDPOINT) {

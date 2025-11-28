@@ -142,7 +142,6 @@ export class SftpStorage extends BlobStorage {
         // List the root directory to ensure SFTP connection is alive
         const exists = await client.exists(this._config.path);
 
-        console.log(await client.list("/"));
         if (!exists) {
           await client.mkdir(this._config.path, true);
         }
