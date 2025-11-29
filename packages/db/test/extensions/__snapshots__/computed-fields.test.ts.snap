@@ -6,4 +6,6 @@ exports[`Computed Fields Extension > Blob Data Storage Reference Model > url > s
 
 exports[`Computed Fields Extension > Blob Data Storage Reference Model > url > should fail when returning a S3 url without a configured api base url or bucket name 1`] = `"Couldn't compute load network blob data url field: api base url or bucket name not provided"`;
 
+exports[`Computed Fields Extension > Blob Data Storage Reference Model > url > should fail when returning a SFTP url without a configured api base url 1`] = `"Couldn't compute sftp blob data url field: api base url not provided"`;
+
 exports[`Computed Fields Extension > Blob Data Storage Reference Model > url > should fail when returning a WEAVEVM url without a configured api base url 1`] = `"Couldn't compute load network blob data url field: api base url not provided"`;

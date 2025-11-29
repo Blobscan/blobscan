@@ -16,6 +16,7 @@ const BLOB_STORAGE = [
   "SWARM",
   "SWARMYCLOUD",
   "S3",
+  "SFTP",
   "WEAVEVM",
 ] as const;
 const blobStorageSchema = z.enum(BLOB_STORAGE);
@@ -208,6 +209,29 @@ export const env = createEnv({
       S3_STORAGE_ENDPOINT: z.string().url().optional(),
       S3_STORAGE_FORCE_PATH_STYLE: booleanSchema.optional(),
 
+      // SFTP storage
+      SFTP_STORAGE_ENABLED: booleanSchema.default("false"),
+      SFTP_STORAGE_HOST: z
+        .string()
+        .optional()
+        .superRefine(requireIfEnvEnabled("SFTP_STORAGE_ENABLED")),
+      SFTP_STORAGE_PORT: z.coerce.number().optional().default(22),
+      SFTP_STORAGE_USERNAME: z
+        .string()
+        .optional()
+        .superRefine(requireIfEnvEnabled("SFTP_STORAGE_ENABLED")),
+      SFTP_STORAGE_PASSWORD: z.string().optional(),
+      SFTP_STORAGE_PRIVATE_KEY: z.string().optional(),
+      SFTP_STORAGE_PATH: z
+        .string()
+        .optional()
+        .superRefine(requireIfEnvEnabled("SFTP_STORAGE_ENABLED")),
+      SFTP_STORAGE_API_BASE_URL: z
+        .string()
+        .url()
+        .optional()
+        .superRefine(requireIfEnvEnabled("SFTP_STORAGE_ENABLED")),
+
       // SwarmyCloud storage
       SWARMYCLOUD_STORAGE_ENABLED: booleanSchema.default("false"),
       SWARMY_API_KEY: z
@@ -258,7 +282,7 @@ export const env = createEnv({
     );
 
     console.log(
-      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, swarmy=${env.SWARMYCLOUD_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}`
+      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, swarmy=${env.SWARMYCLOUD_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, sftp=${env.SFTP_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}`
     );
 
     if (env.GOOGLE_STORAGE_ENABLED) {
@@ -290,6 +314,12 @@ export const env = createEnv({
         }, endpoint=${env.S3_STORAGE_ENDPOINT || "default"}, forcePathStyle=${
           env.S3_STORAGE_FORCE_PATH_STYLE || false
         }`
+      );
+    }
+
+    if (env.SFTP_STORAGE_ENABLED) {
+      console.log(
+        `SFTP configuration: host=${env.SFTP_STORAGE_HOST}, port=${env.SFTP_STORAGE_PORT}, user=${env.SFTP_STORAGE_USERNAME}, path=${env.SFTP_STORAGE_PATH}`
       );
     }
     console.log(

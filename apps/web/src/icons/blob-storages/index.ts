@@ -1,5 +1,6 @@
 import type { BlobStorage } from "~/types";
 import type { RenderableIcon } from "~/types/icons";
+import archiveBox from "./archive-box.svg";
 import google from "./google.svg";
 import postgres from "./postgres.svg";
 import s3 from "./s3.svg";
@@ -12,6 +13,7 @@ export const ICONS: BlobStorageSVGRegistry = {
   google,
   postgres,
   s3,
+  sftp: archiveBox,
   swarm,
   swarmycloud: swarm,
   weavevm,

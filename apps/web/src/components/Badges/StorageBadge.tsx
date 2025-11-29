@@ -48,6 +48,11 @@ export const STORAGES: Record<BlobStorage, StorageConfig> = {
     style:
       "bg-yellow-100 hover:bg-yellow-200 text-yellow-800 hover:text-yellow-900 dark:bg-yellow-900 dark:text-yellow-300 dark:hover:bg-yellow-800 dark:hover:text-yellow-200",
   },
+  sftp: {
+    name: "Blobscan Archive",
+    style:
+      "bg-emerald-100 hover:bg-emerald-200 text-emerald-800 hover:text-emerald-900 dark:bg-emerald-900 dark:text-emerald-300 dark:hover:bg-emerald-800 dark:hover:text-emerald-200",
+  },
 };
 
 export const StorageBadge: FC<StorageBadgeProps> = ({

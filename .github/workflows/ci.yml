@@ -119,6 +119,13 @@ jobs:
           COM_ADOBE_TESTING_S3MOCK_STORE_REGION: us-east-1
         ports:
           - 9090:9090
+      sftp:
+        image: atmoz/sftp:latest
+        ports:
+          - 2222:22
+        env:
+          SFTP_USERS: blobscan:supersecret:::upload
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

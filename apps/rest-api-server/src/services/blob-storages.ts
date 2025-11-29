@@ -3,6 +3,7 @@ import {
   GoogleStorage,
   PostgresStorage,
   S3Storage,
+  SftpStorage,
   SwarmStorage,
   SwarmyCloudStorage,
   WeaveVMStorage,
@@ -43,6 +44,27 @@ export async function createStorageFromEnv(
         secretAccessKey: env.S3_STORAGE_SECRET_ACCESS_KEY,
         endpoint: env.S3_STORAGE_ENDPOINT,
         forcePathStyle: env.S3_STORAGE_FORCE_PATH_STYLE,
+      });
+    }
+    case BlobStorageName.SFTP: {
+      if (
+        !env.SFTP_STORAGE_HOST ||
+        !env.SFTP_STORAGE_USERNAME ||
+        !env.SFTP_STORAGE_PATH
+      ) {
+        throw new Error(
+          "Missing required env variables for SftpStorage: SFTP_STORAGE_HOST, SFTP_STORAGE_USERNAME, SFTP_STORAGE_PATH"
+        );
+      }
+
+      return SftpStorage.create({
+        chainId,
+        host: env.SFTP_STORAGE_HOST,
+        port: env.SFTP_STORAGE_PORT,
+        username: env.SFTP_STORAGE_USERNAME,
+        password: env.SFTP_STORAGE_PASSWORD,
+        privateKey: env.SFTP_STORAGE_PRIVATE_KEY,
+        path: env.SFTP_STORAGE_PATH,
       });
     }
     case BlobStorageName.GOOGLE: {

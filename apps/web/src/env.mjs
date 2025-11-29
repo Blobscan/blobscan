@@ -64,6 +64,7 @@ export const env = createEnv({
     GOOGLE_STORAGE_API_ENDPOINT: z.string().url().optional(),
     S3_STORAGE_BUCKET_NAME: z.string().optional(),
     S3_STORAGE_ENDPOINT: z.string().url().optional(),
+    SFTP_STORAGE_API_BASE_URL: z.string().url().optional(),
     WEAVEVM_STORAGE_API_BASE_URL: z.string().optional(),
 
     ...clientEnvVars,
@@ -95,6 +96,7 @@ export const env = createEnv({
     GOOGLE_STORAGE_BUCKET_NAME: process.env.GOOGLE_STORAGE_BUCKET_NAME,
     S3_STORAGE_BUCKET_NAME: process.env.S3_STORAGE_BUCKET_NAME,
     S3_STORAGE_ENDPOINT: process.env.S3_STORAGE_ENDPOINT,
+    SFTP_STORAGE_API_BASE_URL: process.env.SFTP_STORAGE_API_BASE_URL,
     WEAVEVM_STORAGE_API_BASE_URL: process.env.WEAVEVM_STORAGE_API_BASE_URL,
 
     PUBLIC_BEACON_BASE_URL: process.env.PUBLIC_BEACON_BASE_URL,

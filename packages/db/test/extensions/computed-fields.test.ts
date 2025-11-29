@@ -30,6 +30,9 @@ describe("Computed Fields Extension", () => {
           apiBaseUrl: env.S3_STORAGE_ENDPOINT,
           bucketName: env.S3_STORAGE_BUCKET_NAME,
         },
+        sftp: {
+          apiBaseUrl: env.SFTP_STORAGE_API_BASE_URL,
+        },
       },
     },
   });
@@ -122,10 +125,24 @@ describe("Computed Fields Extension", () => {
         );
       });
 
+      it("should return the correct sftp url", async () => {
+        const { dataReference, url } =
+          await prisma.blobDataStorageReference.findFirstOrThrow({
+            where: {
+              blobStorage: "SFTP",
+            },
+          });
+
+        expect(url).toBe(
+          `${env.SFTP_STORAGE_API_BASE_URL}/blobs/${dataReference}/data`
+        );
+      });
+
       test.each<[BlobStorage, string]>([
         ["GOOGLE", "bucket name"],
         ["POSTGRES", "api base url"],
         ["S3", "api base url or bucket name"],
+        ["SFTP", "api base url"],
         ["WEAVEVM", "api base url"],
       ])(
         "should fail when returning a %s url without a configured %s",

@@ -58,6 +58,15 @@ services:
       - COM_ADOBE_TESTING_S3MOCK_STORE_REGION=us-east-1
     ports:
       - 9090:9090
+
+  sftp:
+    image: atmoz/sftp:latest
+    ports:
+      - 2222:22
+    volumes:
+      - sftp_data:/home/blobscan
+    environment:
+      - SFTP_USERS=blobscan:supersecret:::upload
   redis:
     image: "redis:alpine"
     command: redis-server /usr/local/etc/redis/redis.conf
@@ -80,3 +89,4 @@ services:
 volumes:
   postgres-data:
   gcs_data:
+  sftp_data:
