@@ -124,7 +124,7 @@ jobs:
         ports:
           - 2222:22
         env:
-          SFTP_USERS: blobscan::1001:1001:upload
+          SFTP_USERS: blobscan:supersecret:::upload
 
     runs-on: ubuntu-latest
     steps:

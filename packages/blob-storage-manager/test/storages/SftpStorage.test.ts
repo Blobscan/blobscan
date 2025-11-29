@@ -17,10 +17,12 @@ import { SftpStorage } from "../../src";
 if (
   !env.SFTP_STORAGE_HOST ||
   !env.SFTP_STORAGE_USERNAME ||
-  !env.SFTP_STORAGE_PATH
+  !env.SFTP_STORAGE_PASSWORD ||
+  !env.SFTP_STORAGE_PATH ||
+  !env.SFTP_STORAGE_PORT
 ) {
   throw new Error(
-    "SFTP_STORAGE_HOST, SFTP_STORAGE_USERNAME, and SFTP_STORAGE_PATH are required"
+    "SFTP_STORAGE_HOST, SFTP_STORAGE_USERNAME, SFTP_STORAGE_PASSWORD, SFTP_STORAGE_PATH, and SFTP_STORAGE_PORT are required"
   );
 }
 
@@ -30,22 +32,11 @@ const SFTP_STORAGE_CONFIG: SftpStorageConfig = {
   port: env.SFTP_STORAGE_PORT,
   username: env.SFTP_STORAGE_USERNAME,
   password: env.SFTP_STORAGE_PASSWORD,
-  privateKey: env.SFTP_STORAGE_PRIVATE_KEY,
   path: env.SFTP_STORAGE_PATH,
 };
 
 class SftpStorageMock extends SftpStorage {
   constructor(config?: SftpStorageConfig) {
-    if (
-      !env.SFTP_STORAGE_HOST ||
-      !env.SFTP_STORAGE_USERNAME ||
-      !env.SFTP_STORAGE_PATH
-    ) {
-      throw new Error(
-        "SFTP_STORAGE_HOST, SFTP_STORAGE_USERNAME, and SFTP_STORAGE_PATH are required"
-      );
-    }
-
     super(config ?? SFTP_STORAGE_CONFIG);
   }
 
