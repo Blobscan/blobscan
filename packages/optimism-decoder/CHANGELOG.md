@@ -1,5 +1,12 @@
 # @blobscan/optimism-decoder
 
+## 0.1.18
+
+### Patch Changes
+
+- Updated dependencies [[`39540a7`](https://github.com/Blobscan/blobscan/commit/39540a73b77909f113b4086c513c93655f91b074)]:
+  - @blobscan/db@0.25.1
+
 ## 0.1.17
 
 ### Patch Changes

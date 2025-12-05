@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.25.1
+
+### Patch Changes
+
+- [#929](https://github.com/Blobscan/blobscan/pull/929) [`39540a7`](https://github.com/Blobscan/blobscan/commit/39540a73b77909f113b4086c513c93655f91b074) Thanks [@PJColombo](https://github.com/PJColombo)! - Corrected the calculation of the block’s blob gas base fee in USD
+
 ## 0.25.0
 
 ### Minor Changes
