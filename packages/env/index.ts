@@ -39,7 +39,6 @@ export const blobStorageCoercionSchema = z.string().transform((value, ctx) => {
 
 const networkSchema = z.enum([
   "mainnet",
-  "holesky",
   "hoodi",
   "sepolia",
   "gnosis",

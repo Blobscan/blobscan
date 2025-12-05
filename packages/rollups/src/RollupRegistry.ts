@@ -1,7 +1,6 @@
 import type { Rollup } from "@blobscan/db/prisma/enums";
 
 import { GNOSIS_REGISTRY } from "./blob-posters/gnosis";
-import { HOLESKY_REGISTRY } from "./blob-posters/holesky";
 import { HOODI_REGISTRY } from "./blob-posters/hoodi";
 import { MAINNET_REGISTRY } from "./blob-posters/mainnet";
 import { SEPOLIA_REGISTRY } from "./blob-posters/sepolia";
@@ -18,8 +17,6 @@ export class RollupRegistry {
     switch (chainId) {
       case 1:
         return new RollupRegistry(MAINNET_REGISTRY);
-      case 167004:
-        return new RollupRegistry(HOLESKY_REGISTRY);
       case 11155111:
         return new RollupRegistry(SEPOLIA_REGISTRY);
       case 560048:
