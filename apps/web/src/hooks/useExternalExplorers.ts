@@ -30,7 +30,6 @@ export const useExternalExplorers = function (type: ExplorerType) {
           urls: {
             devnet: customExplorerUrl,
             gnosis: customExplorerUrl,
-            holesky: customExplorerUrl,
             hoodi: customExplorerUrl,
             mainnet: customExplorerUrl,
             sepolia: customExplorerUrl,

@@ -9,8 +9,6 @@ export function getChainIdByName(chainName: string): number | undefined {
   switch (chainName) {
     case "mainnet":
       return 1;
-    case "holesky":
-      return 17000;
     case "hoodi":
       return 560048;
     case "sepolia":

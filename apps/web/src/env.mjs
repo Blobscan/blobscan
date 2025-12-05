@@ -3,7 +3,6 @@ import { z } from "zod";
 
 export const networkSchema = z.enum([
   "mainnet",
-  "holesky",
   "hoodi",
   "sepolia",
   "gnosis",

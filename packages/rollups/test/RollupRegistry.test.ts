@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import { RollupRegistry } from "../src";
 import { GNOSIS_REGISTRY } from "../src/blob-posters/gnosis";
-import { HOLESKY_REGISTRY } from "../src/blob-posters/holesky";
 import { HOODI_REGISTRY } from "../src/blob-posters/hoodi";
 import { MAINNET_REGISTRY } from "../src/blob-posters/mainnet";
 import { SEPOLIA_REGISTRY } from "../src/blob-posters/sepolia";
@@ -19,11 +18,6 @@ describe("RollupRegistry", () => {
     it("should create a rollup registry for sepolia", () => {
       const rollupRegistry = RollupRegistry.create(11155111);
       expect(rollupRegistry.registry).toEqual(SEPOLIA_REGISTRY);
-    });
-
-    it("should create a rollup registry for holesky", () => {
-      const rollupRegistry = RollupRegistry.create(167004);
-      expect(rollupRegistry.registry).toEqual(HOLESKY_REGISTRY);
     });
 
     it("should create a rollup registry for hoodi", () => {

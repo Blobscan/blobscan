@@ -21,7 +21,6 @@ export const EXTERNAL_EXECUTION_EXPLORERS: ExternalExplorer[] = [
     urls: {
       mainnet: "https://eth.blockscout.com",
       gnosis: "https://gnosis.blockscout.com",
-      holesky: "https://eth-holesky.blockscout.com",
       hoodi: "https://eth-hoodi.blockscout.com",
       sepolia: "https://eth-sepolia.blockscout.com",
       devnet: "https://eth.blockscout.com",
@@ -36,7 +35,6 @@ export const EXTERNAL_CONSENSUS_EXPLORERS: ExternalExplorer[] = [
     urls: {
       mainnet: "https://beaconcha.in",
       gnosis: "https://gnosischa.in",
-      holesky: "https://light-holesky.beaconcha.in",
       hoodi: "https://hoodi.beaconcha.in",
       sepolia: "https://light-sepolia.beaconcha.in",
       devnet: "https://eth.blockscout.com",
@@ -67,12 +65,6 @@ export const BLOBSCAN_EXPLORERS: {
     label: "Hoodi Testnet",
     url: "https://hoodi.blobscan.com",
     apiUrl: "https://api.hoodi.blobscan.com",
-  },
-  {
-    id: "holesky",
-    label: "Holesky Testnet",
-    url: "https://holesky.blobscan.com",
-    apiUrl: "https://api.holesky.blobscan.com",
   },
   {
     id: "sepolia",
