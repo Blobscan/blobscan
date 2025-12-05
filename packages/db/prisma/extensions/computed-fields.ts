@@ -223,14 +223,16 @@ export const createComputedFieldsExtension = ({
               compute({ blobGasPrice, blobGasBaseFee }) {
                 return (ethUsdPrice: EthUsdPrice["price"]) => {
                   const weiUsdPrice = calculateWeiUsdPrice(ethUsdPrice);
-                  const blobGasUsdPrice = weiUsdPrice.mul(blobGasPrice);
-                  const blobGasBaseUsdFee = blobGasUsdPrice
+                  const blobGasUsdPrice = weiUsdPrice
+                    .mul(blobGasPrice)
+                    .toFixed();
+                  const blobGasBaseUsdFee = weiUsdPrice
                     .mul(blobGasBaseFee)
                     .toFixed();
 
                   return {
                     blobGasBaseUsdFee,
-                    blobGasUsdPrice: blobGasUsdPrice.toFixed(),
+                    blobGasUsdPrice,
                   };
                 };
               },
