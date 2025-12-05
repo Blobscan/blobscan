@@ -162,10 +162,7 @@ describe("Computed Fields Extension", () => {
       const usdFields = block.computeUsdFields(ethUsdPrice);
 
       const expectedUsdFields = {
-        blobGasBaseUsdFee: weiUsdPrice
-          .mul(block.blobGasPrice)
-          .mul(block.blobGasBaseFee)
-          .toFixed(),
+        blobGasBaseUsdFee: weiUsdPrice.mul(block.blobGasBaseFee).toFixed(),
         blobGasUsdPrice: weiUsdPrice.mul(block.blobGasPrice).toFixed(),
       };
 
