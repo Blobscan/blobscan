@@ -281,7 +281,7 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.25.0
+        specifier: workspace:^0.25.1
         version: link:../../packages/db
       '@blobscan/eth-format':
         specifier: workspace:^0.1.0

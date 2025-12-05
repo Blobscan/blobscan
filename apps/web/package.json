@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/web",
-  "version": "0.44.0",
+  "version": "0.44.1",
   "private": true,
   "scripts": {
     "analyze": "ANALYZE=true pnpm with-env next build",
@@ -20,7 +20,7 @@
     "@blobscan/chains": "workspace:^0.4.0",
     "@blobscan/dates": "workspace:*",
     "@blobscan/dayjs": "workspace:^0.1.0",
-    "@blobscan/db": "workspace:^0.25.0",
+    "@blobscan/db": "workspace:^0.25.1",
     "@blobscan/eth-format": "workspace:^0.1.0",
     "@blobscan/open-telemetry": "workspace:^0.0.10",
     "@blobscan/rollups": "workspace:^0.4.0",
