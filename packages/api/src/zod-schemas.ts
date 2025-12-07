@@ -157,7 +157,7 @@ export const baseBlobSchema = prismaBlobSchema.extend({
   dataStorageReferences: z.array(
     z.object({
       storage: blobStorageSchema,
-      url: z.string().url(),
+      url: z.string().url().optional(),
     })
   ),
 });
