@@ -14,8 +14,8 @@ export const mainnet = new Chain(
       activationSlot: 11_649_024,
     },
     bpo1: {
-      activationDate: new Date("2025-12-17T13:29:59Z"),
-      activationSlot: 13_262_848,
+      activationDate: new Date("2025-12-09T14:21:11Z"),
+      activationSlot: 13_205_504,
     },
     bpo2: {
       activationDate: new Date("2026-01-07T01:01:11Z"),
