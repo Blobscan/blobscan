@@ -1,5 +1,11 @@
 # @blobscan/chains
 
+## 0.4.1
+
+### Patch Changes
+
+- [#932](https://github.com/Blobscan/blobscan/pull/932) [`225a37e`](https://github.com/Blobscan/blobscan/commit/225a37e82a2188cf4a98be1120800a131bf91935) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed mainnet bpo1 activation date
+
 ## 0.4.0
 
 ### Minor Changes

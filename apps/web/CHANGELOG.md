@@ -1,5 +1,16 @@
 # @blobscan/web
 
+## 0.45.0
+
+### Minor Changes
+
+- [`01658aa`](https://github.com/Blobscan/blobscan/commit/01658aae1fca42d79e6bde4ea3635351678bdca1) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Update dependencies
+
+### Patch Changes
+
+- Updated dependencies [[`225a37e`](https://github.com/Blobscan/blobscan/commit/225a37e82a2188cf4a98be1120800a131bf91935)]:
+  - @blobscan/chains@0.4.1
+
 ## 0.44.1
 
 ### Patch Changes

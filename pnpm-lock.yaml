@@ -115,7 +115,7 @@ importers:
         version: 0.5.13(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@24.10.1)(typescript@5.5.3)))
       autoprefixer:
         specifier: ^10.4.14
-        version: 10.4.19(postcss@8.4.39)
+        version: 10.4.19(postcss@8.4.38)
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
@@ -272,7 +272,7 @@ importers:
         specifier: workspace:^0.2.2
         version: link:../../packages/blob-decoder
       '@blobscan/chains':
-        specifier: workspace:^0.4.0
+        specifier: workspace:^0.4.1
         version: link:../../packages/chains
       '@blobscan/dates':
         specifier: workspace:*
@@ -3779,9 +3779,6 @@ packages:
 
   '@types/eslint@8.56.10':
     resolution: {integrity: sha512-Shavhk87gCtY2fhXDctcfS3e6FdxWkCx1iUZ9eEUbh7rTqlZT0/IzOkCOVt0fCjcFuZ9FPYfuezTBImfHCDBGQ==}
-
-  '@types/eslint@9.6.1':
-    resolution: {integrity: sha512-FXx2pKgId/WyYo2jXw63kk7/+TY7u7AziEJxJAnSFzHlqTAS3Ync6SvgYAN/k4/PQpnnVuzoMuVnByKK2qp0ag==}
 
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
@@ -11739,7 +11736,7 @@ snapshots:
 
   '@types/eslint-scope@3.7.7':
     dependencies:
-      '@types/eslint': 9.6.1
+      '@types/eslint': 8.56.10
       '@types/estree': 1.0.8
     optional: true
 
@@ -11747,12 +11744,6 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.5
       '@types/json-schema': 7.0.15
-
-  '@types/eslint@9.6.1':
-    dependencies:
-      '@types/estree': 1.0.8
-      '@types/json-schema': 7.0.15
-    optional: true
 
   '@types/estree@1.0.5': {}
 
@@ -12400,6 +12391,16 @@ snapshots:
   async@3.2.6: {}
 
   asynckit@0.4.0: {}
+
+  autoprefixer@10.4.19(postcss@8.4.38):
+    dependencies:
+      browserslist: 4.23.0
+      caniuse-lite: 1.0.30001614
+      fraction.js: 4.3.7
+      normalize-range: 0.1.2
+      picocolors: 1.0.0
+      postcss: 8.4.38
+      postcss-value-parser: 4.2.0
 
   autoprefixer@10.4.19(postcss@8.4.39):
     dependencies:
@@ -14335,7 +14336,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 24.10.1
+      '@types/node': 22.15.18
       merge-stream: 2.0.0
       supports-color: 8.1.1
     optional: true
