@@ -114,10 +114,9 @@ export const createComputedFieldsExtension = ({
                 switch (blobStorage) {
                   case "GOOGLE": {
                     if (!gcs?.bucketName) {
-                      throw new Error(
-                        "Couldn't compute gcs blob data url field: bucket name not provided"
-                      );
+                      return;
                     }
+
                     return process.env.MODE === "test"
                       ? `${
                           gcs.apiBaseUrl ?? "http://localhost:4443"
@@ -128,9 +127,7 @@ export const createComputedFieldsExtension = ({
                   }
                   case "POSTGRES": {
                     if (!postgres?.apiBaseUrl) {
-                      throw new Error(
-                        "Couldn't compute postgres blob data url field: api base url not provided"
-                      );
+                      return;
                     }
 
                     return `${postgres.apiBaseUrl}/blobs/${dataReference}/data`;
@@ -140,17 +137,13 @@ export const createComputedFieldsExtension = ({
                     return `https://api.gateway.ethswarm.org/bzz/${dataReference}`;
                   case "WEAVEVM": {
                     if (!loadNetwork?.apiBaseUrl) {
-                      throw new Error(
-                        "Couldn't compute load network blob data url field: api base url not provided"
-                      );
+                      return;
                     }
                     return `${loadNetwork.apiBaseUrl}/v1/blob/${dataReference}`;
                   }
                   case "S3": {
                     if (!s3?.apiBaseUrl || !s3.bucketName) {
-                      throw new Error(
-                        "Couldn't compute load network blob data url field: api base url or bucket name not provided"
-                      );
+                      return;
                     }
                     return `${s3.apiBaseUrl}/${s3.bucketName}/${dataReference}`;
                   }

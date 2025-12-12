@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { beforeEach, describe, expect, it, test } from "vitest";
 
-import { assertError, env } from "@blobscan/test";
+import { env } from "@blobscan/test";
 
 import { getPrisma } from "../../prisma";
 import type { BlobStorage } from "../../prisma/enums";
@@ -128,20 +128,18 @@ describe("Computed Fields Extension", () => {
         ["S3", "api base url or bucket name"],
         ["WEAVEVM", "api base url"],
       ])(
-        "should fail when returning a %s url without a configured %s",
+        "should return undefined when returning a %s url without a configured %s",
         async (storage, _) => {
-          await assertError(async () => {
-            const ref =
-              await prismaWithoutParams.blobDataStorageReference.findFirstOrThrow(
-                {
-                  where: {
-                    blobStorage: storage,
-                  },
-                }
-              );
+          const ref =
+            await prismaWithoutParams.blobDataStorageReference.findFirstOrThrow(
+              {
+                where: {
+                  blobStorage: storage,
+                },
+              }
+            );
 
-            return ref.url;
-          }, Error);
+          expect(ref.url).toBeUndefined();
         }
       );
     });

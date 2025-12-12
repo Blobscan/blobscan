@@ -12,7 +12,7 @@ import { Badge } from "./Badge";
 type StorageBadgeProps = BadgeProps & {
   compact?: boolean;
   storage: BlobStorage;
-  url: string;
+  url?: string;
 };
 
 type StorageConfig = {
@@ -53,7 +53,7 @@ export const STORAGES: Record<BlobStorage, StorageConfig> = {
 export const StorageBadge: FC<StorageBadgeProps> = ({
   compact = false,
   storage,
-  url,
+  url = "#",
   ...props
 }) => {
   const { name = capitalize(storage), style } = STORAGES[storage];

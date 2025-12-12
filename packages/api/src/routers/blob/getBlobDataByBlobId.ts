@@ -74,6 +74,10 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
 
       for (const { blobStorage, dataReference, url } of storageUrls) {
         try {
+          if (!url) {
+            continue;
+          }
+
           const isBinaryFile =
             url.includes(".bin") || blobStorage === "POSTGRES";
 
