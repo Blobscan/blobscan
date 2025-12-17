@@ -1,6 +1,6 @@
 # @blobscan/blob-storage-manager
 
-## 1.0.0
+## 0.8.3
 
 ### Patch Changes
 
