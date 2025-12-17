@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/auth",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "private": true,
   "main": "./index.ts",
   "types": "./index.ts",
@@ -12,7 +12,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@blobscan/db": "workspace:^0.25.0",
+    "@blobscan/db": "workspace:^0.26.0",
     "@next-auth/prisma-adapter": "^1.0.5",
     "next": "^14.2.30",
     "next-auth": "^4.21.1",
