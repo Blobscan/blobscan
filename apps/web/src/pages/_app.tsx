@@ -75,19 +75,22 @@ function App({ Component, pageProps }: NextAppProps) {
   }, [router.events]);
 
   useEffect(() => {
+    if (!env?.PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL) {
+      return;
+    }
+
     const _mtm = (window._mtm = window._mtm || []);
     _mtm.push({ "mtm.startTime": new Date().getTime(), event: "mtm.Start" });
     const d = document,
       g = d.createElement("script"),
       s = d.getElementsByTagName("script")[0];
     g.async = true;
-    g.src =
-      "https://cdn.matomo.cloud/blobscan.matomo.cloud/container_jlmw3LAz.js";
+    g.src = env.PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL;
 
     if (s) {
       s.parentNode?.insertBefore(g, s);
     }
-  }, []);
+  }, [env?.PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL]);
 
   if (!isMounted) {
     return null;

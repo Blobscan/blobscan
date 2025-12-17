@@ -31,6 +31,7 @@ const clientEnvVars = {
   PUBLIC_POSTHOG_ID: z.string().optional(),
   PUBLIC_POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
   PUBLIC_VERCEL_ANALYTICS_ENABLED: booleanSchema.default("false"),
+  PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL: z.string().url().optional(),
 };
 
 export const clientEnvVarsSchema = z.object(clientEnvVars);
@@ -88,6 +89,9 @@ export const env = createEnv({
     OTEL_DIAG_ENABLED: process.env.OTEL_DIAG_ENABLED,
     OTLP_AUTH_USERNAME: process.env.OTLP_AUTH_USERNAME,
     OTLP_AUTH_PASSWORD: process.env.OTLP_AUTH_PASSWORD,
+
+    PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL:
+      process.env.PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL,
 
     BLOBSCAN_API_BASE_URL: process.env.BLOBSCAN_API_BASE_URL,
     GOOGLE_STORAGE_API_ENDPOINT: process.env.GOOGLE_STORAGE_API_ENDPOINT,
