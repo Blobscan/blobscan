@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.26.0
+
+### Minor Changes
+
+- [#933](https://github.com/Blobscan/blobscan/pull/933) [`fea097f`](https://github.com/Blobscan/blobscan/commit/fea097f1ba88dae6639a93f975a19dea7ce16107) Thanks [@PJColombo](https://github.com/PJColombo)! - Made blob data storage reference computed field `url` optional
+
 ## 0.25.1
 
 ### Patch Changes

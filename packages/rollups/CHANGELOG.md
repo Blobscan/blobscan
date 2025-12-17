@@ -1,5 +1,12 @@
 # @blobscan/rollups
 
+## 1.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`fea097f`](https://github.com/Blobscan/blobscan/commit/fea097f1ba88dae6639a93f975a19dea7ce16107)]:
+  - @blobscan/db@0.26.0
+
 ## 0.4.0
 
 ### Minor Changes
