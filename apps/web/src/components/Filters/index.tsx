@@ -4,18 +4,17 @@ import { useRouter } from "next/router";
 import type { DateRangeType } from "react-tailwindcss-datepicker";
 import type { UrlObject } from "url";
 
-import { Category } from "@blobscan/db/prisma/enums";
-
 import { Button } from "~/components/Button";
 import type { Sort } from "~/hooks/useQueryParams";
 import {
   MULTIPLE_VALUES_SEPARATOR,
   useQueryParams,
 } from "~/hooks/useQueryParams";
+import type { Category } from "~/types";
 import { capitalize, getISODate } from "~/utils";
 import { Card } from "../Cards/Card";
-import { Dropdown } from "../Dropdown";
 import type { Option } from "../Dropdown";
+import { Listbox } from "../Dropdowns";
 import type { NumberRange } from "../Inputs/NumberRangeInput";
 import { BlockNumberFilter } from "./BlockNumberFilter";
 import { RollupFilter } from "./RollupFilter";
@@ -24,7 +23,7 @@ import { SlotFilter } from "./SlotFilter";
 import { SortToggle } from "./SortToggle";
 import { TimestampFilter } from "./TimestampFilter";
 
-type CategoryOption = Option<string>;
+type CategoryOption = Option<Category>;
 
 type FiltersState = {
   rollups: RollupOption[] | null;
@@ -50,8 +49,8 @@ type FiltersAction<V extends keyof FiltersState> =
   | UpdateAction;
 
 const CATEGORY_FILTER_OPTIONS: CategoryOption[] = [
-  { value: Category.ROLLUP.toLowerCase(), label: capitalize(Category.ROLLUP) },
-  { value: Category.OTHER.toLowerCase(), label: capitalize(Category.OTHER) },
+  { value: "rollup", label: "Rollup" },
+  { value: "other", label: "Other" },
 ];
 
 const INIT_STATE: FiltersState = {
@@ -229,17 +228,16 @@ export const Filters: FC = function () {
                 dispatch({ type: "UPDATE", payload: { sort: newSort } });
               }}
             />
-            <div className="w-full md:min-w-[6.5rem]">
-              <Dropdown
+            <div className="w-32">
+              <Listbox
                 options={CATEGORY_FILTER_OPTIONS}
                 selected={filters.category}
-                width="w-full"
                 onChange={(newCategory) => {
                   const newFilters: Partial<FiltersState> = {
                     category: newCategory,
                   };
 
-                  if (newCategory?.value === Category.OTHER.toLowerCase()) {
+                  if (newCategory?.value === "other") {
                     newFilters.rollups = [];
                   }
 
@@ -249,17 +247,14 @@ export const Filters: FC = function () {
                   });
                 }}
                 placeholder="Category"
-                clearable
+                nullable
               />
             </div>
 
-            <div className="w-[120px] min-[440px]:w-[180px] min-[540px]:w-[260px] min-[580px]:w-[280px] sm:w-[170px] md:w-[110px] lg:w-[180px] xl:w-[200px]">
+            <div className="w-48">
               <RollupFilter
                 selected={filters.rollups}
-                disabled={
-                  filters.category?.value.toString().toUpperCase() !==
-                  Category.ROLLUP
-                }
+                disabled={filters.category?.value !== "rollup"}
                 onChange={handleRollupChange}
               />
             </div>
