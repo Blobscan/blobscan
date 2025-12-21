@@ -25,7 +25,7 @@ export const Scrollable: FC<ScrollableProps> = function ({
     <a.div
       ref={containerRef}
       className={classNames({
-        "pb-1 pr-1 transition-colors dark:[&::-webkit-scrollbar-corner]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-primary-800 dark:hover:[&::-webkit-scrollbar-thumb]:bg-accentHighlight-dark/60 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 dark:[&::-webkit-scrollbar-track]:bg-surface-dark/60 [&::-webkit-scrollbar]:max-h-1.5 [&::-webkit-scrollbar]:max-w-1.5":
+        "pr-1 transition-colors dark:[&::-webkit-scrollbar-corner]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-primary-800 dark:hover:[&::-webkit-scrollbar-thumb]:bg-accentHighlight-dark/60 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 dark:[&::-webkit-scrollbar-track]:bg-surface-dark/60 [&::-webkit-scrollbar]:max-h-1.5 [&::-webkit-scrollbar]:max-w-1.5":
           displayScrollbar,
         "[&::-webkit-scrollbar]:hidden": !displayScrollbar,
       })}
