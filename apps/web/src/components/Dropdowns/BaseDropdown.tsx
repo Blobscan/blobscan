@@ -68,15 +68,13 @@ export interface DropdownLayoutProps {
   onClear?(): void;
 }
 
-export function DropdownLayout({
-  as,
-  disabled,
-  toggleAs,
-  children,
-  optionsPanel,
-  showClear,
-  onClear,
-}: DropdownLayoutProps) {
+export const DropdownLayout = React.forwardRef<
+  HTMLDivElement,
+  DropdownLayoutProps
+>(function DropdownLayout(
+  { as, disabled, toggleAs, children, optionsPanel, showClear, onClear },
+  forwardedRef
+) {
   const WrapperComponent = as ?? "div";
   const ToggleComponent = toggleAs ?? "div";
 
@@ -96,7 +94,7 @@ export function DropdownLayout({
           "ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:ui-open:border-controlActive-dark"
         )}
       >
-        <Scrollable>{children}</Scrollable>
+        <Scrollable ref={forwardedRef}>{children}</Scrollable>
         <div className="ml-1 flex items-center gap-1">
           {showClear && (
             <IconButton
@@ -141,8 +139,7 @@ export function DropdownLayout({
       </Transition>
     </div>
   );
-}
-
+});
 export interface OptionLayoutProps<T extends TValue> {
   option: Option<T>;
   selected?: boolean;
