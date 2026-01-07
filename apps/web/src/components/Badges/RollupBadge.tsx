@@ -3,7 +3,6 @@ import React from "react";
 import { ICONS } from "~/icons/rollups";
 import { ROLLUP_STYLES } from "~/rollups";
 import type { Rollup } from "~/types";
-import { capitalize } from "~/utils";
 import { Icon } from "../Icon";
 import type { BadgeProps } from "./Badge";
 import { Badge } from "./Badge";
