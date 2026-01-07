@@ -38,30 +38,71 @@ export function Combobox<
   placeholder,
 }: ComboboxProps<T, M, N>) {
   const [query, setQuery] = useState("");
-  const [activeTagIndex, setActiveTagIndex] = useState<number | null>(null);
+  const [activeOptionIndex, setActiveOptionIndex] = useState<number | null>(
+    null
+  );
   const comboboxRef = useRef<HTMLDivElement | null>(null);
   const selectedOptRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const optionSelected = Array.isArray(selected)
+  const optionOrOptionsSelected = Array.isArray(selected)
     ? selected.length > 0
     : !!selected;
-  const displayInput = multiple || !optionSelected;
+  const displayInput = multiple || !optionOrOptionsSelected;
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const optionsRef = useRef<HTMLDivElement | null>(null);
+
+  function scrollToInput({
+    scrollBehavior = "instant",
+  }: {
+    scrollBehavior?: "smooth" | "instant";
+  } = {}) {
+    requestAnimationFrame(() => {
+      const container = containerRef.current;
+      const input = inputRef.current;
+      const optionsContainer = optionsRef.current;
+      if (!container || !input || !optionsContainer) return;
+
+      const inputRect = input.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+
+      input.focus();
+
+      const peekPx = containerRect.width / 2.5;
+      const padding = 20;
+      const isInputVisible =
+        inputRect.left > containerRect.left + padding &&
+        inputRect.left < containerRect.right - padding;
+
+      if (isInputVisible) {
+        return;
+      }
+
+      const selectedOptionsWidth = container.scrollWidth - input.scrollWidth;
+      const target = Math.max(0, selectedOptionsWidth - peekPx);
+
+      container.scrollTo({
+        left: target,
+        behavior: scrollBehavior,
+      });
+    });
+  }
 
   useEffect(() => {
-    if (activeTagIndex == null) return;
+    if (activeOptionIndex == null) return;
 
-    const tagRef = selectedOptRefs.current[activeTagIndex];
+    const selectedOptionRef = selectedOptRefs.current[activeOptionIndex];
 
-    if (!tagRef) {
+    if (!selectedOptionRef) {
       return;
     }
 
-    tagRef.focus();
-    tagRef.scrollIntoView({
+    selectedOptionRef.focus();
+    selectedOptionRef.scrollIntoView({
       inline: "center",
       block: "center",
     });
-  }, [activeTagIndex]);
+  }, [activeOptionIndex]);
 
   const filtered = useMemo(() => {
     const queryWords = query.trim().toLowerCase().split(" ");
@@ -88,6 +129,8 @@ export function Combobox<
       newOptions = null as SelectedOption<T, M, N>;
     }
 
+    scrollToInput({ scrollBehavior: "smooth" });
+
     onChange(newOptions);
   }
 
@@ -98,11 +141,8 @@ export function Combobox<
       onChange(null as SelectedOption<T, M, N>);
       return;
     }
-    inputRef.current?.focus();
-    inputRef.current?.scrollIntoView({
-      inline: "center",
-      block: "center",
-    });
+
+    scrollToInput({ scrollBehavior: "smooth" });
     onChange(newOptions);
   }
 
@@ -113,16 +153,6 @@ export function Combobox<
 
     onChange(newOption);
     setQuery("");
-  }
-
-  function focusInputToEnd() {
-    requestAnimationFrame(() => {
-      const el = inputRef.current;
-      if (!el) return;
-      el.focus();
-      const len = el.value.length;
-      el.setSelectionRange(len, len);
-    });
   }
 
   return (
@@ -141,8 +171,9 @@ export function Combobox<
       }}
     >
       <DropdownLayout
+        ref={containerRef}
         toggleAs={ComboboxButton}
-        showClear={Boolean(optionSelected && nullable)}
+        showClear={Boolean(optionOrOptionsSelected && nullable)}
         onClear={clearAll}
         disabled={disabled}
         optionsPanel={
@@ -171,94 +202,96 @@ export function Combobox<
           role="button"
           tabIndex={disabled ? -1 : 0}
           onMouseDown={() => {
-            inputRef.current?.focus();
+            scrollToInput();
           }}
           onBlur={() => {
-            setActiveTagIndex(null);
-            const tagRef = selectedOptRefs.current[0];
+            setActiveOptionIndex(null);
+            const firstSelectedOptionRef = selectedOptRefs.current[0];
 
-            if (!tagRef) {
+            if (!firstSelectedOptionRef) {
               return;
             }
 
-            tagRef.scrollIntoView({
+            firstSelectedOptionRef.scrollIntoView({
               inline: "center",
               block: "center",
             });
           }}
         >
           <div className="flex flex-row items-center gap-2">
-            {Array.isArray(selected)
-              ? selected?.map((opt, i) => (
-                  <button
-                    key={opt.value}
-                    ref={(el) => {
-                      selectedOptRefs.current[i] = el;
-                    }}
-                    type="button"
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      inputRef.current?.focus();
-                    }}
-                    onKeyDown={(e) => {
-                      switch (e.key) {
-                        case "ArrowLeft":
-                          e.preventDefault();
+            <div ref={optionsRef} className="flex flex-row items-center gap-2">
+              {Array.isArray(selected)
+                ? selected?.map((opt, i) => (
+                    <button
+                      key={opt.value}
+                      ref={(el) => {
+                        selectedOptRefs.current[i] = el;
+                      }}
+                      type="button"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        scrollToInput();
+                      }}
+                      onKeyDown={(e) => {
+                        switch (e.key) {
+                          case "ArrowLeft":
+                            e.preventDefault();
 
-                          setActiveTagIndex(Math.max(i - 1, 0));
-                          break;
-                        case "ArrowRight": {
-                          e.preventDefault();
+                            setActiveOptionIndex(Math.max(i - 1, 0));
+                            break;
+                          case "ArrowRight": {
+                            e.preventDefault();
 
-                          if (i < selected.length - 1) {
-                            setActiveTagIndex(i + 1);
-                          } else {
-                            setActiveTagIndex(null);
-                            focusInputToEnd();
-                          }
-                          break;
-                        }
-                        case "Backspace":
-                        case "Delete": {
-                          e.preventDefault();
-                          const removedIndex = i;
-                          const removed = Array.isArray(selected)
-                            ? selected[removedIndex]
-                            : selected;
-                          if (!removed) return;
-
-                          removeOption(removed as unknown as Option<T>);
-
-                          setTimeout(() => {
-                            if (
-                              selected.length === 1 ||
-                              removedIndex === selected.length - 1
-                            ) {
-                              focusInputToEnd();
-                              setActiveTagIndex(null);
-
-                              return;
+                            if (i < selected.length - 1) {
+                              setActiveOptionIndex(i + 1);
+                            } else {
+                              scrollToInput();
+                              setActiveOptionIndex(null);
                             }
+                            break;
+                          }
+                          case "Backspace":
+                          case "Delete": {
+                            e.preventDefault();
+                            const removedIndex = i;
+                            const removed = Array.isArray(selected)
+                              ? selected[removedIndex]
+                              : selected;
+                            if (!removed) return;
 
-                            setActiveTagIndex(removedIndex);
-                            selectedOptRefs.current[removedIndex]?.focus();
-                          }, 0);
+                            removeOption(removed as unknown as Option<T>);
 
-                          break;
+                            setTimeout(() => {
+                              if (
+                                selected.length === 1 ||
+                                removedIndex === selected.length - 1
+                              ) {
+                                scrollToInput();
+                                setActiveOptionIndex(null);
+
+                                return;
+                              }
+
+                              setActiveOptionIndex(removedIndex);
+                              selectedOptRefs.current[removedIndex]?.focus();
+                            }, 0);
+
+                            break;
+                          }
+                          default:
+                            scrollToInput();
+                            break;
                         }
-                        default:
-                          inputRef.current?.focus();
-                          break;
-                      }
-                    }}
-                    className={cn(
-                      "focus:rounded-lg focus:ring-2 focus:ring-indigo-500"
-                    )}
-                  >
-                    {opt.label}
-                  </button>
-                ))
-              : selected?.label}
+                      }}
+                      className={cn(
+                        "focus:rounded-lg focus:ring-2 focus:ring-indigo-500"
+                      )}
+                    >
+                      {opt.label}
+                    </button>
+                  ))
+                : selected?.label}
+            </div>
 
             {displayInput && (
               <ComboboxInput
@@ -276,7 +309,7 @@ export function Combobox<
                   setQuery(e.target.value);
                 }}
                 onFocus={() => {
-                  setActiveTagIndex(null);
+                  setActiveOptionIndex(null);
                 }}
                 onKeyDown={(e) => {
                   const el = e.currentTarget;
@@ -286,14 +319,14 @@ export function Combobox<
                   if (
                     e.key === "ArrowLeft" &&
                     caretAtStart &&
-                    optionSelected &&
+                    optionOrOptionsSelected &&
                     Array.isArray(selected)
                   ) {
                     e.preventDefault();
 
                     inputRef.current?.blur();
 
-                    setActiveTagIndex(selected.length - 1);
+                    setActiveOptionIndex(selected.length - 1);
 
                     return;
                   }
@@ -301,7 +334,7 @@ export function Combobox<
                   if (
                     e.key === "Backspace" &&
                     query.length === 0 &&
-                    optionSelected &&
+                    optionOrOptionsSelected &&
                     Array.isArray(selected)
                   ) {
                     e.preventDefault();
