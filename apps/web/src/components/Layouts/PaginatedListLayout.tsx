@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 
 import { Header } from "~/components/Header";
 import { Card } from "../Cards/Card";
-import { Dropdown } from "../Dropdown";
-import type { Option } from "../Dropdown";
+import type { Option } from "../Dropdowns";
+import { Listbox } from "../Dropdowns";
 import { Pagination } from "../Pagination";
 import type { PaginationProps } from "../Pagination";
 
@@ -120,10 +120,9 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
             <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
               <div className="flex items-center justify-start gap-2">
                 Displayed items:
-                <Dropdown
+                <Listbox
                   options={PAGE_SIZES_OPTIONS}
                   selected={{ value: pageSize }}
-                  width="w-full"
                   onChange={handlePageSizeSelection}
                 />
               </div>

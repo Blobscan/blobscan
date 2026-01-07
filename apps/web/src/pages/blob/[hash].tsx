@@ -20,8 +20,8 @@ import { Card } from "~/components/Cards/Card";
 import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { Copyable } from "~/components/Copyable";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
-import { Dropdown } from "~/components/Dropdown";
 import type { Option } from "~/components/Dropdown";
+import { Listbox } from "~/components/Dropdowns";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -324,7 +324,7 @@ const Blob: NextPage = function () {
                   <div className="text-sm font-normal text-contentSecondary-light dark:text-contentSecondary-dark">
                     View as:
                   </div>
-                  <Dropdown
+                  <Listbox
                     options={blobViewModesOptions}
                     selected={{
                       value: selectedBlobViewMode,

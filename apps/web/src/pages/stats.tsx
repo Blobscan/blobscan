@@ -22,8 +22,8 @@ import {
   DailyAvgBlobGasPriceChart,
 } from "~/components/Charts";
 import { convertStatsToChartSeries } from "~/components/Charts/helpers";
-import type { Option } from "~/components/Dropdown";
-import { Dropdown } from "~/components/Dropdown";
+import type { Option } from "~/components/Dropdowns";
+import { Listbox } from "~/components/Dropdowns";
 import { RollupFilter } from "~/components/Filters/RollupFilter";
 import type { RollupOption } from "~/components/Filters/RollupFilter";
 import { Header } from "~/components/Header";
@@ -440,25 +440,28 @@ const Stats: NextPage = function () {
       <Header>Stats Overview</Header>
       <Card>
         <div className="flex w-full flex-wrap items-center justify-start gap-4">
-          <Dropdown
-            width="w-48"
-            options={SECTION_OPTIONS}
-            selected={selectedSection}
-            onChange={(option) => {
-              setSelectedSection(option);
-            }}
-          />
-          <Dropdown
+          <div className="w-48">
+            <Listbox
+              options={SECTION_OPTIONS}
+              selected={selectedSection}
+              onChange={(option) => {
+                setSelectedSection(option);
+              }}
+            />
+          </div>
+          <Listbox
             options={TIME_FRAME_OPTIONS}
             selected={timeFrameOption}
             onChange={(option) => {
               setTimeFrameOption(option);
             }}
           />
-          <RollupFilter
-            selected={selectedRollups}
-            onChange={(newRollups) => setSelectedRollups(newRollups ?? [])}
-          />
+          <div className="w-64">
+            <RollupFilter
+              selected={selectedRollups}
+              onChange={(newRollups) => setSelectedRollups(newRollups ?? [])}
+            />
+          </div>
         </div>
       </Card>
       <div className="flex flex-col gap-4">

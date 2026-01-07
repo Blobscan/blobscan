@@ -3,7 +3,6 @@ import React from "react";
 import { ICONS } from "~/icons/rollups";
 import { ROLLUP_STYLES } from "~/rollups";
 import type { Rollup } from "~/types";
-import { capitalize } from "~/utils";
 import { Icon } from "../Icon";
 import type { BadgeProps } from "./Badge";
 import { Badge } from "./Badge";
@@ -20,11 +19,7 @@ export const RollupBadge: React.FC<RollupBadgeProps> = ({
   amount = 1,
   ...props
 }) => {
-  const {
-    badgeStyle,
-    iconStyle,
-    label = capitalize(rollup),
-  } = ROLLUP_STYLES[rollup];
+  const { badgeStyle, iconStyle, label } = ROLLUP_STYLES[rollup];
   const rollupIconSrc = ICONS[rollup];
   const rollupIcon = rollupIconSrc ? (
     <div className="relative">

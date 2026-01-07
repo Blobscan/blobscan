@@ -1,18 +1,18 @@
 import { useEffect, useMemo } from "react";
 import type { FC } from "react";
 
-import { Dropdown } from "~/components/Dropdown";
-import type { DropdownProps, Option } from "~/components/Dropdown";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import { useRollupRegistry } from "~/hooks/useRollupRegistry";
+import { ROLLUP_STYLES } from "~/rollups";
 import type { Rollup } from "~/types";
-import { capitalize } from "~/utils";
 import { RollupBadge } from "../Badges/RollupBadge";
+import type { ComboboxProps, Option } from "../Dropdowns";
+import { Combobox } from "../Dropdowns";
 
 export type RollupOption = Option<Rollup>;
 
 type RollupFilterProps = Pick<
-  DropdownProps<Rollup, true, true>,
+  ComboboxProps<Rollup, true, true>,
   "selected" | "disabled" | "onChange"
 >;
 
@@ -33,15 +33,10 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
       ([name]) =>
         ({
           value: name.toLowerCase() as Rollup,
-          selectedLabel: (
+          label: (
             <RollupBadge rollup={name.toLowerCase() as Rollup} size="sm" />
           ),
-          label: (
-            <div className="flex flex-row items-center gap-2">
-              <RollupBadge rollup={name.toLowerCase() as Rollup} compact />
-              <div>{capitalize(name)}</div>
-            </div>
-          ),
+          searchText: ROLLUP_STYLES[name.toLowerCase() as Rollup].label,
         } satisfies RollupOption)
     );
   }, [rollupRegistry]);
@@ -63,14 +58,13 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
   }, [rollupOptions, params?.rollups, onChange]);
 
   return (
-    <Dropdown
+    <Combobox
       selected={selected}
       options={rollupOptions}
       onChange={onChange}
       placeholder="Rollup"
-      width="w-[120px] min-[440px]:w-[180px] min-[540px]:w-[260px] min-[580px]:w-[280px] sm:w-[170px] md:w-[110px] lg:w-[180px] xl:w-[200px]"
       disabled={disabled}
-      clearable
+      nullable
       multiple
     />
   );

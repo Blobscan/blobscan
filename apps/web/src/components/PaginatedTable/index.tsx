@@ -4,13 +4,13 @@ import { useRouter } from "next/router";
 import Skeleton from "react-loading-skeleton";
 
 import { Card } from "~/components/Cards/Card";
-import { Dropdown } from "~/components/Dropdown";
-import type { Option } from "~/components/Dropdown";
 import type { PaginationProps } from "~/components/Pagination";
 import { Pagination } from "~/components/Pagination";
 import type { TableProps } from "~/components/Table";
 import { Table } from "~/components/Table";
 import type { Rollup } from "~/types";
+import type { Option } from "../Dropdowns";
+import { Listbox } from "../Dropdowns";
 
 const DEFAULT_TABLE_EMPTY_STATE = "No items";
 
@@ -148,10 +148,9 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
         <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
           <div className="flex items-center justify-start gap-2">
             Displayed items:
-            <Dropdown
+            <Listbox
               options={PAGE_SIZES_OPTIONS}
               selected={{ value: pageSize }}
-              width="w-full"
               onChange={handlePageSizeSelection}
             />
           </div>

@@ -3,14 +3,15 @@ import type { ReactNode } from "react";
 import {
   Listbox,
   ListboxButton,
+  ListboxOption,
   ListboxOptions,
   Transition,
 } from "@headlessui/react";
+import { CheckIcon } from "@heroicons/react/24/outline";
 import { ChevronUpDownIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import cn from "classnames";
 
 import { Scrollable } from "../Scrollable";
-import { Option } from "./Option";
 
 export interface Option<T> {
   value: T;
@@ -98,9 +99,7 @@ export function Dropdown<
                 <div className="flex flex-row items-center gap-1 align-middle">
                   {selected.map(({ selectedLabel, label }, i) => {
                     return (
-                      <Fragment key={i}>
-                        {selectedLabel ? selectedLabel : label}
-                      </Fragment>
+                      <Fragment key={i}>{selectedLabel ?? label}</Fragment>
                     );
                   })}
                 </div>
@@ -149,8 +148,26 @@ export function Dropdown<
           leaveTo="opacity-0"
         >
           <ListboxOptions className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-controlBackground-light py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-controlBackground-dark sm:text-sm">
-            {options.map((option, id) => (
-              <Option key={id} option={option} />
+            {options.map((opt) => (
+              <ListboxOption
+                key={String(opt.value)}
+                className={`relative cursor-pointer select-none px-4 py-2 text-contentSecondary-light hover:bg-controlActive-light data-[selected]:font-semibold data-[selected]:text-content-light dark:text-contentSecondary-dark  hover:dark:bg-controlActive-dark data-[selected]:dark:font-semibold data-[selected]:dark:text-content-dark`}
+                value={opt}
+              >
+                {({ selected }) => (
+                  <div
+                    className={cn("flex items-center justify-between gap-3")}
+                  >
+                    <div className="truncate text-sm">{opt.label}</div>
+                    {selected && (
+                      <CheckIcon
+                        className="pointer-events-none absolute right-2.5 top-2.5 size-4"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </div>
+                )}
+              </ListboxOption>
             ))}
           </ListboxOptions>
         </Transition>
