@@ -24,8 +24,8 @@ import {
 import { convertStatsToChartSeries } from "~/components/Charts/helpers";
 import { Header } from "~/components/Header";
 import { Scrollable } from "~/components/Scrollable";
-import { RollupSelect } from "~/components/Selectors";
-import type { RollupSelectOption } from "~/components/Selectors";
+import { RollupSelector } from "~/components/Selectors";
+import type { RollupSelectorOption } from "~/components/Selectors";
 import type { SelectOption } from "~/components/Selects";
 import { Listbox } from "~/components/Selects";
 import { api } from "~/api-client";
@@ -65,9 +65,9 @@ const Stats: NextPage = function () {
   const [timeFrameOption, setTimeFrameOption] = useState<TimeFrameOption>(
     TIME_FRAME_OPTIONS[1]
   );
-  const [selectedRollups, setSelectedRollups] = useState<RollupSelectOption[]>(
-    []
-  );
+  const [selectedRollups, setSelectedRollups] = useState<
+    RollupSelectorOption[]
+  >([]);
   const { data: dailyStatsData } = api.stats.getDailyStatsForCharts.useQuery(
     {
       categories: "all",
@@ -459,7 +459,7 @@ const Stats: NextPage = function () {
             }}
           />
           <div className="w-64">
-            <RollupSelect
+            <RollupSelector
               selected={selectedRollups}
               onChange={(newRollups) => setSelectedRollups(newRollups ?? [])}
             />

@@ -10,24 +10,21 @@ import {
   MULTIPLE_VALUES_SEPARATOR,
   useQueryParams,
 } from "~/hooks/useQueryParams";
-import type { Category } from "~/types";
 import { capitalize, getISODate } from "~/utils";
 import { Card } from "../Cards/Card";
 import type { NumberRange } from "../Inputs/NumberRangeInput";
-import { RollupSelect } from "../Selectors";
-import type { RollupSelectOption } from "../Selectors";
-import type { SelectOption } from "../Selects";
-import { Listbox } from "../Selects";
+import { RollupSelector } from "../Selectors";
+import type { RollupSelectorOption } from "../Selectors";
+import { CategorySelector } from "../Selectors/CategorySelector";
+import type { CategorySelectorOption } from "../Selectors/CategorySelector";
 import { BlockNumberFilter } from "./BlockNumberFilter";
 import { SlotFilter } from "./SlotFilter";
 import { SortToggle } from "./SortToggle";
 import { TimestampFilter } from "./TimestampFilter";
 
-type CategoryOption = SelectOption<Category>;
-
 type FiltersState = {
-  rollups: RollupSelectOption[] | null;
-  category: CategoryOption | null;
+  rollups: RollupSelectorOption[] | null;
+  category: CategorySelectorOption | null;
   timestampRange: DateRangeType | null;
   blockNumberRange: NumberRange | null;
   slotRange: NumberRange | null;
@@ -47,11 +44,6 @@ type UpdateAction = {
 type FiltersAction<V extends keyof FiltersState> =
   | ClearAction<V>
   | UpdateAction;
-
-const CATEGORY_FILTER_OPTIONS: CategoryOption[] = [
-  { value: "rollup", label: "Rollup" },
-  { value: "other", label: "Other" },
-];
 
 const INIT_STATE: FiltersState = {
   rollups: [],
@@ -167,8 +159,26 @@ export const Filters: FC = function () {
   };
 
   const handleRollupChange = useCallback(
-    (newRollups: RollupSelectOption[] | null) =>
+    (newRollups: RollupSelectorOption[] | null) =>
       dispatch({ type: "UPDATE", payload: { rollups: newRollups } }),
+    []
+  );
+
+  const handleCategoryChange = useCallback(
+    (newCategory: CategorySelectorOption | null) => {
+      const newFilters: Partial<FiltersState> = {
+        category: newCategory,
+      };
+
+      if (newCategory?.value === "other") {
+        newFilters.rollups = [];
+      }
+
+      dispatch({
+        type: "UPDATE",
+        payload: newFilters,
+      });
+    },
     []
   );
 
@@ -229,30 +239,14 @@ export const Filters: FC = function () {
               }}
             />
             <div className="w-32">
-              <Listbox
-                options={CATEGORY_FILTER_OPTIONS}
+              <CategorySelector
                 selected={filters.category}
-                onChange={(newCategory) => {
-                  const newFilters: Partial<FiltersState> = {
-                    category: newCategory,
-                  };
-
-                  if (newCategory?.value === "other") {
-                    newFilters.rollups = [];
-                  }
-
-                  dispatch({
-                    type: "UPDATE",
-                    payload: newFilters,
-                  });
-                }}
-                placeholder="Category"
-                nullable
+                onChange={handleCategoryChange}
               />
             </div>
 
             <div className="w-48">
-              <RollupSelect
+              <RollupSelector
                 selected={filters.rollups}
                 disabled={filters.category?.value !== "rollup"}
                 onChange={handleRollupChange}
