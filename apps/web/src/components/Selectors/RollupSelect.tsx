@@ -6,17 +6,17 @@ import { useRollupRegistry } from "~/hooks/useRollupRegistry";
 import { ROLLUP_STYLES } from "~/rollups";
 import type { Rollup } from "~/types";
 import { RollupBadge } from "../Badges/RollupBadge";
-import type { ComboboxProps, Option } from "../Dropdowns";
-import { Combobox } from "../Dropdowns";
+import type { ComboboxProps, SelectOption } from "../Selects";
+import { Combobox } from "../Selects";
 
-export type RollupOption = Option<Rollup>;
+export type RollupSelectOption = SelectOption<Rollup>;
 
-type RollupFilterProps = Pick<
+type RollupSelectProps = Pick<
   ComboboxProps<Rollup, true, true>,
   "selected" | "disabled" | "onChange"
 >;
 
-export const RollupFilter: FC<RollupFilterProps> = function ({
+export const RollupSelect: FC<RollupSelectProps> = function ({
   onChange,
   selected,
   disabled,
@@ -24,7 +24,7 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
   const rollupRegistry = useRollupRegistry();
 
   const { params } = useQueryParams();
-  const rollupOptions = useMemo<RollupOption[]>(() => {
+  const rollupOptions = useMemo<RollupSelectOption[]>(() => {
     if (!rollupRegistry) {
       return [];
     }
@@ -37,7 +37,7 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
             <RollupBadge rollup={name.toLowerCase() as Rollup} size="sm" />
           ),
           searchText: ROLLUP_STYLES[name.toLowerCase() as Rollup].label,
-        } satisfies RollupOption)
+        } satisfies RollupSelectOption)
     );
   }, [rollupRegistry]);
 

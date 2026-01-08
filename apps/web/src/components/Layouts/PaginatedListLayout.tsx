@@ -4,10 +4,10 @@ import { useRouter } from "next/router";
 
 import { Header } from "~/components/Header";
 import { Card } from "../Cards/Card";
-import type { Option } from "../Dropdowns";
-import { Listbox } from "../Dropdowns";
 import { Pagination } from "../Pagination";
 import type { PaginationProps } from "../Pagination";
+import type { SelectOption } from "../Selects";
+import { Listbox } from "../Selects";
 
 export type PaginatedListLayoutProps = {
   header?: ReactNode;
@@ -20,7 +20,7 @@ export type PaginatedListLayoutProps = {
   emptyState?: ReactNode;
 };
 
-type PageSizeOption = Option<number>;
+type PageSizeOption = SelectOption<number>;
 
 const PAGE_SIZES_OPTIONS: PageSizeOption[] = [
   { value: 10 },

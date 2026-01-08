@@ -13,20 +13,20 @@ import {
 import type { Category } from "~/types";
 import { capitalize, getISODate } from "~/utils";
 import { Card } from "../Cards/Card";
-import type { Option } from "../Dropdown";
-import { Listbox } from "../Dropdowns";
 import type { NumberRange } from "../Inputs/NumberRangeInput";
+import { RollupSelect } from "../Selectors";
+import type { RollupSelectOption } from "../Selectors";
+import type { SelectOption } from "../Selects";
+import { Listbox } from "../Selects";
 import { BlockNumberFilter } from "./BlockNumberFilter";
-import { RollupFilter } from "./RollupFilter";
-import type { RollupOption } from "./RollupFilter";
 import { SlotFilter } from "./SlotFilter";
 import { SortToggle } from "./SortToggle";
 import { TimestampFilter } from "./TimestampFilter";
 
-type CategoryOption = Option<Category>;
+type CategoryOption = SelectOption<Category>;
 
 type FiltersState = {
-  rollups: RollupOption[] | null;
+  rollups: RollupSelectOption[] | null;
   category: CategoryOption | null;
   timestampRange: DateRangeType | null;
   blockNumberRange: NumberRange | null;
@@ -167,7 +167,7 @@ export const Filters: FC = function () {
   };
 
   const handleRollupChange = useCallback(
-    (newRollups: RollupOption[] | null) =>
+    (newRollups: RollupSelectOption[] | null) =>
       dispatch({ type: "UPDATE", payload: { rollups: newRollups } }),
     []
   );
@@ -252,7 +252,7 @@ export const Filters: FC = function () {
             </div>
 
             <div className="w-48">
-              <RollupFilter
+              <RollupSelect
                 selected={filters.rollups}
                 disabled={filters.category?.value !== "rollup"}
                 onChange={handleRollupChange}

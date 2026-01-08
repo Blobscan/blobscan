@@ -9,12 +9,12 @@ import { Pagination } from "~/components/Pagination";
 import type { TableProps } from "~/components/Table";
 import { Table } from "~/components/Table";
 import type { Rollup } from "~/types";
-import type { Option } from "../Dropdowns";
-import { Listbox } from "../Dropdowns";
+import type { SelectOption } from "../Selects";
+import { Listbox } from "../Selects";
 
 const DEFAULT_TABLE_EMPTY_STATE = "No items";
 
-type PageSizeOption = Option<number>;
+type PageSizeOption = SelectOption<number>;
 
 const PAGE_SIZES_OPTIONS: PageSizeOption[] = [
   { value: 10 },

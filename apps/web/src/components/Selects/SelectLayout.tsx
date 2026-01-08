@@ -16,10 +16,9 @@ export type TValue = string | number | bigint;
 export type TMultiple = boolean;
 export type TNullable = boolean;
 
-export interface Option<T extends TValue> {
+export interface SelectOption<T extends TValue> {
   value: T;
   label?: React.ReactNode;
-  // Optional: plain text for filtering (recommended if label is not a string)
   searchText?: string;
 }
 
@@ -29,18 +28,18 @@ export type SelectedOption<
   N extends TNullable
 > = M extends true
   ? N extends true
-    ? Option<T>[] | null
-    : Option<T>[]
+    ? SelectOption<T>[] | null
+    : SelectOption<T>[]
   : N extends true
-  ? Option<T> | null
-  : Option<T>;
+  ? SelectOption<T> | null
+  : SelectOption<T>;
 
 export interface BaseDropdownProps<
   T extends TValue,
   M extends TMultiple = false,
   N extends TNullable = false
 > {
-  options: readonly Option<T>[];
+  options: readonly SelectOption<T>[];
   selected: SelectedOption<T, M, N>;
   multiple?: M;
   nullable?: N;
@@ -68,7 +67,7 @@ export interface DropdownLayoutProps {
   onClear?(): void;
 }
 
-export const DropdownLayout = React.forwardRef<
+export const SelectLayout = React.forwardRef<
   HTMLDivElement,
   DropdownLayoutProps
 >(function DropdownLayout(
@@ -141,7 +140,7 @@ export const DropdownLayout = React.forwardRef<
   );
 });
 export interface OptionLayoutProps<T extends TValue> {
-  option: Option<T>;
+  option: SelectOption<T>;
   selected?: boolean;
   focused?: boolean;
 }

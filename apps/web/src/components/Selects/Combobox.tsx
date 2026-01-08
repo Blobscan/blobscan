@@ -8,15 +8,15 @@ import {
 } from "@headlessui/react";
 import cn from "classnames";
 
-import { DropdownLayout, OptionLayout } from "./BaseDropdown";
+import { SelectLayout, OptionLayout } from "./SelectLayout";
 import type {
   BaseDropdownProps,
-  Option,
+  SelectOption,
   SelectedOption,
   TMultiple,
   TNullable,
   TValue,
-} from "./BaseDropdown";
+} from "./SelectLayout";
 
 export type ComboboxProps<
   T extends TValue,
@@ -116,7 +116,7 @@ export function Combobox<
     });
   }, [options, query]);
 
-  function removeOption(opt: Option<T>) {
+  function removeOption(opt: SelectOption<T>) {
     if (!selected) return;
 
     let newOptions: SelectedOption<T, M, N>;
@@ -170,7 +170,7 @@ export function Combobox<
         setQuery("");
       }}
     >
-      <DropdownLayout
+      <SelectLayout
         ref={containerRef}
         toggleAs={ComboboxButton}
         showClear={Boolean(optionOrOptionsSelected && nullable)}
@@ -259,7 +259,7 @@ export function Combobox<
                               : selected;
                             if (!removed) return;
 
-                            removeOption(removed as unknown as Option<T>);
+                            removeOption(removed as unknown as SelectOption<T>);
 
                             setTimeout(() => {
                               if (
@@ -350,7 +350,7 @@ export function Combobox<
             )}
           </div>
         </div>
-      </DropdownLayout>
+      </SelectLayout>
     </HeadlessCombobox>
   );
 }

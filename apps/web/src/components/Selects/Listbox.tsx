@@ -8,14 +8,14 @@ import {
 } from "@headlessui/react";
 import cn from "classnames";
 
-import { DropdownLayout, OptionLayout } from "./BaseDropdown";
+import { SelectLayout, OptionLayout } from "./SelectLayout";
 import type {
   BaseDropdownProps,
   SelectedOption,
   TMultiple,
   TNullable,
   TValue,
-} from "./BaseDropdown";
+} from "./SelectLayout";
 
 export type ListboxProps<
   T extends TValue,
@@ -54,7 +54,7 @@ export function Listbox<
       multiple={multiple}
       disabled={disabled}
     >
-      <DropdownLayout
+      <SelectLayout
         as={ListboxButton}
         showClear={Boolean(optionSelected && nullable)}
         onClear={clearAll}
@@ -95,7 +95,7 @@ export function Listbox<
             {placeholder}
           </div>
         )}
-      </DropdownLayout>
+      </SelectLayout>
     </HeadlessListbox>
   );
 }

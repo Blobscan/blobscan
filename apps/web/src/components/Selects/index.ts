@@ -1,10 +1,10 @@
 export * from "./Combobox";
 export type {
-  Option,
+  SelectOption,
   OnChangeFn,
   SelectedOption,
   TValue,
   TMultiple,
   TNullable,
-} from "./BaseDropdown";
+} from "./SelectLayout";
 export * from "./Listbox";
