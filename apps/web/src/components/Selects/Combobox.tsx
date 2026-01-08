@@ -10,7 +10,7 @@ import cn from "classnames";
 
 import { SelectLayout, OptionLayout } from "./SelectLayout";
 import type {
-  BaseDropdownProps,
+  BaseSelectProps,
   SelectOption,
   SelectedOption,
   TMultiple,
@@ -22,7 +22,7 @@ export type ComboboxProps<
   T extends TValue,
   M extends TMultiple,
   N extends TNullable
-> = BaseDropdownProps<T, M, N>;
+> = BaseSelectProps<T, M, N>;
 
 export function Combobox<
   T extends TValue,

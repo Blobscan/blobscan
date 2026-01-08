@@ -34,7 +34,7 @@ export type SelectedOption<
   ? SelectOption<T> | null
   : SelectOption<T>;
 
-export interface BaseDropdownProps<
+export interface BaseSelectProps<
   T extends TValue,
   M extends TMultiple = false,
   N extends TNullable = false
@@ -55,7 +55,7 @@ export type OnChangeFn<
   N extends TNullable
 > = (newOption: SelectedOption<T, M, N>) => void;
 
-export interface DropdownLayoutProps {
+export interface SelectLayoutProps {
   as?: React.ElementType;
   children: React.ReactNode;
   disabled?: boolean;
@@ -67,78 +67,77 @@ export interface DropdownLayoutProps {
   onClear?(): void;
 }
 
-export const SelectLayout = React.forwardRef<
-  HTMLDivElement,
-  DropdownLayoutProps
->(function DropdownLayout(
-  { as, disabled, toggleAs, children, optionsPanel, showClear, onClear },
-  forwardedRef
-) {
-  const WrapperComponent = as ?? "div";
-  const ToggleComponent = toggleAs ?? "div";
+export const SelectLayout = React.forwardRef<HTMLDivElement, SelectLayoutProps>(
+  function SelectLayout(
+    { as, disabled, toggleAs, children, optionsPanel, showClear, onClear },
+    forwardedRef
+  ) {
+    const WrapperComponent = as ?? "div";
+    const ToggleComponent = toggleAs ?? "div";
 
-  return (
-    <div className="relative">
-      <WrapperComponent
-        aria-label="Open dropdown"
-        className={cn(
-          "flex h-9 w-full  items-center justify-between rounded-lg border border-transparent",
-          "bg-controlBackground-light px-2  text-left text-sm shadow-md hover:border hover:border-controlBorderHighlight-light",
-          "focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark",
-          {
-            "cursor-not-allowed opacity-40 hover:border-transparent dark:bg-opacity-40 dark:hover:border-transparent":
-              disabled,
-            "cursor-pointer": !disabled,
-          },
-          "ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:ui-open:border-controlActive-dark"
-        )}
-      >
-        <Scrollable ref={forwardedRef}>{children}</Scrollable>
-        <div className="ml-1 flex items-center gap-1">
-          {showClear && (
-            <IconButton
-              variant={disabled ? "disabled" : "default"}
-              onClick={(e) => {
-                if (onClear && !disabled) {
-                  onClear();
-                }
-
-                e.stopPropagation();
-              }}
-              aria-label="Clear all"
-            >
-              <XMarkIcon />
-            </IconButton>
-          )}
-          <ToggleComponent
-            className={cn({
-              "hover:fill-iconHighlight-lighthover:text-iconHighlight-light         hover:dark:fill-iconHighlight-dark hover:dark:text-iconHighlight-dark":
-                !disabled,
-            })}
-          >
-            <Icon src={ChevronUpDownIcon} size="lg" />
-          </ToggleComponent>
-        </div>
-      </WrapperComponent>
-      <Transition
-        as={Fragment}
-        leave="transition ease-in duration-100"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-      >
-        <div
+    return (
+      <div className="relative">
+        <WrapperComponent
+          aria-label="Open select"
           className={cn(
-            "absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black/10 focus:outline-none",
-            "dark:bg-controlBackground-dark",
-            "transition-colors dark:[&::-webkit-scrollbar-corner]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-primary-800 dark:hover:[&::-webkit-scrollbar-thumb]:bg-accentHighlight-dark/60 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 dark:[&::-webkit-scrollbar-track]:bg-surface-dark/60 [&::-webkit-scrollbar]:max-h-1.5 [&::-webkit-scrollbar]:max-w-1.5"
+            "flex h-9 w-full  items-center justify-between rounded-lg border border-transparent",
+            "bg-controlBackground-light px-2  text-left text-sm shadow-md hover:border hover:border-controlBorderHighlight-light",
+            "focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark",
+            {
+              "cursor-not-allowed opacity-40 hover:border-transparent dark:bg-opacity-40 dark:hover:border-transparent":
+                disabled,
+              "cursor-pointer": !disabled,
+            },
+            "ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:ui-open:border-controlActive-dark"
           )}
         >
-          {optionsPanel}
-        </div>
-      </Transition>
-    </div>
-  );
-});
+          <Scrollable ref={forwardedRef}>{children}</Scrollable>
+          <div className="ml-1 flex items-center gap-1">
+            {showClear && (
+              <IconButton
+                variant={disabled ? "disabled" : "default"}
+                onClick={(e) => {
+                  if (onClear && !disabled) {
+                    onClear();
+                  }
+
+                  e.stopPropagation();
+                }}
+                aria-label="Clear all"
+              >
+                <XMarkIcon />
+              </IconButton>
+            )}
+            <ToggleComponent
+              className={cn({
+                "hover:fill-iconHighlight-lighthover:text-iconHighlight-light         hover:dark:fill-iconHighlight-dark hover:dark:text-iconHighlight-dark":
+                  !disabled,
+              })}
+            >
+              <Icon src={ChevronUpDownIcon} size="lg" />
+            </ToggleComponent>
+          </div>
+        </WrapperComponent>
+        <Transition
+          as={Fragment}
+          leave="transition ease-in duration-100"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div
+            className={cn(
+              "absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black/10 focus:outline-none",
+              "dark:bg-controlBackground-dark",
+              "transition-colors dark:[&::-webkit-scrollbar-corner]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-primary-800 dark:hover:[&::-webkit-scrollbar-thumb]:bg-accentHighlight-dark/60 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 dark:[&::-webkit-scrollbar-track]:bg-surface-dark/60 [&::-webkit-scrollbar]:max-h-1.5 [&::-webkit-scrollbar]:max-w-1.5"
+            )}
+          >
+            {optionsPanel}
+          </div>
+        </Transition>
+      </div>
+    );
+  }
+);
 export interface OptionLayoutProps<T extends TValue> {
   option: SelectOption<T>;
   selected?: boolean;
