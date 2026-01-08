@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.46.0
+
+### Minor Changes
+
+- [#936](https://github.com/Blobscan/blobscan/pull/936) [`969256e`](https://github.com/Blobscan/blobscan/commit/969256e10d32ecb093afa846e3de29144d182b5a) Thanks [@PJColombo](https://github.com/PJColombo)! - Replaced the rollup filter dropdown with a searchable combobox to improve rollup discovery and filtering usability.
+
 ## 0.45.1
 
 ### Patch Changes
