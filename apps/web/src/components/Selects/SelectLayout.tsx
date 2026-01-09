@@ -80,7 +80,7 @@ export const SelectLayout = React.forwardRef<HTMLDivElement, SelectLayoutProps>(
         <WrapperComponent
           aria-label="Open select"
           className={cn(
-            "flex h-9 w-full  items-center justify-between rounded-lg border border-transparent",
+            "flex h-9 w-full min-w-20 items-center justify-between rounded-lg border border-transparent",
             "bg-controlBackground-light px-2  text-left text-sm shadow-md hover:border hover:border-controlBorderHighlight-light",
             "focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark",
             {
@@ -152,8 +152,8 @@ export function OptionLayout<T extends TValue>({
   return (
     <div
       className={cn(
-        "relative cursor-pointer select-none ",
-        "flex items-center justify-between gap-3 px-4 py-2",
+        "relative cursor-pointer select-none",
+        "flex items-center justify-between gap-0.5 px-4 py-2",
         "text-contentSecondary-light dark:text-contentSecondary-dark",
         "hover:bg-controlActive-light hover:dark:bg-controlActive-dark/70",
         {
@@ -168,12 +168,7 @@ export function OptionLayout<T extends TValue>({
       >
         {option.label ?? option.value}
       </div>
-      {selected && (
-        <CheckIcon
-          className="pointer-events-none absolute right-2.5 top-2.5 size-4"
-          aria-hidden="true"
-        />
-      )}
+      {selected && <Icon src={CheckIcon} />}
     </div>
   );
 }

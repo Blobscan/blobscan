@@ -62,13 +62,21 @@ export function Listbox<
           <ListboxOptions className="h-full">
             {options.map((opt) => (
               <ListboxOption key={String(opt.value)} value={opt}>
-                {({ selected, focus }) => (
-                  <OptionLayout
-                    option={opt}
-                    selected={selected}
-                    focused={focus}
-                  />
-                )}
+                {({ focus }) => {
+                  const isSelected = selected
+                    ? Array.isArray(selected)
+                      ? selected.includes(opt)
+                      : selected?.value === opt.value
+                    : false;
+
+                  return (
+                    <OptionLayout
+                      option={opt}
+                      selected={isSelected}
+                      focused={focus}
+                    />
+                  );
+                }}
               </ListboxOption>
             ))}
           </ListboxOptions>
