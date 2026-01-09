@@ -6,8 +6,8 @@ import { Header } from "~/components/Header";
 import { Card } from "../Cards/Card";
 import { Pagination } from "../Pagination";
 import type { PaginationProps } from "../Pagination";
-import type { SelectOption } from "../Selects";
-import { Listbox } from "../Selects";
+import type { PageSizeOption } from "../Selectors";
+import { PageSizeSelector } from "../Selectors";
 
 export type PaginatedListLayoutProps = {
   header?: ReactNode;
@@ -19,15 +19,6 @@ export type PaginatedListLayoutProps = {
   itemSkeleton: ReactNode;
   emptyState?: ReactNode;
 };
-
-type PageSizeOption = SelectOption<number>;
-
-const PAGE_SIZES_OPTIONS: PageSizeOption[] = [
-  { value: 10 },
-  { value: 25 },
-  { value: 50 },
-  { value: 100 },
-] as const;
 
 export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   header,
@@ -48,9 +39,13 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
       : undefined;
   const hasItems = !items || items.length;
 
+  console.log(pageSize);
+
   const handlePageSizeSelection = useCallback(
     (option: PageSizeOption) => {
       const newPageSize = option.value;
+
+      console.log("newPageSize", newPageSize);
 
       void router.push({
         pathname: router.pathname,
@@ -120,8 +115,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
             <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
               <div className="flex items-center justify-start gap-2">
                 Displayed items:
-                <Listbox
-                  options={PAGE_SIZES_OPTIONS}
+                <PageSizeSelector
                   selected={{ value: pageSize }}
                   onChange={handlePageSizeSelection}
                 />
