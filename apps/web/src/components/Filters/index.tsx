@@ -15,7 +15,10 @@ import { Card } from "../Cards/Card";
 import type { NumberRange } from "../Inputs/NumberRangeInput";
 import { RollupSelector } from "../Selectors";
 import type { RollupSelectorOption } from "../Selectors";
-import { CategorySelector } from "../Selectors/CategorySelector";
+import {
+  CATEGORY_OPTIONS,
+  CategorySelector,
+} from "../Selectors/CategorySelector";
 import type { CategorySelectorOption } from "../Selectors/CategorySelector";
 import { BlockNumberFilter } from "./BlockNumberFilter";
 import { SlotFilter } from "./SlotFilter";
@@ -160,7 +163,10 @@ export const Filters: FC = function () {
 
   const handleRollupChange = useCallback(
     (newRollups: RollupSelectorOption[] | null) =>
-      dispatch({ type: "UPDATE", payload: { rollups: newRollups } }),
+      dispatch({
+        type: "UPDATE",
+        payload: { rollups: newRollups, category: CATEGORY_OPTIONS[1] },
+      }),
     []
   );
 
@@ -248,7 +254,6 @@ export const Filters: FC = function () {
             <div className="w-48">
               <RollupSelector
                 selected={filters.rollups}
-                disabled={filters.category?.value !== "rollup"}
                 onChange={handleRollupChange}
               />
             </div>

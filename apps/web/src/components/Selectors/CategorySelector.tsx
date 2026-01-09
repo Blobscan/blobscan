@@ -9,9 +9,9 @@ export type CategorySelectorProps<M extends TMultiple = false> = Omit<
   "options" | "nullable" | "placeholder"
 >;
 
-const CATEGORIES_OPTIONS: CategorySelectorOption[] = [
-  { value: "rollup", label: "Rollup" },
+export const CATEGORY_OPTIONS: CategorySelectorOption[] = [
   { value: "other", label: "Other" },
+  { value: "rollup", label: "Rollup" },
 ] as const;
 
 export function CategorySelector<M extends TMultiple = false>(
@@ -20,7 +20,7 @@ export function CategorySelector<M extends TMultiple = false>(
   return (
     <Listbox
       {...props}
-      options={CATEGORIES_OPTIONS}
+      options={CATEGORY_OPTIONS}
       placeholder="Category"
       nullable
     />
