@@ -446,7 +446,7 @@ const Stats: NextPage = function () {
             <Listbox
               options={SECTION_OPTIONS}
               selected={selectedSection}
-              onChange={(option) => {
+              onChange={(option: SectionOption) => {
                 setSelectedSection(option);
               }}
             />
@@ -454,7 +454,7 @@ const Stats: NextPage = function () {
           <Listbox
             options={TIME_FRAME_OPTIONS}
             selected={timeFrameOption}
-            onChange={(option) => {
+            onChange={(option: TimeFrameOption) => {
               setTimeFrameOption(option);
             }}
           />
