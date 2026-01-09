@@ -5,7 +5,7 @@ import { t } from "../trpc-client";
 export const DEFAULT_PAGE_LIMIT = 50;
 
 export const withPaginationSchema = z.object({
-  p: z.number().default(1),
+  p: z.number().positive().default(1),
   ps: z.number().default(DEFAULT_PAGE_LIMIT),
   count: z.boolean().default(false),
 });
