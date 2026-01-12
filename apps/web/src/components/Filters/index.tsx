@@ -10,9 +10,12 @@ import {
   MULTIPLE_VALUES_SEPARATOR,
   useQueryParams,
 } from "~/hooks/useQueryParams";
-import { capitalize, getISODate } from "~/utils";
+import { getISODate } from "~/utils";
 import { Card } from "../Cards/Card";
+import { NumberRangeInput } from "../Inputs/NumberRangeInput";
 import type { NumberRange } from "../Inputs/NumberRangeInput";
+import { RANGE_OPTIONS, RangeRadioGroup } from "../RangeRadioGroup";
+import type { RangeOption } from "../RangeRadioGroup";
 import { RollupSelector } from "../Selectors";
 import type { RollupSelectorOption } from "../Selectors";
 import {
@@ -20,14 +23,13 @@ import {
   CategorySelector,
 } from "../Selectors/CategorySelector";
 import type { CategorySelectorOption } from "../Selectors/CategorySelector";
-import { BlockNumberFilter } from "./BlockNumberFilter";
-import { SlotFilter } from "./SlotFilter";
 import { SortToggle } from "./SortToggle";
 import { TimestampFilter } from "./TimestampFilter";
 
 type FiltersState = {
   rollups: RollupSelectorOption[] | null;
   category: CategorySelectorOption | null;
+  range: RangeOption;
   timestampRange: DateRangeType | null;
   blockNumberRange: NumberRange | null;
   slotRange: NumberRange | null;
@@ -51,10 +53,9 @@ type FiltersAction<V extends keyof FiltersState> =
 const INIT_STATE: FiltersState = {
   rollups: [],
   category: null,
-  timestampRange: {
-    endDate: null,
-    startDate: null,
-  },
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  range: RANGE_OPTIONS[1]!,
+  timestampRange: null,
   blockNumberRange: null,
   slotRange: null,
   sort: "desc",
@@ -87,12 +88,13 @@ export const Filters: FC = function () {
 
   const disableClear =
     !filters.category &&
-    !filters.rollups &&
-    !filters.timestampRange?.endDate &&
-    !filters.timestampRange?.startDate &&
+    !filters.rollups?.length &&
+    !filters.range &&
+    !filters.timestampRange &&
     !filters.blockNumberRange &&
-    !filters.slotRange &&
-    !filters.sort;
+    !filters.slotRange;
+
+  console.log(filters);
 
   const handleFilter = () => {
     const query: UrlObject["query"] = {};
@@ -188,16 +190,35 @@ export const Filters: FC = function () {
     []
   );
 
+  const handleRangeChange = useCallback((newRange: RangeOption) => {
+    const payload: Partial<FiltersState> = { range: newRange };
+
+    switch (newRange?.value) {
+      case "date":
+        payload.slotRange = null;
+        payload.blockNumberRange = null;
+        break;
+      case "block":
+        payload.slotRange = null;
+        payload.timestampRange = null;
+        break;
+      case "slot":
+        payload.blockNumberRange = null;
+        payload.timestampRange = null;
+        break;
+      default:
+        payload.blockNumberRange = null;
+        payload.slotRange = null;
+        payload.timestampRange = null;
+        break;
+    }
+
+    dispatch({ type: "UPDATE", payload });
+  }, []);
+
   useEffect(() => {
-    const {
-      category,
-      startDate,
-      endDate,
-      startBlock,
-      endBlock,
-      startSlot,
-      endSlot,
-    } = filterParams;
+    const { startDate, endDate, startBlock, endBlock, startSlot, endSlot } =
+      filterParams;
     const { sort } = paginationParams;
     const newFilters: Partial<FiltersState> = {};
 
@@ -222,10 +243,6 @@ export const Filters: FC = function () {
       };
     }
 
-    if (category) {
-      newFilters.category = { value: category, label: capitalize(category) };
-    }
-
     if (sort) {
       newFilters.sort = sort;
     }
@@ -235,78 +252,94 @@ export const Filters: FC = function () {
 
   return (
     <Card compact>
-      <div className="flex flex-col justify-between gap-4 lg:flex-row lg:gap-0">
-        <div className="flex w-full flex-col items-center gap-2 md:w-auto md:flex-row">
-          <div className="flex w-full flex-row gap-2">
-            <SortToggle
-              type={filters.sort}
-              onChange={(newSort) => {
-                dispatch({ type: "UPDATE", payload: { sort: newSort } });
-              }}
-            />
-            <div className="w-32">
+      <div className="flex  flex-col justify-between gap-5 lg:flex-row lg:justify-start lg:gap-0">
+        <div className="flex w-full flex-col items-center gap-2 lg:flex-row lg:justify-start">
+          <div className="flex w-full min-w-0 flex-row gap-2 lg:max-w-xl lg:justify-start">
+            <div className="shrink-0">
+              <SortToggle
+                type={filters.sort}
+                onChange={(newSort) => {
+                  dispatch({ type: "UPDATE", payload: { sort: newSort } });
+                }}
+              />
+            </div>
+            <div className="w-28 shrink-0">
               <CategorySelector
                 selected={filters.category}
                 onChange={handleCategoryChange}
               />
             </div>
 
-            <div className="w-48">
+            <div className="min-w-0 flex-1 basis-0">
               <RollupSelector
                 selected={filters.rollups}
                 onChange={handleRollupChange}
               />
             </div>
-            <div className="w-[42px] sm:w-[222px] md:max-xl:w-[42px] xl:w-[222px]">
-              <TimestampFilter
-                value={filters.timestampRange}
-                onChange={(newTimestampRange) =>
-                  dispatch({
-                    type: "UPDATE",
-                    payload: { timestampRange: newTimestampRange },
-                  })
-                }
-              />
-            </div>
           </div>
-          <div className="flex gap-2">
-            <div className="w-full md:w-[11.5rem] lg:max-xl:w-[11.5rem] xl:w-[11.5rem]">
-              <BlockNumberFilter
-                range={filters.blockNumberRange}
-                onChange={(newBlockNumberRange) =>
-                  dispatch({
-                    type: "UPDATE",
-                    payload: { blockNumberRange: newBlockNumberRange },
-                  })
-                }
+          <div className="flex w-full justify-start lg:max-w-sm">
+            <div className="w-28 border-r border-gray-200 dark:border-gray-500">
+              <RangeRadioGroup
+                selected={filters.range}
+                onChange={handleRangeChange}
               />
             </div>
-            <div className="w-full md:w-40 lg:max-xl:w-[10rem] xl:w-[10rem]">
-              <SlotFilter
-                range={filters.slotRange}
-                onChange={(newSlotRange) =>
-                  dispatch({
-                    type: "UPDATE",
-                    payload: { slotRange: newSlotRange },
-                  })
-                }
-              />
+            <div className="min-w-0 flex-1 basis-0">
+              {filters.range?.value === "date" && (
+                <TimestampFilter
+                  className="rounded-s-none"
+                  value={filters.timestampRange}
+                  onChange={(newTimestampRange) =>
+                    dispatch({
+                      type: "UPDATE",
+                      payload: { timestampRange: newTimestampRange },
+                    })
+                  }
+                />
+              )}
+              {filters.range?.value === "block" && (
+                <NumberRangeInput
+                  className="w-full rounded-s-none"
+                  type="uint"
+                  inputStartProps={{ placeholder: "Start Block" }}
+                  inputEndProps={{ placeholder: "End Block" }}
+                  range={filters.blockNumberRange}
+                  onChange={(newBlockNumberRange) =>
+                    dispatch({
+                      type: "UPDATE",
+                      payload: { blockNumberRange: newBlockNumberRange },
+                    })
+                  }
+                />
+              )}
+              {filters.range?.value === "slot" && (
+                <NumberRangeInput
+                  className="w-full rounded-s-none"
+                  type="uint"
+                  inputStartProps={{ placeholder: "Start Slot" }}
+                  inputEndProps={{ placeholder: "End Slot" }}
+                  range={filters.slotRange}
+                  onChange={(newSlotRange) =>
+                    dispatch({
+                      type: "UPDATE",
+                      payload: { slotRange: newSlotRange },
+                    })
+                  }
+                />
+              )}
             </div>
           </div>
         </div>
         <div className="flex gap-2 md:flex-row lg:ml-2">
           <Button
-            className="w-full lg:w-auto lg:px-3 xl:px-6"
+            className="w-full  lg:px-3 xl:px-6"
             variant="outline"
             onClick={() => dispatch({ type: "CLEAR" })}
             disabled={disableClear}
           >
             Clear
           </Button>
-          <Button
-            className="w-full lg:w-auto lg:px-3 xl:px-6"
-            onClick={handleFilter}
-          >
+          <Button className="w-full  lg:px-3 xl:px-6" onClick={handleFilter}>
             Filter
           </Button>
         </div>
