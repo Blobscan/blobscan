@@ -92,6 +92,10 @@ function App({ Component, pageProps }: NextAppProps) {
     }
   }, [env?.PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL]);
 
+  if (!router.isReady) {
+    return null;
+  }
+
   if (!isMounted) {
     return null;
   }
