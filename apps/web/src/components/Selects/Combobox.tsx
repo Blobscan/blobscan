@@ -8,21 +8,21 @@ import {
 } from "@headlessui/react";
 import cn from "classnames";
 
-import { DropdownLayout, OptionLayout } from "./BaseDropdown";
+import { SelectLayout, OptionLayout } from "./SelectLayout";
 import type {
-  BaseDropdownProps,
-  Option,
+  BaseSelectProps,
+  SelectOption,
   SelectedOption,
   TMultiple,
   TNullable,
   TValue,
-} from "./BaseDropdown";
+} from "./SelectLayout";
 
 export type ComboboxProps<
   T extends TValue,
   M extends TMultiple,
   N extends TNullable
-> = BaseDropdownProps<T, M, N>;
+> = BaseSelectProps<T, M, N>;
 
 export function Combobox<
   T extends TValue,
@@ -99,8 +99,8 @@ export function Combobox<
 
     selectedOptionRef.focus();
     selectedOptionRef.scrollIntoView({
+      block: "nearest",
       inline: "center",
-      block: "center",
     });
   }, [activeOptionIndex]);
 
@@ -116,7 +116,7 @@ export function Combobox<
     });
   }, [options, query]);
 
-  function removeOption(opt: Option<T>) {
+  function removeOption(opt: SelectOption<T>) {
     if (!selected) return;
 
     let newOptions: SelectedOption<T, M, N>;
@@ -170,7 +170,7 @@ export function Combobox<
         setQuery("");
       }}
     >
-      <DropdownLayout
+      <SelectLayout
         ref={containerRef}
         toggleAs={ComboboxButton}
         showClear={Boolean(optionOrOptionsSelected && nullable)}
@@ -213,8 +213,8 @@ export function Combobox<
             }
 
             firstSelectedOptionRef.scrollIntoView({
+              block: "nearest",
               inline: "center",
-              block: "center",
             });
           }}
         >
@@ -259,7 +259,7 @@ export function Combobox<
                               : selected;
                             if (!removed) return;
 
-                            removeOption(removed as unknown as Option<T>);
+                            removeOption(removed as unknown as SelectOption<T>);
 
                             setTimeout(() => {
                               if (
@@ -297,7 +297,7 @@ export function Combobox<
               <ComboboxInput
                 ref={inputRef}
                 className={cn(
-                  "h-6 border-none bg-transparent text-sm outline-none focus:outline-none focus:ring-0"
+                  "h-6 border-none bg-transparent text-sm outline-none placeholder:text-hint-light focus:outline-none focus:ring-0 dark:placeholder:text-hint-dark"
                 )}
                 value={query}
                 placeholder={
@@ -350,7 +350,7 @@ export function Combobox<
             )}
           </div>
         </div>
-      </DropdownLayout>
+      </SelectLayout>
     </HeadlessCombobox>
   );
 }

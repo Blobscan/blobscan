@@ -9,19 +9,11 @@ import { Pagination } from "~/components/Pagination";
 import type { TableProps } from "~/components/Table";
 import { Table } from "~/components/Table";
 import type { Rollup } from "~/types";
-import type { Option } from "../Dropdowns";
-import { Listbox } from "../Dropdowns";
+import { PageSizeSelector } from "../Selectors/PageSizeSelector";
+import type { PageSizeOption } from "../Selectors/PageSizeSelector";
 
 const DEFAULT_TABLE_EMPTY_STATE = "No items";
 
-type PageSizeOption = Option<number>;
-
-const PAGE_SIZES_OPTIONS: PageSizeOption[] = [
-  { value: 10 },
-  { value: 25 },
-  { value: 50 },
-  { value: 100 },
-] as const;
 const DEFAULT_ROW_SKELETON_HEIGHT = 22;
 
 export interface PaginatedTableQueryFilters {
@@ -78,27 +70,18 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
       : undefined;
 
   const handlePageSizeSelection = useCallback(
-    (option: PageSizeOption) => {
-      if (!option) {
-        return;
-      }
-
-      const newPageSize = option.value;
+    ({ value: newPageSize }: PageSizeOption) => {
+      const { p: _, ...rest } = router.query;
 
       void router.push({
         pathname: router.pathname,
         query: {
-          ...router.query,
-          /**
-           * Update the selected page to a lower value if we require less pages to show the
-           * new amount of elements per page.
-           */
-          p: Math.min(Math.ceil(totalItems ?? 0 / newPageSize), page),
+          ...rest,
           ps: newPageSize,
         },
       });
     },
-    [page, totalItems, router]
+    [router]
   );
 
   const handlePageSelection = useCallback<PaginationProps["onChange"]>(
@@ -148,8 +131,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
         <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
           <div className="flex items-center justify-start gap-2">
             Displayed items:
-            <Listbox
-              options={PAGE_SIZES_OPTIONS}
+            <PageSizeSelector
               selected={{ value: pageSize }}
               onChange={handlePageSizeSelection}
             />

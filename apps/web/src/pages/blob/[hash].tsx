@@ -20,11 +20,11 @@ import { Card } from "~/components/Cards/Card";
 import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { Copyable } from "~/components/Copyable";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
-import type { Option } from "~/components/Dropdown";
-import { Listbox } from "~/components/Dropdowns";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import type { SelectOption } from "~/components/Selects";
+import { Listbox } from "~/components/Selects";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import {
@@ -103,7 +103,7 @@ const Blob: NextPage = function () {
     ...(blob && decoder ? ["Decoded" as BlobViewMode] : []),
     ...DEFAULT_BLOB_VIEW_MODES,
   ];
-  const blobViewModesOptions: Option<BlobViewMode>[] = blobViewModes.map(
+  const blobViewModesOptions: SelectOption<BlobViewMode>[] = blobViewModes.map(
     (blobViewMode) => ({ value: blobViewMode })
   );
 

@@ -13,6 +13,7 @@ export type DatePeriod = {
 };
 
 export const MIN_DATE = new Date(0);
+export const MAX_DATE = new Date(8.64e15);
 
 export function getDateFromISODateTime(isoDateTime: DateLike) {
   let normalizedDateTime: string;

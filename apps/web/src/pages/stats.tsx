@@ -22,12 +22,12 @@ import {
   DailyAvgBlobGasPriceChart,
 } from "~/components/Charts";
 import { convertStatsToChartSeries } from "~/components/Charts/helpers";
-import type { Option } from "~/components/Dropdowns";
-import { Listbox } from "~/components/Dropdowns";
-import { RollupFilter } from "~/components/Filters/RollupFilter";
-import type { RollupOption } from "~/components/Filters/RollupFilter";
 import { Header } from "~/components/Header";
 import { Scrollable } from "~/components/Scrollable";
+import { RollupSelector } from "~/components/Selectors";
+import type { RollupSelectorOption } from "~/components/Selectors";
+import type { SelectOption } from "~/components/Selects";
+import { Listbox } from "~/components/Selects";
 import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
@@ -36,9 +36,9 @@ import { calculatePercentage, splitArrayIntoChunks } from "~/utils";
 
 type Section = "All" | "Blob" | "Block" | "Gas" | "Fee" | "Transaction";
 
-type SectionOption = Option<Section>;
+type SectionOption = SelectOption<Section>;
 
-type TimeFrameOption = Option<TimeFrame>;
+type TimeFrameOption = SelectOption<TimeFrame>;
 
 const TIME_FRAME_OPTIONS = [
   { label: "1 year", value: "365d" },
@@ -65,7 +65,9 @@ const Stats: NextPage = function () {
   const [timeFrameOption, setTimeFrameOption] = useState<TimeFrameOption>(
     TIME_FRAME_OPTIONS[1]
   );
-  const [selectedRollups, setSelectedRollups] = useState<RollupOption[]>([]);
+  const [selectedRollups, setSelectedRollups] = useState<
+    RollupSelectorOption[]
+  >([]);
   const { data: dailyStatsData } = api.stats.getDailyStatsForCharts.useQuery(
     {
       categories: "all",
@@ -444,7 +446,7 @@ const Stats: NextPage = function () {
             <Listbox
               options={SECTION_OPTIONS}
               selected={selectedSection}
-              onChange={(option) => {
+              onChange={(option: SectionOption) => {
                 setSelectedSection(option);
               }}
             />
@@ -452,12 +454,12 @@ const Stats: NextPage = function () {
           <Listbox
             options={TIME_FRAME_OPTIONS}
             selected={timeFrameOption}
-            onChange={(option) => {
+            onChange={(option: TimeFrameOption) => {
               setTimeFrameOption(option);
             }}
           />
           <div className="w-64">
-            <RollupFilter
+            <RollupSelector
               selected={selectedRollups}
               onChange={(newRollups) => setSelectedRollups(newRollups ?? [])}
             />

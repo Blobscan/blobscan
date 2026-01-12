@@ -8,20 +8,20 @@ import {
 } from "@headlessui/react";
 import cn from "classnames";
 
-import { DropdownLayout, OptionLayout } from "./BaseDropdown";
+import { SelectLayout, OptionLayout } from "./SelectLayout";
 import type {
-  BaseDropdownProps,
+  BaseSelectProps,
   SelectedOption,
   TMultiple,
   TNullable,
   TValue,
-} from "./BaseDropdown";
+} from "./SelectLayout";
 
 export type ListboxProps<
   T extends TValue,
   M extends TMultiple,
   N extends TNullable
-> = BaseDropdownProps<T, M, N>;
+> = BaseSelectProps<T, M, N>;
 
 export function Listbox<
   T extends TValue,
@@ -54,7 +54,7 @@ export function Listbox<
       multiple={multiple}
       disabled={disabled}
     >
-      <DropdownLayout
+      <SelectLayout
         as={ListboxButton}
         showClear={Boolean(optionSelected && nullable)}
         onClear={clearAll}
@@ -62,13 +62,21 @@ export function Listbox<
           <ListboxOptions className="h-full">
             {options.map((opt) => (
               <ListboxOption key={String(opt.value)} value={opt}>
-                {({ selected, focus }) => (
-                  <OptionLayout
-                    option={opt}
-                    selected={selected}
-                    focused={focus}
-                  />
-                )}
+                {({ focus }) => {
+                  const isSelected = selected
+                    ? Array.isArray(selected)
+                      ? selected.includes(opt)
+                      : selected?.value === opt.value
+                    : false;
+
+                  return (
+                    <OptionLayout
+                      option={opt}
+                      selected={isSelected}
+                      focused={focus}
+                    />
+                  );
+                }}
               </ListboxOption>
             ))}
           </ListboxOptions>
@@ -88,14 +96,17 @@ export function Listbox<
           )
         ) : (
           <div
-            className={cn("text-hint-light dark:text-hint-dark", {
-              "text-opacity-40 dark:text-opacity-40": disabled,
-            })}
+            className={cn(
+              "w-full text-ellipsis whitespace-nowrap text-hint-light dark:text-hint-dark",
+              {
+                "text-opacity-40 dark:text-opacity-40": disabled,
+              }
+            )}
           >
             {placeholder}
           </div>
         )}
-      </DropdownLayout>
+      </SelectLayout>
     </HeadlessListbox>
   );
 }
