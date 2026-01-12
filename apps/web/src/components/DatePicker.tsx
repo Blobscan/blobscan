@@ -4,6 +4,10 @@ import type { DatepickerType } from "react-tailwindcss-datepicker";
 import TailwindDatePicker from "react-tailwindcss-datepicker";
 import { twMerge } from "tailwind-merge";
 
+import { MAX_DATE, MIN_DATE } from "@blobscan/dayjs";
+
+import { useChain } from "~/hooks/useChain";
+
 type DatePickerProps = Pick<DatepickerType, "value" | "onChange"> & {
   className?: string;
 };
@@ -13,10 +17,25 @@ export const DatePicker: FC<DatePickerProps> = function ({
   onChange,
   className,
 }) {
+  const chain = useChain();
   const isValueSet = value?.startDate || value?.endDate;
+  const disabledDates = [
+    {
+      startDate: new Date(),
+      endDate: MAX_DATE,
+    },
+  ];
+
+  if (chain) {
+    disabledDates.push({
+      startDate: MIN_DATE,
+      endDate: chain.forks[0].activationDate,
+    });
+  }
 
   return (
     <TailwindDatePicker
+      disabledDates={disabledDates}
       primaryColor="purple"
       value={value}
       onChange={onChange}
@@ -46,6 +65,7 @@ export const DatePicker: FC<DatePickerProps> = function ({
         "[&>div>div]:dark:bg-controlBackground-dark [&>div>div]:border-controlBorder-light [&>div>div]:dark:border-transparent"
       )}
       placeholder={"Start date - End date"}
+      showShortcuts
     />
   );
 };
