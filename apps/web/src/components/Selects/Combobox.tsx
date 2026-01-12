@@ -99,8 +99,8 @@ export function Combobox<
 
     selectedOptionRef.focus();
     selectedOptionRef.scrollIntoView({
+      block: "nearest",
       inline: "center",
-      block: "center",
     });
   }, [activeOptionIndex]);
 
@@ -213,8 +213,8 @@ export function Combobox<
             }
 
             firstSelectedOptionRef.scrollIntoView({
+              block: "nearest",
               inline: "center",
-              block: "center",
             });
           }}
         >
