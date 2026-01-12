@@ -182,7 +182,7 @@ export const FiltersBar: FC = function () {
         category: newCategory,
       };
 
-      if (newCategory?.value === "other") {
+      if (newCategory?.value !== "rollup") {
         newFilters.rollups = [];
       }
 
