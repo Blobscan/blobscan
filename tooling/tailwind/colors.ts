@@ -9,9 +9,10 @@ export const baseColors = {
     200: "#36385B",
     300: "#434672",
     400: "#7D80AB",
-    500: "#ADAFD0",
-    600: "#C5C9D3",
-    700: "#BFC1DE",
+    500: "#6467a3",
+    600: "#ADAFD0",
+    700: "#C5C9D3",
+    800: "#BFC1DE",
   },
 
   warmGray: {
@@ -30,6 +31,7 @@ export const baseColors = {
     100: "#F7F5FD",
     200: "#EADEFD",
     300: "#E2CFFF",
+    350: "#C8AEFA",
     400: "#AE8CF5",
     500: "#9A71F2",
     600: "#896EE1",
@@ -101,7 +103,7 @@ export const semanticColors = {
     dark: primary[400],
   },
   accentDisabled: {
-    light: warmGray[500],
+    light: warmGray[300],
     dark: coolGray[300],
   },
   background: {
@@ -118,27 +120,31 @@ export const semanticColors = {
   },
   contentSecondary: {
     light: warmGray[600],
-    dark: coolGray[700],
+    dark: coolGray[800],
   },
   contentTertiary: {
     light: warmGray[400],
-    dark: coolGray[400],
+    dark: coolGray[500],
   },
   contentDisabled: {
     light: warmGray[400],
-    dark: coolGray[400],
+    dark: coolGray[500],
   },
   control: {
     light: shades["00"],
     dark: shades["00"],
   },
-  controlBackground: {
-    light: shades["00"],
-    dark: coolGray[200],
-  },
   controlActive: {
     light: primary[100],
     dark: primary[500],
+  },
+  controlHighlight: {
+    light: primary[100],
+    dark: coolGray[500],
+  },
+  controlBackground: {
+    light: warmGray[50],
+    dark: coolGray[200],
   },
   controlBorder: {
     light: warmGray[200],

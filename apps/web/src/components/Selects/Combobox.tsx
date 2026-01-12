@@ -297,7 +297,7 @@ export function Combobox<
               <ComboboxInput
                 ref={inputRef}
                 className={cn(
-                  "h-6 border-none bg-transparent text-sm outline-none focus:outline-none focus:ring-0"
+                  "h-6 border-none bg-transparent text-sm outline-none placeholder:text-hint-light focus:outline-none focus:ring-0 dark:placeholder:text-hint-dark"
                 )}
                 value={query}
                 placeholder={

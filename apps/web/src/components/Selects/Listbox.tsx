@@ -96,9 +96,12 @@ export function Listbox<
           )
         ) : (
           <div
-            className={cn("text-hint-light dark:text-hint-dark", {
-              "text-opacity-40 dark:text-opacity-40": disabled,
-            })}
+            className={cn(
+              "w-full text-ellipsis whitespace-nowrap text-hint-light dark:text-hint-dark",
+              {
+                "text-opacity-40 dark:text-opacity-40": disabled,
+              }
+            )}
           >
             {placeholder}
           </div>

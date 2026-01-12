@@ -81,7 +81,7 @@ export const SelectLayout = React.forwardRef<HTMLDivElement, SelectLayoutProps>(
           aria-label="Open select"
           className={cn(
             "flex h-9 w-full min-w-20 items-center justify-between rounded-lg border border-transparent",
-            "bg-controlBackground-light px-2  text-left text-sm shadow-md hover:border hover:border-controlBorderHighlight-light",
+            "bg-controlBackground-light px-2  text-left text-sm shadow-md hover:border ",
             "focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark",
             {
               "cursor-not-allowed opacity-40 hover:border-transparent dark:bg-opacity-40 dark:hover:border-transparent":
@@ -155,7 +155,7 @@ export function OptionLayout<T extends TValue>({
         "relative cursor-pointer select-none",
         "flex items-center justify-between gap-0.5 px-4 py-2",
         "text-contentSecondary-light dark:text-contentSecondary-dark",
-        "hover:bg-controlActive-light hover:dark:bg-controlActive-dark/70",
+        "hover:bg-controlHighlight-light hover:dark:bg-controlHighlight-dark",
         {
           "bg-controlActive-light dark:bg-controlActive-dark/70": focused,
         }
