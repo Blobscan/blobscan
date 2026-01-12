@@ -12,7 +12,9 @@ type TimestampProps = {
 export const TimestampToggle: FC<TimestampProps> = ({ format, onChange }) => {
   return (
     <Tooltip>
-      <TooltipContent>Click to show {format} timestamp</TooltipContent>
+      <TooltipContent>
+        Display {format === "relative" ? "Datetime" : "Age"} Format
+      </TooltipContent>
       <TooltipTrigger
         className="text-link-light dark:text-link-dark"
         onClick={() =>
