@@ -8,13 +8,13 @@ import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Copyable } from "~/components/Copyable";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
-import { Filters } from "~/components/Filters";
+import { FiltersBar } from "~/components/FiltersBar";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { Skeleton } from "~/components/Skeleton";
-import { TimestampToggle } from "~/components/TimestampToggle";
-import type { TimestampFormat } from "~/components/TimestampToggle";
+import { TimestampToggle } from "~/components/Toggles";
+import type { TimestampFormat } from "~/components/Toggles";
 import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import type { BlobWithExpandedTransaction } from "~/types";
@@ -219,7 +219,7 @@ const Blobs: NextPage = function () {
           </div>
         </div>
       </Header>
-      <Filters />
+      <FiltersBar />
       <PaginatedTable
         isLoading={isLoading}
         headers={blobHeaders}

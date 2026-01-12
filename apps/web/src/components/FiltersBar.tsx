@@ -11,20 +11,20 @@ import {
   useQueryParams,
 } from "~/hooks/useQueryParams";
 import { getISODate } from "~/utils";
-import { Card } from "../Cards/Card";
-import { NumberRangeInput } from "../Inputs/NumberRangeInput";
-import type { NumberRange } from "../Inputs/NumberRangeInput";
-import { RANGE_OPTIONS, RangeRadioGroup } from "../RangeRadioGroup";
-import type { RangeOption } from "../RangeRadioGroup";
-import { RollupSelector } from "../Selectors";
-import type { RollupSelectorOption } from "../Selectors";
+import { Card } from "./Cards/Card";
+import { DatePicker } from "./DatePicker";
+import { NumberRangeInput } from "./Inputs/NumberRangeInput";
+import type { NumberRange } from "./Inputs/NumberRangeInput";
+import { RANGE_OPTIONS, RangeRadioGroup } from "./RangeRadioGroup";
+import type { RangeOption } from "./RangeRadioGroup";
+import { RollupSelector } from "./Selectors";
+import type { RollupSelectorOption } from "./Selectors";
 import {
   CATEGORY_OPTIONS,
   CategorySelector,
-} from "../Selectors/CategorySelector";
-import type { CategorySelectorOption } from "../Selectors/CategorySelector";
-import { SortToggle } from "./SortToggle";
-import { TimestampFilter } from "./TimestampFilter";
+} from "./Selectors/CategorySelector";
+import type { CategorySelectorOption } from "./Selectors/CategorySelector";
+import { SortToggle } from "./Toggles";
 
 type FiltersState = {
   rollups: RollupSelectorOption[] | null;
@@ -81,7 +81,7 @@ function reducer<V extends keyof FiltersState>(
   }
 }
 
-export const Filters: FC = function () {
+export const FiltersBar: FC = function () {
   const router = useRouter();
   const { filterParams, paginationParams } = useQueryParams();
   const [filters, dispatch] = useReducer(reducer, INIT_STATE);
@@ -93,8 +93,6 @@ export const Filters: FC = function () {
     !filters.timestampRange &&
     !filters.blockNumberRange &&
     !filters.slotRange;
-
-  console.log(filters);
 
   const handleFilter = () => {
     const query: UrlObject["query"] = {};
@@ -286,7 +284,7 @@ export const Filters: FC = function () {
             </div>
             <div className="min-w-0 flex-1 basis-0">
               {filters.range?.value === "date" && (
-                <TimestampFilter
+                <DatePicker
                   className="rounded-s-none"
                   value={filters.timestampRange}
                   onChange={(newTimestampRange) =>

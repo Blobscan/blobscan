@@ -9,14 +9,14 @@ import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
-import { Filters } from "~/components/Filters";
+import { FiltersBar } from "~/components/FiltersBar";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
-import type { TimestampFormat } from "~/components/TimestampToggle";
-import { TimestampToggle } from "~/components/TimestampToggle";
+import type { TimestampFormat } from "~/components/Toggles";
+import { TimestampToggle } from "~/components/Toggles";
 import { api } from "~/api-client";
 import { useChain } from "~/hooks/useChain";
 import { useQueryParams } from "~/hooks/useQueryParams";
@@ -393,7 +393,7 @@ const Blocks: NextPage = function () {
           </div>
         </div>
       </Header>
-      <Filters />
+      <FiltersBar />
       <PaginatedTable
         isLoading={blocksIsLoading}
         headers={blockHeaders}

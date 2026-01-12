@@ -1,14 +1,14 @@
 import type { FC } from "react";
 import cn from "classnames";
 import type { DatepickerType } from "react-tailwindcss-datepicker";
-import Datepicker from "react-tailwindcss-datepicker";
+import TailwindDatePicker from "react-tailwindcss-datepicker";
 import { twMerge } from "tailwind-merge";
 
-type TimestampFilterProps = Pick<DatepickerType, "value" | "onChange"> & {
+type DatePickerProps = Pick<DatepickerType, "value" | "onChange"> & {
   className?: string;
 };
 
-export const TimestampFilter: FC<TimestampFilterProps> = function ({
+export const DatePicker: FC<DatePickerProps> = function ({
   value,
   onChange,
   className,
@@ -16,7 +16,7 @@ export const TimestampFilter: FC<TimestampFilterProps> = function ({
   const isValueSet = value?.startDate || value?.endDate;
 
   return (
-    <Datepicker
+    <TailwindDatePicker
       primaryColor="purple"
       value={value}
       onChange={onChange}
