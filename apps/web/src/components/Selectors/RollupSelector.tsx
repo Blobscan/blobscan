@@ -1,6 +1,7 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
-import { useQueryParams } from "~/hooks/useQueryParams";
+import { RollupRegistry } from "@blobscan/rollups";
+
 import { useRollupRegistry } from "~/hooks/useRollupRegistry";
 import { ROLLUP_STYLES } from "~/rollups";
 import type { Rollup } from "~/types";
@@ -15,43 +16,32 @@ export type RollupSelectorProps = Omit<
   "options" | "multiple" | "nullable" | "placeholder"
 >;
 
-export function RollupSelector(props: RollupSelectorProps) {
-  const onChange = props.onChange;
-  const rollupRegistry = useRollupRegistry();
+export const ROLLUP_OPTIONS: RollupSelectorOption[] = RollupRegistry.create(1)
+  .geAll()
+  .map(
+    ([name]) =>
+      ({
+        value: name.toLowerCase() as Rollup,
+        label: <RollupBadge rollup={name.toLowerCase() as Rollup} size="sm" />,
+        searchText: ROLLUP_STYLES[name.toLowerCase() as Rollup].label,
+      } satisfies RollupSelectorOption)
+  );
 
-  const { params } = useQueryParams();
-  const rollupOptions = useMemo<RollupSelectorOption[]>(() => {
+export function RollupSelector(props: RollupSelectorProps) {
+  const rollupRegistry = useRollupRegistry();
+  const rollupOptions = useMemo(() => {
     if (!rollupRegistry) {
       return [];
     }
 
-    return rollupRegistry.geAll().map(
-      ([name]) =>
-        ({
-          value: name.toLowerCase() as Rollup,
-          label: (
-            <RollupBadge rollup={name.toLowerCase() as Rollup} size="sm" />
-          ),
-          searchText: ROLLUP_STYLES[name.toLowerCase() as Rollup].label,
-        } satisfies RollupSelectorOption)
+    return ROLLUP_OPTIONS.filter((opt) =>
+      rollupRegistry.hasRollup(
+        opt.value.toUpperCase() as Parameters<
+          typeof rollupRegistry.hasRollup
+        >[0]
+      )
     );
   }, [rollupRegistry]);
-
-  useEffect(() => {
-    const rollups = params?.rollups;
-
-    if (!rollups) {
-      return;
-    }
-
-    const selectedRollupOptions = rollupOptions.filter((opt) =>
-      rollups.includes(opt.value)
-    );
-
-    if (selectedRollupOptions) {
-      onChange(selectedRollupOptions);
-    }
-  }, [rollupOptions, params?.rollups, onChange]);
 
   return (
     <Combobox

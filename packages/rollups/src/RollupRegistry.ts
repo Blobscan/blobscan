@@ -28,6 +28,10 @@ export class RollupRegistry {
     }
   }
 
+  hasRollup(rollup: Rollup) {
+    return !!this.registry[rollup]?.length;
+  }
+
   geAll() {
     return Object.entries(this.registry);
   }

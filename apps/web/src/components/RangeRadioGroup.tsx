@@ -11,22 +11,28 @@ export type RangeOption = {
   tooltipText?: string;
 };
 
+export const BLOCK_RANGE_OPTION: RangeOption = {
+  icon: <Icon src={CubeIcon} />,
+  value: "block",
+  tooltipText: "Filter by Block Number Range",
+};
+
+export const DATE_RANGE_OPTION: RangeOption = {
+  icon: <Icon src={CalendarIcon} />,
+  value: "date",
+  tooltipText: "Filter by Date Range",
+};
+
+export const SLOT_RANGE_OPTION: RangeOption = {
+  icon: <Icon src={ClockIcon} />,
+  value: "slot",
+  tooltipText: "Filter by Slot Range",
+};
+
 export const RANGE_OPTIONS: RangeOption[] = [
-  {
-    icon: <Icon src={CubeIcon} />,
-    value: "block",
-    tooltipText: "Filter by Block Number Range",
-  },
-  {
-    icon: <Icon src={CalendarIcon} />,
-    value: "date",
-    tooltipText: "Filter by Date Range",
-  },
-  {
-    icon: <Icon src={ClockIcon} />,
-    value: "slot",
-    tooltipText: "Filter by Slot Range",
-  },
+  BLOCK_RANGE_OPTION,
+  DATE_RANGE_OPTION,
+  SLOT_RANGE_OPTION,
 ];
 
 export interface RangeRadioGroupProps {

@@ -15,9 +15,15 @@ import { Card } from "./Cards/Card";
 import { DatePicker } from "./DatePicker";
 import { NumberRangeInput } from "./Inputs/NumberRangeInput";
 import type { NumberRange } from "./Inputs/NumberRangeInput";
-import { RANGE_OPTIONS, RangeRadioGroup } from "./RangeRadioGroup";
+import {
+  BLOCK_RANGE_OPTION,
+  DATE_RANGE_OPTION,
+  RANGE_OPTIONS,
+  RangeRadioGroup,
+  SLOT_RANGE_OPTION,
+} from "./RangeRadioGroup";
 import type { RangeOption } from "./RangeRadioGroup";
-import { RollupSelector } from "./Selectors";
+import { ROLLUP_OPTIONS, RollupSelector } from "./Selectors";
 import type { RollupSelectorOption } from "./Selectors";
 import {
   CATEGORY_OPTIONS,
@@ -215,12 +221,27 @@ export const FiltersBar: FC = function () {
   }, []);
 
   useEffect(() => {
-    const { startDate, endDate, startBlock, endBlock, startSlot, endSlot } =
-      filterParams;
+    const {
+      category,
+      startDate,
+      endDate,
+      startBlock,
+      endBlock,
+      startSlot,
+      endSlot,
+      rollups,
+    } = filterParams;
     const { sort } = paginationParams;
     const newFilters: Partial<FiltersState> = {};
 
+    if (category) {
+      newFilters.category = CATEGORY_OPTIONS.find(
+        (opts) => opts.value === category
+      );
+    }
+
     if (startDate || endDate) {
+      newFilters.range = DATE_RANGE_OPTION;
       newFilters.timestampRange = {
         startDate: startDate ? new Date(startDate) : null,
         endDate: endDate ? new Date(endDate) : null,
@@ -228,6 +249,7 @@ export const FiltersBar: FC = function () {
     }
 
     if (startBlock || endBlock) {
+      newFilters.range = BLOCK_RANGE_OPTION;
       newFilters.blockNumberRange = {
         start: startBlock,
         end: endBlock,
@@ -235,10 +257,17 @@ export const FiltersBar: FC = function () {
     }
 
     if (startSlot || endSlot) {
+      newFilters.range = SLOT_RANGE_OPTION;
       newFilters.slotRange = {
         start: startSlot,
         end: endSlot,
       };
+    }
+
+    if (rollups?.length) {
+      newFilters.rollups = rollups
+        .map((r) => ROLLUP_OPTIONS.find((opts) => opts.value === r))
+        .filter(Boolean) as RollupSelectorOption[];
     }
 
     if (sort) {
