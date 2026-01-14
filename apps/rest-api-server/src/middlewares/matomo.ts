@@ -3,7 +3,7 @@ import type { Request, Response, NextFunction } from "express";
 import { env } from "@blobscan/env";
 import { logger } from "@blobscan/logger";
 
-import { createOrGetMatomoTracker } from "../matomo-tracker";
+import { matomoTracker } from "../clients/matomo-tracker";
 
 const EXCLUDED_PATHS = ["/metrics", "/healthcheck", "/logging"];
 
@@ -22,13 +22,11 @@ export function matomoMiddleware(
   res: Response,
   next: NextFunction
 ): void {
-  if (!env.MATOMO_ENABLED) {
+  if (!matomoTracker) {
     next();
 
     return;
   }
-
-  const matomoTracker = createOrGetMatomoTracker();
 
   const path = req.path;
 
@@ -39,6 +37,8 @@ export function matomoMiddleware(
   }
 
   res.on("finish", () => {
+    const start = Date.now();
+
     try {
       const clientIp = getClientIp(req);
       const userAgent = req.headers["user-agent"] || "unknown";
@@ -61,12 +61,14 @@ export function matomoMiddleware(
           2: ["HTTP Method", method],
         }),
       });
+
       matomoTracker?.track({
         url: fullUrl,
         action_name: actionName,
         token_auth: env.MATOMO_AUTH_TOKEN,
         ua: userAgent,
         cip: clientIp,
+        pf_srv: Date.now() - start,
         cvar: JSON.stringify({
           1: ["HTTP Status", statusCode.toString()],
           2: ["HTTP Method", method],
