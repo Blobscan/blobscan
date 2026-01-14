@@ -118,6 +118,20 @@ export const env = createEnv({
       POSTHOG_ID: z.string().optional(),
       POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
 
+      // Matomo
+      MATOMO_ENABLED: booleanSchema.default("false"),
+      MATOMO_URL: z
+        .string()
+        .url()
+        .optional()
+        .superRefine(requireIfEnvEnabled("MATOMO_ENABLED")),
+      MATOMO_SITE_ID: z.coerce
+        .number()
+        .positive()
+        .optional()
+        .superRefine(requireIfEnvEnabled("MATOMO_ENABLED")),
+      MATOMO_AUTH_TOKEN: z.string().optional(),
+
       // OpenTelemetry
       OTEL_DIAG_ENABLED: z.boolean().default(false),
       OTLP_AUTH_USERNAME: z.coerce.string().optional(),
@@ -291,6 +305,15 @@ export const env = createEnv({
         }`
       );
     }
+
+    console.log(
+      `Matomo configuration: enabled=${env.MATOMO_ENABLED}, url=${
+        env.MATOMO_URL
+      }, siteId=${env.MATOMO_SITE_ID} authToken=${maskSensitiveData(
+        env.MATOMO_AUTH_TOKEN
+      )}`
+    );
+
     console.log(
       `Otel configuration: protocol=${
         env.OTEL_EXPORTER_OTLP_PROTOCOL

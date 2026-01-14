@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import * as Sentry from "@sentry/node";
-import bodyParser from "body-parser";
-import cors from "cors";
 import express from "express";
 
 import "./bigint";
-import { createMetricsHandler } from "@blobscan/api";
 import { env } from "@blobscan/env";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 
@@ -15,8 +12,13 @@ import { logger } from "@blobscan/logger";
 
 import { printBanner } from "./banner";
 import { prisma } from "./clients/prisma";
-import { errorHandler } from "./errors/handler";
-import { morganMiddleware } from "./morgan";
+import { errorHandler, metricsHandler } from "./handlers";
+import {
+  bodyParserMiddleware,
+  corsMiddleware,
+  matomoMiddleware,
+  morganMiddleware,
+} from "./middlewares";
 import { setUpOpenApiTRPC } from "./openapi-trpc";
 import { getBlobPropagator } from "./services/blob-propagator";
 import { setUpSyncers } from "./services/syncers";
@@ -25,28 +27,17 @@ collectDefaultMetrics();
 
 printBanner();
 
-const REQUEST_BODY_LIMIT = "8mb";
-
 async function main() {
-  const metricsHandler = createMetricsHandler(prisma);
   const closeSyncers = await setUpSyncers();
 
   const app = express();
 
+  app.use(corsMiddleware);
+  app.use(bodyParserMiddleware);
   app.use(morganMiddleware);
-  app.use(cors());
-  app.use(bodyParser.json({ limit: REQUEST_BODY_LIMIT }));
+  app.use(matomoMiddleware);
 
-  app.get("/metrics", (req, res) => {
-    if (!env.METRICS_ENABLED) {
-      res.statusCode = 403;
-      res.end("Metrics are disabled");
-
-      return;
-    }
-
-    return metricsHandler(req, res);
-  });
+  app.get("/metrics", metricsHandler);
 
   await setUpOpenApiTRPC(app);
 
