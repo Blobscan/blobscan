@@ -50,18 +50,6 @@ export function matomoMiddleware(
 
       const fullUrl = `${req.protocol}://${req.get("host") || "unknown"}${url}`;
 
-      console.log("Tracking request in Matomo", {
-        url: fullUrl,
-        action_name: actionName,
-        token_auth: env.MATOMO_AUTH_TOKEN,
-        ua: userAgent,
-        cip: clientIp,
-        cvar: JSON.stringify({
-          1: ["HTTP Status", statusCode.toString()],
-          2: ["HTTP Method", method],
-        }),
-      });
-
       matomoTracker?.track({
         url: fullUrl,
         action_name: actionName,
