@@ -16,6 +16,7 @@ import { logger } from "@blobscan/logger";
 import { printBanner } from "./banner";
 import { prisma } from "./clients/prisma";
 import { errorHandler } from "./errors/handler";
+import { matomoMiddleware } from "./middlewares";
 import { morganMiddleware } from "./morgan";
 import { setUpOpenApiTRPC } from "./openapi-trpc";
 import { getBlobPropagator } from "./services/blob-propagator";
@@ -34,6 +35,7 @@ async function main() {
   const app = express();
 
   app.use(morganMiddleware);
+  app.use(matomoMiddleware);
   app.use(cors());
   app.use(bodyParser.json({ limit: REQUEST_BODY_LIMIT }));
 
