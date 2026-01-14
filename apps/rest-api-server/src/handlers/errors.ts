@@ -5,8 +5,8 @@ import { logger } from "@blobscan/logger";
 import {
   isBodyParserError,
   PayloadTooLargeError,
-} from "./app-errors/PayloadTooLargeError";
-import { UnknownError } from "./app-errors/UnknownError";
+} from "../errors/PayloadTooLargeError";
+import { UnknownError } from "../errors/UnknownError";
 
 export const errorHandler: ErrorRequestHandler = function (err, _, res, __) {
   if (isBodyParserError(err)) {

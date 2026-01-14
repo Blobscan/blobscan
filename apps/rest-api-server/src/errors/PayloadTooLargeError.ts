@@ -1,4 +1,4 @@
-import { AppError } from "../AppError";
+import { AppError } from "./AppError";
 
 interface BodyParserError extends Error {
   status: number;

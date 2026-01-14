@@ -1,6 +1,6 @@
 import type { Response } from "express";
 
-import { AppError } from "../AppError";
+import { AppError } from "./AppError";
 
 export class UnknownError extends AppError {
   constructor(err: unknown) {
