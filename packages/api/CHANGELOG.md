@@ -1,5 +1,15 @@
 # @blobscan/api
 
+## 0.31.3
+
+### Patch Changes
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Enforced page query parameter to be greater than 0
+
+- Updated dependencies [[`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082)]:
+  - @blobscan/rollups@0.4.2
+  - @blobscan/dayjs@0.1.1
+
 ## 0.31.2
 
 ### Patch Changes
