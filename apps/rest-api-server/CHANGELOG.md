@@ -1,5 +1,19 @@
 # @blobscan/rest-api-server
 
+## 0.12.0
+
+### Minor Changes
+
+- [#940](https://github.com/Blobscan/blobscan/pull/940) [`28f83b8`](https://github.com/Blobscan/blobscan/commit/28f83b856aa72f36794ecbfed27a454102146b08) Thanks [@PJColombo](https://github.com/PJColombo)! - Added Matomo analytics tracking
+
+### Patch Changes
+
+- [#941](https://github.com/Blobscan/blobscan/pull/941) [`9d43fa6`](https://github.com/Blobscan/blobscan/commit/9d43fa68ab81404f793439a06c9bbf8d6e37a25b) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated Matomo tracking requests to use POST instead of GET, allowing the auth token to be sent securely in the request body
+
+- Updated dependencies [[`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082), [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082)]:
+  - @blobscan/rollups@0.4.2
+  - @blobscan/api@0.31.3
+
 ## 0.11.2
 
 ### Patch Changes

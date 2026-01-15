@@ -1,5 +1,36 @@
 # @blobscan/web
 
+## 0.47.0
+
+### Minor Changes
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved range filters by displaying only one at a time and allowing users to switch between them
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for date picker shortcuts
+
+### Patch Changes
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Disabled future dates and dates prior to the blob fork in the date picker
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Corrected timestamp toggle tooltip message
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated the filters bar to automatically switch the selected category to Rollup when a rollup is chosen
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue where checkmark icon wasn't being displayed in listboxes
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue where checkmark wasn't being displayed properly for listboxes that contain small size values
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved category and rollup filter behavior by automatically resetting the rollup selector when a non-rollup category is selected
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue where filters bar wasn't being properly displayed in medium and small screens
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue causing unintended vertical scrolling when selecting the rollup filter
+
+- Updated dependencies [[`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082), [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082)]:
+  - @blobscan/rollups@0.4.2
+  - @blobscan/dayjs@0.1.1
+  - @blobscan/api@0.31.3
+
 ## 0.46.0
 
 ### Minor Changes

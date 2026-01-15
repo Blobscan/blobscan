@@ -1,5 +1,11 @@
 # @blobscan/rollups
 
+## 0.4.2
+
+### Patch Changes
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for date picker shortcuts
+
 ## 0.4.1
 
 ### Patch Changes
