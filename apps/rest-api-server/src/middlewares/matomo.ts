@@ -42,6 +42,7 @@ export function matomoMiddleware(
     try {
       const clientIp = getClientIp(req);
       const userAgent = req.headers["user-agent"] || "unknown";
+      const acceptLanguage = req.headers["accept-language"] || "unknown";
       const url = req.originalUrl || req.url;
       const method = req.method;
       const statusCode = res.statusCode;
@@ -56,7 +57,8 @@ export function matomoMiddleware(
         token_auth: env.MATOMO_AUTH_TOKEN,
         ua: userAgent,
         cip: clientIp,
-        pf_srv: Date.now() - start,
+        lang: acceptLanguage,
+        pf_srv: (Date.now() - start).toString(),
         cvar: JSON.stringify({
           1: ["HTTP Status", statusCode.toString()],
           2: ["HTTP Method", method],
