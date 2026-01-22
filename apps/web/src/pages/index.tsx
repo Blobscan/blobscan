@@ -50,8 +50,8 @@ const Home: NextPage = () => {
       refetchOnReconnect: false,
       select: (data) => data[0],
     });
-  const { data: totalBlobsChartData, error: totalBlobsTimeSeriesErr } =
-    api.stats.getDailyStats.useQuery(
+  const { data: categorizedChartData, error: categorizedChartDataError } =
+    api.stats.getTimeseries.useQuery(
       {
         stats: "totalBlobs",
         timeFrame: "30d",
@@ -64,20 +64,18 @@ const Home: NextPage = () => {
         select: ({ data }) => convertTimeseriesToChartData(data),
       }
     );
-  const {
-    data: avgBlobGasPriceChartData,
-    error: avgBlobGasPriceTimeSeriesErr,
-  } = api.stats.getDailyStats.useQuery(
-    {
-      stats: "avgBlobGasPrice",
-      timeFrame: "30d",
-      sort: "asc",
-    },
-    {
-      refetchOnWindowFocus: false,
-      select: ({ data }) => convertTimeseriesToChartData(data),
-    }
-  );
+  const { data: globalChartData, error: globalChartDataError } =
+    api.stats.getTimeseries.useQuery(
+      {
+        stats: "avgBlobGasPrice",
+        timeFrame: "30d",
+        sort: "asc",
+      },
+      {
+        refetchOnWindowFocus: false,
+        select: ({ data }) => convertTimeseriesToChartData(data),
+      }
+    );
   const { blocks, transactions, blobs } = useMemo(() => {
     if (!blocksData) {
       return { blocks: [], transactions: [], blobs: [] };
@@ -106,8 +104,8 @@ const Home: NextPage = () => {
   const error =
     latestBlocksError ||
     overallStatsErr ||
-    totalBlobsTimeSeriesErr ||
-    avgBlobGasPriceTimeSeriesErr;
+    categorizedChartDataError ||
+    globalChartDataError;
 
   if (error) {
     return (
@@ -136,8 +134,8 @@ const Home: NextPage = () => {
         <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
             <DailyAvgBlobGasPriceChart
-              days={avgBlobGasPriceChartData?.timestamps}
-              series={avgBlobGasPriceChartData?.metricSeries.avgBlobGasPrice}
+              days={globalChartData?.timestamps}
+              series={globalChartData?.metricSeries.avgBlobGasPrice}
               size="sm"
               compact
             />
@@ -199,8 +197,8 @@ const Home: NextPage = () => {
           <div className="col-span-2 sm:col-span-4">
             <DailyBlobsChart
               size="sm"
-              days={totalBlobsChartData?.timestamps}
-              series={totalBlobsChartData?.metricSeries.totalBlobs}
+              days={categorizedChartData?.timestamps}
+              series={categorizedChartData?.metricSeries.totalBlobs}
               compact
             />
           </div>

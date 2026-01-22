@@ -19,7 +19,7 @@ const METRICS = Object.keys(
 
 const inputSchema = withAllStatFiltersSchema.merge(withSortFilterSchema);
 
-const metricsSchema = z.object({
+const metricSeriesSchema = z.object({
   avgBlobAsCalldataFee: DailyStatsModel.shape.avgBlobAsCalldataFee
     .array()
     .optional(),
@@ -67,13 +67,13 @@ const seriesSchema = z.object({
   type: z.enum(["category", "rollup", "global"]),
   name: z.union([z.nativeEnum(Category), z.nativeEnum(Rollup)]).optional(),
   startTimestampIdx: z.number().optional(),
-  metrics: metricsSchema,
+  metrics: metricSeriesSchema,
 });
 
 type SeriesSchema = z.infer<typeof seriesSchema>;
-type MetricsSchema = z.input<typeof metricsSchema>;
+type MetricsSchema = z.input<typeof metricSeriesSchema>;
 
-const outputSchema = z
+export const outputSchema = z
   .object({
     data: z.object({
       timestamps: z.date().array(),
@@ -178,13 +178,13 @@ function getZeroValue(value: unknown) {
   return 0;
 }
 
-export const getDailyStats = publicProcedure
+export const getTimeseries = publicProcedure
   .meta({
     openapi: {
       method: "GET",
       path: `/stats/timeseries`,
       tags: ["stats"],
-      summary: "retrieves transactions time series stats.",
+      summary: "retrieves time series stats.",
     },
   })
   .input(inputSchema)

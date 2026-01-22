@@ -1,7 +1,5 @@
-import type { Category, DailyStats, Rollup, Chartable } from "~/types";
+import type { TimeseriesData, Chartable, TimeseriesName } from "~/types";
 import { normalizeNumerish } from "../../utils";
-
-type SeriesDimensionName = Category | Rollup | "global" | "unknown";
 
 type AggregationType = "count" | "average" | "time";
 
@@ -73,17 +71,18 @@ export function aggregateSeries<T extends number | string | bigint>(
   }, [] as T[]);
 }
 
-type MetricDefinitions<T extends DailyStats> = T["series"][number]["metrics"];
+type MetricDefinitions<T extends TimeseriesData> =
+  T["series"][number]["metrics"];
 type MetricDefinitionOf<
-  T extends DailyStats,
+  T extends TimeseriesData,
   K extends keyof MetricDefinitions<T>
 > = MetricDefinitions<T>[K];
 
-type TimeseriesChartData<T extends DailyStats> = {
+type TimeseriesChartData<T extends TimeseriesData> = {
   timestamps: string[];
   metricSeries: {
     [K in keyof MetricDefinitions<T>]?: Array<{
-      name: SeriesDimensionName;
+      name: TimeseriesName;
       values: NonNullable<Chartable<MetricDefinitions<T>[K]>>;
     }>;
   };
@@ -118,7 +117,7 @@ function normalizeSeriesLength<T extends number | string>(
   ];
 }
 
-export function convertTimeseriesToChartData<T extends DailyStats>(
+export function convertTimeseriesToChartData<T extends TimeseriesData>(
   timeseries: T
 ): TimeseriesChartData<T> {
   const { timestamps, series } = timeseries;
