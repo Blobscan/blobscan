@@ -9,11 +9,11 @@ import type { CustomTimeSeriesProps } from "./ChartBase/types";
 import { aggregateSeries } from "./helpers";
 
 export type DailyBlobGasComparisonChartProps = CustomTimeSeriesProps<{
-  totalBlobAsCalldataGasUsed: {
+  totalBlobAsCalldataGasUsed?: {
     name?: string;
     values: string[];
   }[];
-  totalBlobGasUsed: {
+  totalBlobGasUsed?: {
     name?: string;
     values: string[];
   }[];

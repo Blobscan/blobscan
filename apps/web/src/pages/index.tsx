@@ -13,17 +13,13 @@ import {
   DailyAvgBlobGasPriceChart,
   DailyBlobsChart,
 } from "~/components/Charts";
-import { convertStatsToChartSeries } from "~/components/Charts/helpers";
+import { convertTimeseriesToChartData } from "~/components/Charts/helpers";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
-import type {
-  BlockWithExpandedBlobsAndTransactions,
-  DailyStats,
-  MakeRequired,
-} from "~/types";
+import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
   buildBlobsRoute,
   buildBlocksRoute,
@@ -54,33 +50,34 @@ const Home: NextPage = () => {
       refetchOnReconnect: false,
       select: (data) => data[0],
     });
-  const { data: dailyStatsData, error: dailyStatsErr } =
-    api.stats.getDailyStatsForCharts.useQuery(
+  const { data: totalBlobsChartData, error: totalBlobsTimeSeriesErr } =
+    api.stats.getDailyStats.useQuery(
       {
-        fields: ["totalBlobs", "avgBlobGasPrice"],
+        stats: "totalBlobs",
         timeFrame: "30d",
-        categories: "all",
+        categories: "other",
         rollups: "all",
         sort: "asc",
       },
       {
         refetchOnWindowFocus: false,
+        select: ({ data }) => convertTimeseriesToChartData(data),
       }
     );
-
-  const dailyStats = useMemo(() => {
-    if (!dailyStatsData) {
-      return;
+  const {
+    data: avgBlobGasPriceChartData,
+    error: avgBlobGasPriceTimeSeriesErr,
+  } = api.stats.getDailyStats.useQuery(
+    {
+      stats: "avgBlobGasPrice",
+      timeFrame: "30d",
+      sort: "asc",
+    },
+    {
+      refetchOnWindowFocus: false,
+      select: ({ data }) => convertTimeseriesToChartData(data),
     }
-    return convertStatsToChartSeries(
-      dailyStatsData as MakeRequired<
-        DailyStats,
-        "totalBlobs" | "avgBlobGasPrice"
-      >[]
-    );
-  }, [dailyStatsData]);
-  const { days, series, totalSeries } = dailyStats || {};
-
+  );
   const { blocks, transactions, blobs } = useMemo(() => {
     if (!blocksData) {
       return { blocks: [], transactions: [], blobs: [] };
@@ -106,7 +103,11 @@ const Home: NextPage = () => {
     };
   }, [blocksData]);
 
-  const error = latestBlocksError || overallStatsErr || dailyStatsErr;
+  const error =
+    latestBlocksError ||
+    overallStatsErr ||
+    totalBlobsTimeSeriesErr ||
+    avgBlobGasPriceTimeSeriesErr;
 
   if (error) {
     return (
@@ -135,8 +136,8 @@ const Home: NextPage = () => {
         <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
             <DailyAvgBlobGasPriceChart
-              days={days}
-              series={totalSeries?.avgBlobGasPrice}
+              days={avgBlobGasPriceChartData?.timestamps}
+              series={avgBlobGasPriceChartData?.metricSeries.avgBlobGasPrice}
               size="sm"
               compact
             />
@@ -198,8 +199,8 @@ const Home: NextPage = () => {
           <div className="col-span-2 sm:col-span-4">
             <DailyBlobsChart
               size="sm"
-              days={days}
-              series={series?.totalBlobs}
+              days={totalBlobsChartData?.timestamps}
+              series={totalBlobsChartData?.metricSeries.totalBlobs}
               compact
             />
           </div>

@@ -7,14 +7,16 @@ import type { CustomTimeSeriesProps } from "./ChartBase/types";
 import { aggregateSeries } from "./helpers";
 
 export type DailyUniqueAddressesChartProps = CustomTimeSeriesProps<{
-  totalUniqueReceivers: {
-    name?: string;
-    values: number[];
-  }[];
-  totalUniqueSenders: {
-    name?: string;
-    values: number[];
-  }[];
+  totalUniqueReceivers?:
+    | {
+        name?: string;
+        values: number[];
+      }[];
+  totalUniqueSenders?:
+    | {
+        name?: string;
+        values: number[];
+      }[];
 }>;
 
 const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =

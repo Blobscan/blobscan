@@ -48,5 +48,9 @@ export function formatSeriesName(name?: string) {
     return "Other";
   }
 
+  if (name === "global") {
+    return "Total";
+  }
+
   return name ?? "Unknown";
 }

@@ -1,94 +1,7 @@
-import type { Category, DailyStats, Rollup, Stringified } from "~/types";
+import type { Category, DailyStats, Rollup, Chartable } from "~/types";
 import { normalizeNumerish } from "../../utils";
 
-type CategoryName = Category | Rollup | "total" | "unknown";
-
-type ChartStatsSeries<T extends DailyStats> = {
-  [K in keyof Omit<T, "category" | "rollup" | "day">]: {
-    name?: CategoryName;
-    values: Stringified<T[K]>[];
-  }[];
-};
-
-export function convertStatsToChartSeries<T extends DailyStats>(
-  dailyStats: T[]
-):
-  | {
-      days: string[];
-      series?: ChartStatsSeries<T>;
-      totalSeries?: ChartStatsSeries<T>;
-      totalRollupSeries?: ChartStatsSeries<T>;
-    }
-  | undefined {
-  if (dailyStats.length === 0) {
-    return { days: [] };
-  }
-
-  const days = Array.from(new Set(dailyStats.map(({ day }) => day.toString())));
-  const totalSeries: ChartStatsSeries<T> = {} as ChartStatsSeries<T>;
-  const totalRollupSeries: ChartStatsSeries<T> = {} as ChartStatsSeries<T>;
-  const categoriesSeries: ChartStatsSeries<T> = {} as ChartStatsSeries<T>;
-  let currentDayIndex = 0;
-  let prevDay = days[0];
-
-  for (const stats of dailyStats) {
-    const day = stats.day.toString();
-    const seriesName = stats.category ?? stats.rollup ?? "total";
-
-    if (day !== prevDay) {
-      prevDay = day;
-      currentDayIndex++;
-    }
-
-    Object.entries(stats).forEach(([statKey, statValue]) => {
-      if (statKey === "day" || statKey === "category" || statKey === "rollup") {
-        return;
-      }
-
-      const defaultStatValue = typeof statValue === "number" ? 0 : "0";
-
-      const statKey_ = statKey as keyof ChartStatsSeries<T>;
-      const series =
-        seriesName === "total"
-          ? totalSeries
-          : seriesName === "rollup"
-          ? totalRollupSeries
-          : categoriesSeries;
-
-      if (!series[statKey_]) {
-        series[statKey_] = [];
-      }
-
-      const statSeries = series[statKey_];
-      const categoryStat = statSeries.find(({ name }) => name === seriesName);
-      const statValue_ = (
-        typeof statValue !== "number" ? String(statValue) : statValue
-      ) as Stringified<T[typeof statKey_]>;
-
-      if (!categoryStat) {
-        const values = Array.from({ length: days.length }).fill(
-          defaultStatValue
-        ) as Stringified<T[typeof statKey_]>[];
-
-        values[currentDayIndex] = statValue_;
-
-        statSeries.push({
-          name: seriesName,
-          values,
-        });
-      } else {
-        categoryStat.values[currentDayIndex] = statValue_;
-      }
-    });
-  }
-
-  return {
-    days,
-    series: categoriesSeries,
-    totalSeries,
-    totalRollupSeries,
-  };
-}
+type SeriesDimensionName = Category | Rollup | "global" | "unknown";
 
 type AggregationType = "count" | "average" | "time";
 
@@ -158,4 +71,91 @@ export function aggregateSeries<T extends number | string | bigint>(
       return ((accValue as number) + (value as number)) as T;
     });
   }, [] as T[]);
+}
+
+type MetricDefinitions<T extends DailyStats> = T["series"][number]["metrics"];
+type MetricDefinitionOf<
+  T extends DailyStats,
+  K extends keyof MetricDefinitions<T>
+> = MetricDefinitions<T>[K];
+
+type TimeseriesChartData<T extends DailyStats> = {
+  timestamps: string[];
+  metricSeries: {
+    [K in keyof MetricDefinitions<T>]?: Array<{
+      name: SeriesDimensionName;
+      values: NonNullable<Chartable<MetricDefinitions<T>[K]>>;
+    }>;
+  };
+};
+
+function getDefaultValue<T extends number | string>(sample: T) {
+  return typeof sample === "string" ? "0" : 0;
+}
+
+function normalizeSeriesLength<T extends number | string>(
+  values: T[],
+  startTimestampIdx: number,
+  totalTimestamps: number
+): T[] {
+  const sample = values.find((v) => v !== null && v !== undefined);
+
+  if (!sample) return values;
+
+  const defaultValue = getDefaultValue(sample) as T;
+  const left = startTimestampIdx;
+  const right = Math.max(
+    0,
+    totalTimestamps - (startTimestampIdx + values.length)
+  );
+
+  if (left === 0 && right === 0) return values;
+
+  return [
+    ...Array.from({ length: left }, () => defaultValue),
+    ...values,
+    ...Array.from({ length: right }, () => defaultValue),
+  ];
+}
+
+export function convertTimeseriesToChartData<T extends DailyStats>(
+  timeseries: T
+): TimeseriesChartData<T> {
+  const { timestamps, series } = timeseries;
+  const totalTimestamps = timestamps.length;
+
+  const chartData: TimeseriesChartData<T> = {
+    timestamps: timestamps.map((t) => t.toString()),
+    metricSeries: {},
+  };
+
+  for (const s of series) {
+    const startTimestampIdx = s.startTimestampIdx ?? 0;
+
+    for (const [metricName, metricValues] of Object.entries(s.metrics)) {
+      const metricName_ =
+        metricName as keyof TimeseriesChartData<T>["metricSeries"];
+
+      if (!metricValues.length) continue;
+
+      const normalizedMetricValues = metricValues.map((v) =>
+        typeof v !== "number" ? v.toString() : v
+      );
+
+      const alignedValues = normalizeSeriesLength(
+        normalizedMetricValues,
+        startTimestampIdx,
+        totalTimestamps
+      );
+
+      (chartData.metricSeries[metricName_] ??= []).push({
+        name: s.name ?? "global",
+        values: alignedValues as NonNullable<
+          Chartable<MetricDefinitionOf<T, typeof metricName_>>
+        >,
+      });
+    }
+  }
+
+  return chartData;
 }

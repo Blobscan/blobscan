@@ -9,7 +9,7 @@ export type DailyAvgBlobGasPriceChartProps = TimeSeriesProps<number>;
 
 const DailyAvgBlobGasPriceChart: FC<DailyAvgBlobGasPriceChartProps> =
   React.memo(function ({ days, series, ...restProps }) {
-    const { scaledValues, unit } = useScaledWeiAmounts(series);
+    const { scaledValues, unit } = useScaledWeiAmounts(series, "Gwei");
 
     return (
       <ChartCard

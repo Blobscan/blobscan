@@ -50,7 +50,11 @@ export type BlobWithExpandedTransaction = MakeRequired<
   "transaction"
 >;
 
-export type DailyStats = AppRouterOutputs["stats"]["getDailyStats"][number];
+export type DailyStats = AppRouterOutputs["stats"]["getDailyStats"]["data"];
+
+export type TimeSeries = DailyStats["series"][number];
+
+export type TimeSeriesMetrics = DailyStats["series"][number]["metrics"];
 
 export type DailyStatName = keyof Omit<
   DailyStats,
