@@ -54,7 +54,10 @@ export type TimeseriesData = AppRouterOutputs["stats"]["getTimeseries"]["data"];
 
 export type SingleTimeseries = TimeseriesData["series"][number];
 
-export type TimeseriesMetrics = TimeseriesData["series"][number]["metrics"];
+export type TimeseriesMetricsSeries =
+  TimeseriesData["series"][number]["metrics"];
+
+export type TimeseriesMetric = keyof TimeseriesMetricsSeries;
 
 export type TimeseriesName = Category | Rollup | "global";
 

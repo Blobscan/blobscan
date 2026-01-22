@@ -31,6 +31,7 @@ import { Listbox } from "~/components/Selects";
 import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
+import type { TimeseriesMetric } from "~/types";
 import { calculatePercentage, splitArrayIntoChunks } from "~/utils";
 
 type Section = "All" | "Blob" | "Block" | "Gas" | "Fee" | "Transaction";
@@ -56,6 +57,29 @@ const SECTION_OPTIONS = [
   { value: "Transaction" },
 ] as const;
 
+const CATEGORIZED_METRICS: TimeseriesMetric[] = [
+  "totalBlobs",
+  "totalBlobSize",
+  "totalBlobUsageSize",
+  "totalBlobGasUsed",
+  "totalBlobFee",
+  "totalTransactions",
+  "totalUniqueReceivers",
+  "totalUniqueSenders",
+  "totalBlobAsCalldataGasUsed",
+] as const;
+
+const GLOBAL_METRICS: TimeseriesMetric[] = [
+  "avgBlobGasPrice",
+  "avgBlobFee",
+  "avgBlobMaxFee",
+  "totalBlocks",
+  "totalUniqueReceivers",
+  "totalUniqueSenders",
+  "totalBlobAsCalldataGasUsed",
+  "totalBlobGasUsed",
+] as const;
+
 const Stats: NextPage = function () {
   const chain = useChain();
   const [selectedSection, setSelectedSection] = useState<SectionOption>(
@@ -73,8 +97,7 @@ const Stats: NextPage = function () {
       rollups: "all",
       timeFrame: timeFrameOption?.value,
       sort: "asc",
-      stats:
-        "totalBlobs,totalBlobSize,totalBlobUsageSize,totalBlobGasUsed,totalBlobFee,totalTransactions,totalUniqueReceivers,totalUniqueSenders,totalBlobAsCalldataGasUsed",
+      metrics: CATEGORIZED_METRICS.join(","),
     },
     {
       refetchOnWindowFocus: false,
@@ -85,8 +108,7 @@ const Stats: NextPage = function () {
     {
       timeFrame: timeFrameOption?.value,
       sort: "asc",
-      stats:
-        "avgBlobGasPrice,avgBlobFee,avgBlobMaxFee,totalBlocks,totalUniqueReceivers,totalUniqueSenders,totalBlobAsCalldataGasUsed,totalBlobGasUsed",
+      metrics: GLOBAL_METRICS.join(","),
     },
     {
       refetchOnWindowFocus: false,

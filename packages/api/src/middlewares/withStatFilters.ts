@@ -64,9 +64,9 @@ export const withStatRollupsFilterSchema = z.object({
   rollups: allSchema.or(commaSeparatedRollupsSchema).optional(),
 });
 
-export const withStatsFilterSchema = z
+export const withMetricsFilterSchema = z
   .object({
-    stats: commaSeparatedValuesSchema.transform((values, ctx) =>
+    metrics: commaSeparatedValuesSchema.transform((values, ctx) =>
       values?.map((v) => {
         const res = DailyStatsModel.omit({
           id: true,
@@ -83,7 +83,7 @@ export const withStatsFilterSchema = z
             params: {
               value: v,
             },
-            message: "Provided stats value is invalid",
+            message: "Provided metric name is invalid",
           });
 
           return z.NEVER;
@@ -95,22 +95,20 @@ export const withStatsFilterSchema = z
   })
   .partial();
 
-export const withAllStatFiltersSchema = withStatsFilterSchema
+export const withStatFiltersSchema = withMetricsFilterSchema
   .merge(withTimeFrameFilterSchema)
   .merge(withStatCategoriesFilterSchema.merge(withStatRollupsFilterSchema));
 
-export type StatFiltersOutputSchema = z.output<typeof withAllStatFiltersSchema>;
+export type StatFiltersOutputSchema = z.output<typeof withStatFiltersSchema>;
 
 function buildDayWhereClause({
   chain,
   scope,
   timeFrame,
-  selectedStats,
 }: {
   chain: Chain;
   scope: ContextScope;
   timeFrame: TimeFrame;
-  selectedStats: StatFiltersOutputSchema["stats"];
 }): DayStatFilter["day"] {
   let days: number;
 
@@ -159,13 +157,13 @@ function buildDayWhereClause({
 
 export const withStatFilters = t.middleware(
   ({ next, input = {}, ctx: { chain, scope } }) => {
-    const { categories, rollups, timeFrame, stats } =
+    const { categories, rollups, timeFrame, metrics } =
       input as StatFiltersOutputSchema;
     let select: StatsFilters["select"];
     const where: StatsFilters["where"] = {};
 
-    if (stats) {
-      select = stats.reduce(
+    if (metrics) {
+      select = metrics.reduce(
         (acc, key) => ({
           ...acc,
           [key]: true,
@@ -179,7 +177,6 @@ export const withStatFilters = t.middleware(
         chain,
         scope,
         timeFrame,
-        selectedStats: stats,
       });
     }
 

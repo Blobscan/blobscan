@@ -6,7 +6,7 @@ import { z } from "@blobscan/zod";
 
 import { withSortFilterSchema } from "../../middlewares/withFilters";
 import {
-  withAllStatFiltersSchema,
+  withStatFiltersSchema,
   withStatFilters,
 } from "../../middlewares/withStatFilters";
 import { publicProcedure } from "../../procedures";
@@ -17,7 +17,7 @@ const METRICS = Object.keys(
     .shape
 );
 
-const inputSchema = withAllStatFiltersSchema.merge(withSortFilterSchema);
+const inputSchema = withStatFiltersSchema.merge(withSortFilterSchema);
 
 const metricSeriesSchema = z.object({
   avgBlobAsCalldataFee: DailyStatsModel.shape.avgBlobAsCalldataFee
@@ -102,7 +102,7 @@ function createTimeSeries(
 function createOutput({
   categories,
   rollups,
-  stats,
+  metrics: stats,
 }: z.output<typeof inputSchema>): OutputSchema {
   const output: OutputSchema = {
     data: {

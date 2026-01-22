@@ -19,7 +19,10 @@ import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
-import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
+import type {
+  BlockWithExpandedBlobsAndTransactions,
+  TimeseriesMetric,
+} from "~/types";
 import {
   buildBlobsRoute,
   buildBlocksRoute,
@@ -29,6 +32,9 @@ import {
 const LATEST_ITEMS_LENGTH = 5;
 
 const CARD_HEIGHT = "sm:h-28";
+
+const CATEGORIZED_METRICS: TimeseriesMetric[] = ["totalBlobs"] as const;
+const GLOBAL_METRICS: TimeseriesMetric[] = ["avgBlobGasPrice"] as const;
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -53,7 +59,7 @@ const Home: NextPage = () => {
   const { data: categorizedChartData, error: categorizedChartDataError } =
     api.stats.getTimeseries.useQuery(
       {
-        stats: "totalBlobs",
+        metrics: CATEGORIZED_METRICS.join(","),
         timeFrame: "30d",
         categories: "other",
         rollups: "all",
@@ -67,7 +73,7 @@ const Home: NextPage = () => {
   const { data: globalChartData, error: globalChartDataError } =
     api.stats.getTimeseries.useQuery(
       {
-        stats: "avgBlobGasPrice",
+        metrics: GLOBAL_METRICS.join(","),
         timeFrame: "30d",
         sort: "asc",
       },
