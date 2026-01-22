@@ -137,7 +137,7 @@ function buildDayWhereClause({
 
   let selectedDates: string[] | undefined;
 
-  if (scope === "web" && isLargeTimeFrame && !selectedStats?.length) {
+  if (scope === "web" && isLargeTimeFrame) {
     const origin = final.subtract(days, "day").startOf("day").utc();
     const dates: string[] = [];
 
@@ -151,7 +151,7 @@ function buildDayWhereClause({
   }
 
   return {
-    gte: final.subtract(days, "day").startOf("day").utc().toISOString(),
+    gt: final.subtract(days, "day").startOf("day").utc().toISOString(),
     lte: finalDate,
     in: selectedDates,
   };
@@ -185,17 +185,6 @@ export const withStatFilters = t.middleware(
 
     const isAllCategoriesEnabled = categories === "all";
     const isAllRollupsEnabled = rollups === "all";
-
-    if (isAllCategoriesEnabled && isAllRollupsEnabled) {
-      return next({
-        ctx: {
-          statFilters: {
-            select,
-            where,
-          },
-        },
-      });
-    }
 
     const categoryFilter: CategoryStatFilter = {
       category: categories
