@@ -12,6 +12,7 @@ import {
 import { publicProcedure } from "../../procedures";
 import { normalize, cacheTRPCQuery } from "../../utils";
 import { arrayOptionalizeShape } from "../../zod-schemas";
+import { buildStatsPath } from "./helpers";
 
 const metricsSchema = DailyStatsModel.omit({
   id: true,
@@ -144,7 +145,7 @@ export const getTimeseries = publicProcedure
   .meta({
     openapi: {
       method: "GET",
-      path: `/stats/timeseries`,
+      path: buildStatsPath("timeseries"),
       tags: ["stats"],
       summary: "retrieves time series stats.",
     },
