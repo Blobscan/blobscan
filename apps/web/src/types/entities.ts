@@ -50,12 +50,16 @@ export type BlobWithExpandedTransaction = MakeRequired<
   "transaction"
 >;
 
-export type DailyStats = AppRouterOutputs["stats"]["getDailyStats"][number];
+export type TimeseriesData = AppRouterOutputs["stats"]["getTimeseries"]["data"];
 
-export type DailyStatName = keyof Omit<
-  DailyStats,
-  "day" | "category" | "rollup"
->;
+export type SingleTimeseries = TimeseriesData["series"][number];
+
+export type TimeseriesMetricsSeries =
+  TimeseriesData["series"][number]["metrics"];
+
+export type TimeseriesMetric = keyof TimeseriesMetricsSeries;
+
+export type TimeseriesName = Category | Rollup | "global";
 
 export type OverallStats = AppRouterOutputs["stats"]["getOverallStats"][number];
 

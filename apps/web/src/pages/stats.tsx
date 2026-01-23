@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import type { NextPage } from "next";
 
 import type { TimeFrame } from "@blobscan/api";
@@ -21,7 +21,7 @@ import {
   DailyUniqueAddressesChart,
   DailyAvgBlobGasPriceChart,
 } from "~/components/Charts";
-import { convertStatsToChartSeries } from "~/components/Charts/helpers";
+import { convertTimeseriesToChartData } from "~/components/Charts/helpers";
 import { Header } from "~/components/Header";
 import { Scrollable } from "~/components/Scrollable";
 import { RollupSelector } from "~/components/Selectors";
@@ -31,7 +31,7 @@ import { Listbox } from "~/components/Selects";
 import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
-import type { DailyStats } from "~/types";
+import type { TimeseriesMetric } from "~/types";
 import { calculatePercentage, splitArrayIntoChunks } from "~/utils";
 
 type Section = "All" | "Blob" | "Block" | "Gas" | "Fee" | "Transaction";
@@ -57,6 +57,29 @@ const SECTION_OPTIONS = [
   { value: "Transaction" },
 ] as const;
 
+const CATEGORIZED_METRICS: TimeseriesMetric[] = [
+  "totalBlobs",
+  "totalBlobSize",
+  "totalBlobUsageSize",
+  "totalBlobGasUsed",
+  "totalBlobFee",
+  "totalTransactions",
+  "totalUniqueReceivers",
+  "totalUniqueSenders",
+  "totalBlobAsCalldataGasUsed",
+] as const;
+
+const GLOBAL_METRICS: TimeseriesMetric[] = [
+  "avgBlobGasPrice",
+  "avgBlobFee",
+  "avgBlobMaxFee",
+  "totalBlocks",
+  "totalUniqueReceivers",
+  "totalUniqueSenders",
+  "totalBlobAsCalldataGasUsed",
+  "totalBlobGasUsed",
+] as const;
+
 const Stats: NextPage = function () {
   const chain = useChain();
   const [selectedSection, setSelectedSection] = useState<SectionOption>(
@@ -68,72 +91,45 @@ const Stats: NextPage = function () {
   const [selectedRollups, setSelectedRollups] = useState<
     RollupSelectorOption[]
   >([]);
-  const { data: dailyStatsData } = api.stats.getDailyStatsForCharts.useQuery(
+  const { data: categorizedDailyChartData } = api.stats.getTimeseries.useQuery(
     {
-      categories: "all",
+      categories: "other",
       rollups: "all",
       timeFrame: timeFrameOption?.value,
       sort: "asc",
-      fields: [
-        "totalBlobs",
-        "totalBlobSize",
-        "totalBlobUsageSize",
-        "totalBlocks",
-        "totalBlobGasUsed",
-        "avgBlobGasPrice",
-        "totalBlobFee",
-        "avgBlobFee",
-        "avgBlobUsageSize",
-        "avgMaxBlobGasFee",
-        "totalTransactions",
-        "totalUniqueReceivers",
-        "totalUniqueSenders",
-        "totalBlobAsCalldataGasUsed",
-      ],
+      metrics: CATEGORIZED_METRICS.join(","),
     },
     {
       refetchOnWindowFocus: false,
+      select: ({ data }) => convertTimeseriesToChartData(data),
     }
   );
-  const { data: allOverallStats } = api.stats.getOverallStats.useQuery({
-    categories: "all",
-    rollups: "all",
-  });
-  const dailyStats = useMemo(
-    () =>
-      dailyStatsData
-        ? convertStatsToChartSeries(dailyStatsData as Required<DailyStats>[])
-        : undefined,
-    [dailyStatsData]
-  );
-
-  const { days, series, totalSeries } = dailyStats || {};
-  const selectedRollupSeries = useMemo(() => {
-    const selectedRollupValues = selectedRollups.map((r) => r.value);
-
-    if (!selectedRollupValues.length || !series) {
-      return series;
+  const { data: globalDailyChartData } = api.stats.getTimeseries.useQuery(
+    {
+      timeFrame: timeFrameOption?.value,
+      sort: "asc",
+      metrics: GLOBAL_METRICS.join(","),
+    },
+    {
+      refetchOnWindowFocus: false,
+      select: ({ data }) => convertTimeseriesToChartData(data),
     }
+  );
+  const { data: allOverallStats } = api.stats.getOverallStats.useQuery();
 
-    return Object.entries(series).reduce((acc, [key, values]) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      acc[key] = values.filter((v) =>
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        v.name ? selectedRollupValues.includes(v.name) : false
-      );
-
-      return acc;
-    }, {} as typeof series);
-  }, [series, selectedRollups]);
-  const overallAggr = useAggregateOverallStats(
+  const aggregatedOverallStats = useAggregateOverallStats(
     selectedRollups.map((r) => r.value),
     allOverallStats
   );
-  const selectedRollupOrTotalSeries = selectedRollups.length
-    ? selectedRollupSeries
-    : totalSeries;
+  const {
+    timestamps: categorizedChartTimestamps,
+    metricSeries: categorizedChartMetricSeries,
+  } = categorizedDailyChartData || {};
+  const {
+    timestamps: globalChartTimestamps,
+    metricSeries: globalChartMetricSeries,
+  } = globalDailyChartData || {};
+
   const blobSize = chain
     ? chain.latestFork.blobParams.bytesPerFieldElement *
       chain.latestFork.blobParams.fieldElementsPerBlob
@@ -150,7 +146,7 @@ const Stats: NextPage = function () {
           name: "Total Blobs",
           metric: {
             primary: {
-              value: overallAggr?.totalBlobs,
+              value: aggregatedOverallStats?.totalBlobs,
             },
           },
         },
@@ -158,7 +154,7 @@ const Stats: NextPage = function () {
           name: "Total Blob Size",
           metric: {
             primary: {
-              value: overallAggr?.totalBlobSize,
+              value: aggregatedOverallStats?.totalBlobSize,
               type: "bytes",
             },
           },
@@ -167,7 +163,7 @@ const Stats: NextPage = function () {
           name: "Total Blob Usage Size",
           metric: {
             primary: {
-              value: overallAggr?.totalBlobUsageSize,
+              value: aggregatedOverallStats?.totalBlobUsageSize,
               type: "bytes",
             },
           },
@@ -176,14 +172,14 @@ const Stats: NextPage = function () {
           name: "Avg. Blob Usage Size",
           metric: {
             primary: {
-              value: overallAggr?.avgBlobUsageSize,
+              value: aggregatedOverallStats?.avgBlobUsageSize,
               type: "bytes",
             },
             secondary:
-              blobSize && overallAggr?.avgBlobUsageSize
+              blobSize && aggregatedOverallStats?.avgBlobUsageSize
                 ? {
                     value: calculatePercentage(
-                      overallAggr?.avgBlobUsageSize,
+                      aggregatedOverallStats?.avgBlobUsageSize,
                       blobSize,
                       {
                         decimals: 2,
@@ -198,7 +194,7 @@ const Stats: NextPage = function () {
           name: "Total Unique Blobs",
           metric: {
             primary: {
-              value: overallAggr?.totalUniqueBlobs,
+              value: aggregatedOverallStats?.totalUniqueBlobs,
             },
           },
         },
@@ -206,20 +202,20 @@ const Stats: NextPage = function () {
       charts: [
         <DailyBlobsChart
           key="daily-blobs"
-          days={days}
-          series={selectedRollupSeries?.totalBlobs}
+          days={categorizedChartTimestamps}
+          series={categorizedChartMetricSeries?.totalBlobs}
           showLegend
         />,
         <DailyBlobSizeChart
           key="daily-blob-size"
-          days={days}
-          series={selectedRollupSeries?.totalBlobSize}
+          days={categorizedChartTimestamps}
+          series={categorizedChartMetricSeries?.totalBlobSize}
           showLegend
         />,
         <DailyBlobUsageSizeChart
           key="daily-blob-usage-size"
-          days={days}
-          series={selectedRollupSeries?.totalBlobUsageSize}
+          days={categorizedChartTimestamps}
+          series={categorizedChartMetricSeries?.totalBlobUsageSize}
           showLegend
         />,
       ],
@@ -231,7 +227,7 @@ const Stats: NextPage = function () {
           name: "Total Blocks",
           metric: {
             primary: {
-              value: overallAggr?.totalBlocks,
+              value: aggregatedOverallStats?.totalBlocks,
             },
           },
         },
@@ -239,8 +235,8 @@ const Stats: NextPage = function () {
       charts: [
         <DailyBlocksChart
           key="daily-blocks"
-          days={days}
-          series={selectedRollupSeries?.totalBlocks}
+          days={globalChartTimestamps}
+          series={globalChartMetricSeries?.totalBlocks}
           showLegend
         />,
       ],
@@ -252,7 +248,7 @@ const Stats: NextPage = function () {
           name: "Total Blob Gas Used",
           metric: {
             primary: {
-              value: overallAggr?.totalBlobGasUsed,
+              value: aggregatedOverallStats?.totalBlobGasUsed,
               type: "ethereum",
             },
           },
@@ -261,9 +257,9 @@ const Stats: NextPage = function () {
           name: "Total Gas Saved",
           metric: {
             primary: {
-              value: overallAggr
-                ? overallAggr.totalBlobAsCalldataGasUsed -
-                  overallAggr.totalBlobGasUsed
+              value: aggregatedOverallStats
+                ? aggregatedOverallStats.totalBlobAsCalldataGasUsed -
+                  aggregatedOverallStats.totalBlobGasUsed
                 : undefined,
             },
           },
@@ -283,10 +279,10 @@ const Stats: NextPage = function () {
         },
         {
           name: "Avg. Blob Gas Price",
-          metric: overallAggr
+          metric: aggregatedOverallStats
             ? {
                 primary: {
-                  value: overallAggr.avgBlobGasPrice,
+                  value: aggregatedOverallStats.avgBlobGasPrice,
                   type: "ethereum",
                   numberFormatOpts: {
                     maximumFractionDigits: 9,
@@ -299,20 +295,20 @@ const Stats: NextPage = function () {
       charts: [
         <DailyBlobGasUsedChart
           key="daily-blob-gas-used"
-          days={days}
-          series={selectedRollupSeries?.totalBlobGasUsed}
+          days={categorizedChartTimestamps}
+          series={categorizedChartMetricSeries?.totalBlobGasUsed}
           showLegend
         />,
         <DailyAvgBlobGasPriceChart
           key="daily-avg-blob-gas-price"
-          days={days}
-          series={selectedRollupOrTotalSeries?.avgBlobGasPrice}
+          days={globalChartTimestamps}
+          series={globalChartMetricSeries?.avgBlobGasPrice}
           showLegend
         />,
         <DailyBlobGasComparisonChart
           key="daily-blob-gas-comparison"
-          days={days}
-          series={selectedRollupOrTotalSeries}
+          days={globalChartTimestamps}
+          series={globalChartMetricSeries}
           showLegend
         />,
       ],
@@ -324,19 +320,19 @@ const Stats: NextPage = function () {
           name: "Total Blob Fees",
           metric: {
             primary: {
-              value: overallAggr?.totalBlobFee,
+              value: aggregatedOverallStats?.totalBlobFee,
               type: "ethereum",
             },
           },
         },
         {
           name: "Total Tx Fees Saved",
-          metric: overallAggr
+          metric: aggregatedOverallStats
             ? {
                 primary: {
                   value:
-                    overallAggr.totalBlobAsCalldataFee -
-                    overallAggr.totalBlobFee,
+                    aggregatedOverallStats.totalBlobAsCalldataFee -
+                    aggregatedOverallStats.totalBlobFee,
                   type: "ethereum",
                 },
               }
@@ -358,7 +354,7 @@ const Stats: NextPage = function () {
           name: "Avg. Max Blob Gas Fee",
           metric: {
             primary: {
-              value: overallAggr?.avgMaxBlobGasFee,
+              value: aggregatedOverallStats?.avgMaxBlobGasFee,
               type: "ethereum",
             },
           },
@@ -367,20 +363,20 @@ const Stats: NextPage = function () {
       charts: [
         <DailyBlobFeeChart
           key="daily-blob-fee"
-          days={days}
-          series={selectedRollupSeries?.totalBlobFee}
+          days={categorizedChartTimestamps}
+          series={categorizedChartMetricSeries?.totalBlobFee}
           showLegend
         />,
         <DailyAvgBlobFeeChart
           key="daily-avg-blob-fee"
-          days={days}
-          series={selectedRollupOrTotalSeries?.avgBlobFee}
+          days={globalChartTimestamps}
+          series={globalChartMetricSeries?.avgBlobFee}
           showLegend
         />,
         <DailyAvgMaxBlobGasFeeChart
           key="daily-avg-max-blob-gas-fee"
-          days={days}
-          series={selectedRollupOrTotalSeries?.avgMaxBlobGasFee}
+          days={globalChartTimestamps}
+          series={globalChartMetricSeries?.avgBlobMaxFee}
           showLegend
         />,
       ],
@@ -392,7 +388,7 @@ const Stats: NextPage = function () {
           name: "Total Transactions",
           metric: {
             primary: {
-              value: overallAggr?.totalTransactions,
+              value: aggregatedOverallStats?.totalTransactions,
             },
           },
         },
@@ -400,7 +396,7 @@ const Stats: NextPage = function () {
           name: "Total Unique Receivers",
           metric: {
             primary: {
-              value: overallAggr?.totalUniqueReceivers,
+              value: aggregatedOverallStats?.totalUniqueReceivers,
             },
           },
         },
@@ -408,7 +404,7 @@ const Stats: NextPage = function () {
           name: "Total Unique Senders",
           metric: {
             primary: {
-              value: overallAggr?.totalUniqueSenders,
+              value: aggregatedOverallStats?.totalUniqueSenders,
             },
           },
         },
@@ -416,14 +412,14 @@ const Stats: NextPage = function () {
       charts: [
         <DailyTransactionsChart
           key="daily-transactions"
-          days={days}
-          series={selectedRollupSeries?.totalTransactions}
+          days={categorizedChartTimestamps}
+          series={categorizedChartMetricSeries?.totalTransactions}
           showLegend
         />,
         <DailyUniqueAddressesChart
           key="daily-unique-addresses"
-          days={days}
-          series={selectedRollupOrTotalSeries}
+          days={globalChartTimestamps}
+          series={globalChartMetricSeries}
           showLegend
         />,
       ],

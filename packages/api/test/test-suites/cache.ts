@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { redis } from "@blobscan/test";
 import type { ZodSchema } from "@blobscan/zod";
@@ -32,6 +32,10 @@ export function runTRPCQueryCacheTests<
   return describe("when caching procedure query", () => {
     const cacheKey = createCacheKey(procedureName, procedureInput);
 
+    beforeEach(async () => {
+      await redis.del(cacheKey);
+    });
+
     it("should store result with the correct key", async () => {
       const existsBefore = redis.exists(cacheKey);
 
@@ -41,7 +45,10 @@ export function runTRPCQueryCacheTests<
         existsBefore,
         "cache key exists before calling procedure"
       ).resolves.toBe(0);
-      await expect(redis.exists(cacheKey)).resolves.toBe(1);
+      await expect(
+        redis.exists(cacheKey),
+        "cache key does not exists after calling procedure"
+      ).resolves.toBe(1);
     });
 
     it("should store result correctly", async () => {

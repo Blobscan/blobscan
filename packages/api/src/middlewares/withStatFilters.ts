@@ -64,9 +64,9 @@ export const withStatRollupsFilterSchema = z.object({
   rollups: allSchema.or(commaSeparatedRollupsSchema).optional(),
 });
 
-export const withStatsFilterSchema = z
+export const withMetricsFilterSchema = z
   .object({
-    stats: commaSeparatedValuesSchema.transform((values, ctx) =>
+    metrics: commaSeparatedValuesSchema.transform((values, ctx) =>
       values?.map((v) => {
         const res = DailyStatsModel.omit({
           id: true,
@@ -83,7 +83,7 @@ export const withStatsFilterSchema = z
             params: {
               value: v,
             },
-            message: "Provided stats value is invalid",
+            message: "Provided metric name is invalid",
           });
 
           return z.NEVER;
@@ -95,41 +95,47 @@ export const withStatsFilterSchema = z
   })
   .partial();
 
-export const withAllStatFiltersSchema = withStatsFilterSchema
+export const withStatFiltersSchema = withMetricsFilterSchema
   .merge(withTimeFrameFilterSchema)
   .merge(withStatCategoriesFilterSchema.merge(withStatRollupsFilterSchema));
 
-export type StatFiltersOutputSchema = z.output<typeof withAllStatFiltersSchema>;
+export type StatFiltersOutputSchema = z.output<typeof withStatFiltersSchema>;
 
 function buildDayWhereClause({
   chain,
   scope,
   timeFrame,
-  selectedStats,
 }: {
   chain: Chain;
   scope: ContextScope;
   timeFrame: TimeFrame;
-  selectedStats: StatFiltersOutputSchema["stats"];
 }): DayStatFilter["day"] {
   let days: number;
+  const currentDate = dayjs();
 
   if (timeFrame === "All") {
-    const activeFork = chain.forks[0].activationDate;
-    const firstDate = dayjs(activeFork);
+    const activeFork = chain.forks[0];
+    const forkActivationDate = dayjs(activeFork.activationDate);
 
-    days = dayjs().diff(firstDate, "D");
+    if (forkActivationDate.isAfter(currentDate)) {
+      return {
+        lte: forkActivationDate.utc().toISOString(),
+        gt: currentDate.utc().toISOString(),
+      };
+    }
+
+    days = currentDate.diff(forkActivationDate, "D");
   } else {
     days = parseInt(timeFrame.split("d")[0] ?? "1");
   }
 
-  const final = dayjs().utc().subtract(1, "day").startOf("day");
-  const finalDate = final.utc().toISOString();
+  const finalDate = currentDate.utc().subtract(1, "day").startOf("day");
+  const finalISODate = finalDate.utc().toISOString();
 
   if (days === 1) {
     return {
-      gte: finalDate,
-      lte: finalDate,
+      gte: finalISODate,
+      lte: finalISODate,
     };
   }
 
@@ -137,11 +143,11 @@ function buildDayWhereClause({
 
   let selectedDates: string[] | undefined;
 
-  if (scope === "web" && isLargeTimeFrame && !selectedStats?.length) {
-    const origin = final.subtract(days, "day").startOf("day").utc();
+  if (scope === "web" && isLargeTimeFrame) {
+    const origin = finalDate.subtract(days, "day").startOf("day").utc();
     const dates: string[] = [];
 
-    let current = final.clone();
+    let current = finalDate.clone();
     while (current.isAfter(origin) || current.isSame(origin)) {
       dates.push(current.utc().toISOString());
       current = current.subtract(DAYS_INTERVAL_GRANULARITY, "day");
@@ -151,21 +157,21 @@ function buildDayWhereClause({
   }
 
   return {
-    gte: final.subtract(days, "day").startOf("day").utc().toISOString(),
-    lte: finalDate,
+    gt: finalDate.subtract(days, "day").startOf("day").utc().toISOString(),
+    lte: finalISODate,
     in: selectedDates,
   };
 }
 
 export const withStatFilters = t.middleware(
   ({ next, input = {}, ctx: { chain, scope } }) => {
-    const { categories, rollups, timeFrame, stats } =
+    const { categories, rollups, timeFrame, metrics } =
       input as StatFiltersOutputSchema;
     let select: StatsFilters["select"];
     const where: StatsFilters["where"] = {};
 
-    if (stats) {
-      select = stats.reduce(
+    if (metrics) {
+      select = metrics.reduce(
         (acc, key) => ({
           ...acc,
           [key]: true,
@@ -179,23 +185,11 @@ export const withStatFilters = t.middleware(
         chain,
         scope,
         timeFrame,
-        selectedStats: stats,
       });
     }
 
     const isAllCategoriesEnabled = categories === "all";
     const isAllRollupsEnabled = rollups === "all";
-
-    if (isAllCategoriesEnabled && isAllRollupsEnabled) {
-      return next({
-        ctx: {
-          statFilters: {
-            select,
-            where,
-          },
-        },
-      });
-    }
 
     const categoryFilter: CategoryStatFilter = {
       category: categories

@@ -13,7 +13,7 @@ import {
   DailyAvgBlobGasPriceChart,
   DailyBlobsChart,
 } from "~/components/Charts";
-import { convertStatsToChartSeries } from "~/components/Charts/helpers";
+import { convertTimeseriesToChartData } from "~/components/Charts/helpers";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
@@ -21,8 +21,7 @@ import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import type {
   BlockWithExpandedBlobsAndTransactions,
-  DailyStats,
-  MakeRequired,
+  TimeseriesMetric,
 } from "~/types";
 import {
   buildBlobsRoute,
@@ -33,6 +32,9 @@ import {
 const LATEST_ITEMS_LENGTH = 5;
 
 const CARD_HEIGHT = "sm:h-28";
+
+const CATEGORIZED_METRICS: TimeseriesMetric[] = ["totalBlobs"] as const;
+const GLOBAL_METRICS: TimeseriesMetric[] = ["avgBlobGasPrice"] as const;
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -54,33 +56,32 @@ const Home: NextPage = () => {
       refetchOnReconnect: false,
       select: (data) => data[0],
     });
-  const { data: dailyStatsData, error: dailyStatsErr } =
-    api.stats.getDailyStatsForCharts.useQuery(
+  const { data: categorizedChartData, error: categorizedChartDataError } =
+    api.stats.getTimeseries.useQuery(
       {
-        fields: ["totalBlobs", "avgBlobGasPrice"],
+        metrics: CATEGORIZED_METRICS.join(","),
         timeFrame: "30d",
-        categories: "all",
+        categories: "other",
         rollups: "all",
         sort: "asc",
       },
       {
         refetchOnWindowFocus: false,
+        select: ({ data }) => convertTimeseriesToChartData(data),
       }
     );
-
-  const dailyStats = useMemo(() => {
-    if (!dailyStatsData) {
-      return;
-    }
-    return convertStatsToChartSeries(
-      dailyStatsData as MakeRequired<
-        DailyStats,
-        "totalBlobs" | "avgBlobGasPrice"
-      >[]
+  const { data: globalChartData, error: globalChartDataError } =
+    api.stats.getTimeseries.useQuery(
+      {
+        metrics: GLOBAL_METRICS.join(","),
+        timeFrame: "30d",
+        sort: "asc",
+      },
+      {
+        refetchOnWindowFocus: false,
+        select: ({ data }) => convertTimeseriesToChartData(data),
+      }
     );
-  }, [dailyStatsData]);
-  const { days, series, totalSeries } = dailyStats || {};
-
   const { blocks, transactions, blobs } = useMemo(() => {
     if (!blocksData) {
       return { blocks: [], transactions: [], blobs: [] };
@@ -106,7 +107,11 @@ const Home: NextPage = () => {
     };
   }, [blocksData]);
 
-  const error = latestBlocksError || overallStatsErr || dailyStatsErr;
+  const error =
+    latestBlocksError ||
+    overallStatsErr ||
+    categorizedChartDataError ||
+    globalChartDataError;
 
   if (error) {
     return (
@@ -135,8 +140,8 @@ const Home: NextPage = () => {
         <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
             <DailyAvgBlobGasPriceChart
-              days={days}
-              series={totalSeries?.avgBlobGasPrice}
+              days={globalChartData?.timestamps}
+              series={globalChartData?.metricSeries.avgBlobGasPrice}
               size="sm"
               compact
             />
@@ -198,8 +203,8 @@ const Home: NextPage = () => {
           <div className="col-span-2 sm:col-span-4">
             <DailyBlobsChart
               size="sm"
-              days={days}
-              series={series?.totalBlobs}
+              days={categorizedChartData?.timestamps}
+              series={categorizedChartData?.metricSeries.totalBlobs}
               compact
             />
           </div>
