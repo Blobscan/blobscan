@@ -7,7 +7,7 @@ import {
 } from "../../middlewares/withStatFilters";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
-import { BASE_PATH } from "./helpers";
+import { buildStatsPath } from "./helpers";
 
 const inputSchema = withStatCategoriesFilterSchema
   .merge(withStatRollupsFilterSchema)
@@ -24,7 +24,7 @@ export const getOverallStats = publicProcedure
   .meta({
     openapi: {
       method: "GET",
-      path: `/${BASE_PATH}/overall`,
+      path: buildStatsPath("overall"),
       tags: ["stats"],
       summary: "retrieves all overall stats.",
     },
