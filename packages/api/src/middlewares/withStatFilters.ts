@@ -111,23 +111,31 @@ function buildDayWhereClause({
   timeFrame: TimeFrame;
 }): DayStatFilter["day"] {
   let days: number;
+  const currentDate = dayjs();
 
   if (timeFrame === "All") {
-    const activeFork = chain.forks[0].activationDate;
-    const firstDate = dayjs(activeFork);
+    const activeFork = chain.forks[0];
+    const forkActivationDate = dayjs(activeFork.activationDate);
 
-    days = dayjs().diff(firstDate, "D");
+    if (forkActivationDate.isAfter(currentDate)) {
+      return {
+        lte: forkActivationDate.utc().toISOString(),
+        gt: currentDate.utc().toISOString(),
+      };
+    }
+
+    days = currentDate.diff(forkActivationDate, "D");
   } else {
     days = parseInt(timeFrame.split("d")[0] ?? "1");
   }
 
-  const final = dayjs().utc().subtract(1, "day").startOf("day");
-  const finalDate = final.utc().toISOString();
+  const finalDate = currentDate.utc().subtract(1, "day").startOf("day");
+  const finalISODate = finalDate.utc().toISOString();
 
   if (days === 1) {
     return {
-      gte: finalDate,
-      lte: finalDate,
+      gte: finalISODate,
+      lte: finalISODate,
     };
   }
 
@@ -136,10 +144,10 @@ function buildDayWhereClause({
   let selectedDates: string[] | undefined;
 
   if (scope === "web" && isLargeTimeFrame) {
-    const origin = final.subtract(days, "day").startOf("day").utc();
+    const origin = finalDate.subtract(days, "day").startOf("day").utc();
     const dates: string[] = [];
 
-    let current = final.clone();
+    let current = finalDate.clone();
     while (current.isAfter(origin) || current.isSame(origin)) {
       dates.push(current.utc().toISOString());
       current = current.subtract(DAYS_INTERVAL_GRANULARITY, "day");
@@ -149,8 +157,8 @@ function buildDayWhereClause({
   }
 
   return {
-    gt: final.subtract(days, "day").startOf("day").utc().toISOString(),
-    lte: finalDate,
+    gt: finalDate.subtract(days, "day").startOf("day").utc().toISOString(),
+    lte: finalISODate,
     in: selectedDates,
   };
 }
