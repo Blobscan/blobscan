@@ -37,7 +37,22 @@ export const toLogLevelSchema = z.string().transform((value, ctx) => {
 
   return result.data;
 });
+
 export const toBigIntSchema = z.string().transform((value) => BigInt(value));
+
+export function arrayOptionalizeShape<T extends z.ZodRawShape>(
+  shape: T
+): {
+  [K in keyof T]: z.ZodOptional<z.ZodArray<T[K]>>;
+} {
+  return Object.fromEntries(
+    Object.entries(shape).map(([key, schema]) => [
+      key,
+      (schema as z.ZodTypeAny).array().optional(),
+    ])
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ) as any;
+}
 
 export const commaSeparatedValuesSchema = z
   .string()

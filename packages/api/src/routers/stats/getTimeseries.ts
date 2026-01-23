@@ -11,73 +11,35 @@ import {
 } from "../../middlewares/withStatFilters";
 import { publicProcedure } from "../../procedures";
 import { normalize, cacheTRPCQuery } from "../../utils";
+import { arrayOptionalizeShape } from "../../zod-schemas";
 
-const METRICS = Object.keys(
-  DailyStatsModel.omit({ id: true, day: true, category: true, rollup: true })
-    .shape
-);
+const metricsSchema = DailyStatsModel.omit({
+  id: true,
+  day: true,
+  category: true,
+  rollup: true,
+});
+const METRICS = Object.keys(metricsSchema.shape);
 
 const inputSchema = withStatFiltersSchema.merge(withSortFilterSchema);
 
-const metricSeriesSchema = z.object({
-  avgBlobAsCalldataFee: DailyStatsModel.shape.avgBlobAsCalldataFee
-    .array()
-    .optional(),
-  avgBlobAsCalldataMaxFee: DailyStatsModel.shape.avgBlobAsCalldataMaxFee
-    .array()
-    .optional(),
-  avgBlobFee: DailyStatsModel.shape.avgBlobFee.array().optional(),
-  avgBlobGasPrice: DailyStatsModel.shape.avgBlobGasPrice.array().optional(),
-  avgBlobMaxFee: DailyStatsModel.shape.avgBlobMaxFee.array().optional(),
-  avgBlobUsageSize: DailyStatsModel.shape.avgBlobUsageSize.array().optional(),
-  avgMaxBlobGasFee: DailyStatsModel.shape.avgMaxBlobGasFee.array().optional(),
-  totalBlobAsCalldataFee: DailyStatsModel.shape.totalBlobAsCalldataFee
-    .array()
-    .optional(),
-  totalBlobAsCalldataGasUsed: DailyStatsModel.shape.totalBlobAsCalldataGasUsed
-    .array()
-    .optional(),
-  totalBlobAsCalldataMaxFees: DailyStatsModel.shape.totalBlobAsCalldataMaxFees
-    .array()
-    .optional(),
-  totalBlobGasPrice: DailyStatsModel.shape.totalBlobGasPrice.array().optional(),
-  totalBlobFee: DailyStatsModel.shape.totalBlobFee.array().optional(),
-  totalBlobGasUsed: DailyStatsModel.shape.totalBlobGasUsed.array().optional(),
-  totalBlobMaxFees: DailyStatsModel.shape.totalBlobMaxFees.array().optional(),
-  totalBlobMaxGasFees: DailyStatsModel.shape.totalBlobMaxGasFees
-    .array()
-    .optional(),
-  totalBlobs: DailyStatsModel.shape.totalBlobs.array().optional(),
-  totalBlobSize: DailyStatsModel.shape.totalBlobSize.array().optional(),
-  totalUniqueBlobs: DailyStatsModel.shape.totalUniqueBlobs.array().optional(),
-  totalUniqueReceivers: DailyStatsModel.shape.totalUniqueReceivers
-    .array()
-    .optional(),
-  totalUniqueSenders: DailyStatsModel.shape.totalUniqueSenders
-    .array()
-    .optional(),
-  totalTransactions: DailyStatsModel.shape.totalTransactions.array().optional(),
-  totalBlobUsageSize: DailyStatsModel.shape.totalBlobUsageSize
-    .array()
-    .optional(),
-  totalBlocks: DailyStatsModel.shape.totalBlocks.array().optional(),
-});
+const metricSeriesSchema = z.object(arrayOptionalizeShape(metricsSchema.shape));
 
-const seriesSchema = z.object({
+const timeseriesSchema = z.object({
   type: z.enum(["category", "rollup", "global"]),
   name: z.union([z.nativeEnum(Category), z.nativeEnum(Rollup)]).optional(),
   startTimestampIdx: z.number().optional(),
   metrics: metricSeriesSchema,
 });
 
-type SeriesSchema = z.infer<typeof seriesSchema>;
-type MetricsSchema = z.input<typeof metricSeriesSchema>;
+type TimeseriesSchema = z.infer<typeof timeseriesSchema>;
+type MetricsSeriesSchema = z.input<typeof metricSeriesSchema>;
 
 export const outputSchema = z
   .object({
     data: z.object({
       timestamps: z.date().array(),
-      series: z.array(seriesSchema),
+      series: timeseriesSchema.array(),
     }),
   })
   .transform(normalize);
@@ -85,17 +47,17 @@ export const outputSchema = z
 type OutputSchema = z.input<typeof outputSchema>;
 
 function createTimeSeries(
-  type: SeriesSchema["type"],
-  name: SeriesSchema["name"],
+  type: TimeseriesSchema["type"],
+  name: TimeseriesSchema["name"],
   metricNames: string[]
-): SeriesSchema {
+): TimeseriesSchema {
   return {
     type,
     name,
     metrics: metricNames.reduce((acc, metric) => {
-      acc[metric as keyof MetricsSchema] = [];
+      acc[metric as keyof MetricsSeriesSchema] = [];
       return acc;
-    }, {} as MetricsSchema),
+    }, {} as MetricsSeriesSchema),
   };
 }
 
@@ -259,7 +221,7 @@ export const getTimeseries = publicProcedure
               continue;
             }
 
-            const metricName_ = metricName as keyof MetricsSchema;
+            const metricName_ = metricName as keyof MetricsSeriesSchema;
             const timeseriesMetric = currTimeseries.metrics[metricName_];
 
             if (!timeseriesMetric) {
