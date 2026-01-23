@@ -248,7 +248,7 @@ export const getTimeseries = publicProcedure
         return output;
       },
       {
-        queryName: "getDailyStats",
+        queryName: "getTimeseries",
         ttl: "daily",
       }
     )
