@@ -5,6 +5,9 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
   "data": {
     "series": [
       {
+        "dimension": {
+          "type": "global",
+        },
         "metrics": {
           "avgBlobAsCalldataFee": [
             22000,
@@ -76,9 +79,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             3,
           ],
         },
-        "name": undefined,
         "startTimestampIdx": 0,
-        "type": "global",
       },
     ],
     "timestamps": [
@@ -93,6 +94,9 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
   "data": {
     "series": [
       {
+        "dimension": {
+          "type": "global",
+        },
         "metrics": {
           "avgBlobAsCalldataFee": [
             22000,
@@ -187,9 +191,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             2,
           ],
         },
-        "name": undefined,
         "startTimestampIdx": 0,
-        "type": "global",
       },
     ],
     "timestamps": [
@@ -205,6 +207,9 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
   "data": {
     "series": [
       {
+        "dimension": {
+          "type": "global",
+        },
         "metrics": {
           "avgBlobAsCalldataFee": [
             22000,
@@ -322,9 +327,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             5,
           ],
         },
-        "name": undefined,
         "startTimestampIdx": 0,
-        "type": "global",
       },
     ],
     "timestamps": [
@@ -341,6 +344,9 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
   "data": {
     "series": [
       {
+        "dimension": {
+          "type": "global",
+        },
         "metrics": {
           "avgBlobAsCalldataFee": [
             22000,
@@ -481,9 +487,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             1,
           ],
         },
-        "name": undefined,
         "startTimestampIdx": 0,
-        "type": "global",
       },
     ],
     "timestamps": [
@@ -501,6 +505,9 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
   "data": {
     "series": [
       {
+        "dimension": {
+          "type": "global",
+        },
         "metrics": {
           "avgBlobAsCalldataFee": [
             22000,
@@ -641,9 +648,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             1,
           ],
         },
-        "name": undefined,
         "startTimestampIdx": 0,
-        "type": "global",
       },
     ],
     "timestamps": [
@@ -661,6 +666,9 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
   "data": {
     "series": [
       {
+        "dimension": {
+          "type": "global",
+        },
         "metrics": {
           "avgBlobAsCalldataFee": [
             22000,
@@ -824,9 +832,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             1,
           ],
         },
-        "name": undefined,
         "startTimestampIdx": 0,
-        "type": "global",
       },
     ],
     "timestamps": [
@@ -845,6 +851,9 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
   "data": {
     "series": [
       {
+        "dimension": {
+          "type": "global",
+        },
         "metrics": {
           "avgBlobAsCalldataFee": [
             22000,
@@ -1031,9 +1040,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             3,
           ],
         },
-        "name": undefined,
         "startTimestampIdx": 0,
-        "type": "global",
       },
     ],
     "timestamps": [
@@ -1053,6 +1060,9 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
   "data": {
     "series": [
       {
+        "dimension": {
+          "type": "global",
+        },
         "metrics": {
           "avgBlobAsCalldataFee": [],
           "avgBlobAsCalldataMaxFee": [],
@@ -1078,8 +1088,6 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           "totalUniqueReceivers": [],
           "totalUniqueSenders": [],
         },
-        "name": undefined,
-        "type": "global",
       },
     ],
     "timestamps": [],
