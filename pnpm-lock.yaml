@@ -175,7 +175,7 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.31.2
+        specifier: workspace:^0.32.0
         version: link:../../packages/api
       '@blobscan/blob-propagator':
         specifier: workspace:^0.6.5
@@ -205,7 +205,7 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../../packages/price-feed
       '@blobscan/rollups':
-        specifier: workspace:^0.4.1
+        specifier: workspace:^0.4.2
         version: link:../../packages/rollups
       '@blobscan/syncers':
         specifier: workspace:^0.6.4
@@ -266,7 +266,7 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.31.2
+        specifier: workspace:^0.32.0
         version: link:../../packages/api
       '@blobscan/blob-decoder':
         specifier: workspace:^0.2.2
@@ -278,7 +278,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/dates
       '@blobscan/dayjs':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.1.1
         version: link:../../packages/dayjs
       '@blobscan/db':
         specifier: workspace:^0.26.0
@@ -290,7 +290,7 @@ importers:
         specifier: workspace:^0.0.10
         version: link:../../packages/open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^0.4.1
+        specifier: workspace:^0.4.2
         version: link:../../packages/rollups
       '@floating-ui/react':
         specifier: ^0.26.23
@@ -474,7 +474,7 @@ importers:
         specifier: workspace:^0.4.0
         version: link:../chains
       '@blobscan/dayjs':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.1.1
         version: link:../dayjs
       '@blobscan/db':
         specifier: workspace:^0.26.0
@@ -486,7 +486,7 @@ importers:
         specifier: workspace:^0.0.10
         version: link:../open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^0.4.1
+        specifier: workspace:^0.4.2
         version: link:../rollups
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -784,7 +784,7 @@ importers:
   packages/test:
     devDependencies:
       '@blobscan/dayjs':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.1.1
         version: link:../dayjs
       '@blobscan/env':
         specifier: workspace:^0.2.0
@@ -7493,6 +7493,7 @@ packages:
   tar@7.2.0:
     resolution: {integrity: sha512-hctwP0Nb4AB60bj8WQgRYaMOuJYRAPMGiQUAotms5igN8ppfQM+IvjQ5HcKu1MaZh2Wy2KWVTe563Yj8dfc14w==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
 
   tdigest@0.1.2:
     resolution: {integrity: sha512-+G0LLgjjo9BZX2MfdvPfH+MKLCrxlXSYec5DaPYP1fe6Iyhf0/fSmJ0bFiZ1F8BT6cGXl2LpltQptzjXKWEkKA==}

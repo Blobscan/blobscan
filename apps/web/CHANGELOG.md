@@ -1,5 +1,46 @@
 # @blobscan/web
 
+## 0.47.0
+
+### Minor Changes
+
+- [#942](https://github.com/Blobscan/blobscan/pull/942) [`2f8b37b`](https://github.com/Blobscan/blobscan/commit/2f8b37bad10da132d741d057fc543c206bfc3e1b) Thanks [@PJColombo](https://github.com/PJColombo)! - Renamed stats query param to metrics
+
+- [#942](https://github.com/Blobscan/blobscan/pull/942) [`2f8b37b`](https://github.com/Blobscan/blobscan/commit/2f8b37bad10da132d741d057fc543c206bfc3e1b) Thanks [@PJColombo](https://github.com/PJColombo)! - Renamed daily stats procedure to timeseries
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved range filters by displaying only one at a time and allowing users to switch between them
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for date picker shortcuts
+
+- [#942](https://github.com/Blobscan/blobscan/pull/942) [`2f8b37b`](https://github.com/Blobscan/blobscan/commit/2f8b37bad10da132d741d057fc543c206bfc3e1b) Thanks [@PJColombo](https://github.com/PJColombo)! - Reduced daily stats procedure response size
+
+### Patch Changes
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Disabled future dates and dates prior to the blob fork in the date picker
+
+- [#945](https://github.com/Blobscan/blobscan/pull/945) [`40536aa`](https://github.com/Blobscan/blobscan/commit/40536aaf21d8f859fb427becba4dbfbae8a7a4ec) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated the timeseries procedure response by nesting `type` and `name` fields into a new `dimension` object field
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Corrected timestamp toggle tooltip message
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated the filters bar to automatically switch the selected category to Rollup when a rollup is chosen
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue where checkmark icon wasn't being displayed in listboxes
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue where checkmark wasn't being displayed properly for listboxes that contain small size values
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved category and rollup filter behavior by automatically resetting the rollup selector when a non-rollup category is selected
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue where filters bar wasn't being properly displayed in medium and small screens
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue causing unintended vertical scrolling when selecting the rollup filter
+
+- [#945](https://github.com/Blobscan/blobscan/pull/945) [`40536aa`](https://github.com/Blobscan/blobscan/commit/40536aaf21d8f859fb427becba4dbfbae8a7a4ec) Thanks [@PJColombo](https://github.com/PJColombo)! - Restructured the overall stats response. The `category` and `rollup` fields are now grouped under a `dimension` object, distinct from `metrics` and `updatedAt`
+
+- Updated dependencies [[`40536aa`](https://github.com/Blobscan/blobscan/commit/40536aaf21d8f859fb427becba4dbfbae8a7a4ec), [`2f8b37b`](https://github.com/Blobscan/blobscan/commit/2f8b37bad10da132d741d057fc543c206bfc3e1b), [`2f8b37b`](https://github.com/Blobscan/blobscan/commit/2f8b37bad10da132d741d057fc543c206bfc3e1b), [`3032c6c`](https://github.com/Blobscan/blobscan/commit/3032c6cbb210b58cd7eda703210c0b8712711c8f), [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082), [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082), [`2f8b37b`](https://github.com/Blobscan/blobscan/commit/2f8b37bad10da132d741d057fc543c206bfc3e1b), [`6617338`](https://github.com/Blobscan/blobscan/commit/66173389e9c61e845d71aa01191d59469cbf039d), [`698d943`](https://github.com/Blobscan/blobscan/commit/698d9438c035a5a9944b01d203e041faaee8231c), [`40536aa`](https://github.com/Blobscan/blobscan/commit/40536aaf21d8f859fb427becba4dbfbae8a7a4ec)]:
+  - @blobscan/api@0.32.0
+  - @blobscan/rollups@0.4.2
+  - @blobscan/dayjs@0.1.1
+
 ## 0.46.0
 
 ### Minor Changes
