@@ -1,8 +1,8 @@
 import { t } from "../../trpc-client";
-import { getOverallStats } from "./getOverallStats";
+import { getOverall } from "./getOverall";
 import { getTimeseries } from "./getTimeseries";
 
 export const statsRouter = t.router({
   getTimeseries,
-  getOverallStats,
+  getOverall,
 });

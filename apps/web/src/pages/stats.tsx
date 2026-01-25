@@ -115,7 +115,7 @@ const Stats: NextPage = function () {
       select: ({ data }) => convertTimeseriesToChartData(data),
     }
   );
-  const { data: allOverallStats } = api.stats.getOverallStats.useQuery();
+  const { data: allOverallStats } = api.stats.getOverall.useQuery();
 
   const aggregatedOverallStats = useAggregateOverallStats(
     selectedRollups.map((r) => r.value),

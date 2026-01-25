@@ -20,7 +20,7 @@ const outputSchema = OverallStatsModel.omit({
   .array()
   .transform(normalize);
 
-export const getOverallStats = publicProcedure
+export const getOverall = publicProcedure
   .meta({
     openapi: {
       method: "GET",

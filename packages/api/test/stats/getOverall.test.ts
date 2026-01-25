@@ -7,7 +7,7 @@ import { createTestContext } from "../helpers";
 import { createStatsCaller } from "./caller";
 import type { StatsCaller } from "./caller";
 
-describe("getOverallStats", () => {
+describe("getOverall", () => {
   let caller: StatsCaller;
   let ctx: TRPCContext;
 
@@ -23,7 +23,7 @@ describe("getOverallStats", () => {
 
   it("should return the correct overall stats", async () => {
     const overallStats = await caller
-      .getOverallStats()
+      .getOverall()
       .then((stats) => stats.map((s) => omitDBTimestampFields(s)));
 
     expect(overallStats).toMatchInlineSnapshot(`
