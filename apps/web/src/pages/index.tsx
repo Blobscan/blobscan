@@ -50,7 +50,7 @@ const Home: NextPage = () => {
     expand: "transaction,blob",
   });
   const { data: overallStats, error: overallStatsErr } =
-    api.stats.getOverallStats.useQuery(undefined, {
+    api.stats.getOverall.useQuery(undefined, {
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       refetchOnReconnect: false,

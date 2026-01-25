@@ -61,7 +61,7 @@ export type TimeseriesMetric = keyof TimeseriesMetricsSeries;
 
 export type TimeseriesName = Category | Rollup | "global";
 
-export type OverallStats = AppRouterOutputs["stats"]["getOverallStats"][number];
+export type OverallStats = AppRouterOutputs["stats"]["getOverall"][number];
 
 export type SearchOutput = NonNullable<AppRouterOutputs["search"]>;
 
