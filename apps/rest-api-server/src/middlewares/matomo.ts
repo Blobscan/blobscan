@@ -5,7 +5,15 @@ import { logger } from "@blobscan/logger";
 
 import { matomoTracker } from "../clients/matomo-tracker";
 
-const EXCLUDED_PATHS = ["/metrics", "/healthcheck", "/logging", "/indexer"];
+type RequestMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+
+const TRACKING_EXCLUSIONS: { methods?: RequestMethod[]; path: string }[] = [
+  { methods: ["PUT", "POST"], path: "/indexer" },
+  { methods: ["PUT", "POST"], path: "/blockchain-sync-state" },
+  { path: "/healthcheck" },
+  { path: "/metrics" },
+  { path: "/logging" },
+];
 
 function getClientIp(req: Request): string {
   const forwarded = req.headers["x-forwarded-for"];
@@ -15,6 +23,20 @@ function getClientIp(req: Request): string {
       : req.socket.remoteAddress;
 
   return ip || "unknown";
+}
+
+function shouldSkipTracking(req: Request): boolean {
+  const path = req.path;
+
+  return TRACKING_EXCLUSIONS.some((rule) => {
+    const isPathMatch = rule.path === path;
+
+    if (rule.methods) {
+      return isPathMatch && rule.methods.includes(req.method as RequestMethod);
+    }
+
+    return isPathMatch;
+  });
 }
 
 export function matomoMiddleware(
@@ -28,9 +50,7 @@ export function matomoMiddleware(
     return;
   }
 
-  const path = req.path;
-
-  if (EXCLUDED_PATHS.includes(path)) {
+  if (shouldSkipTracking(req)) {
     next();
 
     return;
@@ -44,6 +64,7 @@ export function matomoMiddleware(
       const userAgent = req.headers["user-agent"] || "unknown";
       const acceptLanguage = req.headers["accept-language"] || "unknown";
       const url = req.originalUrl || req.url;
+      const path = req.path;
       const method = req.method;
       const statusCode = res.statusCode;
 
