@@ -49,12 +49,13 @@ const Home: NextPage = () => {
     ps: LATEST_ITEMS_LENGTH,
     expand: "transaction,blob",
   });
-  const { data: overallStats, error: overallStatsErr } =
+  const { data: globalOverallStats, error: overallStatsErr } =
     api.stats.getOverall.useQuery(undefined, {
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       refetchOnReconnect: false,
-      select: (data) => data[0],
+      select: ({ data }) =>
+        data.find(({ dimension }) => dimension.type === "global")?.metrics,
     });
   const { data: categorizedChartData, error: categorizedChartDataError } =
     api.stats.getTimeseries.useQuery(
@@ -79,6 +80,8 @@ const Home: NextPage = () => {
       },
       {
         refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        refetchOnReconnect: false,
         select: ({ data }) => convertTimeseriesToChartData(data),
       }
     );
@@ -152,9 +155,9 @@ const Home: NextPage = () => {
                 name="Total Tx Fees Saved"
                 metric={{
                   primary: {
-                    value: overallStats
-                      ? overallStats.totalBlobAsCalldataFee -
-                        overallStats.totalBlobFee
+                    value: globalOverallStats
+                      ? globalOverallStats.totalBlobAsCalldataFee -
+                        globalOverallStats.totalBlobFee
                       : undefined,
                     type: "ethereum",
                   },
@@ -166,7 +169,7 @@ const Home: NextPage = () => {
               name="Total Blocks"
               metric={{
                 primary: {
-                  value: overallStats?.totalBlocks,
+                  value: globalOverallStats?.totalBlocks,
                 },
               }}
               compact
@@ -175,7 +178,7 @@ const Home: NextPage = () => {
               name="Total Txs"
               metric={{
                 primary: {
-                  value: overallStats?.totalTransactions,
+                  value: globalOverallStats?.totalTransactions,
                 },
               }}
               compact
@@ -184,7 +187,7 @@ const Home: NextPage = () => {
               name="Total Blobs"
               metric={{
                 primary: {
-                  value: overallStats?.totalBlobs,
+                  value: globalOverallStats?.totalBlobs,
                 },
               }}
               compact
@@ -193,7 +196,7 @@ const Home: NextPage = () => {
               name="Total Blob Size"
               metric={{
                 primary: {
-                  value: overallStats?.totalBlobSize,
+                  value: globalOverallStats?.totalBlobSize,
                   type: "bytes",
                 },
               }}

@@ -13,37 +13,37 @@ export function useAggregateOverallStats(
     }
 
     if (!selectedRollups.length) {
-      return overallStats.find((s) => s.category === null && s.rollup === null);
+      return overallStats.find((s) => s.dimension.type === "global")?.metrics;
     }
 
-    const selectedOverallStats = overallStats.filter((s) =>
-      s.rollup !== null ? selectedRollups.includes(s.rollup) : false
+    const selectedOverallStats = overallStats.filter(({ dimension }) =>
+      dimension.type === "rollup" && dimension.name
+        ? selectedRollups.includes(dimension.name as Rollup)
+        : false
     );
 
     const aggregations = selectedOverallStats.reduce(
-      (aggr, s) => {
-        aggr.totalBlobAsCalldataFee += s.totalBlobAsCalldataFee;
-        aggr.totalBlobAsCalldataGasUsed += s.totalBlobAsCalldataGasUsed;
-        aggr.totalBlobAsCalldataMaxFees += s.totalBlobAsCalldataMaxFees;
-        aggr.totalBlobGasPrice += s.totalBlobGasPrice;
-        aggr.totalBlobFee += s.totalBlobFee;
-        aggr.totalBlobGasUsed += s.totalBlobGasUsed;
-        aggr.totalBlobMaxFees += s.totalBlobMaxFees;
-        aggr.totalBlobMaxGasFees += s.totalBlobMaxGasFees;
-        aggr.totalBlobs += s.totalBlobs;
-        aggr.totalBlobSize += s.totalBlobSize;
-        aggr.totalBlobUsageSize += s.totalBlobUsageSize;
-        aggr.totalBlocks += s.totalBlocks;
-        aggr.totalTransactions += s.totalTransactions;
-        aggr.totalUniqueBlobs += s.totalUniqueBlobs;
-        aggr.totalUniqueReceivers += s.totalUniqueReceivers;
-        aggr.totalUniqueSenders += s.totalUniqueSenders;
+      (aggr, { metrics }) => {
+        aggr.totalBlobAsCalldataFee += metrics.totalBlobAsCalldataFee;
+        aggr.totalBlobAsCalldataGasUsed += metrics.totalBlobAsCalldataGasUsed;
+        aggr.totalBlobAsCalldataMaxFees += metrics.totalBlobAsCalldataMaxFees;
+        aggr.totalBlobGasPrice += metrics.totalBlobGasPrice;
+        aggr.totalBlobFee += metrics.totalBlobFee;
+        aggr.totalBlobGasUsed += metrics.totalBlobGasUsed;
+        aggr.totalBlobMaxFees += metrics.totalBlobMaxFees;
+        aggr.totalBlobMaxGasFees += metrics.totalBlobMaxGasFees;
+        aggr.totalBlobs += metrics.totalBlobs;
+        aggr.totalBlobSize += metrics.totalBlobSize;
+        aggr.totalBlobUsageSize += metrics.totalBlobUsageSize;
+        aggr.totalBlocks += metrics.totalBlocks;
+        aggr.totalTransactions += metrics.totalTransactions;
+        aggr.totalUniqueBlobs += metrics.totalUniqueBlobs;
+        aggr.totalUniqueReceivers += metrics.totalUniqueReceivers;
+        aggr.totalUniqueSenders += metrics.totalUniqueSenders;
 
         return aggr;
       },
       {
-        category: null,
-        rollup: null,
         avgBlobAsCalldataFee: 0,
         avgBlobAsCalldataMaxFee: 0,
         avgBlobFee: 0,
@@ -67,7 +67,7 @@ export function useAggregateOverallStats(
         totalUniqueBlobs: 0,
         totalUniqueReceivers: 0,
         totalUniqueSenders: 0,
-      } satisfies Omit<OverallStats, "updatedAt">
+      } satisfies OverallStats["metrics"]
     );
 
     const totalBlobs = BigInt(aggregations.totalBlobs);
