@@ -34,6 +34,7 @@ export const getOverall = publicProcedure
       summary: "retrieves all overall stats.",
     },
   })
+  .input(z.void())
   .output(outputSchema)
   .query(async ({ ctx: { prisma } }) => {
     const allOverallStats = await prisma.overallStats.findMany({
