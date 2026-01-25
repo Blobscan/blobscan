@@ -11,7 +11,12 @@ import {
 } from "../../middlewares/withStatFilters";
 import { publicProcedure } from "../../procedures";
 import { normalize, cacheTRPCQuery } from "../../utils";
-import { arrayOptionalizeShape } from "../../zod-schemas";
+import type { Dimension } from "../../zod-schemas";
+import {
+  arrayOptionalizeShape,
+  dimensionSchema,
+  getDimension,
+} from "../../zod-schemas";
 import { buildStatsPath } from "./helpers";
 
 const metricsSchema = DailyStatsModel.omit({
@@ -27,8 +32,7 @@ const inputSchema = withStatFiltersSchema.merge(withSortFilterSchema);
 const metricSeriesSchema = z.object(arrayOptionalizeShape(metricsSchema.shape));
 
 const timeseriesSchema = z.object({
-  type: z.enum(["category", "rollup", "global"]),
-  name: z.union([z.nativeEnum(Category), z.nativeEnum(Rollup)]).optional(),
+  dimension: dimensionSchema,
   startTimestampIdx: z.number().optional(),
   metrics: metricSeriesSchema,
 });
@@ -47,14 +51,12 @@ export const outputSchema = z
 
 type OutputSchema = z.input<typeof outputSchema>;
 
-function createTimeSeries(
-  type: TimeseriesSchema["type"],
-  name: TimeseriesSchema["name"],
+function createTimeseries(
+  dimension: Dimension,
   metricNames: string[]
 ): TimeseriesSchema {
   return {
-    type,
-    name,
+    dimension,
     metrics: metricNames.reduce((acc, metric) => {
       acc[metric as keyof MetricsSeriesSchema] = [];
       return acc;
@@ -82,7 +84,13 @@ function createOutput({
   if (requestedCategories) {
     output.data.series.push(
       ...requestedCategories.map((c) =>
-        createTimeSeries("category", c, requestedMetrics)
+        createTimeseries(
+          {
+            type: "category",
+            name: c,
+          },
+          requestedMetrics
+        )
       )
     );
   }
@@ -90,44 +98,32 @@ function createOutput({
   if (requestedRollups) {
     output.data.series.push(
       ...requestedRollups.map((r) =>
-        createTimeSeries("rollup", r, requestedMetrics)
+        createTimeseries({ type: "rollup", name: r }, requestedMetrics)
       )
     );
   }
 
   if (!requestedCategories && !requestedRollups) {
     output.data.series.push(
-      createTimeSeries("global", undefined, requestedMetrics)
+      createTimeseries({ type: "global" }, requestedMetrics)
     );
   }
 
   return output;
 }
 
-function getSeriesInfo(stats: {
+function getSeriesInfo({
+  category,
+  rollup,
+}: {
   category: Category | null;
   rollup: Rollup | null;
 }) {
-  if (stats.category) {
-    return {
-      type: "category" as const,
-      name: stats.category,
-      id: stats.category,
-    };
-  }
-
-  if (stats.rollup) {
-    return {
-      type: "rollup" as const,
-      name: stats.rollup,
-      id: stats.rollup,
-    };
-  }
+  const dimension = getDimension(category, rollup);
 
   return {
-    type: "global" as const,
-    name: undefined,
-    id: "global",
+    dimension,
+    id: dimension.name ?? "global",
   };
 }
 
@@ -174,7 +170,10 @@ export const getTimeseries = publicProcedure
 
         const output = createOutput(input);
         const seriesToIdx = new Map<string, number>(
-          output.data.series.map((s, i) => [s.name ?? s.type, i])
+          output.data.series.map(({ dimension: { type, name } }, i) => [
+            name ?? type,
+            i,
+          ])
         );
         const timestamps = new Set<string>();
 
@@ -189,7 +188,10 @@ export const getTimeseries = publicProcedure
 
           const currTimestampIdx = output.data.timestamps.length - 1;
 
-          const { type, name, id: seriesId } = getSeriesInfo(stats);
+          const {
+            dimension: { type, name },
+            id: seriesId,
+          } = getSeriesInfo(stats);
           const timeSeriesIdx = seriesToIdx.get(seriesId);
 
           if (timeSeriesIdx === undefined) {

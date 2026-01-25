@@ -115,9 +115,11 @@ const Stats: NextPage = function () {
       select: ({ data }) => convertTimeseriesToChartData(data),
     }
   );
-  const { data: allOverallStats } = api.stats.getOverall.useQuery();
+  const { data: allOverallStats } = api.stats.getOverall.useQuery(undefined, {
+    select: ({ data }) => data,
+  });
 
-  const aggregatedOverallStats = useAggregateOverallStats(
+  const aggregatedMetrics = useAggregateOverallStats(
     selectedRollups.map((r) => r.value),
     allOverallStats
   );
@@ -146,7 +148,7 @@ const Stats: NextPage = function () {
           name: "Total Blobs",
           metric: {
             primary: {
-              value: aggregatedOverallStats?.totalBlobs,
+              value: aggregatedMetrics?.totalBlobs,
             },
           },
         },
@@ -154,7 +156,7 @@ const Stats: NextPage = function () {
           name: "Total Blob Size",
           metric: {
             primary: {
-              value: aggregatedOverallStats?.totalBlobSize,
+              value: aggregatedMetrics?.totalBlobSize,
               type: "bytes",
             },
           },
@@ -163,7 +165,7 @@ const Stats: NextPage = function () {
           name: "Total Blob Usage Size",
           metric: {
             primary: {
-              value: aggregatedOverallStats?.totalBlobUsageSize,
+              value: aggregatedMetrics?.totalBlobUsageSize,
               type: "bytes",
             },
           },
@@ -172,14 +174,14 @@ const Stats: NextPage = function () {
           name: "Avg. Blob Usage Size",
           metric: {
             primary: {
-              value: aggregatedOverallStats?.avgBlobUsageSize,
+              value: aggregatedMetrics?.avgBlobUsageSize,
               type: "bytes",
             },
             secondary:
-              blobSize && aggregatedOverallStats?.avgBlobUsageSize
+              blobSize && aggregatedMetrics?.avgBlobUsageSize
                 ? {
                     value: calculatePercentage(
-                      aggregatedOverallStats?.avgBlobUsageSize,
+                      aggregatedMetrics?.avgBlobUsageSize,
                       blobSize,
                       {
                         decimals: 2,
@@ -194,7 +196,7 @@ const Stats: NextPage = function () {
           name: "Total Unique Blobs",
           metric: {
             primary: {
-              value: aggregatedOverallStats?.totalUniqueBlobs,
+              value: aggregatedMetrics?.totalUniqueBlobs,
             },
           },
         },
@@ -227,7 +229,7 @@ const Stats: NextPage = function () {
           name: "Total Blocks",
           metric: {
             primary: {
-              value: aggregatedOverallStats?.totalBlocks,
+              value: aggregatedMetrics?.totalBlocks,
             },
           },
         },
@@ -248,7 +250,7 @@ const Stats: NextPage = function () {
           name: "Total Blob Gas Used",
           metric: {
             primary: {
-              value: aggregatedOverallStats?.totalBlobGasUsed,
+              value: aggregatedMetrics?.totalBlobGasUsed,
               type: "ethereum",
             },
           },
@@ -257,9 +259,9 @@ const Stats: NextPage = function () {
           name: "Total Gas Saved",
           metric: {
             primary: {
-              value: aggregatedOverallStats
-                ? aggregatedOverallStats.totalBlobAsCalldataGasUsed -
-                  aggregatedOverallStats.totalBlobGasUsed
+              value: aggregatedMetrics
+                ? aggregatedMetrics.totalBlobAsCalldataGasUsed -
+                  aggregatedMetrics.totalBlobGasUsed
                 : undefined,
             },
           },
@@ -279,10 +281,10 @@ const Stats: NextPage = function () {
         },
         {
           name: "Avg. Blob Gas Price",
-          metric: aggregatedOverallStats
+          metric: aggregatedMetrics
             ? {
                 primary: {
-                  value: aggregatedOverallStats.avgBlobGasPrice,
+                  value: aggregatedMetrics.avgBlobGasPrice,
                   type: "ethereum",
                   numberFormatOpts: {
                     maximumFractionDigits: 9,
@@ -320,19 +322,19 @@ const Stats: NextPage = function () {
           name: "Total Blob Fees",
           metric: {
             primary: {
-              value: aggregatedOverallStats?.totalBlobFee,
+              value: aggregatedMetrics?.totalBlobFee,
               type: "ethereum",
             },
           },
         },
         {
           name: "Total Tx Fees Saved",
-          metric: aggregatedOverallStats
+          metric: aggregatedMetrics
             ? {
                 primary: {
                   value:
-                    aggregatedOverallStats.totalBlobAsCalldataFee -
-                    aggregatedOverallStats.totalBlobFee,
+                    aggregatedMetrics.totalBlobAsCalldataFee -
+                    aggregatedMetrics.totalBlobFee,
                   type: "ethereum",
                 },
               }
@@ -354,7 +356,7 @@ const Stats: NextPage = function () {
           name: "Avg. Max Blob Gas Fee",
           metric: {
             primary: {
-              value: aggregatedOverallStats?.avgMaxBlobGasFee,
+              value: aggregatedMetrics?.avgMaxBlobGasFee,
               type: "ethereum",
             },
           },
@@ -388,7 +390,7 @@ const Stats: NextPage = function () {
           name: "Total Transactions",
           metric: {
             primary: {
-              value: aggregatedOverallStats?.totalTransactions,
+              value: aggregatedMetrics?.totalTransactions,
             },
           },
         },
@@ -396,7 +398,7 @@ const Stats: NextPage = function () {
           name: "Total Unique Receivers",
           metric: {
             primary: {
-              value: aggregatedOverallStats?.totalUniqueReceivers,
+              value: aggregatedMetrics?.totalUniqueReceivers,
             },
           },
         },
@@ -404,7 +406,7 @@ const Stats: NextPage = function () {
           name: "Total Unique Senders",
           metric: {
             primary: {
-              value: aggregatedOverallStats?.totalUniqueSenders,
+              value: aggregatedMetrics?.totalUniqueSenders,
             },
           },
         },

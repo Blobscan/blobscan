@@ -128,10 +128,8 @@ export function convertTimeseriesToChartData<T extends TimeseriesData>(
     metricSeries: {},
   };
 
-  for (const s of series) {
-    const startTimestampIdx = s.startTimestampIdx ?? 0;
-
-    for (const [metricName, metricValues] of Object.entries(s.metrics)) {
+  for (const { dimension, metrics, startTimestampIdx = 0 } of series) {
+    for (const [metricName, metricValues] of Object.entries(metrics)) {
       const metricName_ =
         metricName as keyof TimeseriesChartData<T>["metricSeries"];
 
@@ -148,7 +146,7 @@ export function convertTimeseriesToChartData<T extends TimeseriesData>(
       );
 
       (chartData.metricSeries[metricName_] ??= []).push({
-        name: s.name ?? "global",
+        name: dimension.name ?? "global",
         values: alignedValues as NonNullable<
           Chartable<MetricDefinitionOf<T, typeof metricName_>>
         >,

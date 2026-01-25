@@ -1,3 +1,4 @@
+import type { Category, Rollup } from "@blobscan/db/prisma/enums";
 import {
   blockAllComputedFieldsSchema,
   transactionAllComputedFieldsSchema,
@@ -17,9 +18,35 @@ import {
   lowercaseToUppercaseDBCategorySchema,
   lowercaseToUpercaseDBRollupSchema,
   optimismDecodedFieldsSchema,
+  dbRollupSchema,
 } from "@blobscan/db/prisma/zod-utils";
 import { logLevelEnum } from "@blobscan/logger";
 import { z } from "@blobscan/zod";
+
+export const dimensionTypeSchema = z.enum(["category", "global", "rollup"]);
+
+export const dimensionSchema = z.object({
+  type: dimensionTypeSchema,
+  name: z.union([dbCategorySchema, dbRollupSchema]).optional(),
+});
+
+export type Dimension = z.output<typeof dimensionSchema>;
+
+export function getDimension(
+  category: Category | null,
+  rollup?: Rollup | null
+): Dimension {
+  if (!category && !rollup) {
+    return {
+      type: "global",
+    };
+  }
+
+  return {
+    type: rollup ? "rollup" : "category",
+    name: rollup ?? category ?? undefined,
+  };
+}
 
 export const toLogLevelSchema = z.string().transform((value, ctx) => {
   const result = logLevelEnum.safeParse(value);
