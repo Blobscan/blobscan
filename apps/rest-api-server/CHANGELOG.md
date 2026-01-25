@@ -1,5 +1,21 @@
 # @blobscan/rest-api-server
 
+## 0.12.0
+
+### Minor Changes
+
+- [#940](https://github.com/Blobscan/blobscan/pull/940) [`28f83b8`](https://github.com/Blobscan/blobscan/commit/28f83b856aa72f36794ecbfed27a454102146b08) Thanks [@PJColombo](https://github.com/PJColombo)! - Added Matomo analytics tracking
+
+### Patch Changes
+
+- [#947](https://github.com/Blobscan/blobscan/pull/947) [`5315170`](https://github.com/Blobscan/blobscan/commit/53151704262f5d3a7a0297ec207f2915f7bfe27c) Thanks [@PJColombo](https://github.com/PJColombo)! - Excluded indexer requests from Matomo tracking
+
+- [#941](https://github.com/Blobscan/blobscan/pull/941) [`9d43fa6`](https://github.com/Blobscan/blobscan/commit/9d43fa68ab81404f793439a06c9bbf8d6e37a25b) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated Matomo tracking requests to use POST instead of GET, allowing the auth token to be sent securely in the request body
+
+- Updated dependencies [[`40536aa`](https://github.com/Blobscan/blobscan/commit/40536aaf21d8f859fb427becba4dbfbae8a7a4ec), [`2f8b37b`](https://github.com/Blobscan/blobscan/commit/2f8b37bad10da132d741d057fc543c206bfc3e1b), [`2f8b37b`](https://github.com/Blobscan/blobscan/commit/2f8b37bad10da132d741d057fc543c206bfc3e1b), [`3032c6c`](https://github.com/Blobscan/blobscan/commit/3032c6cbb210b58cd7eda703210c0b8712711c8f), [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082), [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082), [`2f8b37b`](https://github.com/Blobscan/blobscan/commit/2f8b37bad10da132d741d057fc543c206bfc3e1b), [`6617338`](https://github.com/Blobscan/blobscan/commit/66173389e9c61e845d71aa01191d59469cbf039d), [`698d943`](https://github.com/Blobscan/blobscan/commit/698d9438c035a5a9944b01d203e041faaee8231c), [`40536aa`](https://github.com/Blobscan/blobscan/commit/40536aaf21d8f859fb427becba4dbfbae8a7a4ec)]:
+  - @blobscan/api@0.32.0
+  - @blobscan/rollups@0.4.2
+
 ## 0.11.2
 
 ### Patch Changes

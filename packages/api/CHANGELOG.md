@@ -1,5 +1,33 @@
 # @blobscan/api
 
+## 0.32.0
+
+### Minor Changes
+
+- [#945](https://github.com/Blobscan/blobscan/pull/945) [`40536aa`](https://github.com/Blobscan/blobscan/commit/40536aaf21d8f859fb427becba4dbfbae8a7a4ec) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated the timeseries procedure response by nesting `type` and `name` fields into a new `dimension` object field
+
+- [#942](https://github.com/Blobscan/blobscan/pull/942) [`2f8b37b`](https://github.com/Blobscan/blobscan/commit/2f8b37bad10da132d741d057fc543c206bfc3e1b) Thanks [@PJColombo](https://github.com/PJColombo)! - Renamed stats query param to metrics
+
+- [#942](https://github.com/Blobscan/blobscan/pull/942) [`2f8b37b`](https://github.com/Blobscan/blobscan/commit/2f8b37bad10da132d741d057fc543c206bfc3e1b) Thanks [@PJColombo](https://github.com/PJColombo)! - Renamed daily stats procedure to timeseries
+
+- [#942](https://github.com/Blobscan/blobscan/pull/942) [`2f8b37b`](https://github.com/Blobscan/blobscan/commit/2f8b37bad10da132d741d057fc543c206bfc3e1b) Thanks [@PJColombo](https://github.com/PJColombo)! - Reduced daily stats procedure response size
+
+- [#943](https://github.com/Blobscan/blobscan/pull/943) [`6617338`](https://github.com/Blobscan/blobscan/commit/66173389e9c61e845d71aa01191d59469cbf039d) Thanks [@PJColombo](https://github.com/PJColombo)! - Dropped unused stats-by-entity trpc procedures
+
+- [#945](https://github.com/Blobscan/blobscan/pull/945) [`40536aa`](https://github.com/Blobscan/blobscan/commit/40536aaf21d8f859fb427becba4dbfbae8a7a4ec) Thanks [@PJColombo](https://github.com/PJColombo)! - Restructured the overall stats response. The `category` and `rollup` fields are now grouped under a `dimension` object, distinct from `metrics` and `updatedAt`
+
+### Patch Changes
+
+- [#944](https://github.com/Blobscan/blobscan/pull/944) [`3032c6c`](https://github.com/Blobscan/blobscan/commit/3032c6cbb210b58cd7eda703210c0b8712711c8f) Thanks [@PJColombo](https://github.com/PJColombo)! - Renamed overall stats procedure
+
+- [#938](https://github.com/Blobscan/blobscan/pull/938) [`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082) Thanks [@PJColombo](https://github.com/PJColombo)! - Enforced page query parameter to be greater than 0
+
+- [#946](https://github.com/Blobscan/blobscan/pull/946) [`698d943`](https://github.com/Blobscan/blobscan/commit/698d9438c035a5a9944b01d203e041faaee8231c) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue where `getOverall` procedure was missing the input zod validator
+
+- Updated dependencies [[`c0187fc`](https://github.com/Blobscan/blobscan/commit/c0187fc2b7b6d663c2e4d0cae6eceefdb292d082)]:
+  - @blobscan/rollups@0.4.2
+  - @blobscan/dayjs@0.1.1
+
 ## 0.31.2
 
 ### Patch Changes
