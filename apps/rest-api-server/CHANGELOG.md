@@ -1,5 +1,11 @@
 # @blobscan/rest-api-server
 
+## 0.12.1
+
+### Patch Changes
+
+- [#948](https://github.com/Blobscan/blobscan/pull/948) [`5c4a86a`](https://github.com/Blobscan/blobscan/commit/5c4a86a1a2870defd1d8708ac7f0faaf725a18c5) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for method-specific exclusions. Now filters out `PUT` and `POST` requests for `/indexer` and `/blockchain-sync-state` to prevent internal sync traffic from polluting analytics
+
 ## 0.12.0
 
 ### Minor Changes
