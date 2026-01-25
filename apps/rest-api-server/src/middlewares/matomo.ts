@@ -5,7 +5,7 @@ import { logger } from "@blobscan/logger";
 
 import { matomoTracker } from "../clients/matomo-tracker";
 
-const EXCLUDED_PATHS = ["/metrics", "/healthcheck", "/logging"];
+const EXCLUDED_PATHS = ["/metrics", "/healthcheck", "/logging", "/indexer"];
 
 function getClientIp(req: Request): string {
   const forwarded = req.headers["x-forwarded-for"];
