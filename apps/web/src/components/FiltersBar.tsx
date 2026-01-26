@@ -87,7 +87,19 @@ function reducer<V extends keyof FiltersState>(
   }
 }
 
-export const FiltersBar: FC = function () {
+export type FiltersBarProps = {
+  hideCategoryFilter?: boolean;
+  hideRollupFilter?: boolean;
+  hideRangeFilter?: boolean;
+  hideSortFilter?: boolean;
+};
+
+export const FiltersBar: FC<FiltersBarProps> = function ({
+  hideCategoryFilter,
+  hideRollupFilter,
+  hideRangeFilter,
+  hideSortFilter,
+}) {
   const router = useRouter();
   const { filterParams, paginationParams } = useQueryParams();
   const [filters, dispatch] = useReducer(reducer, INIT_STATE);
@@ -111,53 +123,55 @@ export const FiltersBar: FC = function () {
       category,
     } = filters;
 
-    if (rollups && rollups.length > 0) {
+    if (!hideRollupFilter && rollups && rollups.length > 0) {
       query.rollups = rollups
         .flatMap((r) => r.value)
         .join(MULTIPLE_VALUES_SEPARATOR);
     }
 
-    if (category) {
+    if (!hideCategoryFilter && category) {
       query.category = category.value;
     }
 
-    if (timestampRange) {
-      const { startDate, endDate } = timestampRange;
+    if (!hideRangeFilter) {
+      if (timestampRange) {
+        const { startDate, endDate } = timestampRange;
 
-      if (startDate) {
-        query.startDate = getISODate(startDate);
+        if (startDate) {
+          query.startDate = getISODate(startDate);
+        }
+
+        if (endDate) {
+          query.endDate = getISODate(endDate);
+        }
       }
 
-      if (endDate) {
-        query.endDate = getISODate(endDate);
+      if (blockNumberRange) {
+        const { start, end } = blockNumberRange;
+
+        if (start) {
+          query.startBlock = start;
+        }
+
+        if (end) {
+          query.endBlock = end;
+        }
+      }
+
+      if (slotRange) {
+        const { start, end } = slotRange;
+
+        if (start) {
+          query.startSlot = start;
+        }
+
+        if (end) {
+          query.endSlot = end;
+        }
       }
     }
 
-    if (blockNumberRange) {
-      const { start, end } = blockNumberRange;
-
-      if (start) {
-        query.startBlock = start;
-      }
-
-      if (end) {
-        query.endBlock = end;
-      }
-    }
-
-    if (slotRange) {
-      const { start, end } = slotRange;
-
-      if (start) {
-        query.startSlot = start;
-      }
-
-      if (end) {
-        query.endSlot = end;
-      }
-    }
-
-    if (sort) {
+    if (!hideSortFilter && sort) {
       query.sort = sort;
     }
 
@@ -282,80 +296,88 @@ export const FiltersBar: FC = function () {
       <div className="flex  flex-col justify-between gap-5 lg:flex-row lg:justify-start lg:gap-0">
         <div className="flex w-full flex-col items-center gap-2 lg:flex-row lg:justify-start">
           <div className="flex w-full min-w-0 flex-row gap-2 lg:max-w-xl lg:justify-start">
-            <div className="shrink-0">
-              <SortToggle
-                type={filters.sort}
-                onChange={(newSort) => {
-                  dispatch({ type: "UPDATE", payload: { sort: newSort } });
-                }}
-              />
-            </div>
-            <div className="w-28 shrink-0">
-              <CategorySelector
-                selected={filters.category}
-                onChange={handleCategoryChange}
-              />
-            </div>
+            {!hideSortFilter && (
+              <div className="shrink-0">
+                <SortToggle
+                  type={filters.sort}
+                  onChange={(newSort) => {
+                    dispatch({ type: "UPDATE", payload: { sort: newSort } });
+                  }}
+                />
+              </div>
+            )}
+            {!hideCategoryFilter && (
+              <div className="w-28 shrink-0">
+                <CategorySelector
+                  selected={filters.category}
+                  onChange={handleCategoryChange}
+                />
+              </div>
+            )}
 
-            <div className="min-w-0 flex-1 basis-0">
-              <RollupSelector
-                selected={filters.rollups}
-                onChange={handleRollupChange}
-              />
-            </div>
+            {!hideRollupFilter && (
+              <div className="min-w-0 flex-1 basis-0">
+                <RollupSelector
+                  selected={filters.rollups}
+                  onChange={handleRollupChange}
+                />
+              </div>
+            )}
           </div>
-          <div className="flex w-full justify-start lg:max-w-sm">
-            <div className="w-28 border-r border-gray-200 dark:border-gray-500">
-              <RangeRadioGroup
-                selected={filters.range}
-                onChange={handleRangeChange}
-              />
+          {!hideRangeFilter && (
+            <div className="flex w-full justify-start lg:max-w-sm">
+              <div className="w-28 border-r border-gray-200 dark:border-gray-500">
+                <RangeRadioGroup
+                  selected={filters.range}
+                  onChange={handleRangeChange}
+                />
+              </div>
+              <div className="min-w-0 flex-1 basis-0">
+                {filters.range?.value === "date" && (
+                  <DatePicker
+                    className="rounded-s-none"
+                    value={filters.timestampRange}
+                    onChange={(newTimestampRange) =>
+                      dispatch({
+                        type: "UPDATE",
+                        payload: { timestampRange: newTimestampRange },
+                      })
+                    }
+                  />
+                )}
+                {filters.range?.value === "block" && (
+                  <NumberRangeInput
+                    className="w-full rounded-s-none"
+                    type="uint"
+                    inputStartProps={{ placeholder: "Start Block" }}
+                    inputEndProps={{ placeholder: "End Block" }}
+                    range={filters.blockNumberRange}
+                    onChange={(newBlockNumberRange) =>
+                      dispatch({
+                        type: "UPDATE",
+                        payload: { blockNumberRange: newBlockNumberRange },
+                      })
+                    }
+                  />
+                )}
+                {filters.range?.value === "slot" && (
+                  <NumberRangeInput
+                    className="w-full rounded-s-none"
+                    type="uint"
+                    inputStartProps={{ placeholder: "Start Slot" }}
+                    inputEndProps={{ placeholder: "End Slot" }}
+                    range={filters.slotRange}
+                    onChange={(newSlotRange) =>
+                      dispatch({
+                        type: "UPDATE",
+                        payload: { slotRange: newSlotRange },
+                      })
+                    }
+                  />
+                )}
+              </div>
             </div>
-            <div className="min-w-0 flex-1 basis-0">
-              {filters.range?.value === "date" && (
-                <DatePicker
-                  className="rounded-s-none"
-                  value={filters.timestampRange}
-                  onChange={(newTimestampRange) =>
-                    dispatch({
-                      type: "UPDATE",
-                      payload: { timestampRange: newTimestampRange },
-                    })
-                  }
-                />
-              )}
-              {filters.range?.value === "block" && (
-                <NumberRangeInput
-                  className="w-full rounded-s-none"
-                  type="uint"
-                  inputStartProps={{ placeholder: "Start Block" }}
-                  inputEndProps={{ placeholder: "End Block" }}
-                  range={filters.blockNumberRange}
-                  onChange={(newBlockNumberRange) =>
-                    dispatch({
-                      type: "UPDATE",
-                      payload: { blockNumberRange: newBlockNumberRange },
-                    })
-                  }
-                />
-              )}
-              {filters.range?.value === "slot" && (
-                <NumberRangeInput
-                  className="w-full rounded-s-none"
-                  type="uint"
-                  inputStartProps={{ placeholder: "Start Slot" }}
-                  inputEndProps={{ placeholder: "End Slot" }}
-                  range={filters.slotRange}
-                  onChange={(newSlotRange) =>
-                    dispatch({
-                      type: "UPDATE",
-                      payload: { slotRange: newSlotRange },
-                    })
-                  }
-                />
-              )}
-            </div>
-          </div>
+          )}
         </div>
         <div className="flex gap-2 md:flex-row lg:ml-2">
           <Button
