@@ -9,6 +9,7 @@ import {
   BlobModel,
   BlobsOnTransactionsModel,
   BlockModel,
+  DailyStatsModel,
   TransactionModel,
 } from "@blobscan/db/prisma/zod";
 import {
@@ -47,6 +48,13 @@ export function getDimension(
     name: rollup ?? category ?? undefined,
   };
 }
+
+export const timeseriesMetricsSchema = DailyStatsModel.omit({
+  id: true,
+  day: true,
+  category: true,
+  rollup: true,
+});
 
 export const toLogLevelSchema = z.string().transform((value, ctx) => {
   const result = logLevelEnum.safeParse(value);
