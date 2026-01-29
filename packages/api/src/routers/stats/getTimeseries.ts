@@ -1,7 +1,6 @@
 import { Prisma } from "@blobscan/db";
 import { Rollup } from "@blobscan/db/prisma/enums";
 import { Category } from "@blobscan/db/prisma/enums";
-import { DailyStatsModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { withSortFilterSchema } from "../../middlewares/withFilters";
@@ -16,20 +15,17 @@ import {
   arrayOptionalizeShape,
   dimensionSchema,
   getDimension,
+  timeseriesMetricsSchema,
 } from "../../zod-schemas";
 import { buildStatsPath } from "./helpers";
 
-const metricsSchema = DailyStatsModel.omit({
-  id: true,
-  day: true,
-  category: true,
-  rollup: true,
-});
-const METRICS = Object.keys(metricsSchema.shape);
+const METRIC_NAMES = Object.keys(timeseriesMetricsSchema.shape);
 
 const inputSchema = withStatFiltersSchema.merge(withSortFilterSchema);
 
-const metricSeriesSchema = z.object(arrayOptionalizeShape(metricsSchema.shape));
+const metricSeriesSchema = z.object(
+  arrayOptionalizeShape(timeseriesMetricsSchema.shape)
+);
 
 const timeseriesSchema = z.object({
   dimension: dimensionSchema,
@@ -79,7 +75,7 @@ function createOutput({
   const requestedCategories =
     categories === "all" ? Object.values(Category) : categories;
   const requestedRollups = rollups === "all" ? Object.values(Rollup) : rollups;
-  const requestedMetrics = stats ?? METRICS;
+  const requestedMetrics = stats ?? METRIC_NAMES;
 
   if (requestedCategories) {
     output.data.series.push(
