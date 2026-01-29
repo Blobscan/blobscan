@@ -2,13 +2,12 @@ import type { FC } from "react";
 import React from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { TimeSeriesProps } from "./ChartBase/types";
+import type { SingleTimeseriesChartProps } from "./ChartBase/types";
 
-export type DailyBlocksChartProps = TimeSeriesProps<number>;
+export type DailyBlocksChartProps = SingleTimeseriesChartProps;
 
 const DailyBlocksChart: FC<DailyBlocksChartProps> = React.memo(function ({
-  days,
-  series,
+  dataset,
   ...restProps
 }) {
   return (
@@ -18,18 +17,23 @@ const DailyBlocksChart: FC<DailyBlocksChartProps> = React.memo(function ({
         xAxis: {
           type: "time",
         },
-        yAxis: { type: "count", unitType: "none" },
+        yAxis: { type: "count" },
       }}
       options={{
-        xAxis: {
-          data: days,
-        },
-        series: series?.map(({ name, values }) => ({
-          name,
-          data: values,
-          type: "bar",
-          stack: "total",
-        })),
+        dataset,
+        series: dataset
+          ? [
+              {
+                name: "Total Blocks",
+                type: "bar",
+                stack: "total",
+                encode: {
+                  x: "timestamp",
+                  y: "totalBlocks",
+                },
+              },
+            ]
+          : undefined,
         tooltipExtraOptions: {
           displayTotal: true,
         },

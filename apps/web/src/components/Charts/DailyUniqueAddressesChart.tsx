@@ -1,56 +1,13 @@
-import React, { useMemo } from "react";
+import React from "react";
 import type { FC } from "react";
-import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { CustomTimeSeriesProps } from "./ChartBase/types";
-import { aggregateSeries } from "./helpers";
+import type { SingleTimeseriesChartProps } from "./ChartBase/types";
 
-export type DailyUniqueAddressesChartProps = CustomTimeSeriesProps<{
-  totalUniqueReceivers?:
-    | {
-        name?: string;
-        values: number[];
-      }[];
-  totalUniqueSenders?:
-    | {
-        name?: string;
-        values: number[];
-      }[];
-}>;
+export type DailyUniqueAddressesChartProps = SingleTimeseriesChartProps;
 
 const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
-  React.memo(function ({ days, series: seriesProps, ...restProps }) {
-    const { totalUniqueReceivers, totalUniqueSenders } = useMemo(
-      () => ({
-        totalUniqueReceivers: seriesProps?.totalUniqueReceivers
-          ? aggregateSeries(seriesProps.totalUniqueReceivers, "count")
-          : undefined,
-        totalUniqueSenders: seriesProps?.totalUniqueSenders
-          ? aggregateSeries(seriesProps.totalUniqueSenders, "count")
-          : undefined,
-      }),
-      [seriesProps]
-    );
-    const series: EChartOption.Series[] | undefined =
-      totalUniqueReceivers && totalUniqueSenders ? [] : undefined;
-
-    if (series && totalUniqueReceivers?.length) {
-      series.push({
-        name: "Total Unique Receivers",
-        data: totalUniqueReceivers,
-        type: "bar",
-      });
-    }
-
-    if (series && totalUniqueSenders?.length) {
-      series.push({
-        name: "Total Unique Senders",
-        data: totalUniqueSenders,
-        type: "bar",
-      });
-    }
-
+  React.memo(function ({ dataset, ...restProps }) {
     return (
       <ChartCard
         title="Daily Unique Addresses"
@@ -58,13 +15,30 @@ const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
           xAxis: {
             type: "time",
           },
-          yAxis: { type: "count", unitType: "none" },
+          yAxis: { type: "count" },
         }}
         options={{
-          xAxis: {
-            data: days,
-          },
-          series,
+          dataset,
+          series: dataset
+            ? [
+                {
+                  name: "Total Unique Receivers",
+                  type: "bar",
+                  encode: {
+                    x: "timestamp",
+                    y: "totalUniqueReceivers",
+                  },
+                },
+                {
+                  name: "Total Unique Senders",
+                  type: "bar",
+                  encode: {
+                    x: "timestamp",
+                    y: "totalUniqueSenders",
+                  },
+                },
+              ]
+            : undefined,
         }}
         {...restProps}
       />

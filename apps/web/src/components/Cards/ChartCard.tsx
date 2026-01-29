@@ -23,8 +23,7 @@ export const ChartCard: FC<ChartCardProps> = function ({
   showLegend,
 }) {
   const { yAxis } = metricInfo;
-  const yUnit =
-    yAxis.type !== "time" && yAxis.unitType !== "none" ? yAxis.unit : undefined;
+  const yUnit = yAxis.displayUnit ?? yAxis.unit;
   const isEmpty = options.series && options.series.length === 0;
   const isLoading = !options.series;
 

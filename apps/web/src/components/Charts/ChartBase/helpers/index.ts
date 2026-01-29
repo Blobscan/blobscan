@@ -1,3 +1,4 @@
+export * from "./dataset";
 export * from "./formatters";
 export * from "./toolbox";
 export * from "./tooltip";

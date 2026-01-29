@@ -13,12 +13,16 @@ import {
   createToolBox,
   createTooltip,
   formatMetricValue,
-  performCumulativeSum,
+  getDataPointsSize,
 } from "./helpers";
-import { DEFAULT_COLOR, getSeriesColor } from "./helpers/colors";
-import type { ChartCommonProps, MetricInfo } from "./types";
+import {
+  DEFAULT_COLOR,
+  getSeriesColor,
+  inferSeriesName,
+} from "./helpers/colors";
+import type { ChartBaseProps as ChartBaseProps_, MetricInfo } from "./types";
 
-export interface ChartBaseProps extends ChartCommonProps {
+export interface ChartBaseProps extends ChartBaseProps_ {
   metricInfo: {
     xAxis: MetricInfo;
     yAxis: MetricInfo;
@@ -52,13 +56,11 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   showLegend = false,
 }) {
   const { resolvedTheme } = useTheme();
-  const cachedCumulativeSumsRef = useRef<string[][] | null>(null);
   const chartInstanceRef = useRef<EChartsInstance | null>(null);
   const hoveredSeriesRef = useRef<{
     seriesIndex?: number;
     seriesName?: string;
   } | null>(null);
-  const [showCumulative, setShowCumulative] = useState(false);
   const [legendItems, setLegendItems] = useState<LegendItem[]>([]);
   const [selectedLegendItem, setSelectedLegendItem] = useState<
     string | undefined
@@ -74,6 +76,11 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     tooltipExtraOptions,
     ...restOptions
   } = options;
+  const dataPointsSize = useMemo(
+    () => (options.dataset ? getDataPointsSize(options.dataset) : 0),
+    [options.dataset]
+  );
+  const animationEnabled = dataPointsSize < 20_000;
   const themeMode = resolvedTheme as "light" | "dark";
 
   const tooltip = createTooltip({
@@ -85,62 +92,31 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   });
   const toolbox = !compact
     ? createToolBox({
-        extraFeatures: {
-          cumulativeSum:
-            yAxisMetricInfo.type === "count"
-              ? {
-                  onClick() {
-                    setShowCumulative(
-                      (prevShowCumulative) => !prevShowCumulative
-                    );
-                  },
-                }
-              : undefined,
-        },
         themeMode,
         opts: toolboxOptions,
       })
     : undefined;
-
   const formattedSeries = useMemo(() => {
     return seriesOptions
-      ?.sort((a, b) =>
-        (a.name?.toLowerCase() ?? "").localeCompare(b.name?.toLowerCase() ?? "")
-      )
+
       ?.map((series, i) => {
-        const { data, name, ...restSeries } = series;
+        const { name, id, ...restSeries } = series;
 
-        let newData = data;
-
-        if (showCumulative && data) {
-          if (!cachedCumulativeSumsRef.current) {
-            cachedCumulativeSumsRef.current = [];
-          }
-
-          let cumulativeSums = cachedCumulativeSumsRef.current[i];
-
-          if (!cumulativeSums) {
-            cumulativeSums = performCumulativeSum(data);
-            cachedCumulativeSumsRef.current[i] = cumulativeSums;
-          }
-
-          newData = cumulativeSums;
-        }
-
+        const seriesLabel = name?.length ? name : id ? inferSeriesName(id) : "";
         const color = getSeriesColor({
-          seriesName: name,
+          seriesName: seriesLabel.toLowerCase(),
           seriesIndex: i,
           themeMode,
         });
 
         return {
-          name,
+          name: seriesLabel,
           smooth: true,
-          data: newData,
           areaStyle: {},
           itemStyle: {
             color,
-          },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any,
           emphasis: {
             focus: "series",
             itemStyle: {
@@ -148,11 +124,16 @@ export const ChartBase: FC<ChartBaseProps> = function ({
               shadowOffsetX: 0,
               shadowColor: "rgba(0, 0, 0, 0.5)",
             },
-          },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any,
+          id,
           ...restSeries,
         };
-      });
-  }, [seriesOptions, showCumulative, themeMode]);
+      })
+      ?.sort((a, b) =>
+        (a.name?.toLowerCase() ?? "").localeCompare(b.name?.toLowerCase() ?? "")
+      );
+  }, [seriesOptions, themeMode]);
 
   const onChartReady = useCallback((chart: EChartsInstance) => {
     chart.on(
@@ -239,21 +220,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     setLegendItems(items);
   }, [showLegend, formattedSeries]);
 
-  useEffect(() => {
-    const chartInstance = chartInstanceRef.current?.getEchartsInstance();
-
-    if (!chartInstance) {
-      return;
-    }
-
-    chartInstance.setOption(
-      {
-        series: formattedSeries,
-      },
-      { replaceMerge: ["series"] }
-    );
-  }, [formattedSeries]);
-
   return (
     <div className="flex h-full w-full flex-col gap-1 overflow-visible md:flex-row md:gap-2">
       <ReactEChartsCore
@@ -262,6 +228,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         onChartReady={onChartReady}
         option={
           {
+            animation: animationEnabled,
             legend: {
               show: false,
             },
@@ -294,6 +261,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
             toolbox,
             tooltip,
             animationEasing: "linear",
+            series: formattedSeries,
             ...restOptions,
           } satisfies EChartOption
         }
@@ -343,9 +311,4 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   );
 };
 
-export type {
-  MetricInfo,
-  MetricType,
-  MetricUnitType,
-  TimeSeriesProps as TimeSeriesBaseProps,
-} from "./helpers";
+export type { MetricInfo, MetricType, MetricUnitType } from "./helpers";

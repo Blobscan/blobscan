@@ -1,5 +1,6 @@
 import { ROLLUP_STYLES } from "~/rollups";
 import type { Rollup } from "~/types";
+import { capitalize } from "~/utils";
 
 export const DEFAULT_COLOR = "#505050";
 
@@ -48,4 +49,18 @@ export function getSeriesColor({
   }
 
   return getCategoryRollupSeriesColor(seriesName, themeMode) ?? defaultColor;
+}
+
+export function inferSeriesName(id: string) {
+  const [type, name] = id.split("-");
+
+  if (!name && type === "global") {
+    return "Total";
+  }
+
+  if (type === "rollup") {
+    return ROLLUP_STYLES[name as Rollup].label;
+  }
+
+  return capitalize(name ?? "");
 }

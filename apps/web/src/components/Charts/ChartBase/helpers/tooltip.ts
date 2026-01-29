@@ -1,8 +1,6 @@
 import type { MutableRefObject } from "react";
 import type { EChartOption } from "echarts";
 
-import { ROLLUP_STYLES } from "~/rollups";
-import type { Rollup } from "~/types";
 import { calculatePercentage, getNeighbouringElements } from "~/utils";
 import type { Numerish } from "~/utils";
 import { aggregateValues } from "../../helpers";
@@ -86,6 +84,7 @@ export function createTooltip({
     backgroundColor: themeMode === "dark" ? "#2E2854" : "#FAFAFA",
     borderColor: themeMode === "dark" ? "#372779" : "#5D25D4",
     formatter: (paramOrParams) => {
+      console.log(paramOrParams);
       const seriesIndex = currentSeriesRef.current?.seriesIndex;
 
       let dateHTMLElement: string | undefined;
@@ -99,13 +98,17 @@ export function createTooltip({
 
         const dayTotal = displayTotal
           ? aggregateValues(
-              paramOrParams.map((p) => p.value ?? 0) as number[],
+              paramOrParams.map((p) =>
+                Array.isArray(p.value) ? p.value[1] : p.value ?? 0
+              ) as number[],
               yAxisMetricInfo.type
             )
           : undefined;
 
-        const rollupSeries = paramOrParams.filter(
-          (d) => !!ROLLUP_STYLES[d.seriesName as Rollup]
+        const rollupSeries = paramOrParams.filter((d) =>
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          (d.seriesId as string).includes("rollup")
         );
         const totalItems = 15;
         const filteredParams =
@@ -113,21 +116,21 @@ export function createTooltip({
             ? getNeighbouringElements(paramOrParams, seriesIndex, totalItems)
             : paramOrParams.slice(0, 10); // fallback if no hovered series
 
-        const { name } = paramOrParams[0] || {};
-
-        dateHTMLElement = name
-          ? formatMetricValue(name, xAxisMetricInfo).toString()
+        const { name, value } = paramOrParams[0] || {};
+        const date = name?.length
+          ? name
+          : Array.isArray(value)
+          ? value[0]
+          : value;
+        dateHTMLElement = date
+          ? formatMetricValue(date, xAxisMetricInfo).toString()
           : "-";
 
         filteredParams.map((p) => {
           const { seriesName, value, color } = p;
           const currentSeriesName = seriesName?.toLowerCase();
 
-          if (
-            !currentSeriesName ||
-            value === undefined ||
-            Array.isArray(value)
-          ) {
+          if (!currentSeriesName || value === undefined) {
             return "";
           }
 
@@ -141,7 +144,7 @@ export function createTooltip({
           seriesHTMLElements.push(
             buildSeriesHtmlElement({
               name: formattedName,
-              value: value,
+              value: Array.isArray(value) ? value[1] : value,
               total: dayTotal,
               metricInfo: yAxisMetricInfo,
               markerColor: color,
@@ -154,7 +157,9 @@ export function createTooltip({
         if (displayTotal) {
           if (rollupSeries.length) {
             const rollupTotal = aggregateValues(
-              rollupSeries.map((p) => p.value ?? 0) as number[],
+              rollupSeries.map((p) =>
+                Array.isArray(p.value) ? p.value[1] : p.value ?? 0
+              ) as number[],
               yAxisMetricInfo.type
             );
 

@@ -57,6 +57,8 @@ export type SingleTimeseries = TimeseriesData["series"][number];
 export type TimeseriesMetricsSeries =
   TimeseriesData["series"][number]["metrics"];
 
+export type TimeseriesDimension = TimeseriesData["series"][number]["dimension"];
+
 export type TimeseriesMetric = keyof TimeseriesMetricsSeries;
 
 export type TimeseriesName = Category | Rollup | "global";

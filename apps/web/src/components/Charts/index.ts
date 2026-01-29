@@ -1,6 +1,5 @@
 export * from "./DailyAvgBlobFeeChart";
 export * from "./DailyAvgBlobGasPriceChart";
-export * from "./DailyAvgMaxBlobGasFeeChart";
 export * from "./DailyBlobFeeChart";
 export * from "./DailyBlobGasComparisonChart";
 export * from "./DailyBlobGasUsedChart";

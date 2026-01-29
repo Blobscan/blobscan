@@ -16,12 +16,11 @@ import {
   DailyBlobUsageSizeChart,
   DailyBlobsChart,
   DailyBlocksChart,
-  DailyAvgMaxBlobGasFeeChart,
   DailyTransactionsChart,
   DailyUniqueAddressesChart,
   DailyAvgBlobGasPriceChart,
 } from "~/components/Charts";
-import { convertTimeseriesToChartData } from "~/components/Charts/helpers";
+import { transformToDatasets } from "~/components/Charts/helpers";
 import { Header } from "~/components/Header";
 import { Scrollable } from "~/components/Scrollable";
 import { RollupSelector } from "~/components/Selectors";
@@ -91,7 +90,7 @@ const Stats: NextPage = function () {
   const [selectedRollups, setSelectedRollups] = useState<
     RollupSelectorOption[]
   >([]);
-  const { data: categorizedDailyChartData } = api.stats.getTimeseries.useQuery(
+  const { data: categorizedChartDatasets } = api.stats.getTimeseries.useQuery(
     {
       categories: "other",
       rollups: "all",
@@ -101,10 +100,10 @@ const Stats: NextPage = function () {
     },
     {
       refetchOnWindowFocus: false,
-      select: ({ data }) => convertTimeseriesToChartData(data),
+      select: ({ data }) => transformToDatasets(data),
     }
   );
-  const { data: globalDailyChartData } = api.stats.getTimeseries.useQuery(
+  const { data: globalChartDatasets } = api.stats.getTimeseries.useQuery(
     {
       timeFrame: timeFrameOption?.value,
       sort: "asc",
@@ -112,7 +111,7 @@ const Stats: NextPage = function () {
     },
     {
       refetchOnWindowFocus: false,
-      select: ({ data }) => convertTimeseriesToChartData(data),
+      select: ({ data }) => transformToDatasets(data)[0],
     }
   );
   const { data: allOverallStats } = api.stats.getOverall.useQuery(undefined, {
@@ -123,14 +122,6 @@ const Stats: NextPage = function () {
     selectedRollups.map((r) => r.value),
     allOverallStats
   );
-  const {
-    timestamps: categorizedChartTimestamps,
-    metricSeries: categorizedChartMetricSeries,
-  } = categorizedDailyChartData || {};
-  const {
-    timestamps: globalChartTimestamps,
-    metricSeries: globalChartMetricSeries,
-  } = globalDailyChartData || {};
 
   const blobSize = chain
     ? chain.latestFork.blobParams.bytesPerFieldElement *
@@ -204,21 +195,15 @@ const Stats: NextPage = function () {
       charts: [
         <DailyBlobsChart
           key="daily-blobs"
-          days={categorizedChartTimestamps}
-          series={categorizedChartMetricSeries?.totalBlobs}
-          showLegend
+          datasets={categorizedChartDatasets}
         />,
         <DailyBlobSizeChart
           key="daily-blob-size"
-          days={categorizedChartTimestamps}
-          series={categorizedChartMetricSeries?.totalBlobSize}
-          showLegend
+          datasets={categorizedChartDatasets}
         />,
         <DailyBlobUsageSizeChart
           key="daily-blob-usage-size"
-          days={categorizedChartTimestamps}
-          series={categorizedChartMetricSeries?.totalBlobUsageSize}
-          showLegend
+          datasets={categorizedChartDatasets}
         />,
       ],
     },
@@ -235,12 +220,7 @@ const Stats: NextPage = function () {
         },
       ],
       charts: [
-        <DailyBlocksChart
-          key="daily-blocks"
-          days={globalChartTimestamps}
-          series={globalChartMetricSeries?.totalBlocks}
-          showLegend
-        />,
+        <DailyBlocksChart key="daily-blocks" dataset={globalChartDatasets} />,
       ],
     },
     {
@@ -297,21 +277,15 @@ const Stats: NextPage = function () {
       charts: [
         <DailyBlobGasUsedChart
           key="daily-blob-gas-used"
-          days={categorizedChartTimestamps}
-          series={categorizedChartMetricSeries?.totalBlobGasUsed}
-          showLegend
+          datasets={categorizedChartDatasets}
         />,
         <DailyAvgBlobGasPriceChart
           key="daily-avg-blob-gas-price"
-          days={globalChartTimestamps}
-          series={globalChartMetricSeries?.avgBlobGasPrice}
-          showLegend
+          dataset={globalChartDatasets}
         />,
         <DailyBlobGasComparisonChart
           key="daily-blob-gas-comparison"
-          days={globalChartTimestamps}
-          series={globalChartMetricSeries}
-          showLegend
+          dataset={globalChartDatasets}
         />,
       ],
     },
@@ -365,21 +339,11 @@ const Stats: NextPage = function () {
       charts: [
         <DailyBlobFeeChart
           key="daily-blob-fee"
-          days={categorizedChartTimestamps}
-          series={categorizedChartMetricSeries?.totalBlobFee}
-          showLegend
+          datasets={categorizedChartDatasets}
         />,
         <DailyAvgBlobFeeChart
           key="daily-avg-blob-fee"
-          days={globalChartTimestamps}
-          series={globalChartMetricSeries?.avgBlobFee}
-          showLegend
-        />,
-        <DailyAvgMaxBlobGasFeeChart
-          key="daily-avg-max-blob-gas-fee"
-          days={globalChartTimestamps}
-          series={globalChartMetricSeries?.avgBlobMaxFee}
-          showLegend
+          dataset={globalChartDatasets}
         />,
       ],
     },
@@ -414,15 +378,11 @@ const Stats: NextPage = function () {
       charts: [
         <DailyTransactionsChart
           key="daily-transactions"
-          days={categorizedChartTimestamps}
-          series={categorizedChartMetricSeries?.totalTransactions}
-          showLegend
+          datasets={categorizedChartDatasets}
         />,
         <DailyUniqueAddressesChart
           key="daily-unique-addresses"
-          days={globalChartTimestamps}
-          series={globalChartMetricSeries}
-          showLegend
+          dataset={globalChartDatasets}
         />,
       ],
     },

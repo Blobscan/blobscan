@@ -2,33 +2,40 @@ import type { FC } from "react";
 import React from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
-import type { TimeSeriesProps } from "./ChartBase/types";
+import type { SingleTimeseriesChartProps } from "./ChartBase/types";
 
-export type DailyAvgBlobFeeChartProps = TimeSeriesProps<number>;
+export type DailyAvgBlobFeeChartProps = SingleTimeseriesChartProps;
 
 const DailyAvgBlobFeeChart: FC<DailyAvgBlobFeeChartProps> = React.memo(
-  function ({ days, series, ...restProps }) {
-    const { scaledValues, unit } = useScaledWeiAmounts(series);
-
+  function ({ dataset, ...restProps }) {
     return (
       <ChartCard
-        title={"Daily Avg. Blob Fee"}
+        title="Daily Avg. Blob Base Fee"
         metricInfo={{
           xAxis: {
             type: "time",
           },
-          yAxis: { type: "average", unitType: "ether", unit },
+          yAxis: {
+            type: "average",
+            unitType: "ether",
+            unit: "wei",
+            displayUnit: "Gwei",
+          },
         }}
         options={{
-          xAxis: {
-            data: days,
-          },
-          series: scaledValues?.map(({ name, values }) => ({
-            name: name === "total" ? "Avg. Blob Fee" : name,
-            data: values,
-            type: "line",
-          })),
+          dataset: dataset,
+          series: dataset
+            ? [
+                {
+                  name: "Avg. Blob Base Fee",
+                  type: "line",
+                  encode: {
+                    x: "timestamp",
+                    y: "avgBlobFee",
+                  },
+                },
+              ]
+            : undefined,
         }}
         {...restProps}
       />

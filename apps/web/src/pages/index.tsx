@@ -13,7 +13,7 @@ import {
   DailyAvgBlobGasPriceChart,
   DailyBlobsChart,
 } from "~/components/Charts";
-import { convertTimeseriesToChartData } from "~/components/Charts/helpers";
+import { transformToDatasets } from "~/components/Charts/helpers";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
@@ -57,7 +57,7 @@ const Home: NextPage = () => {
       select: ({ data }) =>
         data.find(({ dimension }) => dimension.type === "global")?.metrics,
     });
-  const { data: categorizedChartData, error: categorizedChartDataError } =
+  const { data: categorizedChartDatasets, error: categorizedChartDataError } =
     api.stats.getTimeseries.useQuery(
       {
         metrics: CATEGORIZED_METRICS.join(","),
@@ -68,10 +68,10 @@ const Home: NextPage = () => {
       },
       {
         refetchOnWindowFocus: false,
-        select: ({ data }) => convertTimeseriesToChartData(data),
+        select: ({ data }) => transformToDatasets(data),
       }
     );
-  const { data: globalChartData, error: globalChartDataError } =
+  const { data: globalChartDataset, error: globalChartDataError } =
     api.stats.getTimeseries.useQuery(
       {
         metrics: GLOBAL_METRICS.join(","),
@@ -82,7 +82,7 @@ const Home: NextPage = () => {
         refetchOnWindowFocus: false,
         refetchOnMount: false,
         refetchOnReconnect: false,
-        select: ({ data }) => convertTimeseriesToChartData(data),
+        select: ({ data }) => transformToDatasets(data)[0],
       }
     );
   const { blocks, transactions, blobs } = useMemo(() => {
@@ -143,8 +143,7 @@ const Home: NextPage = () => {
         <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
             <DailyAvgBlobGasPriceChart
-              days={globalChartData?.timestamps}
-              series={globalChartData?.metricSeries.avgBlobGasPrice}
+              dataset={globalChartDataset}
               size="sm"
               compact
             />
@@ -206,8 +205,7 @@ const Home: NextPage = () => {
           <div className="col-span-2 sm:col-span-4">
             <DailyBlobsChart
               size="sm"
-              days={categorizedChartData?.timestamps}
-              series={categorizedChartData?.metricSeries.totalBlobs}
+              datasets={categorizedChartDatasets}
               compact
             />
           </div>

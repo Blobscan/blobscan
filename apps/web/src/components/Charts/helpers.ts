@@ -1,5 +1,9 @@
-import type { TimeseriesData, Chartable, TimeseriesName } from "~/types";
-import { normalizeNumerish } from "../../utils";
+import type {
+  TimeseriesData,
+  Chartable,
+  NullableElements,
+  TimeseriesDimension,
+} from "~/types";
 
 type AggregationType = "count" | "average" | "time";
 
@@ -26,133 +30,89 @@ export function aggregateValues(
   }
 }
 
-export function aggregateSeries(
-  series: { name?: string; values: number[] }[],
-  type: AggregationType
-): number[];
-export function aggregateSeries(
-  series: { name?: string; values: string[] }[],
-  type: AggregationType
-): string[];
-export function aggregateSeries<T extends number | string | bigint>(
-  series: {
-    name?: string;
-    values: T[];
-  }[],
-  type: AggregationType
-): T[] {
-  return series.reduce((acc, { values }) => {
-    return values.map((v, i) => {
-      const value = normalizeNumerish(v);
-      const zero = typeof value === "bigint" ? BigInt(0) : 0;
-      const accValue = acc[i] ? normalizeNumerish(acc[i]) : zero;
-
-      if (accValue === zero) {
-        return v as T;
-      }
-
-      if (type === "average") {
-        if (typeof value === "bigint") {
-          return (
-            ((accValue as bigint) + (value as bigint)) /
-            BigInt(2)
-          ).toString() as T;
-        }
-
-        return (((accValue as number) + (value as number)) / 2) as T;
-      }
-
-      if (typeof value === "bigint") {
-        return ((accValue as bigint) + (value as bigint)).toString() as T;
-      }
-
-      return ((accValue as number) + (value as number)) as T;
-    });
-  }, [] as T[]);
-}
-
 type MetricDefinitions<T extends TimeseriesData> =
   T["series"][number]["metrics"];
+
 type MetricDefinitionOf<
   T extends TimeseriesData,
   K extends keyof MetricDefinitions<T>
 > = MetricDefinitions<T>[K];
 
-type TimeseriesChartData<T extends TimeseriesData> = {
-  timestamps: string[];
-  metricSeries: {
-    [K in keyof MetricDefinitions<T>]?: Array<{
-      name: TimeseriesName;
-      values: NonNullable<Chartable<MetricDefinitions<T>[K]>>;
-    }>;
+export type DatasetId =
+  | `${TimeseriesDimension["type"]}-${NonNullable<TimeseriesDimension["name"]>}`
+  | "global";
+
+export type TimeseriesDataset<T extends TimeseriesData = TimeseriesData> = {
+  id: DatasetId;
+  source: {
+    timestamp: Date[];
+  } & {
+    [K in keyof MetricDefinitions<T>]: NullableElements<
+      Chartable<MetricDefinitions<T>[K]>
+    >;
   };
 };
 
-function getDefaultValue<T extends number | string>(sample: T) {
-  return typeof sample === "string" ? "0" : 0;
-}
-
-function normalizeSeriesLength<T extends number | string>(
-  values: T[],
-  startTimestampIdx: number,
-  totalTimestamps: number
-): T[] {
-  const sample = values.find((v) => v !== null && v !== undefined);
-
-  if (!sample) return values;
-
-  const defaultValue = getDefaultValue(sample) as T;
-  const left = startTimestampIdx;
-  const right = Math.max(
-    0,
-    totalTimestamps - (startTimestampIdx + values.length)
-  );
-
-  if (left === 0 && right === 0) return values;
+function padSeries<S extends (string | number)[]>(
+  series: S,
+  offset: number,
+  totalLength: number
+): Array<S[number] | null> {
+  const left = Math.max(0, offset);
+  const right = Math.max(0, totalLength - (offset + series.length));
 
   return [
-    ...Array.from({ length: left }, () => defaultValue),
-    ...values,
-    ...Array.from({ length: right }, () => defaultValue),
+    ...Array.from({ length: left }, () => null),
+    ...series,
+    ...Array.from({ length: right }, () => null),
   ];
 }
 
-export function convertTimeseriesToChartData<T extends TimeseriesData>(
-  timeseries: T
-): TimeseriesChartData<T> {
-  const { timestamps, series } = timeseries;
-  const totalTimestamps = timestamps.length;
+export function transformToDatasets<T extends TimeseriesData>({
+  series,
+  timestamps,
+}: T): TimeseriesDataset<T>[] {
+  const datesets = series.map(({ dimension, metrics, startTimestampIdx }) => {
+    const { type, name } = dimension;
+    const paddedMetrics = Object.entries(metrics).reduce(
+      (acc, [metricName, metricValues]) => {
+        const metricName_ = metricName as keyof MetricDefinitions<T>;
+        const offset = startTimestampIdx ?? 0;
+        const totalLength = timestamps.length;
 
-  const chartData: TimeseriesChartData<T> = {
-    timestamps: timestamps.map((t) => t.toString()),
-    metricSeries: {},
-  };
+        const sample = metricValues.find((v) => v !== null && v !== undefined);
 
-  for (const { dimension, metrics, startTimestampIdx = 0 } of series) {
-    for (const [metricName, metricValues] of Object.entries(metrics)) {
-      const metricName_ =
-        metricName as keyof TimeseriesChartData<T>["metricSeries"];
+        const metricValues_ = (
+          typeof sample === "bigint"
+            ? metricValues.map((v) => v.toString())
+            : metricValues
+        ) as string[] | number[];
 
-      if (!metricValues.length) continue;
-
-      const normalizedMetricValues = metricValues.map((v) =>
-        typeof v !== "number" ? v.toString() : v
-      );
-
-      const alignedValues = normalizeSeriesLength(
-        normalizedMetricValues,
-        startTimestampIdx,
-        totalTimestamps
-      );
-
-      (chartData.metricSeries[metricName_] ??= []).push({
-        name: dimension.name ?? "global",
-        values: alignedValues as NonNullable<
+        acc[metricName_] = padSeries(
+          metricValues_,
+          offset,
+          totalLength
+        ) as NullableElements<
           Chartable<MetricDefinitionOf<T, typeof metricName_>>
-        >,
-      });
-    }
-  }
+        >;
 
-  return chartData;
+        return acc;
+      },
+      {} as {
+        [K in keyof MetricDefinitions<T>]: NullableElements<
+          Chartable<MetricDefinitions<T>[K]>
+        >;
+      }
+    );
+
+    return {
+      id: [type, name].filter(Boolean).join("-") as DatasetId,
+      source: {
+        timestamp: timestamps,
+        ...paddedMetrics,
+      },
+    };
+  });
+
+  return datesets;
 }

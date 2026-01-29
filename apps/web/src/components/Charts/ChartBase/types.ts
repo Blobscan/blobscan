@@ -1,34 +1,45 @@
 import type { EtherUnit } from "@blobscan/eth-format";
 
-import type { BYTE_UNITS } from "~/utils";
+import type { Size, TimeseriesData } from "~/types";
+import type { ByteUnit } from "~/utils";
+import type { TimeseriesDataset } from "../helpers";
 
 export type MetricType = "count" | "average" | "time";
 
-export type MetricUnitType = "ether" | "byte" | "none";
+export type MetricUnitType = "ether" | "byte";
 
-interface BaseMetricInfo {
+interface MetricInfoBase {
   type: MetricType;
   unitType?: MetricUnitType;
+  unit?: EtherUnit | ByteUnit;
+  displayUnit?: EtherUnit | ByteUnit;
 }
-interface TimeMetricInfo extends BaseMetricInfo {
+export interface TimeMetricInfo extends MetricInfoBase {
   type: "time";
+  unitType?: never;
+  unit?: never;
+  displayUnit?: never;
 }
 
-interface UnitlessMetricInfo extends BaseMetricInfo {
+interface UnitlessMetricInfo extends MetricInfoBase {
   type: Exclude<MetricType, "time">;
-  unitType: "none";
+  unitType?: never;
+  unit?: never;
+  displayUnit?: never;
 }
 
-interface EtherMetricInfo extends BaseMetricInfo {
+export interface EtherMetricInfo extends MetricInfoBase {
   type: Exclude<MetricType, "time">;
   unitType: "ether";
   unit: EtherUnit;
+  displayUnit?: EtherUnit;
 }
 
-interface ByteMetricInfo extends BaseMetricInfo {
+export interface ByteMetricInfo extends MetricInfoBase {
   type: Exclude<MetricType, "time">;
   unitType: "byte";
-  unit: (typeof BYTE_UNITS)[number];
+  unit: ByteUnit;
+  displayUnit?: ByteUnit;
 }
 
 export type MetricInfo =
@@ -37,29 +48,20 @@ export type MetricInfo =
   | EtherMetricInfo
   | ByteMetricInfo;
 
-export interface AxisMetricInfo {
-  xAxis: MetricInfo;
-  yAxis: MetricInfo;
-}
-
-export interface ChartCommonProps {
+export interface ChartBaseProps {
   compact?: boolean;
   showLegend?: boolean;
-  size?: "sm" | "md" | "lg";
+  size?: Size;
 }
 
-interface TimeSeriesBaseProps extends ChartCommonProps {
-  days?: string[];
+export interface MultipleTimeseriesChartProps<
+  T extends TimeseriesData = TimeseriesData
+> extends ChartBaseProps {
+  datasets?: TimeseriesDataset<T>[];
 }
 
-export interface TimeSeriesProps<T extends number | string>
-  extends TimeSeriesBaseProps {
-  series?: {
-    name?: string;
-    values: T[];
-  }[];
-}
-
-export interface CustomTimeSeriesProps<T> extends TimeSeriesBaseProps {
-  series?: T;
+export interface SingleTimeseriesChartProps<
+  T extends TimeseriesData = TimeseriesData
+> extends ChartBaseProps {
+  dataset?: TimeseriesDataset<T>;
 }

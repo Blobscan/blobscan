@@ -2,18 +2,14 @@ import type { FC } from "react";
 import React from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
-import type { TimeSeriesProps } from "./ChartBase/types";
+import type { MultipleTimeseriesChartProps } from "./ChartBase/types";
 
-export type DailyBlobFeeChartProps = TimeSeriesProps<string>;
+export type DailyBlobFeeChartProps = MultipleTimeseriesChartProps;
 
 const DailyBlobFeeChart: FC<DailyBlobFeeChartProps> = React.memo(function ({
-  days,
-  series,
+  datasets,
   ...restProps
 }) {
-  const { scaledValues, unit } = useScaledWeiAmounts(series);
-
   return (
     <ChartCard
       title="Daily Blob Fees"
@@ -21,18 +17,36 @@ const DailyBlobFeeChart: FC<DailyBlobFeeChartProps> = React.memo(function ({
         xAxis: {
           type: "time",
         },
-        yAxis: { type: "count", unitType: "ether", unit },
+        yAxis: {
+          type: "count",
+          unitType: "ether",
+          unit: "wei",
+          displayUnit: "ether",
+        },
       }}
       options={{
-        xAxis: {
-          data: days,
-        },
-        series: scaledValues?.map(({ name, values }) => ({
-          name,
-          data: values,
+        dataset: datasets,
+        series: datasets?.map(({ id }, i) => ({
+          datasetIndex: i,
+          datasetId: id,
+          id,
           type: "bar",
           stack: "total",
+          encode: {
+            x: "timestamp",
+            y: "blobFee",
+          },
         })),
+        dataZoom: [
+          {
+            show: true,
+            realtime: true,
+          },
+          {
+            type: "inside",
+            realtime: true,
+          },
+        ],
         tooltipExtraOptions: {
           displayTotal: true,
         },

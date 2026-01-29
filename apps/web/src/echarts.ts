@@ -6,14 +6,18 @@ import {
   GridComponent,
   LegendComponent,
   GraphicComponent,
+  DatasetComponent,
 } from "echarts/components";
 import * as echarts from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
+
+import "echarts/lib/component/dataZoom";
 
 // Register only needed components
 echarts.use([
   BarChart,
   CanvasRenderer,
+  DatasetComponent,
   GraphicComponent,
   GridComponent,
   LegendComponent,

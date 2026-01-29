@@ -2,29 +2,14 @@ import type { FC } from "react";
 import React from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import { formatBytes } from "~/utils";
-import type { TimeSeriesProps } from "./ChartBase/types";
+import type { MultipleTimeseriesChartProps } from "./ChartBase/types";
 
-export type DailyBlobsSizeProps = TimeSeriesProps<string>;
+export type DailyBlobsSizeProps = MultipleTimeseriesChartProps;
 
 const DailyBlobSizeChart: FC<DailyBlobsSizeProps> = React.memo(function ({
-  days,
-  series,
+  datasets,
   ...restProps
 }) {
-  const scaledSeries = series?.map(({ name, values }) => ({
-    name,
-    values: values.map((v) =>
-      Number(
-        formatBytes(v, {
-          unit: "GiB",
-          hideUnit: true,
-          displayAllDecimals: true,
-        })
-      )
-    ),
-  }));
-
   return (
     <ChartCard
       title="Daily Blob Size"
@@ -35,18 +20,22 @@ const DailyBlobSizeChart: FC<DailyBlobsSizeProps> = React.memo(function ({
         yAxis: {
           type: "count",
           unitType: "byte",
-          unit: "GiB",
+          unit: "B",
+          displayUnit: "GiB",
         },
       }}
       options={{
-        xAxis: {
-          data: days,
-        },
-        series: scaledSeries?.map(({ name, values }) => ({
-          name,
-          data: values,
+        dataset: datasets,
+        series: datasets?.map(({ id }, i) => ({
+          datasetIndex: i,
+          datasetId: id,
+          id,
           type: "bar",
           stack: "total",
+          encode: {
+            x: "timestamp",
+            y: "totalBlobSize",
+          },
         })),
         tooltipExtraOptions: {
           displayTotal: true,

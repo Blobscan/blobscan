@@ -1,32 +1,51 @@
 import dayjs from "@blobscan/dayjs";
+import { convertWei } from "@blobscan/eth-format";
 
 import { ROLLUP_STYLES } from "~/rollups";
 import type { Rollup } from "~/types";
-import { formatNumber, getHumanDate } from "~/utils";
+import { convertBytes, formatNumber, getHumanDate } from "~/utils";
 import type { Numerish } from "~/utils";
 import type { MetricInfo } from "../types";
 
 export function formatMetricValue(
-  value: Numerish,
-  { type, unitType }: MetricInfo,
+  value: Numerish | Date,
+  metricInfo: MetricInfo,
   compact?: boolean
 ) {
-  if (type === "time") {
-    if (typeof value !== "string") {
-      return value;
-    }
+  const { type, unitType } = metricInfo;
+  const isTimeMetric =
+    value instanceof Date || (type === "time" && typeof value === "string");
 
+  if (isTimeMetric) {
     return compact ? dayjs(value).format("MMM DD") : getHumanDate(value);
   }
 
   const opts: Intl.NumberFormatOptions = {};
+  let displayValue = value;
 
   switch (unitType) {
-    case "ether":
-      opts.maximumFractionDigits = 18;
+    case "ether": {
+      const { displayUnit, unit } = metricInfo;
+
+      console.log(unit, displayUnit);
+      if (unit === "wei" && displayUnit) {
+        displayValue = convertWei(value, displayUnit);
+      }
+
+      if (unit === "wei") {
+        opts.maximumFractionDigits = 18;
+      }
+
       break;
+    }
     case "byte": {
-      opts.maximumFractionDigits = 5;
+      const { unit, displayUnit } = metricInfo;
+
+      if (["B", "byte"].includes(unit) && displayUnit) {
+        displayValue = convertBytes(value, displayUnit);
+      }
+
+      opts.maximumFractionDigits = 2;
       break;
     }
     default:
@@ -34,7 +53,8 @@ export function formatMetricValue(
       break;
   }
 
-  return formatNumber(value, compact ? "compact" : "standard", opts);
+  console.log(displayValue);
+  return formatNumber(displayValue, compact ? "compact" : "standard", opts);
 }
 
 export function formatSeriesName(name?: string) {
