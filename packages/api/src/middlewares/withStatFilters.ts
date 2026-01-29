@@ -108,7 +108,7 @@ function getRecommendedDaysInterval(
 
   const totalPotentialPoints = days * dimensionCount * metricsCount;
 
-  if (totalPotentialPoints < 10_000) {
+  if (totalPotentialPoints < 15_000) {
     return 1;
   }
 
