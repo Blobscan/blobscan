@@ -7,6 +7,44 @@ import { aggregateValues } from "../../helpers";
 import type { MetricInfo } from "../types";
 import { formatMetricValue, formatSeriesName } from "./formatters";
 
+type StandardEncoding = {
+  x: number[];
+  y: number[];
+};
+
+export function isStandardEncoding(value: unknown): value is StandardEncoding {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const v = value as Record<string, unknown>;
+
+  return (
+    Array.isArray(v.x) &&
+    v.x.every((n) => typeof n === "number") &&
+    Array.isArray(v.y) &&
+    v.y.every((n) => typeof n === "number")
+  );
+}
+
+function getValue(param: EChartOption.Tooltip.Format) {
+  const encode = param.encode;
+
+  if (isStandardEncoding(encode)) {
+    const dataIndex = encode.y[0];
+
+    if (dataIndex !== undefined) {
+      return param.data[dataIndex];
+    }
+  }
+
+  if (Array.isArray(param.value)) {
+    return param.value[1];
+  }
+
+  return param.value;
+}
+
 function buildSeriesHtmlElement({
   name,
   value,
@@ -84,7 +122,6 @@ export function createTooltip({
     backgroundColor: themeMode === "dark" ? "#2E2854" : "#FAFAFA",
     borderColor: themeMode === "dark" ? "#372779" : "#5D25D4",
     formatter: (paramOrParams) => {
-      console.log(paramOrParams);
       const seriesIndex = currentSeriesRef.current?.seriesIndex;
 
       let dateHTMLElement: string | undefined;
@@ -96,11 +133,9 @@ export function createTooltip({
           return "Loading…";
         }
 
-        const dayTotal = displayTotal
+        const dailyTotal = displayTotal
           ? aggregateValues(
-              paramOrParams.map((p) =>
-                Array.isArray(p.value) ? p.value[1] : p.value ?? 0
-              ) as number[],
+              paramOrParams.map((p) => getValue(p)) as number[],
               yAxisMetricInfo.type
             )
           : undefined;
@@ -144,8 +179,8 @@ export function createTooltip({
           seriesHTMLElements.push(
             buildSeriesHtmlElement({
               name: formattedName,
-              value: Array.isArray(value) ? value[1] : value,
-              total: dayTotal,
+              value: getValue(p),
+              total: dailyTotal,
               metricInfo: yAxisMetricInfo,
               markerColor: color,
               themeMode,
@@ -157,9 +192,7 @@ export function createTooltip({
         if (displayTotal) {
           if (rollupSeries.length) {
             const rollupTotal = aggregateValues(
-              rollupSeries.map((p) =>
-                Array.isArray(p.value) ? p.value[1] : p.value ?? 0
-              ) as number[],
+              rollupSeries.map((p) => getValue(p)) as number[],
               yAxisMetricInfo.type
             );
 
@@ -168,7 +201,7 @@ export function createTooltip({
                 name: "Rollup",
                 value: rollupTotal,
                 metricInfo: yAxisMetricInfo,
-                total: dayTotal,
+                total: dailyTotal,
                 themeMode,
               })
             );
@@ -177,7 +210,7 @@ export function createTooltip({
           totalSeriesHTMLElements.push(
             buildSeriesHtmlElement({
               name: "Total",
-              value: dayTotal,
+              value: dailyTotal,
               metricInfo: yAxisMetricInfo,
               themeMode,
             })

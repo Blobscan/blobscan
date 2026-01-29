@@ -27,7 +27,6 @@ export function formatMetricValue(
     case "ether": {
       const { displayUnit, unit } = metricInfo;
 
-      console.log(unit, displayUnit);
       if (unit === "wei" && displayUnit) {
         displayValue = convertWei(value, displayUnit);
       }
@@ -53,7 +52,6 @@ export function formatMetricValue(
       break;
   }
 
-  console.log(displayValue);
   return formatNumber(displayValue, compact ? "compact" : "standard", opts);
 }
 
