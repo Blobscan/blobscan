@@ -21,7 +21,7 @@ const DailyBlobFeeChart: FC<DailyBlobFeeChartProps> = React.memo(function ({
           type: "count",
           unitType: "ether",
           unit: "wei",
-          displayUnit: "ether",
+          displayUnit: "Gwei",
         },
       }}
       options={{
@@ -34,7 +34,7 @@ const DailyBlobFeeChart: FC<DailyBlobFeeChartProps> = React.memo(function ({
           stack: "total",
           encode: {
             x: "timestamp",
-            y: "blobFee",
+            y: "totalBlobFee",
           },
         })),
         tooltipExtraOptions: {
