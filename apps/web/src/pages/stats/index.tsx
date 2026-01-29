@@ -2,8 +2,6 @@ import type { ReactNode } from "react";
 import React, { useState } from "react";
 import type { NextPage } from "next";
 
-import type { TimeFrame } from "@blobscan/api";
-
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
@@ -36,16 +34,6 @@ import { calculatePercentage, splitArrayIntoChunks } from "~/utils";
 type Section = "All" | "Blob" | "Block" | "Gas" | "Fee" | "Transaction";
 
 type SectionOption = SelectOption<Section>;
-
-type TimeFrameOption = SelectOption<TimeFrame>;
-
-const TIME_FRAME_OPTIONS = [
-  { label: "1 year", value: "365d" },
-  { label: "6 months", value: "180d" },
-  { label: "1 month", value: "30d" },
-  { label: "7 days", value: "7d" },
-  { label: "1 day", value: "1d" },
-] as const;
 
 const SECTION_OPTIONS = [
   { value: "All" },
@@ -84,9 +72,7 @@ const Stats: NextPage = function () {
   const [selectedSection, setSelectedSection] = useState<SectionOption>(
     SECTION_OPTIONS[0]
   );
-  const [timeFrameOption, setTimeFrameOption] = useState<TimeFrameOption>(
-    TIME_FRAME_OPTIONS[1]
-  );
+
   const [selectedRollups, setSelectedRollups] = useState<
     RollupSelectorOption[]
   >([]);
@@ -94,7 +80,7 @@ const Stats: NextPage = function () {
     {
       categories: "other",
       rollups: "all",
-      timeFrame: timeFrameOption?.value,
+      timeFrame: "15d",
       sort: "asc",
       metrics: CATEGORIZED_METRICS.join(","),
     },
@@ -105,7 +91,7 @@ const Stats: NextPage = function () {
   );
   const { data: globalChartDatasets } = api.stats.getTimeseries.useQuery(
     {
-      timeFrame: timeFrameOption?.value,
+      timeFrame: "15d",
       sort: "asc",
       metrics: GLOBAL_METRICS.join(","),
     },
@@ -114,6 +100,7 @@ const Stats: NextPage = function () {
       select: ({ data }) => transformToDatasets(data)[0],
     }
   );
+
   const { data: allOverallStats } = api.stats.getOverall.useQuery(undefined, {
     select: ({ data }) => data,
   });
@@ -423,13 +410,6 @@ const Stats: NextPage = function () {
               }}
             />
           </div>
-          <Listbox
-            options={TIME_FRAME_OPTIONS}
-            selected={timeFrameOption}
-            onChange={(option: TimeFrameOption) => {
-              setTimeFrameOption(option);
-            }}
-          />
           <div className="w-64">
             <RollupSelector
               selected={selectedRollups}
