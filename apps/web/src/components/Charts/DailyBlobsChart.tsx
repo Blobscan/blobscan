@@ -7,7 +7,7 @@ import type { MultipleTimeseriesChartProps } from "./ChartBase/types";
 export type DailyBlobsChartProps = MultipleTimeseriesChartProps;
 
 const DailyBlobsChart: FC<DailyBlobsChartProps> = React.memo(function ({
-  datasets: dataset,
+  datasets,
   ...restProps
 }) {
   return (
@@ -18,8 +18,8 @@ const DailyBlobsChart: FC<DailyBlobsChartProps> = React.memo(function ({
         yAxis: { type: "count" },
       }}
       options={{
-        dataset: dataset,
-        series: dataset?.map(({ id }, i) => ({
+        dataset: datasets,
+        series: datasets?.map(({ id }, i) => ({
           datasetIndex: i,
           datasetId: id,
           id: id,

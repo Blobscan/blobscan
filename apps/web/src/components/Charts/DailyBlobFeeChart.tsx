@@ -37,16 +37,6 @@ const DailyBlobFeeChart: FC<DailyBlobFeeChartProps> = React.memo(function ({
             y: "blobFee",
           },
         })),
-        dataZoom: [
-          {
-            show: true,
-            realtime: true,
-          },
-          {
-            type: "inside",
-            realtime: true,
-          },
-        ],
         tooltipExtraOptions: {
           displayTotal: true,
         },

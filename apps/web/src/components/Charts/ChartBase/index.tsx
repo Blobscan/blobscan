@@ -52,8 +52,7 @@ function buildAxisOptions(metricInfo: MetricInfo) {
 export const ChartBase: FC<ChartBaseProps> = function ({
   metricInfo,
   options,
-  compact = false,
-  showLegend = false,
+  compact,
 }) {
   const { resolvedTheme } = useTheme();
   const chartInstanceRef = useRef<EChartsInstance | null>(null);
@@ -193,7 +192,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   );
 
   useEffect(() => {
-    if (!showLegend || !formattedSeries?.length) {
+    if (compact || !formattedSeries?.length) {
       return;
     }
 
@@ -218,7 +217,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     }
 
     setLegendItems(items);
-  }, [showLegend, formattedSeries]);
+  }, [compact, formattedSeries]);
 
   return (
     <div className="flex h-full w-full flex-col gap-1 overflow-visible md:flex-row md:gap-2">
@@ -267,7 +266,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         }
         style={{ height: "100%", width: "100%" }}
       />
-      {showLegend && (
+      {!compact && (
         <div className="h-4 md:h-full">
           <Legend
             items={legendItems}

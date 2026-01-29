@@ -50,7 +50,6 @@ export type MetricInfo =
 
 export interface ChartBaseProps {
   compact?: boolean;
-  showLegend?: boolean;
   size?: Size;
 }
 

@@ -196,14 +196,17 @@ const Stats: NextPage = function () {
         <DailyBlobsChart
           key="daily-blobs"
           datasets={categorizedChartDatasets}
+          compact
         />,
         <DailyBlobSizeChart
           key="daily-blob-size"
           datasets={categorizedChartDatasets}
+          compact
         />,
         <DailyBlobUsageSizeChart
           key="daily-blob-usage-size"
           datasets={categorizedChartDatasets}
+          compact
         />,
       ],
     },
@@ -220,7 +223,11 @@ const Stats: NextPage = function () {
         },
       ],
       charts: [
-        <DailyBlocksChart key="daily-blocks" dataset={globalChartDatasets} />,
+        <DailyBlocksChart
+          key="daily-blocks"
+          dataset={globalChartDatasets}
+          compact
+        />,
       ],
     },
     {
@@ -278,14 +285,17 @@ const Stats: NextPage = function () {
         <DailyBlobGasUsedChart
           key="daily-blob-gas-used"
           datasets={categorizedChartDatasets}
+          compact
         />,
         <DailyAvgBlobGasPriceChart
           key="daily-avg-blob-gas-price"
           dataset={globalChartDatasets}
+          compact
         />,
         <DailyBlobGasComparisonChart
           key="daily-blob-gas-comparison"
           dataset={globalChartDatasets}
+          compact
         />,
       ],
     },
@@ -340,10 +350,12 @@ const Stats: NextPage = function () {
         <DailyBlobFeeChart
           key="daily-blob-fee"
           datasets={categorizedChartDatasets}
+          compact
         />,
         <DailyAvgBlobFeeChart
           key="daily-avg-blob-fee"
           dataset={globalChartDatasets}
+          compact
         />,
       ],
     },
@@ -379,10 +391,12 @@ const Stats: NextPage = function () {
         <DailyTransactionsChart
           key="daily-transactions"
           datasets={categorizedChartDatasets}
+          compact
         />,
         <DailyUniqueAddressesChart
           key="daily-unique-addresses"
           dataset={globalChartDatasets}
+          compact
         />,
       ],
     },

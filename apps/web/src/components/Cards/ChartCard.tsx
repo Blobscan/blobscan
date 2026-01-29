@@ -20,7 +20,6 @@ export const ChartCard: FC<ChartCardProps> = function ({
   options,
   metricInfo,
   compact,
-  showLegend,
 }) {
   const { yAxis } = metricInfo;
   const yUnit = yAxis.displayUnit ?? yAxis.unit;
@@ -55,7 +54,6 @@ export const ChartCard: FC<ChartCardProps> = function ({
               metricInfo={metricInfo}
               options={options}
               compact={compact}
-              showLegend={showLegend}
             />
           )}
         </div>
