@@ -39,13 +39,9 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
       : undefined;
   const hasItems = !items || items.length;
 
-  console.log(pageSize);
-
   const handlePageSizeSelection = useCallback(
     (option: PageSizeOption) => {
       const newPageSize = option.value;
-
-      console.log("newPageSize", newPageSize);
 
       void router.push({
         pathname: router.pathname,
