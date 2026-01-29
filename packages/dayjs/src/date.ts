@@ -12,6 +12,11 @@ export type DatePeriod = {
   to?: Date;
 };
 
+export type DayjsDatePeriod = {
+  from?: dayjs.Dayjs;
+  to?: dayjs.Dayjs;
+};
+
 export const MIN_DATE = new Date(0);
 export const MAX_DATE = new Date(8.64e15);
 
