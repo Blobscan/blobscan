@@ -29,7 +29,7 @@ import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
 import type { TimeseriesMetric } from "~/types";
-import { calculatePercentage, splitArrayIntoChunks } from "~/utils";
+import { calculatePercentage } from "~/utils";
 
 type Section = "All" | "Blob" | "Block" | "Gas" | "Fee" | "Transaction";
 
@@ -420,19 +420,14 @@ const Stats: NextPage = function () {
       </Card>
       <div className="flex flex-col gap-4">
         <OverallMetricWrapper displayScrollbar>
-          <div className="flex w-full flex-row gap-4">
-            {splitArrayIntoChunks(
-              displayedSections.flatMap((s) => s.metrics),
-              2
-            ).map((metricProps, i) => (
-              <div key={i} className="flex flex-col gap-4">
-                {metricProps.map((p) => (
-                  <div key={p.name} className="w-[240px]">
-                    <MetricCard {...p} />
-                  </div>
-                ))}
-              </div>
-            ))}
+          <div className="grid grid-flow-col grid-rows-3 gap-4">
+            {displayedSections
+              .flatMap((s) => s.metrics)
+              .map((p) => (
+                <div key={p.name} className="w-[85vw] sm:w-[260px]">
+                  <MetricCard {...p} />
+                </div>
+              ))}
           </div>
         </OverallMetricWrapper>
       </div>
