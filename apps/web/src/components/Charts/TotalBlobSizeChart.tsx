@@ -4,24 +4,24 @@ import React from "react";
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { MultipleTimeseriesChartProps } from "./ChartBase/types";
 
-export type DailyBlobFeeChartProps = MultipleTimeseriesChartProps;
+export type TotalBlobsSizeProps = MultipleTimeseriesChartProps;
 
-const DailyBlobFeeChart: FC<DailyBlobFeeChartProps> = React.memo(function ({
+const TotalBlobSizeChart: FC<TotalBlobsSizeProps> = React.memo(function ({
   datasets,
   ...restProps
 }) {
   return (
     <ChartCard
-      title="Daily Blob Fees"
+      title="Total Blob Size"
       metricInfo={{
         xAxis: {
           type: "time",
         },
         yAxis: {
           type: "count",
-          unitType: "ether",
-          unit: "wei",
-          displayUnit: "Gwei",
+          unitType: "byte",
+          unit: "B",
+          displayUnit: "GiB",
         },
       }}
       options={{
@@ -34,7 +34,7 @@ const DailyBlobFeeChart: FC<DailyBlobFeeChartProps> = React.memo(function ({
           stack: "total",
           encode: {
             x: "timestamp",
-            y: "totalBlobFee",
+            y: "totalBlobSize",
           },
         })),
         tooltipExtraOptions: {
@@ -46,6 +46,6 @@ const DailyBlobFeeChart: FC<DailyBlobFeeChartProps> = React.memo(function ({
   );
 });
 
-DailyBlobFeeChart.displayName = "DailyBlobFeeChart";
+TotalBlobSizeChart.displayName = "TotalBlobSizeChart";
 
-export { DailyBlobFeeChart };
+export { TotalBlobSizeChart };

@@ -4,30 +4,35 @@ import React from "react";
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { MultipleTimeseriesChartProps } from "./ChartBase/types";
 
-export type DailyTransactionsChartProps = MultipleTimeseriesChartProps;
+export type TotalBlobBaseFeeChartProps = MultipleTimeseriesChartProps;
 
-const DailyTransactionsChart: FC<DailyTransactionsChartProps> = React.memo(
+const TotalBlobBaseFeesChart: FC<TotalBlobBaseFeeChartProps> = React.memo(
   function ({ datasets, ...restProps }) {
     return (
       <ChartCard
-        title="Daily Transactions"
+        title="Total Blob Base Fees"
         metricInfo={{
           xAxis: {
             type: "time",
           },
-          yAxis: { type: "count" },
+          yAxis: {
+            type: "count",
+            unitType: "ether",
+            unit: "wei",
+            displayUnit: "Gwei",
+          },
         }}
         options={{
           dataset: datasets,
           series: datasets?.map(({ id }, i) => ({
-            datasetId: id,
             datasetIndex: i,
+            datasetId: id,
             id,
             type: "bar",
             stack: "total",
             encode: {
               x: "timestamp",
-              y: "totalTransactions",
+              y: "totalBlobFee",
             },
           })),
           tooltipExtraOptions: {
@@ -40,6 +45,6 @@ const DailyTransactionsChart: FC<DailyTransactionsChartProps> = React.memo(
   }
 );
 
-DailyTransactionsChart.displayName = "DailyTransactionsChart";
+TotalBlobBaseFeesChart.displayName = "TotalBlobBaseFeesChart";
 
-export { DailyTransactionsChart };
+export { TotalBlobBaseFeesChart as TotalBlobBaseFeesChart };

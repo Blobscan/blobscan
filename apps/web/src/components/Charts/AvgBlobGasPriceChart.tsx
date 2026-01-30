@@ -4,13 +4,13 @@ import React from "react";
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { SingleTimeseriesChartProps } from "./ChartBase/types";
 
-export type DailyAvgBlobFeeChartProps = SingleTimeseriesChartProps;
+export type AvgBlobGasPriceChartProps = SingleTimeseriesChartProps;
 
-const DailyAvgBlobFeeChart: FC<DailyAvgBlobFeeChartProps> = React.memo(
+const DailyAvgBlobGasPriceChart: FC<AvgBlobGasPriceChartProps> = React.memo(
   function ({ dataset, ...restProps }) {
     return (
       <ChartCard
-        title="Daily Avg. Blob Base Fee"
+        title="Avg. Blob Gas Price"
         metricInfo={{
           xAxis: {
             type: "time",
@@ -23,15 +23,15 @@ const DailyAvgBlobFeeChart: FC<DailyAvgBlobFeeChartProps> = React.memo(
           },
         }}
         options={{
-          dataset: dataset,
+          dataset,
           series: dataset
             ? [
                 {
-                  name: "Avg. Blob Base Fee",
+                  name: "Avg. Blob Gas Price",
                   type: "line",
                   encode: {
                     x: "timestamp",
-                    y: "avgBlobFee",
+                    y: "avgBlobGasPrice",
                   },
                 },
               ]
@@ -43,6 +43,6 @@ const DailyAvgBlobFeeChart: FC<DailyAvgBlobFeeChartProps> = React.memo(
   }
 );
 
-DailyAvgBlobFeeChart.displayName = "DailyAvgBlobFeeChart";
+DailyAvgBlobGasPriceChart.displayName = "AvgBlobGasPriceChart";
 
-export { DailyAvgBlobFeeChart };
+export { DailyAvgBlobGasPriceChart };

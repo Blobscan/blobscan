@@ -6,65 +6,15 @@ import { ChartCard } from "~/components/Cards/ChartCard";
 import echarts from "~/echarts";
 import type { SingleTimeseriesChartProps } from "./ChartBase/types";
 
-export type DailyBlobGasComparisonChartProps = SingleTimeseriesChartProps;
+export type TotalBlobGasComparisonChartProps = SingleTimeseriesChartProps;
 
-const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
+const TotalBlobGasComparisonChart: FC<TotalBlobGasComparisonChartProps> =
   React.memo(function ({ dataset, ...restProps }) {
     const { resolvedTheme } = useTheme();
-    // const totalBlobAsCalldataGasUsedSeries = datasets?.find(
-    //   ({ id }) => id === "totalBlobAsCalldataGasUsed"
-    // );
-    // const series: EChartOption.Series[] | undefined =
-    //   totalBlobAsCalldataGasUsed && totalBlobGasUsed ? [] : undefined;
-
-    // if (series && totalBlobAsCalldataGasUsed?.length) {
-    //   series.push({
-    //     name: "Equivalents Blob As Calldata Gas",
-    //     data: totalBlobAsCalldataGasUsed,
-    //     stack: "gas",
-    //     type: "bar",
-    //     itemStyle: {
-    //       color: resolvedTheme === "dark" ? "#9c3932" : "#e97979",
-    //     },
-    //     areaStyle: {
-    //       color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-    //         {
-    //           offset: 0,
-    //           color: "rgba(213,72,120,0.8)",
-    //         },
-    //         {
-    //           offset: 1,
-    //           color: "rgba(222, 70, 121, 0.514)",
-    //         },
-    //       ]),
-    //     },
-    //   });
-    // }
-
-    // if (series && totalBlobGasUsed?.length) {
-    //   series.push({
-    //     name: "Blob Gas Used",
-    //     data: totalBlobGasUsed,
-    //     stack: "gas",
-    //     type: "bar",
-    //     areaStyle: {
-    //       color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-    //         {
-    //           offset: 0,
-    //           color: "rgba(58,77,233,0.8)",
-    //         },
-    //         {
-    //           offset: 1,
-    //           color: "rgba(58,77,233,0.3)",
-    //         },
-    //       ]),
-    //     },
-    //   });
-    // }
 
     return (
       <ChartCard
-        title="Daily Blob Gas Expenditure Comparison"
+        title="Total Blob Gas Expenditure Comparison"
         metricInfo={{
           xAxis: {
             type: "time",
@@ -126,6 +76,6 @@ const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
     );
   });
 
-DailyBlobGasComparisonChart.displayName = "DailyBlobGasComparisonChart";
+TotalBlobGasComparisonChart.displayName = "TotalBlobGasComparisonChart";
 
-export { DailyBlobGasComparisonChart };
+export { TotalBlobGasComparisonChart as TotalBlobGasComparisonChart };

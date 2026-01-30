@@ -4,13 +4,13 @@ import type { FC } from "react";
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { SingleTimeseriesChartProps } from "./ChartBase/types";
 
-export type DailyUniqueAddressesChartProps = SingleTimeseriesChartProps;
+export type TotalUniqueAddressesChartProps = SingleTimeseriesChartProps;
 
-const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
+const TotalUniqueAddressesChart: FC<TotalUniqueAddressesChartProps> =
   React.memo(function ({ dataset, ...restProps }) {
     return (
       <ChartCard
-        title="Daily Unique Addresses"
+        title="Total Unique Addresses"
         metricInfo={{
           xAxis: {
             type: "time",
@@ -45,6 +45,6 @@ const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
     );
   });
 
-DailyUniqueAddressesChart.displayName = "DailyUniqueAddressesChart";
+TotalUniqueAddressesChart.displayName = "TotalUniqueAddressesChart";
 
-export { DailyUniqueAddressesChart };
+export { TotalUniqueAddressesChart };

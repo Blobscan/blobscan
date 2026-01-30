@@ -11,7 +11,7 @@ import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransac
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
 import {
   DailyAvgBlobGasPriceChart,
-  DailyBlobsChart,
+  TotalBlobsChart,
 } from "~/components/Charts";
 import { transformToDatasets } from "~/components/Charts/helpers";
 import { Link } from "~/components/Link";
@@ -203,7 +203,7 @@ const Home: NextPage = () => {
             />
           </div>
           <div className="col-span-2 sm:col-span-4">
-            <DailyBlobsChart
+            <TotalBlobsChart
               size="sm"
               datasets={categorizedChartDatasets}
               compact

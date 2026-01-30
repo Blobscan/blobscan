@@ -4,13 +4,13 @@ import React from "react";
 import { ChartCard } from "../Cards/ChartCard";
 import type { MultipleTimeseriesChartProps } from "./ChartBase/types";
 
-export type DailyBlobUsageSizeChartProps = MultipleTimeseriesChartProps;
+export type TotalBlobUsageSizeChartProps = MultipleTimeseriesChartProps;
 
-const DailyBlobUsageSizeChart: FC<DailyBlobUsageSizeChartProps> = React.memo(
+const TotalBlobUsageSizeChart: FC<TotalBlobUsageSizeChartProps> = React.memo(
   ({ datasets, ...restProps }) => {
     return (
       <ChartCard
-        title="Daily Blob Usage Size"
+        title="Total Blob Usage"
         metricInfo={{
           xAxis: {
             type: "time",
@@ -45,6 +45,6 @@ const DailyBlobUsageSizeChart: FC<DailyBlobUsageSizeChartProps> = React.memo(
   }
 );
 
-DailyBlobUsageSizeChart.displayName = "DailyBlobUsageSizeChart";
+TotalBlobUsageSizeChart.displayName = "TotalBlobUsageSizeChart";
 
-export { DailyBlobUsageSizeChart };
+export { TotalBlobUsageSizeChart };

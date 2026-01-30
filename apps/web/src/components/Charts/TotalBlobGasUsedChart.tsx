@@ -1,0 +1,45 @@
+import type { FC } from "react";
+import React from "react";
+
+import { ChartCard } from "~/components/Cards/ChartCard";
+import type { MultipleTimeseriesChartProps } from "./ChartBase/types";
+
+export type TotalBlobGasUsedChartProps = MultipleTimeseriesChartProps;
+
+const TotalBlobGasUsedChart: FC<TotalBlobGasUsedChartProps> = React.memo(
+  function ({ datasets, ...restProps }) {
+    return (
+      <ChartCard
+        title="Total Blob Gas Used"
+        metricInfo={{
+          xAxis: {
+            type: "time",
+          },
+          yAxis: { type: "count" },
+        }}
+        options={{
+          dataset: datasets,
+          series: datasets?.map(({ id }, i) => ({
+            datasetIndex: i,
+            datasetId: id,
+            id: id,
+            type: "bar",
+            stack: "total",
+            encode: {
+              x: "timestamp",
+              y: "totalBlobGasUsed",
+            },
+          })),
+          tooltipExtraOptions: {
+            displayTotal: true,
+          },
+        }}
+        {...restProps}
+      />
+    );
+  }
+);
+
+TotalBlobGasUsedChart.displayName = "TotalBlobGasUsedChart";
+
+export { TotalBlobGasUsedChart };

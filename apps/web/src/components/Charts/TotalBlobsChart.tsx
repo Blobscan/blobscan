@@ -4,15 +4,15 @@ import React from "react";
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { MultipleTimeseriesChartProps } from "./ChartBase/types";
 
-export type DailyBlobsChartProps = MultipleTimeseriesChartProps;
+export type TotalBlobsChartProps = MultipleTimeseriesChartProps;
 
-const DailyBlobsChart: FC<DailyBlobsChartProps> = React.memo(function ({
+const TotalBlobsChart: FC<TotalBlobsChartProps> = React.memo(function ({
   datasets,
   ...restProps
 }) {
   return (
     <ChartCard
-      title="Daily Blobs"
+      title="Total Blobs"
       metricInfo={{
         xAxis: { type: "time" },
         yAxis: { type: "count" },
@@ -40,6 +40,6 @@ const DailyBlobsChart: FC<DailyBlobsChartProps> = React.memo(function ({
   );
 });
 
-DailyBlobsChart.displayName = "DailyBlobsChart";
+TotalBlobsChart.displayName = "TotalBlobsChart";
 
-export { DailyBlobsChart };
+export { TotalBlobsChart };

@@ -6,16 +6,16 @@ import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
 import {
-  DailyAvgBlobFeeChart,
-  DailyBlobFeeChart,
-  DailyBlobGasComparisonChart,
-  DailyBlobGasUsedChart,
-  DailyBlobSizeChart,
-  DailyBlobUsageSizeChart,
-  DailyBlobsChart,
-  DailyBlocksChart,
-  DailyTransactionsChart,
-  DailyUniqueAddressesChart,
+  AvgBlobBaseFeeChart,
+  TotalBlobBaseFeesChart,
+  TotalBlobGasComparisonChart,
+  TotalBlobGasUsedChart,
+  TotalBlobSizeChart,
+  TotalBlobUsageSizeChart,
+  TotalBlobsChart,
+  TotalBlocksChart,
+  TotalTransactionsChart,
+  TotalUniqueAddressesChart,
   DailyAvgBlobGasPriceChart,
 } from "~/components/Charts";
 import { transformToDatasets } from "~/components/Charts/helpers";
@@ -180,17 +180,17 @@ const Stats: NextPage = function () {
         },
       ],
       charts: [
-        <DailyBlobsChart
-          key="daily-blobs"
+        <TotalBlobsChart
+          key="total-blobs"
           datasets={categorizedChartDatasets}
           compact
         />,
-        <DailyBlobSizeChart
+        <TotalBlobSizeChart
           key="daily-blob-size"
           datasets={categorizedChartDatasets}
           compact
         />,
-        <DailyBlobUsageSizeChart
+        <TotalBlobUsageSizeChart
           key="daily-blob-usage-size"
           datasets={categorizedChartDatasets}
           compact
@@ -210,7 +210,7 @@ const Stats: NextPage = function () {
         },
       ],
       charts: [
-        <DailyBlocksChart
+        <TotalBlocksChart
           key="daily-blocks"
           dataset={globalChartDatasets}
           compact
@@ -269,7 +269,7 @@ const Stats: NextPage = function () {
         },
       ],
       charts: [
-        <DailyBlobGasUsedChart
+        <TotalBlobGasUsedChart
           key="daily-blob-gas-used"
           datasets={categorizedChartDatasets}
           compact
@@ -279,7 +279,7 @@ const Stats: NextPage = function () {
           dataset={globalChartDatasets}
           compact
         />,
-        <DailyBlobGasComparisonChart
+        <TotalBlobGasComparisonChart
           key="daily-blob-gas-comparison"
           dataset={globalChartDatasets}
           compact
@@ -334,12 +334,12 @@ const Stats: NextPage = function () {
         },
       ],
       charts: [
-        <DailyBlobFeeChart
+        <TotalBlobBaseFeesChart
           key="daily-blob-fee"
           datasets={categorizedChartDatasets}
           compact
         />,
-        <DailyAvgBlobFeeChart
+        <AvgBlobBaseFeeChart
           key="daily-avg-blob-fee"
           dataset={globalChartDatasets}
           compact
@@ -375,12 +375,12 @@ const Stats: NextPage = function () {
         },
       ],
       charts: [
-        <DailyTransactionsChart
+        <TotalTransactionsChart
           key="daily-transactions"
           datasets={categorizedChartDatasets}
           compact
         />,
-        <DailyUniqueAddressesChart
+        <TotalUniqueAddressesChart
           key="daily-unique-addresses"
           dataset={globalChartDatasets}
           compact

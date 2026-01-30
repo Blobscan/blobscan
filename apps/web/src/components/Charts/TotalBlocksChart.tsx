@@ -4,15 +4,15 @@ import React from "react";
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { SingleTimeseriesChartProps } from "./ChartBase/types";
 
-export type DailyBlocksChartProps = SingleTimeseriesChartProps;
+export type TotalBlocksChartProps = SingleTimeseriesChartProps;
 
-const DailyBlocksChart: FC<DailyBlocksChartProps> = React.memo(function ({
+const TotalBlocksChart: FC<TotalBlocksChartProps> = React.memo(function ({
   dataset,
   ...restProps
 }) {
   return (
     <ChartCard
-      title="Daily Blocks"
+      title="Total Blocks"
       metricInfo={{
         xAxis: {
           type: "time",
@@ -43,6 +43,6 @@ const DailyBlocksChart: FC<DailyBlocksChartProps> = React.memo(function ({
   );
 });
 
-DailyBlocksChart.displayName = "DailyBlocksChart";
+TotalBlocksChart.displayName = "TotalBlocksChart";
 
-export { DailyBlocksChart };
+export { TotalBlocksChart };
