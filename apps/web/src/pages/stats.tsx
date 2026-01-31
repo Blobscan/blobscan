@@ -418,8 +418,6 @@ const Stats: NextPage = function () {
     currentSectionOption === "All"
       ? sections
       : sections.filter((s) => s.id === currentSectionOption);
-  const OverallMetricWrapper =
-    currentSectionOption === "All" ? Scrollable : React.Fragment;
 
   return (
     <div className="flex flex-col gap-8">
@@ -445,17 +443,23 @@ const Stats: NextPage = function () {
       </Card>
       <div className="flex flex-col gap-8">
         <SubHeader>Overall Metrics</SubHeader>
-        <OverallMetricWrapper displayScrollbar>
-          <div className="grid grid-flow-col grid-rows-3 gap-4">
+        <Scrollable displayScrollbar>
+          <div
+            className={
+              currentSectionOption === "All"
+                ? "grid grid-flow-col grid-rows-3 gap-6"
+                : "flex flex-wrap gap-6"
+            }
+          >
             {displayedSections
               .flatMap((s) => s.metrics)
               .map((p) => (
-                <div key={p.name} className="w-[85vw] sm:w-[260px]">
+                <div key={p.name} className="w-screen sm:w-[260px]">
                   <MetricCard {...p} />
                 </div>
               ))}
           </div>
-        </OverallMetricWrapper>
+        </Scrollable>
       </div>
       <div className="mt-4 flex flex-col gap-8">
         {displayedSections.map(({ title: section, charts }) => (
