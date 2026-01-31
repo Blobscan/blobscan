@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import React, { useState } from "react";
 import type { NextPage } from "next";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
 
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
@@ -21,7 +20,6 @@ import {
 } from "~/components/Charts";
 import { transformToDatasets } from "~/components/Charts/helpers";
 import { Header } from "~/components/Header";
-import { Icon } from "~/components/Icon";
 import { Link } from "~/components/Link";
 import { Scrollable } from "~/components/Scrollable";
 import { RollupSelector } from "~/components/Selectors";
@@ -74,10 +72,7 @@ const GLOBAL_METRICS: TimeseriesMetric[] = [
 function buildViewLink(metricRoute: string) {
   return (
     <Link href={buildStatRoute(metricRoute)}>
-      <div className="flex items-center gap-2 text-sm">
-        <div>Full View</div>
-        <Icon src={ArrowRightIcon} size="md" />
-      </div>
+      <span className="text-sm">Full View</span>
     </Link>
   );
 }
