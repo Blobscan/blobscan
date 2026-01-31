@@ -34,9 +34,6 @@ const TotalBlocksChart: FC<TotalBlocksChartProps> = React.memo(function ({
               },
             ]
           : undefined,
-        tooltipExtraOptions: {
-          displayTotal: true,
-        },
       }}
       {...restProps}
     />
