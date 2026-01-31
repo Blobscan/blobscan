@@ -234,7 +234,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
             grid: {
               top: 27,
               right: 10,
-              bottom: 22,
+              bottom: compact ? 22 : 82,
               left: 40,
               ...(gridOptions || {}),
             },
@@ -259,6 +259,18 @@ export const ChartBase: FC<ChartBaseProps> = function ({
             },
             toolbox,
             tooltip,
+            dataZoom: !compact
+              ? [
+                  {
+                    type: "inside",
+                  },
+                  {
+                    type: "slider",
+                    start: 0,
+                    end: 100,
+                  },
+                ]
+              : undefined,
             animationEasing: "linear",
             series: formattedSeries,
             ...restOptions,
