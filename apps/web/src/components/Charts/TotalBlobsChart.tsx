@@ -30,7 +30,6 @@ const TotalBlobsChart: FC<TotalBlobsChartProps> = React.memo(function ({
             y: "totalBlobs",
           },
         })),
-
         tooltipExtraOptions: {
           displayTotal: true,
         },
