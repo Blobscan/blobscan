@@ -11,10 +11,12 @@ import type { ChartBaseProps } from "../Charts/ChartBase";
 import { Card } from "./Card";
 
 interface ChartCardProps extends ChartBaseProps {
+  headerControls?: ReactNode;
   title?: ReactNode;
 }
 
 export const ChartCard: FC<ChartCardProps> = function ({
+  headerControls,
   title,
   size = "md",
   options,
@@ -28,15 +30,20 @@ export const ChartCard: FC<ChartCardProps> = function ({
 
   return (
     <Card className="h-full overflow-visible" compact>
-      <div className="flex-start -mb-2 ml-2 flex font-semibold dark:text-warmGray-50">
-        {`${title}${yUnit ? ` (${yUnit})` : ""}` ?? <Skeleton width={150} />}
+      <div className="flex w-full justify-between p-1">
+        <div className="flex-start -mb-2 flex font-semibold">
+          {`${title}${yUnit ? ` (${yUnit})` : ""}` ?? <Skeleton width={150} />}
+        </div>
+        {!isLoading && headerControls}
       </div>
       <div className="flex h-full flex-col gap-2">
         <div
           className={cn({
-            "h-48 md:h-60 lg:h-56": size === "sm",
-            "h-64 md:h-64 lg:h-80": size === "md",
-            "h-72 md:h-72 lg:h-96": size === "lg",
+            "h-48 md:h-56 lg:h-56": size === "sm",
+            "h-60 md:h-72 lg:h-72": size === "md",
+            "h-72 md:h-80 lg:h-[22rem]": size === "lg",
+            "h-84 md:h-96 lg:h-[26rem]": size === "xl",
+            "h-96 md:h-[28rem] lg:h-[30rem]": size === "2xl",
           })}
         >
           {isEmpty ? (

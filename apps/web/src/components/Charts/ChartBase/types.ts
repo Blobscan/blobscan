@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import type { EtherUnit } from "@blobscan/eth-format";
 
 import type { Size, TimeseriesData } from "~/types";
@@ -50,6 +52,7 @@ export type MetricInfo =
 
 export interface ChartBaseProps {
   compact?: boolean;
+  headerControls?: ReactNode;
   size?: Size;
 }
 

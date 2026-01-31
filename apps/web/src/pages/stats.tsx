@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import React, { useState } from "react";
 import type { NextPage } from "next";
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
 
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
@@ -16,33 +17,36 @@ import {
   TotalBlocksChart,
   TotalTransactionsChart,
   TotalUniqueAddressesChart,
-  DailyAvgBlobGasPriceChart,
+  AvgBlobGasPriceChart,
 } from "~/components/Charts";
 import { transformToDatasets } from "~/components/Charts/helpers";
 import { Header } from "~/components/Header";
+import { Icon } from "~/components/Icon";
+import { Link } from "~/components/Link";
 import { Scrollable } from "~/components/Scrollable";
 import { RollupSelector } from "~/components/Selectors";
 import type { RollupSelectorOption } from "~/components/Selectors";
 import type { SelectOption } from "~/components/Selects";
 import { Listbox } from "~/components/Selects";
+import { SubHeader } from "~/components/SubHeader";
 import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
 import type { TimeseriesMetric } from "~/types";
-import { calculatePercentage } from "~/utils";
+import { buildStatRoute, calculatePercentage } from "~/utils";
 
 type Section = "All" | "Blob" | "Block" | "Gas" | "Fee" | "Transaction";
 
 type SectionOption = SelectOption<Section>;
 
-const SECTION_OPTIONS = [
-  { value: "All" },
-  { value: "Blob" },
-  { value: "Block" },
-  { value: "Gas" },
-  { value: "Fee" },
-  { value: "Transaction" },
-] as const;
+const SECTION_OPTIONS: [SectionOption, ...SectionOption[]] = [
+  { label: "All Stats", value: "All" },
+  { label: "Blobs", value: "Blob" },
+  { label: "Blocks", value: "Block" },
+  { label: "Gas", value: "Gas" },
+  { label: "Fees", value: "Fee" },
+  { label: "Transactions", value: "Transaction" },
+];
 
 const CATEGORIZED_METRICS: TimeseriesMetric[] = [
   "totalBlobs",
@@ -66,6 +70,17 @@ const GLOBAL_METRICS: TimeseriesMetric[] = [
   "totalBlobAsCalldataGasUsed",
   "totalBlobGasUsed",
 ] as const;
+
+function buildViewLink(metricRoute: string) {
+  return (
+    <Link href={buildStatRoute(metricRoute)}>
+      <div className="flex items-center gap-2 text-sm">
+        <div>Full View</div>
+        <Icon src={ArrowRightIcon} size="md" />
+      </div>
+    </Link>
+  );
+}
 
 const Stats: NextPage = function () {
   const chain = useChain();
@@ -114,13 +129,16 @@ const Stats: NextPage = function () {
     ? chain.latestFork.blobParams.bytesPerFieldElement *
       chain.latestFork.blobParams.fieldElementsPerBlob
     : undefined;
+
   const sections: {
-    section: Section;
+    id: Section;
+    title: string;
     metrics: MetricCardProps[];
     charts: ReactNode[];
   }[] = [
     {
-      section: "Blob",
+      id: "Blob",
+      title: "Blob Charts",
       metrics: [
         {
           name: "Total Blobs",
@@ -183,22 +201,26 @@ const Stats: NextPage = function () {
         <TotalBlobsChart
           key="total-blobs"
           datasets={categorizedChartDatasets}
+          headerControls={buildViewLink("total-blobs")}
           compact
         />,
         <TotalBlobSizeChart
-          key="daily-blob-size"
+          key="total-blob-size"
           datasets={categorizedChartDatasets}
+          headerControls={buildViewLink("total-blob-size")}
           compact
         />,
         <TotalBlobUsageSizeChart
-          key="daily-blob-usage-size"
+          key="total-blob-usage-size"
           datasets={categorizedChartDatasets}
+          headerControls={buildViewLink("total-blob-usage-size")}
           compact
         />,
       ],
     },
     {
-      section: "Block",
+      id: "Block",
+      title: "Block Charts",
       metrics: [
         {
           name: "Total Blocks",
@@ -211,14 +233,16 @@ const Stats: NextPage = function () {
       ],
       charts: [
         <TotalBlocksChart
-          key="daily-blocks"
+          key="total-blocks"
           dataset={globalChartDatasets}
+          headerControls={buildViewLink("total-blocks")}
           compact
         />,
       ],
     },
     {
-      section: "Gas",
+      id: "Gas",
+      title: "Gas Charts",
       metrics: [
         {
           name: "Total Blob Gas Used",
@@ -255,39 +279,41 @@ const Stats: NextPage = function () {
         },
         {
           name: "Avg. Blob Gas Price",
-          metric: aggregatedMetrics
-            ? {
-                primary: {
-                  value: aggregatedMetrics.avgBlobGasPrice,
-                  type: "ethereum",
-                  numberFormatOpts: {
-                    maximumFractionDigits: 9,
-                  },
-                },
-              }
-            : undefined,
+          metric: {
+            primary: {
+              value: aggregatedMetrics?.avgBlobGasPrice,
+              type: "ethereum",
+              numberFormatOpts: {
+                maximumFractionDigits: 9,
+              },
+            },
+          },
         },
       ],
       charts: [
         <TotalBlobGasUsedChart
-          key="daily-blob-gas-used"
+          key="total-blob-gas-used"
           datasets={categorizedChartDatasets}
+          headerControls={buildViewLink("total-blob-gas-used")}
           compact
         />,
-        <DailyAvgBlobGasPriceChart
-          key="daily-avg-blob-gas-price"
+        <AvgBlobGasPriceChart
+          key="avg-blob-gas-price"
           dataset={globalChartDatasets}
+          headerControls={buildViewLink("avg-blob-gas-price")}
           compact
         />,
         <TotalBlobGasComparisonChart
-          key="daily-blob-gas-comparison"
+          key="total-blob-gas-used-comparison"
           dataset={globalChartDatasets}
+          headerControls={buildViewLink("total-blob-gas-used-comparison")}
           compact
         />,
       ],
     },
     {
-      section: "Fee",
+      id: "Fee",
+      title: "Blob Fee Charts",
       metrics: [
         {
           name: "Total Blob Fees",
@@ -300,16 +326,15 @@ const Stats: NextPage = function () {
         },
         {
           name: "Total Tx Fees Saved",
-          metric: aggregatedMetrics
-            ? {
-                primary: {
-                  value:
-                    aggregatedMetrics.totalBlobAsCalldataFee -
-                    aggregatedMetrics.totalBlobFee,
-                  type: "ethereum",
-                },
-              }
-            : undefined,
+          metric: {
+            primary: {
+              value: aggregatedMetrics
+                ? aggregatedMetrics.totalBlobAsCalldataFee -
+                  aggregatedMetrics.totalBlobFee
+                : undefined,
+              type: "ethereum",
+            },
+          },
           // secondaryMetric={
           //   overallStats
           //     ? {
@@ -335,19 +360,22 @@ const Stats: NextPage = function () {
       ],
       charts: [
         <TotalBlobBaseFeesChart
-          key="daily-blob-fee"
+          key="total-blob-base-fees"
           datasets={categorizedChartDatasets}
+          headerControls={buildViewLink("total-blob-base-fees")}
           compact
         />,
         <AvgBlobBaseFeeChart
-          key="daily-avg-blob-fee"
+          key="avg-blob-base-fee"
           dataset={globalChartDatasets}
+          headerControls={buildViewLink("avg-blob-base-fee")}
           compact
         />,
       ],
     },
     {
-      section: "Transaction",
+      id: "Transaction",
+      title: "Transaction Charts",
       metrics: [
         {
           name: "Total Transactions",
@@ -376,13 +404,15 @@ const Stats: NextPage = function () {
       ],
       charts: [
         <TotalTransactionsChart
-          key="daily-transactions"
+          key="total-transactions"
           datasets={categorizedChartDatasets}
+          headerControls={buildViewLink("total-transactions")}
           compact
         />,
         <TotalUniqueAddressesChart
-          key="daily-unique-addresses"
+          key="total-unique-addresses"
           dataset={globalChartDatasets}
+          headerControls={buildViewLink("total-unique-addresses")}
           compact
         />,
       ],
@@ -392,7 +422,7 @@ const Stats: NextPage = function () {
   const displayedSections =
     currentSectionOption === "All"
       ? sections
-      : sections.filter((s) => s.section === currentSectionOption);
+      : sections.filter((s) => s.id === currentSectionOption);
   const OverallMetricWrapper =
     currentSectionOption === "All" ? Scrollable : React.Fragment;
 
@@ -418,7 +448,8 @@ const Stats: NextPage = function () {
           </div>
         </div>
       </Card>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-8">
+        <SubHeader>Overall Metrics</SubHeader>
         <OverallMetricWrapper displayScrollbar>
           <div className="grid grid-flow-col grid-rows-3 gap-4">
             {displayedSections
@@ -431,15 +462,15 @@ const Stats: NextPage = function () {
           </div>
         </OverallMetricWrapper>
       </div>
-      <div className="flex flex-col gap-8">
-        {displayedSections.map(({ section, charts }) => (
-          <div key={section} className="flex flex-col gap-4">
-            <Header>{section}</Header>
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 [&>div]:w-full">
+      <div className="mt-4 flex flex-col gap-8">
+        {displayedSections.map(({ title: section, charts }) => (
+          <div key={section} className="flex flex-col gap-8">
+            <SubHeader>{section}</SubHeader>
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 [&>div]:w-full">
               {charts.map((chart, index) => (
-                <Card key={index} className="h-full">
+                <div key={index} className="h-full">
                   {chart}
-                </Card>
+                </div>
               ))}
             </div>
           </div>

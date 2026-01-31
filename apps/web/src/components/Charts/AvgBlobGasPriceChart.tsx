@@ -6,7 +6,7 @@ import type { SingleTimeseriesChartProps } from "./ChartBase/types";
 
 export type AvgBlobGasPriceChartProps = SingleTimeseriesChartProps;
 
-const DailyAvgBlobGasPriceChart: FC<AvgBlobGasPriceChartProps> = React.memo(
+const AvgBlobGasPriceChart: FC<AvgBlobGasPriceChartProps> = React.memo(
   function ({ dataset, ...restProps }) {
     return (
       <ChartCard
@@ -43,6 +43,6 @@ const DailyAvgBlobGasPriceChart: FC<AvgBlobGasPriceChartProps> = React.memo(
   }
 );
 
-DailyAvgBlobGasPriceChart.displayName = "AvgBlobGasPriceChart";
+AvgBlobGasPriceChart.displayName = "AvgBlobGasPriceChart";
 
-export { DailyAvgBlobGasPriceChart };
+export { AvgBlobGasPriceChart };

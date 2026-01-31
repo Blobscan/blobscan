@@ -9,10 +9,7 @@ import { MetricCard } from "~/components/Cards/MetricCard";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
-import {
-  DailyAvgBlobGasPriceChart,
-  TotalBlobsChart,
-} from "~/components/Charts";
+import { AvgBlobGasPriceChart, TotalBlobsChart } from "~/components/Charts";
 import { transformToDatasets } from "~/components/Charts/helpers";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
@@ -142,7 +139,7 @@ const Home: NextPage = () => {
       <div className="flex w-full flex-col gap-8 sm:gap-10">
         <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
-            <DailyAvgBlobGasPriceChart
+            <AvgBlobGasPriceChart
               dataset={globalChartDataset}
               size="sm"
               compact
