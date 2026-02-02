@@ -95,10 +95,10 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     } = optionsProp ?? {};
 
     const defaults = {
-      animationEasing: "linear",
-      animationDurationUpdate: 100,
-      animationDuration: 100,
-      animationEasingUpdate: "linear",
+      animationEasing: "cubicOut",
+      animationDuration: 500,
+      animationDelayUpdate: (idx: number) => idx * 2,
+      animationThreshold: 20_000,
       animation: true,
       legend: {
         show: false,

@@ -29,6 +29,9 @@ export function createBaseSeriesOptions(seriesIndex: number) {
     itemStyle: {
       color: getDefaultSeriesColor(seriesIndex),
     },
+    animationDelay: function (idx) {
+      return idx * 2;
+    },
     emphasis: {
       focus: "series",
     },
