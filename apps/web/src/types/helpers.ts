@@ -1,3 +1,6 @@
+export type MakePartial<T, K extends keyof T> = Omit<T, K> &
+  Partial<Pick<T, K>>;
+
 export type MakeRequired<T, K extends keyof T> = Omit<T, K> &
   Required<{
     [P in K]: T[P] extends Array<infer U> ? Required<U>[] : Required<T[P]>;

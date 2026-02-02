@@ -24,19 +24,19 @@ const TotalBlobSizeChart: FC<TotalBlobsSizeProps> = React.memo(function ({
           displayUnit: "GiB",
         },
       }}
+      dataset={datasets}
+      series={datasets?.map(({ id }, i) => ({
+        datasetIndex: i,
+        datasetId: id,
+        id,
+        type: "bar",
+        stack: "total",
+        encode: {
+          x: "timestamp",
+          y: "totalBlobSize",
+        },
+      }))}
       options={{
-        dataset: datasets,
-        series: datasets?.map(({ id }, i) => ({
-          datasetIndex: i,
-          datasetId: id,
-          id,
-          type: "bar",
-          stack: "total",
-          encode: {
-            x: "timestamp",
-            y: "totalBlobSize",
-          },
-        })),
         tooltipExtraOptions: {
           displayTotal: true,
         },

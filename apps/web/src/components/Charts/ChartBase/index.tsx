@@ -7,51 +7,39 @@ import ReactEChartsCore from "echarts-for-react/lib/core";
 import { useTheme } from "next-themes";
 
 import echarts from "~/echarts";
+import type { TimeseriesDimension } from "~/types";
 import { Legend } from "./Legend";
-import type { LegendItem } from "./Legend";
+import type { LegendItem, LegendProps } from "./Legend";
 import {
-  createToolBox,
-  createTooltip,
-  formatMetricValue,
-  getDataPointsSize,
+  createXAxisOptions,
+  createBaseToolboxOptions,
+  createBaseTooltipOptions,
+  createYAxisOptions,
+  DEFAULT_SERIES_COLOR,
+  createBaseSeriesOptions,
+  getDimensionColor,
 } from "./helpers";
-import {
-  DEFAULT_COLOR,
-  getSeriesColor,
-  inferSeriesName,
-} from "./helpers/colors";
 import type { ChartBaseProps as ChartBaseProps_, MetricInfo } from "./types";
 
 export interface ChartBaseProps extends ChartBaseProps_ {
+  dataset?: EChartOption.Dataset | EChartOption.Dataset[];
+  series: EChartOption.Series[];
   metricInfo: {
     xAxis: MetricInfo;
     yAxis: MetricInfo;
   };
-  options: EChartOption & {
+  options?: Omit<EChartOption, "dataset" | "series" | "legend"> & {
     tooltipExtraOptions?: {
       displayTotal?: boolean;
     };
   };
 }
 
-function buildAxisOptions(metricInfo: MetricInfo) {
-  const { type } = metricInfo;
-  const axisType: EChartOption.BasicComponents.CartesianAxis.Type =
-    type === "time" ? "category" : "value";
-  const axisLabelFormatter = (value: string | number) =>
-    formatMetricValue(value, metricInfo, true);
-
-  return {
-    type: axisType,
-    axisLabel: {
-      formatter: axisLabelFormatter,
-    },
-  };
-}
-
 export const ChartBase: FC<ChartBaseProps> = function ({
+  dataset,
   metricInfo,
-  options,
+  options: optionsProp,
+  series: seriesProp,
   compact,
 }) {
   const { resolvedTheme } = useTheme();
@@ -64,149 +52,207 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   const [selectedLegendItem, setSelectedLegendItem] = useState<
     string | undefined
   >();
-  const { xAxis: xAxisMetricInfo, yAxis: yAxisMetricInfo } = metricInfo;
-  const {
-    series: seriesOptions,
-    grid: gridOptions,
-    xAxis: xAxisOptions,
-    yAxis: yAxisOptions,
-    toolbox: toolboxOptions,
-    tooltip: tooltipOptions,
-    tooltipExtraOptions,
-    ...restOptions
-  } = options;
-  const dataPointsSize = useMemo(
-    () => (options.dataset ? getDataPointsSize(options.dataset) : 0),
-    [options.dataset]
-  );
-  const animationEnabled = dataPointsSize < 20_000;
   const themeMode = resolvedTheme as "light" | "dark";
+  const series = useMemo(
+    () =>
+      seriesProp
+        ?.map((series, i) => {
+          const { name: seriesNameProp, id, ...restSeries } = series;
 
-  const tooltip = createTooltip({
-    currentSeriesRef: hoveredSeriesRef,
-    metricInfo,
-    displayTotal: tooltipExtraOptions?.displayTotal,
-    themeMode,
-    opts: tooltipOptions,
-  });
-  const toolbox = !compact
-    ? createToolBox({
-        themeMode,
-        opts: toolboxOptions,
-      })
-    : undefined;
-  const formattedSeries = useMemo(() => {
-    return seriesOptions
+          const baseSeriesOptions = createBaseSeriesOptions(i);
+          const [type, name] = id ? id.split("-") : [];
 
-      ?.map((series, i) => {
-        const { name, id, ...restSeries } = series;
+          const seriesLabel = seriesNameProp ?? name ?? "Unknown";
 
-        const seriesLabel = name?.length ? name : id ? inferSeriesName(id) : "";
-        const color = getSeriesColor({
-          seriesName: seriesLabel.toLowerCase(),
-          seriesIndex: i,
-          themeMode,
-        });
+          const color = getDimensionColor(
+            { type, name } as TimeseriesDimension,
+            themeMode
+          );
 
-        return {
-          name: seriesLabel,
-          smooth: true,
-          areaStyle: {},
-          itemStyle: {
-            color,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } as any,
-          emphasis: {
-            focus: "series",
+          return {
+            ...baseSeriesOptions,
+            name: seriesLabel,
             itemStyle: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: "rgba(0, 0, 0, 0.5)",
+              ...baseSeriesOptions.itemStyle,
+              color,
             },
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } as any,
-          id,
-          ...restSeries,
-        };
-      })
-      ?.sort((a, b) =>
-        (a.name?.toLowerCase() ?? "").localeCompare(b.name?.toLowerCase() ?? "")
-      );
-  }, [seriesOptions, themeMode]);
+            ...restSeries,
+          };
+        })
+        ?.sort((a, b) => String(a.name).localeCompare(String(b.name))),
+    [seriesProp, themeMode]
+  );
+
+  const baseOptions = useMemo(() => {
+    const {
+      grid: gridOptions,
+      xAxis: xAxisOptions,
+      yAxis: yAxisOptions,
+      toolbox: toolboxOptions,
+      tooltip: tooltipOptions,
+      tooltipExtraOptions,
+      ...restOptions
+    } = optionsProp ?? {};
+
+    const defaults = {
+      animationEasing: "linear",
+      animationDurationUpdate: 100,
+      animationDuration: 100,
+      animationEasingUpdate: "linear",
+      animation: true,
+      legend: {
+        show: false,
+      },
+      grid: {
+        top: 27,
+        right: 10,
+        bottom: compact ? 22 : 82,
+        left: 40,
+      },
+      xAxis: createXAxisOptions(metricInfo.xAxis, compact),
+      yAxis: createYAxisOptions(metricInfo.yAxis, compact),
+      tooltip: createBaseTooltipOptions({
+        currentSeriesRef: hoveredSeriesRef,
+        metricInfo,
+        displayTotal: tooltipExtraOptions?.displayTotal,
+        themeMode,
+      }),
+      toolbox: !compact ? createBaseToolboxOptions({ themeMode }) : undefined,
+      dataZoom: !compact
+        ? [{ type: "inside" }, { type: "slider", start: 0, end: 100 }]
+        : undefined,
+    } satisfies EChartOption;
+
+    return {
+      ...defaults,
+      ...restOptions,
+      grid: {
+        ...defaults.grid,
+        ...gridOptions,
+      },
+      xAxis: {
+        ...defaults.xAxis,
+        ...xAxisOptions,
+      },
+      yAxis: {
+        ...defaults.yAxis,
+        ...yAxisOptions,
+      },
+      toolbox: {
+        ...defaults.toolbox,
+        ...toolboxOptions,
+      },
+      tooltip: {
+        ...defaults.tooltip,
+        ...tooltipOptions,
+      },
+    } satisfies EChartOption;
+  }, [compact, metricInfo, optionsProp, themeMode]);
 
   const onChartReady = useCallback((chart: EChartsInstance) => {
     chart.on(
       "mouseover",
       ({ componentType, seriesName, seriesIndex }: ECElementEvent) => {
-        if (componentType === "series") {
-          setSelectedLegendItem(seriesName);
-          hoveredSeriesRef.current = {
-            seriesIndex,
-            seriesName,
-          };
-        }
+        if (componentType !== "series") return;
+
+        setSelectedLegendItem(seriesName);
+        hoveredSeriesRef.current = {
+          seriesIndex,
+          seriesName,
+        };
       }
     );
 
-    chart.on("mouseout", () => {
-      setSelectedLegendItem(undefined);
-    });
-
     chart.on("globalout", () => {
+      chart.dispatchAction({ type: "downplay" });
       hoveredSeriesRef.current = null;
       setSelectedLegendItem(undefined);
     });
   }, []);
 
-  const handleLegendToggle = useCallback(
-    (itemName: string | "all", direction: "in" | "out") => {
+  const handleLegendItemHover = useCallback<
+    NonNullable<LegendProps["onItemHover"]>
+  >((itemName, direction) => {
+    const chart = chartInstanceRef.current?.getEchartsInstance();
+
+    if (!chart) {
+      return;
+    }
+
+    if (direction === "in") {
+      chart.dispatchAction({
+        type: "highlight",
+        seriesName: itemName,
+      });
+
+      setSelectedLegendItem(itemName);
+
+      return;
+    }
+
+    if (direction === "out") {
+      chart.dispatchAction({
+        type: "downplay",
+        seriesName: itemName,
+      });
+
+      setSelectedLegendItem(undefined);
+
+      return;
+    }
+  }, []);
+
+  const handleLegendItemToggle = useCallback<
+    NonNullable<LegendProps["onItemToggle"]>
+  >(
+    (itemName, disabled) => {
       const chart = chartInstanceRef.current?.getEchartsInstance();
 
       if (!chart) {
         return;
       }
 
-      if (direction === "in") {
+      if (itemName === "all") {
         chart.dispatchAction({
-          type: "highlight",
-          seriesName: itemName,
+          type: disabled ? "legendUnSelect" : "legendToggleSelect",
+          batch: legendItems.map(({ name }) => ({ name })),
         });
 
-        setSelectedLegendItem(itemName);
+        setLegendItems((prev) => prev.map((item) => ({ ...item, disabled })));
 
         return;
       }
 
-      if (direction === "out") {
-        chart.dispatchAction({
-          type: "downplay",
-          seriesName: itemName,
-        });
+      chart.dispatchAction({
+        type: "legendToggleSelect",
+        name: itemName,
+      });
 
-        setSelectedLegendItem(undefined);
-
-        return;
-      }
+      setLegendItems((prev) =>
+        prev.map((item) =>
+          item.name === itemName ? { ...item, disabled } : item
+        )
+      );
     },
-    []
+    [legendItems]
   );
 
   useEffect(() => {
-    if (compact || !formattedSeries?.length) {
+    if (compact || !series?.length) {
       return;
     }
 
-    const items = [
-      ...formattedSeries.map(
+    const items = series
+      .map(
         ({ name, itemStyle }): LegendItem => ({
           name: name ?? "",
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          color: itemStyle?.color ?? DEFAULT_COLOR,
+          color: itemStyle?.color ?? DEFAULT_SERIES_COLOR,
           disabled: false,
         })
-      ),
-    ].reverse();
+      )
+      .reverse();
 
     if (items.length > 1) {
       items.unshift({
@@ -217,7 +263,23 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     }
 
     setLegendItems(items);
-  }, [compact, formattedSeries]);
+  }, [compact, series]);
+
+  useEffect(() => {
+    const chart = chartInstanceRef.current?.getEchartsInstance();
+
+    if (!chart || !series) return;
+
+    chart.setOption(
+      {
+        series,
+        dataset,
+      },
+      {
+        replaceMerge: ["series", "dataset"],
+      }
+    );
+  }, [baseOptions, dataset, series]);
 
   return (
     <div className="flex h-full w-full flex-col gap-1 overflow-visible md:flex-row md:gap-2">
@@ -225,57 +287,8 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         echarts={echarts}
         ref={chartInstanceRef}
         onChartReady={onChartReady}
-        option={
-          {
-            animation: animationEnabled,
-            legend: {
-              show: false,
-            },
-            grid: {
-              top: 27,
-              right: 10,
-              bottom: compact ? 22 : 82,
-              left: 40,
-              ...(gridOptions || {}),
-            },
-            xAxis: {
-              ...buildAxisOptions(xAxisMetricInfo),
-              boundaryGap: true,
-              axisTick: {
-                alignWithLabel: true,
-              },
-              ...(compact
-                ? {
-                    axisLine: { show: false },
-                  }
-                : {}),
-              ...(xAxisOptions || {}),
-            },
-            yAxis: {
-              ...buildAxisOptions(yAxisMetricInfo),
-              splitLine: { show: false },
-              axisLine: { show: !compact },
-              ...(yAxisOptions || {}),
-            },
-            toolbox,
-            tooltip,
-            dataZoom: !compact
-              ? [
-                  {
-                    type: "inside",
-                  },
-                  {
-                    type: "slider",
-                    start: 0,
-                    end: 100,
-                  },
-                ]
-              : undefined,
-            animationEasing: "linear",
-            series: formattedSeries,
-            ...restOptions,
-          } satisfies EChartOption
-        }
+        option={baseOptions}
+        lazyUpdate
         style={{ height: "100%", width: "100%" }}
       />
       {!compact && (
@@ -283,38 +296,8 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           <Legend
             items={legendItems}
             selectedItem={selectedLegendItem}
-            onItemToggle={(itemName, disabled) => {
-              const chart = chartInstanceRef.current?.getEchartsInstance();
-
-              if (!chart) {
-                return;
-              }
-
-              if (itemName === "all") {
-                chart.dispatchAction({
-                  type: disabled ? "legendUnSelect" : "legendToggleSelect",
-                  batch: legendItems.map(({ name }) => ({ name })),
-                });
-
-                setLegendItems((prev) =>
-                  prev.map((item) => ({ ...item, disabled }))
-                );
-
-                return;
-              }
-
-              chart.dispatchAction({
-                type: "legendToggleSelect",
-                name: itemName,
-              });
-
-              setLegendItems((prev) =>
-                prev.map((item) =>
-                  item.name === itemName ? { ...item, disabled } : item
-                )
-              );
-            }}
-            onItemHover={handleLegendToggle}
+            onItemToggle={handleLegendItemToggle}
+            onItemHover={handleLegendItemHover}
           />
         </div>
       )}

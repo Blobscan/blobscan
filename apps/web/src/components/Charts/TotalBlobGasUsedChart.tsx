@@ -17,19 +17,19 @@ const TotalBlobGasUsedChart: FC<TotalBlobGasUsedChartProps> = React.memo(
           },
           yAxis: { type: "count" },
         }}
+        dataset={datasets}
+        series={datasets?.map(({ id }, i) => ({
+          datasetIndex: i,
+          datasetId: id,
+          id: id,
+          type: "bar",
+          stack: "total",
+          encode: {
+            x: "timestamp",
+            y: "totalBlobGasUsed",
+          },
+        }))}
         options={{
-          dataset: datasets,
-          series: datasets?.map(({ id }, i) => ({
-            datasetIndex: i,
-            datasetId: id,
-            id: id,
-            type: "bar",
-            stack: "total",
-            encode: {
-              x: "timestamp",
-              y: "totalBlobGasUsed",
-            },
-          })),
           tooltipExtraOptions: {
             displayTotal: true,
           },

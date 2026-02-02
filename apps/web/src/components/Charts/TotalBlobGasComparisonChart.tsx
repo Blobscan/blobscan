@@ -21,13 +21,13 @@ const TotalBlobGasComparisonChart: FC<TotalBlobGasComparisonChartProps> =
           },
           yAxis: { type: "count" },
         }}
-        options={{
-          dataset,
-          series: dataset
+        dataset={dataset}
+        series={
+          dataset
             ? [
                 {
                   name: "Total Blob Gas Used",
-                  type: "bar",
+                  type: "line",
                   areaStyle: {
                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                       {
@@ -46,7 +46,7 @@ const TotalBlobGasComparisonChart: FC<TotalBlobGasComparisonChartProps> =
                   },
                 },
                 {
-                  type: "bar",
+                  type: "line",
                   itemStyle: {
                     color: resolvedTheme === "dark" ? "#9c3932" : "#e97979",
                   },
@@ -69,8 +69,8 @@ const TotalBlobGasComparisonChart: FC<TotalBlobGasComparisonChartProps> =
                   },
                 },
               ]
-            : undefined,
-        }}
+            : undefined
+        }
         {...restProps}
       />
     );

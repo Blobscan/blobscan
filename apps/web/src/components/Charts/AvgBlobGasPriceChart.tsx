@@ -22,9 +22,9 @@ const AvgBlobGasPriceChart: FC<AvgBlobGasPriceChartProps> = React.memo(
             displayUnit: "Gwei",
           },
         }}
-        options={{
-          dataset,
-          series: dataset
+        dataset={dataset}
+        series={
+          dataset
             ? [
                 {
                   name: "Avg. Blob Gas Price",
@@ -35,8 +35,8 @@ const AvgBlobGasPriceChart: FC<AvgBlobGasPriceChartProps> = React.memo(
                   },
                 },
               ]
-            : undefined,
-        }}
+            : undefined
+        }
         {...restProps}
       />
     );

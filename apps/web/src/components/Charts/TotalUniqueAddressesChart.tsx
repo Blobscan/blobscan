@@ -17,9 +17,9 @@ const TotalUniqueAddressesChart: FC<TotalUniqueAddressesChartProps> =
           },
           yAxis: { type: "count" },
         }}
-        options={{
-          dataset,
-          series: dataset
+        dataset={dataset}
+        series={
+          dataset
             ? [
                 {
                   name: "Total Unique Receivers",
@@ -38,8 +38,8 @@ const TotalUniqueAddressesChart: FC<TotalUniqueAddressesChartProps> =
                   },
                 },
               ]
-            : undefined,
-        }}
+            : undefined
+        }
         {...restProps}
       />
     );

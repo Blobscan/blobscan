@@ -17,19 +17,19 @@ const TotalTransactionsChart: FC<TotalTransactionsChartProps> = React.memo(
           },
           yAxis: { type: "count" },
         }}
+        dataset={datasets}
+        series={datasets?.map(({ id }, i) => ({
+          datasetId: id,
+          datasetIndex: i,
+          id,
+          type: "bar",
+          stack: "total",
+          encode: {
+            x: "timestamp",
+            y: "totalTransactions",
+          },
+        }))}
         options={{
-          dataset: datasets,
-          series: datasets?.map(({ id }, i) => ({
-            datasetId: id,
-            datasetIndex: i,
-            id,
-            type: "bar",
-            stack: "total",
-            encode: {
-              x: "timestamp",
-              y: "totalTransactions",
-            },
-          })),
           tooltipExtraOptions: {
             displayTotal: true,
           },

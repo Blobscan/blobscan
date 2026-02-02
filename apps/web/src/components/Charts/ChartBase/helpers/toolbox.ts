@@ -62,10 +62,9 @@ export function performCumulativeSum(data: unknown[]): string[] {
   throw new Error("Unable to perform cumulative sum on data");
 }
 
-export function createToolBox({
+export function createBaseToolboxOptions({
   extraFeatures,
   themeMode,
-  opts,
 }: {
   themeMode: "light" | "dark";
   extraFeatures?: {
@@ -73,7 +72,6 @@ export function createToolBox({
       onClick: () => void;
     };
   };
-  opts?: EChartOption<EChartOption.Series>["toolbox"];
 }): EChartOption<EChartOption.Series>["toolbox"] {
   const cumulativeSumFeature = extraFeatures?.cumulativeSum
     ? {
@@ -104,6 +102,5 @@ export function createToolBox({
       saveAsImage: {},
       ...cumulativeSumFeature,
     },
-    ...(opts ?? {}),
   };
 }

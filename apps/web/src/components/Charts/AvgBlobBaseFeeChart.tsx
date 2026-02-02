@@ -24,9 +24,9 @@ const AvgBlobBaseFeeChart: FC<AvgBlobFeeChartProps> = React.memo(function ({
           displayUnit: "Gwei",
         },
       }}
-      options={{
-        dataset: dataset,
-        series: dataset
+      dataset={dataset}
+      series={
+        dataset
           ? [
               {
                 name: "Avg. Blob Base Fee",
@@ -37,8 +37,8 @@ const AvgBlobBaseFeeChart: FC<AvgBlobFeeChartProps> = React.memo(function ({
                 },
               },
             ]
-          : undefined,
-      }}
+          : undefined
+      }
       {...restProps}
     />
   );

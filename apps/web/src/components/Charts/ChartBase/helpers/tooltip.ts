@@ -99,145 +99,140 @@ function buildSeriesHtmlElement({
     </div>`;
 }
 
-export function createTooltip({
+function createTooltipFormater({
   currentSeriesRef,
-  displayTotal,
   metricInfo: { xAxis: xAxisMetricInfo, yAxis: yAxisMetricInfo },
   themeMode,
-  opts,
+  displayTotal,
 }: {
   currentSeriesRef: MutableRefObject<{
     seriesIndex?: number;
     seriesName?: string;
   } | null>;
-  metricInfo: { xAxis: MetricInfo; yAxis: MetricInfo };
-  displayTotal?: boolean;
+  metricInfo: {
+    xAxis: MetricInfo;
+    yAxis: MetricInfo;
+  };
   themeMode: "light" | "dark";
-  opts?: EChartOption.Tooltip;
-}): EChartOption.Tooltip {
-  return {
-    trigger: "axis",
-    confine: true,
-    extraCssText: "font-size: 0.80rem;",
-    backgroundColor: themeMode === "dark" ? "#2E2854" : "#FAFAFA",
-    borderColor: themeMode === "dark" ? "#372779" : "#5D25D4",
-    formatter: (paramOrParams) => {
-      const seriesIndex = currentSeriesRef.current?.seriesIndex;
+  displayTotal?: boolean;
+}) {
+  return (
+    paramOrParams: EChartOption.Tooltip.Format | EChartOption.Tooltip.Format[]
+  ) => {
+    const seriesIndex = currentSeriesRef.current?.seriesIndex;
 
-      let dateHTMLElement: string | undefined;
-      const seriesHTMLElements: string[] = [];
-      const totalSeriesHTMLElements: string[] = [];
+    let dateHTMLElement: string | undefined;
+    const seriesHTMLElements: string[] = [];
+    const totalSeriesHTMLElements: string[] = [];
 
-      if (Array.isArray(paramOrParams)) {
-        if (!paramOrParams.length) {
-          return "Loading…";
+    if (Array.isArray(paramOrParams)) {
+      if (!paramOrParams.length) {
+        return "Loading…";
+      }
+
+      const dailyTotal = displayTotal
+        ? aggregateValues(
+            paramOrParams.map((p) => getValue(p)) as number[],
+            yAxisMetricInfo.type
+          )
+        : undefined;
+
+      const rollupSeries = paramOrParams.filter((d) =>
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        (d.seriesId as string).includes("rollup")
+      );
+      const totalItems = 15;
+      const filteredParams =
+        seriesIndex != null
+          ? getNeighbouringElements(paramOrParams, seriesIndex, totalItems)
+          : paramOrParams.slice(-10); // fallback if no hovered series
+
+      const { name, value } = paramOrParams[0] || {};
+      const date = name?.length
+        ? name
+        : Array.isArray(value)
+        ? value[0]
+        : value;
+      dateHTMLElement = date ? formatMetricValue(date, xAxisMetricInfo) : "-";
+
+      filteredParams.map((p) => {
+        const { seriesName, value, color } = p;
+        const currentSeriesName = seriesName?.toLowerCase();
+
+        if (!currentSeriesName || value === undefined) {
+          return "";
         }
 
-        const dailyTotal = displayTotal
-          ? aggregateValues(
-              paramOrParams.map((p) => getValue(p)) as number[],
-              yAxisMetricInfo.type
-            )
+        const isSelected = displayTotal
+          ? currentSeriesRef.current?.seriesName?.toLowerCase() ===
+            currentSeriesName
           : undefined;
-
-        const rollupSeries = paramOrParams.filter((d) =>
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          (d.seriesId as string).includes("rollup")
-        );
-        const totalItems = 15;
-        const filteredParams =
-          seriesIndex != null
-            ? getNeighbouringElements(paramOrParams, seriesIndex, totalItems)
-            : paramOrParams.slice(0, 10); // fallback if no hovered series
-
-        const { name, value } = paramOrParams[0] || {};
-        const date = name?.length
-          ? name
-          : Array.isArray(value)
-          ? value[0]
-          : value;
-        dateHTMLElement = date
-          ? formatMetricValue(date, xAxisMetricInfo).toString()
-          : "-";
-
-        filteredParams.map((p) => {
-          const { seriesName, value, color } = p;
-          const currentSeriesName = seriesName?.toLowerCase();
-
-          if (!currentSeriesName || value === undefined) {
-            return "";
-          }
-
-          const isSelected = displayTotal
-            ? currentSeriesRef.current?.seriesName?.toLowerCase() ===
-              currentSeriesName
-            : undefined;
-
-          const formattedName = formatSeriesName(seriesName);
-
-          seriesHTMLElements.push(
-            buildSeriesHtmlElement({
-              name: formattedName,
-              value: getValue(p),
-              total: dailyTotal,
-              metricInfo: yAxisMetricInfo,
-              markerColor: color,
-              themeMode,
-              isSelected,
-            })
-          );
-        });
-
-        if (displayTotal) {
-          if (rollupSeries.length) {
-            const rollupTotal = aggregateValues(
-              rollupSeries.map((p) => getValue(p)) as number[],
-              yAxisMetricInfo.type
-            );
-
-            totalSeriesHTMLElements.push(
-              buildSeriesHtmlElement({
-                name: "Rollup",
-                value: rollupTotal,
-                metricInfo: yAxisMetricInfo,
-                total: dailyTotal,
-                themeMode,
-              })
-            );
-          }
-
-          totalSeriesHTMLElements.push(
-            buildSeriesHtmlElement({
-              name: "Total",
-              value: dailyTotal,
-              metricInfo: yAxisMetricInfo,
-              themeMode,
-            })
-          );
-        }
-      } else {
-        const { name, seriesName, value, color } = paramOrParams;
 
         const formattedName = formatSeriesName(seriesName);
 
         seriesHTMLElements.push(
           buildSeriesHtmlElement({
             name: formattedName,
-            value: (value as number | string) ?? 0,
+            value: getValue(p),
+            total: dailyTotal,
             metricInfo: yAxisMetricInfo,
             markerColor: color,
-            isSelected: true,
+            themeMode,
+            isSelected,
+          })
+        );
+      });
+
+      if (displayTotal) {
+        if (rollupSeries.length) {
+          const rollupTotal = aggregateValues(
+            rollupSeries.map((p) => getValue(p)) as number[],
+            yAxisMetricInfo.type
+          );
+
+          totalSeriesHTMLElements.push(
+            buildSeriesHtmlElement({
+              name: "Rollup",
+              value: rollupTotal,
+              metricInfo: yAxisMetricInfo,
+              total: dailyTotal,
+              themeMode,
+            })
+          );
+        }
+
+        totalSeriesHTMLElements.push(
+          buildSeriesHtmlElement({
+            name: "Total",
+            value: dailyTotal,
+            metricInfo: yAxisMetricInfo,
             themeMode,
           })
         );
-
-        dateHTMLElement = name
-          ? formatMetricValue(name, xAxisMetricInfo).toString()
-          : "-";
       }
+    } else {
+      const { name, seriesName, value, color } = paramOrParams;
 
-      return `
+      const formattedName = formatSeriesName(seriesName);
+
+      seriesHTMLElements.push(
+        buildSeriesHtmlElement({
+          name: formattedName,
+          value: (value as number | string) ?? 0,
+          metricInfo: yAxisMetricInfo,
+          markerColor: color,
+          isSelected: true,
+          themeMode,
+        })
+      );
+
+      dateHTMLElement = name
+        ? formatMetricValue(name, xAxisMetricInfo).toString()
+        : "-";
+    }
+
+    return `
           <div style="display: flex; flex-direction: column; gap: 2px;">
             <div style="color: ${
               themeMode === "dark" ? "#FFFFFF" : "#171717"
@@ -261,7 +256,34 @@ export function createTooltip({
             }
           </div>
         `;
-    },
-    ...(opts ?? {}),
+  };
+}
+
+export function createBaseTooltipOptions({
+  currentSeriesRef,
+  displayTotal,
+  metricInfo,
+  themeMode,
+}: {
+  currentSeriesRef: MutableRefObject<{
+    seriesIndex?: number;
+    seriesName?: string;
+  } | null>;
+  metricInfo: { xAxis: MetricInfo; yAxis: MetricInfo };
+  displayTotal?: boolean;
+  themeMode: "light" | "dark";
+}): EChartOption.Tooltip {
+  return {
+    trigger: "axis",
+    confine: true,
+    extraCssText: "font-size: 0.80rem;",
+    backgroundColor: themeMode === "dark" ? "#2E2854" : "#FAFAFA",
+    borderColor: themeMode === "dark" ? "#372779" : "#5D25D4",
+    formatter: createTooltipFormater({
+      currentSeriesRef,
+      metricInfo,
+      themeMode,
+      displayTotal,
+    }),
   };
 }

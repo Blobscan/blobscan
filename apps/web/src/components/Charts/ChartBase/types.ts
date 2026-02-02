@@ -23,7 +23,7 @@ export interface TimeMetricInfo extends MetricInfoBase {
   displayUnit?: never;
 }
 
-interface UnitlessMetricInfo extends MetricInfoBase {
+export interface UnitlessMetricInfo extends MetricInfoBase {
   type: Exclude<MetricType, "time">;
   unitType?: never;
   unit?: never;

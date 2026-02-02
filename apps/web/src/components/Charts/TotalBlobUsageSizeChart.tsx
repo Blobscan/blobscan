@@ -22,19 +22,19 @@ const TotalBlobUsageSizeChart: FC<TotalBlobUsageSizeChartProps> = React.memo(
             displayUnit: "GiB",
           },
         }}
+        dataset={datasets}
+        series={datasets?.map(({ id }, i) => ({
+          datasetIndex: i,
+          datasetId: id,
+          id,
+          type: "bar",
+          stack: "total",
+          encode: {
+            x: "timestamp",
+            y: "totalBlobUsageSize",
+          },
+        }))}
         options={{
-          dataset: datasets,
-          series: datasets?.map(({ id }, i) => ({
-            datasetIndex: i,
-            datasetId: id,
-            id,
-            type: "bar",
-            stack: "total",
-            encode: {
-              x: "timestamp",
-              y: "totalBlobUsageSize",
-            },
-          })),
           tooltipExtraOptions: {
             displayTotal: true,
           },

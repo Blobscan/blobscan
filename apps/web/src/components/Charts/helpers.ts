@@ -2,14 +2,14 @@ import type {
   TimeseriesData,
   Chartable,
   NullableElements,
-  TimeseriesDimension,
+  Category,
+  Rollup,
 } from "~/types";
-
-type AggregationType = "count" | "average" | "time";
+import type { MetricInfo } from "./ChartBase";
 
 export function aggregateValues(
   values: number[] | string[],
-  type: AggregationType
+  type: MetricInfo["type"]
 ): number {
   if (!values.length) {
     return 0;
@@ -38,9 +38,7 @@ type MetricDefinitionOf<
   K extends keyof MetricDefinitions<T>
 > = MetricDefinitions<T>[K];
 
-export type DatasetId =
-  | `${TimeseriesDimension["type"]}-${NonNullable<TimeseriesDimension["name"]>}`
-  | "global";
+export type DatasetId = "global" | `category-${Category}` | `rollup-${Rollup}`;
 
 export type TimeseriesDataset<T extends TimeseriesData = TimeseriesData> = {
   id: DatasetId;
@@ -73,7 +71,6 @@ export function transformToDatasets<T extends TimeseriesData>({
   timestamps,
 }: T): TimeseriesDataset<T>[] {
   const datesets = series.map(({ dimension, metrics, startTimestampIdx }) => {
-    const { type, name } = dimension;
     const paddedMetrics = Object.entries(metrics).reduce(
       (acc, [metricName, metricValues]) => {
         const metricName_ = metricName as keyof MetricDefinitions<T>;
@@ -106,7 +103,9 @@ export function transformToDatasets<T extends TimeseriesData>({
     );
 
     return {
-      id: [type, name].filter(Boolean).join("-") as DatasetId,
+      id: (dimension.type === "global"
+        ? "global"
+        : `${dimension.type}-${dimension.name}`) as DatasetId,
       source: {
         timestamp: timestamps,
         ...paddedMetrics,

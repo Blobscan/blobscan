@@ -19,9 +19,9 @@ const TotalBlocksChart: FC<TotalBlocksChartProps> = React.memo(function ({
         },
         yAxis: { type: "count" },
       }}
-      options={{
-        dataset,
-        series: dataset
+      dataset={dataset}
+      series={
+        dataset
           ? [
               {
                 name: "Total Blocks",
@@ -33,8 +33,8 @@ const TotalBlocksChart: FC<TotalBlocksChartProps> = React.memo(function ({
                 },
               },
             ]
-          : undefined,
-      }}
+          : undefined
+      }
       {...restProps}
     />
   );

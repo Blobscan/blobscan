@@ -22,19 +22,19 @@ const TotalBlobBaseFeesChart: FC<TotalBlobBaseFeeChartProps> = React.memo(
             displayUnit: "Gwei",
           },
         }}
+        dataset={datasets}
+        series={datasets?.map(({ id }, i) => ({
+          datasetIndex: i,
+          datasetId: id,
+          id,
+          type: "bar",
+          stack: "total",
+          encode: {
+            x: "timestamp",
+            y: "totalBlobFee",
+          },
+        }))}
         options={{
-          dataset: datasets,
-          series: datasets?.map(({ id }, i) => ({
-            datasetIndex: i,
-            datasetId: id,
-            id,
-            type: "bar",
-            stack: "total",
-            encode: {
-              x: "timestamp",
-              y: "totalBlobFee",
-            },
-          })),
           tooltipExtraOptions: {
             displayTotal: true,
           },

@@ -1,51 +1,56 @@
 import type { FC, ReactNode } from "react";
-import cn from "classnames";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import React from "react";
-import Skeleton from "react-loading-skeleton";
 
+import type { MakePartial, Size } from "~/types";
 import { ChartSkeleton } from "../ChartSkeleton";
 import { ChartBase } from "../Charts/ChartBase";
 import type { ChartBaseProps } from "../Charts/ChartBase";
 import { Card } from "./Card";
 
-interface ChartCardProps extends ChartBaseProps {
+interface ChartCardProps
+  extends MakePartial<ChartBaseProps, "dataset" | "series" | "options"> {
   headerControls?: ReactNode;
   title?: ReactNode;
 }
 
+const SIZES: Record<Size, string> = {
+  xs: "h-48 md:h-56 lg:h-56",
+  sm: "h-48 md:h-56 lg:h-56",
+  md: "h-60 md:h-72 lg:h-72",
+  lg: "h-72 md:h-80 lg:h-[22rem]",
+  xl: "h-84 md:h-96 lg:h-[26rem]",
+  "2xl": "h-96 md:h-[28rem] lg:h-[30rem]",
+};
+
 export const ChartCard: FC<ChartCardProps> = function ({
+  dataset,
   headerControls,
   title,
   size = "md",
   options,
+  series,
   metricInfo,
   compact,
 }) {
   const { yAxis } = metricInfo;
   const yUnit = yAxis.displayUnit ?? yAxis.unit;
-  const isEmpty = options.series && options.series.length === 0;
-  const isLoading = !options.series;
+  const isEmpty = series && !series.length;
+  const isLoading = !series;
 
   return (
     <Card className="h-full overflow-visible" compact>
       <div className="flex w-full justify-between p-1">
-        <div className="flex-start -mb-2 flex font-semibold">
-          {`${title}${yUnit ? ` (${yUnit})` : ""}` ?? <Skeleton width={150} />}
-        </div>
+        {title && (
+          <div className="flex-start -mb-2 flex font-semibold">
+            {`${title}${yUnit ? ` (${yUnit})` : ""}`}
+          </div>
+        )}
         {!isLoading && headerControls}
       </div>
       <div className="flex h-full flex-col gap-2">
-        <div
-          className={cn({
-            "h-48 md:h-56 lg:h-56": size === "sm",
-            "h-60 md:h-72 lg:h-72": size === "md",
-            "h-72 md:h-80 lg:h-[22rem]": size === "lg",
-            "h-84 md:h-96 lg:h-[26rem]": size === "xl",
-            "h-96 md:h-[28rem] lg:h-[30rem]": size === "2xl",
-          })}
-        >
+        <div className={SIZES[size]}>
           {isEmpty ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-sm font-thin uppercase text-contentSecondary-light dark:text-contentSecondary-dark">
@@ -58,9 +63,11 @@ export const ChartCard: FC<ChartCardProps> = function ({
             </div>
           ) : (
             <ChartBase
+              compact={compact}
+              dataset={dataset}
               metricInfo={metricInfo}
               options={options}
-              compact={compact}
+              series={series}
             />
           )}
         </div>
