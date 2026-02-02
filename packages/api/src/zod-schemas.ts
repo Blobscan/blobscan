@@ -24,12 +24,22 @@ import {
 import { logLevelEnum } from "@blobscan/logger";
 import { z } from "@blobscan/zod";
 
-export const dimensionTypeSchema = z.enum(["category", "global", "rollup"]);
-
-export const dimensionSchema = z.object({
-  type: dimensionTypeSchema,
-  name: z.union([dbCategorySchema, dbRollupSchema]).optional(),
-});
+export const dimensionSchema = z
+  .object({
+    type: z.literal("global"),
+  })
+  .or(
+    z.object({
+      type: z.literal("category"),
+      name: dbCategorySchema,
+    })
+  )
+  .or(
+    z.object({
+      type: z.literal("rollup"),
+      name: dbRollupSchema,
+    })
+  );
 
 export type Dimension = z.output<typeof dimensionSchema>;
 
@@ -37,15 +47,22 @@ export function getDimension(
   category: Category | null,
   rollup?: Rollup | null
 ): Dimension {
-  if (!category && !rollup) {
+  if (rollup) {
     return {
-      type: "global",
+      type: "rollup",
+      name: rollup,
+    };
+  }
+
+  if (category) {
+    return {
+      type: "category",
+      name: category,
     };
   }
 
   return {
-    type: rollup ? "rollup" : "category",
-    name: rollup ?? category ?? undefined,
+    type: "global",
   };
 }
 
