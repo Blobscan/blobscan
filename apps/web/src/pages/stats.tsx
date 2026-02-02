@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
 
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
@@ -24,27 +25,22 @@ import { Link } from "~/components/Link";
 import { Scrollable } from "~/components/Scrollable";
 import { RollupSelector } from "~/components/Selectors";
 import type { RollupSelectorOption } from "~/components/Selectors";
-import type { SelectOption } from "~/components/Selects";
-import { Listbox } from "~/components/Selects";
+import type {
+  SectionName,
+  SectionOption,
+} from "~/components/Selectors/StatsSectionSelector";
+import {
+  DEFAULT_SECTION,
+  SECTION_OPTIONS,
+  StatsSectionSelector,
+} from "~/components/Selectors/StatsSectionSelector";
 import { SubHeader } from "~/components/SubHeader";
 import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
+import { useQueryParams } from "~/hooks/useQueryParams";
 import type { TimeseriesMetric } from "~/types";
 import { buildStatRoute, calculatePercentage } from "~/utils";
-
-type Section = "All" | "Blob" | "Block" | "Gas" | "Fee" | "Transaction";
-
-type SectionOption = SelectOption<Section>;
-
-const SECTION_OPTIONS: [SectionOption, ...SectionOption[]] = [
-  { label: "All Stats", value: "All" },
-  { label: "Blobs", value: "Blob" },
-  { label: "Blocks", value: "Block" },
-  { label: "Gas", value: "Gas" },
-  { label: "Fees", value: "Fee" },
-  { label: "Transactions", value: "Transaction" },
-];
 
 const CATEGORIZED_METRICS: TimeseriesMetric[] = [
   "totalBlobs",
@@ -79,9 +75,10 @@ function buildViewLink(metricRoute: string) {
 
 const Stats: NextPage = function () {
   const chain = useChain();
-  const [selectedSection, setSelectedSection] = useState<SectionOption>(
-    SECTION_OPTIONS[0]
-  );
+  const router = useRouter();
+  const { statsSection } = useQueryParams();
+  const [selectedSection, setSelectedSection] =
+    useState<SectionOption>(DEFAULT_SECTION);
 
   const [selectedRollups, setSelectedRollups] = useState<
     RollupSelectorOption[]
@@ -95,6 +92,8 @@ const Stats: NextPage = function () {
       metrics: CATEGORIZED_METRICS.join(","),
     },
     {
+      refetchOnMount: false,
+      refetchOnReconnect: false,
       refetchOnWindowFocus: false,
       select: ({ data }) => transformToDatasets(data),
     }
@@ -106,12 +105,16 @@ const Stats: NextPage = function () {
       metrics: GLOBAL_METRICS.join(","),
     },
     {
+      refetchOnMount: false,
+      refetchOnReconnect: false,
       refetchOnWindowFocus: false,
       select: ({ data }) => transformToDatasets(data)[0],
     }
   );
-
   const { data: allOverallStats } = api.stats.getOverall.useQuery(undefined, {
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
     select: ({ data }) => data,
   });
 
@@ -119,318 +122,358 @@ const Stats: NextPage = function () {
     selectedRollups.map((r) => r.value),
     allOverallStats
   );
+  const selectedCategorizedChartDatasets = useMemo(() => {
+    return !selectedRollups.length
+      ? categorizedChartDatasets
+      : categorizedChartDatasets?.filter((dataset) =>
+          selectedRollups.map((r) => `rollup-${r.value}`).includes(dataset.id)
+        );
+  }, [categorizedChartDatasets, selectedRollups]);
 
   const blobSize = chain
     ? chain.latestFork.blobParams.bytesPerFieldElement *
       chain.latestFork.blobParams.fieldElementsPerBlob
     : undefined;
 
-  const sections: {
-    id: Section;
-    title: string;
-    metrics: MetricCardProps[];
-    charts: ReactNode[];
-  }[] = [
+  const sections = useMemo<
     {
-      id: "Blob",
-      title: "Blob Charts",
-      metrics: [
-        {
-          name: "Total Blobs",
-          metric: {
-            primary: {
-              value: aggregatedMetrics?.totalBlobs,
-            },
-          },
-        },
-        {
-          name: "Total Blob Size",
-          metric: {
-            primary: {
-              value: aggregatedMetrics?.totalBlobSize,
-              type: "bytes",
-            },
-          },
-        },
-        {
-          name: "Total Blob Usage Size",
-          metric: {
-            primary: {
-              value: aggregatedMetrics?.totalBlobUsageSize,
-              type: "bytes",
-            },
-          },
-        },
-        {
-          name: "Avg. Blob Usage Size",
-          metric: {
-            primary: {
-              value: aggregatedMetrics?.avgBlobUsageSize,
-              type: "bytes",
-            },
-            secondary:
-              blobSize && aggregatedMetrics?.avgBlobUsageSize
-                ? {
-                    value: calculatePercentage(
-                      aggregatedMetrics?.avgBlobUsageSize,
-                      blobSize,
-                      {
-                        decimals: 2,
-                      }
-                    ),
-                    type: "percentage",
-                  }
-                : undefined,
-          },
-        },
-        {
-          name: "Total Unique Blobs",
-          metric: {
-            primary: {
-              value: aggregatedMetrics?.totalUniqueBlobs,
-            },
-          },
-        },
-      ],
-      charts: [
-        <TotalBlobsChart
-          key="total-blobs"
-          datasets={categorizedChartDatasets}
-          headerControls={buildViewLink("total-blobs")}
-          compact
-        />,
-        <TotalBlobSizeChart
-          key="total-blob-size"
-          datasets={categorizedChartDatasets}
-          headerControls={buildViewLink("total-blob-size")}
-          compact
-        />,
-        <TotalBlobUsageSizeChart
-          key="total-blob-usage-size"
-          datasets={categorizedChartDatasets}
-          headerControls={buildViewLink("total-blob-usage-size")}
-          compact
-        />,
-      ],
-    },
-    {
-      id: "Block",
-      title: "Block Charts",
-      metrics: [
-        {
-          name: "Total Blocks",
-          metric: {
-            primary: {
-              value: aggregatedMetrics?.totalBlocks,
-            },
-          },
-        },
-      ],
-      charts: [
-        <TotalBlocksChart
-          key="total-blocks"
-          dataset={globalChartDatasets}
-          headerControls={buildViewLink("total-blocks")}
-          compact
-        />,
-      ],
-    },
-    {
-      id: "Gas",
-      title: "Gas Charts",
-      metrics: [
-        {
-          name: "Total Blob Gas Used",
-          metric: {
-            primary: {
-              value: aggregatedMetrics?.totalBlobGasUsed,
-              type: "ethereum",
-            },
-          },
-        },
-        {
-          name: "Total Gas Saved",
-          metric: {
-            primary: {
-              value: aggregatedMetrics
-                ? aggregatedMetrics.totalBlobAsCalldataGasUsed -
-                  aggregatedMetrics.totalBlobGasUsed
-                : undefined,
-            },
-          },
-          // secondaryMetric={
-          //   overallStats &&
-          //   BigInt(overallStats.block.totalBlobAsCalldataFee) > BigInt(0)
-          //     ? {
-          //         value: calculatePercentage(
-          //           BigInt(overallStats.block.totalBlobGasUsed),
-          //           BigInt(overallStats.block.totalBlobAsCalldataGasUsed),
-          //           { returnComplement: true }
-          //         ),
-          //         type: "percentage",
-          //       }
-          //     : undefined
-          // }
-        },
-        {
-          name: "Avg. Blob Gas Price",
-          metric: {
-            primary: {
-              value: aggregatedMetrics?.avgBlobGasPrice,
-              type: "ethereum",
-              numberFormatOpts: {
-                maximumFractionDigits: 9,
+      id: SectionName;
+      title: string;
+      metrics: MetricCardProps[];
+      charts: ReactNode[];
+    }[]
+  >(
+    () => [
+      {
+        id: "blob",
+        title: "Blob Charts",
+        metrics: [
+          {
+            name: "Total Blobs",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.totalBlobs,
               },
             },
           },
-        },
-      ],
-      charts: [
-        <TotalBlobGasUsedChart
-          key="total-blob-gas-used"
-          datasets={categorizedChartDatasets}
-          headerControls={buildViewLink("total-blob-gas-used")}
-          compact
-        />,
-        <AvgBlobGasPriceChart
-          key="avg-blob-gas-price"
-          dataset={globalChartDatasets}
-          headerControls={buildViewLink("avg-blob-gas-price")}
-          compact
-        />,
-        <TotalBlobGasComparisonChart
-          key="total-blob-gas-used-comparison"
-          dataset={globalChartDatasets}
-          headerControls={buildViewLink("total-blob-gas-used-comparison")}
-          compact
-        />,
-      ],
-    },
-    {
-      id: "Fee",
-      title: "Blob Fee Charts",
-      metrics: [
-        {
-          name: "Total Blob Fees",
-          metric: {
-            primary: {
-              value: aggregatedMetrics?.totalBlobFee,
-              type: "ethereum",
+          {
+            name: "Total Blob Size",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.totalBlobSize,
+                type: "bytes",
+              },
             },
           },
-        },
-        {
-          name: "Total Tx Fees Saved",
-          metric: {
-            primary: {
-              value: aggregatedMetrics
-                ? aggregatedMetrics.totalBlobAsCalldataFee -
-                  aggregatedMetrics.totalBlobFee
-                : undefined,
-              type: "ethereum",
+          {
+            name: "Total Blob Usage Size",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.totalBlobUsageSize,
+                type: "bytes",
+              },
             },
           },
-          // secondaryMetric={
-          //   overallStats
-          //     ? {
-          //         value: calculatePercentage(
-          //           BigInt(overallStats.block.totalBlobFee),
-          //           BigInt(overallStats.block.totalBlobAsCalldataFee),
-          //           { returnComplement: true }
-          //         ),
-          //         type: "percentage",
-          //       }
-          //     : undefined
-          // }
-        },
-        {
-          name: "Avg. Max Blob Gas Fee",
-          metric: {
-            primary: {
-              value: aggregatedMetrics?.avgMaxBlobGasFee,
-              type: "ethereum",
+          {
+            name: "Avg. Blob Usage Size",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.avgBlobUsageSize,
+                type: "bytes",
+              },
+              secondary:
+                blobSize && aggregatedMetrics?.avgBlobUsageSize
+                  ? {
+                      value: calculatePercentage(
+                        aggregatedMetrics?.avgBlobUsageSize,
+                        blobSize,
+                        {
+                          decimals: 2,
+                        }
+                      ),
+                      type: "percentage",
+                    }
+                  : undefined,
             },
           },
-        },
-      ],
-      charts: [
-        <TotalBlobBaseFeesChart
-          key="total-blob-base-fees"
-          datasets={categorizedChartDatasets}
-          headerControls={buildViewLink("total-blob-base-fees")}
-          compact
-        />,
-        <AvgBlobBaseFeeChart
-          key="avg-blob-base-fee"
-          dataset={globalChartDatasets}
-          headerControls={buildViewLink("avg-blob-base-fee")}
-          compact
-        />,
-      ],
-    },
-    {
-      id: "Transaction",
-      title: "Transaction Charts",
-      metrics: [
-        {
-          name: "Total Transactions",
-          metric: {
-            primary: {
-              value: aggregatedMetrics?.totalTransactions,
+          {
+            name: "Total Unique Blobs",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.totalUniqueBlobs,
+              },
             },
           },
-        },
-        {
-          name: "Total Unique Receivers",
-          metric: {
-            primary: {
-              value: aggregatedMetrics?.totalUniqueReceivers,
+        ],
+        charts: [
+          <TotalBlobsChart
+            key="total-blobs"
+            datasets={selectedCategorizedChartDatasets}
+            headerControls={buildViewLink("total-blobs")}
+            compact
+          />,
+          <TotalBlobSizeChart
+            key="total-blob-size"
+            datasets={selectedCategorizedChartDatasets}
+            headerControls={buildViewLink("total-blob-size")}
+            compact
+          />,
+          <TotalBlobUsageSizeChart
+            key="total-blob-usage-size"
+            datasets={selectedCategorizedChartDatasets}
+            headerControls={buildViewLink("total-blob-usage-size")}
+            compact
+          />,
+        ],
+      },
+      {
+        id: "block",
+        title: "Block Charts",
+        metrics: [
+          {
+            name: "Total Blocks",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.totalBlocks,
+              },
             },
           },
-        },
-        {
-          name: "Total Unique Senders",
-          metric: {
-            primary: {
-              value: aggregatedMetrics?.totalUniqueSenders,
+        ],
+        charts: [
+          <TotalBlocksChart
+            key="total-blocks"
+            dataset={globalChartDatasets}
+            headerControls={buildViewLink("total-blocks")}
+            compact
+          />,
+        ],
+      },
+      {
+        id: "gas",
+        title: "Gas Charts",
+        metrics: [
+          {
+            name: "Total Blob Gas Used",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.totalBlobGasUsed,
+                type: "ethereum",
+              },
             },
           },
-        },
-      ],
-      charts: [
-        <TotalTransactionsChart
-          key="total-transactions"
-          datasets={categorizedChartDatasets}
-          headerControls={buildViewLink("total-transactions")}
-          compact
-        />,
-        <TotalUniqueAddressesChart
-          key="total-unique-addresses"
-          dataset={globalChartDatasets}
-          headerControls={buildViewLink("total-unique-addresses")}
-          compact
-        />,
-      ],
-    },
-  ];
-  const currentSectionOption = selectedSection?.value ?? "All";
+          {
+            name: "Total Gas Saved",
+            metric: {
+              primary: {
+                value: aggregatedMetrics
+                  ? aggregatedMetrics.totalBlobAsCalldataGasUsed -
+                    aggregatedMetrics.totalBlobGasUsed
+                  : undefined,
+              },
+            },
+            // secondaryMetric={
+            //   overallStats &&
+            //   BigInt(overallStats.block.totalBlobAsCalldataFee) > BigInt(0)
+            //     ? {
+            //         value: calculatePercentage(
+            //           BigInt(overallStats.block.totalBlobGasUsed),
+            //           BigInt(overallStats.block.totalBlobAsCalldataGasUsed),
+            //           { returnComplement: true }
+            //         ),
+            //         type: "percentage",
+            //       }
+            //     : undefined
+            // }
+          },
+          {
+            name: "Avg. Blob Gas Price",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.avgBlobGasPrice,
+                type: "ethereum",
+                numberFormatOpts: {
+                  maximumFractionDigits: 9,
+                },
+              },
+            },
+          },
+        ],
+        charts: [
+          <TotalBlobGasUsedChart
+            key="total-blob-gas-used"
+            datasets={selectedCategorizedChartDatasets}
+            headerControls={buildViewLink("total-blob-gas-used")}
+            compact
+          />,
+          <AvgBlobGasPriceChart
+            key="avg-blob-gas-price"
+            dataset={globalChartDatasets}
+            headerControls={buildViewLink("avg-blob-gas-price")}
+            compact
+          />,
+          <TotalBlobGasComparisonChart
+            key="total-blob-gas-used-comparison"
+            dataset={globalChartDatasets}
+            headerControls={buildViewLink("total-blob-gas-used-comparison")}
+            compact
+          />,
+        ],
+      },
+      {
+        id: "fee",
+        title: "Blob Fee Charts",
+        metrics: [
+          {
+            name: "Total Blob Fees",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.totalBlobFee,
+                type: "ethereum",
+              },
+            },
+          },
+          {
+            name: "Total Tx Fees Saved",
+            metric: {
+              primary: {
+                value: aggregatedMetrics
+                  ? aggregatedMetrics.totalBlobAsCalldataFee -
+                    aggregatedMetrics.totalBlobFee
+                  : undefined,
+                type: "ethereum",
+              },
+            },
+            // secondaryMetric={
+            //   overallStats
+            //     ? {
+            //         value: calculatePercentage(
+            //           BigInt(overallStats.block.totalBlobFee),
+            //           BigInt(overallStats.block.totalBlobAsCalldataFee),
+            //           { returnComplement: true }
+            //         ),
+            //         type: "percentage",
+            //       }
+            //     : undefined
+            // }
+          },
+          {
+            name: "Avg. Max Blob Gas Fee",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.avgMaxBlobGasFee,
+                type: "ethereum",
+              },
+            },
+          },
+        ],
+        charts: [
+          <TotalBlobBaseFeesChart
+            key="total-blob-base-fees"
+            datasets={selectedCategorizedChartDatasets}
+            headerControls={buildViewLink("total-blob-base-fees")}
+            compact
+          />,
+          <AvgBlobBaseFeeChart
+            key="avg-blob-base-fee"
+            dataset={globalChartDatasets}
+            headerControls={buildViewLink("avg-blob-base-fee")}
+            compact
+          />,
+        ],
+      },
+      {
+        id: "transaction",
+        title: "Transaction Charts",
+        metrics: [
+          {
+            name: "Total Transactions",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.totalTransactions,
+              },
+            },
+          },
+          {
+            name: "Total Unique Receivers",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.totalUniqueReceivers,
+              },
+            },
+          },
+          {
+            name: "Total Unique Senders",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.totalUniqueSenders,
+              },
+            },
+          },
+        ],
+        charts: [
+          <TotalTransactionsChart
+            key="total-transactions"
+            datasets={selectedCategorizedChartDatasets}
+            headerControls={buildViewLink("total-transactions")}
+            compact
+          />,
+          <TotalUniqueAddressesChart
+            key="total-unique-addresses"
+            dataset={globalChartDatasets}
+            headerControls={buildViewLink("total-unique-addresses")}
+            compact
+          />,
+        ],
+      },
+    ],
+    [
+      aggregatedMetrics,
+      blobSize,
+      selectedCategorizedChartDatasets,
+      globalChartDatasets,
+    ]
+  );
+  const currentSectionOption = selectedSection?.value ?? "all";
   const displayedSections =
-    currentSectionOption === "All"
+    currentSectionOption === "all"
       ? sections
       : sections.filter((s) => s.id === currentSectionOption);
+
+  const handleSectionChange = useCallback(
+    (option: SectionOption) => {
+      const queryParams = {
+        ...router.query,
+      };
+
+      if (option !== DEFAULT_SECTION) {
+        queryParams.section = option.value;
+      } else {
+        delete queryParams.section;
+      }
+
+      router.push({
+        pathname: router.pathname,
+        query: queryParams,
+      });
+    },
+    [router]
+  );
+
+  useEffect(() => {
+    setSelectedSection(
+      SECTION_OPTIONS.find((s) => s.value === statsSection) ?? DEFAULT_SECTION
+    );
+  }, [statsSection]);
 
   return (
     <div className="flex flex-col gap-8">
       <Header>Stats Overview</Header>
       <Card>
         <div className="flex w-full flex-wrap items-center justify-start gap-4">
-          <div className="w-48">
-            <Listbox
-              options={SECTION_OPTIONS}
+          <div className="w-36">
+            <StatsSectionSelector
               selected={selectedSection}
-              onChange={(option: SectionOption) => {
-                setSelectedSection(option);
-              }}
+              onChange={handleSectionChange}
             />
           </div>
           <div className="w-64">
@@ -446,7 +489,7 @@ const Stats: NextPage = function () {
         <Scrollable displayScrollbar>
           <div
             className={
-              currentSectionOption === "All"
+              currentSectionOption === "all"
                 ? "grid grid-flow-col grid-rows-3 gap-6"
                 : "flex flex-wrap gap-6"
             }

@@ -3,12 +3,19 @@ import { useRouter } from "next/router";
 import { z } from "zod";
 
 import { commaSeparatedRollupsSchema } from "~/utils/zod-schemas";
+import { SECTION_NAMES } from "~/components/Selectors/StatsSectionSelector";
+import type { SectionName } from "~/components/Selectors/StatsSectionSelector";
 
 export type Sort = "asc" | "desc";
 
+const DEFAULT_STATS_SECTION = "all";
 const DEFAULT_PAGE = 1;
 const DEFAULT_PAGE_SIZE = 50;
 const DEFAULT_SORT = "desc";
+
+const statsSectionParamSchema = z.object({
+  section: z.enum(SECTION_NAMES).default("all"),
+});
 
 const paginationParamsSchema = z.object({
   p: z.coerce.number().default(DEFAULT_PAGE),
@@ -43,6 +50,9 @@ export function useQueryParams() {
       sort: DEFAULT_SORT,
     });
   const [filterParams, setFilterParams] = useState<FilterParamsSchema>({});
+  const [statsSection, setStatsSection] = useState<SectionName>(
+    DEFAULT_STATS_SECTION
+  );
 
   useEffect(() => {
     if (!router.isReady) {
@@ -51,17 +61,24 @@ export function useQueryParams() {
 
     const paginationRes = paginationParamsSchema.safeParse(router.query);
     const filtersRes = filterParamsSchema.safeParse(router.query);
+    const statsSectionRes = statsSectionParamSchema.safeParse(router.query);
 
     if (paginationRes.success) {
       setPaginationParams(paginationRes.data);
     } else {
-      console.error("Invalid pagination params ", paginationRes.error);
+      console.warn("Invalid pagination params ", paginationRes.error);
     }
 
     if (filtersRes.success) {
       setFilterParams(filtersRes.data);
     } else {
-      console.error("Invalid filters params ", filtersRes.error);
+      console.warn("Invalid filters params ", filtersRes.error);
+    }
+
+    if (statsSectionRes.success) {
+      setStatsSection(statsSectionRes.data.section);
+    } else {
+      console.warn("Invalid stats section ", statsSectionRes.error);
     }
   }, [router]);
   return {
@@ -71,5 +88,6 @@ export function useQueryParams() {
     },
     paginationParams,
     filterParams,
+    statsSection,
   };
 }
