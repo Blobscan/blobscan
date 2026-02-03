@@ -8,6 +8,7 @@ export type TotalBlocksChartProps = SingleTimeseriesChartProps;
 
 const TotalBlocksChart: FC<TotalBlocksChartProps> = React.memo(function ({
   dataset,
+  loadingOpts,
   ...restProps
 }) {
   return (
@@ -35,6 +36,12 @@ const TotalBlocksChart: FC<TotalBlocksChartProps> = React.memo(function ({
             ]
           : undefined
       }
+      options={{
+        loading: {
+          chartType: "bar",
+          timeFrame: loadingOpts?.timeFrame,
+        },
+      }}
       {...restProps}
     />
   );

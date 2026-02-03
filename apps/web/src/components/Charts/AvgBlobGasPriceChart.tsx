@@ -7,7 +7,7 @@ import type { SingleTimeseriesChartProps } from "./ChartBase/types";
 export type AvgBlobGasPriceChartProps = SingleTimeseriesChartProps;
 
 const AvgBlobGasPriceChart: FC<AvgBlobGasPriceChartProps> = React.memo(
-  function ({ dataset, ...restProps }) {
+  function ({ dataset, loadingOpts, ...restProps }) {
     return (
       <ChartCard
         title="Avg. Blob Gas Price"
@@ -37,6 +37,12 @@ const AvgBlobGasPriceChart: FC<AvgBlobGasPriceChartProps> = React.memo(
               ]
             : undefined
         }
+        options={{
+          loading: {
+            chartType: "line",
+            timeFrame: loadingOpts?.timeFrame,
+          },
+        }}
         {...restProps}
       />
     );

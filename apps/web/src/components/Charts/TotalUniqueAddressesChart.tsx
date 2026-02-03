@@ -7,7 +7,7 @@ import type { SingleTimeseriesChartProps } from "./ChartBase/types";
 export type TotalUniqueAddressesChartProps = SingleTimeseriesChartProps;
 
 const TotalUniqueAddressesChart: FC<TotalUniqueAddressesChartProps> =
-  React.memo(function ({ dataset, ...restProps }) {
+  React.memo(function ({ dataset, loadingOpts, ...restProps }) {
     return (
       <ChartCard
         title="Total Unique Addresses"
@@ -40,6 +40,12 @@ const TotalUniqueAddressesChart: FC<TotalUniqueAddressesChartProps> =
               ]
             : undefined
         }
+        options={{
+          loading: {
+            chartType: "bar",
+            timeFrame: loadingOpts?.timeFrame,
+          },
+        }}
         {...restProps}
       />
     );

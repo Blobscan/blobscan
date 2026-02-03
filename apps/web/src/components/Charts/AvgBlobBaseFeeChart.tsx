@@ -8,6 +8,7 @@ export type AvgBlobFeeChartProps = SingleTimeseriesChartProps;
 
 const AvgBlobBaseFeeChart: FC<AvgBlobFeeChartProps> = React.memo(function ({
   dataset,
+  loadingOpts,
   ...restProps
 }) {
   return (
@@ -39,6 +40,12 @@ const AvgBlobBaseFeeChart: FC<AvgBlobFeeChartProps> = React.memo(function ({
             ]
           : undefined
       }
+      options={{
+        loading: {
+          chartType: "line",
+          timeFrame: loadingOpts?.timeFrame,
+        },
+      }}
       {...restProps}
     />
   );

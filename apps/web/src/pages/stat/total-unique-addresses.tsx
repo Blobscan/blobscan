@@ -24,7 +24,13 @@ const TotalUniqueAddresses: NextPage = function () {
       title="Total Unique Addresses"
       description="This chart shows the total unique addresses that have received or sent a blob transaction per day."
       chart={
-        <TotalUniqueAddressesChart size="2xl" dataset={dailyBlobsDatasets} />
+        <TotalUniqueAddressesChart
+          size="2xl"
+          dataset={dailyBlobsDatasets}
+          loadingOpts={{
+            timeFrame: "180d",
+          }}
+        />
       }
     />
   );

@@ -73,6 +73,10 @@ function buildViewLink(metricRoute: string) {
   );
 }
 
+const LOADING_OPTS = {
+  timeFrame: "15d" as const,
+};
+
 const Stats: NextPage = function () {
   const chain = useChain();
   const router = useRouter();
@@ -210,18 +214,21 @@ const Stats: NextPage = function () {
             key="total-blobs"
             datasets={selectedCategorizedChartDatasets}
             headerControls={buildViewLink("total-blobs")}
+            loadingOpts={LOADING_OPTS}
             compact
           />,
           <TotalBlobSizeChart
             key="total-blob-size"
             datasets={selectedCategorizedChartDatasets}
             headerControls={buildViewLink("total-blob-size")}
+            loadingOpts={LOADING_OPTS}
             compact
           />,
           <TotalBlobUsageSizeChart
             key="total-blob-usage-size"
             datasets={selectedCategorizedChartDatasets}
             headerControls={buildViewLink("total-blob-usage-size")}
+            loadingOpts={LOADING_OPTS}
             compact
           />,
         ],
@@ -244,6 +251,7 @@ const Stats: NextPage = function () {
             key="total-blocks"
             dataset={globalChartDatasets}
             headerControls={buildViewLink("total-blocks")}
+            loadingOpts={LOADING_OPTS}
             compact
           />,
         ],
@@ -303,18 +311,21 @@ const Stats: NextPage = function () {
             key="total-blob-gas-used"
             datasets={selectedCategorizedChartDatasets}
             headerControls={buildViewLink("total-blob-gas-used")}
+            loadingOpts={LOADING_OPTS}
             compact
           />,
           <AvgBlobGasPriceChart
             key="avg-blob-gas-price"
             dataset={globalChartDatasets}
             headerControls={buildViewLink("avg-blob-gas-price")}
+            loadingOpts={LOADING_OPTS}
             compact
           />,
           <TotalBlobGasComparisonChart
             key="total-blob-gas-used-comparison"
             dataset={globalChartDatasets}
             headerControls={buildViewLink("total-blob-gas-used-comparison")}
+            loadingOpts={LOADING_OPTS}
             compact
           />,
         ],
@@ -377,6 +388,7 @@ const Stats: NextPage = function () {
             key="avg-blob-base-fee"
             dataset={globalChartDatasets}
             headerControls={buildViewLink("avg-blob-base-fee")}
+            loadingOpts={LOADING_OPTS}
             compact
           />,
         ],
@@ -415,12 +427,14 @@ const Stats: NextPage = function () {
             key="total-transactions"
             datasets={selectedCategorizedChartDatasets}
             headerControls={buildViewLink("total-transactions")}
+            loadingOpts={LOADING_OPTS}
             compact
           />,
           <TotalUniqueAddressesChart
             key="total-unique-addresses"
             dataset={globalChartDatasets}
             headerControls={buildViewLink("total-unique-addresses")}
+            loadingOpts={LOADING_OPTS}
             compact
           />,
         ],

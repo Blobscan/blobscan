@@ -34,7 +34,15 @@ const TotalBlobSize: NextPage = function () {
       title="Total Blob Size Stats"
       description="This chart shows the total amount of blob data posted per day, broken down by category and rollup."
       enableFilters
-      chart={<TotalBlobSizeChart size="2xl" datasets={dailyBlobsDatasets} />}
+      chart={
+        <TotalBlobSizeChart
+          size="2xl"
+          datasets={dailyBlobsDatasets}
+          loadingOpts={{
+            timeFrame: "180d",
+          }}
+        />
+      }
     />
   );
 };

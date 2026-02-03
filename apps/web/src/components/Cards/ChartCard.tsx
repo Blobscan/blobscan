@@ -4,7 +4,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 import React from "react";
 
 import type { MakePartial, Size } from "~/types";
-import { ChartSkeleton } from "../ChartSkeleton";
 import { ChartBase } from "../Charts/ChartBase";
 import type { ChartBaseProps } from "../Charts/ChartBase";
 import { Card } from "./Card";
@@ -37,7 +36,7 @@ export const ChartCard: FC<ChartCardProps> = function ({
   const { yAxis } = metricInfo;
   const yUnit = yAxis.displayUnit ?? yAxis.unit;
   const isEmpty = series && !series.length;
-  const isLoading = !series;
+  const isLoading = dataset === undefined;
 
   return (
     <Card className="h-full overflow-visible" compact>
@@ -57,17 +56,14 @@ export const ChartCard: FC<ChartCardProps> = function ({
                 No data
               </div>
             </div>
-          ) : isLoading ? (
-            <div className="flex h-full w-full items-center justify-center">
-              <ChartSkeleton itemsCount={6} />
-            </div>
           ) : (
             <ChartBase
               compact={compact}
               dataset={dataset}
               metricInfo={metricInfo}
               options={options}
-              series={series}
+              series={series ?? []}
+              isLoading={isLoading}
             />
           )}
         </div>

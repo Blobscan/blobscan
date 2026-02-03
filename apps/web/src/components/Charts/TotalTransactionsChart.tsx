@@ -7,7 +7,7 @@ import type { MultipleTimeseriesChartProps } from "./ChartBase/types";
 export type TotalTransactionsChartProps = MultipleTimeseriesChartProps;
 
 const TotalTransactionsChart: FC<TotalTransactionsChartProps> = React.memo(
-  function ({ datasets, ...restProps }) {
+  function ({ datasets, loadingOpts, ...restProps }) {
     return (
       <ChartCard
         title="Total Transactions"
@@ -30,8 +30,12 @@ const TotalTransactionsChart: FC<TotalTransactionsChartProps> = React.memo(
           },
         }))}
         options={{
-          tooltipExtraOptions: {
+          tooltip: {
             displayTotal: true,
+          },
+          loading: {
+            chartType: "bar",
+            timeFrame: loadingOpts?.timeFrame,
           },
         }}
         {...restProps}

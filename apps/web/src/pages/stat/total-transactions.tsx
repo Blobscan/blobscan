@@ -38,6 +38,9 @@ const TotalTransactions: NextPage = function () {
         <TotalTransactionsChart
           size="2xl"
           datasets={totalTransactionsDatasets}
+          loadingOpts={{
+            timeFrame: "180d",
+          }}
         />
       }
     />

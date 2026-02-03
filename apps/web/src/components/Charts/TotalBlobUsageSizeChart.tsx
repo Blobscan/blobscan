@@ -7,7 +7,7 @@ import type { MultipleTimeseriesChartProps } from "./ChartBase/types";
 export type TotalBlobUsageSizeChartProps = MultipleTimeseriesChartProps;
 
 const TotalBlobUsageSizeChart: FC<TotalBlobUsageSizeChartProps> = React.memo(
-  ({ datasets, ...restProps }) => {
+  ({ datasets, loadingOpts, ...restProps }) => {
     return (
       <ChartCard
         title="Total Blob Usage"
@@ -35,8 +35,12 @@ const TotalBlobUsageSizeChart: FC<TotalBlobUsageSizeChartProps> = React.memo(
           },
         }))}
         options={{
-          tooltipExtraOptions: {
+          tooltip: {
             displayTotal: true,
+          },
+          loading: {
+            chartType: "bar",
+            timeFrame: loadingOpts?.timeFrame,
           },
         }}
         {...restProps}

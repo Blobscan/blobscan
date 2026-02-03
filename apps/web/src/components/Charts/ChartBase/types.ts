@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import type { TimeFrame } from "@blobscan/api";
 import type { EtherUnit } from "@blobscan/eth-format";
 
 import type { Size, TimeseriesData } from "~/types";
@@ -54,6 +55,10 @@ export interface ChartBaseProps {
   compact?: boolean;
   headerControls?: ReactNode;
   size?: Size;
+  loadingOpts?: {
+    timeFrame?: TimeFrame;
+    chartType?: "line" | "bar";
+  };
 }
 
 export interface MultipleTimeseriesChartProps<

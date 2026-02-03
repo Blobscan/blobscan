@@ -1,15 +1,18 @@
 import type { FC } from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useState } from "react";
+import classNames from "classnames";
 import type { EChartOption, ECElementEvent } from "echarts";
 import type { EChartsInstance } from "echarts-for-react";
 import ReactEChartsCore from "echarts-for-react/lib/core";
 import { useTheme } from "next-themes";
 
+import type { TimeFrame } from "@blobscan/api";
+
 import echarts from "~/echarts";
 import type { TimeseriesDimension } from "~/types";
 import { Legend } from "./Legend";
-import type { LegendItem, LegendProps } from "./Legend";
+import type { LegendItemData, LegendProps } from "./Legend";
 import {
   createXAxisOptions,
   createBaseToolboxOptions,
@@ -19,6 +22,7 @@ import {
   createBaseSeriesOptions,
   getDimensionColor,
 } from "./helpers";
+import { createChartSkeletonOptions } from "./helpers/skeleton";
 import type { ChartBaseProps as ChartBaseProps_, MetricInfo } from "./types";
 
 export interface ChartBaseProps extends ChartBaseProps_ {
@@ -28,8 +32,13 @@ export interface ChartBaseProps extends ChartBaseProps_ {
     xAxis: MetricInfo;
     yAxis: MetricInfo;
   };
-  options?: Omit<EChartOption, "dataset" | "series" | "legend"> & {
-    tooltipExtraOptions?: {
+  isLoading?: boolean;
+  options?: {
+    loading?: {
+      timeFrame?: TimeFrame;
+      chartType?: "line" | "bar";
+    };
+    tooltip?: {
       displayTotal?: boolean;
     };
   };
@@ -41,6 +50,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   options: optionsProp,
   series: seriesProp,
   compact,
+  isLoading,
 }) {
   const { resolvedTheme } = useTheme();
   const chartInstanceRef = useRef<EChartsInstance | null>(null);
@@ -48,7 +58,15 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     seriesIndex?: number;
     seriesName?: string;
   } | null>(null);
-  const [legendItems, setLegendItems] = useState<LegendItem[]>([]);
+  const chartSkeletonOptions = useMemo(
+    () =>
+      createChartSkeletonOptions({
+        ...optionsProp?.loading,
+        compact,
+      }),
+    [optionsProp?.loading, compact]
+  );
+  const [legendItems, setLegendItems] = useState<LegendItemData[]>([]);
   const [selectedLegendItem, setSelectedLegendItem] = useState<
     string | undefined
   >();
@@ -82,72 +100,38 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         ?.sort((a, b) => String(a.name).localeCompare(String(b.name))),
     [seriesProp, themeMode]
   );
-
-  const baseOptions = useMemo(() => {
-    const {
-      grid: gridOptions,
-      xAxis: xAxisOptions,
-      yAxis: yAxisOptions,
-      toolbox: toolboxOptions,
-      tooltip: tooltipOptions,
-      tooltipExtraOptions,
-      ...restOptions
-    } = optionsProp ?? {};
-
-    const defaults = {
-      animationEasing: "cubicOut",
-      animationDuration: 500,
-      animationDelayUpdate: (idx: number) => idx * 2,
-      animationThreshold: 20_000,
-      animation: true,
-      legend: {
-        show: false,
-      },
-      grid: {
-        top: 27,
-        right: 10,
-        bottom: compact ? 22 : 82,
-        left: 40,
-      },
-      xAxis: createXAxisOptions(metricInfo.xAxis, compact),
-      yAxis: createYAxisOptions(metricInfo.yAxis, compact),
-      tooltip: createBaseTooltipOptions({
-        currentSeriesRef: hoveredSeriesRef,
-        metricInfo,
-        displayTotal: tooltipExtraOptions?.displayTotal,
-        themeMode,
-      }),
-      toolbox: !compact ? createBaseToolboxOptions({ themeMode }) : undefined,
-      dataZoom: !compact
-        ? [{ type: "inside" }, { type: "slider", start: 0, end: 100 }]
-        : undefined,
-    } satisfies EChartOption;
-
-    return {
-      ...defaults,
-      ...restOptions,
-      grid: {
-        ...defaults.grid,
-        ...gridOptions,
-      },
-      xAxis: {
-        ...defaults.xAxis,
-        ...xAxisOptions,
-      },
-      yAxis: {
-        ...defaults.yAxis,
-        ...yAxisOptions,
-      },
-      toolbox: {
-        ...defaults.toolbox,
-        ...toolboxOptions,
-      },
-      tooltip: {
-        ...defaults.tooltip,
-        ...tooltipOptions,
-      },
-    } satisfies EChartOption;
-  }, [compact, metricInfo, optionsProp, themeMode]);
+  const baseOptions = useMemo(
+    () =>
+      ({
+        animationEasing: "cubicOut",
+        animationDuration: 500,
+        animationDelayUpdate: (idx: number) => idx * 2,
+        animationThreshold: 20_000,
+        animation: true,
+        legend: {
+          show: false,
+        },
+        grid: {
+          top: 27,
+          right: 10,
+          bottom: compact ? 22 : 82,
+          left: 40,
+        },
+        xAxis: createXAxisOptions(metricInfo.xAxis, compact),
+        yAxis: createYAxisOptions(metricInfo.yAxis, compact),
+        tooltip: createBaseTooltipOptions({
+          currentSeriesRef: hoveredSeriesRef,
+          metricInfo,
+          displayTotal: optionsProp?.tooltip?.displayTotal,
+          themeMode,
+        }),
+        toolbox: !compact ? createBaseToolboxOptions({ themeMode }) : undefined,
+        dataZoom: !compact
+          ? [{ type: "inside" }, { type: "slider", start: 0, end: 100 }]
+          : undefined,
+      } satisfies EChartOption),
+    [compact, metricInfo, optionsProp?.tooltip, themeMode]
+  );
 
   const onChartReady = useCallback((chart: EChartsInstance) => {
     chart.on(
@@ -244,7 +228,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
 
     const items = series
       .map(
-        ({ name, itemStyle }): LegendItem => ({
+        ({ name, itemStyle }): LegendItemData => ({
           name: name ?? "",
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
@@ -259,7 +243,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         name: "All",
         color: undefined,
         disabled: false,
-      } satisfies LegendItem);
+      } satisfies LegendItemData);
     }
 
     setLegendItems(items);
@@ -268,34 +252,45 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   useEffect(() => {
     const chart = chartInstanceRef.current?.getEchartsInstance();
 
-    if (!chart || !series) return;
+    if (!chart || !series || !dataset) return;
 
     chart.setOption(
       {
+        ...baseOptions,
         series,
         dataset,
       },
       {
-        replaceMerge: ["series", "dataset"],
+        notMerge: true,
       }
     );
   }, [baseOptions, dataset, series]);
 
   return (
-    <div className="flex h-full w-full flex-col gap-1 overflow-visible md:flex-row md:gap-2">
+    <div
+      className={classNames(
+        "relative flex h-full w-full flex-col gap-1 overflow-visible md:flex-row md:gap-2",
+        {
+          "animate-pulse": isLoading,
+        }
+      )}
+    >
       <ReactEChartsCore
         echarts={echarts}
         ref={chartInstanceRef}
         onChartReady={onChartReady}
-        option={baseOptions}
-        lazyUpdate
+        option={isLoading ? chartSkeletonOptions : baseOptions}
         style={{ height: "100%", width: "100%" }}
       />
+      {isLoading && !compact ? (
+        <div className="absolute bottom-3 left-10 h-9 w-[90%] rounded-md bg-[#e5e7eb52] opacity-10" />
+      ) : null}
       {!compact && (
         <div className="h-4 md:h-full">
           <Legend
             items={legendItems}
             selectedItem={selectedLegendItem}
+            isLoading={isLoading}
             onItemToggle={handleLegendItemToggle}
             onItemHover={handleLegendItemHover}
           />
@@ -305,4 +300,4 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   );
 };
 
-export type { MetricInfo, MetricType, MetricUnitType } from "./helpers";
+export type { MetricInfo, MetricType, MetricUnitType } from "./types";

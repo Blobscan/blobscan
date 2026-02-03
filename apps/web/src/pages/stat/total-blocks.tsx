@@ -23,7 +23,15 @@ const TotalBlocks: NextPage = function () {
     <StatPageLayout
       title="Total Blocks Stats"
       description="This chart shows the total amount of blocks containing blob transactions per day."
-      chart={<TotalBlocksChart size="2xl" dataset={totalBlocksDataset} />}
+      chart={
+        <TotalBlocksChart
+          size="2xl"
+          dataset={totalBlocksDataset}
+          loadingOpts={{
+            timeFrame: "180d",
+          }}
+        />
+      }
     />
   );
 };

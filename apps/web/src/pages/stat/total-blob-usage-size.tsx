@@ -38,6 +38,9 @@ const TotalBlobUsageSize: NextPage = function () {
         <TotalBlobUsageSizeChart
           size="2xl"
           datasets={totalBlobUsageSizeDatasets}
+          loadingOpts={{
+            timeFrame: "180d",
+          }}
         />
       }
     />

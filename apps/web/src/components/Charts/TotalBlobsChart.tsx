@@ -8,6 +8,7 @@ export type TotalBlobsChartProps = MultipleTimeseriesChartProps;
 
 const TotalBlobsChart: FC<TotalBlobsChartProps> = React.memo(function ({
   datasets,
+  loadingOpts,
   ...restProps
 }) {
   return (
@@ -34,8 +35,12 @@ const TotalBlobsChart: FC<TotalBlobsChartProps> = React.memo(function ({
         },
       }))}
       options={{
-        tooltipExtraOptions: {
+        tooltip: {
           displayTotal: true,
+        },
+        loading: {
+          timeFrame: loadingOpts?.timeFrame,
+          chartType: "bar",
         },
       }}
       {...restProps}

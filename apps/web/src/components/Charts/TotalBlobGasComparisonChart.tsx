@@ -9,7 +9,7 @@ import type { SingleTimeseriesChartProps } from "./ChartBase/types";
 export type TotalBlobGasComparisonChartProps = SingleTimeseriesChartProps;
 
 const TotalBlobGasComparisonChart: FC<TotalBlobGasComparisonChartProps> =
-  React.memo(function ({ dataset, ...restProps }) {
+  React.memo(function ({ dataset, loadingOpts, ...restProps }) {
     const { resolvedTheme } = useTheme();
 
     return (
@@ -71,6 +71,12 @@ const TotalBlobGasComparisonChart: FC<TotalBlobGasComparisonChartProps> =
               ]
             : undefined
         }
+        options={{
+          loading: {
+            chartType: "line",
+            timeFrame: loadingOpts?.timeFrame,
+          },
+        }}
         {...restProps}
       />
     );

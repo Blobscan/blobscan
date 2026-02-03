@@ -63,7 +63,7 @@ export function formatBytesMetric(
   }
 
   return formatNumber(convertedValue, compact ? "compact" : "standard", {
-    maximumFractionDigits: 2,
+    maximumFractionDigits: compact ? 2 : 6,
   });
 }
 
