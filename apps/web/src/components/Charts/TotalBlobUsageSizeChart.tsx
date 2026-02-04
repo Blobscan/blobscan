@@ -3,11 +3,12 @@ import React from "react";
 
 import { ChartCard } from "../Cards/ChartCard";
 import type { MultipleTimeseriesChartProps } from "./ChartBase/types";
+import { defineTimeseriesChart } from "./helpers";
 
 export type TotalBlobUsageSizeChartProps = MultipleTimeseriesChartProps;
 
-const TotalBlobUsageSizeChart: FC<TotalBlobUsageSizeChartProps> = React.memo(
-  ({ datasets, loadingOpts, ...restProps }) => {
+const TotalBlobUsageSizeChartInner: FC<TotalBlobUsageSizeChartProps> =
+  function ({ dataset, skeletonOpts = {}, ...restProps }) {
     return (
       <ChartCard
         title="Total Blob Usage"
@@ -22,8 +23,8 @@ const TotalBlobUsageSizeChart: FC<TotalBlobUsageSizeChartProps> = React.memo(
             displayUnit: "GiB",
           },
         }}
-        dataset={datasets}
-        series={datasets?.map(({ id }, i) => ({
+        dataset={dataset}
+        series={dataset?.map(({ id }, i) => ({
           datasetIndex: i,
           datasetId: id,
           id,
@@ -34,21 +35,23 @@ const TotalBlobUsageSizeChart: FC<TotalBlobUsageSizeChartProps> = React.memo(
             y: "totalBlobUsageSize",
           },
         }))}
-        options={{
-          tooltip: {
-            displayTotal: true,
+        skeletonOpts={{
+          ...skeletonOpts,
+          chart: {
+            ...(skeletonOpts?.chart ?? {}),
+            variant: "bar",
           },
-          loading: {
-            chartType: "bar",
-            timeFrame: loadingOpts?.timeFrame,
-          },
+        }}
+        tooltipOpts={{
+          displayTotal: true,
         }}
         {...restProps}
       />
     );
-  }
+  };
+
+export const TotalBlobUsageSizeChart = defineTimeseriesChart(
+  TotalBlobUsageSizeChartInner,
+  ["totalBlobUsageSize"],
+  "TotalBlobUsageSizeChart"
 );
-
-TotalBlobUsageSizeChart.displayName = "TotalBlobUsageSizeChart";
-
-export { TotalBlobUsageSizeChart };

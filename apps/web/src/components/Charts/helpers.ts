@@ -1,11 +1,19 @@
+import type { FC } from "react";
+import React from "react";
+
 import type {
   TimeseriesData,
   Chartable,
   NullableElements,
   Category,
   Rollup,
+  TimeseriesMetric,
 } from "~/types";
 import type { MetricInfo } from "./ChartBase";
+import type {
+  TimeseriesChartComponent,
+  TimeseriesChartProps,
+} from "./ChartBase/types";
 
 export function aggregateValues(
   values: number[] | string[],
@@ -70,6 +78,12 @@ export function transformToDatasets<T extends TimeseriesData>({
   series,
   timestamps,
 }: T): TimeseriesDataset<T>[] {
+  const allEmptySeries = series.every((s) => s.startTimestampIdx === undefined);
+
+  if (allEmptySeries) {
+    return [];
+  }
+
   const datesets = series.map(({ dimension, metrics, startTimestampIdx }) => {
     const paddedMetrics = Object.entries(metrics).reduce(
       (acc, [metricName, metricValues]) => {
@@ -114,4 +128,15 @@ export function transformToDatasets<T extends TimeseriesData>({
   });
 
   return datesets;
+}
+
+export function defineTimeseriesChart<P extends TimeseriesChartProps>(
+  Comp: FC<P>,
+  requiredMetrics: [TimeseriesMetric, ...TimeseriesMetric[]],
+  displayName?: string
+): TimeseriesChartComponent<P> {
+  return Object.assign(React.memo(Comp), {
+    requiredMetrics,
+    displayName: displayName ?? Comp.displayName,
+  });
 }

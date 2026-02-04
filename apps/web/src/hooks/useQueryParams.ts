@@ -53,6 +53,7 @@ export function useQueryParams() {
   const [statsSection, setStatsSection] = useState<SectionName>(
     DEFAULT_STATS_SECTION
   );
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     if (!router.isReady) {
@@ -80,6 +81,8 @@ export function useQueryParams() {
     } else {
       console.warn("Invalid stats section ", statsSectionRes.error);
     }
+
+    setIsReady(true);
   }, [router]);
   return {
     params: {
@@ -89,5 +92,6 @@ export function useQueryParams() {
     paginationParams,
     filterParams,
     statsSection,
+    isReady,
   };
 }

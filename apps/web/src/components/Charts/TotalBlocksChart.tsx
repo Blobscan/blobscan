@@ -3,12 +3,13 @@ import React from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { SingleTimeseriesChartProps } from "./ChartBase/types";
+import { defineTimeseriesChart } from "./helpers";
 
 export type TotalBlocksChartProps = SingleTimeseriesChartProps;
 
-const TotalBlocksChart: FC<TotalBlocksChartProps> = React.memo(function ({
+const TotalBlocksChartInner: FC<TotalBlocksChartProps> = function ({
   dataset,
-  loadingOpts,
+  skeletonOpts = {},
   ...restProps
 }) {
   return (
@@ -36,17 +37,24 @@ const TotalBlocksChart: FC<TotalBlocksChartProps> = React.memo(function ({
             ]
           : undefined
       }
-      options={{
-        loading: {
-          chartType: "bar",
-          timeFrame: loadingOpts?.timeFrame,
+      skeletonOpts={{
+        ...skeletonOpts,
+        chart: {
+          ...(skeletonOpts?.chart ?? {}),
+          variant: "bar",
+        },
+        legend: {
+          ...(skeletonOpts?.legend ?? {}),
+          itemCount: 1,
         },
       }}
       {...restProps}
     />
   );
-});
+};
 
-TotalBlocksChart.displayName = "TotalBlocksChart";
-
-export { TotalBlocksChart };
+export const TotalBlocksChart = defineTimeseriesChart(
+  TotalBlocksChartInner,
+  ["totalBlocks"],
+  "TotalBlocksChart"
+);

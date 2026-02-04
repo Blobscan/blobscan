@@ -1,14 +1,14 @@
-import type { FC } from "react";
 import React from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { SingleTimeseriesChartProps } from "./ChartBase/types";
+import { defineTimeseriesChart } from "./helpers";
 
-export type AvgBlobFeeChartProps = SingleTimeseriesChartProps;
+export type AvgBlobBaseFeeChartProps = SingleTimeseriesChartProps;
 
-const AvgBlobBaseFeeChart: FC<AvgBlobFeeChartProps> = React.memo(function ({
+const AvgBlobBaseFeeChartInner: React.FC<AvgBlobBaseFeeChartProps> = function ({
   dataset,
-  loadingOpts,
+  skeletonOpts = {},
   ...restProps
 }) {
   return (
@@ -40,17 +40,24 @@ const AvgBlobBaseFeeChart: FC<AvgBlobFeeChartProps> = React.memo(function ({
             ]
           : undefined
       }
-      options={{
-        loading: {
-          chartType: "line",
-          timeFrame: loadingOpts?.timeFrame,
+      skeletonOpts={{
+        ...skeletonOpts,
+        chart: {
+          ...(skeletonOpts?.chart ?? {}),
+          variant: "line",
+        },
+        legend: {
+          ...(skeletonOpts?.legend ?? {}),
+          itemCount: 1,
         },
       }}
       {...restProps}
     />
   );
-});
+};
 
-AvgBlobBaseFeeChart.displayName = "AvgBlobBaseFeeChart";
-
-export { AvgBlobBaseFeeChart };
+export const AvgBlobBaseFeeChart = defineTimeseriesChart(
+  AvgBlobBaseFeeChartInner,
+  ["avgBlobFee"],
+  "AvgBlobBaseFeeChart"
+);

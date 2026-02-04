@@ -5,11 +5,12 @@ import { useTheme } from "next-themes";
 import { ChartCard } from "~/components/Cards/ChartCard";
 import echarts from "~/echarts";
 import type { SingleTimeseriesChartProps } from "./ChartBase/types";
+import { defineTimeseriesChart } from "./helpers";
 
 export type TotalBlobGasComparisonChartProps = SingleTimeseriesChartProps;
 
-const TotalBlobGasComparisonChart: FC<TotalBlobGasComparisonChartProps> =
-  React.memo(function ({ dataset, loadingOpts, ...restProps }) {
+const TotalBlobGasComparisonChartInner: FC<TotalBlobGasComparisonChartProps> =
+  function ({ dataset, skeletonOpts, ...restProps }) {
     const { resolvedTheme } = useTheme();
 
     return (
@@ -71,17 +72,23 @@ const TotalBlobGasComparisonChart: FC<TotalBlobGasComparisonChartProps> =
               ]
             : undefined
         }
-        options={{
-          loading: {
-            chartType: "line",
-            timeFrame: loadingOpts?.timeFrame,
+        skeletonOpts={{
+          chart: {
+            ...(skeletonOpts?.chart ?? {}),
+            variant: "line",
+          },
+          legend: {
+            ...(skeletonOpts?.legend ?? {}),
+            itemCount: 2,
           },
         }}
         {...restProps}
       />
     );
-  });
+  };
 
-TotalBlobGasComparisonChart.displayName = "TotalBlobGasComparisonChart";
-
-export { TotalBlobGasComparisonChart as TotalBlobGasComparisonChart };
+export const TotalBlobGasComparisonChart = defineTimeseriesChart(
+  TotalBlobGasComparisonChartInner,
+  ["totalBlobGasUsed", "totalBlobAsCalldataGasUsed"],
+  "TotalBlobGasComparisonChart"
+);

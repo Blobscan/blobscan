@@ -54,34 +54,40 @@ const Home: NextPage = () => {
       select: ({ data }) =>
         data.find(({ dimension }) => dimension.type === "global")?.metrics,
     });
-  const { data: categorizedChartDatasets, error: categorizedChartDataError } =
-    api.stats.getTimeseries.useQuery(
-      {
-        metrics: CATEGORIZED_METRICS.join(","),
-        timeFrame: "30d",
-        categories: "other",
-        rollups: "all",
-        sort: "asc",
-      },
-      {
-        refetchOnWindowFocus: false,
-        select: ({ data }) => transformToDatasets(data),
-      }
-    );
-  const { data: globalChartDataset, error: globalChartDataError } =
-    api.stats.getTimeseries.useQuery(
-      {
-        metrics: GLOBAL_METRICS.join(","),
-        timeFrame: "30d",
-        sort: "asc",
-      },
-      {
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        refetchOnReconnect: false,
-        select: ({ data }) => transformToDatasets(data)[0],
-      }
-    );
+  const {
+    data: categorizedChartDatasets,
+    isLoading: categorizedChartLoading,
+    error: categorizedChartDataError,
+  } = api.stats.getTimeseries.useQuery(
+    {
+      metrics: CATEGORIZED_METRICS.join(","),
+      timeFrame: "30d",
+      categories: "other",
+      rollups: "all",
+      sort: "asc",
+    },
+    {
+      refetchOnWindowFocus: false,
+      select: ({ data }) => transformToDatasets(data),
+    }
+  );
+  const {
+    data: globalChartDataset,
+    isLoading: globalChartLoading,
+    error: globalChartDataError,
+  } = api.stats.getTimeseries.useQuery(
+    {
+      metrics: GLOBAL_METRICS.join(","),
+      timeFrame: "30d",
+      sort: "asc",
+    },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      select: ({ data }) => transformToDatasets(data)[0],
+    }
+  );
   const { blocks, transactions, blobs } = useMemo(() => {
     if (!blocksData) {
       return { blocks: [], transactions: [], blobs: [] };
@@ -136,11 +142,13 @@ const Home: NextPage = () => {
           </span>
         </div>
       </div>
+
       <div className="flex w-full flex-col gap-8 sm:gap-10">
         <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
             <AvgBlobGasPriceChart
               dataset={globalChartDataset}
+              isLoading={globalChartLoading}
               size="sm"
               compact
             />
@@ -202,7 +210,8 @@ const Home: NextPage = () => {
           <div className="col-span-2 sm:col-span-4">
             <TotalBlobsChart
               size="sm"
-              datasets={categorizedChartDatasets}
+              dataset={categorizedChartDatasets}
+              isLoading={categorizedChartLoading}
               compact
             />
           </div>

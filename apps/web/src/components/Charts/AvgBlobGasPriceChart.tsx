@@ -3,52 +3,62 @@ import React from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { SingleTimeseriesChartProps } from "./ChartBase/types";
+import { defineTimeseriesChart } from "./helpers";
 
 export type AvgBlobGasPriceChartProps = SingleTimeseriesChartProps;
 
-const AvgBlobGasPriceChart: FC<AvgBlobGasPriceChartProps> = React.memo(
-  function ({ dataset, loadingOpts, ...restProps }) {
-    return (
-      <ChartCard
-        title="Avg. Blob Gas Price"
-        metricInfo={{
-          xAxis: {
-            type: "time",
-          },
-          yAxis: {
-            type: "average",
-            unitType: "ether",
-            unit: "wei",
-            displayUnit: "Gwei",
-          },
-        }}
-        dataset={dataset}
-        series={
-          dataset
-            ? [
-                {
-                  name: "Avg. Blob Gas Price",
-                  type: "line",
-                  encode: {
-                    x: "timestamp",
-                    y: "avgBlobGasPrice",
-                  },
+const AvgBlobGasPriceInner: FC<AvgBlobGasPriceChartProps> = function ({
+  dataset,
+  skeletonOpts = {},
+  ...restProps
+}) {
+  return (
+    <ChartCard
+      title="Avg. Blob Gas Price"
+      metricInfo={{
+        xAxis: {
+          type: "time",
+        },
+        yAxis: {
+          type: "average",
+          unitType: "ether",
+          unit: "wei",
+          displayUnit: "Gwei",
+        },
+      }}
+      dataset={dataset}
+      series={
+        dataset
+          ? [
+              {
+                name: "Avg. Blob Gas Price",
+                type: "line",
+                encode: {
+                  x: "timestamp",
+                  y: "avgBlobGasPrice",
                 },
-              ]
-            : undefined
-        }
-        options={{
-          loading: {
-            chartType: "line",
-            timeFrame: loadingOpts?.timeFrame,
-          },
-        }}
-        {...restProps}
-      />
-    );
-  }
+              },
+            ]
+          : undefined
+      }
+      skeletonOpts={{
+        ...skeletonOpts,
+        chart: {
+          ...(skeletonOpts?.chart ?? {}),
+          variant: "line",
+        },
+        legend: {
+          ...(skeletonOpts?.legend ?? {}),
+          itemCount: 1,
+        },
+      }}
+      {...restProps}
+    />
+  );
+};
+
+export const AvgBlobGasPriceChart = defineTimeseriesChart(
+  AvgBlobGasPriceInner,
+  ["avgBlobGasPrice"],
+  "AvgBlobGasPriceChart"
 );
-
-AvgBlobGasPriceChart.displayName = "AvgBlobGasPriceChart";
-
-export { AvgBlobGasPriceChart };

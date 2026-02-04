@@ -3,11 +3,12 @@ import type { FC } from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { SingleTimeseriesChartProps } from "./ChartBase/types";
+import { defineTimeseriesChart } from "./helpers";
 
 export type TotalUniqueAddressesChartProps = SingleTimeseriesChartProps;
 
-const TotalUniqueAddressesChart: FC<TotalUniqueAddressesChartProps> =
-  React.memo(function ({ dataset, loadingOpts, ...restProps }) {
+const TotalUniqueAddressesChartInner: FC<TotalUniqueAddressesChartProps> =
+  function ({ dataset, skeletonOpts = {}, ...restProps }) {
     return (
       <ChartCard
         title="Total Unique Addresses"
@@ -40,17 +41,24 @@ const TotalUniqueAddressesChart: FC<TotalUniqueAddressesChartProps> =
               ]
             : undefined
         }
-        options={{
-          loading: {
-            chartType: "bar",
-            timeFrame: loadingOpts?.timeFrame,
+        skeletonOpts={{
+          ...skeletonOpts,
+          chart: {
+            ...(skeletonOpts?.chart ?? {}),
+            variant: "bar",
+          },
+          legend: {
+            ...(skeletonOpts?.legend ?? {}),
+            itemCount: 2,
           },
         }}
         {...restProps}
       />
     );
-  });
+  };
 
-TotalUniqueAddressesChart.displayName = "TotalUniqueAddressesChart";
-
-export { TotalUniqueAddressesChart };
+export const TotalUniqueAddressesChart = defineTimeseriesChart(
+  TotalUniqueAddressesChartInner,
+  ["totalUniqueReceivers", "totalUniqueSenders"],
+  "TotalUniqueAddressesChart"
+);

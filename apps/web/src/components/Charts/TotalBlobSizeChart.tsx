@@ -3,12 +3,13 @@ import React from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { MultipleTimeseriesChartProps } from "./ChartBase/types";
+import { defineTimeseriesChart } from "./helpers";
 
 export type TotalBlobsSizeProps = MultipleTimeseriesChartProps;
 
-const TotalBlobSizeChart: FC<TotalBlobsSizeProps> = React.memo(function ({
-  datasets,
-  loadingOpts,
+const TotalBlobSizeChartInner: FC<TotalBlobsSizeProps> = function ({
+  dataset,
+  skeletonOpts = {},
   ...restProps
 }) {
   return (
@@ -25,8 +26,8 @@ const TotalBlobSizeChart: FC<TotalBlobsSizeProps> = React.memo(function ({
           displayUnit: "GiB",
         },
       }}
-      dataset={datasets}
-      series={datasets?.map(({ id }, i) => ({
+      dataset={dataset}
+      series={dataset?.map(({ id }, i) => ({
         datasetIndex: i,
         datasetId: id,
         id,
@@ -37,20 +38,23 @@ const TotalBlobSizeChart: FC<TotalBlobsSizeProps> = React.memo(function ({
           y: "totalBlobSize",
         },
       }))}
-      options={{
-        tooltip: {
-          displayTotal: true,
+      skeletonOpts={{
+        ...skeletonOpts,
+        chart: {
+          ...(skeletonOpts?.chart ?? {}),
+          variant: "bar",
         },
-        loading: {
-          chartType: "bar",
-          timeFrame: loadingOpts?.timeFrame,
-        },
+      }}
+      tooltipOpts={{
+        displayTotal: true,
       }}
       {...restProps}
     />
   );
-});
+};
 
-TotalBlobSizeChart.displayName = "TotalBlobSizeChart";
-
-export { TotalBlobSizeChart };
+export const TotalBlobSizeChart = defineTimeseriesChart(
+  TotalBlobSizeChartInner,
+  ["totalBlobSize"],
+  "TotalBlobSizeChart"
+);

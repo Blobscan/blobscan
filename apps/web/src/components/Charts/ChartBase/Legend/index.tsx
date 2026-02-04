@@ -9,6 +9,9 @@ export type LegendProps = {
   items: LegendItemData[];
   selectedItem?: string;
   isLoading?: boolean;
+  skeletonOpts?: {
+    itemCount?: number;
+  };
   onItemToggle?: (itemName: string | "all", disabled: boolean) => void;
   onItemHover?: (itemName: string, direction: "in" | "out") => void;
 };
@@ -19,12 +22,13 @@ export type LegendItemData = {
   disabled: boolean;
 };
 
-const SKELETON_ITEMS = Array.from({ length: 20 }, (_, i) => i);
+const DEFAULT_SKELETON_ITEM_COUNT = 24;
 
 export const Legend: FC<LegendProps> = function ({
   items,
   selectedItem,
   isLoading,
+  skeletonOpts,
   onItemHover,
   onItemToggle,
 }) {
@@ -77,7 +81,10 @@ export const Legend: FC<LegendProps> = function ({
         </Scrollable>
       ) : (
         <div className="flex items-center gap-2 md:flex-col">
-          {SKELETON_ITEMS.map((_, i) => (
+          {Array.from(
+            { length: skeletonOpts?.itemCount ?? DEFAULT_SKELETON_ITEM_COUNT },
+            (_, i) => i
+          ).map((_, i) => (
             <LegendSkeletonItem key={i} />
           ))}
         </div>

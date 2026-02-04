@@ -38,8 +38,8 @@ const SKELETON_DATA_POINTS_90D = generateSkeletonData(90);
 const SKELETON_DATA_POINTS_180D = generateSkeletonData(180);
 const SKELETON_DATA_POINTS_365D = generateSkeletonData(365);
 
-export function getSkeletonDataPoints(timeFrame: TimeFrame) {
-  switch (timeFrame) {
+export function getSkeletonDataPoints(timeframe: TimeFrame) {
+  switch (timeframe) {
     case "All":
       return SKELETON_DATA_POINTS_ALL;
     case "7d":
@@ -59,16 +59,18 @@ export function getSkeletonDataPoints(timeFrame: TimeFrame) {
   }
 }
 
+const SKELETON_COLOR = "#434672";
+
 export function createChartSkeletonOptions({
   compact,
-  timeFrame = "30d",
-  chartType = "bar",
+  timeframe = "30d",
+  variant = "bar",
 }: {
   compact?: boolean;
-  timeFrame?: TimeFrame;
-  chartType?: "line" | "bar";
+  timeframe?: TimeFrame;
+  variant?: "line" | "bar";
 }) {
-  const dataPoints = getSkeletonDataPoints(timeFrame);
+  const dataPoints = getSkeletonDataPoints(timeframe);
 
   return {
     animation: false,
@@ -80,23 +82,21 @@ export function createChartSkeletonOptions({
     },
     series: [
       {
-        type: chartType,
+        type: variant,
         data: dataPoints,
         symbol: "none",
         smooth: true,
         silent: true,
 
         itemStyle: {
-          color: "#E5E7EB",
-          opacity: 0.1,
+          color: SKELETON_COLOR,
         },
         lineStyle: {
-          color: "#E5E7EB",
+          color: SKELETON_COLOR,
           type: "solid",
-          opacity: 0.1,
         },
         areaStyle: {
-          opacity: 0.1,
+          color: SKELETON_COLOR,
         },
       },
     ],
@@ -105,7 +105,7 @@ export function createChartSkeletonOptions({
       axisLabel: { show: false },
       axisLine: {
         show: false,
-        lineStyle: { color: "#E5E7EB" },
+        lineStyle: { color: SKELETON_COLOR },
       },
       axisTick: {
         show: false,
@@ -117,7 +117,7 @@ export function createChartSkeletonOptions({
       axisLabel: { show: false },
       axisLine: {
         show: !compact,
-        lineStyle: { color: "#E5E7EB", opacity: 0.1 },
+        lineStyle: { color: SKELETON_COLOR },
       },
       splitLine: {
         show: false,

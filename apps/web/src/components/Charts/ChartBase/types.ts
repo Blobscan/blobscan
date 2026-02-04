@@ -1,10 +1,10 @@
-import type { ReactNode } from "react";
+import type { FC } from "react";
 
-import type { TimeFrame } from "@blobscan/api";
 import type { EtherUnit } from "@blobscan/eth-format";
 
-import type { Size, TimeseriesData } from "~/types";
+import type { TimeseriesData, TimeseriesMetric } from "~/types";
 import type { ByteUnit } from "~/utils";
+import type { ChartBaseProps } from ".";
 import type { TimeseriesDataset } from "../helpers";
 
 export type MetricType = "count" | "average" | "time";
@@ -51,24 +51,28 @@ export type MetricInfo =
   | EtherMetricInfo
   | ByteMetricInfo;
 
-export interface ChartBaseProps {
-  compact?: boolean;
-  headerControls?: ReactNode;
-  size?: Size;
-  loadingOpts?: {
-    timeFrame?: TimeFrame;
-    chartType?: "line" | "bar";
-  };
-}
+export type TimeseriesChartBaseProps = Pick<
+  ChartBaseProps,
+  "compact" | "headerControls" | "size" | "isLoading" | "skeletonOpts"
+>;
 
 export interface MultipleTimeseriesChartProps<
   T extends TimeseriesData = TimeseriesData
-> extends ChartBaseProps {
-  datasets?: TimeseriesDataset<T>[];
+> extends TimeseriesChartBaseProps {
+  dataset?: TimeseriesDataset<T>[];
 }
 
 export interface SingleTimeseriesChartProps<
   T extends TimeseriesData = TimeseriesData
-> extends ChartBaseProps {
+> extends TimeseriesChartBaseProps {
   dataset?: TimeseriesDataset<T>;
 }
+
+export type TimeseriesChartProps =
+  | MultipleTimeseriesChartProps
+  | SingleTimeseriesChartProps;
+
+export type TimeseriesChartComponent<P extends TimeseriesChartProps> = FC<P> & {
+  displayName?: string;
+  requiredMetrics: [TimeseriesMetric, ...TimeseriesMetric[]];
+};

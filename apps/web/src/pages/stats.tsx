@@ -19,6 +19,7 @@ import {
   TotalUniqueAddressesChart,
   AvgBlobGasPriceChart,
 } from "~/components/Charts";
+import type { ChartBaseProps } from "~/components/Charts/ChartBase";
 import { transformToDatasets } from "~/components/Charts/helpers";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
@@ -73,8 +74,10 @@ function buildViewLink(metricRoute: string) {
   );
 }
 
-const LOADING_OPTS = {
-  timeFrame: "15d" as const,
+const SKELETON_OPTS: ChartBaseProps["skeletonOpts"] = {
+  chart: {
+    timeframe: "15d" as const,
+  },
 };
 
 const Stats: NextPage = function () {
@@ -87,7 +90,10 @@ const Stats: NextPage = function () {
   const [selectedRollups, setSelectedRollups] = useState<
     RollupSelectorOption[]
   >([]);
-  const { data: categorizedChartDatasets } = api.stats.getTimeseries.useQuery(
+  const {
+    data: categorizedChartDatasets,
+    isLoading: categorizedDatasetsLoading,
+  } = api.stats.getTimeseries.useQuery(
     {
       categories: "other",
       rollups: "all",
@@ -102,19 +108,20 @@ const Stats: NextPage = function () {
       select: ({ data }) => transformToDatasets(data),
     }
   );
-  const { data: globalChartDatasets } = api.stats.getTimeseries.useQuery(
-    {
-      timeFrame: "15d",
-      sort: "asc",
-      metrics: GLOBAL_METRICS.join(","),
-    },
-    {
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
-      select: ({ data }) => transformToDatasets(data)[0],
-    }
-  );
+  const { data: globalChartDatasets, isLoading: globalDatasetsLoading } =
+    api.stats.getTimeseries.useQuery(
+      {
+        timeFrame: "15d",
+        sort: "asc",
+        metrics: GLOBAL_METRICS.join(","),
+      },
+      {
+        refetchOnMount: false,
+        refetchOnReconnect: false,
+        refetchOnWindowFocus: false,
+        select: ({ data }) => transformToDatasets(data)[0],
+      }
+    );
   const { data: allOverallStats } = api.stats.getOverall.useQuery(undefined, {
     refetchOnMount: false,
     refetchOnReconnect: false,
@@ -139,6 +146,7 @@ const Stats: NextPage = function () {
       chain.latestFork.blobParams.fieldElementsPerBlob
     : undefined;
 
+  console.log(selectedCategorizedChartDatasets);
   const sections = useMemo<
     {
       id: SectionName;
@@ -212,23 +220,26 @@ const Stats: NextPage = function () {
         charts: [
           <TotalBlobsChart
             key="total-blobs"
-            datasets={selectedCategorizedChartDatasets}
+            dataset={selectedCategorizedChartDatasets}
             headerControls={buildViewLink("total-blobs")}
-            loadingOpts={LOADING_OPTS}
+            isLoading={categorizedDatasetsLoading}
+            skeletonOpts={SKELETON_OPTS}
             compact
           />,
           <TotalBlobSizeChart
             key="total-blob-size"
-            datasets={selectedCategorizedChartDatasets}
+            dataset={selectedCategorizedChartDatasets}
             headerControls={buildViewLink("total-blob-size")}
-            loadingOpts={LOADING_OPTS}
+            isLoading={categorizedDatasetsLoading}
+            skeletonOpts={SKELETON_OPTS}
             compact
           />,
           <TotalBlobUsageSizeChart
             key="total-blob-usage-size"
-            datasets={selectedCategorizedChartDatasets}
+            dataset={selectedCategorizedChartDatasets}
             headerControls={buildViewLink("total-blob-usage-size")}
-            loadingOpts={LOADING_OPTS}
+            isLoading={categorizedDatasetsLoading}
+            skeletonOpts={SKELETON_OPTS}
             compact
           />,
         ],
@@ -251,7 +262,8 @@ const Stats: NextPage = function () {
             key="total-blocks"
             dataset={globalChartDatasets}
             headerControls={buildViewLink("total-blocks")}
-            loadingOpts={LOADING_OPTS}
+            isLoading={globalDatasetsLoading}
+            skeletonOpts={SKELETON_OPTS}
             compact
           />,
         ],
@@ -309,23 +321,26 @@ const Stats: NextPage = function () {
         charts: [
           <TotalBlobGasUsedChart
             key="total-blob-gas-used"
-            datasets={selectedCategorizedChartDatasets}
+            dataset={selectedCategorizedChartDatasets}
             headerControls={buildViewLink("total-blob-gas-used")}
-            loadingOpts={LOADING_OPTS}
+            isLoading={categorizedDatasetsLoading}
+            skeletonOpts={SKELETON_OPTS}
             compact
           />,
           <AvgBlobGasPriceChart
             key="avg-blob-gas-price"
             dataset={globalChartDatasets}
             headerControls={buildViewLink("avg-blob-gas-price")}
-            loadingOpts={LOADING_OPTS}
+            isLoading={globalDatasetsLoading}
+            skeletonOpts={SKELETON_OPTS}
             compact
           />,
           <TotalBlobGasComparisonChart
             key="total-blob-gas-used-comparison"
             dataset={globalChartDatasets}
             headerControls={buildViewLink("total-blob-gas-used-comparison")}
-            loadingOpts={LOADING_OPTS}
+            isLoading={globalDatasetsLoading}
+            skeletonOpts={SKELETON_OPTS}
             compact
           />,
         ],
@@ -380,15 +395,18 @@ const Stats: NextPage = function () {
         charts: [
           <TotalBlobBaseFeesChart
             key="total-blob-base-fees"
-            datasets={selectedCategorizedChartDatasets}
+            dataset={selectedCategorizedChartDatasets}
             headerControls={buildViewLink("total-blob-base-fees")}
+            isLoading={categorizedDatasetsLoading}
+            skeletonOpts={SKELETON_OPTS}
             compact
           />,
           <AvgBlobBaseFeeChart
             key="avg-blob-base-fee"
             dataset={globalChartDatasets}
             headerControls={buildViewLink("avg-blob-base-fee")}
-            loadingOpts={LOADING_OPTS}
+            isLoading={globalDatasetsLoading}
+            skeletonOpts={SKELETON_OPTS}
             compact
           />,
         ],
@@ -425,16 +443,17 @@ const Stats: NextPage = function () {
         charts: [
           <TotalTransactionsChart
             key="total-transactions"
-            datasets={selectedCategorizedChartDatasets}
+            dataset={selectedCategorizedChartDatasets}
             headerControls={buildViewLink("total-transactions")}
-            loadingOpts={LOADING_OPTS}
+            isLoading={categorizedDatasetsLoading}
+            skeletonOpts={SKELETON_OPTS}
             compact
           />,
           <TotalUniqueAddressesChart
             key="total-unique-addresses"
             dataset={globalChartDatasets}
             headerControls={buildViewLink("total-unique-addresses")}
-            loadingOpts={LOADING_OPTS}
+            skeletonOpts={SKELETON_OPTS}
             compact
           />,
         ],
@@ -445,6 +464,8 @@ const Stats: NextPage = function () {
       blobSize,
       selectedCategorizedChartDatasets,
       globalChartDatasets,
+      categorizedDatasetsLoading,
+      globalDatasetsLoading,
     ]
   );
   const currentSectionOption = selectedSection?.value ?? "all";

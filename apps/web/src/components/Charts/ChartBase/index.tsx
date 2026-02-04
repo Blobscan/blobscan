@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import type { FC, ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useState } from "react";
 import classNames from "classnames";
@@ -10,7 +10,7 @@ import { useTheme } from "next-themes";
 import type { TimeFrame } from "@blobscan/api";
 
 import echarts from "~/echarts";
-import type { TimeseriesDimension } from "~/types";
+import type { Size, TimeseriesDimension } from "~/types";
 import { Legend } from "./Legend";
 import type { LegendItemData, LegendProps } from "./Legend";
 import {
@@ -23,34 +23,52 @@ import {
   getDimensionColor,
 } from "./helpers";
 import { createChartSkeletonOptions } from "./helpers/skeleton";
-import type { ChartBaseProps as ChartBaseProps_, MetricInfo } from "./types";
+import type { MetricInfo } from "./types";
 
-export interface ChartBaseProps extends ChartBaseProps_ {
+export interface ChartBaseProps {
+  title: ReactNode;
+  headerControls?: ReactNode;
   dataset?: EChartOption.Dataset | EChartOption.Dataset[];
-  series: EChartOption.Series[];
+  series?: EChartOption.Series[];
   metricInfo: {
     xAxis: MetricInfo;
     yAxis: MetricInfo;
   };
+  compact?: boolean;
   isLoading?: boolean;
-  options?: {
-    loading?: {
-      timeFrame?: TimeFrame;
-      chartType?: "line" | "bar";
+  size?: Size;
+  skeletonOpts?: {
+    chart?: {
+      timeframe?: TimeFrame;
+      variant?: "line" | "bar";
     };
-    tooltip?: {
-      displayTotal?: boolean;
-    };
+    legend?: LegendProps["skeletonOpts"];
+  };
+  tooltipOpts?: {
+    displayTotal?: boolean;
   };
 }
 
+const SIZES: Record<Size, string> = {
+  xs: "h-48 md:h-56 lg:h-56",
+  sm: "h-48 md:h-56 lg:h-56",
+  md: "h-60 md:h-72 lg:h-72",
+  lg: "h-72 md:h-80 lg:h-[22rem]",
+  xl: "h-84 md:h-96 lg:h-[26rem]",
+  "2xl": "h-96 md:h-[28rem] lg:h-[30rem]",
+};
+
 export const ChartBase: FC<ChartBaseProps> = function ({
+  title,
+  headerControls,
   dataset,
   metricInfo,
-  options: optionsProp,
+  skeletonOpts,
+  tooltipOpts,
   series: seriesProp,
   compact,
   isLoading,
+  size = "md",
 }) {
   const { resolvedTheme } = useTheme();
   const chartInstanceRef = useRef<EChartsInstance | null>(null);
@@ -61,16 +79,19 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   const chartSkeletonOptions = useMemo(
     () =>
       createChartSkeletonOptions({
-        ...optionsProp?.loading,
+        ...(skeletonOpts?.chart ?? {}),
         compact,
       }),
-    [optionsProp?.loading, compact]
+    [skeletonOpts?.chart, compact]
   );
   const [legendItems, setLegendItems] = useState<LegendItemData[]>([]);
   const [selectedLegendItem, setSelectedLegendItem] = useState<
     string | undefined
   >();
   const themeMode = resolvedTheme as "light" | "dark";
+  const datasetUndefined = Array.isArray(dataset) ? !dataset.length : !dataset;
+  const dataExists = isLoading === true && !datasetUndefined;
+  const yUnit = metricInfo.yAxis.displayUnit ?? metricInfo.yAxis.unit;
   const series = useMemo(
     () =>
       seriesProp
@@ -122,7 +143,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         tooltip: createBaseTooltipOptions({
           currentSeriesRef: hoveredSeriesRef,
           metricInfo,
-          displayTotal: optionsProp?.tooltip?.displayTotal,
+          displayTotal: tooltipOpts?.displayTotal,
           themeMode,
         }),
         toolbox: !compact ? createBaseToolboxOptions({ themeMode }) : undefined,
@@ -130,7 +151,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           ? [{ type: "inside" }, { type: "slider", start: 0, end: 100 }]
           : undefined,
       } satisfies EChartOption),
-    [compact, metricInfo, optionsProp?.tooltip, themeMode]
+    [compact, metricInfo, tooltipOpts, themeMode]
   );
 
   const onChartReady = useCallback((chart: EChartsInstance) => {
@@ -267,35 +288,55 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   }, [baseOptions, dataset, series]);
 
   return (
-    <div
-      className={classNames(
-        "relative flex h-full w-full flex-col gap-1 overflow-visible md:flex-row md:gap-2",
-        {
-          "animate-pulse": isLoading,
-        }
-      )}
-    >
-      <ReactEChartsCore
-        echarts={echarts}
-        ref={chartInstanceRef}
-        onChartReady={onChartReady}
-        option={isLoading ? chartSkeletonOptions : baseOptions}
-        style={{ height: "100%", width: "100%" }}
-      />
-      {isLoading && !compact ? (
-        <div className="absolute bottom-3 left-10 h-9 w-[90%] rounded-md bg-[#e5e7eb52] opacity-10" />
-      ) : null}
-      {!compact && (
-        <div className="h-4 md:h-full">
-          <Legend
-            items={legendItems}
-            selectedItem={selectedLegendItem}
-            isLoading={isLoading}
-            onItemToggle={handleLegendItemToggle}
-            onItemHover={handleLegendItemHover}
+    <div>
+      <div className="flex w-full justify-between p-1">
+        {title && (
+          <div className="flex-start -mb-2 flex font-semibold">
+            {`${title}${yUnit ? ` (${yUnit})` : ""}`}
+          </div>
+        )}
+        {!isLoading && headerControls}
+      </div>
+      <div
+        className={classNames(
+          "relative flex h-full w-full flex-col gap-1 overflow-visible md:flex-row md:gap-2",
+          SIZES[size],
+          {
+            "animate-pulse": isLoading,
+          }
+        )}
+      >
+        {!dataExists ? (
+          <ReactEChartsCore
+            echarts={echarts}
+            ref={chartInstanceRef}
+            onChartReady={onChartReady}
+            option={isLoading ? chartSkeletonOptions : baseOptions}
+            style={{ height: "100%", width: "100%" }}
           />
-        </div>
-      )}
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <span className="text-md text-contentSecondary-light dark:text-contentSecondary-dark">
+              No Data Available
+            </span>
+          </div>
+        )}
+        {isLoading && !compact ? (
+          <div className="absolute bottom-3 left-10 h-9 w-[90%] rounded-md bg-[#434672]" />
+        ) : null}
+        {!compact && !dataExists && (
+          <div className="h-4 md:h-full">
+            <Legend
+              items={legendItems}
+              selectedItem={selectedLegendItem}
+              isLoading={isLoading}
+              skeletonOpts={skeletonOpts?.legend}
+              onItemToggle={handleLegendItemToggle}
+              onItemHover={handleLegendItemHover}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };
