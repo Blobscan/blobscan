@@ -53,6 +53,45 @@ const SIZES: Record<Size, string> = {
   "2xl": "h-96 md:h-[28rem] lg:h-[30rem]",
 };
 
+function ChartHeader({
+  title,
+  dataUnit,
+  controls,
+  isLoading,
+}: {
+  title: ReactNode;
+  dataUnit?: string;
+  controls?: ReactNode;
+  isLoading?: boolean;
+}) {
+  return (
+    <div className="flex w-full justify-between p-1">
+      {title && (
+        <div className="flex-start -mb-2 flex font-semibold">
+          {`${title}${dataUnit ? ` (${dataUnit})` : ""}`}
+        </div>
+      )}
+      {!isLoading && controls}
+    </div>
+  );
+}
+
+function DataZoomSkeleton() {
+  return (
+    <div className="absolute bottom-3 left-10 h-9 w-[90%] rounded-md bg-[#434672]" />
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="flex h-full w-full items-center justify-center">
+      <span className="text-md text-contentSecondary-light dark:text-contentSecondary-dark">
+        No Data Available
+      </span>
+    </div>
+  );
+}
+
 export const ChartBase: FC<ChartBaseProps> = function ({
   title,
   headerControls,
@@ -241,8 +280,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       return;
     }
 
-    console.log(series);
-
     const items = series
       .map(
         ({ name, itemStyle }): LegendItemData => ({
@@ -285,14 +322,12 @@ export const ChartBase: FC<ChartBaseProps> = function ({
 
   return (
     <div>
-      <div className="flex w-full justify-between p-1">
-        {title && (
-          <div className="flex-start -mb-2 flex font-semibold">
-            {`${title}${yUnit ? ` (${yUnit})` : ""}`}
-          </div>
-        )}
-        {!isLoading && headerControls}
-      </div>
+      <ChartHeader
+        title={title}
+        dataUnit={yUnit}
+        controls={headerControls}
+        isLoading={isLoading}
+      />
       <div
         className={classNames(
           "relative flex h-full w-full flex-col gap-1 overflow-visible md:flex-row md:gap-2",
@@ -311,15 +346,9 @@ export const ChartBase: FC<ChartBaseProps> = function ({
             style={{ height: "100%", width: "100%" }}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <span className="text-md text-contentSecondary-light dark:text-contentSecondary-dark">
-              No Data Available
-            </span>
-          </div>
+          <EmptyState />
         )}
-        {isLoading && !compact ? (
-          <div className="absolute bottom-3 left-10 h-9 w-[90%] rounded-md bg-[#434672]" />
-        ) : null}
+        {isLoading && !compact ? <DataZoomSkeleton /> : null}
         {!compact && (
           <div className="h-4 md:h-full">
             <Legend
