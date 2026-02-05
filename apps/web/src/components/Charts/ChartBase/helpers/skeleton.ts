@@ -66,16 +66,21 @@ export function getSkeletonDataPoints(
   }
 }
 
-const SKELETON_COLOR = "#434672";
+const SKELETON_DARK_COLOR = "#434672";
+const SKELETON_LIGHT_COLOR = "#EADEFD";
 
 export function createChartSkeletonOptions({
   compact,
+  themeMode,
   variant = "bar",
   itemCount = 30,
 }: {
   compact?: boolean;
+  themeMode: "light" | "dark";
 } & SkeletonOptions["chart"]) {
   const dataPoints = getSkeletonDataPoints(itemCount);
+  const skeletonColor =
+    themeMode === "dark" ? SKELETON_DARK_COLOR : SKELETON_LIGHT_COLOR;
   return {
     animation: false,
     grid: {
@@ -93,14 +98,14 @@ export function createChartSkeletonOptions({
         silent: true,
 
         itemStyle: {
-          color: SKELETON_COLOR,
+          color: skeletonColor,
         },
         lineStyle: {
-          color: SKELETON_COLOR,
+          color: skeletonColor,
           type: "solid",
         },
         areaStyle: {
-          color: SKELETON_COLOR,
+          color: skeletonColor,
         },
       },
     ],
@@ -109,7 +114,7 @@ export function createChartSkeletonOptions({
       axisLabel: { show: false },
       axisLine: {
         show: false,
-        lineStyle: { color: SKELETON_COLOR },
+        lineStyle: { color: skeletonColor },
       },
       axisTick: {
         show: false,
@@ -121,7 +126,7 @@ export function createChartSkeletonOptions({
       axisLabel: { show: false },
       axisLine: {
         show: !compact,
-        lineStyle: { color: SKELETON_COLOR },
+        lineStyle: { color: skeletonColor },
       },
       splitLine: {
         show: false,

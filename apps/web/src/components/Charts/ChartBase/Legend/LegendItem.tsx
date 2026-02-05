@@ -79,7 +79,7 @@ export const LegendSkeletonItem: FC = function () {
   return (
     <div className="flex h-3 w-[100px] animate-pulse items-center gap-1">
       <LegendDot color="#e5e7eb52" />
-      <div className="h-3 w-[50px] rounded-sm bg-[#434672]" />
+      <div className="h-3 w-[50px] rounded-sm bg-[#EADEFD] dark:bg-[#434672]" />
     </div>
   );
 };

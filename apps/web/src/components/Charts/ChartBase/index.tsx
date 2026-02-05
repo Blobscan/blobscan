@@ -78,7 +78,7 @@ function ChartHeader({
 
 function DataZoomSkeleton() {
   return (
-    <div className="absolute bottom-3 left-10 h-9 w-[90%] rounded-md bg-[#434672]" />
+    <div className="absolute bottom-3 left-10 h-9 w-[90%] rounded-md bg-[#EADEFD] dark:bg-[#434672]" />
   );
 }
 
@@ -105,6 +105,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   size = "md",
 }) {
   const { resolvedTheme } = useTheme();
+  const themeMode = resolvedTheme as "light" | "dark";
   const chartInstanceRef = useRef<EChartsInstance | null>(null);
   const hoveredSeriesRef = useRef<{
     seriesIndex?: number;
@@ -115,14 +116,14 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       createChartSkeletonOptions({
         ...(skeletonOpts?.chart ?? {}),
         compact,
+        themeMode,
       }),
-    [skeletonOpts?.chart, compact]
+    [skeletonOpts?.chart, compact, themeMode]
   );
   const [legendItems, setLegendItems] = useState<LegendItemData[]>([]);
   const [selectedLegendItem, setSelectedLegendItem] = useState<
     string | undefined
   >();
-  const themeMode = resolvedTheme as "light" | "dark";
   const datasetExists = Array.isArray(dataset) ? !!dataset.length : !!dataset;
   const yUnit = axes.y.displayUnit ?? axes.y.unit;
   const series = useMemo(
