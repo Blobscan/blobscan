@@ -15,3 +15,7 @@ export type Chartable<T> = T extends Array<infer U>
   : T;
 
 export type NullableElements<T> = T extends (infer U)[] ? (U | null)[] : never;
+
+export type Prettify<T> = {
+  [K in keyof T]: T[K];
+};

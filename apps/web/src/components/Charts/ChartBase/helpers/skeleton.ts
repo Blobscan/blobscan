@@ -1,6 +1,11 @@
 import type { EChartOption } from "echarts";
 
-import type { TimeFrame } from "@blobscan/api";
+import type { SkeletonOptions } from "..";
+
+export interface SkeletonChartOptions {
+  itemCount?: 7 | 15 | 30 | 90 | 180 | 365 | 720;
+  variant?: "line" | "bar";
+}
 
 const hash = (n: number) => {
   const x = Math.sin(n) * 10000;
@@ -30,32 +35,34 @@ function generateSkeletonData(length = 20): number[] {
   return smoothedData;
 }
 
-const SKELETON_DATA_POINTS_ALL = generateSkeletonData(720);
-const SKELETON_DATA_POINTS_7D = generateSkeletonData(7);
-const SKELETON_DATA_POINTS_15D = generateSkeletonData(15);
-const SKELETON_DATA_POINTS_30D = generateSkeletonData(30);
-const SKELETON_DATA_POINTS_90D = generateSkeletonData(90);
-const SKELETON_DATA_POINTS_180D = generateSkeletonData(180);
-const SKELETON_DATA_POINTS_365D = generateSkeletonData(365);
+const SKELETON_DATA_POINTS_7 = generateSkeletonData(7);
+const SKELETON_DATA_POINTS_15 = generateSkeletonData(15);
+const SKELETON_DATA_POINTS_30 = generateSkeletonData(30);
+const SKELETON_DATA_POINTS_90 = generateSkeletonData(90);
+const SKELETON_DATA_POINTS_180 = generateSkeletonData(180);
+const SKELETON_DATA_POINTS_365 = generateSkeletonData(365);
+const SKELETON_DATA_POINTS_720 = generateSkeletonData(720);
 
-export function getSkeletonDataPoints(timeframe: TimeFrame) {
-  switch (timeframe) {
-    case "All":
-      return SKELETON_DATA_POINTS_ALL;
-    case "7d":
-      return SKELETON_DATA_POINTS_7D;
-    case "30d":
-      return SKELETON_DATA_POINTS_30D;
-    case "90d":
-      return SKELETON_DATA_POINTS_90D;
-    case "180d":
-      return SKELETON_DATA_POINTS_180D;
-    case "365d":
-      return SKELETON_DATA_POINTS_365D;
-    case "15d":
-      return SKELETON_DATA_POINTS_15D;
+export function getSkeletonDataPoints(
+  itemCount: SkeletonChartOptions["itemCount"]
+) {
+  switch (itemCount) {
+    case 7:
+      return SKELETON_DATA_POINTS_7;
+    case 15:
+      return SKELETON_DATA_POINTS_15;
+    case 30:
+      return SKELETON_DATA_POINTS_30;
+    case 90:
+      return SKELETON_DATA_POINTS_90;
+    case 180:
+      return SKELETON_DATA_POINTS_180;
+    case 365:
+      return SKELETON_DATA_POINTS_365;
+    case 720:
+      return SKELETON_DATA_POINTS_720;
     default:
-      return SKELETON_DATA_POINTS_30D;
+      return SKELETON_DATA_POINTS_30;
   }
 }
 
@@ -63,15 +70,12 @@ const SKELETON_COLOR = "#434672";
 
 export function createChartSkeletonOptions({
   compact,
-  timeframe = "30d",
   variant = "bar",
+  itemCount = 30,
 }: {
   compact?: boolean;
-  timeframe?: TimeFrame;
-  variant?: "line" | "bar";
-}) {
-  const dataPoints = getSkeletonDataPoints(timeframe);
-
+} & SkeletonOptions["chart"]) {
+  const dataPoints = getSkeletonDataPoints(itemCount);
   return {
     animation: false,
     grid: {
@@ -101,7 +105,7 @@ export function createChartSkeletonOptions({
       },
     ],
     xAxis: {
-      data: Array.from({ length: dataPoints.length }, (_, i) => i),
+      data: Array.from({ length: itemCount }, (_, i) => i),
       axisLabel: { show: false },
       axisLine: {
         show: false,

@@ -6,21 +6,7 @@ import { useRouter } from "next/router";
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
-import {
-  AvgBlobBaseFeeChart,
-  TotalBlobBaseFeesChart,
-  TotalBlobGasComparisonChart,
-  TotalBlobGasUsedChart,
-  TotalBlobSizeChart,
-  TotalBlobUsageSizeChart,
-  TotalBlobsChart,
-  TotalBlocksChart,
-  TotalTransactionsChart,
-  TotalUniqueAddressesChart,
-  AvgBlobGasPriceChart,
-} from "~/components/Charts";
 import type { ChartBaseProps } from "~/components/Charts/ChartBase";
-import { transformToDatasets } from "~/components/Charts/helpers";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { Scrollable } from "~/components/Scrollable";
@@ -36,6 +22,20 @@ import {
   StatsSectionSelector,
 } from "~/components/Selectors/StatsSectionSelector";
 import { SubHeader } from "~/components/SubHeader";
+import {
+  AvgBlobBaseFeeChart,
+  TotalBlobBaseFeesChart,
+  TotalBlobGasComparisonChart,
+  TotalBlobGasUsedChart,
+  TotalBlobSizeChart,
+  TotalBlobUsageSizeChart,
+  TotalBlobsChart,
+  TotalBlocksChart,
+  TotalTransactionsChart,
+  TotalUniqueAddressesChart,
+  AvgBlobGasPriceChart,
+} from "~/components/TimeseriesCharts";
+import { transformToDatasets } from "~/components/TimeseriesCharts/helpers";
 import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
@@ -76,7 +76,7 @@ function buildViewLink(metricRoute: string) {
 
 const SKELETON_OPTS: ChartBaseProps["skeletonOpts"] = {
   chart: {
-    timeframe: "15d" as const,
+    itemCount: 15,
   },
 };
 

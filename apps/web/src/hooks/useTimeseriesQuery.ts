@@ -1,18 +1,21 @@
-import { transformToDatasets } from "~/components/Charts/helpers";
+import { transformToDatasets } from "~/components/TimeseriesCharts/helpers";
 import { api } from "~/api-client";
 import type { TimeseriesMetric } from "~/types";
 import { MULTIPLE_VALUES_SEPARATOR, useQueryParams } from "./useQueryParams";
 
 const globalMetrics = ["avgBlobFee", "avgBlobGasPrice", "totalBlocks"];
 
-export function useTimeseries(
-  metrics: [TimeseriesMetric, ...TimeseriesMetric[]]
+export function useTimeseriesQuery(
+  metrics: [TimeseriesMetric, ...TimeseriesMetric[]],
+  options?: {
+    onlyGlobal?: boolean;
+  }
 ) {
   const {
     filterParams: { category, rollups },
   } = useQueryParams();
   const isGlobalMetric =
-    metrics.length === 1 && globalMetrics.includes(metrics[0]);
+    options?.onlyGlobal || metrics.every((m) => globalMetrics.includes(m));
   const metricsParam = metrics.join(MULTIPLE_VALUES_SEPARATOR);
   const categories = category ?? (!rollups ? "other" : undefined);
   const rollupsParam = !rollups

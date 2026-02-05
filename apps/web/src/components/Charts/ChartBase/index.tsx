@@ -7,8 +7,6 @@ import type { EChartsInstance } from "echarts-for-react";
 import ReactEChartsCore from "echarts-for-react/lib/core";
 import { useTheme } from "next-themes";
 
-import type { TimeFrame } from "@blobscan/api";
-
 import echarts from "~/echarts";
 import type { Size, TimeseriesDimension } from "~/types";
 import { Legend } from "./Legend";
@@ -22,28 +20,25 @@ import {
   createBaseSeriesOptions,
   getDimensionColor,
 } from "./helpers";
+import type { SkeletonChartOptions } from "./helpers/skeleton";
 import { createChartSkeletonOptions } from "./helpers/skeleton";
-import type { MetricInfo } from "./types";
+import type { Axes } from "./types";
+
+export interface SkeletonOptions {
+  chart?: SkeletonChartOptions;
+  legend?: LegendProps["skeletonOpts"];
+}
 
 export interface ChartBaseProps {
   title: ReactNode;
   headerControls?: ReactNode;
   dataset?: EChartOption.Dataset | EChartOption.Dataset[];
   series?: EChartOption.Series[];
-  metricInfo: {
-    xAxis: MetricInfo;
-    yAxis: MetricInfo;
-  };
+  axes: Axes;
   compact?: boolean;
   isLoading?: boolean;
   size?: Size;
-  skeletonOpts?: {
-    chart?: {
-      timeframe?: TimeFrame;
-      variant?: "line" | "bar";
-    };
-    legend?: LegendProps["skeletonOpts"];
-  };
+  skeletonOpts?: SkeletonOptions;
   tooltipOpts?: {
     displayTotal?: boolean;
   };
@@ -62,7 +57,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   title,
   headerControls,
   dataset,
-  metricInfo,
+  axes,
   skeletonOpts,
   tooltipOpts,
   series: seriesProp,
@@ -89,9 +84,8 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     string | undefined
   >();
   const themeMode = resolvedTheme as "light" | "dark";
-  const datasetUndefined = Array.isArray(dataset) ? !dataset.length : !dataset;
-  const dataExists = isLoading === true && !datasetUndefined;
-  const yUnit = metricInfo.yAxis.displayUnit ?? metricInfo.yAxis.unit;
+  const datasetExists = Array.isArray(dataset) ? !!dataset.length : !!dataset;
+  const yUnit = axes.y.displayUnit ?? axes.y.unit;
   const series = useMemo(
     () =>
       seriesProp
@@ -113,7 +107,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
             name: seriesLabel,
             itemStyle: {
               ...baseSeriesOptions.itemStyle,
-              color,
+              color: color ?? baseSeriesOptions.itemStyle.color,
             },
             ...restSeries,
           };
@@ -138,11 +132,11 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           bottom: compact ? 22 : 82,
           left: 40,
         },
-        xAxis: createXAxisOptions(metricInfo.xAxis, compact),
-        yAxis: createYAxisOptions(metricInfo.yAxis, compact),
+        xAxis: createXAxisOptions(axes.x, compact),
+        yAxis: createYAxisOptions(axes.y, compact),
         tooltip: createBaseTooltipOptions({
           currentSeriesRef: hoveredSeriesRef,
-          metricInfo,
+          axes,
           displayTotal: tooltipOpts?.displayTotal,
           themeMode,
         }),
@@ -151,7 +145,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           ? [{ type: "inside" }, { type: "slider", start: 0, end: 100 }]
           : undefined,
       } satisfies EChartOption),
-    [compact, metricInfo, tooltipOpts, themeMode]
+    [compact, axes, tooltipOpts, themeMode]
   );
 
   const onChartReady = useCallback((chart: EChartsInstance) => {
@@ -247,6 +241,8 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       return;
     }
 
+    console.log(series);
+
     const items = series
       .map(
         ({ name, itemStyle }): LegendItemData => ({
@@ -306,7 +302,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           }
         )}
       >
-        {!dataExists ? (
+        {isLoading || datasetExists ? (
           <ReactEChartsCore
             echarts={echarts}
             ref={chartInstanceRef}
@@ -324,7 +320,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         {isLoading && !compact ? (
           <div className="absolute bottom-3 left-10 h-9 w-[90%] rounded-md bg-[#434672]" />
         ) : null}
-        {!compact && !dataExists && (
+        {!compact && (
           <div className="h-4 md:h-full">
             <Legend
               items={legendItems}
@@ -341,4 +337,4 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   );
 };
 
-export type { MetricInfo, MetricType, MetricUnitType } from "./types";
+export type { Axis, AxisType, AxisUnitType } from "./types";

@@ -9,11 +9,14 @@ import { MetricCard } from "~/components/Cards/MetricCard";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
-import { AvgBlobGasPriceChart, TotalBlobsChart } from "~/components/Charts";
-import { transformToDatasets } from "~/components/Charts/helpers";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
+import {
+  AvgBlobGasPriceChart,
+  TotalBlobsChart,
+} from "~/components/TimeseriesCharts";
+import { transformToDatasets } from "~/components/TimeseriesCharts/helpers";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import type {

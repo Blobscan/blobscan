@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 
-import { AvgBlobGasPriceChart } from "~/components/Charts";
 import { TimeseriesChartPage } from "~/components/TimeseriesChartPage";
+import { AvgBlobGasPriceChart } from "~/components/TimeseriesCharts";
 
 const AvgBlobGasPrice: NextPage = function () {
   return (

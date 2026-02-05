@@ -80,7 +80,7 @@ export const Legend: FC<LegendProps> = function ({
           </div>
         </Scrollable>
       ) : (
-        <div className="flex items-center gap-2 md:flex-col">
+        <div className="flex items-center justify-center gap-2 md:flex-col">
           {Array.from(
             { length: skeletonOpts?.itemCount ?? DEFAULT_SKELETON_ITEM_COUNT },
             (_, i) => i

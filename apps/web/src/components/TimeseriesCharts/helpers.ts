@@ -1,23 +1,16 @@
-import type { FC } from "react";
-import React from "react";
-
 import type {
   TimeseriesData,
   Chartable,
   NullableElements,
   Category,
   Rollup,
-  TimeseriesMetric,
+  Prettify,
 } from "~/types";
-import type { MetricInfo } from "./ChartBase";
-import type {
-  TimeseriesChartComponent,
-  TimeseriesChartProps,
-} from "./ChartBase/types";
+import type { Axis } from "../Charts/ChartBase";
 
 export function aggregateValues(
   values: number[] | string[],
-  type: MetricInfo["type"]
+  type: Axis["type"]
 ): number {
   if (!values.length) {
     return 0;
@@ -48,16 +41,17 @@ type MetricDefinitionOf<
 
 export type DatasetId = "global" | `category-${Category}` | `rollup-${Rollup}`;
 
-export type TimeseriesDataset<T extends TimeseriesData = TimeseriesData> = {
-  id: DatasetId;
-  source: {
-    timestamp: Date[];
-  } & {
-    [K in keyof MetricDefinitions<T>]: NullableElements<
-      Chartable<MetricDefinitions<T>[K]>
-    >;
-  };
-};
+export type TimeseriesDataset<T extends TimeseriesData = TimeseriesData> =
+  Prettify<{
+    id: DatasetId;
+    source: {
+      timestamp: Date[];
+    } & {
+      [K in keyof MetricDefinitions<T>]: NullableElements<
+        Chartable<MetricDefinitions<T>[K]>
+      >;
+    };
+  }>;
 
 function padSeries<S extends (string | number)[]>(
   series: S,
@@ -128,15 +122,4 @@ export function transformToDatasets<T extends TimeseriesData>({
   });
 
   return datesets;
-}
-
-export function defineTimeseriesChart<P extends TimeseriesChartProps>(
-  Comp: FC<P>,
-  requiredMetrics: [TimeseriesMetric, ...TimeseriesMetric[]],
-  displayName?: string
-): TimeseriesChartComponent<P> {
-  return Object.assign(React.memo(Comp), {
-    requiredMetrics,
-    displayName: displayName ?? Comp.displayName,
-  });
 }

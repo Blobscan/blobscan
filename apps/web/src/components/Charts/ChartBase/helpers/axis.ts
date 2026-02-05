@@ -1,10 +1,10 @@
 import type { EChartOption } from "echarts";
 
-import type { MetricInfo } from "../types";
-import { formatMetricValue } from "./formatters";
+import type { Axis } from "../types";
+import { formatAxisValue } from "./formatters";
 
 export function createXAxisOptions(
-  metricInfo: MetricInfo,
+  metricInfo: Axis,
   compact?: boolean,
   opts?: EChartOption["xAxis"]
 ) {
@@ -12,7 +12,7 @@ export function createXAxisOptions(
   const axisType: EChartOption.BasicComponents.CartesianAxis.Type =
     type === "time" ? "category" : "value";
   const formatter = (value: string | number | Date) =>
-    formatMetricValue(value, metricInfo, true);
+    formatAxisValue(value, metricInfo, true);
 
   return {
     type: axisType,
@@ -33,14 +33,14 @@ export function createXAxisOptions(
 }
 
 export function createYAxisOptions(
-  metricInfo: MetricInfo,
+  metricInfo: Axis,
   compact?: boolean,
   opts?: EChartOption["yAxis"]
 ) {
   const axisType: EChartOption.BasicComponents.CartesianAxis.Type =
     metricInfo.type === "time" ? "category" : "value";
   const formatter = (value: string | number | Date) =>
-    formatMetricValue(value, metricInfo, true);
+    formatAxisValue(value, metricInfo, true);
 
   return {
     type: axisType,

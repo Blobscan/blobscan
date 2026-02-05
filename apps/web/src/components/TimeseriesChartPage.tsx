@@ -1,27 +1,26 @@
 import type { ReactNode } from "react";
 
 import { useQueryParams } from "~/hooks/useQueryParams";
-import { useTimeseries } from "~/hooks/useTimeseries";
-import type {
-  TimeseriesChartComponent,
-  TimeseriesChartProps,
-} from "./Charts/ChartBase/types";
+import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
+import type { TimeseriesChartComponent } from "./Charts/TimeseriesChartBase";
 import { FiltersBar } from "./FiltersBar";
 import { Header } from "./Header";
 
-export type MetricChartPageProps<P extends TimeseriesChartProps> = {
-  chart: TimeseriesChartComponent<P>;
+export type TimeseriesChartPageProps = {
+  chart: TimeseriesChartComponent;
   description: ReactNode;
   enableFilters?: boolean;
   title: ReactNode;
+  onlyGlobalTimeseries?: boolean;
 };
 
-export const TimeseriesChartPage = function <P extends TimeseriesChartProps>({
+export const TimeseriesChartPage = function ({
   chart: Chart,
   title,
   description,
   enableFilters,
-}: MetricChartPageProps<P>) {
+  onlyGlobalTimeseries,
+}: TimeseriesChartPageProps) {
   const {
     filterParams: { category, rollups },
     isReady,
@@ -31,8 +30,11 @@ export const TimeseriesChartPage = function <P extends TimeseriesChartProps>({
     ? (category ? 1 : 0) + (rollups?.length ?? 0)
     : undefined;
 
-  const { data: chartDatasets, isLoading } = useTimeseries(
-    Chart.requiredMetrics
+  const { data: chartDatasets, isLoading } = useTimeseriesQuery(
+    Chart.requiredMetrics,
+    {
+      onlyGlobal: onlyGlobalTimeseries,
+    }
   );
 
   if (!isReady) {
@@ -44,19 +46,19 @@ export const TimeseriesChartPage = function <P extends TimeseriesChartProps>({
       <Header>{title}</Header>
       <div>{description}</div>
       {enableFilters && <FiltersBar hideRangeFilter hideSortFilter />}
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-ignore */}
       <Chart
         dataset={chartDatasets}
         isLoading={isLoading}
         size="2xl"
         skeletonOpts={{
           chart: {
-            timeframe: filtersSet ? "All" : "180d",
+            itemCount: filtersSet ? 720 : 180,
           },
-          legend: {
-            itemCount,
-          },
+          legend: itemCount
+            ? {
+                itemCount,
+              }
+            : undefined,
         }}
       />
     </div>

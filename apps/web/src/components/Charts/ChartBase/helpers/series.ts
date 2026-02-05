@@ -24,10 +24,15 @@ export function getDefaultSeriesColor(seriesIndex: number) {
 }
 
 export function createBaseSeriesOptions(seriesIndex: number) {
+  const color = getDefaultSeriesColor(seriesIndex);
+
   return {
     smooth: true,
+    areaStyle: {
+      color,
+    },
     itemStyle: {
-      color: getDefaultSeriesColor(seriesIndex),
+      color,
     },
     animationDelay: function (idx) {
       return idx * 2;

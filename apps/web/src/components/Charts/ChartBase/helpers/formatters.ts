@@ -5,39 +5,39 @@ import { ROLLUP_STYLES } from "~/rollups";
 import type { Rollup } from "~/types";
 import { convertBytes, formatNumber, getHumanDate } from "~/utils";
 import type { Numerish } from "~/utils";
-import type { ByteMetricInfo, EtherMetricInfo, MetricInfo } from "../types";
+import type { BytesAxis, EtherAxis, Axis } from "../types";
 
-export function formatMetricValue(
+export function formatAxisValue(
   value: Numerish | Date,
-  metricInfo: MetricInfo,
+  axis: Axis,
   compact?: boolean
 ) {
-  const { type, unitType } = metricInfo;
+  const { type, unitType } = axis;
 
   const isDateValue = value instanceof Date || typeof value === "string";
 
   if (type === "time" && isDateValue) {
-    return formatTimeMetric(value as Date | string, compact);
+    return formatTimeValue(value as Date | string, compact);
   }
 
   const value_ = value as Numerish;
   switch (unitType) {
     case "ether":
-      return formatEtherMetric(value_, metricInfo, compact);
+      return formatEtherValue(value_, axis, compact);
     case "byte":
-      return formatBytesMetric(value_, metricInfo, compact);
+      return formatBytesValue(value_, axis, compact);
     default:
-      return formatUnknownMetric(value_, compact);
+      return formatUnknownValue(value_, compact);
   }
 }
 
-export function formatTimeMetric(value: string | Date, compact?: boolean) {
+export function formatTimeValue(value: string | Date, compact?: boolean) {
   return compact ? dayjs(value).format("MMM DD") : getHumanDate(value);
 }
 
-export function formatEtherMetric(
+export function formatEtherValue(
   value: Numerish,
-  { displayUnit, unit }: EtherMetricInfo,
+  { displayUnit, unit }: EtherAxis,
   compact?: boolean
 ) {
   let convertedValue = value;
@@ -51,9 +51,9 @@ export function formatEtherMetric(
   });
 }
 
-export function formatBytesMetric(
+export function formatBytesValue(
   value: Numerish,
-  { displayUnit, unit }: ByteMetricInfo,
+  { displayUnit, unit }: BytesAxis,
   compact?: boolean
 ) {
   let convertedValue = value;
@@ -67,7 +67,7 @@ export function formatBytesMetric(
   });
 }
 
-export function formatUnknownMetric(value: Numerish, compact?: boolean) {
+export function formatUnknownValue(value: Numerish, compact?: boolean) {
   return formatNumber(value, compact ? "compact" : "standard", {
     maximumFractionDigits: 2,
   });

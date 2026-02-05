@@ -3,14 +3,9 @@ import type { EChartOption } from "echarts";
 
 import { calculatePercentage, getNeighbouringElements } from "~/utils";
 import type { Numerish } from "~/utils";
-import { aggregateValues } from "../../helpers";
-import type { MetricInfo } from "../types";
-import { formatMetricValue, formatSeriesName } from "./formatters";
-
-type StandardEncoding = {
-  x: number[];
-  y: number[];
-};
+import { aggregateValues } from "../../../TimeseriesCharts/helpers";
+import type { Axes, Axis, StandardEncoding } from "../types";
+import { formatAxisValue, formatSeriesName } from "./formatters";
 
 export function isStandardEncoding(value: unknown): value is StandardEncoding {
   if (typeof value !== "object" || value === null) {
@@ -48,7 +43,7 @@ function getValue(param: EChartOption.Tooltip.Format) {
 function buildSeriesHtmlElement({
   name,
   value,
-  metricInfo,
+  axis,
   marker,
   markerColor,
   total,
@@ -57,7 +52,7 @@ function buildSeriesHtmlElement({
 }: {
   name: string;
   value?: Numerish;
-  metricInfo: MetricInfo;
+  axis: Axis;
   marker?: string;
   markerColor?: string;
   total?: Numerish;
@@ -68,9 +63,7 @@ function buildSeriesHtmlElement({
   const percentage =
     value && total ? calculatePercentage(value, total).toFixed(2) : undefined;
   1;
-  const formattedValue = value
-    ? formatMetricValue(value, metricInfo)
-    : undefined;
+  const formattedValue = value ? formatAxisValue(value, axis) : undefined;
   const markerElement =
     marker ?? markerColor
       ? `<div style="width: 10px; height: 10px; background-color:${markerColor}; border-radius: 50%;"></div>`
@@ -101,7 +94,7 @@ function buildSeriesHtmlElement({
 
 function createTooltipFormater({
   currentSeriesRef,
-  metricInfo: { xAxis: xAxisMetricInfo, yAxis: yAxisMetricInfo },
+  axes,
   themeMode,
   displayTotal,
 }: {
@@ -109,10 +102,7 @@ function createTooltipFormater({
     seriesIndex?: number;
     seriesName?: string;
   } | null>;
-  metricInfo: {
-    xAxis: MetricInfo;
-    yAxis: MetricInfo;
-  };
+  axes: Axes;
   themeMode: "light" | "dark";
   displayTotal?: boolean;
 }) {
@@ -133,7 +123,7 @@ function createTooltipFormater({
       const dailyTotal = displayTotal
         ? aggregateValues(
             paramOrParams.map((p) => getValue(p)) as number[],
-            yAxisMetricInfo.type
+            axes.y.type
           )
         : undefined;
 
@@ -154,7 +144,7 @@ function createTooltipFormater({
         : Array.isArray(value)
         ? value[0]
         : value;
-      dateHTMLElement = date ? formatMetricValue(date, xAxisMetricInfo) : "-";
+      dateHTMLElement = date ? formatAxisValue(date, axes.x) : "-";
 
       filteredParams.map((p) => {
         const { seriesName, value, color } = p;
@@ -164,10 +154,9 @@ function createTooltipFormater({
           return "";
         }
 
-        const isSelected = displayTotal
-          ? currentSeriesRef.current?.seriesName?.toLowerCase() ===
-            currentSeriesName
-          : undefined;
+        const isSelected =
+          currentSeriesRef.current?.seriesName?.toLowerCase() ===
+          currentSeriesName;
 
         const formattedName = formatSeriesName(seriesName);
 
@@ -176,7 +165,7 @@ function createTooltipFormater({
             name: formattedName,
             value: getValue(p),
             total: dailyTotal,
-            metricInfo: yAxisMetricInfo,
+            axis: axes.y,
             markerColor: color,
             themeMode,
             isSelected,
@@ -188,14 +177,14 @@ function createTooltipFormater({
         if (rollupSeries.length) {
           const rollupTotal = aggregateValues(
             rollupSeries.map((p) => getValue(p)) as number[],
-            yAxisMetricInfo.type
+            axes.y.type
           );
 
           totalSeriesHTMLElements.push(
             buildSeriesHtmlElement({
               name: "Rollup",
               value: rollupTotal,
-              metricInfo: yAxisMetricInfo,
+              axis: axes.y,
               total: dailyTotal,
               themeMode,
             })
@@ -206,7 +195,7 @@ function createTooltipFormater({
           buildSeriesHtmlElement({
             name: "Total",
             value: dailyTotal,
-            metricInfo: yAxisMetricInfo,
+            axis: axes.y,
             themeMode,
           })
         );
@@ -220,16 +209,14 @@ function createTooltipFormater({
         buildSeriesHtmlElement({
           name: formattedName,
           value: (value as number | string) ?? 0,
-          metricInfo: yAxisMetricInfo,
+          axis: axes.y,
           markerColor: color,
           isSelected: true,
           themeMode,
         })
       );
 
-      dateHTMLElement = name
-        ? formatMetricValue(name, xAxisMetricInfo).toString()
-        : "-";
+      dateHTMLElement = name ? formatAxisValue(name, axes.x).toString() : "-";
     }
 
     return `
@@ -262,14 +249,14 @@ function createTooltipFormater({
 export function createBaseTooltipOptions({
   currentSeriesRef,
   displayTotal,
-  metricInfo,
+  axes,
   themeMode,
 }: {
   currentSeriesRef: MutableRefObject<{
     seriesIndex?: number;
     seriesName?: string;
   } | null>;
-  metricInfo: { xAxis: MetricInfo; yAxis: MetricInfo };
+  axes: Axes;
   displayTotal?: boolean;
   themeMode: "light" | "dark";
 }): EChartOption.Tooltip {
@@ -281,7 +268,7 @@ export function createBaseTooltipOptions({
     borderColor: themeMode === "dark" ? "#372779" : "#5D25D4",
     formatter: createTooltipFormater({
       currentSeriesRef,
-      metricInfo,
+      axes,
       themeMode,
       displayTotal,
     }),

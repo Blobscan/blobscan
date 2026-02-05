@@ -8,6 +8,7 @@ export default function Custom404() {
         <h1 className="mt-4 text-3xl font-bold tracking-tight text-content-light dark:text-content-dark sm:text-5xl">
           Page not found
         </h1>
+
         <p className="mt-6 text-base leading-7 dark:text-contentSecondary-dark">
           Sorry, we couldn’t find the page you’re looking for.
         </p>
