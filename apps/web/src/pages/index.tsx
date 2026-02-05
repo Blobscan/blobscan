@@ -16,13 +16,10 @@ import {
   AvgBlobGasPriceChart,
   TotalBlobsChart,
 } from "~/components/TimeseriesCharts";
-import { transformToDatasets } from "~/components/TimeseriesCharts/helpers";
 import { api } from "~/api-client";
+import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import NextError from "~/pages/_error";
-import type {
-  BlockWithExpandedBlobsAndTransactions,
-  TimeseriesMetric,
-} from "~/types";
+import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
   buildBlobsRoute,
   buildBlocksRoute,
@@ -32,9 +29,6 @@ import {
 const LATEST_ITEMS_LENGTH = 5;
 
 const CARD_HEIGHT = "sm:h-28";
-
-const CATEGORIZED_METRICS: TimeseriesMetric[] = ["totalBlobs"] as const;
-const GLOBAL_METRICS: TimeseriesMetric[] = ["avgBlobGasPrice"] as const;
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -58,39 +52,23 @@ const Home: NextPage = () => {
         data.find(({ dimension }) => dimension.type === "global")?.metrics,
     });
   const {
-    data: categorizedChartDatasets,
-    isLoading: categorizedChartLoading,
-    error: categorizedChartDataError,
-  } = api.stats.getTimeseries.useQuery(
-    {
-      metrics: CATEGORIZED_METRICS.join(","),
-      timeFrame: "30d",
-      categories: "other",
-      rollups: "all",
-      sort: "asc",
-    },
-    {
-      refetchOnWindowFocus: false,
-      select: ({ data }) => transformToDatasets(data),
-    }
-  );
-  const {
     data: globalChartDataset,
     isLoading: globalChartLoading,
     error: globalChartDataError,
-  } = api.stats.getTimeseries.useQuery(
-    {
-      metrics: GLOBAL_METRICS.join(","),
-      timeFrame: "30d",
-      sort: "asc",
-    },
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      select: ({ data }) => transformToDatasets(data)[0],
-    }
-  );
+  } = useTimeseriesQuery({
+    metrics: ["avgBlobGasPrice"],
+    timeFrame: "30d",
+  });
+  const {
+    data: categorizedChartDatasets,
+    isLoading: categorizedChartLoading,
+    error: categorizedChartDataError,
+  } = useTimeseriesQuery({
+    metrics: ["totalBlobs"],
+    timeFrame: "30d",
+    categories: "other",
+    rollups: "all",
+  });
   const { blocks, transactions, blobs } = useMemo(() => {
     if (!blocksData) {
       return { blocks: [], transactions: [], blobs: [] };

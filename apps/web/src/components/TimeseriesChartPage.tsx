@@ -31,7 +31,9 @@ export const TimeseriesChartPage = function ({
     : undefined;
 
   const { data: chartDatasets, isLoading } = useTimeseriesQuery(
-    Chart.requiredMetrics,
+    {
+      metrics: Chart.requiredMetrics,
+    },
     {
       onlyGlobal: onlyGlobalTimeseries,
     }

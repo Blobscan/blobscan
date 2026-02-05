@@ -35,36 +35,12 @@ import {
   TotalUniqueAddressesChart,
   AvgBlobGasPriceChart,
 } from "~/components/TimeseriesCharts";
-import { transformToDatasets } from "~/components/TimeseriesCharts/helpers";
 import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
 import { useQueryParams } from "~/hooks/useQueryParams";
-import type { TimeseriesMetric } from "~/types";
+import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import { buildStatRoute, calculatePercentage } from "~/utils";
-
-const CATEGORIZED_METRICS: TimeseriesMetric[] = [
-  "totalBlobs",
-  "totalBlobSize",
-  "totalBlobUsageSize",
-  "totalBlobGasUsed",
-  "totalBlobFee",
-  "totalTransactions",
-  "totalUniqueReceivers",
-  "totalUniqueSenders",
-  "totalBlobAsCalldataGasUsed",
-] as const;
-
-const GLOBAL_METRICS: TimeseriesMetric[] = [
-  "avgBlobGasPrice",
-  "avgBlobFee",
-  "avgBlobMaxFee",
-  "totalBlocks",
-  "totalUniqueReceivers",
-  "totalUniqueSenders",
-  "totalBlobAsCalldataGasUsed",
-  "totalBlobGasUsed",
-] as const;
 
 function buildViewLink(metricRoute: string) {
   return (
@@ -93,34 +69,38 @@ const Stats: NextPage = function () {
   const {
     data: categorizedChartDatasets,
     isLoading: categorizedDatasetsLoading,
-  } = api.stats.getTimeseries.useQuery(
-    {
-      categories: "other",
-      rollups: "all",
-      timeFrame: "15d",
-      sort: "asc",
-      metrics: CATEGORIZED_METRICS.join(","),
-    },
-    {
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
-      select: ({ data }) => transformToDatasets(data),
-    }
-  );
+  } = useTimeseriesQuery({
+    metrics: [
+      "totalBlobs",
+      "totalBlobSize",
+      "totalBlobUsageSize",
+      "totalBlobGasUsed",
+      "totalBlobFee",
+      "totalTransactions",
+      "totalUniqueReceivers",
+      "totalUniqueSenders",
+      "totalBlobAsCalldataGasUsed",
+    ],
+    categories: "other",
+    rollups: "all",
+    timeFrame: "15d",
+  });
   const { data: globalChartDatasets, isLoading: globalDatasetsLoading } =
-    api.stats.getTimeseries.useQuery(
+    useTimeseriesQuery(
       {
+        metrics: [
+          "avgBlobGasPrice",
+          "avgBlobFee",
+          "avgBlobMaxFee",
+          "totalBlocks",
+          "totalUniqueReceivers",
+          "totalUniqueSenders",
+          "totalBlobAsCalldataGasUsed",
+          "totalBlobGasUsed",
+        ],
         timeFrame: "15d",
-        sort: "asc",
-        metrics: GLOBAL_METRICS.join(","),
       },
-      {
-        refetchOnMount: false,
-        refetchOnReconnect: false,
-        refetchOnWindowFocus: false,
-        select: ({ data }) => transformToDatasets(data)[0],
-      }
+      { onlyGlobal: true }
     );
   const { data: allOverallStats } = api.stats.getOverall.useQuery(undefined, {
     refetchOnMount: false,
@@ -134,9 +114,13 @@ const Stats: NextPage = function () {
     allOverallStats
   );
   const selectedCategorizedChartDatasets = useMemo(() => {
+    if (!categorizedChartDatasets || !Array.isArray(categorizedChartDatasets)) {
+      return [];
+    }
+
     return !selectedRollups.length
       ? categorizedChartDatasets
-      : categorizedChartDatasets?.filter((dataset) =>
+      : categorizedChartDatasets.filter((dataset) =>
           selectedRollups.map((r) => `rollup-${r.value}`).includes(dataset.id)
         );
   }, [categorizedChartDatasets, selectedRollups]);
@@ -146,7 +130,6 @@ const Stats: NextPage = function () {
       chain.latestFork.blobParams.fieldElementsPerBlob
     : undefined;
 
-  console.log(selectedCategorizedChartDatasets);
   const sections = useMemo<
     {
       id: SectionName;
