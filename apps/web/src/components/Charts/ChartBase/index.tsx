@@ -50,7 +50,7 @@ const SIZES: Record<Size, string> = {
   md: "h-60 md:h-72 lg:h-72",
   lg: "h-72 md:h-80 lg:h-[22rem]",
   xl: "h-84 md:h-96 lg:h-[26rem]",
-  "2xl": "h-96 md:h-[28rem] lg:h-[30rem]",
+  "2xl": "h-96 md:h-[28rem] lg:h-[30rem] xl:h-[36rem]",
 };
 
 function ChartHeader({

@@ -9,7 +9,7 @@ const TotalBlobGasUsed: NextPage = function () {
       chart={TotalBlobGasUsedChart}
       description="This chart shows the total amount of blob gas used per day, broken down by rollup and category."
       title="Total Blob Gas Used Stats"
-      enableFilters
+      isCategorizedTimeseries
     />
   );
 };

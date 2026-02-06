@@ -9,7 +9,7 @@ const TotalBlobBaseFees: NextPage = function () {
       chart={TotalBlobBaseFeesChart}
       description="This chart shows the total amount of  blob base fees per day, broken down by rollup and category."
       title="Total Blob Base Fees Stats"
-      enableFilters
+      isCategorizedTimeseries
     />
   );
 };

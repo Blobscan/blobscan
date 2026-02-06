@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { Category, Rollup } from "@blobscan/db/prisma/enums";
 
-export const commaSeparatedValuesSchema = z
+export const multiValueFieldSchema = z
   .string()
   .optional()
   .transform((values) =>
@@ -10,48 +10,6 @@ export const commaSeparatedValuesSchema = z
       ?.split(",")
       .map((v) => v.trim())
       .filter((v) => !!v.length)
-  );
-
-export const commaSeparatedRollupsSchema = commaSeparatedValuesSchema.transform(
-  (values, ctx) =>
-    values?.map((v) => {
-      const res = rollupSchema.safeParse(v);
-
-      if (!res.success) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          params: {
-            value: v,
-          },
-          message: "Provided rollup value is invalid",
-        });
-
-        return z.NEVER;
-      }
-
-      return res.data;
-    })
-);
-
-export const commaSeparatedCategoriesSchema =
-  commaSeparatedValuesSchema.transform((values, ctx) =>
-    values?.map((v) => {
-      const res = categorySchema.safeParse(v);
-
-      if (!res.success) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          params: {
-            value: v,
-          },
-          message: "Provided category value is invalid",
-        });
-
-        return z.NEVER;
-      }
-
-      return res.data;
-    })
   );
 
 const LOWERCASE_DB_CATEGORY_ENUM = Object.entries(Category).reduce(
@@ -75,3 +33,35 @@ const LOWERCASE_ROLLUP_ENUM = Object.entries(Rollup).reduce(
 export const categorySchema = z.nativeEnum(LOWERCASE_DB_CATEGORY_ENUM);
 
 export const rollupSchema = z.nativeEnum(LOWERCASE_ROLLUP_ENUM);
+
+export function createMultiValueFieldSchema<TSchema extends z.ZodTypeAny>(
+  valueSchema: TSchema
+): z.ZodEffects<
+  typeof multiValueFieldSchema,
+  z.infer<TSchema>[] | undefined,
+  z.input<typeof multiValueFieldSchema>
+> {
+  return multiValueFieldSchema.transform((values, ctx) => {
+    if (!values) return undefined;
+
+    const out: z.infer<TSchema>[] = [];
+
+    for (const v of values) {
+      const res = valueSchema.safeParse(v);
+
+      if (!res.success) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          params: { value: v },
+          message: `Provided value ${v} is invalid`,
+        });
+
+        continue;
+      }
+
+      out.push(res.data);
+    }
+
+    return out;
+  });
+}

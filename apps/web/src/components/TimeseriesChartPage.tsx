@@ -11,33 +11,42 @@ export type TimeseriesChartPageProps = {
   description: ReactNode;
   enableFilters?: boolean;
   title: ReactNode;
-  onlyGlobalTimeseries?: boolean;
+  isCategorizedTimeseries?: boolean;
 };
 
 export const TimeseriesChartPage = function ({
   chart: Chart,
   title,
   description,
-  enableFilters,
-  onlyGlobalTimeseries,
+  isCategorizedTimeseries,
 }: TimeseriesChartPageProps) {
   const {
-    filterParams: { category, rollups },
+    filterParams: {
+      categories: categoriesQueryParam,
+      rollups: rollupsQueryParam,
+    },
     isReady,
   } = useQueryParams();
-  const filtersSet = !!category || !!rollups?.length;
-  const itemCount = filtersSet
-    ? (category ? 1 : 0) + (rollups?.length ?? 0)
+  const queryParamsExists = Boolean(
+    categoriesQueryParam?.length || rollupsQueryParam?.length
+  );
+  const categories = queryParamsExists
+    ? categoriesQueryParam
+    : ["other" as const];
+  const rollups = queryParamsExists ? rollupsQueryParam : ["all" as const];
+  const allRollupsSelected = rollups && rollups[0] === "all";
+  const itemCount = !allRollupsSelected
+    ? (categories?.length ?? 0) + (rollups?.length ?? 0)
     : undefined;
 
-  const { data: chartDatasets, isLoading } = useTimeseriesQuery(
-    {
-      metrics: Chart.requiredMetrics,
-    },
-    {
-      onlyGlobal: onlyGlobalTimeseries,
-    }
-  );
+  console.log(categories);
+  console.log(rollupsQueryParam);
+
+  const { data: chartDatasets, isLoading } = useTimeseriesQuery({
+    metrics: Chart.requiredMetrics,
+    categories: isCategorizedTimeseries ? categories : undefined,
+    rollups: isCategorizedTimeseries ? rollups : undefined,
+  });
 
   if (!isReady) {
     return null;
@@ -47,14 +56,14 @@ export const TimeseriesChartPage = function ({
     <div className="flex flex-col gap-8">
       <Header>{title}</Header>
       <div>{description}</div>
-      {enableFilters && <FiltersBar hideRangeFilter hideSortFilter />}
+      {isCategorizedTimeseries && <FiltersBar hideRangeFilter hideSortFilter />}
       <Chart
         dataset={chartDatasets}
         isLoading={isLoading}
         size="2xl"
         skeletonOpts={{
           chart: {
-            itemCount: filtersSet ? 720 : 180,
+            itemCount: allRollupsSelected ? 720 : 180,
           },
           legend: itemCount
             ? {

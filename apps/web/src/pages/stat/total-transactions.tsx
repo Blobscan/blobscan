@@ -9,7 +9,7 @@ const TotalTransactions: NextPage = function () {
       chart={TotalTransactionsChart}
       description="This chart shows the total number of blob transactions per day, broken down by category and rollup."
       title="Total Transactions Stats"
-      enableFilters
+      isCategorizedTimeseries
     />
   );
 };

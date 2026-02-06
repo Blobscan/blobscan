@@ -59,7 +59,18 @@ const SKELETON_OPTS: ChartBaseProps["skeletonOpts"] = {
 const Stats: NextPage = function () {
   const chain = useChain();
   const router = useRouter();
-  const { statsSection } = useQueryParams();
+  const {
+    filterParams: {
+      categories: categoriesQueryParam,
+      rollups: rollupsQueryParam,
+    },
+    statsSection,
+  } = useQueryParams();
+  const { categories, rollups } =
+    categoriesQueryParam?.length && rollupsQueryParam?.length
+      ? { categories: categoriesQueryParam, rollups: rollupsQueryParam }
+      : { categories: ["other" as const], rollups: ["all" as const] };
+
   const [selectedSection, setSelectedSection] =
     useState<SectionOption>(DEFAULT_SECTION);
 
@@ -81,27 +92,24 @@ const Stats: NextPage = function () {
       "totalUniqueSenders",
       "totalBlobAsCalldataGasUsed",
     ],
-    categories: "other",
-    rollups: "all",
+    categories,
+    rollups,
     timeFrame: "15d",
   });
   const { data: globalChartDatasets, isLoading: globalDatasetsLoading } =
-    useTimeseriesQuery(
-      {
-        metrics: [
-          "avgBlobGasPrice",
-          "avgBlobFee",
-          "avgBlobMaxFee",
-          "totalBlocks",
-          "totalUniqueReceivers",
-          "totalUniqueSenders",
-          "totalBlobAsCalldataGasUsed",
-          "totalBlobGasUsed",
-        ],
-        timeFrame: "15d",
-      },
-      { onlyGlobal: true }
-    );
+    useTimeseriesQuery({
+      metrics: [
+        "avgBlobGasPrice",
+        "avgBlobFee",
+        "avgBlobMaxFee",
+        "totalBlocks",
+        "totalUniqueReceivers",
+        "totalUniqueSenders",
+        "totalBlobAsCalldataGasUsed",
+        "totalBlobGasUsed",
+      ],
+      timeFrame: "15d",
+    });
   const { data: allOverallStats } = api.stats.getOverall.useQuery(undefined, {
     refetchOnMount: false,
     refetchOnReconnect: false,
@@ -115,7 +123,7 @@ const Stats: NextPage = function () {
   );
   const selectedCategorizedChartDatasets = useMemo(() => {
     if (!categorizedChartDatasets || !Array.isArray(categorizedChartDatasets)) {
-      return [];
+      return;
     }
 
     return !selectedRollups.length

@@ -66,8 +66,8 @@ const Home: NextPage = () => {
   } = useTimeseriesQuery({
     metrics: ["totalBlobs"],
     timeFrame: "30d",
-    categories: "other",
-    rollups: "all",
+    categories: ["other"],
+    rollups: ["all"],
   });
   const { blocks, transactions, blobs } = useMemo(() => {
     if (!blocksData) {
