@@ -16,7 +16,10 @@ import { Skeleton } from "~/components/Skeleton";
 import { TimestampToggle } from "~/components/Toggles";
 import type { TimestampFormat } from "~/components/Toggles";
 import { api } from "~/api-client";
-import { useQueryParams } from "~/hooks/useQueryParams";
+import {
+  serializedMultiValueParam,
+  useQueryParams,
+} from "~/hooks/useQueryParams";
 import type { BlobWithExpandedTransaction } from "~/types";
 import type { ByteUnit } from "~/utils";
 import {
@@ -32,7 +35,12 @@ const BYTES_UNIT: ByteUnit = "KiB";
 
 const Blobs: NextPage = function () {
   const { paginationParams, filterParams } = useQueryParams();
-  const rollups = filterParams?.rollups?.join(",");
+  const rollups = filterParams.rollups
+    ? serializedMultiValueParam(filterParams.rollups)
+    : undefined;
+  const categories = filterParams.categories
+    ? serializedMultiValueParam(filterParams.categories)
+    : undefined;
 
   const {
     data: blobsData,
@@ -42,6 +50,7 @@ const Blobs: NextPage = function () {
     ...paginationParams,
     ...filterParams,
     rollups,
+    categories,
     expand: "transaction",
   });
   const {
@@ -52,6 +61,7 @@ const Blobs: NextPage = function () {
     {
       ...filterParams,
       rollups,
+      categories,
     },
     {
       refetchOnWindowFocus: false,

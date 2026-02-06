@@ -7,7 +7,7 @@ import type { UrlObject } from "url";
 import { Button } from "~/components/Button";
 import type { Sort } from "~/hooks/useQueryParams";
 import {
-  MULTIPLE_VALUES_SEPARATOR,
+  serializedMultiValueParam,
   useQueryParams,
 } from "~/hooks/useQueryParams";
 import { getISODate } from "~/utils";
@@ -34,7 +34,7 @@ import { SortToggle } from "./Toggles";
 
 type FiltersState = {
   rollups: RollupSelectorOption[] | null;
-  category: CategorySelectorOption | null;
+  categories: CategorySelectorOption | null;
   range: RangeOption;
   timestampRange: DateRangeType | null;
   blockNumberRange: NumberRange | null;
@@ -58,7 +58,7 @@ type FiltersAction<V extends keyof FiltersState> =
 
 const INIT_STATE: FiltersState = {
   rollups: [],
-  category: null,
+  categories: null,
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   range: RANGE_OPTIONS[1]!,
   timestampRange: null,
@@ -105,7 +105,7 @@ export const FiltersBar: FC<FiltersBarProps> = function ({
   const [filters, dispatch] = useReducer(reducer, INIT_STATE);
 
   const disableClear =
-    !filters.category &&
+    !filters.categories &&
     !filters.rollups?.length &&
     !filters.range &&
     !filters.timestampRange &&
@@ -120,17 +120,17 @@ export const FiltersBar: FC<FiltersBarProps> = function ({
       blockNumberRange,
       slotRange,
       sort,
-      category,
+      categories,
     } = filters;
 
     if (!hideRollupFilter && rollups && rollups.length > 0) {
-      query.rollups = rollups
-        .flatMap((r) => r.value)
-        .join(MULTIPLE_VALUES_SEPARATOR);
+      query.rollups = serializedMultiValueParam(
+        rollups.flatMap((r) => r.value)
+      );
     }
 
-    if (!hideCategoryFilter && category) {
-      query.category = category.value;
+    if (!hideCategoryFilter && categories) {
+      query.categories = categories.value;
     }
 
     if (!hideRangeFilter) {
@@ -185,7 +185,7 @@ export const FiltersBar: FC<FiltersBarProps> = function ({
     (newRollups: RollupSelectorOption[] | null) =>
       dispatch({
         type: "UPDATE",
-        payload: { rollups: newRollups, category: CATEGORY_OPTIONS[1] },
+        payload: { rollups: newRollups },
       }),
     []
   );
@@ -193,12 +193,8 @@ export const FiltersBar: FC<FiltersBarProps> = function ({
   const handleCategoryChange = useCallback(
     (newCategory: CategorySelectorOption | null) => {
       const newFilters: Partial<FiltersState> = {
-        category: newCategory,
+        categories: newCategory,
       };
-
-      if (newCategory?.value !== "rollup") {
-        newFilters.rollups = [];
-      }
 
       dispatch({
         type: "UPDATE",
@@ -236,7 +232,7 @@ export const FiltersBar: FC<FiltersBarProps> = function ({
 
   useEffect(() => {
     const {
-      category,
+      categories,
       startDate,
       endDate,
       startBlock,
@@ -248,9 +244,9 @@ export const FiltersBar: FC<FiltersBarProps> = function ({
     const { sort } = paginationParams;
     const newFilters: Partial<FiltersState> = {};
 
-    if (category) {
-      newFilters.category = CATEGORY_OPTIONS.find(
-        (opts) => opts.value === category
+    if (categories) {
+      newFilters.categories = CATEGORY_OPTIONS.find((opts) =>
+        categories.includes(opts.value)
       );
     }
 
@@ -309,7 +305,7 @@ export const FiltersBar: FC<FiltersBarProps> = function ({
             {!hideCategoryFilter && (
               <div className="w-28 shrink-0">
                 <CategorySelector
-                  selected={filters.category}
+                  selected={filters.categories}
                   onChange={handleCategoryChange}
                 />
               </div>

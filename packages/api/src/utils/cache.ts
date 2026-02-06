@@ -37,7 +37,9 @@ export function cacheTRPCQuery<In, Out, Ctx extends TRPCContext = TRPCContext>(
   return async ({ ctx, input }) => {
     const { redis } = ctx;
 
-    if (!redis) return resolver({ ctx, input });
+    if (!redis) {
+      return resolver({ ctx, input });
+    }
 
     try {
       const cacheKey = `trpc:query:${queryName}:${superjson.stringify({

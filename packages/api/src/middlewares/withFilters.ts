@@ -65,8 +65,8 @@ export const withRollupsFilterSchema = z.object({
   ),
 });
 
-export const withCategoryFilterSchema = z.object({
-  category: dbCategoryCoercionSchema.optional(),
+export const withCategoriesFilterSchema = z.object({
+  categories: dbCategoryCoercionSchema.optional(),
 });
 
 export const withTypeFilterSchema = z.object({
@@ -94,7 +94,7 @@ export const withAllFiltersSchema = withSortFilterSchema
   .merge(withDateRangeFilterSchema)
   .merge(withSlotRangeFilterSchema)
   .merge(withRollupsFilterSchema)
-  .merge(withCategoryFilterSchema)
+  .merge(withCategoriesFilterSchema)
   .merge(withAddressFilterSchema)
   .merge(withTypeFilterSchema);
 
@@ -122,7 +122,7 @@ export const withFilters = t.middleware(
       endBlock,
       endSlot,
       rollups,
-      category,
+      categories,
       startBlock,
       startSlot,
       startDate,
@@ -173,9 +173,9 @@ export const withFilters = t.middleware(
         .filter((r): r is string => !!r);
 
       transactionFilters.fromId = { in: resolvedAddresses };
-    } else if (category) {
+    } else if (categories) {
       transactionFilters.from = {
-        rollup: category === "ROLLUP" ? { not: null } : null,
+        rollup: categories === "ROLLUP" ? { not: null } : null,
       };
     }
 
