@@ -175,10 +175,16 @@ export const FiltersBar: FC<FiltersBarProps> = function ({
       query.sort = sort;
     }
 
-    router.push({
-      pathname: router.pathname,
-      query,
-    });
+    router.push(
+      {
+        pathname: router.pathname,
+        query,
+      },
+      undefined,
+      {
+        scroll: false,
+      }
+    );
   };
 
   const handleRollupChange = useCallback(
