@@ -39,7 +39,6 @@ function getSeries(
   dataset: TimeseriesDataset | TimeseriesDataset[],
   seriesProp: [Timeseries, ...Timeseries[]]
 ) {
-  console.log(dataset);
   if (Array.isArray(dataset)) {
     return seriesProp.flatMap((series) =>
       dataset.map((d, i) => ({

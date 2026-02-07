@@ -39,9 +39,6 @@ export const TimeseriesChartPage = function ({
     ? (categories?.length ?? 0) + (rollups?.length ?? 0)
     : undefined;
 
-  console.log(categories);
-  console.log(rollupsQueryParam);
-
   const { data: chartDatasets, isLoading } = useTimeseriesQuery({
     metrics: Chart.requiredMetrics,
     categories: isCategorizedTimeseries ? categories : undefined,
