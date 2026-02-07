@@ -133,5 +133,9 @@ export function createChartSkeletonOptions({
       },
       show: !compact,
     },
+    tooltip: {
+      show: false,
+    },
+    dataZoom: undefined,
   } satisfies EChartOption;
 }

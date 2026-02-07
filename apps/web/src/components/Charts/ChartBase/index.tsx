@@ -50,7 +50,7 @@ const SIZES: Record<Size, string> = {
   md: "h-60 md:h-72 lg:h-72",
   lg: "h-72 md:h-80 lg:h-[22rem]",
   xl: "h-84 md:h-96 lg:h-[26rem]",
-  "2xl": "h-96 md:h-[28rem] lg:h-[30rem] xl:h-[36rem]",
+  "2xl": "h-[22rem] sm:h-[22rem] md:h-[28rem] lg:h-[30rem] xl:h-[36rem]",
 };
 
 function ChartHeader({
@@ -111,6 +111,16 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     seriesIndex?: number;
     seriesName?: string;
   } | null>(null);
+  const [isChartInteractive, setIsChartInteractive] = useState(false);
+  const [legendItems, setLegendItems] = useState<LegendItemData[]>([]);
+  const [selectedLegendItem, setSelectedLegendItem] = useState<
+    string | undefined
+  >();
+  const datasetAvailable = Array.isArray(dataset)
+    ? !!dataset.length
+    : !!dataset;
+  const shouldRenderChart = isLoading === true || datasetAvailable;
+  const yUnit = axes.y.displayUnit ?? axes.y.unit;
   const chartSkeletonOptions = useMemo(
     () =>
       createChartSkeletonOptions({
@@ -120,12 +130,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       }),
     [skeletonOpts?.chart, compact, themeMode]
   );
-  const [legendItems, setLegendItems] = useState<LegendItemData[]>([]);
-  const [selectedLegendItem, setSelectedLegendItem] = useState<
-    string | undefined
-  >();
-  const datasetExists = Array.isArray(dataset) ? !!dataset.length : !!dataset;
-  const yUnit = axes.y.displayUnit ?? axes.y.unit;
   const series = useMemo(
     () =>
       seriesProp
@@ -159,7 +163,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     () =>
       ({
         animationEasing: "cubicOut",
-        animationDuration: 500,
+        animationDuration: 300,
         animationDelayUpdate: (idx: number) => idx * 2,
         animationThreshold: 20_000,
         animation: true,
@@ -188,6 +192,55 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     [compact, axes, tooltipOpts, themeMode]
   );
 
+  const idleTimerRef = useRef<number | null>(null);
+
+  const setUpChartFinishedEventHandler = useCallback(
+    (chart: EChartsInstance) => {
+      const onFinished = () => {
+        if (idleTimerRef.current !== null) {
+          window.clearTimeout(idleTimerRef.current);
+        }
+
+        idleTimerRef.current = window.setTimeout(() => {
+          setIsChartInteractive(true);
+          idleTimerRef.current = null;
+        }, 100);
+      };
+
+      chart.off("finished");
+      chart.on("finished", onFinished);
+
+      return () => {
+        chart.off("finished", onFinished);
+
+        if (idleTimerRef.current !== null) {
+          window.clearTimeout(idleTimerRef.current);
+          idleTimerRef.current = null;
+        }
+      };
+    },
+    []
+  );
+
+  useEffect(() => {
+    const chart = chartInstanceRef.current?.getEchartsInstance();
+    if (!chart) return;
+
+    setIsChartInteractive(false);
+    chart.dispatchAction({ type: "hideTip" });
+
+    const cleanup = setUpChartFinishedEventHandler(chart);
+    return cleanup;
+  }, [dataset, series, isLoading, setUpChartFinishedEventHandler]);
+
+  useEffect(() => {
+    const chart = chartInstanceRef.current?.getEchartsInstance();
+    if (!chart) return;
+
+    chart.dispatchAction({ type: "hideTip" });
+    chart.setOption({ tooltip: { show: !isLoading } }, { notMerge: false });
+  }, [dataset, series, isLoading]);
+
   const onChartReady = useCallback((chart: EChartsInstance) => {
     chart.on(
       "mouseover",
@@ -204,6 +257,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
 
     chart.on("globalout", () => {
       chart.dispatchAction({ type: "downplay" });
+      chart.dispatchAction({ type: "hideTip" });
       hoveredSeriesRef.current = null;
       setSelectedLegendItem(undefined);
     });
@@ -321,6 +375,16 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     );
   }, [baseOptions, dataset, series]);
 
+  useEffect(() => {
+    const chart = chartInstanceRef.current?.getEchartsInstance();
+
+    if (!chart || !isLoading) return;
+
+    chart.setOption(chartSkeletonOptions, {
+      notMerge: true,
+    });
+  }, [chartSkeletonOptions, isLoading]);
+
   return (
     <div>
       <ChartHeader
@@ -335,15 +399,16 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           SIZES[size],
           {
             "animate-pulse": isLoading,
+            "pointer-events-none": !isChartInteractive,
           }
         )}
       >
-        {isLoading || datasetExists ? (
+        {shouldRenderChart ? (
           <ReactEChartsCore
             echarts={echarts}
             ref={chartInstanceRef}
             onChartReady={onChartReady}
-            option={isLoading ? chartSkeletonOptions : baseOptions}
+            option={baseOptions}
             style={{ height: "100%", width: "100%" }}
           />
         ) : (
