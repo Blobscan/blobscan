@@ -6,6 +6,7 @@ export const TotalBlocksChart = createTimeseriesChart({
     yAxis: { type: "count" },
     timeseries: [
       {
+        name: "Total Blocks",
         type: "bar",
         metric: "totalBlocks",
         stack: "total",
@@ -15,9 +16,6 @@ export const TotalBlocksChart = createTimeseriesChart({
       chart: {
         variant: "bar",
       },
-    },
-    tooltipOpts: {
-      displayTotal: true,
     },
   },
   requiredMetrics: ["totalBlocks"],
