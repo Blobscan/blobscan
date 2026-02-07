@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 
 import { TimeseriesChartPage } from "~/components/TimeseriesChartPage";
-import { TotalTransactionsChart } from "~/components/TimeseriesCharts";
+import { TotalTransactionsChart } from "~/components/TimeseriesCharts/TotalTransactionsChart";
 
 const TotalTransactions: NextPage = function () {
   return (

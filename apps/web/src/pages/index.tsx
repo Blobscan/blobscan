@@ -12,10 +12,8 @@ import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
-import {
-  AvgBlobGasPriceChart,
-  TotalBlobsChart,
-} from "~/components/TimeseriesCharts";
+import { AvgBlobGasPriceChart } from "~/components/TimeseriesCharts/AvgBlobGasPriceChart";
+import { TotalBlobsChart } from "~/components/TimeseriesCharts/TotalBlobsChart";
 import { api } from "~/api-client";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import NextError from "~/pages/_error";

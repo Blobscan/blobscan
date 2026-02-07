@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 
 import { TimeseriesChartPage } from "~/components/TimeseriesChartPage";
-import { TotalBlobUsageSizeChart } from "~/components/TimeseriesCharts";
+import { TotalBlobUsageSizeChart } from "~/components/TimeseriesCharts/TotalBlobUsageSizeChart";
 
 const TotalBlobUsageSize: NextPage = function () {
   return (

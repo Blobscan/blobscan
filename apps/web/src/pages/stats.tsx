@@ -22,19 +22,17 @@ import {
   StatsSectionSelector,
 } from "~/components/Selectors/StatsSectionSelector";
 import { SubHeader } from "~/components/SubHeader";
-import {
-  AvgBlobBaseFeeChart,
-  TotalBlobBaseFeesChart,
-  TotalBlobGasComparisonChart,
-  TotalBlobGasUsedChart,
-  TotalBlobSizeChart,
-  TotalBlobUsageSizeChart,
-  TotalBlobsChart,
-  TotalBlocksChart,
-  TotalTransactionsChart,
-  TotalUniqueAddressesChart,
-  AvgBlobGasPriceChart,
-} from "~/components/TimeseriesCharts";
+import { AvgBlobBaseFeeChart } from "~/components/TimeseriesCharts/AvgBlobBaseFeeChart";
+import { AvgBlobGasPriceChart } from "~/components/TimeseriesCharts/AvgBlobGasPriceChart";
+import { TotalBlobBaseFeesChart } from "~/components/TimeseriesCharts/TotalBlobBaseFeesChart";
+import { TotalBlobGasComparisonChart } from "~/components/TimeseriesCharts/TotalBlobGasComparisonChart";
+import { TotalBlobGasUsedChart } from "~/components/TimeseriesCharts/TotalBlobGasUsedChart";
+import { TotalBlobSizeChart } from "~/components/TimeseriesCharts/TotalBlobSizeChart";
+import { TotalBlobUsageSizeChart } from "~/components/TimeseriesCharts/TotalBlobUsageSizeChart";
+import { TotalBlobsChart } from "~/components/TimeseriesCharts/TotalBlobsChart";
+import { TotalBlocksChart } from "~/components/TimeseriesCharts/TotalBlocksChart";
+import { TotalTransactionsChart } from "~/components/TimeseriesCharts/TotalTransactionsChart";
+import { TotalUniqueAddressesChart } from "~/components/TimeseriesCharts/TotalUniqueAddressesChart";
 import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
