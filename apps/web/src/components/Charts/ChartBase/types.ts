@@ -1,65 +1,53 @@
 import type { EtherUnit } from "@blobscan/eth-format";
 
-import type { BYTE_UNITS } from "~/utils";
+import type { ByteUnit } from "~/utils";
 
-export type MetricType = "count" | "average" | "time";
+export type AxisType = "count" | "average" | "time";
 
-export type MetricUnitType = "ether" | "byte" | "none";
+export type AxisUnitType = "ether" | "byte";
 
-interface BaseMetricInfo {
-  type: MetricType;
-  unitType?: MetricUnitType;
+interface AxisBase {
+  type: AxisType;
+  unitType?: AxisUnitType;
+  unit?: EtherUnit | ByteUnit;
+  displayUnit?: EtherUnit | ByteUnit;
 }
-interface TimeMetricInfo extends BaseMetricInfo {
+export interface TimeAxis extends AxisBase {
   type: "time";
+  unitType?: never;
+  unit?: never;
+  displayUnit?: never;
 }
 
-interface UnitlessMetricInfo extends BaseMetricInfo {
-  type: Exclude<MetricType, "time">;
-  unitType: "none";
+export interface UnitlessAxis extends AxisBase {
+  type: Exclude<AxisType, "time">;
+  unitType?: never;
+  unit?: never;
+  displayUnit?: never;
 }
 
-interface EtherMetricInfo extends BaseMetricInfo {
-  type: Exclude<MetricType, "time">;
+export interface EtherAxis extends AxisBase {
+  type: Exclude<AxisType, "time">;
   unitType: "ether";
   unit: EtherUnit;
+  displayUnit?: EtherUnit;
 }
 
-interface ByteMetricInfo extends BaseMetricInfo {
-  type: Exclude<MetricType, "time">;
+export interface BytesAxis extends AxisBase {
+  type: Exclude<AxisType, "time">;
   unitType: "byte";
-  unit: (typeof BYTE_UNITS)[number];
+  unit: ByteUnit;
+  displayUnit?: ByteUnit;
 }
 
-export type MetricInfo =
-  | TimeMetricInfo
-  | UnitlessMetricInfo
-  | EtherMetricInfo
-  | ByteMetricInfo;
+export type Axis = TimeAxis | UnitlessAxis | EtherAxis | BytesAxis;
 
-export interface AxisMetricInfo {
-  xAxis: MetricInfo;
-  yAxis: MetricInfo;
-}
+export type Axes = {
+  x: Axis;
+  y: Axis;
+};
 
-export interface ChartCommonProps {
-  compact?: boolean;
-  showLegend?: boolean;
-  size?: "sm" | "md" | "lg";
-}
-
-interface TimeSeriesBaseProps extends ChartCommonProps {
-  days?: string[];
-}
-
-export interface TimeSeriesProps<T extends number | string>
-  extends TimeSeriesBaseProps {
-  series?: {
-    name?: string;
-    values: T[];
-  }[];
-}
-
-export interface CustomTimeSeriesProps<T> extends TimeSeriesBaseProps {
-  series?: T;
-}
+export type StandardEncoding = {
+  x: number[];
+  y: number[];
+};

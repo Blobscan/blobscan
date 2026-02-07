@@ -1,18 +1,49 @@
 import type { MutableRefObject } from "react";
 import type { EChartOption } from "echarts";
 
-import { ROLLUP_STYLES } from "~/rollups";
-import type { Rollup } from "~/types";
 import { calculatePercentage, getNeighbouringElements } from "~/utils";
 import type { Numerish } from "~/utils";
-import { aggregateValues } from "../../helpers";
-import type { MetricInfo } from "../types";
-import { formatMetricValue, formatSeriesName } from "./formatters";
+import { aggregateValues } from "../../../TimeseriesCharts/helpers";
+import type { Axes, Axis, StandardEncoding } from "../types";
+import { formatAxisValue, formatSeriesName } from "./formatters";
+
+export function isStandardEncoding(value: unknown): value is StandardEncoding {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const v = value as Record<string, unknown>;
+
+  return (
+    Array.isArray(v.x) &&
+    v.x.every((n) => typeof n === "number") &&
+    Array.isArray(v.y) &&
+    v.y.every((n) => typeof n === "number")
+  );
+}
+
+function getValue(param: EChartOption.Tooltip.Format) {
+  const encode = param.encode;
+
+  if (isStandardEncoding(encode)) {
+    const dataIndex = encode.y[0];
+
+    if (dataIndex !== undefined) {
+      return param.data[dataIndex];
+    }
+  }
+
+  if (Array.isArray(param.value)) {
+    return param.value[1];
+  }
+
+  return param.value;
+}
 
 function buildSeriesHtmlElement({
   name,
   value,
-  metricInfo,
+  axis,
   marker,
   markerColor,
   total,
@@ -21,7 +52,7 @@ function buildSeriesHtmlElement({
 }: {
   name: string;
   value?: Numerish;
-  metricInfo: MetricInfo;
+  axis: Axis;
   marker?: string;
   markerColor?: string;
   total?: Numerish;
@@ -32,9 +63,7 @@ function buildSeriesHtmlElement({
   const percentage =
     value && total ? calculatePercentage(value, total).toFixed(2) : undefined;
   1;
-  const formattedValue = value
-    ? formatMetricValue(value, metricInfo)
-    : undefined;
+  const formattedValue = value ? formatAxisValue(value, axis) : undefined;
   const markerElement =
     marker ?? markerColor
       ? `<div style="width: 10px; height: 10px; background-color:${markerColor}; border-radius: 50%;"></div>`
@@ -63,143 +92,134 @@ function buildSeriesHtmlElement({
     </div>`;
 }
 
-export function createTooltip({
+function createTooltipFormater({
   currentSeriesRef,
-  displayTotal,
-  metricInfo: { xAxis: xAxisMetricInfo, yAxis: yAxisMetricInfo },
+  axes,
   themeMode,
-  opts,
+  displayTotal,
 }: {
   currentSeriesRef: MutableRefObject<{
     seriesIndex?: number;
     seriesName?: string;
   } | null>;
-  metricInfo: { xAxis: MetricInfo; yAxis: MetricInfo };
-  displayTotal?: boolean;
+  axes: Axes;
   themeMode: "light" | "dark";
-  opts?: EChartOption.Tooltip;
-}): EChartOption.Tooltip {
-  return {
-    trigger: "axis",
-    confine: true,
-    extraCssText: "font-size: 0.80rem;",
-    backgroundColor: themeMode === "dark" ? "#2E2854" : "#FAFAFA",
-    borderColor: themeMode === "dark" ? "#372779" : "#5D25D4",
-    formatter: (paramOrParams) => {
-      const seriesIndex = currentSeriesRef.current?.seriesIndex;
+  displayTotal?: boolean;
+}) {
+  return (
+    paramOrParams: EChartOption.Tooltip.Format | EChartOption.Tooltip.Format[]
+  ) => {
+    const seriesIndex = currentSeriesRef.current?.seriesIndex;
 
-      let dateHTMLElement: string | undefined;
-      const seriesHTMLElements: string[] = [];
-      const totalSeriesHTMLElements: string[] = [];
+    let dateHTMLElement: string | undefined;
+    const seriesHTMLElements: string[] = [];
+    const totalSeriesHTMLElements: string[] = [];
 
-      if (Array.isArray(paramOrParams)) {
-        if (!paramOrParams.length) {
-          return "Loading…";
+    if (Array.isArray(paramOrParams)) {
+      if (!paramOrParams.length) {
+        return "Loading…";
+      }
+
+      const dailyTotal = displayTotal
+        ? aggregateValues(
+            paramOrParams.map((p) => getValue(p)) as number[],
+            axes.y.type
+          )
+        : undefined;
+
+      const rollupSeries = paramOrParams.filter((d) =>
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        (d.seriesId as string).includes("rollup")
+      );
+      const totalItems = 15;
+      const filteredParams =
+        seriesIndex != null
+          ? getNeighbouringElements(paramOrParams, seriesIndex, totalItems)
+          : paramOrParams.slice(-10); // fallback if no hovered series
+
+      const { name, value } = paramOrParams[0] || {};
+      const date = name?.length
+        ? name
+        : Array.isArray(value)
+        ? value[0]
+        : value;
+      dateHTMLElement = date ? formatAxisValue(date, axes.x) : "-";
+
+      filteredParams.map((p) => {
+        const { seriesName, value, color } = p;
+        const currentSeriesName = seriesName?.toLowerCase();
+
+        if (!currentSeriesName || value === undefined) {
+          return "";
         }
 
-        const dayTotal = displayTotal
-          ? aggregateValues(
-              paramOrParams.map((p) => p.value ?? 0) as number[],
-              yAxisMetricInfo.type
-            )
-          : undefined;
-
-        const rollupSeries = paramOrParams.filter(
-          (d) => !!ROLLUP_STYLES[d.seriesName as Rollup]
-        );
-        const totalItems = 15;
-        const filteredParams =
-          seriesIndex != null
-            ? getNeighbouringElements(paramOrParams, seriesIndex, totalItems)
-            : paramOrParams.slice(0, 10); // fallback if no hovered series
-
-        const { name } = paramOrParams[0] || {};
-
-        dateHTMLElement = name
-          ? formatMetricValue(name, xAxisMetricInfo).toString()
-          : "-";
-
-        filteredParams.map((p) => {
-          const { seriesName, value, color } = p;
-          const currentSeriesName = seriesName?.toLowerCase();
-
-          if (
-            !currentSeriesName ||
-            value === undefined ||
-            Array.isArray(value)
-          ) {
-            return "";
-          }
-
-          const isSelected = displayTotal
-            ? currentSeriesRef.current?.seriesName?.toLowerCase() ===
-              currentSeriesName
-            : undefined;
-
-          const formattedName = formatSeriesName(seriesName);
-
-          seriesHTMLElements.push(
-            buildSeriesHtmlElement({
-              name: formattedName,
-              value: value,
-              total: dayTotal,
-              metricInfo: yAxisMetricInfo,
-              markerColor: color,
-              themeMode,
-              isSelected,
-            })
-          );
-        });
-
-        if (displayTotal) {
-          if (rollupSeries.length) {
-            const rollupTotal = aggregateValues(
-              rollupSeries.map((p) => p.value ?? 0) as number[],
-              yAxisMetricInfo.type
-            );
-
-            totalSeriesHTMLElements.push(
-              buildSeriesHtmlElement({
-                name: "Rollup",
-                value: rollupTotal,
-                metricInfo: yAxisMetricInfo,
-                total: dayTotal,
-                themeMode,
-              })
-            );
-          }
-
-          totalSeriesHTMLElements.push(
-            buildSeriesHtmlElement({
-              name: "Total",
-              value: dayTotal,
-              metricInfo: yAxisMetricInfo,
-              themeMode,
-            })
-          );
-        }
-      } else {
-        const { name, seriesName, value, color } = paramOrParams;
+        const isSelected =
+          currentSeriesRef.current?.seriesName?.toLowerCase() ===
+          currentSeriesName;
 
         const formattedName = formatSeriesName(seriesName);
 
         seriesHTMLElements.push(
           buildSeriesHtmlElement({
             name: formattedName,
-            value: (value as number | string) ?? 0,
-            metricInfo: yAxisMetricInfo,
+            value: getValue(p),
+            total: dailyTotal,
+            axis: axes.y,
             markerColor: color,
-            isSelected: true,
+            themeMode,
+            isSelected,
+          })
+        );
+      });
+
+      if (displayTotal) {
+        if (rollupSeries.length) {
+          const rollupTotal = aggregateValues(
+            rollupSeries.map((p) => getValue(p)) as number[],
+            axes.y.type
+          );
+
+          totalSeriesHTMLElements.push(
+            buildSeriesHtmlElement({
+              name: "Rollup",
+              value: rollupTotal,
+              axis: axes.y,
+              total: dailyTotal,
+              themeMode,
+            })
+          );
+        }
+
+        totalSeriesHTMLElements.push(
+          buildSeriesHtmlElement({
+            name: "Total",
+            value: dailyTotal,
+            axis: axes.y,
             themeMode,
           })
         );
-
-        dateHTMLElement = name
-          ? formatMetricValue(name, xAxisMetricInfo).toString()
-          : "-";
       }
+    } else {
+      const { name, seriesName, value, color } = paramOrParams;
 
-      return `
+      const formattedName = formatSeriesName(seriesName);
+
+      seriesHTMLElements.push(
+        buildSeriesHtmlElement({
+          name: formattedName,
+          value: (value as number | string) ?? 0,
+          axis: axes.y,
+          markerColor: color,
+          isSelected: true,
+          themeMode,
+        })
+      );
+
+      dateHTMLElement = name ? formatAxisValue(name, axes.x).toString() : "-";
+    }
+
+    return `
           <div style="display: flex; flex-direction: column; gap: 2px;">
             <div style="color: ${
               themeMode === "dark" ? "#FFFFFF" : "#171717"
@@ -223,7 +243,34 @@ export function createTooltip({
             }
           </div>
         `;
-    },
-    ...(opts ?? {}),
+  };
+}
+
+export function createBaseTooltipOptions({
+  currentSeriesRef,
+  displayTotal,
+  axes,
+  themeMode,
+}: {
+  currentSeriesRef: MutableRefObject<{
+    seriesIndex?: number;
+    seriesName?: string;
+  } | null>;
+  axes: Axes;
+  displayTotal?: boolean;
+  themeMode: "light" | "dark";
+}): EChartOption.Tooltip {
+  return {
+    trigger: "axis",
+    confine: true,
+    extraCssText: "font-size: 0.80rem;",
+    backgroundColor: themeMode === "dark" ? "#2E2854" : "#FAFAFA",
+    borderColor: themeMode === "dark" ? "#372779" : "#5D25D4",
+    formatter: createTooltipFormater({
+      currentSeriesRef,
+      axes,
+      themeMode,
+      displayTotal,
+    }),
   };
 }

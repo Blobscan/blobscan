@@ -11,7 +11,6 @@ import { Link } from "../Link";
 import { Separator } from "../Separator";
 
 export type DetailsLayoutProps = {
-  children?: ReactNode;
   header: ReactNode;
   fields: InfoGridProps["fields"];
   resource?: ExplorerResource;

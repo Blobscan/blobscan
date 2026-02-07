@@ -29,3 +29,7 @@ export function buildTransactionsRoute() {
 export function buildAllStatsRoute() {
   return "/stats/";
 }
+
+export function buildStatRoute(metric: string) {
+  return `/stat/${metric}`;
+}

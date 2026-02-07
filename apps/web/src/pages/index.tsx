@@ -9,20 +9,15 @@ import { MetricCard } from "~/components/Cards/MetricCard";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
-import {
-  DailyAvgBlobGasPriceChart,
-  DailyBlobsChart,
-} from "~/components/Charts";
-import { convertTimeseriesToChartData } from "~/components/Charts/helpers";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
+import { AvgBlobGasPriceChart } from "~/components/TimeseriesCharts/AvgBlobGasPriceChart";
+import { TotalBlobsChart } from "~/components/TimeseriesCharts/TotalBlobsChart";
 import { api } from "~/api-client";
+import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import NextError from "~/pages/_error";
-import type {
-  BlockWithExpandedBlobsAndTransactions,
-  TimeseriesMetric,
-} from "~/types";
+import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
   buildBlobsRoute,
   buildBlocksRoute,
@@ -32,9 +27,6 @@ import {
 const LATEST_ITEMS_LENGTH = 5;
 
 const CARD_HEIGHT = "sm:h-28";
-
-const CATEGORIZED_METRICS: TimeseriesMetric[] = ["totalBlobs"] as const;
-const GLOBAL_METRICS: TimeseriesMetric[] = ["avgBlobGasPrice"] as const;
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -57,34 +49,24 @@ const Home: NextPage = () => {
       select: ({ data }) =>
         data.find(({ dimension }) => dimension.type === "global")?.metrics,
     });
-  const { data: categorizedChartData, error: categorizedChartDataError } =
-    api.stats.getTimeseries.useQuery(
-      {
-        metrics: CATEGORIZED_METRICS.join(","),
-        timeFrame: "30d",
-        categories: "other",
-        rollups: "all",
-        sort: "asc",
-      },
-      {
-        refetchOnWindowFocus: false,
-        select: ({ data }) => convertTimeseriesToChartData(data),
-      }
-    );
-  const { data: globalChartData, error: globalChartDataError } =
-    api.stats.getTimeseries.useQuery(
-      {
-        metrics: GLOBAL_METRICS.join(","),
-        timeFrame: "30d",
-        sort: "asc",
-      },
-      {
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        refetchOnReconnect: false,
-        select: ({ data }) => convertTimeseriesToChartData(data),
-      }
-    );
+  const {
+    data: globalChartDataset,
+    isLoading: globalChartLoading,
+    error: globalChartDataError,
+  } = useTimeseriesQuery({
+    metrics: ["avgBlobGasPrice"],
+    timeFrame: "30d",
+  });
+  const {
+    data: categorizedChartDatasets,
+    isLoading: categorizedChartLoading,
+    error: categorizedChartDataError,
+  } = useTimeseriesQuery({
+    metrics: ["totalBlobs"],
+    timeFrame: "30d",
+    categories: ["other"],
+    rollups: ["all"],
+  });
   const { blocks, transactions, blobs } = useMemo(() => {
     if (!blocksData) {
       return { blocks: [], transactions: [], blobs: [] };
@@ -139,12 +121,13 @@ const Home: NextPage = () => {
           </span>
         </div>
       </div>
+
       <div className="flex w-full flex-col gap-8 sm:gap-10">
         <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
-            <DailyAvgBlobGasPriceChart
-              days={globalChartData?.timestamps}
-              series={globalChartData?.metricSeries.avgBlobGasPrice}
+            <AvgBlobGasPriceChart
+              dataset={globalChartDataset}
+              isLoading={globalChartLoading}
               size="sm"
               compact
             />
@@ -204,10 +187,10 @@ const Home: NextPage = () => {
             />
           </div>
           <div className="col-span-2 sm:col-span-4">
-            <DailyBlobsChart
+            <TotalBlobsChart
               size="sm"
-              days={categorizedChartData?.timestamps}
-              series={categorizedChartData?.metricSeries.totalBlobs}
+              dataset={categorizedChartDatasets}
+              isLoading={categorizedChartLoading}
               compact
             />
           </div>

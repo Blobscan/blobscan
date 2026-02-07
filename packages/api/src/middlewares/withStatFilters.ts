@@ -1,21 +1,19 @@
 import type { Chain } from "@blobscan/chains";
+import type { DayjsDatePeriod } from "@blobscan/dayjs";
 import dayjs from "@blobscan/dayjs";
 import type { Prisma } from "@blobscan/db";
-import type { Category, Rollup } from "@blobscan/db/prisma/enums";
-import { DailyStatsModel } from "@blobscan/db/prisma/zod";
+import { Category, Rollup } from "@blobscan/db/prisma/enums";
 import { z } from "@blobscan/zod";
 
-import type { ContextScope } from "../context";
 import { t } from "../trpc-client";
 import {
   commaSeparatedCategoriesSchema,
   commaSeparatedRollupsSchema,
   commaSeparatedValuesSchema,
+  timeseriesMetricsSchema,
 } from "../zod-schemas";
 
-// Number of days to subtract when the time frame is larger than 30 days
-// and the scope is web. This is to avoid fetching too many days of data at once.
-const DAYS_INTERVAL_GRANULARITY = 5;
+const METRIC_NAMES = Object.keys(timeseriesMetricsSchema.shape);
 
 export const timeFrameSchema = z.enum([
   "1d",
@@ -68,14 +66,7 @@ export const withMetricsFilterSchema = z
   .object({
     metrics: commaSeparatedValuesSchema.transform((values, ctx) =>
       values?.map((v) => {
-        const res = DailyStatsModel.omit({
-          id: true,
-          day: true,
-          category: true,
-          rollup: true,
-        })
-          .keyof()
-          .safeParse(v);
+        const res = timeseriesMetricsSchema.keyof().safeParse(v);
 
         if (!res.success) {
           ctx.addIssue({
@@ -101,72 +92,130 @@ export const withStatFiltersSchema = withMetricsFilterSchema
 
 export type StatFiltersOutputSchema = z.output<typeof withStatFiltersSchema>;
 
+function getRecommendedDaysInterval(
+  { from, to }: Required<DayjsDatePeriod>,
+  { categories, rollups, metrics }: StatFiltersOutputSchema
+) {
+  const days = to.diff(from, "day");
+  const categoriesCount =
+    categories === "all"
+      ? Object.keys(Category).length
+      : categories?.length ?? 0;
+  const rollupsCount =
+    rollups === "all" ? Object.keys(Rollup).length : rollups?.length ?? 0;
+  const metricsCount = metrics?.length ?? METRIC_NAMES.length;
+  const dimensionCount = categoriesCount * rollupsCount;
+
+  const totalPotentialPoints = days * dimensionCount * metricsCount;
+
+  if (totalPotentialPoints < 15_000) {
+    return 1;
+  }
+
+  if (totalPotentialPoints < 30_000) {
+    return 3;
+  }
+
+  if (totalPotentialPoints < 60_000) {
+    return 4;
+  }
+
+  return 7;
+}
+
+function getSampleDates(
+  { from, to }: Required<DayjsDatePeriod>,
+  daysInterval: number
+) {
+  const dates: string[] = [];
+
+  let current = from.clone();
+
+  while (current.isBefore(to) || current.isSame(to)) {
+    dates.push(current.utc().toISOString());
+
+    current = current.add(daysInterval, "day");
+  }
+
+  return dates;
+}
+
 function buildDayWhereClause({
   chain,
-  scope,
-  timeFrame,
+  input,
 }: {
   chain: Chain;
-  scope: ContextScope;
-  timeFrame: TimeFrame;
+  input: StatFiltersOutputSchema;
 }): DayStatFilter["day"] {
   let days: number;
-  const currentDate = dayjs();
+  const to = dayjs().utc().subtract(1, "day").startOf("day");
+  const toISO = to.utc().toISOString();
+  const timeFrame = input.timeFrame;
 
-  if (timeFrame === "All") {
-    const activeFork = chain.forks[0];
-    const forkActivationDate = dayjs(activeFork.activationDate);
+  let from: dayjs.Dayjs;
 
-    if (forkActivationDate.isAfter(currentDate)) {
+  if (!timeFrame || timeFrame === "All") {
+    const dencunFork = chain.forks[0];
+    const dencunActivationDate = dayjs(dencunFork.activationDate);
+
+    if (dencunActivationDate.isAfter(to)) {
+      const dencunActivationDateISO = dencunActivationDate.utc().toISOString();
       return {
-        lte: forkActivationDate.utc().toISOString(),
-        gt: currentDate.utc().toISOString(),
+        gt: dencunActivationDateISO,
+        lte: toISO,
       };
     }
 
-    days = currentDate.diff(forkActivationDate, "D");
+    from = dencunActivationDate;
+
+    days = from.diff(dencunActivationDate, "day");
   } else {
     days = parseInt(timeFrame.split("d")[0] ?? "1");
+    from = to.subtract(days, "day").startOf("day");
   }
 
-  const finalDate = currentDate.utc().subtract(1, "day").startOf("day");
-  const finalISODate = finalDate.utc().toISOString();
-
-  if (days === 1) {
+  if (from.isSame(to)) {
     return {
-      gte: finalISODate,
-      lte: finalISODate,
+      gte: toISO,
+      lte: toISO,
     };
   }
 
-  const isLargeTimeFrame = days > 30;
+  const daysInterval = getRecommendedDaysInterval(
+    {
+      from,
+      to,
+    },
+    input
+  );
+  const samplingRequired = daysInterval > 1;
 
-  let selectedDates: string[] | undefined;
+  if (samplingRequired) {
+    const sampleDates = getSampleDates(
+      {
+        from,
+        to,
+      },
+      daysInterval
+    );
 
-  if (scope === "web" && isLargeTimeFrame) {
-    const origin = finalDate.subtract(days, "day").startOf("day").utc();
-    const dates: string[] = [];
-
-    let current = finalDate.clone();
-    while (current.isAfter(origin) || current.isSame(origin)) {
-      dates.push(current.utc().toISOString());
-      current = current.subtract(DAYS_INTERVAL_GRANULARITY, "day");
-    }
-
-    selectedDates = dates;
+    return {
+      in: sampleDates,
+    };
   }
 
+  const fromISO = from.utc().toISOString();
+
   return {
-    gt: finalDate.subtract(days, "day").startOf("day").utc().toISOString(),
-    lte: finalISODate,
-    in: selectedDates,
+    gt: fromISO,
+    lte: toISO,
   };
 }
 
 export const withStatFilters = t.middleware(
-  ({ next, input = {}, ctx: { chain, scope } }) => {
-    const { categories, rollups, timeFrame, metrics } =
-      input as StatFiltersOutputSchema;
+  ({ next, input: input_ = {}, ctx: { chain } }) => {
+    const input = input_ as StatFiltersOutputSchema;
+    const { categories, rollups, metrics } = input;
     let select: StatsFilters["select"];
     const where: StatsFilters["where"] = {};
 
@@ -180,13 +229,10 @@ export const withStatFilters = t.middleware(
       );
     }
 
-    if (timeFrame) {
-      where.day = buildDayWhereClause({
-        chain,
-        scope,
-        timeFrame,
-      });
-    }
+    where.day = buildDayWhereClause({
+      chain,
+      input,
+    });
 
     const isAllCategoriesEnabled = categories === "all";
     const isAllRollupsEnabled = rollups === "all";

@@ -17,7 +17,10 @@ import { Table } from "~/components/Table";
 import type { TimestampFormat } from "~/components/Toggles";
 import { TimestampToggle } from "~/components/Toggles";
 import { api } from "~/api-client";
-import { useQueryParams } from "~/hooks/useQueryParams";
+import {
+  serializedMultiValueParam,
+  useQueryParams,
+} from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import type { ByteUnit } from "~/utils";
@@ -37,7 +40,12 @@ const BYTES_UNIT: ByteUnit = "KiB";
 
 const Txs: NextPage = function () {
   const { paginationParams, filterParams } = useQueryParams();
-  const rollups = filterParams.rollups?.join(",");
+  const rollups = filterParams.rollups
+    ? serializedMultiValueParam(filterParams.rollups)
+    : undefined;
+  const categories = filterParams.categories
+    ? serializedMultiValueParam(filterParams.categories)
+    : undefined;
   const {
     data: txsData,
     isLoading: txsIsLoading,
@@ -48,6 +56,7 @@ const Txs: NextPage = function () {
   }>({
     ...paginationParams,
     ...filterParams,
+    categories,
     rollups,
     expand: "block,blob",
   });
@@ -58,6 +67,7 @@ const Txs: NextPage = function () {
   } = api.tx.getCount.useQuery(
     {
       ...filterParams,
+      categories,
       rollups,
     },
     {

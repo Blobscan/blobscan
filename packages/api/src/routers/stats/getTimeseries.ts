@@ -1,7 +1,6 @@
 import { Prisma } from "@blobscan/db";
 import { Rollup } from "@blobscan/db/prisma/enums";
 import { Category } from "@blobscan/db/prisma/enums";
-import { DailyStatsModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { withSortFilterSchema } from "../../middlewares/withFilters";
@@ -16,20 +15,17 @@ import {
   arrayOptionalizeShape,
   dimensionSchema,
   getDimension,
+  timeseriesMetricsSchema,
 } from "../../zod-schemas";
 import { buildStatsPath } from "./helpers";
 
-const metricsSchema = DailyStatsModel.omit({
-  id: true,
-  day: true,
-  category: true,
-  rollup: true,
-});
-const METRICS = Object.keys(metricsSchema.shape);
+const METRIC_NAMES = Object.keys(timeseriesMetricsSchema.shape);
 
 const inputSchema = withStatFiltersSchema.merge(withSortFilterSchema);
 
-const metricSeriesSchema = z.object(arrayOptionalizeShape(metricsSchema.shape));
+const metricSeriesSchema = z.object(
+  arrayOptionalizeShape(timeseriesMetricsSchema.shape)
+);
 
 const timeseriesSchema = z.object({
   dimension: dimensionSchema,
@@ -79,7 +75,7 @@ function createOutput({
   const requestedCategories =
     categories === "all" ? Object.values(Category) : categories;
   const requestedRollups = rollups === "all" ? Object.values(Rollup) : rollups;
-  const requestedMetrics = stats ?? METRICS;
+  const requestedMetrics = stats ?? METRIC_NAMES;
 
   if (requestedCategories) {
     output.data.series.push(
@@ -123,7 +119,10 @@ function getSeriesInfo({
 
   return {
     dimension,
-    id: dimension.name ?? "global",
+    id:
+      dimension.type !== "global"
+        ? `${dimension.type}-${dimension.name}`
+        : "global",
   };
 }
 
@@ -170,8 +169,10 @@ export const getTimeseries = publicProcedure
 
         const output = createOutput(input);
         const seriesToIdx = new Map<string, number>(
-          output.data.series.map(({ dimension: { type, name } }, i) => [
-            name ?? type,
+          output.data.series.map(({ dimension }, i) => [
+            dimension.type !== "global"
+              ? `${dimension.type}-${dimension.name}`
+              : "global",
             i,
           ])
         );
@@ -188,24 +189,17 @@ export const getTimeseries = publicProcedure
 
           const currTimestampIdx = output.data.timestamps.length - 1;
 
-          const {
-            dimension: { type, name },
-            id: seriesId,
-          } = getSeriesInfo(stats);
-          const timeSeriesIdx = seriesToIdx.get(seriesId);
+          const { id: seriesId } = getSeriesInfo(stats);
+          const timeseriesIdx = seriesToIdx.get(seriesId);
 
-          if (timeSeriesIdx === undefined) {
-            throw new Error(
-              `Series of type ${type} and name ${name} not found`
-            );
+          if (timeseriesIdx === undefined) {
+            throw new Error(`Timeseries with id ${seriesId} not found`);
           }
 
-          const currTimeseries = output.data.series[timeSeriesIdx];
+          const currTimeseries = output.data.series[timeseriesIdx];
 
           if (currTimeseries === undefined) {
-            throw new Error(
-              `Series of type ${type} and name ${name} not found`
-            );
+            throw new Error(`Timeseries with id ${seriesId} not found`);
           }
 
           if (currTimeseries.startTimestampIdx === undefined) {
