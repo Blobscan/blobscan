@@ -38,7 +38,7 @@ export const Legend: FC<LegendProps> = function ({
   const legendItemsRef = useRef<Map<string, HTMLDivElement>>(new Map());
   const { value: debouncedSelectedItem, isDebouncing } = useDebounce(
     selectedItem,
-    200
+    150
   );
 
   const handleToggle = useCallback(
