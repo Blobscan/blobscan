@@ -1,5 +1,11 @@
 # @blobscan/api
 
+## 0.33.0
+
+### Minor Changes
+
+- [#950](https://github.com/Blobscan/blobscan/pull/950) [`47834ec`](https://github.com/Blobscan/blobscan/commit/47834eca90ac2bb0fb1dae7532aacc9d42e5a6e6) Thanks [@PJColombo](https://github.com/PJColombo)! - Renamed `category` filter query param to `categories`
+
 ## 0.32.0
 
 ### Minor Changes

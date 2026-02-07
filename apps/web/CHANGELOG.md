@@ -1,5 +1,34 @@
 # @blobscan/web
 
+## 0.48.0
+
+### Minor Changes
+
+- [#950](https://github.com/Blobscan/blobscan/pull/950) [`47834ec`](https://github.com/Blobscan/blobscan/commit/47834eca90ac2bb0fb1dae7532aacc9d42e5a6e6) Thanks [@PJColombo](https://github.com/PJColombo)! - Added dataZoom support to charts
+
+- [#950](https://github.com/Blobscan/blobscan/pull/950) [`47834ec`](https://github.com/Blobscan/blobscan/commit/47834eca90ac2bb0fb1dae7532aacc9d42e5a6e6) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated chart legend to automatically scroll and center the selected legend item
+
+- [#950](https://github.com/Blobscan/blobscan/pull/950) [`47834ec`](https://github.com/Blobscan/blobscan/commit/47834eca90ac2bb0fb1dae7532aacc9d42e5a6e6) Thanks [@PJColombo](https://github.com/PJColombo)! - Added a new section query parameter to the Stats page to preserve the selected section
+
+- [#950](https://github.com/Blobscan/blobscan/pull/950) [`47834ec`](https://github.com/Blobscan/blobscan/commit/47834eca90ac2bb0fb1dae7532aacc9d42e5a6e6) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved chart data rendering animation
+
+- [#950](https://github.com/Blobscan/blobscan/pull/950) [`47834ec`](https://github.com/Blobscan/blobscan/commit/47834eca90ac2bb0fb1dae7532aacc9d42e5a6e6) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed “daily” from all chart titles
+
+- [#950](https://github.com/Blobscan/blobscan/pull/950) [`47834ec`](https://github.com/Blobscan/blobscan/commit/47834eca90ac2bb0fb1dae7532aacc9d42e5a6e6) Thanks [@PJColombo](https://github.com/PJColombo)! - Refined chart skeleton loading visuals
+
+- [#950](https://github.com/Blobscan/blobscan/pull/950) [`47834ec`](https://github.com/Blobscan/blobscan/commit/47834eca90ac2bb0fb1dae7532aacc9d42e5a6e6) Thanks [@PJColombo](https://github.com/PJColombo)! - Added a dedicated details page for each stat chart on the General Stats page
+
+- [#950](https://github.com/Blobscan/blobscan/pull/950) [`47834ec`](https://github.com/Blobscan/blobscan/commit/47834eca90ac2bb0fb1dae7532aacc9d42e5a6e6) Thanks [@PJColombo](https://github.com/PJColombo)! - Reduced the default Stats page timeframe from 6 months to 15 days
+
+### Patch Changes
+
+- [#950](https://github.com/Blobscan/blobscan/pull/950) [`47834ec`](https://github.com/Blobscan/blobscan/commit/47834eca90ac2bb0fb1dae7532aacc9d42e5a6e6) Thanks [@PJColombo](https://github.com/PJColombo)! - Extracted trpc timeseries fetching logic into a hook
+
+- [#950](https://github.com/Blobscan/blobscan/pull/950) [`47834ec`](https://github.com/Blobscan/blobscan/commit/47834eca90ac2bb0fb1dae7532aacc9d42e5a6e6) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated charts to rely on ECharts datasets rather than series-based data definitions
+
+- Updated dependencies [[`47834ec`](https://github.com/Blobscan/blobscan/commit/47834eca90ac2bb0fb1dae7532aacc9d42e5a6e6)]:
+  - @blobscan/api@0.33.0
+
 ## 0.47.0
 
 ### Minor Changes
