@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/rest-api-server",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "private": true,
   "scripts": {
     "build": "ncc build src/index.ts --target es2020 --minify",
@@ -24,7 +24,7 @@
     "@blobscan/db": "workspace:^0.26.0",
     "@blobscan/env": "workspace:^0.2.0",
     "@blobscan/errors": "workspace:^0.0.2",
-    "@blobscan/logger": "workspace:^0.1.4",
+    "@blobscan/logger": "workspace:^0.1.5",
     "@blobscan/open-telemetry": "workspace:^0.0.10",
     "@blobscan/price-feed": "workspace:^0.1.0",
     "@blobscan/rollups": "workspace:^0.4.2",
