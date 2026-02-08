@@ -29,15 +29,17 @@ function shouldSkipTracking(req: Request): boolean {
   const path = req.path;
 
   return TRACKING_EXCLUSIONS.some((rule) => {
-    const isPathMatch = path
+    const isPathBlacklisted = path
       .split("/")
       .some((segment) => segment === rule.path);
 
     if (rule.methods?.length) {
-      return isPathMatch && rule.methods.includes(req.method as RequestMethod);
+      return (
+        isPathBlacklisted && rule.methods.includes(req.method as RequestMethod)
+      );
     }
 
-    return isPathMatch;
+    return isPathBlacklisted;
   });
 }
 
