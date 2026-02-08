@@ -1,5 +1,14 @@
 # @blobscan/rest-api-server
 
+## 0.12.3
+
+### Patch Changes
+
+- [#952](https://github.com/Blobscan/blobscan/pull/952) [`f506b01`](https://github.com/Blobscan/blobscan/commit/f506b016f4c32feb3dfb4b1ee7da76e09de53821) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue where the REST API could crash if auxiliary blob storages failed to initialize, even when the main storage was available
+
+- Updated dependencies [[`f506b01`](https://github.com/Blobscan/blobscan/commit/f506b016f4c32feb3dfb4b1ee7da76e09de53821)]:
+  - @blobscan/logger@0.1.5
+
 ## 0.12.2
 
 ### Patch Changes

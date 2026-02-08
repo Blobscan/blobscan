@@ -1,5 +1,11 @@
 # @blobscan/logger
 
+## 0.1.5
+
+### Patch Changes
+
+- [#952](https://github.com/Blobscan/blobscan/pull/952) [`f506b01`](https://github.com/Blobscan/blobscan/commit/f506b016f4c32feb3dfb4b1ee7da76e09de53821) Thanks [@PJColombo](https://github.com/PJColombo)! - Colorized error causes
+
 ## 0.1.4
 
 ### Patch Changes
