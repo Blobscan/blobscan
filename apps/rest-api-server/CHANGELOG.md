@@ -1,5 +1,11 @@
 # @blobscan/rest-api-server
 
+## 0.12.4
+
+### Patch Changes
+
+- [#954](https://github.com/Blobscan/blobscan/pull/954) [`07569cb`](https://github.com/Blobscan/blobscan/commit/07569cbeb0bbcb358c1bbb36e2448e81285c1f54) Thanks [@PJColombo](https://github.com/PJColombo)! - - Fixed an issue where Matomo tracking errors were not handled properly
+
 ## 0.12.3
 
 ### Patch Changes
