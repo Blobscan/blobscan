@@ -1,13 +1,14 @@
 import type { FC, ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useState } from "react";
-import classNames from "classnames";
+import cn from "classnames";
 import type { EChartOption, ECElementEvent } from "echarts";
 import type { EChartsInstance } from "echarts-for-react";
 import ReactEChartsCore from "echarts-for-react/lib/core";
 import { useTheme } from "next-themes";
 
 import echarts from "~/echarts";
+import NoResults from "~/icons/no-results.svg";
 import type { Size, TimeseriesDimension } from "~/types";
 import { Legend } from "./Legend";
 import type { LegendItemData, LegendProps } from "./Legend";
@@ -53,6 +54,14 @@ const SIZES: Record<Size, string> = {
   "2xl": "h-[22rem] sm:h-[22rem] md:h-[28rem] lg:h-[30rem] xl:h-[36rem]",
 };
 
+const ICON_SIZES: Record<Size> = {
+  xs: "h-16  w-16",
+  sm: "h-24  w-24",
+  md: "h-32 w-32",
+  lg: "h-42 w-42",
+  xl: "h-44 w-44",
+  "2xl": "h-52 w-52",
+};
 function ChartHeader({
   title,
   dataUnit,
@@ -82,12 +91,12 @@ function DataZoomSkeleton() {
   );
 }
 
-function EmptyState() {
+function EmptyState({ size }: { size: Size }) {
+  const iconSize = ICON_SIZES[size];
   return (
-    <div className="flex h-full w-full items-center justify-center">
-      <span className="text-md text-contentSecondary-light dark:text-contentSecondary-dark">
-        No Data Available
-      </span>
+    <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-contentSecondary-light dark:text-contentSecondary-dark">
+      <NoResults className={iconSize} />
+      <span className="text-md">No Data Available</span>
     </div>
   );
 }
@@ -390,11 +399,11 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       <ChartHeader
         title={title}
         dataUnit={yUnit}
-        controls={headerControls}
+        controls={shouldRenderChart ? headerControls : undefined}
         isLoading={isLoading}
       />
       <div
-        className={classNames(
+        className={cn(
           "relative flex h-full w-full flex-col gap-1 overflow-visible md:flex-row md:gap-2",
           SIZES[size],
           {
@@ -412,10 +421,10 @@ export const ChartBase: FC<ChartBaseProps> = function ({
             style={{ height: "100%", width: "100%" }}
           />
         ) : (
-          <EmptyState />
+          <EmptyState size={size} />
         )}
         {isLoading && !compact ? <DataZoomSkeleton /> : null}
-        {!compact && (
+        {!compact && shouldRenderChart && (
           <div className="h-4 md:h-full">
             <Legend
               items={legendItems}
