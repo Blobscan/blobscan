@@ -8,11 +8,11 @@ import { matomoTracker } from "../clients/matomo-tracker";
 type RequestMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 const TRACKING_EXCLUSIONS: { methods?: RequestMethod[]; path: string }[] = [
-  { methods: ["PUT", "POST"], path: "/indexer" },
-  { methods: ["PUT", "POST"], path: "/blockchain-sync-state" },
-  { path: "/healthcheck" },
-  { path: "/metrics" },
-  { path: "/logging" },
+  { methods: ["PUT", "POST"], path: "indexer" },
+  { methods: ["PUT", "POST"], path: "blockchain-sync-state" },
+  { path: "healthcheck" },
+  { path: "metrics" },
+  { path: "logging" },
 ];
 
 function getClientIp(req: Request): string {
@@ -29,9 +29,11 @@ function shouldSkipTracking(req: Request): boolean {
   const path = req.path;
 
   return TRACKING_EXCLUSIONS.some((rule) => {
-    const isPathMatch = rule.path === path;
+    const isPathMatch = path
+      .split("/")
+      .some((segment) => segment === rule.path);
 
-    if (rule.methods) {
+    if (rule.methods?.length) {
       return isPathMatch && rule.methods.includes(req.method as RequestMethod);
     }
 
