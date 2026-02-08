@@ -64,7 +64,7 @@ const logfmtFormat = winston.format.combine(
 
     // Handle error causes
     if (cause instanceof Error) {
-      logData.error_cause = cause.message;
+      logData.error_cause = colorFormat.colorize(level, cause.message);
       if (cause.stack) {
         logData.error_stack = cause.stack;
       }
