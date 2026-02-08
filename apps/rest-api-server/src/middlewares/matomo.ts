@@ -59,20 +59,20 @@ export function matomoMiddleware(
   res.on("finish", () => {
     const start = Date.now();
 
-    try {
-      const clientIp = getClientIp(req);
-      const userAgent = req.headers["user-agent"] || "unknown";
-      const acceptLanguage = req.headers["accept-language"] || "unknown";
-      const url = req.originalUrl || req.url;
-      const path = req.path;
-      const method = req.method;
-      const statusCode = res.statusCode;
+    const clientIp = getClientIp(req);
+    const userAgent = req.headers["user-agent"] || "unknown";
+    const acceptLanguage = req.headers["accept-language"] || "unknown";
+    const url = req.originalUrl || req.url;
+    const path = req.path;
+    const method = req.method;
+    const statusCode = res.statusCode;
 
-      const actionName = `${method} ${path}`;
+    const actionName = `${method} ${path}`;
 
-      const fullUrl = `${req.protocol}://${req.get("host") || "unknown"}${url}`;
+    const fullUrl = `${req.protocol}://${req.get("host") || "unknown"}${url}`;
 
-      matomoTracker?.track({
+    matomoTracker
+      ?.track({
         url: fullUrl,
         action_name: actionName,
         token_auth: env.MATOMO_AUTH_TOKEN,
@@ -84,10 +84,10 @@ export function matomoMiddleware(
           1: ["HTTP Status", statusCode.toString()],
           2: ["HTTP Method", method],
         }),
+      })
+      .catch((error) => {
+        logger.warning(`Failed to track request ${actionName} `, error);
       });
-    } catch (error) {
-      logger.warning("Failed to track request in Matomo", error);
-    }
   });
 
   next();
