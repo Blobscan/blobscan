@@ -54,7 +54,7 @@ const SIZES: Record<Size, string> = {
   "2xl": "h-[22rem] sm:h-[22rem] md:h-[28rem] lg:h-[30rem] xl:h-[36rem]",
 };
 
-const ICON_SIZES: Record<Size> = {
+const ICON_SIZES: Record<Size, string> = {
   xs: "h-16  w-16",
   sm: "h-24  w-24",
   md: "h-32 w-32",
