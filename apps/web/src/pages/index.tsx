@@ -16,7 +16,7 @@ import { AvgBlobGasPriceChart } from "~/components/TimeseriesCharts/AvgBlobGasPr
 import { TotalBlobsChart } from "~/components/TimeseriesCharts/TotalBlobsChart";
 import { api } from "~/api-client";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
-import NextError from "~/pages/_error";
+import ErrorPage from "~/pages/_error";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
   buildBlobsRoute,
@@ -99,12 +99,7 @@ const Home: NextPage = () => {
     globalChartDataError;
 
   if (error) {
-    return (
-      <NextError
-        title={error.message}
-        statusCode={error.data?.httpStatus ?? 500}
-      />
-    );
+    return <ErrorPage error={error} />;
   }
 
   return (

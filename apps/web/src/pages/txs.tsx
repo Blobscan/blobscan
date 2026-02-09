@@ -21,7 +21,7 @@ import {
   serializedMultiValueParam,
   useQueryParams,
 } from "~/hooks/useQueryParams";
-import NextError from "~/pages/_error";
+import ErrorPage from "~/pages/_error";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import type { ByteUnit } from "~/utils";
 import {
@@ -357,12 +357,7 @@ const Txs: NextPage = function () {
   }, [transactions, timeFormat]);
 
   if (error) {
-    return (
-      <NextError
-        title={error.message}
-        statusCode={error.data?.httpStatus ?? 500}
-      />
-    );
+    return <ErrorPage error={error} />;
   }
 
   return (

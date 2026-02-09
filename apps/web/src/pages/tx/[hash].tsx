@@ -18,7 +18,7 @@ import type { NavArrowProps } from "~/components/NavArrow";
 import { OptimismCard } from "~/components/OptimismCard";
 import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
-import NextError from "~/pages/_error";
+import ErrorPage from "~/pages/_error";
 import type {
   GetAdjacentTxByAddressInput,
   TransactionWithExpandedBlockAndBlob,
@@ -44,7 +44,13 @@ const Tx: NextPage = () => {
     isLoading,
   } = api.tx.getByHash.useQuery<TransactionWithExpandedBlockAndBlob>(
     { hash, expand: "block,blob" },
-    { enabled: router.isReady, staleTime: Infinity }
+    {
+      enabled: router.isReady,
+      staleTime: Infinity,
+      retry: false,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    }
   );
   const { data: adjacentTxs } = api.tx.getAdjacentsByAddress.useQuery(
     {
@@ -57,6 +63,7 @@ const Tx: NextPage = () => {
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       staleTime: Infinity,
+      retry: false,
     }
   );
   const [adjacentTxLoading, setAdjacentTxLoading] = useState(false);
@@ -90,15 +97,20 @@ const Tx: NextPage = () => {
 
   if (error) {
     return (
-      <NextError
-        title={error.message}
-        statusCode={error.data?.httpStatus ?? 500}
+      <ErrorPage
+        error={error}
+        overrides={{
+          NOT_FOUND: {
+            title: "Transaction Not Found",
+            description: "We couldn't find a transaction matching this hash.",
+          },
+          BAD_REQUEST: {
+            title: "Invalid Transaction Hash",
+            description: "The transaction hash you are looking for is invalid.",
+          },
+        }}
       />
     );
-  }
-
-  if (!isLoading && !tx) {
-    return <div>Transaction not found</div>;
   }
 
   let detailsFields: DetailsLayoutProps["fields"] | undefined;
