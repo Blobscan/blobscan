@@ -34,13 +34,22 @@ export const parsedBlockIdSchema = z
       };
     }
 
-    const parsedHash = blockHashSchema.safeParse(value);
+    if (value.startsWith("0x")) {
+      const parsedHash = blockHashSchema.safeParse(value);
 
-    if (parsedHash.success) {
-      return {
-        type: "hash",
-        value: parsedHash.data,
-      };
+      if (parsedHash.success) {
+        return {
+          type: "hash",
+          value: parsedHash.data,
+        };
+      }
+
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Invalid block hash",
+      });
+
+      return z.NEVER;
     }
 
     const parsedBlockNumber = blockNumberSchema.safeParse(value);

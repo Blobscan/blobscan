@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
+import { hashSchema } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
 import {
@@ -17,7 +18,7 @@ import {
 
 const inputSchema = z
   .object({
-    hash: z.string(),
+    hash: hashSchema,
   })
   .merge(createExpandsSchema(["block", "blob"]));
 
