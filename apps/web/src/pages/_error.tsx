@@ -7,7 +7,7 @@ import { InternalServerErrorView } from "~/components/ErrorViews/InternalServerE
 import { NotFoundErrorView } from "~/components/ErrorViews/NotFoundErrorView";
 import { UnknownErrorView } from "~/components/ErrorViews/UnknownErrorView";
 
-type ErrorCode = "NOT_FOUND" | "BAD_REQUEST";
+type ErrorCode = "NOT_FOUND" | "BAD_REQUEST" | "INTERNAL_SERVER_ERROR";
 
 interface ErrorTextOverride {
   title?: string;
@@ -29,6 +29,7 @@ export const ErrorPage = function ({
   error: { data },
   overrides: { BAD_REQUEST, NOT_FOUND } = {},
 }: ErrorPageProps) {
+  console.log(data);
   switch (data?.code) {
     case "NOT_FOUND":
       return (
@@ -49,7 +50,7 @@ export const ErrorPage = function ({
           }
         />
       );
-    case "INTERNAL_ERROR":
+    case "INTERNAL_SERVER_ERROR":
       return <InternalServerErrorView />;
     default:
       return <UnknownErrorView code={data?.httpStatus ?? 500} />;
