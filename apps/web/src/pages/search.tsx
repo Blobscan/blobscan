@@ -13,6 +13,7 @@ import {
 } from "@blobscan/db/prisma/zod-utils";
 
 import { Button } from "~/components/Button";
+import { Glowable } from "~/components/Glowable";
 import { Icon } from "~/components/Icon";
 import {
   buildAddressRoute,
@@ -24,12 +25,6 @@ import {
 type SearchProps = {
   term: string;
 };
-
-function GlowingEffect() {
-  return (
-    <div className="animate-glow absolute right-[20%] top-[70%] h-[0.5px] w-[0.5px] bg-transparent" />
-  );
-}
 
 export const getServerSideProps: GetServerSideProps<SearchProps> =
   async function ({ query }) {
@@ -82,8 +77,7 @@ export default function Search({ term }: SearchProps) {
   const router = useRouter();
   return (
     <main className="flex w-full flex-col items-center gap-4">
-      <div className="relative">
-        <GlowingEffect />
+      <Glowable top="70%" right="20%">
         <Image
           src="/not-found.png"
           alt="404"
@@ -93,7 +87,7 @@ export default function Search({ term }: SearchProps) {
           className="h-[250px] w-[250px] md:h-[250px] md:w-[250px] lg:h-[350px] lg:w-[350px]"
           priority
         />
-      </div>
+      </Glowable>
       <div className="flex flex-col items-center gap-6 text-center">
         <h1 className="mb-4 mt-4 text-3xl font-bold tracking-tight text-content-light dark:text-content-dark sm:text-5xl">
           Oops! Nothing matched your search

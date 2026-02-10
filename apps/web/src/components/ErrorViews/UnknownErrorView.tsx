@@ -1,30 +1,19 @@
 import type { FC } from "react";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
 
-import { Button } from "../Button";
-import { Icon } from "../Icon";
+import { Glowable } from "../Glowable";
+import { ReloadButton } from "../ReloadButton";
 import { ErrorViewLayout } from "./ErrorViewLayout";
 
-function GlowingEffect() {
-  return (
-    <div className="animate-glow absolute right-[50%] top-[25%] h-[0.5px] w-[0.5px] bg-transparent" />
-  );
-}
-
 export interface UnknownErrorViewProps {
-  code: string | number;
+  code?: string | number;
 }
 
 export const UnknownErrorView: FC<UnknownErrorViewProps> = ({ code }) => {
-  const router = useRouter();
-
   return (
     <ErrorViewLayout
       image={
-        <div className="relative">
-          <GlowingEffect />
+        <Glowable right="50%" top="25%">
           <Image
             src="/internal-error.png"
             alt="Internal Server Error"
@@ -33,19 +22,12 @@ export const UnknownErrorView: FC<UnknownErrorViewProps> = ({ code }) => {
             sizes="(max-width: 768px) 200px, (max-width: 1024px) 350px, 450px"
             className="h-[240px] w-[200px] md:h-[480px] md:w-[390px]"
           />
-        </div>
+        </Glowable>
       }
-      code={code}
+      code={code ?? "Error"}
       title="Something went wrong"
       description="We ran into an unexpected issue while processing your request."
-      action={
-        <Button onClick={() => router.reload()} className="w-72">
-          <div className="flex items-center justify-center gap-1">
-            <Icon src={ArrowPathIcon} size="md" />
-            Reload
-          </div>
-        </Button>
-      }
+      action={<ReloadButton className="w-60" />}
     />
   );
 };

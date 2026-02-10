@@ -1,47 +1,31 @@
 import type { FC } from "react";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
 
-import { Button } from "../Button";
-import { Icon } from "../Icon";
+import { Glowable } from "../Glowable";
+import { ReloadButton } from "../ReloadButton";
 import { ErrorViewLayout } from "./ErrorViewLayout";
 
-function GlowingEffect() {
-  return (
-    <div className="animate-glow absolute right-[50%] top-[25%] h-[0.5px] w-[0.5px] bg-transparent" />
-  );
-}
-
 export const InternalServerErrorView: FC = () => {
-  const router = useRouter();
-
   return (
     <ErrorViewLayout
       image={
         <div className="relative">
-          <GlowingEffect />
-          <Image
-            src="/internal-error.png"
-            alt="Internal Server Error"
-            width={390}
-            height={480}
-            sizes="(max-width: 768px) 200px, (max-width: 1024px) 350px, 450px"
-            className="h-[240px] w-[200px] md:h-[480px] md:w-[390px]"
-          />
+          <Glowable right="50%" top="25%">
+            <Image
+              src="/internal-error.png"
+              alt="Internal Server Error"
+              width={390}
+              height={480}
+              sizes="(max-width: 768px) 200px, (max-width: 1024px) 350px, 450px"
+              className="h-[240px] w-[200px] md:h-[480px] md:w-[390px]"
+            />
+          </Glowable>
         </div>
       }
       code={500}
       title="Internal Server Error"
-      description="Something went wrong on our end."
-      action={
-        <Button onClick={() => router.reload()} className="w-60">
-          <div className="flex items-center justify-center gap-1">
-            <Icon src={ArrowPathIcon} size="md" />
-            Reload
-          </div>
-        </Button>
-      }
+      description="Oops! Something went wrong on our end."
+      action={<ReloadButton className="w-60" />}
     />
   );
 };

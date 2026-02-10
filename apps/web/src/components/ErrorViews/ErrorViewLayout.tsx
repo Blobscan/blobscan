@@ -21,7 +21,7 @@ export const ErrorViewLayout: FC<ErrorViewLayoutProps> = function ({
   const router = useRouter();
 
   return (
-    <main className="flex h-full w-full flex-col items-center justify-center gap-1 sm:flex-row sm:gap-7">
+    <main className="flex h-full w-full flex-col items-center justify-center gap-1 sm:mt-20 sm:flex-row sm:gap-7">
       {image}
       <div className="text-center">
         <div className="text-7xl font-bold text-primary-700 dark:text-primary-500 md:text-9xl">
@@ -40,13 +40,9 @@ export const ErrorViewLayout: FC<ErrorViewLayoutProps> = function ({
             {description}
           </p>
         )}
-        <div className="mt-3 w-full sm:mt-10">
+        <div className="mt-3 sm:mt-10">
           {action ?? (
-            <Button
-              variant="primary"
-              onClick={() => router.replace("/")}
-              className="w-48 sm:w-60"
-            >
+            <Button variant="primary" onClick={() => router.replace("/")}>
               Go To Homepage
             </Button>
           )}

@@ -1,18 +1,13 @@
 import type { FC, ReactNode } from "react";
 import Image from "next/image";
 
+import { Glowable } from "../Glowable";
 import { ErrorViewLayout } from "./ErrorViewLayout";
 
 export interface NotFoundErrorViewProps {
   title: string;
   description: string;
   action?: ReactNode;
-}
-
-function GlowingEffect() {
-  return (
-    <div className="animate-glow absolute right-[20%] top-[70%] h-[0.5px] w-[0.5px] bg-transparent" />
-  );
 }
 
 export const NotFoundErrorView: FC<NotFoundErrorViewProps> = function ({
@@ -24,8 +19,7 @@ export const NotFoundErrorView: FC<NotFoundErrorViewProps> = function ({
     <ErrorViewLayout
       code="404"
       image={
-        <div className="relative">
-          <GlowingEffect />
+        <Glowable right="20%" top="70%">
           <Image
             src="/not-found.png"
             alt="404"
@@ -35,7 +29,7 @@ export const NotFoundErrorView: FC<NotFoundErrorViewProps> = function ({
             className="h-[200px] w-[200px] md:h-[350px] md:w-[350px] lg:h-[450px] lg:w-[450px]"
             priority
           />
-        </div>
+        </Glowable>
       }
       title={title}
       description={description}

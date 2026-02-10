@@ -29,7 +29,6 @@ export const ErrorPage = function ({
   error: { data },
   overrides: { BAD_REQUEST, NOT_FOUND } = {},
 }: ErrorPageProps) {
-  console.log(data);
   switch (data?.code) {
     case "NOT_FOUND":
       return (

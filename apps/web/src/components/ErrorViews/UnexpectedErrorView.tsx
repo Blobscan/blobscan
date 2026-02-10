@@ -1,8 +1,6 @@
 import Image from "next/image";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
 
-import { Button } from "../Button";
-import { Icon } from "../Icon";
+import { ReloadButton } from "../ReloadButton";
 
 export function UnexpectedErrorView() {
   return (
@@ -22,16 +20,7 @@ export function UnexpectedErrorView() {
         We&apos;re not exactly sure what happened, but something went wrong.
         Please try reloading the page.
       </p>
-      <Button
-        variant="primary"
-        onClick={() => window.location.reload()}
-        className="mt-7 w-52"
-      >
-        <div className="flex items-center justify-center gap-1">
-          <Icon src={ArrowPathIcon} size="md" />
-          Reload
-        </div>
-      </Button>
+      <ReloadButton className="mt-7 w-60" />
     </main>
   );
 }

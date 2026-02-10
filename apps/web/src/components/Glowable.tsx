@@ -1,0 +1,31 @@
+import type { FC, ReactNode } from "react";
+
+export interface GlowableProps {
+  children: ReactNode;
+  top?: string;
+  bottom?: string;
+  right?: string;
+  left?: string;
+}
+export const Glowable: FC<GlowableProps> = function ({
+  children,
+  top,
+  bottom,
+  left,
+  right,
+}) {
+  return (
+    <div className="relative">
+      <div
+        className="animate-glow absolute h-[0.5px] w-[0.5px] bg-transparent"
+        style={{
+          top,
+          bottom,
+          left,
+          right,
+        }}
+      />
+      {children}
+    </div>
+  );
+};
