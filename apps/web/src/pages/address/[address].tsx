@@ -7,7 +7,7 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
-import NextError from "~/pages/_error";
+import ErrorPage from "~/pages/_error";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 
 const Address: NextPage = () => {
@@ -20,14 +20,24 @@ const Address: NextPage = () => {
     totalTransactions: number;
   }>(
     { ...paginationParams, from: address, expand: "block,blob" },
-    { enabled: router.isReady }
+    {
+      enabled: router.isReady,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      retry: false,
+    }
   );
 
   if (error) {
     return (
-      <NextError
-        title={error.message}
-        statusCode={error.data?.httpStatus ?? 500}
+      <ErrorPage
+        error={error}
+        overrides={{
+          BAD_REQUEST: {
+            title: "Invalid Address",
+            description: "Please provide a valid Ethereum address.",
+          },
+        }}
       />
     );
   }

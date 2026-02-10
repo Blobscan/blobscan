@@ -38,6 +38,7 @@ import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
+import ErrorPage from "~/pages/_error";
 import { buildStatRoute, calculatePercentage } from "~/utils";
 
 function buildViewLink(metricRoute: string) {
@@ -78,6 +79,7 @@ const Stats: NextPage = function () {
   const {
     data: categorizedChartDatasets,
     isLoading: categorizedDatasetsLoading,
+    error: categorizedChartsError,
   } = useTimeseriesQuery({
     metrics: [
       "totalBlobs",
@@ -94,26 +96,30 @@ const Stats: NextPage = function () {
     rollups,
     timeFrame: "15d",
   });
-  const { data: globalChartDatasets, isLoading: globalDatasetsLoading } =
-    useTimeseriesQuery({
-      metrics: [
-        "avgBlobGasPrice",
-        "avgBlobFee",
-        "avgBlobMaxFee",
-        "totalBlocks",
-        "totalUniqueReceivers",
-        "totalUniqueSenders",
-        "totalBlobAsCalldataGasUsed",
-        "totalBlobGasUsed",
-      ],
-      timeFrame: "15d",
-    });
-  const { data: allOverallStats } = api.stats.getOverall.useQuery(undefined, {
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
-    select: ({ data }) => data,
+  const {
+    data: globalChartDatasets,
+    isLoading: globalDatasetsLoading,
+    error: globalChartsError,
+  } = useTimeseriesQuery({
+    metrics: [
+      "avgBlobGasPrice",
+      "avgBlobFee",
+      "avgBlobMaxFee",
+      "totalBlocks",
+      "totalUniqueReceivers",
+      "totalUniqueSenders",
+      "totalBlobAsCalldataGasUsed",
+      "totalBlobGasUsed",
+    ],
+    timeFrame: "15d",
   });
+  const { data: allOverallStats, error: overallStatsError } =
+    api.stats.getOverall.useQuery(undefined, {
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+      select: ({ data }) => data,
+    });
 
   const aggregatedMetrics = useAggregateOverallStats(
     selectedRollups.map((r) => r.value),
@@ -457,6 +463,10 @@ const Stats: NextPage = function () {
       globalDatasetsLoading,
     ]
   );
+
+  const error =
+    categorizedChartsError || globalChartsError || overallStatsError;
+
   const currentSectionOption = selectedSection?.value ?? "all";
   const displayedSections =
     currentSectionOption === "all"
@@ -488,6 +498,10 @@ const Stats: NextPage = function () {
       SECTION_OPTIONS.find((s) => s.value === statsSection) ?? DEFAULT_SECTION
     );
   }, [statsSection]);
+
+  if (error) {
+    return <ErrorPage error={error} />;
+  }
 
   return (
     <div className="flex flex-col gap-8">

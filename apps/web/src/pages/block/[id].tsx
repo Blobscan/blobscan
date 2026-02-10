@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
+import { hashSchema } from "~/utils/zod-schemas";
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
@@ -19,7 +20,7 @@ import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { useChain } from "~/hooks/useChain";
 import { useExternalExplorers } from "~/hooks/useExternalExplorers";
-import NextError from "~/pages/_error";
+import ErrorPage from "~/pages/_error";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
   buildBlockRoute,
@@ -41,6 +42,8 @@ const Block: NextPage = function () {
   const isReady = router.isReady;
   const blockNumberOrHash = router.query.id as string | undefined;
   const { data: latestBlock } = api.block.getLatest.useQuery(undefined, {
+    retry: false,
+    refetchOnReconnect: false,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
@@ -52,9 +55,10 @@ const Block: NextPage = function () {
     { id: blockNumberOrHash ?? "", expand: EXPAND_QUERY_PARAM },
     {
       enabled: isReady,
-      staleTime: Infinity,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      retry: false,
     }
   );
   const blockNumber = blockData?.number;
@@ -113,16 +117,26 @@ const Block: NextPage = function () {
   );
 
   if (error) {
+    const blockId = hashSchema.safeParse(blockNumberOrHash).success
+      ? "hash"
+      : "number";
+
     return (
-      <NextError
-        title={error.message}
-        statusCode={error.data?.httpStatus ?? 500}
+      <ErrorPage
+        error={error}
+        overrides={{
+          NOT_FOUND: {
+            title: "Block not found",
+            description: `We couldn't find a block matching this block ${blockId}.`,
+          },
+          BAD_REQUEST: {
+            title: "Invalid block id",
+            description:
+              "The block id you provided is invalid. Check is a correct block number or hash.",
+          },
+        }}
       />
     );
-  }
-
-  if (!isLoading && !blockData) {
-    return <div>Block not found</div>;
   }
 
   let detailsFields: DetailsLayoutProps["fields"] | undefined;

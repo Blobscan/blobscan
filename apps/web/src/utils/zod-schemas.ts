@@ -2,6 +2,12 @@ import { z } from "zod";
 
 import { Category, Rollup } from "@blobscan/db/prisma/enums";
 
+export const hashSchema = z.string().regex(/^0x[a-f0-9]{64}$/);
+
+export const versionedHashSchema = z.string().regex(/^0x01[a-f0-9]{62}$/);
+
+export const kzgCommitmentSchema = z.string().regex(/^0x[a-f0-9]{96}$/);
+
 export const multiValueFieldSchema = z
   .string()
   .optional()

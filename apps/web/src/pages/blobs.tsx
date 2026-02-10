@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import type { NextPage } from "next";
-import NextError from "next/error";
 
 import dayjs from "@blobscan/dayjs";
 
@@ -20,6 +19,7 @@ import {
   serializedMultiValueParam,
   useQueryParams,
 } from "~/hooks/useQueryParams";
+import ErrorPage from "~/pages/_error";
 import type { BlobWithExpandedTransaction } from "~/types";
 import type { ByteUnit } from "~/utils";
 import {
@@ -205,12 +205,7 @@ const Blobs: NextPage = function () {
   );
 
   if (error) {
-    return (
-      <NextError
-        title={error.message}
-        statusCode={error.data?.httpStatus ?? 500}
-      />
-    );
+    return <ErrorPage error={error} />;
   }
 
   return (

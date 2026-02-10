@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
-import NextError from "~/pages/_error";
+import ErrorPage from "~/pages/_error";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useQuery } from "@tanstack/react-query";
 import classNames from "classnames";
@@ -10,6 +10,7 @@ import classNames from "classnames";
 import type { Decoder } from "@blobscan/blob-decoder";
 import dayjs from "@blobscan/dayjs";
 
+import { versionedHashSchema } from "~/utils/zod-schemas";
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
@@ -39,22 +40,22 @@ import {
 const Blob: NextPage = function () {
   const router = useRouter();
   const breakpoint = useBreakpoint();
-  const versionedHash = (router.query.hash as string | undefined) ?? "0";
-  const {
-    data: blob,
-    error,
-    isLoading,
-  } = api.blob.getByBlobId.useQuery(
+  const id = (router.query.hash as string | undefined) ?? "0";
+  const { data: blob, error } = api.blob.getByBlobId.useQuery(
     {
-      id: versionedHash,
+      id: id,
       expand: "transaction",
     },
     {
       enabled: router.isReady,
+      retry: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
     }
   );
   const { data: blobData, error: blobDataError } = useQuery({
-    queryKey: ["blob-data", versionedHash],
+    queryKey: ["blob-data", id],
     queryFn: async () => {
       if (!blob || !blob.dataStorageReferences.length) {
         return null;
@@ -78,7 +79,7 @@ const Blob: NextPage = function () {
           return `0x${Buffer.from(blobBytes).toString("hex")}`;
         } catch (err) {
           console.warn(
-            `Failed to fetch data of blob "${versionedHash}" from storage ${storage}:`,
+            `Failed to fetch data of blob "${id}" from storage ${storage}:`,
             err
           );
 
@@ -86,9 +87,7 @@ const Blob: NextPage = function () {
         }
       }
 
-      throw new Error(
-        `Failed to fetch data of blob "${versionedHash}" from any storage`
-      );
+      throw new Error(`Failed to fetch data of blob "${id}" from any storage`);
     },
     enabled: !!blob,
     retry: false,
@@ -116,16 +115,24 @@ const Blob: NextPage = function () {
   }, [decoder]);
 
   if (error) {
+    const idType = versionedHashSchema.safeParse(id).success
+      ? "versioned hash"
+      : "KZG commitment";
     return (
-      <NextError
-        title={error.message}
-        statusCode={error.data?.httpStatus ?? 500}
+      <ErrorPage
+        error={error}
+        overrides={{
+          NOT_FOUND: {
+            title: "Blob Not Found",
+            description: `We couldn't find a blob matching this ${idType}.`,
+          },
+          BAD_REQUEST: {
+            title: "Invalid Blob ID",
+            description: `The blob ID you are looking for is invalid. Check is a correct versioned hash or KZG commitment.`,
+          },
+        }}
       />
     );
-  }
-
-  if (!blob && !isLoading) {
-    return <>Blob not found</>;
   }
 
   const detailsFields: DetailsLayoutProps["fields"] = [];

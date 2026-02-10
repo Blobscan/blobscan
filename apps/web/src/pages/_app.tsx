@@ -17,6 +17,7 @@ import { PostHogProvider } from "posthog-js/react";
 import { SkeletonTheme } from "react-loading-skeleton";
 
 import AppLayout from "~/components/AppLayout/AppLayout";
+import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { FeedbackWidget } from "~/components/FeedbackWidget/FeedbackWidget";
 import { api } from "~/api-client";
 import { useIsMounted } from "~/hooks/useIsMounted";
@@ -126,15 +127,17 @@ function App({ Component, pageProps }: NextAppProps) {
 
 function AppWrapper(props: NextAppProps) {
   return (
-    <ThemeProvider attribute="class">
-      <BlobDecoderWorkerProvider>
-        <EnvProvider>
-          <AppStateProvider>
-            <App {...props} />
-          </AppStateProvider>
-        </EnvProvider>
-      </BlobDecoderWorkerProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider attribute="class">
+        <BlobDecoderWorkerProvider>
+          <EnvProvider>
+            <AppStateProvider>
+              <App {...props} />
+            </AppStateProvider>
+          </EnvProvider>
+        </BlobDecoderWorkerProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

@@ -17,11 +17,13 @@ const AppLayout = ({ children }: LayoutProps) => {
       <TopBarLayout />
       <main
         className={cn("container mx-auto grow", {
-          "mt-14": isHomepage,
-          "mt-8  sm:mb-16 sm:mt-20": !isHomepage,
+          "mb-14 mt-14": isHomepage,
+          "mb-12  mt-10  sm:mb-16 sm:mt-20": !isHomepage,
         })}
       >
-        <div className="mx-auto flex w-11/12 flex-col gap-8">{children}</div>
+        <div className="mx-auto flex min-h-[calc(100vh-180px)] w-11/12 flex-col gap-8">
+          {children}
+        </div>
       </main>
       <BottomBarLayout />
     </div>

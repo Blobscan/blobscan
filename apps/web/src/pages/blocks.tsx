@@ -23,7 +23,7 @@ import {
   serializedMultiValueParam,
   useQueryParams,
 } from "~/hooks/useQueryParams";
-import NextError from "~/pages/_error";
+import ErrorPage from "~/pages/_error";
 import type { BlockWithExpandedBlobsAndTransactions, Rollup } from "~/types";
 import type { ByteUnit } from "~/utils";
 import {
@@ -379,12 +379,7 @@ const Blocks: NextPage = function () {
   }, [blocks, timeFormat, chain]);
 
   if (error) {
-    return (
-      <NextError
-        title={error.message}
-        statusCode={error.data?.httpStatus ?? 500}
-      />
-    );
+    return <ErrorPage error={error} />;
   }
 
   return (

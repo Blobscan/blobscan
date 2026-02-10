@@ -135,10 +135,14 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
             </div>
           </Scrollable>
         ) : (
-          <div className="flex flex-col items-center justify-center gap-2 p-6">
-            <Icon src={EmptyBox} size="2xl" className="stroke-1" />
-            <div className="text-sm text-content-light dark:text-content-dark">
-              No results found
+          <div className="flex h-40 flex-col items-center justify-center gap-2 p-6">
+            <Icon
+              src={EmptyBox}
+              size="2xl"
+              className="stroke-contentSecondary-light stroke-1 dark:stroke-contentSecondary-dark"
+            />
+            <div className="text-sm text-content-light dark:text-contentSecondary-dark">
+              No Results Found
             </div>
           </div>
         )}
