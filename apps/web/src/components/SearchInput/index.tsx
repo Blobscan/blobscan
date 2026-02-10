@@ -7,7 +7,7 @@ import { api } from "~/api-client";
 import { useClickOutside } from "~/hooks/useClickOutside";
 import { useDebounce } from "~/hooks/useDebounce";
 import Loading from "~/icons/loading.svg";
-import NextError from "~/pages/_error";
+import ErrorPage from "~/pages/_error";
 import type { SearchCategory } from "~/types";
 import {
   buildAddressRoute,
@@ -123,12 +123,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
   );
 
   if (searchError) {
-    return (
-      <NextError
-        title={searchError.message}
-        statusCode={searchError.data?.httpStatus ?? 500}
-      />
-    );
+    return <ErrorPage error={searchError} />;
   }
 
   return (
