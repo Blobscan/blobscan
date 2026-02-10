@@ -1,8 +1,10 @@
 import type { FC } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 
 import { Button } from "../Button";
+import { Icon } from "../Icon";
 import { ErrorViewLayout } from "./ErrorViewLayout";
 
 function GlowingEffect() {
@@ -38,7 +40,10 @@ export const UnknownErrorView: FC<UnknownErrorViewProps> = ({ code }) => {
       description="We ran into an unexpected issue while processing your request."
       action={
         <Button onClick={() => router.reload()} className="w-72">
-          Refresh
+          <div className="flex items-center justify-center gap-1">
+            <Icon src={ArrowPathIcon} size="md" />
+            Reload
+          </div>
         </Button>
       }
     />
