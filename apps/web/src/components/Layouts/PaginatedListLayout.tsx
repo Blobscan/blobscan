@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 
 import { Header } from "~/components/Header";
 import { Card } from "../Cards/Card";
+import { EmptyState } from "../EmptyState";
 import { Pagination } from "../Pagination";
 import type { PaginationProps } from "../Pagination";
 import type { PageSizeOption } from "../Selectors";
@@ -17,7 +18,7 @@ export type PaginatedListLayoutProps = {
   page: number;
   pageSize: number;
   itemSkeleton: ReactNode;
-  emptyState?: ReactNode;
+  isLoading?: boolean;
 };
 
 export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
@@ -28,7 +29,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   page,
   pageSize,
   itemSkeleton,
-  emptyState = "No items",
+  isLoading,
 }) {
   const router = useRouter();
   const pages =
@@ -37,7 +38,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
         ? 1
         : Math.ceil(totalItems / pageSize)
       : undefined;
-  const hasItems = !items || items.length;
+  const isEmpty = !isLoading && !items?.length;
 
   const handlePageSizeSelection = useCallback(
     (option: PageSizeOption) => {
@@ -78,7 +79,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
       <Header>{header}</Header>
       <Card
         header={
-          hasItems ? (
+          !isEmpty ? (
             <div
               className={`flex flex-col ${
                 title ? "justify-between" : "justify-end"
@@ -95,13 +96,12 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
             </div>
           ) : undefined
         }
-        emptyState={emptyState}
       >
-        {hasItems ? (
+        {!isEmpty ? (
           <div className="flex flex-col gap-6">
             <div className="space-y-4">
-              {!items
-                ? Array.from({ length: 4 }).map((_, i) => (
+              {isLoading
+                ? Array.from({ length: 10 }).map((_, i) => (
                     <Fragment key={i}>{itemSkeleton}</Fragment>
                   ))
                 : (items ?? []).map((item, i) => (
@@ -126,7 +126,11 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
               </div>
             </div>
           </div>
-        ) : undefined}
+        ) : (
+          <div className="h-[400px] sm:h-[500px]">
+            <EmptyState description="No Blob Transactions" />
+          </div>
+        )}
       </Card>
     </>
   );

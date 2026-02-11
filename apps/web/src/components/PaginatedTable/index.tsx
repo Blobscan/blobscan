@@ -9,10 +9,9 @@ import { Pagination } from "~/components/Pagination";
 import type { TableProps } from "~/components/Table";
 import { Table } from "~/components/Table";
 import type { Rollup } from "~/types";
+import { EmptyState } from "../EmptyState";
 import { PageSizeSelector } from "../Selectors/PageSizeSelector";
 import type { PageSizeOption } from "../Selectors/PageSizeSelector";
-
-const DEFAULT_TABLE_EMPTY_STATE = "No items";
 
 const DEFAULT_ROW_SKELETON_HEIGHT = 22;
 
@@ -28,6 +27,7 @@ type PaginationData = {
 };
 
 export type PaginatedTableProps = {
+  emptyStateDescription?: string;
   isLoading: boolean;
   totalItems?: number;
   isExpandable?: boolean;
@@ -56,10 +56,12 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
   rows,
   totalItems,
   paginationData,
+  emptyStateDescription,
   isExpandable = false,
   rowSkeletonHeight = DEFAULT_ROW_SKELETON_HEIGHT,
 }) {
   const { page, pageSize } = paginationData;
+  const isEmpty = !isLoading && !rows?.length;
 
   const router = useRouter();
   const pages =
@@ -100,52 +102,59 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
   return (
     <Card
       header={
-        <div className={`flex flex-col justify-end md:flex-row`}>
-          <div className="w-full self-center sm:w-auto">
-            <Pagination
-              selected={page}
-              pages={pages}
-              onChange={handlePageSelection}
-            />
+        isEmpty ? null : (
+          <div className={`flex flex-col justify-end md:flex-row`}>
+            <div className="w-full self-center sm:w-auto">
+              <Pagination
+                selected={page}
+                pages={pages}
+                onChange={handlePageSelection}
+              />
+            </div>
           </div>
-        </div>
+        )
       }
-      emptyState={DEFAULT_TABLE_EMPTY_STATE}
       compact
     >
-      <div className="flex flex-col gap-6">
-        <Table
-          expandableRowsMode={isExpandable}
-          headers={headers}
-          rows={
-            isLoading
-              ? getRowsSkeleton(
-                  headers?.[0]?.cells.length,
-                  isExpandable,
-                  rowSkeletonHeight
-                )
-              : rows
-          }
-          fixedColumnsWidth
-        />
-        <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
-          <div className="flex items-center justify-start gap-2">
-            Displayed items:
-            <PageSizeSelector
-              selected={{ value: pageSize }}
-              onChange={handlePageSizeSelection}
-            />
-          </div>
-          <div className="w-full sm:w-auto">
-            <Pagination
-              selected={page}
-              pages={pages}
-              inverseCompact
-              onChange={handlePageSelection}
-            />
+      {isEmpty ? (
+        <div className="h-[400px] sm:h-[500px]">
+          <EmptyState size="lg" description={emptyStateDescription} />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-6">
+          <Table
+            expandableRowsMode={isExpandable}
+            headers={headers}
+            rows={
+              isLoading
+                ? getRowsSkeleton(
+                    headers?.[0]?.cells.length,
+                    isExpandable,
+                    rowSkeletonHeight
+                  )
+                : rows
+            }
+            fixedColumnsWidth
+          />
+          <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
+            <div className="flex items-center justify-start gap-2">
+              Displayed items:
+              <PageSizeSelector
+                selected={{ value: pageSize }}
+                onChange={handlePageSizeSelection}
+              />
+            </div>
+            <div className="w-full sm:w-auto">
+              <Pagination
+                selected={page}
+                pages={pages}
+                inverseCompact
+                onChange={handlePageSelection}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </Card>
   );
 };

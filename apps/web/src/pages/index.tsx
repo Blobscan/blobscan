@@ -4,11 +4,13 @@ import { useRouter } from "next/router";
 
 import { BlobscanLogo } from "~/components/BlobscanLogo";
 import { Button } from "~/components/Button";
+import type { CardProps } from "~/components/Cards/Card";
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
+import { EmptyState } from "~/components/EmptyState";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
@@ -27,6 +29,14 @@ import {
 const LATEST_ITEMS_LENGTH = 5;
 
 const CARD_HEIGHT = "sm:h-28";
+
+function HomepageCard({ children, ...restProps }: CardProps) {
+  return (
+    <Card {...restProps} className="h-[750px]">
+      {children}
+    </Card>
+  );
+}
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -91,7 +101,7 @@ const Home: NextPage = () => {
       blobs,
     };
   }, [blocksData]);
-
+  const isEmpty = !latestBlocksLoading && blocks.length === 0;
   const error =
     latestBlocksError ||
     overallStatsErr ||
@@ -191,20 +201,20 @@ const Home: NextPage = () => {
           </div>
         </div>
         <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-3">
-          <Card
-            className="h-[750px]"
+          <HomepageCard
             header={
-              <div className="flex flex-col flex-wrap justify-between gap-3 2xl:flex-row 2xl:items-center">
-                <div>Latest Blocks</div>
-                <Button
-                  variant="outline"
-                  onClick={() => void router.push(buildBlocksRoute())}
-                >
-                  View All Blocks
-                </Button>
-              </div>
+              !isEmpty ? (
+                <div className="flex flex-col flex-wrap justify-between gap-3 2xl:flex-row 2xl:items-center">
+                  <div>Latest Blocks</div>
+                  <Button
+                    variant="outline"
+                    onClick={() => void router.push(buildBlocksRoute())}
+                  >
+                    View Blocks
+                  </Button>
+                </div>
+              ) : null
             }
-            emptyState="No blocks"
           >
             {latestBlocksLoading ? (
               <div className="flex flex-col gap-4">
@@ -214,7 +224,7 @@ const Home: NextPage = () => {
                     <BlockCard className={CARD_HEIGHT} key={i} />
                   ))}
               </div>
-            ) : (
+            ) : !isEmpty ? (
               <SlidableList
                 items={blocks?.map((b) => ({
                   id: b.hash,
@@ -223,23 +233,25 @@ const Home: NextPage = () => {
                   ),
                 }))}
               />
+            ) : (
+              <EmptyState size="sm" description="No blocks" />
             )}
-          </Card>
-          <Card
-            className="h-[750px]"
+          </HomepageCard>
+          <HomepageCard
             header={
-              <div className="flex flex-col flex-wrap justify-between gap-3 2xl:flex-row 2xl:items-center">
-                <div>Latest Blob Transactions</div>
-                <Button
-                  variant="outline"
-                  onClick={() => void router.push(buildTransactionsRoute())}
-                  className="h-full"
-                >
-                  View All Txs
-                </Button>
-              </div>
+              !isEmpty ? (
+                <div className="flex flex-col flex-wrap justify-between gap-3 2xl:flex-row 2xl:items-center">
+                  <div>Latest Blob Transactions</div>
+                  <Button
+                    variant="outline"
+                    onClick={() => void router.push(buildTransactionsRoute())}
+                    className="h-full"
+                  >
+                    View Txs
+                  </Button>
+                </div>
+              ) : null
             }
-            emptyState="No transactions"
           >
             {latestBlocksLoading ? (
               <div className="flex flex-col gap-3">
@@ -253,7 +265,7 @@ const Home: NextPage = () => {
                     />
                   ))}
               </div>
-            ) : (
+            ) : !isEmpty ? (
               <SlidableList
                 items={transactions.map((tx) => ({
                   id: tx.hash,
@@ -276,22 +288,24 @@ const Home: NextPage = () => {
                   ),
                 }))}
               />
+            ) : (
+              <EmptyState size="sm" description="No transactions" />
             )}
-          </Card>
-          <Card
-            className="h-[750px]"
+          </HomepageCard>
+          <HomepageCard
             header={
-              <div className="flex flex-col flex-wrap justify-between gap-3 2xl:flex-row 2xl:items-center">
-                <div>Latest Blobs</div>
-                <Button
-                  variant="outline"
-                  onClick={() => void router.push(buildBlobsRoute())}
-                >
-                  View All Blobs
-                </Button>
-              </div>
+              !isEmpty ? (
+                <div className="flex flex-col flex-wrap justify-between gap-3 2xl:flex-row 2xl:items-center">
+                  <div>Latest Blobs</div>
+                  <Button
+                    variant="outline"
+                    onClick={() => void router.push(buildBlobsRoute())}
+                  >
+                    View Blobs
+                  </Button>
+                </div>
+              ) : null
             }
-            emptyState="No blobs"
           >
             {latestBlocksLoading ? (
               <div className="flex flex-col gap-3">
@@ -305,7 +319,7 @@ const Home: NextPage = () => {
                     />
                   ))}
               </div>
-            ) : (
+            ) : !isEmpty ? (
               <SlidableList
                 items={blobs.map((b) => ({
                   id: b.versionedHash,
@@ -319,8 +333,10 @@ const Home: NextPage = () => {
                   ),
                 }))}
               />
+            ) : (
+              <EmptyState size="sm" description="No blobs" />
             )}
-          </Card>
+          </HomepageCard>
         </div>
       </div>
     </div>

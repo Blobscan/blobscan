@@ -15,7 +15,11 @@ const Address: NextPage = () => {
   const { paginationParams } = useQueryParams();
   const address = (router.query.address as string | undefined) ?? "";
 
-  const { data: addressTxsData, error } = api.tx.getAll.useQuery<{
+  const {
+    data: addressTxsData,
+    isLoading,
+    error,
+  } = api.tx.getAll.useQuery<{
     transactions: TransactionWithExpandedBlockAndBlob[];
     totalTransactions: number;
   }>(
@@ -66,8 +70,11 @@ const Address: NextPage = () => {
       />
       <PaginatedListLayout
         title={`Blob Transactions ${
-          addressTxsData ? `(${addressTxsData.totalTransactions})` : ""
+          addressTxsData?.totalTransactions
+            ? `(${addressTxsData.totalTransactions})`
+            : ""
         }`}
+        isLoading={isLoading}
         items={addressTxsData?.transactions.map((tx) => {
           const { blobs, ...restTx } = tx;
 
