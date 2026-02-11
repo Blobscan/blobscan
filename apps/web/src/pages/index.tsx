@@ -32,7 +32,7 @@ const CARD_HEIGHT = "sm:h-28";
 
 function HomepageCard({ children, ...restProps }: CardProps) {
   return (
-    <Card {...restProps} className="h-[750px]">
+    <Card {...restProps} className="h-[790px] sm:h-[750px]">
       {children}
     </Card>
   );
