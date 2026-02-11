@@ -11,7 +11,7 @@ type ChartCardProps = ChartBaseProps;
 
 export const ChartCard: FC<ChartCardProps> = function (props) {
   return (
-    <Card compact>
+    <Card className="h-full" compact>
       <ChartBase {...props} />
     </Card>
   );

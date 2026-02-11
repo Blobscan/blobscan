@@ -45,15 +45,6 @@ export interface ChartBaseProps {
   };
 }
 
-const SIZES: Record<Size, string> = {
-  xs: "h-48 md:h-56 lg:h-56",
-  sm: "h-48 md:h-56 lg:h-56",
-  md: "h-60 md:h-72 lg:h-72",
-  lg: "h-72 md:h-80 lg:h-[22rem]",
-  xl: "h-84 md:h-96 lg:h-[26rem]",
-  "2xl": "h-[22rem] sm:h-[22rem] md:h-[28rem] lg:h-[30rem] xl:h-[36rem]",
-};
-
 function ChartHeader({
   title,
   dataUnit,
@@ -377,7 +368,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   }, [chartSkeletonOptions, isLoading]);
 
   return (
-    <div>
+    <div className="h-full">
       <ChartHeader
         title={title}
         dataUnit={yUnit}
@@ -386,8 +377,16 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       />
       <div
         className={cn(
-          "relative flex h-full w-full flex-col gap-1 overflow-visible md:flex-row md:gap-2",
-          SIZES[size],
+          "relative flex w-full flex-col gap-1 overflow-visible md:flex-row md:gap-2",
+          {
+            "h-48 md:h-56 lg:h-56": size === "xs",
+            "h-[180px] sm:h-56": size === "sm",
+            "h-[220px] sm:h-[354px]": size === "md",
+            "h-[260px] sm:h-96": size === "lg",
+            "h-[300px] sm:h-[22rem]": size === "xl",
+            "h-[22rem] sm:h-[22rem] md:h-[28rem] lg:h-[30rem] xl:h-[36rem]":
+              size === "2xl",
+          },
           {
             "animate-pulse": isLoading,
             "pointer-events-none": !isChartInteractive,
