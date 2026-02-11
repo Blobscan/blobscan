@@ -2,6 +2,7 @@ import type { FC, ReactNode } from "react";
 
 export interface GlowableProps {
   children: ReactNode;
+  enabled?: boolean;
   top?: string;
   bottom?: string;
   right?: string;
@@ -9,6 +10,7 @@ export interface GlowableProps {
 }
 export const Glowable: FC<GlowableProps> = function ({
   children,
+  enabled = true,
   top,
   bottom,
   left,
@@ -16,15 +18,17 @@ export const Glowable: FC<GlowableProps> = function ({
 }) {
   return (
     <div className="relative">
-      <div
-        className="animate-glow absolute h-[0.5px] w-[0.5px] bg-transparent"
-        style={{
-          top,
-          bottom,
-          left,
-          right,
-        }}
-      />
+      {enabled && (
+        <div
+          className="animate-glow absolute h-[0.5px] w-[0.5px] bg-transparent"
+          style={{
+            top,
+            bottom,
+            left,
+            right,
+          }}
+        />
+      )}
       {children}
     </div>
   );

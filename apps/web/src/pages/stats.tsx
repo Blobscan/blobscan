@@ -448,6 +448,7 @@ const Stats: NextPage = function () {
             key="total-unique-addresses"
             dataset={globalChartDatasets}
             headerControls={buildViewLink("total-unique-addresses")}
+            isLoading={globalDatasetsLoading}
             skeletonOpts={SKELETON_OPTS}
             compact
           />,

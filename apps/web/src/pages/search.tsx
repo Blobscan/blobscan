@@ -1,5 +1,4 @@
 import type { GetServerSideProps } from "next";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/outline";
 
@@ -13,7 +12,7 @@ import {
 } from "@blobscan/db/prisma/zod-utils";
 
 import { Button } from "~/components/Button";
-import { Glowable } from "~/components/Glowable";
+import { GlowableImage } from "~/components/GlowableImage";
 import { Icon } from "~/components/Icon";
 import {
   buildAddressRoute,
@@ -75,19 +74,23 @@ export const getServerSideProps: GetServerSideProps<SearchProps> =
 
 export default function Search({ term }: SearchProps) {
   const router = useRouter();
+
   return (
     <main className="flex w-full flex-col items-center gap-4">
-      <Glowable top="70%" right="20%">
-        <Image
-          src="/not-found.png"
-          alt="404"
-          width={350}
-          height={350}
-          sizes="(max-width: 768px) 150px, (max-width: 1024px) 250px, 350px"
-          className="h-[250px] w-[250px] md:h-[250px] md:w-[250px] lg:h-[350px] lg:w-[350px]"
-          priority
-        />
-      </Glowable>
+      <GlowableImage
+        top="70%"
+        right="20%"
+        imageProps={{
+          src: "/not-found.png",
+          alt: "404",
+          width: 350,
+          height: 350,
+          sizes: "(max-width: 768px) 150px, (max-width: 1024px) 250px, 350px",
+          className:
+            "h-[250px] w-[250px] md:h-[250px] md:w-[250px] lg:h-[350px] lg:w-[350px]",
+          priority: true,
+        }}
+      />
       <div className="flex flex-col items-center gap-6 text-center">
         <h1 className="mb-4 mt-4 text-3xl font-bold tracking-tight text-content-light dark:text-content-dark sm:text-5xl">
           Oops! Nothing matched your search
