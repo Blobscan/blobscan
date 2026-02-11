@@ -40,7 +40,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(function (
           {header}
         </div>
       )}
-      <div className={`flex-1  gap-5`}>{children}</div>
+      <div className="flex-1">{children}</div>
     </div>
   );
 });
