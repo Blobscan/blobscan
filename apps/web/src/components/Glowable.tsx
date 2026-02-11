@@ -20,7 +20,7 @@ export const Glowable: FC<GlowableProps> = function ({
     <div className="relative">
       {enabled && (
         <div
-          className="animate-glow absolute h-[0.5px] w-[0.5px] bg-transparent"
+          className="animate-glow absolute bg-transparent"
           style={{
             top,
             bottom,
