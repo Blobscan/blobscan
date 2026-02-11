@@ -7,8 +7,8 @@ import type { EChartsInstance } from "echarts-for-react";
 import ReactEChartsCore from "echarts-for-react/lib/core";
 import { useTheme } from "next-themes";
 
+import { EmptyState } from "~/components/EmptyState";
 import echarts from "~/echarts";
-import NoResults from "~/icons/no-results.svg";
 import type { Size, TimeseriesDimension } from "~/types";
 import { Legend } from "./Legend";
 import type { LegendItemData, LegendProps } from "./Legend";
@@ -54,14 +54,6 @@ const SIZES: Record<Size, string> = {
   "2xl": "h-[22rem] sm:h-[22rem] md:h-[28rem] lg:h-[30rem] xl:h-[36rem]",
 };
 
-const ICON_SIZES: Record<Size, string> = {
-  xs: "h-16  w-16",
-  sm: "h-24  w-24",
-  md: "h-32 w-32",
-  lg: "h-42 w-42",
-  xl: "h-44 w-44",
-  "2xl": "h-52 w-52",
-};
 function ChartHeader({
   title,
   dataUnit,
@@ -88,16 +80,6 @@ function ChartHeader({
 function DataZoomSkeleton() {
   return (
     <div className="absolute bottom-3 left-10 h-9 w-[90%] rounded-md bg-[#EADEFD] dark:bg-[#434672]" />
-  );
-}
-
-function EmptyState({ size }: { size: Size }) {
-  const iconSize = ICON_SIZES[size];
-  return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-contentSecondary-light dark:text-contentSecondary-dark">
-      <NoResults className={iconSize} />
-      <span className="text-md">No Data Available</span>
-    </div>
   );
 }
 
@@ -421,7 +403,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
             style={{ height: "100%", width: "100%" }}
           />
         ) : (
-          <EmptyState size={size} />
+          <EmptyState size={"md"} description="No Chart Data" />
         )}
         {isLoading && !compact ? <DataZoomSkeleton /> : null}
         {!compact && shouldRenderChart && (

@@ -2,10 +2,10 @@ import React, { Fragment } from "react";
 import { ArrowsRightLeftIcon, CubeIcon } from "@heroicons/react/24/outline";
 
 import BlobIcon from "~/icons/blob.svg";
-import EmptyBox from "~/icons/empty-box.svg";
 import type { Rollup, SearchCategory, SearchOutput } from "~/types";
 import { capitalize } from "~/utils";
 import { Card } from "../Cards/Card";
+import { EmptyState } from "../EmptyState";
 import { EthIdenticon } from "../EthIdenticon";
 import { Icon } from "../Icon";
 import { Scrollable } from "../Scrollable";
@@ -135,15 +135,8 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
             </div>
           </Scrollable>
         ) : (
-          <div className="flex h-40 flex-col items-center justify-center gap-2 p-6">
-            <Icon
-              src={EmptyBox}
-              size="2xl"
-              className="stroke-contentSecondary-light stroke-1 dark:stroke-contentSecondary-dark"
-            />
-            <div className="text-sm text-content-light dark:text-contentSecondary-dark">
-              No Results Found
-            </div>
+          <div className="flex h-56 flex-col items-center justify-center gap-2 p-6 text-base dark:text-contentTertiary-dark">
+            <EmptyState size="sm" description="No Results Found" />
           </div>
         )}
       </Card>

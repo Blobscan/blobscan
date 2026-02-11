@@ -378,6 +378,7 @@ const Txs: NextPage = function () {
       </Header>
       <FiltersBar />
       <PaginatedTable
+        emptyStateDescription="No Blob Transactions"
         isLoading={txsIsLoading}
         headers={transactionHeaders}
         rows={transactionRows}

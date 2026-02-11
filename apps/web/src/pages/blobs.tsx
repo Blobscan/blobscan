@@ -226,6 +226,7 @@ const Blobs: NextPage = function () {
       </Header>
       <FiltersBar />
       <PaginatedTable
+        emptyStateDescription="No Blobs"
         isLoading={isLoading}
         headers={blobHeaders}
         rows={blobRows}

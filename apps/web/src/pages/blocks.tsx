@@ -400,6 +400,7 @@ const Blocks: NextPage = function () {
       </Header>
       <FiltersBar />
       <PaginatedTable
+        emptyStateDescription="No Blocks"
         isLoading={blocksIsLoading}
         headers={blockHeaders}
         rows={blocksRows}
