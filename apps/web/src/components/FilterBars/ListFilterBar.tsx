@@ -10,7 +10,14 @@ import { FilterBarLayout } from "./FilterBarLayout";
 import { useFilterBarState } from "./useFilterBarState";
 
 export const ListFilterBar: FC = () => {
-  const { state, actions, apply, clear, disableClear } = useFilterBarState();
+  const { state, actions, apply, clear } = useFilterBarState();
+
+  const disableClear =
+    !state.categories &&
+    !state.rollups?.length &&
+    !state.timestampRange &&
+    !state.blockNumberRange &&
+    !state.slotRange;
 
   return (
     <FilterBarLayout

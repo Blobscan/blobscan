@@ -114,16 +114,6 @@ export function useFilterBarState() {
     dispatch({ type: "UPDATE", payload: toState(urlParams) });
   }, [urlParams]);
 
-  const disableClear = useMemo(() => {
-    return (
-      !state.categories &&
-      !state.rollups?.length &&
-      !state.timestampRange &&
-      !state.blockNumberRange &&
-      !state.slotRange
-    );
-  }, [state]);
-
   const clear = useCallback(() => dispatch({ type: "CLEAR" }), []);
 
   const apply = useCallback(() => {
@@ -207,5 +197,5 @@ export function useFilterBarState() {
     []
   );
 
-  return { state, actions, apply, clear, disableClear };
+  return { state, actions, apply, clear };
 }
