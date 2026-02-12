@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
+import { z } from "zod";
 
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
@@ -18,6 +19,7 @@ import type {
 } from "~/components/Selectors/StatsSectionSelector";
 import {
   DEFAULT_SECTION,
+  SECTION_NAMES,
   SECTION_OPTIONS,
   StatsSectionSelector,
 } from "~/components/Selectors/StatsSectionSelector";
@@ -36,9 +38,10 @@ import { TotalUniqueAddressesChart } from "~/components/TimeseriesCharts/TotalUn
 import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
-import { useQueryParams } from "~/hooks/useQueryParams";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
+import { useUrlState } from "~/hooks/useUrlState";
 import ErrorPage from "~/pages/_error";
+import { categoriesParamSchema, rollupsSchema } from "~/schemas/filters";
 import { buildStatRoute, calculatePercentage } from "~/utils";
 
 function buildViewLink(metricRoute: string) {
@@ -55,19 +58,21 @@ const SKELETON_OPTS: ChartBaseProps["skeletonOpts"] = {
   },
 };
 
+const statsSectionSchema = z.object({
+  section: z.enum(SECTION_NAMES).default("all"),
+});
+
+const queryParamsSchema = statsSectionSchema
+  .merge(categoriesParamSchema)
+  .merge(rollupsSchema);
+
 const Stats: NextPage = function () {
   const chain = useChain();
   const router = useRouter();
-  const {
-    filterParams: {
-      categories: categoriesQueryParam,
-      rollups: rollupsQueryParam,
-    },
-    statsSection,
-  } = useQueryParams();
+  const { state } = useUrlState(queryParamsSchema);
   const { categories, rollups } =
-    categoriesQueryParam?.length && rollupsQueryParam?.length
-      ? { categories: categoriesQueryParam, rollups: rollupsQueryParam }
+    state?.categories?.length && state?.rollups?.length
+      ? { categories: state.categories, rollups: state.rollups }
       : { categories: ["other" as const], rollups: ["all" as const] };
 
   const [selectedSection, setSelectedSection] =
@@ -496,9 +501,9 @@ const Stats: NextPage = function () {
 
   useEffect(() => {
     setSelectedSection(
-      SECTION_OPTIONS.find((s) => s.value === statsSection) ?? DEFAULT_SECTION
+      SECTION_OPTIONS.find((s) => s.value === state?.section) ?? DEFAULT_SECTION
     );
-  }, [statsSection]);
+  }, [state?.section]);
 
   if (error) {
     return <ErrorPage error={error} />;

@@ -15,10 +15,7 @@ import { Skeleton } from "~/components/Skeleton";
 import { TimestampToggle } from "~/components/Toggles";
 import type { TimestampFormat } from "~/components/Toggles";
 import { api } from "~/api-client";
-import {
-  serializedMultiValueParam,
-  useQueryParams,
-} from "~/hooks/useQueryParams";
+import { useListPageParams } from "~/hooks/useListPageParams";
 import ErrorPage from "~/pages/_error";
 import type { BlobWithExpandedTransaction } from "~/types";
 import type { ByteUnit } from "~/utils";
@@ -34,39 +31,24 @@ import {
 const BYTES_UNIT: ByteUnit = "KiB";
 
 const Blobs: NextPage = function () {
-  const { paginationParams, filterParams } = useQueryParams();
-  const rollups = filterParams.rollups
-    ? serializedMultiValueParam(filterParams.rollups)
-    : undefined;
-  const categories = filterParams.categories
-    ? serializedMultiValueParam(filterParams.categories)
-    : undefined;
-
+  const { pagination, filterParams, sort } = useListPageParams();
   const {
     data: blobsData,
     error: blobsError,
     isLoading,
   } = api.blob.getAll.useQuery<{ blobs: BlobWithExpandedTransaction[] }>({
-    ...paginationParams,
+    ...pagination,
     ...filterParams,
-    rollups,
-    categories,
+    sort,
     expand: "transaction",
   });
   const {
     data: countData,
     error: countError,
     isLoading: countIsLoading,
-  } = api.blob.getCount.useQuery(
-    {
-      ...filterParams,
-      rollups,
-      categories,
-    },
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
+  } = api.blob.getCount.useQuery(filterParams, {
+    refetchOnWindowFocus: false,
+  });
   const error = blobsError ?? countError;
   const { blobs } = blobsData || {};
   const { totalBlobs } = countData || {};
@@ -232,8 +214,8 @@ const Blobs: NextPage = function () {
         rows={blobRows}
         totalItems={totalBlobs}
         paginationData={{
-          pageSize: paginationParams.ps,
-          page: paginationParams.p,
+          page: pagination.page,
+          pageSize: pagination.pageSize,
         }}
       />
     </>

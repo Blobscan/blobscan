@@ -13,7 +13,7 @@ export function getISODate(date: dayjs.Dayjs | Date | string) {
     return date.format("YYYY-MM-DD");
   }
 
-  return new Date(date).toISOString().split("T")[0];
+  return new Date(date).toISOString().split("T")[0] as string;
 }
 
 export function formatTimestamp(

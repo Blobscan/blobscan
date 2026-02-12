@@ -19,10 +19,7 @@ import type { TimestampFormat } from "~/components/Toggles";
 import { TimestampToggle } from "~/components/Toggles";
 import { api } from "~/api-client";
 import { useChain } from "~/hooks/useChain";
-import {
-  serializedMultiValueParam,
-  useQueryParams,
-} from "~/hooks/useQueryParams";
+import { useListPageParams } from "~/hooks/useListPageParams";
 import ErrorPage from "~/pages/_error";
 import type { BlockWithExpandedBlobsAndTransactions, Rollup } from "~/types";
 import type { ByteUnit } from "~/utils";
@@ -40,14 +37,7 @@ const ETHER_UNIT: EtherUnit = "Gwei";
 
 const Blocks: NextPage = function () {
   const chain = useChain();
-  const { paginationParams, filterParams } = useQueryParams();
-  const rollups = filterParams.rollups
-    ? serializedMultiValueParam(filterParams.rollups)
-    : undefined;
-  const categories = filterParams.categories
-    ? serializedMultiValueParam(filterParams.categories)
-    : undefined;
-
+  const { pagination, filterParams, sort } = useListPageParams();
   const {
     data: blocksData,
     isLoading: blocksIsLoading,
@@ -55,26 +45,18 @@ const Blocks: NextPage = function () {
   } = api.block.getAll.useQuery<{
     blocks: BlockWithExpandedBlobsAndTransactions[];
   }>({
-    ...paginationParams,
+    ...pagination,
     ...filterParams,
-    rollups,
-    categories,
+    sort,
     expand: "transaction,blob",
   });
   const {
     data: countData,
     error: countError,
     isLoading: countIsLoading,
-  } = api.block.getCount.useQuery(
-    {
-      ...filterParams,
-      categories,
-      rollups,
-    },
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
+  } = api.block.getCount.useQuery(filterParams, {
+    refetchOnWindowFocus: false,
+  });
   const { blocks } = blocksData || {};
   const { totalBlocks } = countData || {};
   const error = blocksError || countError;
@@ -405,10 +387,7 @@ const Blocks: NextPage = function () {
         headers={blockHeaders}
         rows={blocksRows}
         totalItems={totalBlocks}
-        paginationData={{
-          pageSize: paginationParams.ps,
-          page: paginationParams.p,
-        }}
+        paginationData={pagination}
         isExpandable
       />
     </>

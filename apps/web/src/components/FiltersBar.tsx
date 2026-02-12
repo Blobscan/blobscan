@@ -1,16 +1,13 @@
 import { useCallback, useEffect, useReducer } from "react";
 import type { FC } from "react";
-import { useRouter } from "next/router";
 import type { DateRangeType } from "react-tailwindcss-datepicker";
-import type { UrlObject } from "url";
+import type { z } from "zod";
 
 import { Button } from "~/components/Button";
-import type { Sort } from "~/hooks/useQueryParams";
-import {
-  serializedMultiValueParam,
-  useQueryParams,
-} from "~/hooks/useQueryParams";
-import { getISODate } from "~/utils";
+import { useUrlState } from "~/hooks/useUrlState";
+import { filterParamsSchema } from "~/schemas/filters";
+import type { Sort } from "~/schemas/sort";
+import { sortParamsSchema } from "~/schemas/sort";
 import { Card } from "./Cards/Card";
 import { DatePicker } from "./DatePicker";
 import { NumberRangeInput } from "./Inputs/NumberRangeInput";
@@ -56,6 +53,10 @@ type FiltersAction<V extends keyof FiltersState> =
   | ClearAction<V>
   | UpdateAction;
 
+const filterSortSchema = filterParamsSchema.merge(sortParamsSchema);
+
+type FilterUrlParams = z.infer<typeof filterSortSchema>;
+
 const INIT_STATE: FiltersState = {
   rollups: [],
   categories: null,
@@ -66,6 +67,62 @@ const INIT_STATE: FiltersState = {
   slotRange: null,
   sort: "desc",
 };
+
+function toFiltersState({
+  categories,
+  startDate,
+  endDate,
+  startBlock,
+  endBlock,
+  startSlot,
+  endSlot,
+  rollups,
+  sort,
+}: FilterUrlParams) {
+  const newFiltersState: Partial<FiltersState> = {};
+
+  if (categories) {
+    newFiltersState.categories = CATEGORY_OPTIONS.find((opts) =>
+      categories.includes(opts.value)
+    );
+  }
+
+  if (startDate || endDate) {
+    newFiltersState.range = DATE_RANGE_OPTION;
+    newFiltersState.timestampRange = {
+      startDate: startDate ?? null,
+      endDate: endDate ?? null,
+    };
+  }
+
+  if (startBlock || endBlock) {
+    newFiltersState.range = BLOCK_RANGE_OPTION;
+    newFiltersState.blockNumberRange = {
+      start: startBlock,
+      end: endBlock,
+    };
+  }
+
+  if (startSlot || endSlot) {
+    newFiltersState.range = SLOT_RANGE_OPTION;
+    newFiltersState.slotRange = {
+      start: startSlot,
+      end: endSlot,
+    };
+  }
+
+  if (rollups?.length) {
+    newFiltersState.rollups = rollups
+      .map((r) => ROLLUP_OPTIONS.find((opts) => opts.value === r))
+      .filter(Boolean) as RollupSelectorOption[];
+  }
+
+  if (sort) {
+    newFiltersState.sort = sort;
+  }
+
+  return newFiltersState;
+}
 
 function reducer<V extends keyof FiltersState>(
   prevState: FiltersState,
@@ -100,8 +157,7 @@ export const FiltersBar: FC<FiltersBarProps> = function ({
   hideRangeFilter,
   hideSortFilter,
 }) {
-  const router = useRouter();
-  const { filterParams, paginationParams } = useQueryParams();
+  const { state: urlParams, updateState } = useUrlState(filterSortSchema);
   const [filters, dispatch] = useReducer(reducer, INIT_STATE);
 
   const disableClear =
@@ -113,7 +169,6 @@ export const FiltersBar: FC<FiltersBarProps> = function ({
     !filters.slotRange;
 
   const handleFilter = () => {
-    const query: UrlObject["query"] = {};
     const {
       rollups,
       timestampRange,
@@ -123,68 +178,26 @@ export const FiltersBar: FC<FiltersBarProps> = function ({
       categories,
     } = filters;
 
-    if (!hideRollupFilter && rollups && rollups.length > 0) {
-      query.rollups = serializedMultiValueParam(
-        rollups.flatMap((r) => r.value)
-      );
-    }
+    const startDate =
+      typeof timestampRange?.startDate === "string"
+        ? new Date(timestampRange.startDate)
+        : undefined;
+    const endDate =
+      typeof timestampRange?.endDate === "string"
+        ? new Date(timestampRange.endDate)
+        : undefined;
 
-    if (!hideCategoryFilter && categories) {
-      query.categories = categories.value;
-    }
-
-    if (!hideRangeFilter) {
-      if (timestampRange) {
-        const { startDate, endDate } = timestampRange;
-
-        if (startDate) {
-          query.startDate = getISODate(startDate);
-        }
-
-        if (endDate) {
-          query.endDate = getISODate(endDate);
-        }
-      }
-
-      if (blockNumberRange) {
-        const { start, end } = blockNumberRange;
-
-        if (start) {
-          query.startBlock = start;
-        }
-
-        if (end) {
-          query.endBlock = end;
-        }
-      }
-
-      if (slotRange) {
-        const { start, end } = slotRange;
-
-        if (start) {
-          query.startSlot = start;
-        }
-
-        if (end) {
-          query.endSlot = end;
-        }
-      }
-    }
-
-    if (!hideSortFilter && sort) {
-      query.sort = sort;
-    }
-
-    router.push(
-      {
-        pathname: router.pathname,
-        query,
-      },
-      undefined,
-      {
-        scroll: false,
-      }
-    );
+    updateState({
+      categories: categories ? [categories.value] : undefined,
+      rollups: rollups?.length ? rollups.flatMap((r) => r.value) : undefined,
+      startDate,
+      endDate,
+      startBlock: blockNumberRange?.start,
+      endBlock: blockNumberRange?.end,
+      startSlot: slotRange?.start,
+      endSlot: slotRange?.end,
+      sort,
+    });
   };
 
   const handleRollupChange = useCallback(
@@ -237,61 +250,12 @@ export const FiltersBar: FC<FiltersBarProps> = function ({
   }, []);
 
   useEffect(() => {
-    const {
-      categories,
-      startDate,
-      endDate,
-      startBlock,
-      endBlock,
-      startSlot,
-      endSlot,
-      rollups,
-    } = filterParams;
-    const { sort } = paginationParams;
-    const newFilters: Partial<FiltersState> = {};
+    if (!urlParams) return;
 
-    if (categories) {
-      newFilters.categories = CATEGORY_OPTIONS.find((opts) =>
-        categories.includes(opts.value)
-      );
-    }
-
-    if (startDate || endDate) {
-      newFilters.range = DATE_RANGE_OPTION;
-      newFilters.timestampRange = {
-        startDate: startDate ? new Date(startDate) : null,
-        endDate: endDate ? new Date(endDate) : null,
-      };
-    }
-
-    if (startBlock || endBlock) {
-      newFilters.range = BLOCK_RANGE_OPTION;
-      newFilters.blockNumberRange = {
-        start: startBlock,
-        end: endBlock,
-      };
-    }
-
-    if (startSlot || endSlot) {
-      newFilters.range = SLOT_RANGE_OPTION;
-      newFilters.slotRange = {
-        start: startSlot,
-        end: endSlot,
-      };
-    }
-
-    if (rollups?.length) {
-      newFilters.rollups = rollups
-        .map((r) => ROLLUP_OPTIONS.find((opts) => opts.value === r))
-        .filter(Boolean) as RollupSelectorOption[];
-    }
-
-    if (sort) {
-      newFilters.sort = sort;
-    }
+    const newFilters = toFiltersState(urlParams);
 
     dispatch({ type: "UPDATE", payload: newFilters });
-  }, [filterParams, paginationParams]);
+  }, [urlParams]);
 
   return (
     <Card compact>

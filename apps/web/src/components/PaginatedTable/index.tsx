@@ -22,8 +22,8 @@ export interface PaginatedTableQueryFilters {
 }
 
 type PaginationData = {
-  page: number;
-  pageSize: number;
+  page?: number;
+  pageSize?: number;
 };
 
 export type PaginatedTableProps = {
@@ -31,7 +31,7 @@ export type PaginatedTableProps = {
   isLoading: boolean;
   totalItems?: number;
   isExpandable?: boolean;
-  paginationData: PaginationData;
+  paginationData?: PaginationData;
   rowSkeletonHeight?: string | number;
   tableTopSlot?: ReactNode;
 } & Pick<TableProps, "headers" | "rows">;
@@ -60,7 +60,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
   isExpandable = false,
   rowSkeletonHeight = DEFAULT_ROW_SKELETON_HEIGHT,
 }) {
-  const { page, pageSize } = paginationData;
+  const { page = 1, pageSize = 50 } = paginationData || {};
   const isEmpty = !isLoading && !rows?.length;
 
   const router = useRouter();

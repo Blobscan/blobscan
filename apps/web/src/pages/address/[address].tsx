@@ -6,13 +6,14 @@ import { EthIdenticon } from "~/components/EthIdenticon";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
-import { useQueryParams } from "~/hooks/useQueryParams";
+import { useUrlState } from "~/hooks/useUrlState";
 import ErrorPage from "~/pages/_error";
+import { paginationParamsSchema } from "~/schemas/pagination";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 
 const Address: NextPage = () => {
   const router = useRouter();
-  const { paginationParams } = useQueryParams();
+  const { state: urlState } = useUrlState(paginationParamsSchema);
   const address = (router.query.address as string | undefined) ?? "";
 
   const {
@@ -23,7 +24,7 @@ const Address: NextPage = () => {
     transactions: TransactionWithExpandedBlockAndBlob[];
     totalTransactions: number;
   }>(
-    { ...paginationParams, from: address, expand: "block,blob" },
+    { p: urlState?.p, ps: urlState?.ps, from: address, expand: "block,blob" },
     {
       enabled: router.isReady,
       refetchOnWindowFocus: false,
@@ -87,8 +88,8 @@ const Address: NextPage = () => {
           );
         })}
         totalItems={addressTxsData?.totalTransactions}
-        page={paginationParams.p}
-        pageSize={paginationParams.ps}
+        page={urlState?.p}
+        pageSize={urlState?.ps}
         itemSkeleton={<BlobTransactionCard />}
       />
     </>
