@@ -5,7 +5,7 @@ import {
   BarsArrowUpIcon,
 } from "@heroicons/react/24/outline";
 
-import type { Sort } from "~/hooks/useQueryParams";
+import type { Sort } from "~/schemas/sort";
 import { IconButton } from "../IconButton";
 
 type SortToggleProps = {

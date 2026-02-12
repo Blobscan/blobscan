@@ -15,8 +15,8 @@ export type PaginatedListLayoutProps = {
   title?: ReactNode;
   items?: ReactNode[];
   totalItems?: number;
-  page: number;
-  pageSize: number;
+  page?: number;
+  pageSize?: number;
   itemSkeleton: ReactNode;
   isLoading?: boolean;
 };
@@ -26,8 +26,8 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   title,
   items,
   totalItems,
-  page,
-  pageSize,
+  page = 1,
+  pageSize = 50,
   itemSkeleton,
   isLoading,
 }) {

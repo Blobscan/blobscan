@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 
-import { useQueryParams } from "~/hooks/useQueryParams";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
+import { useUrlState } from "~/hooks/useUrlState";
+import { categoriesParamSchema, rollupsSchema } from "~/schemas/filters";
 import type { TimeseriesChartComponent } from "./Charts/TimeseriesChartBase";
 import { FiltersBar } from "./FiltersBar";
 import { Header } from "./Header";
@@ -14,26 +15,20 @@ export type TimeseriesChartPageProps = {
   isCategorizedTimeseries?: boolean;
 };
 
+const queryParamsSchema = categoriesParamSchema.merge(rollupsSchema);
+
 export const TimeseriesChartPage = function ({
   chart: Chart,
   title,
   description,
   isCategorizedTimeseries,
 }: TimeseriesChartPageProps) {
-  const {
-    filterParams: {
-      categories: categoriesQueryParam,
-      rollups: rollupsQueryParam,
-    },
-    isReady,
-  } = useQueryParams();
+  const { state, isReady } = useUrlState(queryParamsSchema);
   const queryParamsExists = Boolean(
-    categoriesQueryParam?.length || rollupsQueryParam?.length
+    state?.categories?.length || state?.rollups?.length
   );
-  const categories = queryParamsExists
-    ? categoriesQueryParam
-    : ["other" as const];
-  const rollups = queryParamsExists ? rollupsQueryParam : ["all" as const];
+  const categories = queryParamsExists ? state?.categories : ["other" as const];
+  const rollups = queryParamsExists ? state?.rollups : ["all" as const];
   const allRollupsSelected = rollups && rollups[0] === "all";
   const itemCount = !allRollupsSelected
     ? (categories?.length ?? 0) + (rollups?.length ?? 0)
