@@ -4,7 +4,7 @@ import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import { useUrlState } from "~/hooks/useUrlState";
 import { categoriesParamSchema, rollupsSchema } from "~/schemas/filters";
 import type { TimeseriesChartComponent } from "./Charts/TimeseriesChartBase";
-import { FiltersBar } from "./FiltersBar";
+import { TimeseriesFilterBar } from "./FilterBars/TimeseriesFilterBar";
 import { Header } from "./Header";
 
 export type TimeseriesChartPageProps = {
@@ -48,7 +48,7 @@ export const TimeseriesChartPage = function ({
     <div className="flex flex-col gap-8">
       <Header>{title}</Header>
       <div>{description}</div>
-      {isCategorizedTimeseries && <FiltersBar hideRangeFilter hideSortFilter />}
+      {isCategorizedTimeseries && <TimeseriesFilterBar />}
       <Chart
         dataset={chartDatasets}
         isLoading={isLoading}
