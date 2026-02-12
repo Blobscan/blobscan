@@ -7,7 +7,7 @@ import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Copyable } from "~/components/Copyable";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
-import { FiltersBar } from "~/components/FiltersBar";
+import { ListFilterBar } from "~/components/FilterBars/ListFilterBar";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
@@ -200,7 +200,7 @@ const Blobs: NextPage = function () {
           </div>
         </div>
       </Header>
-      <FiltersBar />
+      <ListFilterBar />
       <PaginatedTable
         emptyStateDescription="No Blobs"
         isLoading={isLoading}
