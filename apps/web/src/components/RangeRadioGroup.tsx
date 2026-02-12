@@ -29,7 +29,7 @@ export const SLOT_RANGE_OPTION: RangeOption = {
   tooltipText: "Filter by Slot Range",
 };
 
-export const RANGE_OPTIONS: RangeOption[] = [
+export const RANGE_OPTIONS: [RangeOption, RangeOption, ...RangeOption[]] = [
   BLOCK_RANGE_OPTION,
   DATE_RANGE_OPTION,
   SLOT_RANGE_OPTION,
