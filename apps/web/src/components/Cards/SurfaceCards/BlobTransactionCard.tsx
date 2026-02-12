@@ -14,13 +14,10 @@ import { Separator } from "~/components/Separator";
 import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
+import { routes } from "~/routes";
 import type { Blob, Transaction } from "~/types";
 import type { BytesOptions, ByteUnit } from "~/utils";
 import {
-  buildAddressRoute,
-  buildBlobRoute,
-  buildBlockRoute,
-  buildTransactionRoute,
   calculatePercentage,
   formatBytes,
   normalizeTimestamp,
@@ -108,7 +105,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                 <span className="text-surfaceContentSecondary-light dark:text-surfaceContentSecondary-dark">
                   Tx{" "}
                 </span>
-                <Link href={buildTransactionRoute(hash)}>{hash}</Link>
+                <Link href={routes.tx(hash)}>{hash}</Link>
               </div>
               <div>
                 {rollup && <RollupBadge rollup={rollup} compact={isCompact} />}
@@ -127,14 +124,14 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                 {from && to ? (
                   <div className="flex flex-row items-center gap-1 text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
                     <div className="flex justify-start gap-0.5">
-                      <Link href={buildAddressRoute(from)}>
+                      <Link href={routes.address(from)}>
                         {isCompact ? shortenHash(from, 8) : from}
                       </Link>
                     </div>
                     <ArrowRightIcon className="h-3 w-3" />
                     <div>
                       <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                        <Link href={buildAddressRoute(to)}>
+                        <Link href={routes.address(to)}>
                           {isCompact ? shortenHash(to, 8) : to}
                         </Link>
                       </div>
@@ -192,7 +189,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
               <div className="t mt-1 flex items-center gap-2 self-start md:flex-col md:justify-center md:gap-0">
                 <div className="flex gap-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                   Block
-                  <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
+                  <Link href={routes.block(blockNumber)}>{blockNumber}</Link>
                 </div>
                 <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
                   {normalizeTimestamp(blockTimestamp).fromNow()}
@@ -264,7 +261,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                         value={versionedHash}
                         tooltipText="Copy versioned hash"
                       >
-                        <Link href={buildBlobRoute(versionedHash)}>
+                        <Link href={routes.blob(versionedHash)}>
                           {versionedHash}
                         </Link>
                       </Copyable>
@@ -310,56 +307,3 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
 };
 
 export { BlobTransactionCard };
-
-// <div className="bg-primary-200 pr-4 dark:bg-primary-900">
-//   <div className="ml-10 grid grid-cols-[1fr_6fr_2fr_2fr_2fr] gap-2 p-2 text-sm">
-//     <TableHeader>Position</TableHeader>
-//     <TableHeader>Versioned Hash</TableHeader>
-//     <TableHeader>Size</TableHeader>
-//     <TableHeader>Usage Size</TableHeader>
-//     <TableHeader>Storages</TableHeader>
-//     {blobsOnTx.map(
-//       (
-//         { dataStorageReferences, versionedHash, size, usageSize },
-//         i
-//       ) => (
-//         <React.Fragment key={`${versionedHash}-${i}`}>
-//           <TableCol>{i}</TableCol>
-//           <TableCol>
-//             <Copyable
-//               value={versionedHash}
-//               tooltipText="Copy versioned hash"
-//             >
-//               <Link href={buildBlobRoute(versionedHash)}>
-//                 {versionedHash}
-//               </Link>
-//             </Copyable>
-//           </TableCol>
-//           <TableCol>{formatBytes(size)}</TableCol>
-//           <TableCol>
-//             <span>
-//               {formatBytes(usageSize)}{" "}
-//               <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-//                 ({calculatePercentage(usageSize, size)}%)
-//               </span>
-//             </span>
-//           </TableCol>
-//           <TableCol>
-//             {dataStorageReferences && (
-//               <div className="flex items-center gap-2">
-//                 {dataStorageReferences.map(({ storage, url }) => (
-//                   <StorageBadge
-//                     key={storage}
-//                     storage={storage}
-//                     url={url}
-//                     compact
-//                   />
-//                 ))}
-//               </div>
-//             )}
-//           </TableCol>
-//         </React.Fragment>
-//       )
-//     )}
-//   </div>
-// </div>

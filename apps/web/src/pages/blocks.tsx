@@ -21,16 +21,10 @@ import { api } from "~/api-client";
 import { useChain } from "~/hooks/useChain";
 import { useListPageParams } from "~/hooks/useListPageParams";
 import ErrorPage from "~/pages/_error";
+import { routes } from "~/routes";
 import type { BlockWithExpandedBlobsAndTransactions, Rollup } from "~/types";
 import type { ByteUnit } from "~/utils";
-import {
-  buildBlobRoute,
-  buildBlockRoute,
-  buildTransactionRoute,
-  formatNumber,
-  normalizeTimestamp,
-  shortenHash,
-} from "~/utils";
+import { formatNumber, normalizeTimestamp, shortenHash } from "~/utils";
 
 const BYTES_UNIT: ByteUnit = "KiB";
 const ETHER_UNIT: EtherUnit = "Gwei";
@@ -186,7 +180,7 @@ const Blocks: NextPage = function () {
                   value={number.toString()}
                   tooltipText="Copy block number"
                 >
-                  <Link href={buildBlockRoute(number)}>{number}</Link>
+                  <Link href={routes.block(number)}>{number}</Link>
                 </Copyable>
               ),
             },
@@ -304,7 +298,7 @@ const Blocks: NextPage = function () {
                           value={transactionHash}
                           tooltipText="Copy transaction hash"
                         >
-                          <Link href={buildTransactionRoute(transactionHash)}>
+                          <Link href={routes.tx(transactionHash)}>
                             {shortenHash(transactionHash, 27)}
                           </Link>
                         </Copyable>
@@ -319,7 +313,7 @@ const Blocks: NextPage = function () {
                           value={blobVersionedHash}
                           tooltipText="Copy blob versioned hash"
                         >
-                          <Link href={buildBlobRoute(blobVersionedHash)}>
+                          <Link href={routes.blob(blobVersionedHash)}>
                             {shortenHash(blobVersionedHash, 27)}
                           </Link>
                         </Copyable>

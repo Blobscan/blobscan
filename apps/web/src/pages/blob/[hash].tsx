@@ -28,9 +28,8 @@ import type { SelectOption } from "~/components/Selects";
 import { Listbox } from "~/components/Selects";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
+import { routes } from "~/routes";
 import {
-  buildBlockRoute,
-  buildTransactionRoute,
   formatBytes,
   formatTimestamp,
   isValidDecoder,
@@ -168,7 +167,7 @@ const Blob: NextPage = function () {
           name: "Block",
           value: (
             <div className="flex items-center gap-2 truncate">
-              <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
+              <Link href={routes.block(blockNumber)}>{blockNumber}</Link>
               <CopyToClipboard
                 value={blockNumber}
                 tooltipText="Copy block number"
@@ -180,7 +179,7 @@ const Blob: NextPage = function () {
           name: "Transaction",
           value: (
             <div className="flex items-center gap-2 truncate" title={txHash}>
-              {<Link href={buildTransactionRoute(txHash)}>{txHash}</Link>}
+              {<Link href={routes.tx(txHash)}>{txHash}</Link>}
               <CopyToClipboard value={txHash} tooltipText="Copy tx hash" />
             </div>
           ),
@@ -260,7 +259,7 @@ const Blob: NextPage = function () {
                 >
                   <div className="flex w-[100px]">
                     <div className="flex items-center gap-1">
-                      <Link href={buildBlockRoute(blockNumber)}>
+                      <Link href={routes.block(blockNumber)}>
                         {blockNumber}
                       </Link>
                       <CopyToClipboard
@@ -284,7 +283,7 @@ const Blob: NextPage = function () {
                       className="flex items-center gap-1 truncate"
                       title={txHash}
                     >
-                      <Link href={buildTransactionRoute(txHash)}>{txHash}</Link>
+                      <Link href={routes.tx(txHash)}>{txHash}</Link>
                       <CopyToClipboard
                         value={txHash}
                         tooltipText="Copy tx hash"

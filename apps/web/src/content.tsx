@@ -8,12 +8,7 @@ import {
 
 import BlobIcon from "~/icons/blob.svg";
 import EthereumIcon from "~/icons/ethereum.svg";
-import {
-  buildBlocksRoute,
-  buildTransactionsRoute,
-  buildBlobsRoute,
-  buildAllStatsRoute,
-} from "~/utils";
+import { routes } from "~/routes";
 import { BLOBSCAN_EXPLORERS } from "./explorers";
 import type { Network } from "./types";
 import type { RenderableIcon } from "./types/icons";
@@ -53,17 +48,17 @@ export const getNavigationItems = (
         {
           icon: BlobIcon,
           label: "Blobs",
-          href: buildBlobsRoute(),
+          href: routes.blobs,
         },
         {
           icon: CubeIcon,
           label: "Blocks",
-          href: buildBlocksRoute(),
+          href: routes.blocks,
         },
         {
           icon: ArrowsRightLeftIcon,
           label: "Transactions",
-          href: buildTransactionsRoute(),
+          href: routes.txs,
         },
       ],
     },
@@ -78,7 +73,7 @@ export const getNavigationItems = (
     {
       label: "Stats",
       icon: ChartBarIcon,
-      href: buildAllStatsRoute(),
+      href: routes.stats,
     },
     {
       label: "API",

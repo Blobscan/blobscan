@@ -41,12 +41,13 @@ import { useChain } from "~/hooks/useChain";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import { useUrlState } from "~/hooks/useUrlState";
 import ErrorPage from "~/pages/_error";
+import { routes } from "~/routes";
 import { categoriesParamSchema, rollupsSchema } from "~/schemas/filters";
-import { buildStatRoute, calculatePercentage } from "~/utils";
+import { calculatePercentage } from "~/utils";
 
-function buildViewLink(metricRoute: string) {
+function buildViewLink(metricName: string) {
   return (
-    <Link href={buildStatRoute(metricRoute)}>
+    <Link href={routes.stat(metricName)}>
       <span className="text-sm">Full View</span>
     </Link>
   );

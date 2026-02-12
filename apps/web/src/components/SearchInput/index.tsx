@@ -8,13 +8,8 @@ import { useClickOutside } from "~/hooks/useClickOutside";
 import { useDebounce } from "~/hooks/useDebounce";
 import Loading from "~/icons/loading.svg";
 import ErrorPage from "~/pages/_error";
+import { routes } from "~/routes";
 import type { SearchCategory } from "~/types";
-import {
-  buildAddressRoute,
-  buildBlobRoute,
-  buildBlockRoute,
-  buildTransactionRoute,
-} from "~/utils";
 import { Button } from "../Button";
 import { Input } from "../Inputs/Input";
 import { ResultsModal } from "./ResultsModal";
@@ -30,13 +25,13 @@ function buildSearchResultRoute(category: SearchCategory, id: string | number) {
 
   switch (category) {
     case "addresses":
-      return buildAddressRoute(id_);
+      return routes.address(id_);
     case "blobs":
-      return buildBlobRoute(id_);
+      return routes.blob(id_);
     case "blocks":
-      return buildBlockRoute(id_);
+      return routes.block(id_);
     case "transactions":
-      return buildTransactionRoute(id_);
+      return routes.tx(id_);
   }
 }
 

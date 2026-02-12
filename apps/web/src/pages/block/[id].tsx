@@ -21,9 +21,9 @@ import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { useChain } from "~/hooks/useChain";
 import { useExternalExplorers } from "~/hooks/useExternalExplorers";
 import ErrorPage from "~/pages/_error";
+import { routes } from "~/routes";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
-  buildBlockRoute,
   formatBytes,
   formatNumber,
   formatTimestamp,
@@ -108,7 +108,7 @@ const Block: NextPage = function () {
           blockData
         );
 
-        router.push(buildBlockRoute(adjacentBlock.number));
+        router.push(routes.block(adjacentBlock.number));
       } finally {
         setAdjacentBlockLoading(false);
       }

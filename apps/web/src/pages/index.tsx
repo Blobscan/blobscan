@@ -19,12 +19,8 @@ import { TotalBlobsChart } from "~/components/TimeseriesCharts/TotalBlobsChart";
 import { api } from "~/api-client";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import ErrorPage from "~/pages/_error";
+import { routes } from "~/routes";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
-import {
-  buildBlobsRoute,
-  buildBlocksRoute,
-  buildTransactionsRoute,
-} from "~/utils";
 
 const LATEST_ITEMS_LENGTH = 5;
 
@@ -208,7 +204,7 @@ const Home: NextPage = () => {
                   <div>Latest Blocks</div>
                   <Button
                     variant="outline"
-                    onClick={() => void router.push(buildBlocksRoute())}
+                    onClick={() => void router.push(routes.blocks)}
                   >
                     View Blocks
                   </Button>
@@ -244,7 +240,7 @@ const Home: NextPage = () => {
                   <div>Latest Blob Transactions</div>
                   <Button
                     variant="outline"
-                    onClick={() => void router.push(buildTransactionsRoute())}
+                    onClick={() => void router.push(routes.txs)}
                     className="h-full"
                   >
                     View Txs
@@ -299,7 +295,7 @@ const Home: NextPage = () => {
                   <div>Latest Blobs</div>
                   <Button
                     variant="outline"
-                    onClick={() => void router.push(buildBlobsRoute())}
+                    onClick={() => void router.push(routes.blobs)}
                   >
                     View Blobs
                   </Button>

@@ -7,8 +7,9 @@ import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Separator } from "~/components/Separator";
 import { Skeleton } from "~/components/Skeleton";
+import { routes } from "~/routes";
 import type { Block, Rollup } from "~/types";
-import { buildBlockRoute, normalizeTimestamp, pluralize } from "~/utils";
+import { normalizeTimestamp, pluralize } from "~/utils";
 import { Link } from "../../Link";
 import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
@@ -61,7 +62,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
         <div className="flex gap-2 md:flex-row">
           {number ? (
             <div className="flex gap-1 text-contentSecondary-light dark:text-contentSecondary-dark">
-              Block <Link href={buildBlockRoute(number)}>{number}</Link>
+              Block <Link href={routes.block(number)}>{number}</Link>
             </div>
           ) : (
             <Skeleton width={150} />
