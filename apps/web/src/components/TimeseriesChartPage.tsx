@@ -4,18 +4,18 @@ import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import { useUrlState } from "~/hooks/useUrlState";
 import { categoriesParamSchema, rollupsSchema } from "~/schemas/filters";
 import type { TimeseriesChartComponent } from "./Charts/TimeseriesChartBase";
-import { TimeseriesFilterBar } from "./FilterBars/TimeseriesFilterBar";
+import { TimeseriesControlBar } from "./ControlBars/TimeseriesControlBar";
 import { Header } from "./Header";
 
 export type TimeseriesChartPageProps = {
   chart: TimeseriesChartComponent;
   description: ReactNode;
-  enableFilters?: boolean;
+  enableControls?: boolean;
   title: ReactNode;
   isCategorizedTimeseries?: boolean;
 };
 
-const queryParamsSchema = categoriesParamSchema.merge(rollupsSchema);
+const controlQueryParamsSchema = categoriesParamSchema.merge(rollupsSchema);
 
 export const TimeseriesChartPage = function ({
   chart: Chart,
@@ -23,7 +23,7 @@ export const TimeseriesChartPage = function ({
   description,
   isCategorizedTimeseries,
 }: TimeseriesChartPageProps) {
-  const { state, isReady } = useUrlState(queryParamsSchema);
+  const { state, isReady } = useUrlState(controlQueryParamsSchema);
   const queryParamsExists = Boolean(
     state?.categories?.length || state?.rollups?.length
   );
@@ -48,7 +48,7 @@ export const TimeseriesChartPage = function ({
     <div className="flex flex-col gap-8">
       <Header>{title}</Header>
       <div>{description}</div>
-      {isCategorizedTimeseries && <TimeseriesFilterBar />}
+      {isCategorizedTimeseries && <TimeseriesControlBar />}
       <Chart
         dataset={chartDatasets}
         isLoading={isLoading}

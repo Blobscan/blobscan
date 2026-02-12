@@ -8,7 +8,7 @@ const AvgBlobBaseFee: NextPage = function () {
     <TimeseriesChartPage
       chart={AvgBlobBaseFeeChart}
       description="This chart shows the average blob base fee per day."
-      enableFilters={false}
+      enableControls={false}
       title="Average Blob Base Fee Stats"
     />
   );

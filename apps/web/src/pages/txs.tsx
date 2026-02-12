@@ -6,9 +6,9 @@ import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
+import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
-import { ListFilterBar } from "~/components/FilterBars/ListFilterBar";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
@@ -350,7 +350,7 @@ const Txs: NextPage = function () {
           </div>
         </div>
       </Header>
-      <ListFilterBar />
+      <ListControlBar />
       <PaginatedTable
         emptyStateDescription="No Blob Transactions"
         isLoading={txsIsLoading}

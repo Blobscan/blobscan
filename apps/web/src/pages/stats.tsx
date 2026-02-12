@@ -63,14 +63,14 @@ const statsSectionSchema = z.object({
   section: z.enum(SECTION_NAMES).default("all"),
 });
 
-const queryParamsSchema = statsSectionSchema
+const controlQueryParamsSchema = statsSectionSchema
   .merge(categoriesParamSchema)
   .merge(rollupsSchema);
 
 const Stats: NextPage = function () {
   const chain = useChain();
   const router = useRouter();
-  const { state } = useUrlState(queryParamsSchema);
+  const { state } = useUrlState(controlQueryParamsSchema);
   const { categories, rollups } =
     state?.categories?.length && state?.rollups?.length
       ? { categories: state.categories, rollups: state.rollups }

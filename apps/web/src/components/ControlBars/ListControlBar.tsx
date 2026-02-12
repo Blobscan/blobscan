@@ -6,11 +6,11 @@ import { RangeRadioGroup } from "../RangeRadioGroup";
 import { RollupSelector } from "../Selectors";
 import { CategorySelector } from "../Selectors/CategorySelector";
 import { SortToggle } from "../Toggles";
-import { FilterBarLayout } from "./FilterBarLayout";
-import { useFilterBarState } from "./useFilterBarState";
+import { ControlBarLayout } from "./ControlBarLayout";
+import { useControlState } from "./useControlState";
 
-export const ListFilterBar: FC = () => {
-  const { state, actions, apply, clear } = useFilterBarState();
+export const ListControlBar: FC = () => {
+  const { state, actions, apply, clear } = useControlState();
 
   const disableClear =
     !state.categories &&
@@ -20,7 +20,7 @@ export const ListFilterBar: FC = () => {
     !state.slotRange;
 
   return (
-    <FilterBarLayout
+    <ControlBarLayout
       onApply={apply}
       onClear={clear}
       disableClear={disableClear}
@@ -87,6 +87,6 @@ export const ListFilterBar: FC = () => {
           </div>
         </div>
       </div>
-    </FilterBarLayout>
+    </ControlBarLayout>
   );
 };

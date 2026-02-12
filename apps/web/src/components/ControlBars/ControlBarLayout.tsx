@@ -3,14 +3,14 @@ import type { FC, ReactNode } from "react";
 import { Button } from "~/components/Button";
 import { Card } from "../Cards/Card";
 
-export type FilterBarLayoutProps = {
+export type ControlBarLayoutProps = {
   children: ReactNode;
   onClear: () => void;
   onApply: () => void;
   disableClear?: boolean;
 };
 
-export const FilterBarLayout: FC<FilterBarLayoutProps> = ({
+export const ControlBarLayout: FC<ControlBarLayoutProps> = ({
   children,
   onClear,
   onApply,

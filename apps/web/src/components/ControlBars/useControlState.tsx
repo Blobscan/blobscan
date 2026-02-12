@@ -19,7 +19,7 @@ import type { RollupSelectorOption } from "../Selectors";
 import { CATEGORY_OPTIONS } from "../Selectors/CategorySelector";
 import type { CategorySelectorOption } from "../Selectors/CategorySelector";
 
-type State = {
+type ControlState = {
   rollups: RollupSelectorOption[] | null;
   categories: CategorySelectorOption | null;
   range: RangeOption;
@@ -29,13 +29,15 @@ type State = {
   sort: Sort;
 };
 
-type Action = { type: "CLEAR" } | { type: "UPDATE"; payload: Partial<State> };
+type Action =
+  | { type: "CLEAR" }
+  | { type: "UPDATE"; payload: Partial<ControlState> };
 
-export const filterAndSortParamsSchema =
-  filterParamsSchema.merge(sortParamsSchema);
-type FilterAndSortParams = z.infer<typeof filterAndSortParamsSchema>;
+export const controlParamsSchema = filterParamsSchema.merge(sortParamsSchema);
 
-const INITIAL_STATE: State = {
+type ControlParams = z.infer<typeof controlParamsSchema>;
+
+const INITIAL_STATE: ControlState = {
   rollups: [],
   categories: null,
   range: RANGE_OPTIONS[1],
@@ -45,7 +47,7 @@ const INITIAL_STATE: State = {
   sort: "desc",
 };
 
-function toState(queryParams: FilterAndSortParams): Partial<State> {
+function toControlState(queryParams: ControlParams): Partial<ControlState> {
   const {
     categories,
     startDate,
@@ -58,7 +60,7 @@ function toState(queryParams: FilterAndSortParams): Partial<State> {
     sort,
   } = queryParams;
 
-  const next: Partial<State> = {};
+  const next: Partial<ControlState> = {};
 
   if (categories) {
     next.categories =
@@ -94,7 +96,7 @@ function toState(queryParams: FilterAndSortParams): Partial<State> {
   return next;
 }
 
-function reducer(prev: State, action: Action): State {
+function reducer(prev: ControlState, action: Action): ControlState {
   switch (action.type) {
     case "CLEAR":
       return { ...INITIAL_STATE };
@@ -103,15 +105,13 @@ function reducer(prev: State, action: Action): State {
   }
 }
 
-export function useFilterBarState() {
-  const { state: urlParams, updateState } = useUrlState(
-    filterAndSortParamsSchema
-  );
+export function useControlState() {
+  const { state: urlParams, updateState } = useUrlState(controlParamsSchema);
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
   useEffect(() => {
     if (!urlParams) return;
-    dispatch({ type: "UPDATE", payload: toState(urlParams) });
+    dispatch({ type: "UPDATE", payload: toControlState(urlParams) });
   }, [urlParams]);
 
   const clear = useCallback(() => dispatch({ type: "CLEAR" }), []);
@@ -160,7 +160,7 @@ export function useFilterBarState() {
       setSort: (sort: Sort) => dispatch({ type: "UPDATE", payload: { sort } }),
 
       setRange: (range: RangeOption) => {
-        const payload: Partial<State> = { range };
+        const payload: Partial<ControlState> = { range };
 
         switch (range?.value) {
           case "date":

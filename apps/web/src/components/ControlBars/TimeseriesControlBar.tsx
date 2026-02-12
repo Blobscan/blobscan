@@ -2,16 +2,16 @@ import type { FC } from "react";
 
 import { RollupSelector } from "../Selectors";
 import { CategorySelector } from "../Selectors/CategorySelector";
-import { FilterBarLayout } from "./FilterBarLayout";
-import { useFilterBarState } from "./useFilterBarState";
+import { ControlBarLayout } from "./ControlBarLayout";
+import { useControlState } from "./useControlState";
 
-export const TimeseriesFilterBar: FC = () => {
-  const { state, actions, apply, clear } = useFilterBarState();
+export const TimeseriesControlBar: FC = () => {
+  const { state, actions, apply, clear } = useControlState();
 
   const disableClear = !state.categories && !state.rollups?.length;
 
   return (
-    <FilterBarLayout
+    <ControlBarLayout
       onApply={apply}
       onClear={clear}
       disableClear={disableClear}
@@ -31,6 +31,6 @@ export const TimeseriesFilterBar: FC = () => {
           />
         </div>
       </div>
-    </FilterBarLayout>
+    </ControlBarLayout>
   );
 };
