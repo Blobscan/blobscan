@@ -1,5 +1,39 @@
 # @blobscan/web
 
+## 0.49.0
+
+### Minor Changes
+
+- [#960](https://github.com/Blobscan/blobscan/pull/960) [`e6a6c27`](https://github.com/Blobscan/blobscan/commit/e6a6c277d896d479b55fdfd9645392bf2be9cce5) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved and standardized empty state screens across the app
+
+- [#958](https://github.com/Blobscan/blobscan/pull/958) [`ecd8888`](https://github.com/Blobscan/blobscan/commit/ecd88880c5c9055a35316a77b4a05b36e50f548c) Thanks [@PJColombo](https://github.com/PJColombo)! - Added error boundary component and fallback page for unexpected errors
+
+- [#958](https://github.com/Blobscan/blobscan/pull/958) [`ecd8888`](https://github.com/Blobscan/blobscan/commit/ecd88880c5c9055a35316a77b4a05b36e50f548c) Thanks [@PJColombo](https://github.com/PJColombo)! - Revamped 404 page
+
+- [#958](https://github.com/Blobscan/blobscan/pull/958) [`ecd8888`](https://github.com/Blobscan/blobscan/commit/ecd88880c5c9055a35316a77b4a05b36e50f548c) Thanks [@PJColombo](https://github.com/PJColombo)! - Revamped the “search not found” page
+
+- [#958](https://github.com/Blobscan/blobscan/pull/958) [`ecd8888`](https://github.com/Blobscan/blobscan/commit/ecd88880c5c9055a35316a77b4a05b36e50f548c) Thanks [@PJColombo](https://github.com/PJColombo)! - Introduced a global error page that is rendered across all routes when an unexpected error occurs, providing a consistent fallback experience for users
+
+- [#958](https://github.com/Blobscan/blobscan/pull/958) [`ecd8888`](https://github.com/Blobscan/blobscan/commit/ecd88880c5c9055a35316a77b4a05b36e50f548c) Thanks [@PJColombo](https://github.com/PJColombo)! - Revamped the error pages with dedicated screens for specific server errors (404, 422, 500, etc.)
+
+### Patch Changes
+
+- [#961](https://github.com/Blobscan/blobscan/pull/961) [`12b922d`](https://github.com/Blobscan/blobscan/commit/12b922dba0536ce894a11786b6797f20545e1863) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where the glowing effect was being displayed before the glowing image loaded
+
+- [#965](https://github.com/Blobscan/blobscan/pull/965) [`d8020ab`](https://github.com/Blobscan/blobscan/commit/d8020abc55d5d8056794f0eec36bc2c96587236f) Thanks [@PJColombo](https://github.com/PJColombo)! - Refactored routes utility
+
+- [#964](https://github.com/Blobscan/blobscan/pull/964) [`c5bbe52`](https://github.com/Blobscan/blobscan/commit/c5bbe5273ef6df4d1676cb6c9ae08f031ae2b850) Thanks [@PJColombo](https://github.com/PJColombo)! - Refactored useQueryParams hook
+
+- [#966](https://github.com/Blobscan/blobscan/pull/966) [`75c87c6`](https://github.com/Blobscan/blobscan/commit/75c87c6bdc6fba36f7427b02829efbaf14ce65fa) Thanks [@PJColombo](https://github.com/PJColombo)! - Reduced stats page bundle size by introducing a dedicated control bar component that excludes unused controls (e.g. date picker and other heavy dependencies)
+
+- [#963](https://github.com/Blobscan/blobscan/pull/963) [`c2a2247`](https://github.com/Blobscan/blobscan/commit/c2a2247fd3134979909809310c0daef67813a20b) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolve an issue where chart cards weren't being properly displayed on small devices due to a height problem
+
+- [#966](https://github.com/Blobscan/blobscan/pull/966) [`75c87c6`](https://github.com/Blobscan/blobscan/commit/75c87c6bdc6fba36f7427b02829efbaf14ce65fa) Thanks [@PJColombo](https://github.com/PJColombo)! - Renamed `FilterBar` to `ControlBar` for clearer semantics
+
+- Updated dependencies [[`ecd8888`](https://github.com/Blobscan/blobscan/commit/ecd88880c5c9055a35316a77b4a05b36e50f548c)]:
+  - @blobscan/api@0.33.1
+  - @blobscan/db@0.26.1
+
 ## 0.48.0
 
 ### Minor Changes

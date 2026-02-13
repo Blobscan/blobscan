@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.26.1
+
+### Patch Changes
+
+- [#958](https://github.com/Blobscan/blobscan/pull/958) [`ecd8888`](https://github.com/Blobscan/blobscan/commit/ecd88880c5c9055a35316a77b4a05b36e50f548c) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue on block fetcher procedure where hex values were being wrongly considered block numbers
+
 ## 0.26.0
 
 ### Minor Changes
