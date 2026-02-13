@@ -130,12 +130,13 @@ jobs:
         uses: ./tooling/github/setup-db
 
       - name: Setup GCS emulator
-        uses: fsouza/fake-gcs-action@v0.4.1
-        with:
-          version: "1.37.2"
-          backend: memory
-          scheme: http
-          data: packages/test/src/fixtures/gcs
+        run: |
+          docker pull fsouza/fake-gcs-server:1.53.1
+          docker run -d --name fake-gcs \
+            -p 4443:4443 \
+            -v "${GITHUB_WORKSPACE}/packages/test/src/fixtures/gcs:/data" \
+            fsouza/fake-gcs-server:1.53.1 \
+            -backend memory -scheme http -port 4443 -data /data
 
       - name: Generate Prisma Client
         run: pnpm db:generate
