@@ -7,8 +7,8 @@ import { NumericInput } from "./NumberInput";
 type SingleInput = Omit<InputProps, "value" | "onChange" | "type">;
 
 export type NumberRange = {
-  start?: number;
-  end?: number;
+  start?: number | null;
+  end?: number | null;
 };
 
 export type NumberRangeInputProps = {
@@ -41,7 +41,7 @@ export const NumberRangeInput: React.FC<NumberRangeInputProps> = ({
             end: range?.end,
           })
         }
-        value={range?.start}
+        value={range?.start ?? undefined}
         {...inputStartProps}
       />
       <NumericInput
@@ -55,7 +55,7 @@ export const NumberRangeInput: React.FC<NumberRangeInputProps> = ({
             end: newEndValue,
           })
         }
-        value={range?.end}
+        value={range?.end ?? undefined}
         {...inputEndProps}
       />
     </div>
