@@ -19,19 +19,17 @@ import { OptimismCard } from "~/components/OptimismCard";
 import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
 import ErrorPage from "~/pages/_error";
+import { routes } from "~/routes";
 import type {
   GetAdjacentTxByAddressInput,
   TransactionWithExpandedBlockAndBlob,
 } from "~/types";
 import {
-  buildAddressRoute,
-  buildBlockRoute,
   formatTimestamp,
   formatBytes,
   formatNumber,
   performDiv,
   pluralize,
-  buildTransactionRoute,
 } from "~/utils";
 
 const Tx: NextPage = () => {
@@ -87,7 +85,7 @@ const Tx: NextPage = () => {
           expand: "block,blob",
         });
 
-        router.push(buildTransactionRoute(adjacentTx));
+        router.push(routes.tx(adjacentTx));
       } finally {
         setAdjacentTxLoading(false);
       }
@@ -146,7 +144,7 @@ const Tx: NextPage = () => {
       { name: "Status", value: <BlockStatusBadge blockNumber={blockNumber} /> },
       {
         name: "Block",
-        value: <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>,
+        value: <Link href={routes.block(blockNumber)}>{blockNumber}</Link>,
       },
       {
         name: "Timestamp",
@@ -164,7 +162,7 @@ const Tx: NextPage = () => {
         name: "From",
         value: (
           <Copyable value={from} tooltipText="Copy from address">
-            <Link href={buildAddressRoute(from)}>{from}</Link>
+            <Link href={routes.address(from)}>{from}</Link>
           </Copyable>
         ),
       },
@@ -172,7 +170,7 @@ const Tx: NextPage = () => {
         name: "To",
         value: (
           <Copyable value={to} tooltipText="Copy to address">
-            <Link href={buildAddressRoute(to)}>{to}</Link>
+            <Link href={routes.address(to)}>{to}</Link>
           </Copyable>
         ),
       },

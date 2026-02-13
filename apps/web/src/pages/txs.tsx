@@ -19,17 +19,14 @@ import { TimestampToggle } from "~/components/Toggles";
 import { api } from "~/api-client";
 import { useListPageParams } from "~/hooks/useListPageParams";
 import ErrorPage from "~/pages/_error";
+import { routes } from "~/routes";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import type { ByteUnit } from "~/utils";
 import {
-  buildAddressRoute,
-  buildBlockRoute,
-  buildTransactionRoute,
   formatBytes,
   formatNumber,
   formatTimestamp,
   shortenHash,
-  buildBlobRoute,
   calculatePercentage,
 } from "~/utils";
 
@@ -145,17 +142,13 @@ const Txs: NextPage = function () {
                 {
                   item: (
                     <Copyable value={hash} tooltipText="Copy hash">
-                      <Link href={buildTransactionRoute(hash)}>
-                        {shortenHash(hash)}
-                      </Link>
+                      <Link href={routes.tx(hash)}>{shortenHash(hash)}</Link>
                     </Copyable>
                   ),
                 },
                 {
                   item: (
-                    <Link href={buildBlockRoute(blockNumber)}>
-                      {blockNumber}
-                    </Link>
+                    <Link href={routes.block(blockNumber)}>{blockNumber}</Link>
                   ),
                 },
                 {
@@ -181,7 +174,7 @@ const Txs: NextPage = function () {
                       value={from}
                       tooltipText="Copy the origin address"
                     >
-                      <Link href={buildAddressRoute(from)}>
+                      <Link href={routes.address(from)}>
                         {shortenHash(from)}
                       </Link>
                     </Copyable>
@@ -193,9 +186,7 @@ const Txs: NextPage = function () {
                       value={to}
                       tooltipText="Copy the destination address"
                     >
-                      <Link href={buildAddressRoute(to)}>
-                        {shortenHash(to)}
-                      </Link>
+                      <Link href={routes.address(to)}>{shortenHash(to)}</Link>
                     </Copyable>
                   ),
                 },
@@ -283,7 +274,7 @@ const Txs: NextPage = function () {
                                     value={versionedHash}
                                     tooltipText="Copy blob versioned hash"
                                   >
-                                    <Link href={buildBlobRoute(versionedHash)}>
+                                    <Link href={routes.blob(versionedHash)}>
                                       {versionedHash}
                                     </Link>
                                   </Copyable>

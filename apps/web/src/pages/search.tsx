@@ -14,12 +14,7 @@ import {
 import { Button } from "~/components/Button";
 import { GlowableImage } from "~/components/GlowableImage";
 import { Icon } from "~/components/Icon";
-import {
-  buildAddressRoute,
-  buildBlobRoute,
-  buildBlockRoute,
-  buildTransactionRoute,
-} from "~/utils";
+import { routes } from "~/routes";
 
 type SearchProps = {
   term: string;
@@ -40,20 +35,20 @@ export const getServerSideProps: GetServerSideProps<SearchProps> =
     let route: string | undefined;
 
     if (addressSchema.safeParse(term).success) {
-      route = buildAddressRoute(term);
+      route = routes.address(term);
     } else if (
       blobCommitmentSchema.safeParse(term).success ||
       blobVersionedHashSchema.safeParse(term).success ||
       blobProofSchema.safeParse(term).success
     ) {
-      route = buildBlobRoute(term);
+      route = routes.blob(term);
     } else if (hashSchema.safeParse(term).success) {
-      route = buildTransactionRoute(term);
+      route = routes.tx(term);
     } else if (
       !term.startsWith("0x") &&
       blockNumberSchema.safeParse(term).success
     ) {
-      route = buildBlockRoute(term);
+      route = routes.block(term);
     }
 
     if (!route) {

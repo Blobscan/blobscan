@@ -6,8 +6,8 @@ import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Separator } from "~/components/Separator";
 import { Skeleton } from "~/components/Skeleton";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
+import { routes } from "~/routes";
 import type { Blob, Rollup } from "~/types";
-import { buildBlobRoute } from "~/utils";
 import { Link } from "../../Link";
 import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
@@ -55,7 +55,7 @@ const BlobCard: FC<BlobCardProps> = ({
               <span className="text-contentSecondary-light dark:text-surfaceContentSecondary-dark">
                 Blob
               </span>
-              <Link href={buildBlobRoute(versionedHash)}>{versionedHash}</Link>
+              <Link href={routes.blob(versionedHash)}>{versionedHash}</Link>
             </div>
             {rollup ? (
               <RollupBadge key={rollup} rollup={rollup} compact />

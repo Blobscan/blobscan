@@ -17,16 +17,10 @@ import type { TimestampFormat } from "~/components/Toggles";
 import { api } from "~/api-client";
 import { useListPageParams } from "~/hooks/useListPageParams";
 import ErrorPage from "~/pages/_error";
+import { routes } from "~/routes";
 import type { BlobWithExpandedTransaction } from "~/types";
 import type { ByteUnit } from "~/utils";
-import {
-  buildBlobRoute,
-  buildBlockRoute,
-  buildTransactionRoute,
-  formatNumber,
-  formatTimestamp,
-  shortenHash,
-} from "~/utils";
+import { formatNumber, formatTimestamp, shortenHash } from "~/utils";
 
 const BYTES_UNIT: ByteUnit = "KiB";
 
@@ -115,7 +109,7 @@ const Blobs: NextPage = function () {
                       value={versionedHash}
                       tooltipText="Copy versioned hash"
                     >
-                      <Link href={buildBlobRoute(versionedHash)}>
+                      <Link href={routes.blob(versionedHash)}>
                         {shortenHash(versionedHash, 8)}
                       </Link>
                     </Copyable>
@@ -127,7 +121,7 @@ const Blobs: NextPage = function () {
                       value={txHash}
                       tooltipText="Copy transaction hash"
                     >
-                      <Link href={buildTransactionRoute(txHash)}>
+                      <Link href={routes.tx(txHash)}>
                         {shortenHash(txHash, 8)}
                       </Link>
                     </Copyable>
@@ -140,7 +134,7 @@ const Blobs: NextPage = function () {
                         value={blockNumber.toString()}
                         tooltipText="Copy block number"
                       >
-                        <Link href={buildBlockRoute(blockNumber)}>
+                        <Link href={routes.block(blockNumber)}>
                           {blockNumber}
                         </Link>
                       </Copyable>
