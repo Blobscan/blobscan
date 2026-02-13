@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
 import { z } from "zod";
 
 import { Card } from "~/components/Cards/Card";
@@ -63,14 +62,13 @@ const statsSectionSchema = z.object({
   section: z.enum(SECTION_NAMES).default("all"),
 });
 
-const queryParamsSchema = statsSectionSchema
+const controlQueryParamsSchema = statsSectionSchema
   .merge(categoriesParamSchema)
   .merge(rollupsSchema);
 
 const Stats: NextPage = function () {
   const chain = useChain();
-  const router = useRouter();
-  const { state } = useUrlState(queryParamsSchema);
+  const { state, updateState } = useUrlState(controlQueryParamsSchema);
   const { categories, rollups } =
     state?.categories?.length && state?.rollups?.length
       ? { categories: state.categories, rollups: state.rollups }
@@ -482,22 +480,11 @@ const Stats: NextPage = function () {
 
   const handleSectionChange = useCallback(
     (option: SectionOption) => {
-      const queryParams = {
-        ...router.query,
-      };
-
-      if (option !== DEFAULT_SECTION) {
-        queryParams.section = option.value;
-      } else {
-        delete queryParams.section;
-      }
-
-      router.push({
-        pathname: router.pathname,
-        query: queryParams,
+      updateState({
+        section: option !== DEFAULT_SECTION ? option.value : undefined,
       });
     },
-    [router]
+    [updateState]
   );
 
   useEffect(() => {
