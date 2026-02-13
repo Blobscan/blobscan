@@ -1,31 +1,36 @@
 import { useCallback, useEffect, useMemo, useReducer } from "react";
-import type { DateRangeType } from "react-tailwindcss-datepicker";
+import type { DateType } from "react-tailwindcss-datepicker";
 import type { z } from "zod";
 
 import { useUrlState } from "~/hooks/useUrlState";
 import { filterParamsSchema } from "~/schemas/filters";
 import type { Sort } from "~/schemas/sort";
 import { sortParamsSchema } from "~/schemas/sort";
-import type { NumberRange } from "../Inputs/NumberRangeInput";
-import {
-  BLOCK_RANGE_OPTION,
-  DATE_RANGE_OPTION,
-  RANGE_OPTIONS,
-  SLOT_RANGE_OPTION,
-} from "../RangeRadioGroup";
-import type { RangeOption } from "../RangeRadioGroup";
+import type { Range } from "../RangeRadioGroup";
 import { ROLLUP_OPTIONS } from "../Selectors";
 import type { RollupSelectorOption } from "../Selectors";
 import { CATEGORY_OPTIONS } from "../Selectors/CategorySelector";
 import type { CategorySelectorOption } from "../Selectors/CategorySelector";
 
+type RangeValue<T> = {
+  end: T | null;
+  start: T | null;
+};
+
+type RangeFilterBase<T extends Range, U> = {
+  type: T;
+  values: RangeValue<U>;
+};
+
+type RangeFilter =
+  | RangeFilterBase<"block" | "slot", number>
+  | RangeFilterBase<"date", DateType>;
+
 type ControlState = {
   rollups: RollupSelectorOption[] | null;
   categories: CategorySelectorOption | null;
-  range: RangeOption;
-  timestampRange: DateRangeType | null;
-  blockNumberRange: NumberRange | null;
-  slotRange: NumberRange | null;
+  range: RangeFilter;
+
   sort: Sort;
 };
 
@@ -40,10 +45,13 @@ type ControlParams = z.infer<typeof controlParamsSchema>;
 const INITIAL_STATE: ControlState = {
   rollups: [],
   categories: null,
-  range: RANGE_OPTIONS[1],
-  timestampRange: null,
-  blockNumberRange: null,
-  slotRange: null,
+  range: {
+    type: "date",
+    values: {
+      start: null,
+      end: null,
+    },
+  },
   sort: "desc",
 };
 
@@ -67,24 +75,6 @@ function toControlState(queryParams: ControlParams): Partial<ControlState> {
       CATEGORY_OPTIONS.find((o) => categories.includes(o.value)) ?? null;
   }
 
-  if (startDate || endDate) {
-    next.range = DATE_RANGE_OPTION;
-    next.timestampRange = {
-      startDate: startDate ?? null,
-      endDate: endDate ?? null,
-    };
-  }
-
-  if (startBlock || endBlock) {
-    next.range = BLOCK_RANGE_OPTION;
-    next.blockNumberRange = { start: startBlock, end: endBlock };
-  }
-
-  if (startSlot || endSlot) {
-    next.range = SLOT_RANGE_OPTION;
-    next.slotRange = { start: startSlot, end: endSlot };
-  }
-
   if (rollups?.length) {
     next.rollups = rollups
       .map((r) => ROLLUP_OPTIONS.find((o) => o.value === r))
@@ -92,6 +82,32 @@ function toControlState(queryParams: ControlParams): Partial<ControlState> {
   }
 
   if (sort) next.sort = sort;
+
+  if (startDate || endDate) {
+    next.range = {
+      type: "date",
+      values: {
+        start: startDate ?? null,
+        end: endDate ?? null,
+      },
+    };
+  } else if (startBlock || endBlock) {
+    next.range = {
+      type: "block",
+      values: {
+        end: endBlock ?? null,
+        start: startBlock ?? null,
+      },
+    };
+  } else if (startSlot || endSlot) {
+    next.range = {
+      type: "slot",
+      values: {
+        start: startSlot ?? null,
+        end: endSlot ?? null,
+      },
+    };
+  }
 
   return next;
 }
@@ -117,36 +133,52 @@ export function useControlState() {
   const clear = useCallback(() => dispatch({ type: "CLEAR" }), []);
 
   const apply = useCallback(() => {
-    const {
-      rollups,
-      timestampRange,
-      blockNumberRange,
-      slotRange,
+    const { rollups, range, sort, categories } = state;
+
+    const newUrlState: ControlParams = {
       sort,
-      categories,
-    } = state;
+    };
 
-    const startDate =
-      typeof timestampRange?.startDate === "string"
-        ? new Date(timestampRange.startDate)
-        : undefined;
+    if (categories) {
+      newUrlState.categories = [categories.value];
+    }
 
-    const endDate =
-      typeof timestampRange?.endDate === "string"
-        ? new Date(timestampRange.endDate)
-        : undefined;
+    if (rollups?.length) {
+      newUrlState.rollups = rollups.map((r) => r.value);
+    }
 
-    updateState({
-      categories: categories ? [categories.value] : undefined,
-      rollups: rollups?.length ? rollups.map((r) => r.value) : undefined,
-      startDate,
-      endDate,
-      startBlock: blockNumberRange?.start,
-      endBlock: blockNumberRange?.end,
-      startSlot: slotRange?.start,
-      endSlot: slotRange?.end,
-      sort,
-    });
+    const clearedRange: ControlParams = {
+      startBlock: undefined,
+      endBlock: undefined,
+      startSlot: undefined,
+      endSlot: undefined,
+      startDate: undefined,
+      endDate: undefined,
+    };
+
+    if (range) {
+      const { type, values } = range;
+
+      if (type === "block") {
+        clearedRange.startBlock = values.start ?? undefined;
+        clearedRange.endBlock = values.end ?? undefined;
+      } else if (type === "date") {
+        const start = values.start;
+        const end = values.end;
+
+        clearedRange.startDate =
+          typeof start === "string" ? new Date(start) : start ?? undefined;
+        clearedRange.endDate =
+          typeof end === "string" ? new Date(end) : end ?? undefined;
+      } else if (type === "slot") {
+        clearedRange.startSlot = values.start ?? undefined;
+        clearedRange.endSlot = values.end ?? undefined;
+      }
+    }
+
+    Object.assign(newUrlState, clearedRange);
+
+    updateState(newUrlState);
   }, [state, updateState]);
 
   const actions = useMemo(
@@ -159,40 +191,8 @@ export function useControlState() {
 
       setSort: (sort: Sort) => dispatch({ type: "UPDATE", payload: { sort } }),
 
-      setRange: (range: RangeOption) => {
-        const payload: Partial<ControlState> = { range };
-
-        switch (range?.value) {
-          case "date":
-            payload.slotRange = null;
-            payload.blockNumberRange = null;
-            break;
-          case "block":
-            payload.slotRange = null;
-            payload.timestampRange = null;
-            break;
-          case "slot":
-            payload.blockNumberRange = null;
-            payload.timestampRange = null;
-            break;
-          default:
-            payload.blockNumberRange = null;
-            payload.slotRange = null;
-            payload.timestampRange = null;
-            break;
-        }
-
-        dispatch({ type: "UPDATE", payload });
-      },
-
-      setTimestampRange: (timestampRange: DateRangeType | null) =>
-        dispatch({ type: "UPDATE", payload: { timestampRange } }),
-
-      setBlockNumberRange: (blockNumberRange: NumberRange | null) =>
-        dispatch({ type: "UPDATE", payload: { blockNumberRange } }),
-
-      setSlotRange: (slotRange: NumberRange | null) =>
-        dispatch({ type: "UPDATE", payload: { slotRange } }),
+      setRange: (range: RangeFilter) =>
+        dispatch({ type: "UPDATE", payload: { range } }),
     }),
     []
   );

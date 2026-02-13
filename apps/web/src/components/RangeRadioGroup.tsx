@@ -5,39 +5,35 @@ import classNames from "classnames";
 import { Icon } from "./Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
 
-export type RangeOption = {
-  value: string;
+export type Range = "block" | "date" | "slot";
+
+type RangeOption = {
+  value: Range;
   icon: React.ReactNode;
-  tooltipText?: string;
+  tooltipText: string;
 };
 
-export const BLOCK_RANGE_OPTION: RangeOption = {
-  icon: <Icon src={CubeIcon} />,
-  value: "block",
-  tooltipText: "Filter by Block Number Range",
-};
-
-export const DATE_RANGE_OPTION: RangeOption = {
-  icon: <Icon src={CalendarIcon} />,
-  value: "date",
-  tooltipText: "Filter by Date Range",
-};
-
-export const SLOT_RANGE_OPTION: RangeOption = {
-  icon: <Icon src={ClockIcon} />,
-  value: "slot",
-  tooltipText: "Filter by Slot Range",
-};
-
-export const RANGE_OPTIONS: [RangeOption, RangeOption, ...RangeOption[]] = [
-  BLOCK_RANGE_OPTION,
-  DATE_RANGE_OPTION,
-  SLOT_RANGE_OPTION,
+const RANGE_OPTIONS: RangeOption[] = [
+  {
+    value: "block",
+    icon: <Icon src={CubeIcon} />,
+    tooltipText: "Filter by Block Number Range",
+  },
+  {
+    value: "date",
+    icon: <Icon src={CalendarIcon} />,
+    tooltipText: "Filter by Date Range",
+  },
+  {
+    value: "slot",
+    icon: <Icon src={ClockIcon} />,
+    tooltipText: "Filter by Slot Range",
+  },
 ];
 
 export interface RangeRadioGroupProps {
-  selected: RangeOption;
-  onChange: (selected: RangeOption) => void;
+  selected: Range;
+  onChange: (selected: Range) => void;
 }
 
 export function RangeRadioGroup(props: RangeRadioGroupProps) {
@@ -45,7 +41,6 @@ export function RangeRadioGroup(props: RangeRadioGroupProps) {
     <RadioGroup
       value={props.selected}
       onChange={props.onChange}
-      by="value"
       className="flex h-full w-full cursor-pointer flex-row items-center rounded-s-lg bg-controlBackground-light  shadow-md dark:bg-controlBackground-dark"
     >
       {RANGE_OPTIONS.map((option, i) => (
@@ -58,13 +53,16 @@ export function RangeRadioGroup(props: RangeRadioGroupProps) {
                 "border-r border-white/5": i < RANGE_OPTIONS.length - 1,
                 "rounded-s-md": i === 0,
                 "hover:text-iconHighlight-light  dark:hover:text-iconHighlight-dark":
-                  props.selected?.value !== option.value,
+                  props.selected !== option.value,
                 "bg-primary-300/40 dark:bg-primary-600/30":
-                  props.selected?.value === option.value,
+                  props.selected === option.value,
               }
             )}
           >
-            <Radio className="flex items-center justify-center" value={option}>
+            <Radio
+              className="flex items-center justify-center"
+              value={option.value}
+            >
               {option.icon}
             </Radio>
           </TooltipTrigger>
