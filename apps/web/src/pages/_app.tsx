@@ -1,7 +1,6 @@
 import "../styles/globals.css";
 import "@upstash/feedback/index.css";
 import type { AppProps as NextAppProps } from "next/app";
-import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider, useTheme } from "next-themes";
 
 import "@fontsource/inter/400.css";
@@ -119,7 +118,6 @@ function App({ Component, pageProps }: NextAppProps) {
           <Component {...pageProps} />
         </AppLayout>
         <FeedbackWidget />
-        {env && env.PUBLIC_VERCEL_ANALYTICS_ENABLED && <Analytics />}
       </SkeletonTheme>
     </PostHogProvider>
   );
