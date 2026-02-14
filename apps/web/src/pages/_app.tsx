@@ -10,9 +10,6 @@ import "@fontsource/public-sans/500.css";
 import { useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import cookie from "cookie";
-import posthog from "posthog-js";
-import { PostHogProvider } from "posthog-js/react";
 import { SkeletonTheme } from "react-loading-skeleton";
 
 import AppLayout from "~/components/AppLayout/AppLayout";
@@ -36,43 +33,6 @@ function App({ Component, pageProps }: NextAppProps) {
   const isMounted = useIsMounted();
   const router = useRouter();
   const { env } = useEnv();
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && !!env?.PUBLIC_POSTHOG_ID) {
-      posthog.init(env.PUBLIC_POSTHOG_ID, {
-        api_host: env.PUBLIC_POSTHOG_HOST,
-        person_profiles: "identified_only",
-        loaded: (posthog) => {
-          if (window.location.hostname.includes("localhost")) {
-            posthog.debug();
-          }
-        },
-      });
-    }
-  }, [env]);
-
-  useEffect(() => {
-    const handleRouteChange = () => {
-      if (!posthog) {
-        return;
-      }
-
-      const distinctId = cookie.parse(document.cookie)["distinctId"];
-
-      if (!distinctId) {
-        return;
-      }
-
-      posthog.identify(distinctId);
-      posthog.capture("$pageview");
-    };
-
-    router.events.on("routeChangeComplete", handleRouteChange);
-
-    return () => {
-      router.events.off("routeChangeComplete", handleRouteChange);
-    };
-  }, [router.events]);
 
   useEffect(() => {
     if (!env?.PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL) {
@@ -101,25 +61,23 @@ function App({ Component, pageProps }: NextAppProps) {
   }
 
   return (
-    <PostHogProvider client={posthog}>
-      <SkeletonTheme
-        baseColor={resolvedTheme === "dark" ? "#434672" : "#EADEFD"}
-        highlightColor={resolvedTheme === "dark" ? "#7D80AB" : "#E2CFFF"}
-      >
-        <Head>
-          <title>Blobscan</title>
-          <meta
-            name="description"
-            content="Blobscan is the first EIP4844 Blob Transaction explorer, a web-based application that offers a seamless experience for navigating and indexing blob data."
-          />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        <AppLayout>
-          <Component {...pageProps} />
-        </AppLayout>
-        <FeedbackWidget />
-      </SkeletonTheme>
-    </PostHogProvider>
+    <SkeletonTheme
+      baseColor={resolvedTheme === "dark" ? "#434672" : "#EADEFD"}
+      highlightColor={resolvedTheme === "dark" ? "#7D80AB" : "#E2CFFF"}
+    >
+      <Head>
+        <title>Blobscan</title>
+        <meta
+          name="description"
+          content="Blobscan is the first EIP4844 Blob Transaction explorer, a web-based application that offers a seamless experience for navigating and indexing blob data."
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <AppLayout>
+        <Component {...pageProps} />
+      </AppLayout>
+      <FeedbackWidget />
+    </SkeletonTheme>
   );
 }
 
