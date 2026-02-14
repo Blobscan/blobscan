@@ -12,4 +12,7 @@ export type Heroicon = ForwardRefExoticComponent<
   } & RefAttributes<SVGSVGElement>
 >;
 
-export type RenderableIcon = ComponentType<SVGProps<SVGElement>> | string | Heroicon;
+export type RenderableIcon =
+  | ComponentType<SVGProps<SVGElement>>
+  | string
+  | Heroicon;
