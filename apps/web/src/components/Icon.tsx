@@ -1,6 +1,5 @@
 import type { FC } from "react";
 import Image from "next/image";
-import { twMerge } from "tailwind-merge";
 
 import type { Size } from "~/types";
 import type { RenderableIcon } from "~/types/icons";
@@ -85,8 +84,8 @@ export const Icon: FC<IconProps> = function ({
       className={className}
     />
   ) : (
-    <div title={title}>
-      <IconOrSrc className={twMerge(className, classNameProp)} />
+    <div title={title} className={className}>
+      <IconOrSrc className={classNameProp} />
     </div>
   );
 };

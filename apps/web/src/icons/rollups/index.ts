@@ -1,157 +1,91 @@
+import dynamic from "next/dynamic";
+import type { ComponentType, SVGProps } from "react";
+
 import type { Rollup } from "~/types";
 import type { RenderableIcon } from "~/types/icons";
-import abstract from "./abstract.svg";
-import aevo from "./aevo.svg";
-import ancient8 from "./ancient8.svg";
-import arbitrum from "./arbitrum.svg";
-import arenaz from "./arenaz.svg";
-import base from "./base.svg";
-import blast from "./blast.svg";
-import bob from "./bob.svg";
-import boba from "./boba.svg";
-import camp from "./camp.svg";
-import codex from "./codex.svg";
-import debankchain from "./debank.svg";
-import ethernity from "./ethernity.svg";
-import flynet from "./flynet.svg";
-import fraxtal from "./fraxtal.svg";
-import fuel from "./fuel.svg";
-import gravity from "./gravity.svg";
-import hashkey from "./hashkey.svg";
-import hemi from "./hemi.svg";
-import hpp from "./hpp.svg";
-import hypr from "./hypr.svg";
-import ink from "./ink.svg";
-import karak from "./karak.svg";
-import katana from "./katana.svg";
-import kinto from "./kinto.svg";
-import kroma from "./kroma.svg";
-import lighter from "./lighter.svg";
-import linea from "./linea.svg";
-import lisk from "./lisk.svg";
-import mantle from "./mantle.svg";
-import metal from "./metal.svg";
-import metamail from "./metamail.svg";
-import metis from "./metis.svg";
-import mint from "./mint.svg";
-import mode from "./mode.svg";
-import morph from "./morph.svg";
-import nal from "./nal.svg";
-import nanonnetwork from "./nanonnetwork.svg";
-import opbnb from "./opbnb.svg";
-import optimism from "./optimism.svg";
-import optopia from "./optopia.svg";
-import paradex from "./paradex.svg";
-import parallel from "./parallel.svg";
-import pgn from "./pgn.svg";
-import phala from "./phala.svg";
-import plume from "./plume.svg";
-import polynomial from "./polynomial.svg";
-import powerloom from "./powerloom.svg";
-import r0ar from "./r0ar.svg";
-import race from "./race.svg";
-import rari from "./rari.svg";
-import river from "./river.svg";
-import scroll from "./scroll.svg";
-import settlus from "./settlus.svg";
-import shape from "./shape.svg";
-import snaxchain from "./snaxchain.svg";
-import soneium from "./soneium.svg";
-import spire from "./spire.svg";
-import starknet from "./starknet.svg";
-import superlumio from "./superlumio.svg";
-import superseed from "./superseed.svg";
-import swanchain from "./swanchain.svg";
-import swellchain from "./swellchain.svg";
-import symbiosis from "./symbiosis.svg";
-import taiko from "./taiko.svg";
-import thebinaryholdings from "./thebinaryholdings.svg";
-import unichain from "./unichain.svg";
-import world from "./world.svg";
-import xga from "./xga.svg";
-import zeronetwork from "./zeronetwork.svg";
-import zircuit from "./zircuit.svg";
-import zksync from "./zksync.svg";
-import zora from "./zora.svg";
 
-type RollupSvgRegistry = { [key in Rollup]?: RenderableIcon };
+type SvgComponent = ComponentType<SVGProps<SVGElement>>;
+type RollupIconRegistry = { [key in Rollup]?: RenderableIcon };
 
-export const ICONS: RollupSvgRegistry = {
-  abstract,
-  aevo,
-  ancient8,
-  arbitrum,
-  arenaz,
-  base,
-  blast,
-  bob,
-  boba,
-  camp,
-  codex,
-  debankchain,
-  ethernity,
-  flynet,
-  fraxtal,
-  fuel,
-  gravity,
-  hashkey,
-  hpp,
-  hemi,
-  hypr,
-  ink,
-  karak,
-  katana,
-  kinto,
-  kroma,
-  lighter,
-  linea,
-  lisk,
-  mantle,
-  metal,
-  metamail,
-  metis,
-  mint,
-  mode,
-  morph,
-  nal,
-  nanonnetwork,
-  opbnb,
-  optimism,
-  optopia,
-  paradex,
-  parallel,
-  pgn,
-  phala,
-  plume,
-  polynomial,
-  powerloom,
-  r0ar,
-  race,
-  rari,
-  river,
-  scroll,
-  settlus,
-  shape,
-  snaxchain,
-  soneium,
-  spire,
-  starknet,
-  superlumio,
-  superseed,
-  swanchain,
-  swellchain,
-  symbiosis,
-  taiko,
-  thebinaryholdings,
-  unichain,
-  world,
-  xga,
-  zeronetwork,
-  zircuit,
-  zksync,
-  zora,
+const svg = (loader: () => Promise<{ default: SvgComponent }>) =>
+  dynamic(loader);
 
-  // PNG-based rollups
+export const ICONS: RollupIconRegistry = {
+  abstract: svg(() => import("./abstract.svg")),
+  aevo: svg(() => import("./aevo.svg")),
+  ancient8: svg(() => import("./ancient8.svg")),
+  arbitrum: svg(() => import("./arbitrum.svg")),
+  arenaz: svg(() => import("./arenaz.svg")),
+  base: svg(() => import("./base.svg")),
+  blast: svg(() => import("./blast.svg")),
+  bob: svg(() => import("./bob.svg")),
+  boba: svg(() => import("./boba.svg")),
+  camp: svg(() => import("./camp.svg")),
+  codex: svg(() => import("./codex.svg")),
+  debankchain: svg(() => import("./debank.svg")),
+  ethernity: svg(() => import("./ethernity.svg")),
+  flynet: svg(() => import("./flynet.svg")),
+  fraxtal: svg(() => import("./fraxtal.svg")),
+  fuel: svg(() => import("./fuel.svg")),
+  gravity: svg(() => import("./gravity.svg")),
+  hashkey: svg(() => import("./hashkey.svg")),
+  hemi: svg(() => import("./hemi.svg")),
+  hpp: svg(() => import("./hpp.svg")),
+  hypr: svg(() => import("./hypr.svg")),
+  ink: svg(() => import("./ink.svg")),
+  karak: svg(() => import("./karak.svg")),
+  katana: svg(() => import("./katana.svg")),
+  kinto: svg(() => import("./kinto.svg")),
+  kroma: svg(() => import("./kroma.svg")),
+  lighter: svg(() => import("./lighter.svg")),
+  linea: svg(() => import("./linea.svg")),
+  lisk: svg(() => import("./lisk.svg")),
+  mantle: svg(() => import("./mantle.svg")),
+  metal: svg(() => import("./metal.svg")),
+  metamail: svg(() => import("./metamail.svg")),
+  metis: svg(() => import("./metis.svg")),
+  mint: svg(() => import("./mint.svg")),
+  mode: svg(() => import("./mode.svg")),
+  morph: svg(() => import("./morph.svg")),
+  nal: svg(() => import("./nal.svg")),
+  nanonnetwork: svg(() => import("./nanonnetwork.svg")),
+  opbnb: svg(() => import("./opbnb.svg")),
+  optimism: svg(() => import("./optimism.svg")),
+  optopia: svg(() => import("./optopia.svg")),
+  paradex: svg(() => import("./paradex.svg")),
+  parallel: svg(() => import("./parallel.svg")),
+  pgn: svg(() => import("./pgn.svg")),
+  phala: svg(() => import("./phala.svg")),
+  plume: svg(() => import("./plume.svg")),
+  polynomial: svg(() => import("./polynomial.svg")),
+  powerloom: svg(() => import("./powerloom.svg")),
+  r0ar: svg(() => import("./r0ar.svg")),
+  race: svg(() => import("./race.svg")),
+  rari: svg(() => import("./rari.svg")),
+  river: svg(() => import("./river.svg")),
+  scroll: svg(() => import("./scroll.svg")),
+  settlus: svg(() => import("./settlus.svg")),
+  shape: svg(() => import("./shape.svg")),
+  snaxchain: svg(() => import("./snaxchain.svg")),
+  soneium: svg(() => import("./soneium.svg")),
+  spire: svg(() => import("./spire.svg")),
+  starknet: svg(() => import("./starknet.svg")),
+  superlumio: svg(() => import("./superlumio.svg")),
+  superseed: svg(() => import("./superseed.svg")),
+  swanchain: svg(() => import("./swanchain.svg")),
+  swellchain: svg(() => import("./swellchain.svg")),
+  symbiosis: svg(() => import("./symbiosis.svg")),
+  taiko: svg(() => import("./taiko.svg")),
+  thebinaryholdings: svg(() => import("./thebinaryholdings.svg")),
+  unichain: svg(() => import("./unichain.svg")),
+  world: svg(() => import("./world.svg")),
+  xga: svg(() => import("./xga.svg")),
+  zeronetwork: svg(() => import("./zeronetwork.svg")),
+  zircuit: svg(() => import("./zircuit.svg")),
+  zksync: svg(() => import("./zksync.svg")),
+  zora: svg(() => import("./zora.svg")),
+
+  // Image-based rollups
   infinaeon: "/rollups/infinaeon.png",
   lachain: "/rollups/lachain.jpg",
   lambda: "/rollups/lambda.png",

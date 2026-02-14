@@ -21,6 +21,7 @@ export const RollupBadge: React.FC<RollupBadgeProps> = ({
 }) => {
   const { badgeStyle, iconStyle, label } = ROLLUP_STYLES[rollup];
   const rollupIconSrc = ICONS[rollup];
+
   const rollupIcon = rollupIconSrc ? (
     <div className="relative">
       <Icon
