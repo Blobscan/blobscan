@@ -43,7 +43,6 @@
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^3.7.2",
     "@manypkg/cli": "^0.21.4",
-    "@next/bundle-analyzer": "^14.1.0",
     "@types/command-line-args": "^5.2.2",
     "@types/command-line-usage": "^5.0.3",
     "@types/node": "^22.0.0",
