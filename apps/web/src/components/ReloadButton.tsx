@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/compat/router";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 
 import { Button } from "./Button";
@@ -11,7 +11,7 @@ export const ReloadButton: FC<{ className?: string }> = function ({
   const router = useRouter();
 
   return (
-    <Button className={className} onClick={() => router.reload()}>
+    <Button className={className} onClick={() => router?.reload()}>
       <div className="flex items-center justify-center gap-1">
         <Icon src={ArrowPathIcon} size="md" />
         Reload

@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
+import { useRouter } from "next/compat/router";
 
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
@@ -35,7 +35,7 @@ import {
 const Tx: NextPage = () => {
   const router = useRouter();
   const utils = api.useUtils();
-  const hash = (router.query.hash as string | undefined) ?? "";
+  const hash = (router?.query.hash as string | undefined) ?? "";
   const {
     data: tx,
     error,
@@ -43,7 +43,7 @@ const Tx: NextPage = () => {
   } = api.tx.getByHash.useQuery<TransactionWithExpandedBlockAndBlob>(
     { hash, expand: "block,blob" },
     {
-      enabled: router.isReady,
+      enabled: router?.isReady,
       staleTime: Infinity,
       retry: false,
       refetchOnMount: false,
@@ -85,7 +85,7 @@ const Tx: NextPage = () => {
           expand: "block,blob",
         });
 
-        router.push(routes.tx(adjacentTx));
+        router?.push(routes.tx(adjacentTx));
       } finally {
         setAdjacentTxLoading(false);
       }

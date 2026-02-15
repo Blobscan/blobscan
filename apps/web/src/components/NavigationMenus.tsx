@@ -43,13 +43,13 @@ const NavigationLinkBase: FC<{
 }> = function ({ label, icon, isHovered }) {
   return (
     <div
-      className={`flex items-center gap-1 ${
+      className={`flex items-center gap-1 border ${
         isHovered
           ? "text-iconHighlight-light dark:text-iconHighlight-dark"
           : "text-content-light dark:text-content-dark"
       }  text-sm transition-colors`}
     >
-      <Icon src={icon} />
+      <Icon src={icon} size="sm" />
       {label}
     </div>
   );
@@ -148,7 +148,7 @@ const NavigationLinksMenu: FC<NavigationLinkMenuProps> = function ({
                     {items.map(({ href, label, icon }, index) => (
                       <PopoverButton key={index} as={Link} href={href}>
                         <div className="flex items-center gap-1 px-4 py-2 transition-all hover:bg-primary-300 hover:text-content-light/60 hover:dark:bg-iconHighlight-dark/80 hover:dark:text-content-dark">
-                          {icon && <Icon src={icon} />}
+                          {icon && <Icon src={icon} size="md" />}
                           <div className="text-xs">{label}</div>
                         </div>
                       </PopoverButton>

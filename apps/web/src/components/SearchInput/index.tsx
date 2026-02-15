@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import type { FormEventHandler, HTMLAttributes } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/compat/router";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
 import { api } from "~/api-client";
@@ -105,14 +105,14 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
       }
     }
 
-    void router.push(route);
+    void router?.push(route);
   };
 
   const handleResultClick = useCallback<ResultsModalProps["onResultClick"]>(
     (category, id) => {
       setSearchQuery("");
 
-      void router.push(buildSearchResultRoute(category, id));
+      void router?.push(buildSearchResultRoute(category, id));
     },
     [router]
   );

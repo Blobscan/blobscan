@@ -1,7 +1,7 @@
 import type { FC, FormEvent } from "react";
 import React, { useState } from "react";
+import { useRouter } from "next/compat/router";
 import Link from "next/link";
-import { useRouter } from "next/router";
 
 import Close from "~/icons/close.svg";
 import { Button } from "../Button";
@@ -37,10 +37,16 @@ interface FeedbackCardProps {
 
 export const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
   const [emoji, setEmoji] = useState<string | undefined>();
-  const { pathname, query } = useRouter();
+  const router = useRouter();
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (!router) {
+      return;
+    }
+
+    const { pathname, query } = router;
 
     const form = event.currentTarget;
     const formData = new FormData(form);

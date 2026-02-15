@@ -4,7 +4,7 @@ import { createAppRouter, createTRPCContext } from "@blobscan/api";
 import { getChain } from "@blobscan/chains";
 import { RollupRegistry } from "@blobscan/rollups/src/RollupRegistry";
 
-import { env } from "./env.mjs";
+import { env } from "./env";
 import { prisma } from "./prisma";
 import { redis } from "./redis";
 

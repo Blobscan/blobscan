@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
-import { z } from "zod";
+import { z } from "@blobscan/zod";
 
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";

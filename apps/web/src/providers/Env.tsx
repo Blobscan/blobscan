@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import type { z } from "zod";
+import type { z } from "@blobscan/zod";
 
-import type { clientEnvVarsSchema } from "~/env.mjs";
+import type { clientEnvVarsSchema } from "~/env";
 
 export type ClientEnvVars = z.output<typeof clientEnvVarsSchema>;
 interface EnvContextType {

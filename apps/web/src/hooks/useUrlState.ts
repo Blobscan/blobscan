@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import type { z } from "zod";
+import { useRouter } from "next/compat/router";
+
+import type { z } from "@blobscan/zod";
 
 import { getISODate } from "~/utils";
 
@@ -38,7 +39,7 @@ export function useUrlState<T extends z.AnyZodObject>(
   const [state, setState] = useState<z.infer<T> | null>(null);
 
   useEffect(() => {
-    if (!router.isReady) return;
+    if (!router || !router.isReady) return;
 
     const result = schema.safeParse(router.query);
 
@@ -46,10 +47,14 @@ export function useUrlState<T extends z.AnyZodObject>(
       setState(result.data);
       setIsReady(true);
     }
-  }, [router.isReady, router.query, schema]);
+  }, [router, schema]);
 
   const updateState = useCallback(
     (updates: Partial<z.infer<T>>) => {
+      if (!router) {
+        return;
+      }
+
       const currentState = schema.safeParse(router.query).success
         ? schema.parse(router.query)
         : {};
