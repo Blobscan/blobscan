@@ -1,5 +1,5 @@
 import type { GetServerSideProps } from "next";
-import { useRouter } from "next/router";
+import { useRouter } from "next/compat/router";
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/outline";
 
 import {
@@ -116,7 +116,7 @@ export default function Search({ term }: SearchProps) {
         <Button
           variant="primary"
           className="mt-4 w-72 lg:w-96"
-          onClick={() => void router.back()}
+          onClick={() => void router?.back()}
         >
           <div className="flex items-center justify-center gap-2">
             <Icon src={ArrowUturnLeftIcon} />

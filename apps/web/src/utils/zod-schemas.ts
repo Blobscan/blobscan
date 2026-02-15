@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@blobscan/zod";
 
 import { Category, Rollup } from "@blobscan/db/prisma/enums";
 

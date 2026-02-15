@@ -1,4 +1,4 @@
-import { env } from "~/env.mjs";
+import { env } from "~/env";
 import { Indicator } from "./Indicator";
 import { Link } from "./Link";
 

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useReducer } from "react";
 import type { DateType } from "react-tailwindcss-datepicker";
-import type { z } from "zod";
+import type { z } from "@blobscan/zod";
 
 import { useUrlState } from "~/hooks/useUrlState";
 import { filterParamsSchema } from "~/schemas/filters";

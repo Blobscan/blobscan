@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import type { FC, ReactNode } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/compat/router";
 import Skeleton from "react-loading-skeleton";
 
 import { Card } from "~/components/Cards/Card";
@@ -73,6 +73,10 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
 
   const handlePageSizeSelection = useCallback(
     ({ value: newPageSize }: PageSizeOption) => {
+      if (!router) {
+        return;
+      }
+
       const { p: _, ...rest } = router.query;
 
       void router.push({
@@ -87,7 +91,11 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
   );
 
   const handlePageSelection = useCallback<PaginationProps["onChange"]>(
-    (newPage) =>
+    (newPage) => {
+      if (!router) {
+        return;
+      }
+
       void router.push({
         pathname: router.pathname,
         query: {
@@ -95,7 +103,8 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
           p: newPage,
           ps: pageSize,
         },
-      }),
+      });
+    },
     [pageSize, router]
   );
 

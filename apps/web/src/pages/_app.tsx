@@ -8,8 +8,8 @@ import "@fontsource/inter/500.css";
 import "@fontsource/public-sans/400.css";
 import "@fontsource/public-sans/500.css";
 import { useEffect } from "react";
+import { useRouter } from "next/compat/router";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { SkeletonTheme } from "react-loading-skeleton";
 
 import AppLayout from "~/components/AppLayout/AppLayout";
@@ -52,7 +52,7 @@ function App({ Component, pageProps }: NextAppProps) {
     }
   }, [env?.PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL]);
 
-  if (!router.isReady) {
+  if (!router || !router.isReady) {
     return null;
   }
 

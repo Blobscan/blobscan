@@ -1,6 +1,6 @@
 import { Fragment, useCallback } from "react";
 import type { FC, ReactNode } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/compat/router";
 
 import { Header } from "~/components/Header";
 import { Card } from "../Cards/Card";
@@ -42,6 +42,10 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
 
   const handlePageSizeSelection = useCallback(
     (option: PageSizeOption) => {
+      if (!router) {
+        return;
+      }
+
       const newPageSize = option.value;
 
       void router.push({
@@ -62,6 +66,10 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
 
   const handlePageSelection = useCallback<PaginationProps["onChange"]>(
     (newPage) => {
+      if (!router) {
+        return;
+      }
+
       void router.push({
         pathname: router.pathname,
         query: {

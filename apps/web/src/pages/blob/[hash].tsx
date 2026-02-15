@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
+import { useRouter } from "next/compat/router";
 
 import ErrorPage from "~/pages/_error";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -39,14 +39,14 @@ import {
 const Blob: NextPage = function () {
   const router = useRouter();
   const breakpoint = useBreakpoint();
-  const id = (router.query.hash as string | undefined) ?? "0";
+  const id = (router?.query.hash as string | undefined) ?? "0";
   const { data: blob, error } = api.blob.getByBlobId.useQuery(
     {
       id: id,
       expand: "transaction",
     },
     {
-      enabled: router.isReady,
+      enabled: router?.isReady,
       retry: false,
       refetchOnReconnect: false,
       refetchOnWindowFocus: false,

@@ -3,8 +3,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import { api } from "@blobscan/open-telemetry";
 
-import { env } from "~/env.mjs";
-import { rateLimited } from "./rate-limit";
+import { env } from "~/env";
+import { rateLimited } from "~/rate-limit";
 
 const feedbackMessagesTotalCounter = api.metrics
   .getMeter("blobscan_web")

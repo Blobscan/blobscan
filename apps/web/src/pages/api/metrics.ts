@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import { createMetricsHandler } from "@blobscan/api";
 
-import { env } from "~/env.mjs";
+import { env } from "~/env";
 import { prisma } from "~/prisma";
 
 const metricsHandler = createMetricsHandler(prisma);

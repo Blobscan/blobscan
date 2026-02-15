@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@blobscan/zod";
 
 import { SECTION_NAMES } from "../components/Selectors/StatsSectionSelector";
 

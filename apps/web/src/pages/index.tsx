@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
+import { useRouter } from "next/compat/router";
 
 import { BlobscanLogo } from "~/components/BlobscanLogo";
 import { Button } from "~/components/Button";
@@ -204,7 +204,7 @@ const Home: NextPage = () => {
                   <div>Latest Blocks</div>
                   <Button
                     variant="outline"
-                    onClick={() => void router.push(routes.blocks)}
+                    onClick={() => void router?.push(routes.blocks)}
                   >
                     View Blocks
                   </Button>
@@ -240,7 +240,7 @@ const Home: NextPage = () => {
                   <div>Latest Blob Transactions</div>
                   <Button
                     variant="outline"
-                    onClick={() => void router.push(routes.txs)}
+                    onClick={() => void router?.push(routes.txs)}
                     className="h-full"
                   >
                     View Txs
@@ -295,7 +295,7 @@ const Home: NextPage = () => {
                   <div>Latest Blobs</div>
                   <Button
                     variant="outline"
-                    onClick={() => void router.push(routes.blobs)}
+                    onClick={() => void router?.push(routes.blobs)}
                   >
                     View Blobs
                   </Button>
