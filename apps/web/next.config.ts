@@ -93,7 +93,7 @@ const config: NextConfig = {
   outputFileTracingRoot: path.join(__dirname, "../../"),
 };
 
-export default withSentryConfig(config, {
+export default withSentryConfig(bundleAnalyzer(config), {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
