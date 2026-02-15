@@ -1,7 +1,7 @@
 import type { NextApiRequest } from "next";
 import { RateLimiterRedis } from "rate-limiter-flexible";
 
-import { redis } from "~/redis";
+import { redis } from "./redis";
 
 const ratelimit = new RateLimiterRedis({
   storeClient: redis,

@@ -2,10 +2,14 @@
 // The config you add here will be used whenever a user loads a page in their browser.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-import { init as SentryInit } from "@sentry/nextjs";
-import type { z } from "zod";
+import {
+  init as SentryInit,
+  captureRouterTransitionStart,
+} from "@sentry/nextjs";
 
-import type { clientEnvVarsSchema } from "~/env.mjs";
+import type { z } from "@blobscan/zod";
+
+import type { clientEnvVarsSchema } from "~/env";
 
 type ClientEnvVars = z.output<typeof clientEnvVarsSchema>;
 
@@ -20,8 +24,11 @@ const initSentry = async () => {
     SentryInit({
       dsn: dns,
       environment,
-      tracesSampleRate: 1,
-      debug: false,
+      // Adds request headers and IP for users
+      sendDefaultPii: true,
+      // Adjust based on your traffic volume
+      tracesSampleRate: process.env.NODE_ENV === "development" ? 1.0 : 0.1,
+      enableLogs: true,
     });
   } catch (error) {
     console.error("Error during Sentry initialization", error);
@@ -29,3 +36,5 @@ const initSentry = async () => {
 };
 
 initSentry();
+
+export const onRouterTransitionStart = captureRouterTransitionStart;

@@ -1,5 +1,5 @@
 import { createEnv } from "@t3-oss/env-nextjs";
-import { z } from "zod";
+import { booleanSchema, z } from "@blobscan/zod";
 
 export const networkSchema = z.enum([
   "mainnet",
@@ -16,12 +16,6 @@ export const chainIdSchema = z.enum([
   "560048",
   "100",
 ]);
-// See booleanSchema from packages/zod/src/schemas.ts
-// We need to redefine it because we can't import ts files from here
-const booleanSchema = z
-  .string()
-  .refine((s) => s === "true" || s === "false")
-  .transform((s) => s === "true");
 
 const clientEnvVars = {
   PUBLIC_BEACON_BASE_URL: z.string().url().optional(),

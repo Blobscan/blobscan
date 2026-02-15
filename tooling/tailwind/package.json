@@ -6,11 +6,18 @@
   "license": "MIT",
   "files": [
     "index.ts",
+    "colors.ts",
     "postcss.js"
   ],
   "devDependencies": {
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.4.1"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
   }
 }

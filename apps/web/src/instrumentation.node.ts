@@ -3,7 +3,7 @@ import {
   collectDefaultMetrics,
 } from "@blobscan/open-telemetry";
 
-import { env } from "./env.mjs";
+import { env } from "./env";
 
 if (env.METRICS_ENABLED) {
   collectDefaultMetrics();

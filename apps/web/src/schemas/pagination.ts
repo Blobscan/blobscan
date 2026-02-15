@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@blobscan/zod";
 
 export const paginationParamsSchema = z.object({
   p: z.coerce.number().optional(),

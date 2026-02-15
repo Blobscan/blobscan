@@ -1,6 +1,6 @@
-import type { z } from "zod";
+import type { z } from "@blobscan/zod";
 
-import type { networkSchema } from "~/env.mjs";
+import type { networkSchema } from "~/env";
 
 export type ChainId = 1 | 100 | 560048 | 11155111;
 

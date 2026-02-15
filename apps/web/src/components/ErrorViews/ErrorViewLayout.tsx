@@ -1,5 +1,5 @@
 import type { FC, ReactNode } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/compat/router";
 
 import { Button } from "../Button";
 
@@ -42,7 +42,7 @@ export const ErrorViewLayout: FC<ErrorViewLayoutProps> = function ({
         )}
         <div className="mt-3 sm:mt-10">
           {action ?? (
-            <Button variant="primary" onClick={() => router.replace("/")}>
+            <Button variant="primary" onClick={() => router?.replace("/")}>
               Go To Homepage
             </Button>
           )}

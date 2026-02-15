@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
+import { useRouter } from "next/compat/router";
 
 import { hashSchema } from "~/utils/zod-schemas";
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
@@ -39,8 +39,8 @@ const Block: NextPage = function () {
   const { buildResourceUrl } = useExternalExplorers("consensus");
   const [adjacentBlockLoading, setAdjacentBlockLoading] = useState(false);
 
-  const isReady = router.isReady;
-  const blockNumberOrHash = router.query.id as string | undefined;
+  const isReady = router?.isReady;
+  const blockNumberOrHash = router?.query.id as string | undefined;
   const { data: latestBlock } = api.block.getLatest.useQuery(undefined, {
     retry: false,
     refetchOnReconnect: false,
@@ -108,7 +108,7 @@ const Block: NextPage = function () {
           blockData
         );
 
-        router.push(routes.block(adjacentBlock.number));
+        router?.push(routes.block(adjacentBlock.number));
       } finally {
         setAdjacentBlockLoading(false);
       }

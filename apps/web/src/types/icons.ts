@@ -1,5 +1,5 @@
 import type {
-  FC,
+  ComponentType,
   ForwardRefExoticComponent,
   RefAttributes,
   SVGProps,
@@ -12,4 +12,7 @@ export type Heroicon = ForwardRefExoticComponent<
   } & RefAttributes<SVGSVGElement>
 >;
 
-export type RenderableIcon = FC<SVGProps<SVGElement>> | string | Heroicon;
+export type RenderableIcon =
+  | ComponentType<SVGProps<SVGElement>>
+  | string
+  | Heroicon;
