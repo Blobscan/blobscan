@@ -3,7 +3,7 @@
   "version": "0.48.0",
   "private": true,
   "scripts": {
-    "analyze": "ANALYZE=true pnpm with-env next build",
+    "analyze": "pnpm with-env next experimental-analyze",
     "build": "pnpm with-env next build",
     "clean": "git clean -xdf .next .turbo node_modules",
     "dev": "pnpm with-env next dev -p 3000",
