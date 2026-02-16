@@ -1,0 +1,310 @@
+model AllTimeMetrics {
+  id       Int       @id @default(autoincrement())
+  category Category?
+  rollup   Rollup?
+
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  // Global-only Metrics
+
+  /// @zod.nonnegative()
+  avgBlobBaseFee    Float   @map("avg_blob_base_fee")
+  /// @zod.nonnegative()
+  avgBlobGasPrice   Float   @map("avg_blob_gas_price")
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasPrice Decimal @map("total_blob_gas_price") @db.Decimal(100, 0)
+
+  // Dimensional Metrics
+
+  /// @zod.nonnegative()
+  avgBlobAsCalldataFee       Float   @map("avg_blob_as_calldata_fee")
+  /// @zod.nonnegative()
+  avgBlobAsCalldataMaxFee    Float   @map("avg_blob_as_calldata_max_fee")
+  /// @zod.nonnegative()
+  avgBlobMaxFee              Float   @map("avg_blob_max_fee")
+  /// @zod.nonnegative()
+  avgBlobUsageSize           Float   @map("avg_blob_usage_size")
+  /// @zod.nonnegative()
+  avgMaxBlobGasFee           Float   @map("avg_max_blob_gas_fee")
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataFee     Decimal @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataGasUsed Decimal @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataMaxFees Decimal @map("total_blob_as_calldata_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobFee               Decimal @map("total_blob_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasUsed           Decimal @map("total_blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobMaxFees           Decimal @map("total_blob_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobMaxGasFees        Decimal @map("total_blob_max_gas_fees") @db.Decimal(100, 0)
+  /// @zod.nonnegative()
+  totalBlobs                 Int     @map("total_blobs")
+  /// @zod.nonnegative()
+  totalBlobSize              BigInt  @map("total_blob_size")
+  /// @zod.nonnegative()
+  totalBlobUsageSize         BigInt  @map("total_blob_usage_size")
+  /// @zod.nonnegative()
+  totalBlocks                Int     @map("total_blocks")
+  /// @zod.nonnegative()
+  totalTransactions          Int     @map("total_transactions")
+  /// @zod.nonnegative()
+  totalUniqueBlobs           Int     @map("total_unique_blobs")
+  /// @zod.nonnegative()
+  totalUniqueReceivers       Int     @map("total_unique_receivers")
+  /// @zod.nonnegative()
+  totalUniqueSenders         Int     @map("total_unique_senders")
+
+  @@unique([category, rollup])
+  @@map("all_time_metrics")
+}
+
+model HourlyMetrics {
+  id          Int       @id @default(autoincrement())
+  periodStart DateTime  @db.Date
+  category    Category?
+  rollup      Rollup?
+
+  // Global-only Metrics
+
+  /// @zod.nonnegative()
+  avgBlobBaseFee    Float   @map("avg_blob_base_fee")
+  /// @zod.nonnegative()
+  avgBlobGasPrice   Float   @map("avg_blob_gas_price")
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasPrice Decimal @map("total_blob_gas_price") @db.Decimal(100, 0)
+
+  // Dimensional Metrics
+
+  /// @zod.nonnegative()
+  avgBlobAsCalldataFee       Float   @map("avg_blob_as_calldata_fee")
+  /// @zod.nonnegative()
+  avgBlobAsCalldataMaxFee    Float   @map("avg_blob_as_calldata_max_fee")
+  /// @zod.nonnegative()
+  avgBlobMaxFee              Float   @map("avg_blob_max_fee")
+  /// @zod.nonnegative()
+  avgBlobUsageSize           Float   @map("avg_blob_usage_size")
+  /// @zod.nonnegative()
+  avgMaxBlobGasFee           Float   @map("avg_max_blob_gas_fee")
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataFee     Decimal @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataGasUsed Decimal @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataMaxFees Decimal @map("total_blob_as_calldata_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobFee               Decimal @map("total_blob_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasUsed           Decimal @map("total_blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobMaxFees           Decimal @map("total_blob_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobMaxGasFees        Decimal @map("total_blob_max_gas_fees") @db.Decimal(100, 0)
+  /// @zod.nonnegative()
+  totalBlobs                 Int     @map("total_blobs")
+  /// @zod.nonnegative()
+  totalBlobSize              BigInt  @map("total_blob_size")
+  /// @zod.nonnegative()
+  totalBlobUsageSize         BigInt  @map("total_blob_usage_size")
+  /// @zod.nonnegative()
+  totalBlocks                Int     @map("total_blocks")
+  /// @zod.nonnegative()
+  totalTransactions          Int     @map("total_transactions")
+  /// @zod.nonnegative()
+  totalUniqueBlobs           Int     @map("total_unique_blobs")
+  /// @zod.nonnegative()
+  totalUniqueReceivers       Int     @map("total_unique_receivers")
+  /// @zod.nonnegative()
+  totalUniqueSenders         Int     @map("total_unique_senders")
+
+  @@unique([periodStart, category, rollup])
+  @@map("hourly_metrics")
+}
+
+model WeeklyMetrics {
+  id          Int       @id @default(autoincrement())
+  periodStart DateTime  @db.Date
+  category    Category?
+  rollup      Rollup?
+
+  // Global-only Metrics
+
+  /// @zod.nonnegative()
+  avgBlobBaseFee    Float   @map("avg_blob_base_fee")
+  /// @zod.nonnegative()
+  avgBlobGasPrice   Float   @map("avg_blob_gas_price")
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasPrice Decimal @map("total_blob_gas_price") @db.Decimal(100, 0)
+
+  // Dimensional Metrics
+
+  /// @zod.nonnegative()
+  avgBlobAsCalldataFee       Float   @map("avg_blob_as_calldata_fee")
+  /// @zod.nonnegative()
+  avgBlobAsCalldataMaxFee    Float   @map("avg_blob_as_calldata_max_fee")
+  /// @zod.nonnegative()
+  avgBlobMaxFee              Float   @map("avg_blob_max_fee")
+  /// @zod.nonnegative()
+  avgBlobUsageSize           Float   @map("avg_blob_usage_size")
+  /// @zod.nonnegative()
+  avgMaxBlobGasFee           Float   @map("avg_max_blob_gas_fee")
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataFee     Decimal @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataGasUsed Decimal @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataMaxFees Decimal @map("total_blob_as_calldata_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobFee               Decimal @map("total_blob_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasUsed           Decimal @map("total_blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobMaxFees           Decimal @map("total_blob_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobMaxGasFees        Decimal @map("total_blob_max_gas_fees") @db.Decimal(100, 0)
+  /// @zod.nonnegative()
+  totalBlobs                 Int     @map("total_blobs")
+  /// @zod.nonnegative()
+  totalBlobSize              BigInt  @map("total_blob_size")
+  /// @zod.nonnegative()
+  totalBlobUsageSize         BigInt  @map("total_blob_usage_size")
+  /// @zod.nonnegative()
+  totalBlocks                Int     @map("total_blocks")
+  /// @zod.nonnegative()
+  totalTransactions          Int     @map("total_transactions")
+  /// @zod.nonnegative()
+  totalUniqueBlobs           Int     @map("total_unique_blobs")
+  /// @zod.nonnegative()
+  totalUniqueReceivers       Int     @map("total_unique_receivers")
+  /// @zod.nonnegative()
+  totalUniqueSenders         Int     @map("total_unique_senders")
+
+  @@unique([periodStart, category, rollup])
+  @@map("weekly_metrics")
+}
+
+model MonthlyMetrics {
+  id          Int       @id @default(autoincrement())
+  periodStart DateTime  @db.Date
+  category    Category?
+  rollup      Rollup?
+
+  // Global-only Metrics
+
+  /// @zod.nonnegative()
+  avgBlobBaseFee    Float   @map("avg_blob_base_fee")
+  /// @zod.nonnegative()
+  avgBlobGasPrice   Float   @map("avg_blob_gas_price")
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasPrice Decimal @map("total_blob_gas_price") @db.Decimal(100, 0)
+
+  // Dimensional Metrics
+
+  /// @zod.nonnegative()
+  avgBlobAsCalldataFee       Float   @map("avg_blob_as_calldata_fee")
+  /// @zod.nonnegative()
+  avgBlobAsCalldataMaxFee    Float   @map("avg_blob_as_calldata_max_fee")
+  /// @zod.nonnegative()
+  avgBlobMaxFee              Float   @map("avg_blob_max_fee")
+  /// @zod.nonnegative()
+  avgBlobUsageSize           Float   @map("avg_blob_usage_size")
+  /// @zod.nonnegative()
+  avgMaxBlobGasFee           Float   @map("avg_max_blob_gas_fee")
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataFee     Decimal @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataGasUsed Decimal @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataMaxFees Decimal @map("total_blob_as_calldata_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobFee               Decimal @map("total_blob_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasUsed           Decimal @map("total_blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobMaxFees           Decimal @map("total_blob_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobMaxGasFees        Decimal @map("total_blob_max_gas_fees") @db.Decimal(100, 0)
+  /// @zod.nonnegative()
+  totalBlobs                 Int     @map("total_blobs")
+  /// @zod.nonnegative()
+  totalBlobSize              BigInt  @map("total_blob_size")
+  /// @zod.nonnegative()
+  totalBlobUsageSize         BigInt  @map("total_blob_usage_size")
+  /// @zod.nonnegative()
+  totalBlocks                Int     @map("total_blocks")
+  /// @zod.nonnegative()
+  totalTransactions          Int     @map("total_transactions")
+  /// @zod.nonnegative()
+  totalUniqueBlobs           Int     @map("total_unique_blobs")
+  /// @zod.nonnegative()
+  totalUniqueReceivers       Int     @map("total_unique_receivers")
+  /// @zod.nonnegative()
+  totalUniqueSenders         Int     @map("total_unique_senders")
+
+  @@unique([periodStart, category, rollup])
+  @@map("monthly_metrics")
+}
+
+model YearlyMetrics {
+  id          Int       @id @default(autoincrement())
+  periodStart DateTime  @db.Date
+  category    Category?
+  rollup      Rollup?
+
+  // Global-only Metrics
+
+  /// @zod.nonnegative()
+  avgBlobBaseFee    Float   @map("avg_blob_base_fee")
+  /// @zod.nonnegative()
+  avgBlobGasPrice   Float   @map("avg_blob_gas_price")
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasPrice Decimal @map("total_blob_gas_price") @db.Decimal(100, 0)
+
+  // Dimensional Metrics
+
+  /// @zod.nonnegative()
+  avgBlobAsCalldataFee       Float   @map("avg_blob_as_calldata_fee")
+  /// @zod.nonnegative()
+  avgBlobAsCalldataMaxFee    Float   @map("avg_blob_as_calldata_max_fee")
+  /// @zod.nonnegative()
+  avgBlobMaxFee              Float   @map("avg_blob_max_fee")
+  /// @zod.nonnegative()
+  avgBlobUsageSize           Float   @map("avg_blob_usage_size")
+  /// @zod.nonnegative()
+  avgMaxBlobGasFee           Float   @map("avg_max_blob_gas_fee")
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataFee     Decimal @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataGasUsed Decimal @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataMaxFees Decimal @map("total_blob_as_calldata_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobFee               Decimal @map("total_blob_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasUsed           Decimal @map("total_blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobMaxFees           Decimal @map("total_blob_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobMaxGasFees        Decimal @map("total_blob_max_gas_fees") @db.Decimal(100, 0)
+  /// @zod.nonnegative()
+  totalBlobs                 Int     @map("total_blobs")
+  /// @zod.nonnegative()
+  totalBlobSize              BigInt  @map("total_blob_size")
+  /// @zod.nonnegative()
+  totalBlobUsageSize         BigInt  @map("total_blob_usage_size")
+  /// @zod.nonnegative()
+  totalBlocks                Int     @map("total_blocks")
+  /// @zod.nonnegative()
+  totalTransactions          Int     @map("total_transactions")
+  /// @zod.nonnegative()
+  totalUniqueBlobs           Int     @map("total_unique_blobs")
+  /// @zod.nonnegative()
+  totalUniqueReceivers       Int     @map("total_unique_receivers")
+  /// @zod.nonnegative()
+  totalUniqueSenders         Int     @map("total_unique_senders")
+
+  @@unique([periodStart, category, rollup])
+  @@map("yearly_metrics")
+}
