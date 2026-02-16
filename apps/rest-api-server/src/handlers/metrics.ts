@@ -16,5 +16,7 @@ export const metricsHandler: RequestHandler = function (req, res) {
     return;
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   return apiMetricsHandler(req, res);
 };

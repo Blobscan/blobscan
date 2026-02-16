@@ -64,6 +64,8 @@ export async function setUpOpenApiTRPC(app: Express): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     createOpenApiExpressMiddleware({
       router: appRouter,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       createContext,
       onError({ error }) {
         if (error.code === "INTERNAL_SERVER_ERROR") {
