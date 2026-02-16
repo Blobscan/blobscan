@@ -65,7 +65,7 @@ describe("SwarmyCloudStorage", () => {
         }
 
         if (uri === mockSwarmReference) {
-          return HttpResponse.arrayBuffer(RAW_DATA.buffer, {
+          return HttpResponse.arrayBuffer(RAW_DATA, {
             status: 200,
           });
         }

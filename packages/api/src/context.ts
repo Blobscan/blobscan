@@ -1,11 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import type { inferAsyncReturnType } from "@trpc/server";
+import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
-import type {
-  NodeHTTPCreateContextFnOptions,
-  NodeHTTPRequest,
-  NodeHTTPResponse,
-} from "@trpc/server/adapters/node-http";
 import type IORedis from "ioredis";
 
 import type { BlobPropagator } from "@blobscan/blob-propagator";
@@ -17,7 +13,7 @@ import type { ApiClient } from "./utils";
 import { createApiClient } from "./utils";
 
 export type CreateContextOptions =
-  | NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>
+  | CreateExpressContextOptions
   | CreateNextContextOptions;
 
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
@@ -95,9 +91,11 @@ export function createTRPCContext({
 }: CreateContextParams) {
   return async (opts: CreateContextOptions) => {
     try {
-      const apiClient = apiKeys
-        ? createApiClient(apiKeys, opts.req)
-        : undefined;
+      const authHeader = opts.req.headers.authorization;
+      const apiClient =
+        apiKeys && authHeader
+          ? createApiClient(apiKeys, authHeader)
+          : undefined;
 
       const innerContext = createTRPCInnerContext({
         chain,
