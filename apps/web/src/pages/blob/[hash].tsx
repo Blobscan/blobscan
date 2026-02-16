@@ -10,7 +10,6 @@ import classNames from "classnames";
 import type { Decoder } from "@blobscan/blob-decoder";
 import dayjs from "@blobscan/dayjs";
 
-import { versionedHashSchema } from "~/utils/zod-schemas";
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
@@ -29,6 +28,7 @@ import { Listbox } from "~/components/Selects";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { routes } from "~/routes";
+import { versionedHashSchema } from "~/schemas/utils";
 import {
   formatBytes,
   formatTimestamp,
