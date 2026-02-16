@@ -3,8 +3,8 @@
   "version": "0.49.0",
   "private": true,
   "scripts": {
-    "analyze": "pnpm with-env next experimental-analyze",
-    "build": "pnpm with-env next build",
+    "analyze": "ANALYZE=true pnpm build",
+    "build": "pnpm with-env next build --webpack",
     "clean": "git clean -xdf .next .turbo node_modules",
     "dev": "pnpm with-env next dev -p 3000",
     "lint": "dotenv -v SKIP_ENV_VALIDATION=1 next lint",
@@ -31,6 +31,7 @@
     "@headlessui/react": "^2.1.0",
     "@headlessui/tailwindcss": "^0.1.3",
     "@heroicons/react": "^2.0.17",
+    "@next/bundle-analyzer": "^16.1.6",
     "@react-spring/web": "^9.7.2",
     "@sentry/nextjs": "^10.38.0",
     "@t3-oss/env-nextjs": "^0.6.1",

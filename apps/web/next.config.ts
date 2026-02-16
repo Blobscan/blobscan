@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import withBundleAnalyzer from "@next/bundle-analyzer";
 import { withSentryConfig } from "@sentry/nextjs";
 import path from "path";
 
@@ -8,15 +9,18 @@ import { printBanner } from "./banner";
 
 printBanner();
 
+type WebpackRule = {
+  test: {
+    test: (rag0: string) => unknown;
+  };
+};
+
+const bundleAnalyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
+
 const config: NextConfig = {
-  turbopack: {
-    rules: {
-      "*.svg": {
-        loaders: ["@svgr/webpack"],
-        as: "*.js",
-      },
-    },
-  },
+  turbopack: {},
   reactStrictMode: true,
   output: process.env.NEXT_BUILD_OUTPUT as NextConfig["output"],
   async rewrites() {
@@ -40,13 +44,53 @@ const config: NextConfig = {
     "echarts",
     "zrender",
   ],
+  webpack(config) {
+    // Grab the existing rule that handles SVG imports
+    const fileLoaderRule = config.module.rules.find((rule: WebpackRule) =>
+      rule.test?.test?.(".svg")
+    );
+
+    config.module.rules.push(
+      // Reapply the existing rule, but only for svg imports ending in ?url
+      {
+        ...fileLoaderRule,
+        test: /\.svg$/i,
+        resourceQuery: /url/, // *.svg?url
+      },
+      // Convert all other *.svg imports to React components
+      {
+        test: /\.svg$/i,
+        issuer: fileLoaderRule.issuer,
+        resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] }, // exclude if *.svg?url
+        use: [
+          {
+            loader: "@svgr/webpack",
+            options: {
+              icon: true,
+              typescript: true,
+              ext: "tsx",
+            },
+          },
+        ],
+      }
+    );
+
+    // Modify the file loader rule to ignore *.svg, since we have it handled now.
+    fileLoaderRule.exclude = /\.svg$/i;
+
+    config.experiments = {
+      asyncWebAssembly: true,
+      layers: true,
+    };
+
+    return config;
+  },
 
   typescript: { ignoreBuildErrors: !!process.env.CI },
-
   outputFileTracingRoot: path.join(__dirname, "../../"),
 };
 
-export default withSentryConfig(config, {
+export default withSentryConfig(bundleAnalyzer(config), {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
