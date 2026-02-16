@@ -43,7 +43,6 @@
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^3.7.2",
     "@manypkg/cli": "^0.21.4",
-    "@next/bundle-analyzer": "^14.1.0",
     "@types/command-line-args": "^5.2.2",
     "@types/command-line-usage": "^5.0.3",
     "@types/node": "^22.0.0",
@@ -57,11 +56,18 @@
     "prettier-plugin-tailwindcss": "^0.2.8",
     "tsx": "^4.19.2",
     "turbo": "^1.10.7",
-    "typescript": "^5.2.2",
+    "typescript": "5.5.3",
     "vitest": "^0.34.1",
     "vitest-mock-extended": "^1.2.0"
   },
   "manypkg": {
     "workspaceProtocol": "require"
+  },
+  "pnpm": {
+    "overrides": {
+      "typescript": "5.5.3",
+      "zod": "3.23.8",
+      "zod-to-json-schema": "3.21.4"
+    }
   }
 }

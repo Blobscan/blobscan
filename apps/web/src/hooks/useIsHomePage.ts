@@ -1,7 +1,7 @@
-import { useRouter } from "next/router";
+import { useRouter } from "next/compat/router";
 
 export function useIsHomepage(): boolean {
-  const { pathname } = useRouter();
+  const router = useRouter();
 
-  return pathname === "/";
+  return router?.pathname === "/";
 }

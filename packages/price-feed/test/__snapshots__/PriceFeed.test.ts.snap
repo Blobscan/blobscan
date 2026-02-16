@@ -15,5 +15,5 @@ Contract Call:
   function:  phaseId()
 
 Docs: https://viem.sh/docs/contract/readContract
-Version: viem@2.22.17]
+Version: viem@2.46.1]
 `;

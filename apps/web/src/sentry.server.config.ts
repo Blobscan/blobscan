@@ -4,11 +4,12 @@
 
 import { init as SentryInit } from "@sentry/nextjs";
 
-import { env } from "./src/env.mjs";
+import { env } from "./env";
 
 SentryInit({
   dsn: env.PUBLIC_SENTRY_DSN_WEB,
   environment: env.PUBLIC_NETWORK_NAME,
-  tracesSampleRate: 1,
-  debug: false,
+  sendDefaultPii: true,
+  tracesSampleRate: process.env.NODE_ENV === "development" ? 1.0 : 0.1,
+  enableLogs: true,
 });

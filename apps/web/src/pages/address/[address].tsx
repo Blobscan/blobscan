@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
+import { useRouter } from "next/compat/router";
 
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { EthIdenticon } from "~/components/EthIdenticon";
@@ -14,7 +14,7 @@ import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 const Address: NextPage = () => {
   const router = useRouter();
   const { state: urlState } = useUrlState(paginationParamsSchema);
-  const address = (router.query.address as string | undefined) ?? "";
+  const address = (router?.query.address as string | undefined) ?? "";
 
   const {
     data: addressTxsData,
@@ -26,7 +26,7 @@ const Address: NextPage = () => {
   }>(
     { p: urlState?.p, ps: urlState?.ps, from: address, expand: "block,blob" },
     {
-      enabled: router.isReady,
+      enabled: router?.isReady,
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       retry: false,

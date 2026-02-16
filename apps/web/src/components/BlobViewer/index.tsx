@@ -5,7 +5,7 @@ import type { Decoder } from "@blobscan/blob-decoder";
 
 import { useBlobDecoderWorker } from "~/providers/BlobDecoderWorker";
 import { capitalize, hexStringToUtf8 } from "~/utils";
-import { Spinner } from "../Spinners/Spinner";
+import { Spinner } from "../Spinner";
 import { ErrorMessage } from "./ErrorMessage";
 import { RawBlobView, StarknetBlobView } from "./Views";
 

@@ -2,8 +2,8 @@ import { useMemo } from "react";
 
 import { RollupRegistry } from "@blobscan/rollups";
 
+import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
 import { useRollupRegistry } from "~/hooks/useRollupRegistry";
-import { ROLLUP_STYLES } from "~/rollups";
 import type { Rollup } from "~/types";
 import { RollupBadge } from "../Badges/RollupBadge";
 import type { ComboboxProps, SelectOption } from "../Selects";
@@ -23,7 +23,7 @@ export const ROLLUP_OPTIONS: RollupSelectorOption[] = RollupRegistry.create(1)
       ({
         value: name.toLowerCase() as Rollup,
         label: <RollupBadge rollup={name.toLowerCase() as Rollup} size="sm" />,
-        searchText: ROLLUP_STYLES[name.toLowerCase() as Rollup].label,
+        searchText: ROLLUP_DEFINITIONS[name.toLowerCase() as Rollup].name,
       } satisfies RollupSelectorOption)
   );
 

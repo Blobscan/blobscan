@@ -1,7 +1,7 @@
-import React from "react";
+import React, { Fragment } from "react";
+import dynamic from "next/dynamic";
 
-import { ICONS } from "~/icons/rollups";
-import { ROLLUP_STYLES } from "~/rollups";
+import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
 import type { Rollup } from "~/types";
 import { Icon } from "../Icon";
 import type { BadgeProps } from "./Badge";
@@ -19,14 +19,23 @@ export const RollupBadge: React.FC<RollupBadgeProps> = ({
   amount = 1,
   ...props
 }) => {
-  const { badgeStyle, iconStyle, label } = ROLLUP_STYLES[rollup];
-  const rollupIconSrc = ICONS[rollup];
-  const rollupIcon = rollupIconSrc ? (
+  const {
+    badgeClassname,
+    iconClassname,
+    name,
+    iconSrc = `${rollup}.svg`,
+  } = ROLLUP_DEFINITIONS[rollup];
+
+  const rollupIcon = (
     <div className="relative">
       <Icon
-        src={rollupIconSrc}
-        title={label}
-        className={iconStyle}
+        src={
+          iconSrc.startsWith("/")
+            ? iconSrc
+            : dynamic(() => import(`~/icons/rollups/${iconSrc}`))
+        }
+        title={name}
+        className={iconClassname}
         size={props.size ?? "md"}
       />
       {amount > 1 && (
@@ -35,16 +44,22 @@ export const RollupBadge: React.FC<RollupBadgeProps> = ({
         </div>
       )}
     </div>
-  ) : (
-    <div className="h-4 w-4" />
   );
 
-  return compact ? (
-    rollupIcon
-  ) : (
-    <Badge className={badgeStyle} {...props}>
+  if (compact) {
+    return rollupIcon;
+  }
+
+  const content = (
+    <Fragment>
       {rollupIcon}
-      {label}
+      {name}
+    </Fragment>
+  );
+
+  return (
+    <Badge className={badgeClassname} {...props}>
+      {content}
     </Badge>
   );
 };

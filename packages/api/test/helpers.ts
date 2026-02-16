@@ -1,8 +1,4 @@
 import { TRPCError } from "@trpc/server";
-import type {
-  NodeHTTPRequest,
-  NodeHTTPResponse,
-} from "@trpc/server/adapters/node-http";
 import jwt from "jsonwebtoken";
 import { describe, expect, it } from "vitest";
 
@@ -60,7 +56,7 @@ export async function createTestContext({
       host: "localhost:3000",
     },
     url: "/api/trpc/test.testProcedure",
-  } as NodeHTTPRequest;
+  } as TRPCContext["req"];
 
   if (apiClient) {
     if (apiClient === "indexer") {
@@ -77,7 +73,7 @@ export async function createTestContext({
 
   const res = {
     statusCode: 200,
-  } as NodeHTTPResponse;
+  } as TRPCContext["res"];
 
   const chain = getChain(env.CHAIN_ID);
   const rollupRegistry = new RollupRegistry({

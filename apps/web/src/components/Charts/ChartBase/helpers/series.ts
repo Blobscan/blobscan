@@ -1,6 +1,6 @@
 import type { SeriesOption } from "echarts";
 
-import { ROLLUP_STYLES } from "~/rollups";
+import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
 import type { Rollup, TimeseriesDimension } from "~/types";
 
 export const DEFAULT_SERIES_COLOR = "#505050";
@@ -61,7 +61,7 @@ export function getDimensionColor(
       break;
     }
     case "rollup": {
-      const rollupSettings = ROLLUP_STYLES[dimension.name as Rollup];
+      const rollupSettings = ROLLUP_DEFINITIONS[dimension.name as Rollup];
 
       if (rollupSettings) {
         return rollupSettings.color[themeMode];

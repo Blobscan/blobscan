@@ -1,7 +1,7 @@
 import dayjs from "@blobscan/dayjs";
 import { convertWei } from "@blobscan/eth-format";
 
-import { ROLLUP_STYLES } from "~/rollups";
+import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
 import type { Rollup } from "~/types";
 import { convertBytes, formatNumber, getHumanDate } from "~/utils";
 import type { Numerish } from "~/utils";
@@ -74,7 +74,7 @@ export function formatUnknownValue(value: Numerish, compact?: boolean) {
 }
 
 export function formatSeriesName(name?: string) {
-  const rollupLabel = ROLLUP_STYLES[name as Rollup]?.label;
+  const rollupLabel = ROLLUP_DEFINITIONS[name as Rollup]?.name;
 
   if (rollupLabel) {
     return rollupLabel;

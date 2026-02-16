@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { env } from "../../../env.mjs";
+import { env } from "../../../env";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   const method = req.method;

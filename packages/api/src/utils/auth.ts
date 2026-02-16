@@ -1,13 +1,7 @@
 import { TRPCError } from "@trpc/server";
-import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
-import type { NodeHTTPRequest } from "@trpc/server/adapters/node-http";
 import jwt from "jsonwebtoken";
 
 import type { ApiKeys } from "../context";
-
-type NextHTTPRequest = CreateNextContextOptions["req"];
-
-type HTTPRequest = NodeHTTPRequest | NextHTTPRequest;
 
 export type ServiceClient = "indexer" | "load-network";
 
@@ -17,14 +11,8 @@ export type ApiClient = ServiceClient | AccessClient | "admin";
 
 export function createApiClient(
   apiKeys: ApiKeys,
-  req: HTTPRequest
+  authHeader: string
 ): ApiClient | undefined {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader) {
-    return;
-  }
-
   const [type, token] = authHeader.split(" ");
 
   if (type !== "Bearer" || !token) {

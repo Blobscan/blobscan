@@ -5,6 +5,7 @@ import cn from "classnames";
 import type { EChartOption, ECElementEvent } from "echarts";
 import type { EChartsInstance } from "echarts-for-react";
 import ReactEChartsCore from "echarts-for-react/lib/core";
+import type EChartsReactCore from "echarts-for-react/lib/core";
 import { useTheme } from "next-themes";
 
 import { EmptyState } from "~/components/EmptyState";
@@ -88,7 +89,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
 }) {
   const { resolvedTheme } = useTheme();
   const themeMode = resolvedTheme as "light" | "dark";
-  const chartInstanceRef = useRef<EChartsInstance | null>(null);
+  const chartInstanceRef = useRef<EChartsReactCore | null>(null);
   const hoveredSeriesRef = useRef<{
     seriesIndex?: number;
     seriesName?: string;
@@ -348,6 +349,8 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     chart.setOption(
       {
         ...baseOptions,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         series,
         dataset,
       },
