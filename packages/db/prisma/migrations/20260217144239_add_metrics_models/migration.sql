@@ -203,19 +203,19 @@ CREATE TABLE "yearly_metrics" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "all_time_metrics_category_rollup_key" ON "all_time_metrics"("category", "rollup");
+CREATE UNIQUE INDEX "all_time_metrics_category_rollup_key" ON "all_time_metrics"("category", "rollup") NULLS NOT DISTINCT;
 
 -- CreateIndex
-CREATE UNIQUE INDEX "hourly_metrics_period_start_category_rollup_key" ON "hourly_metrics"("period_start", "category", "rollup");
+CREATE UNIQUE INDEX "hourly_metrics_period_start_category_rollup_key" ON "hourly_metrics"("period_start", "category", "rollup") NULLS NOT DISTINCT;
 
 -- CreateIndex
-CREATE UNIQUE INDEX "daily_metrics_period_start_category_rollup_key" ON "daily_metrics"("period_start", "category", "rollup");
+CREATE UNIQUE INDEX "daily_metrics_period_start_category_rollup_key" ON "daily_metrics"("period_start", "category", "rollup") NULLS NOT DISTINCT;
 
 -- CreateIndex
-CREATE UNIQUE INDEX "weekly_metrics_period_start_category_rollup_key" ON "weekly_metrics"("period_start", "category", "rollup");
+CREATE UNIQUE INDEX "weekly_metrics_period_start_category_rollup_key" ON "weekly_metrics"("period_start", "category", "rollup") NULLS NOT DISTINCT;
 
 -- CreateIndex
-CREATE UNIQUE INDEX "monthly_metrics_period_start_category_rollup_key" ON "monthly_metrics"("period_start", "category", "rollup");
+CREATE UNIQUE INDEX "monthly_metrics_period_start_category_rollup_key" ON "monthly_metrics"("period_start", "category", "rollup") NULLS NOT DISTINCT;
 
 -- CreateIndex
-CREATE UNIQUE INDEX "yearly_metrics_period_start_category_rollup_key" ON "yearly_metrics"("period_start", "category", "rollup");
+CREATE UNIQUE INDEX "yearly_metrics_period_start_category_rollup_key" ON "yearly_metrics"("period_start", "category", "rollup") NULLS NOT DISTINCT;
