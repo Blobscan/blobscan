@@ -1,6 +1,11 @@
-from analytics.defs.assets import daily_metrics, hourly_metrics, monthly_metrics, weekly_metrics, yearly_metrics
+from analytics.defs.assets import all_time_metrics, daily_metrics, hourly_metrics, monthly_metrics, weekly_metrics, yearly_metrics
 import dagster as dg
 
+
+all_time_metrics_job = dg.define_asset_job(
+    name="all_time_metrics_job",
+    selection=[all_time_metrics],
+)
 
 hourly_metrics_job = dg.define_asset_job(
     name="hourly_metrics_job",

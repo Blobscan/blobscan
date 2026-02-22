@@ -7,7 +7,6 @@ import dagster as dg
 from sqlalchemy import text
 
 from .resources.postgres import PostgresResource
-from .sources import transaction, block, address, blob, blobs_on_transactions, transaction_fork
 
 SQL_DIR = Path(__file__).parent / "sql"
 SQL_TEMPLATE = (SQL_DIR / "aggregate.sql").read_text()
@@ -25,12 +24,12 @@ AGGREGATE_BLOB_HOURLY_SQL = text((SQL_DIR / "aggregate_blob_hourly.sql").read_te
 AGGREGATE_ALL_TIME_SQL = text((SQL_DIR / "aggregate_all_time.sql").read_text())
 
 
-hourly_partitions = dg.HourlyPartitionsDefinition(start_date="2024-03-13-00:00", end_offset=1)
-daily_partitions = dg.DailyPartitionsDefinition(start_date="2024-03-13", fmt="%Y-%m-%d", end_offset=1)
-weekly_partitions = dg.WeeklyPartitionsDefinition(start_date="2024-03-13", fmt="%Y-%m-%d", end_offset=1)
-monthly_partitions = dg.MonthlyPartitionsDefinition(start_date="2024-03", fmt="%Y-%m", end_offset=1)
+hourly_partitions = dg.HourlyPartitionsDefinition(start_date="2025-08-24-22:00", end_offset=1)
+daily_partitions = dg.DailyPartitionsDefinition(start_date="2025-08-24", fmt="%Y-%m-%d", end_offset=1)
+weekly_partitions = dg.WeeklyPartitionsDefinition(start_date="2025-08-24", fmt="%Y-%m-%d", end_offset=1)
+monthly_partitions = dg.MonthlyPartitionsDefinition(start_date="2025-08", fmt="%Y-%m", end_offset=1)
 yearly_partitions = dg.TimeWindowPartitionsDefinition(
-    start="2024",
+    start="2025",
     cron_schedule="0 0 1 1 *",  # every Jan 1st
     fmt="%Y",
     end_offset=1
@@ -61,7 +60,6 @@ yearly_completed_only = dg.AutomationCondition.eager().without(
 
 
 @dg.asset(
-    deps=[transaction, block, address, blob, blobs_on_transactions, transaction_fork],
     partitions_def=hourly_partitions,
     backfill_policy=dg.BackfillPolicy.multi_run(24 * 7)
 )
@@ -142,11 +140,39 @@ monthly_metrics = make_metrics_asset(
 
 yearly_metrics = make_metrics_asset(
     name="yearly_metrics",
-    deps=[dg.AssetDep(daily_metrics, partition_mapping=_ignore_missing)],
+    deps=[dg.AssetDep(monthly_metrics, partition_mapping=_ignore_missing)],
     partitions_def=yearly_partitions,
     sql=build_aggregate_sql(
       "monthly_metrics", "yearly_metrics", "year"
     ),
     automation_condition=yearly_completed_only,
 )
+
+
+
+all_time_condition = (
+    # trigger when something upstream was newly materialized
+    dg.AutomationCondition.any_deps_match(dg.AutomationCondition.newly_updated()) &
+    # but only if ALL partitions of ALL deps are already materialized
+    dg.AutomationCondition.all_deps_match(~dg.AutomationCondition.missing()) &
+    ~dg.AutomationCondition.in_progress()
+)
+
+
+
+@dg.asset(
+    deps=[hourly_metrics, daily_metrics, weekly_metrics, monthly_metrics, yearly_metrics],
+    automation_condition=all_time_condition
+)
+def all_time_metrics(postgres: PostgresResource):
+    with postgres.get_connection() as conn:
+        res = conn.execute(AGGREGATE_ALL_TIME_SQL)
+        conn.commit()
+    
+    return dg.MaterializeResult(
+            metadata={
+                "rows_affected": dg.MetadataValue.int(res.rowcount),
+            }
+        )
+
 
