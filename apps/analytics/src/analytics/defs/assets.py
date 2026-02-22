@@ -1,28 +1,11 @@
 from datetime import timedelta
-from pathlib import Path
 import time
 
 from analytics.defs.asset_factories import make_metrics_asset
+from analytics.defs.helpers import AGGREGATE_ALL_TIME_SQL, AGGREGATE_BLOB_HOURLY_SQL, AGGREGATE_TX_HOURLY_SQL, build_aggregate_sql
 import dagster as dg
-from sqlalchemy import text
 
 from .resources.postgres import PostgresResource
-
-SQL_DIR = Path(__file__).parent / "sql"
-SQL_TEMPLATE = (SQL_DIR / "aggregate.sql").read_text()
-
-def build_aggregate_sql(source: str, target: str, trunc: str):
-    return text(
-        SQL_TEMPLATE
-        .replace("{{source_table}}", source)
-        .replace("{{target_table}}", target)
-        .replace("{{trunc}}", trunc)
-    )
-
-AGGREGATE_TX_HOURLY_SQL = text((SQL_DIR / "aggregate_tx_hourly.sql").read_text())
-AGGREGATE_BLOB_HOURLY_SQL = text((SQL_DIR / "aggregate_blob_hourly.sql").read_text())
-AGGREGATE_ALL_TIME_SQL = text((SQL_DIR / "aggregate_all_time.sql").read_text())
-
 
 hourly_partitions = dg.HourlyPartitionsDefinition(start_date="2025-08-24-22:00", end_offset=1)
 daily_partitions = dg.DailyPartitionsDefinition(start_date="2025-08-24", fmt="%Y-%m-%d", end_offset=1)
@@ -34,6 +17,8 @@ yearly_partitions = dg.TimeWindowPartitionsDefinition(
     fmt="%Y",
     end_offset=1
 )
+
+_ignore_missing = dg.TimeWindowPartitionMapping(allow_nonexistent_upstream_partitions=True)
 
 # .without() requires an exact match with an existing operand in eager().
 # eager() contains in_latest_time_window() (no args), so we:
@@ -56,6 +41,14 @@ monthly_completed_only = _eager_no_time_window & ~dg.AutomationCondition.in_late
 )
 yearly_completed_only = dg.AutomationCondition.eager().without(
     dg.AutomationCondition.in_latest_time_window()
+)
+
+all_time_condition = (
+    # trigger when something upstream was newly materialized
+    dg.AutomationCondition.any_deps_match(dg.AutomationCondition.newly_updated()) &
+    # but only if ALL partitions of ALL deps are already materialized
+    dg.AutomationCondition.all_deps_match(~dg.AutomationCondition.missing()) &
+    ~dg.AutomationCondition.in_progress()
 )
 
 
@@ -103,7 +96,6 @@ def hourly_metrics(context: dg.AssetExecutionContext, postgres: PostgresResource
         }
     )
 
-_ignore_missing = dg.TimeWindowPartitionMapping(allow_nonexistent_upstream_partitions=True)
 
 daily_metrics = make_metrics_asset(
     name="daily_metrics",
@@ -147,18 +139,6 @@ yearly_metrics = make_metrics_asset(
     ),
     automation_condition=yearly_completed_only,
 )
-
-
-
-all_time_condition = (
-    # trigger when something upstream was newly materialized
-    dg.AutomationCondition.any_deps_match(dg.AutomationCondition.newly_updated()) &
-    # but only if ALL partitions of ALL deps are already materialized
-    dg.AutomationCondition.all_deps_match(~dg.AutomationCondition.missing()) &
-    ~dg.AutomationCondition.in_progress()
-)
-
-
 
 @dg.asset(
     deps=[hourly_metrics, daily_metrics, weekly_metrics, monthly_metrics, yearly_metrics],
