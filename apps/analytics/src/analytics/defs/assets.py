@@ -2,17 +2,25 @@ from datetime import timedelta
 import time
 
 from analytics.defs.asset_factories import make_metrics_asset
-from analytics.defs.helpers import AGGREGATE_ALL_TIME_SQL, AGGREGATE_BLOB_HOURLY_SQL, AGGREGATE_TX_HOURLY_SQL, build_aggregate_sql
+from analytics.defs.helpers import AGGREGATE_ALL_TIME_SQL, AGGREGATE_BLOB_HOURLY_SQL, AGGREGATE_TX_HOURLY_SQL, DENCUN_ACTIVATION, build_aggregate_sql, get_partition_start_date
 import dagster as dg
 
 from .resources.postgres import PostgresResource
 
-hourly_partitions = dg.HourlyPartitionsDefinition(start_date="2025-08-24-22:00", end_offset=1)
-daily_partitions = dg.DailyPartitionsDefinition(start_date="2025-08-24", fmt="%Y-%m-%d", end_offset=1)
-weekly_partitions = dg.WeeklyPartitionsDefinition(start_date="2025-08-24", fmt="%Y-%m-%d", end_offset=1)
-monthly_partitions = dg.MonthlyPartitionsDefinition(start_date="2025-08", fmt="%Y-%m", end_offset=1)
+start_date = get_partition_start_date()
+
+hourly_floor = start_date.replace(minute=0, second=0, microsecond=0)
+daily_floor  = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
+weekly_floor = daily_floor - timedelta(days=(daily_floor.weekday() + 1) % 7)
+monthly_floor = daily_floor.replace(day=1)
+yearly_floor  = daily_floor.replace(month=1, day=1)
+
+hourly_partitions = dg.HourlyPartitionsDefinition(start_date=hourly_floor , end_offset=1)
+daily_partitions = dg.DailyPartitionsDefinition(start_date=daily_floor, fmt="%Y-%m-%d", end_offset=1)
+weekly_partitions = dg.WeeklyPartitionsDefinition(start_date=weekly_floor, fmt="%Y-%m-%d", end_offset=1)
+monthly_partitions = dg.MonthlyPartitionsDefinition(start_date=monthly_floor, fmt="%Y-%m", end_offset=1)
 yearly_partitions = dg.TimeWindowPartitionsDefinition(
-    start="2025",
+    start=yearly_floor,
     cron_schedule="0 0 1 1 *",  # every Jan 1st
     fmt="%Y",
     end_offset=1
