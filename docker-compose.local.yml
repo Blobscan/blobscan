@@ -41,6 +41,11 @@ services:
       - POSTGRES_USER=blobscan
       - POSTGRES_DB=blobscan_dev
       - POSTGRES_PASSWORD=s3cr3t
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blobscan -d blobscan_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   storage:
     image: fsouza/fake-gcs-server
@@ -78,6 +83,80 @@ services:
     volumes:
       - ./otel-config.yaml:/etc/otel-config.yaml
 
+  analytics:
+    build:
+      context: ./apps/analytics
+      dockerfile: ./Dockerfile.usercode
+    restart: always
+    environment:
+      CHAIN_ID: "${CHAIN_ID}"
+      DAGSTER_POSTGRES_USER: "blobscan"
+      DAGSTER_POSTGRES_PASSWORD: "s3cr3t"
+      DAGSTER_POSTGRES_DB: "dagster_dev"
+    volumes:
+      - dagster-home:/dagster_home
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD-SHELL", "dagster api grpc-health-check -p 4000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  analytics-webserver:
+    build:
+      context: ./apps/analytics
+      dockerfile: ./Dockerfile.dagster
+    entrypoint:
+      - dagster-webserver
+      - -h
+      - "0.0.0.0"
+      - -p
+      - "3000"
+      - -w
+      - workspace.yaml
+    container_name: analytics-webserver
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+    environment:
+      DAGSTER_POSTGRES_USER: "blobscan"
+      DAGSTER_POSTGRES_PASSWORD: "s3cr3t"
+      DAGSTER_POSTGRES_DB: "dagster_dev"
+    volumes: # Make docker client accessible so we can terminate containers from the webserver
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/io_manager_storage:/tmp/io_manager_storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      analytics:
+        condition: service_healthy
+
+  analytics-daemon:
+    build:
+      context: ./apps/analytics
+      dockerfile: ./Dockerfile.dagster
+    entrypoint:
+      - dagster-daemon
+      - run
+    container_name: analytics-daemon
+    restart: on-failure
+    environment:
+      DAGSTER_POSTGRES_USER: "blobscan"
+      DAGSTER_POSTGRES_PASSWORD: "s3cr3t"
+      DAGSTER_POSTGRES_DB: "dagster_dev"
+    volumes: # Make docker client accessible so we can launch containers using host docker
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/io_manager_storage:/tmp/io_manager_storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      analytics:
+        condition: service_started
+
 volumes:
   postgres-data:
   gcs_data:
+  dagster-home:
