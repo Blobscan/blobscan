@@ -1,0 +1,5 @@
+load_from:
+  - grpc_server:
+      host: analytics
+      port: 4000
+      location_name: "analytics"
