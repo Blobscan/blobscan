@@ -81,8 +81,6 @@ MANIFEST
 # Dagster
 .dagster/
 dagster_home/
-dagster.yaml
-workspace.yaml
 
 # Dagster logs and storage
 logs/
