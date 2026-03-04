@@ -113,14 +113,14 @@ services:
       - -h
       - "0.0.0.0"
       - -p
-      - "3000"
+      - "3003"
       - -w
       - workspace.yaml
     container_name: analytics-webserver
     expose:
-      - "3000"
+      - "3003"
     ports:
-      - "3000:3000"
+      - "3003:3003"
     environment:
       DAGSTER_POSTGRES_USER: "blobscan"
       DAGSTER_POSTGRES_PASSWORD: "s3cr3t"
