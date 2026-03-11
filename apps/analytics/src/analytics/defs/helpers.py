@@ -62,21 +62,20 @@ def execute_sql_window(
 
 
     
-def get_partition_start_date() -> str:
+def get_partition_start_date() -> datetime:
     custom_start_date = os.getenv("DAGSTER_METRICS_START_DATE")
 
     if custom_start_date:
         try:
-            datetime.strptime(custom_start_date, "%Y-%m-%d-%H:%M")
+            return datetime.strptime(custom_start_date, "%Y-%m-%d-%H:%M")
         except ValueError:
             try:
-                datetime.strptime(custom_start_date, "%Y-%m-%d")
+                return datetime.strptime(custom_start_date, "%Y-%m-%d")
             except ValueError:
                 raise ValueError(
                     "Invalid DAGSTER_METRICS_START_DATE format.\n"
                     "Use YYYY-MM-DD or YYYY-MM-DD-HH:MM."
                 )
-        return custom_start_date
 
     chain_id = int(os.getenv("CHAIN_ID", ""))
 
