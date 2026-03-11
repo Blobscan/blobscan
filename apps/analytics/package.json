@@ -7,9 +7,12 @@
     "lint": "uv run ruff check analytics/ tests/",
     "lint:fix": "uv run ruff check --fix analytics/ tests/",
     "type-check": "uv run mypy analytics/",
-    "test": "pnpm with-env:test uv run pytest tests/ -v",
+    "test": "uv run pytest tests/ -v",
     "start": "uv run dagster-webserver -h 0.0.0.0 -p 3003",
     "with-env": "dotenv -e ../../.env --",
     "with-env:test": "dotenv -e ../../.env.test --"
+  },
+  "devDependencies": {
+    "@prisma/client": "^5.22.0"
   }
 }

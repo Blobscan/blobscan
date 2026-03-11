@@ -89,6 +89,12 @@ importers:
         specifier: ^1.2.0
         version: 1.3.2(typescript@5.5.3)(vitest@0.34.6)
 
+  apps/analytics:
+    devDependencies:
+      '@prisma/client':
+        specifier: ^5.22.0
+        version: 5.22.0(prisma@5.22.0)
+
   apps/docs:
     dependencies:
       '@algolia/autocomplete-core':
@@ -99,7 +105,7 @@ importers:
         version: 2.2.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@headlessui/tailwindcss':
         specifier: ^0.1.3
-        version: 0.1.3(tailwindcss@3.4.19(tsx@4.21.0))
+        version: 0.1.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       '@markdoc/markdoc':
         specifier: ^0.4.0
         version: 0.4.0(@types/react@18.3.28)(react@18.2.0)
@@ -111,10 +117,10 @@ importers:
         version: 2.2.1
       '@tailwindcss/forms':
         specifier: ^0.5.10
-        version: 0.5.11(tailwindcss@3.4.19(tsx@4.21.0))
+        version: 0.5.11(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       '@tailwindcss/typography':
         specifier: ^0.5.7
-        version: 0.5.19(tailwindcss@3.4.19(tsx@4.21.0))
+        version: 0.5.19(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       autoprefixer:
         specifier: ^10.4.14
         version: 10.4.24(postcss@8.5.6)
@@ -159,7 +165,7 @@ importers:
         version: 1.2.0
       tailwindcss:
         specifier: ^3.4.1
-        version: 3.4.19(tsx@4.21.0)
+        version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
     devDependencies:
       eslint:
         specifier: ^8.45.0
@@ -311,7 +317,7 @@ importers:
         version: 2.2.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@headlessui/tailwindcss':
         specifier: ^0.1.3
-        version: 0.1.3(tailwindcss@3.4.19(tsx@4.21.0))
+        version: 0.1.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       '@heroicons/react':
         specifier: ^2.0.17
         version: 2.2.0(react@18.2.0)
@@ -399,7 +405,7 @@ importers:
         version: 8.1.0(typescript@5.5.3)
       '@tailwindcss/forms':
         specifier: ^0.5.10
-        version: 0.5.11(tailwindcss@3.4.19(tsx@4.21.0))
+        version: 0.5.11(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       '@types/echarts':
         specifier: ^4.9.18
         version: 4.9.22
@@ -420,7 +426,7 @@ importers:
         version: 8.5.6
       tailwindcss:
         specifier: ^3.4.1
-        version: 3.4.19(tsx@4.21.0)
+        version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
 
   clis/blob-propagation-jobs-cli:
     dependencies:
@@ -865,7 +871,7 @@ importers:
         version: 8.5.6
       tailwindcss:
         specifier: ^3.4.1
-        version: 3.4.19(tsx@4.21.0)
+        version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
 
   tooling/typescript: {}
 
@@ -8276,6 +8282,11 @@ packages:
     resolution: {integrity: sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==}
     engines: {node: '>=18'}
 
+  yaml@2.8.2:
+    resolution: {integrity: sha512-mplynKqc1C2hTVYxd0PU2xQAc22TI1vShAYGksCCfxbn/dFwnHTNi1bvYsBTkhdUNtGIf5xNOg938rrSSYvS9A==}
+    engines: {node: '>= 14.6'}
+    hasBin: true
+
   yargs-parser@21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
     engines: {node: '>=12'}
@@ -10132,9 +10143,9 @@ snapshots:
       react-dom: 18.2.0(react@18.2.0)
       use-sync-external-store: 1.6.0(react@18.2.0)
 
-  '@headlessui/tailwindcss@0.1.3(tailwindcss@3.4.19(tsx@4.21.0))':
+  '@headlessui/tailwindcss@0.1.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
-      tailwindcss: 3.4.19(tsx@4.21.0)
+      tailwindcss: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
 
   '@heroicons/react@2.2.0(react@18.2.0)':
     dependencies:
@@ -12091,15 +12102,15 @@ snapshots:
       typescript: 5.5.3
       zod: 3.23.8
 
-  '@tailwindcss/forms@0.5.11(tailwindcss@3.4.19(tsx@4.21.0))':
+  '@tailwindcss/forms@0.5.11(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
       mini-svg-data-uri: 1.4.4
-      tailwindcss: 3.4.19(tsx@4.21.0)
+      tailwindcss: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
 
-  '@tailwindcss/typography@0.5.19(tailwindcss@3.4.19(tsx@4.21.0))':
+  '@tailwindcss/typography@0.5.19(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
       postcss-selector-parser: 6.0.10
-      tailwindcss: 3.4.19(tsx@4.21.0)
+      tailwindcss: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
 
   '@tanstack/query-core@4.43.0': {}
 
@@ -15465,13 +15476,14 @@ snapshots:
       camelcase-css: 2.0.1
       postcss: 8.5.6
 
-  postcss-load-config@6.0.1(jiti@1.21.7)(postcss@8.5.6)(tsx@4.21.0):
+  postcss-load-config@6.0.1(jiti@1.21.7)(postcss@8.5.6)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
       lilconfig: 3.1.3
     optionalDependencies:
       jiti: 1.21.7
       postcss: 8.5.6
       tsx: 4.21.0
+      yaml: 2.8.2
 
   postcss-nested@6.2.0(postcss@8.5.6):
     dependencies:
@@ -16301,7 +16313,7 @@ snapshots:
 
   tailwind-merge@2.6.1: {}
 
-  tailwindcss@3.4.19(tsx@4.21.0):
+  tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
@@ -16320,7 +16332,7 @@ snapshots:
       postcss: 8.5.6
       postcss-import: 15.1.0(postcss@8.5.6)
       postcss-js: 4.1.0(postcss@8.5.6)
-      postcss-load-config: 6.0.1(jiti@1.21.7)(postcss@8.5.6)(tsx@4.21.0)
+      postcss-load-config: 6.0.1(jiti@1.21.7)(postcss@8.5.6)(tsx@4.21.0)(yaml@2.8.2)
       postcss-nested: 6.2.0(postcss@8.5.6)
       postcss-selector-parser: 6.1.2
       resolve: 1.22.11
@@ -16942,6 +16954,9 @@ snapshots:
   yallist@4.0.0: {}
 
   yallist@5.0.0: {}
+
+  yaml@2.8.2:
+    optional: true
 
   yargs-parser@21.1.1: {}
 
