@@ -12,6 +12,14 @@ dependencies = [
 dev = [
     "dagster-webserver",
     "dagster-dg-cli",
+    "pytest>=8.0",
+    "testcontainers[postgres]>=4.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "integration: mark test as requiring a live PostgreSQL container (Docker must be running)",
 ]
 
 [build-system]
@@ -29,5 +37,4 @@ root_module = "analytics"
 registry_modules = [
     "analytics.components.*",
 ]
-
 
