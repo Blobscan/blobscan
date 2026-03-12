@@ -17,7 +17,11 @@ yearly_floor  = daily_floor.replace(month=1, day=1)
 
 hourly_partitions = dg.HourlyPartitionsDefinition(start_date=hourly_floor , end_offset=1)
 daily_partitions = dg.DailyPartitionsDefinition(start_date=daily_floor, fmt="%Y-%m-%d", end_offset=1)
-weekly_partitions = dg.WeeklyPartitionsDefinition(start_date=weekly_floor, fmt="%Y-%m-%d", end_offset=1)
+weekly_partitions = dg.WeeklyPartitionsDefinition(
+    start_date=weekly_floor,
+    day_offset=1, # Start partitions on Monday instead of Sunday
+    fmt="%Y-%m-%d",
+    end_offset=1)
 monthly_partitions = dg.MonthlyPartitionsDefinition(start_date=monthly_floor, fmt="%Y-%m", end_offset=1)
 yearly_partitions = dg.TimeWindowPartitionsDefinition(
     start=yearly_floor,
