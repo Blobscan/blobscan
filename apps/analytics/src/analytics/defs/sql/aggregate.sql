@@ -4,13 +4,13 @@ INSERT INTO {{target_table}} (
   rollup,
 
   -- ------------- GLOBAL-ONLY METRICS -------------
-  avg_blob_base_fee,
   avg_blob_gas_price,
 
   total_blob_gas_price,
   total_blocks,
 
   -- ------------- DIMENSIONAL METRICS -------------
+  avg_blob_base_fee,
   avg_blob_max_fee,
   avg_blob_as_calldata_fee,
   avg_blob_as_calldata_max_fee,
@@ -39,13 +39,13 @@ SELECT
 
   -- ------------- GLOBAL-ONLY METRICS -------------
   -- Weighted averages using total / count (NULL for non-global rows)
-  (SUM(total_blob_base_fee) / NULLIF(SUM(total_transactions), 0))::FLOAT AS avg_blob_base_fee,
   (SUM(total_blob_gas_price) / NULLIF(SUM(total_blocks), 0))::FLOAT AS avg_blob_gas_price,
 
   SUM(total_blob_gas_price) AS total_blob_gas_price,
   SUM(total_blocks) AS total_blocks,
 
   -- ------------- DIMENSIONAL METRICS -------------
+  (SUM(total_blob_base_fee) / NULLIF(SUM(total_transactions), 0))::FLOAT AS avg_blob_base_fee,
   (SUM(total_blob_max_fee) / NULLIF(SUM(total_transactions), 0))::FLOAT AS avg_blob_max_fee,
   (SUM(total_blob_as_calldata_fee) / NULLIF(SUM(total_transactions), 0))::FLOAT AS avg_blob_as_calldata_fee,
   (SUM(total_blob_as_calldata_max_fee) / NULLIF(SUM(total_transactions), 0))::FLOAT AS avg_blob_as_calldata_max_fee,
@@ -70,12 +70,12 @@ FROM {{source_table}}
 WHERE period_start >= :from AND period_start < :to
 GROUP BY DATE_TRUNC('{{trunc}}', period_start), category, rollup
 ON CONFLICT (period_start, category, rollup) DO UPDATE SET
-  avg_blob_base_fee = EXCLUDED.avg_blob_base_fee,
   avg_blob_gas_price = EXCLUDED.avg_blob_gas_price,
 
   total_blob_gas_price = EXCLUDED.total_blob_gas_price,
   total_blocks = EXCLUDED.total_blocks,
 
+  avg_blob_base_fee = EXCLUDED.avg_blob_base_fee,
   avg_blob_max_fee = EXCLUDED.avg_blob_max_fee,
   avg_blob_as_calldata_fee = EXCLUDED.avg_blob_as_calldata_fee,
   avg_blob_as_calldata_max_fee = EXCLUDED.avg_blob_as_calldata_max_fee,
