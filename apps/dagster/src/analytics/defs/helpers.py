@@ -11,10 +11,10 @@ SQL_DIR = Path(__file__).parent / "sql"
 SQL_TEMPLATE = (SQL_DIR / "aggregate.sql").read_text()
 
 DENCUN_ACTIVATION = {
-    1: "2024-03-13-13:55",
-    11155111: "2024-01-30-22:51",
-    560048: "2025-03-17-12:00",
-    100: "2024-03-11-18:30",
+    1: "2024-03-13T13:55",
+    11155111: "2024-01-30T22:51",
+    560048: "2025-03-17T12:00",
+    100: "2024-03-11T18:30",
 }
 
 
@@ -66,7 +66,7 @@ def get_partition_start_date() -> datetime:
 
     if custom_start_date:
         try:
-            return datetime.strptime(custom_start_date, "%Y-%m-%d-%H:%M").replace(
+            return datetime.strptime(custom_start_date, "%Y-%m-%dT%H:%M").replace(
                 tzinfo=timezone.utc
             )
         except ValueError:
@@ -77,7 +77,7 @@ def get_partition_start_date() -> datetime:
             except ValueError:
                 raise ValueError(
                     "Invalid DAGSTER_METRICS_START_DATE format.\n"
-                    "Use YYYY-MM-DD or YYYY-MM-DD-HH:MM."
+                    "Use YYYY-MM-DD or YYYY-MM-DDTHH:MM."
                 )
 
     chain_id = int(os.getenv("CHAIN_ID", ""))
@@ -85,7 +85,7 @@ def get_partition_start_date() -> datetime:
     try:
         activation_date = DENCUN_ACTIVATION[chain_id]
 
-        return datetime.strptime(activation_date, "%Y-%m-%d-%H:%M").replace(
+        return datetime.strptime(activation_date, "%Y-%m-%dT%H:%M").replace(
             tzinfo=timezone.utc
         )
 

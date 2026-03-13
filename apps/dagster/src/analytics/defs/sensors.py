@@ -18,7 +18,7 @@ def live_hourly_sensor(context: dg.SensorEvaluationContext):
     now = datetime.now(timezone.utc)
     yield dg.RunRequest(
         partition_key=now.replace(minute=0, second=0, microsecond=0).strftime(
-            "%Y-%m-%d-%H:%M"
+            "%Y-%m-%dT%H:%M"
         ),
     )
 

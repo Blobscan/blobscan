@@ -16,5 +16,5 @@ def hourly_catch_up_schedule(context: dg.ScheduleEvaluationContext):
         minute=0, second=0, microsecond=0
     )
     return dg.RunRequest(
-        partition_key=prev_hour.strftime("%Y-%m-%d-%H:%M"),
+        partition_key=prev_hour.strftime("%Y-%m-%dT%H:%M"),
     )
