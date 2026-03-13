@@ -10,4 +10,4 @@ runs:
         envkey_DIRECT_URL: "postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public"
     - name: "Apply Prisma migrations to db"
       shell: bash
-      run: pnpm prisma migrate deploy --schema packages/db/prisma
+      run: pnpm prisma migrate deploy --schema packages/db/prisma/schema
