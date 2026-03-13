@@ -25,7 +25,7 @@ USER app
 # Run dagster gRPC server on port 4000
 EXPOSE 4000
 
-HEALTHCHECK --timeout=1s --start-period=3s --interval=3s --retries=20 \
+HEALTHCHECK --timeout=1s --start-period=3s --interval=10s --retries=5 \
     CMD ["dagster", "api", "grpc-health-check", "-p", "4000"]
 
 CMD ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "4000", "-m", "analytics.definitions"]

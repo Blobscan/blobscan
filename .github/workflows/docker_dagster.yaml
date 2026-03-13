@@ -1,4 +1,4 @@
-name: Docker Analytics
+name: Docker Dagster
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   release_dagster_docker:
-    name: Build Docker image (Analytics)
+    name: Build Docker image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -43,7 +43,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
 
-      - name: Build and push (dagster)
+      - name: Build and push
         uses: docker/build-push-action@v6.5.0
         with:
           context: ./apps/dagster

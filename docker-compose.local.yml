@@ -98,12 +98,6 @@ services:
       - dagster-home:/dagster_home
     depends_on:
       - postgres
-    healthcheck:
-      test: ["CMD-SHELL", "dagster api grpc-health-check -p 4000"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
 
   dagster-webserver:
     build:
