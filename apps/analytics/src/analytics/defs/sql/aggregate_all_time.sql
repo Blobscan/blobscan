@@ -67,24 +67,24 @@ aggregated AS (
     SUM(u.total_max_blob_gas_fee)           AS total_max_blob_gas_fee,
 
     -- weighted averages (pick weights that match your semantics)
-    CASE WHEN COALESCE(SUM(u.total_blocks), 0) = 0 THEN NULL
-      ELSE (SUM(u.avg_blob_base_fee * u.total_blocks) / SUM(u.total_blocks))::float
+    CASE WHEN COALESCE(SUM(u.total_transactions), 0) = 0 THEN NULL
+      ELSE (SUM(u.avg_blob_base_fee * u.total_transactions) / SUM(u.total_transactions))::float
     END AS avg_blob_base_fee,
 
     CASE WHEN COALESCE(SUM(u.total_blocks), 0) = 0 THEN NULL
       ELSE (SUM(u.avg_blob_gas_price * u.total_blocks) / SUM(u.total_blocks))::float
     END AS avg_blob_gas_price,
 
-    CASE WHEN COALESCE(SUM(u.total_blobs), 0) = 0 THEN NULL
-      ELSE (SUM(u.avg_blob_as_calldata_fee * u.total_blobs) / SUM(u.total_blobs))::float
+    CASE WHEN COALESCE(SUM(u.total_transactions), 0) = 0 THEN NULL
+      ELSE (SUM(u.avg_blob_as_calldata_fee * u.total_transactions) / SUM(u.total_transactions))::float
     END AS avg_blob_as_calldata_fee,
 
-    CASE WHEN COALESCE(SUM(u.total_blobs), 0) = 0 THEN NULL
-      ELSE (SUM(u.avg_blob_as_calldata_max_fee * u.total_blobs) / SUM(u.total_blobs))::float
+    CASE WHEN COALESCE(SUM(u.total_transactions), 0) = 0 THEN NULL
+      ELSE (SUM(u.avg_blob_as_calldata_max_fee * u.total_transactions) / SUM(u.total_transactions))::float
     END AS avg_blob_as_calldata_max_fee,
 
-    CASE WHEN COALESCE(SUM(u.total_blobs), 0) = 0 THEN NULL
-      ELSE (SUM(u.avg_blob_max_fee * u.total_blobs) / SUM(u.total_blobs))::float
+    CASE WHEN COALESCE(SUM(u.total_transactions), 0) = 0 THEN NULL
+      ELSE (SUM(u.avg_blob_max_fee * u.total_transactions) / SUM(u.total_transactions))::float
     END AS avg_blob_max_fee,
 
     CASE WHEN COALESCE(SUM(u.total_blobs), 0) = 0 THEN NULL
@@ -134,16 +134,30 @@ INSERT INTO all_time_metrics (
 )
 SELECT
   category, rollup,
-  avg_blob_base_fee, avg_blob_gas_price,
-  total_blob_base_fee, total_blob_gas_price, total_blocks,
+  avg_blob_base_fee,
+  avg_blob_gas_price,
+  total_blob_base_fee,
+  total_blob_gas_price,
+  total_blocks,
 
-  avg_blob_as_calldata_fee, avg_blob_as_calldata_max_fee, avg_blob_max_fee,
-  avg_blob_usage_size, avg_max_blob_gas_fee,
+  avg_blob_as_calldata_fee,
+  avg_blob_as_calldata_max_fee,
+  avg_blob_max_fee,
+  avg_blob_usage_size,
+  avg_max_blob_gas_fee,
 
-  total_blob_as_calldata_fee, total_blob_as_calldata_gas_used, total_blob_as_calldata_max_fee,
-  total_blob_gas_used, total_blob_max_fee, total_blob_max_gas_fee,
-  total_blobs, total_blob_size, total_blob_usage_size,
-  total_transactions, total_unique_blobs, total_unique_receivers, total_unique_senders,
+  total_blob_as_calldata_fee,
+  total_blob_as_calldata_gas_used,
+  total_blob_as_calldata_max_fee,
+  total_blob_gas_used,
+  total_blob_max_fee,
+  total_blob_max_gas_fee,
+  total_blobs, total_blob_size,
+  total_blob_usage_size,
+  total_transactions,
+  total_unique_blobs,
+  total_unique_receivers,
+  total_unique_senders,
   total_max_blob_gas_fee,
   now()
 FROM aggregated
