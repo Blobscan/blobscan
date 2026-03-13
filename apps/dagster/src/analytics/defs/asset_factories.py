@@ -1,4 +1,4 @@
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Union
 from analytics.defs.helpers import execute_sql_window, partition_meta
 import dagster as dg
 
@@ -9,7 +9,7 @@ from .resources.postgres import PostgresResource
 def make_metrics_asset(
     *,
     name: str,
-    deps: Sequence[object],
+    deps: Sequence[Union[dg.AssetDep, dg.AssetsDefinition, dg.SourceAsset]],
     partitions_def: dg.PartitionsDefinition,
     sql: TextClause,
     automation_condition: Optional[dg.AutomationCondition] = None,
