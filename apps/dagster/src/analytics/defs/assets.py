@@ -13,26 +13,31 @@ import dagster as dg
 
 from .resources.postgres import PostgresResource
 
-start_date = get_partition_start_date()
+_start = get_partition_start_date()
+_midnight = _start.replace(hour=0, minute=0, second=0, microsecond=0)
 
-hourly_floor = start_date.replace(minute=0, second=0, microsecond=0)
-daily_floor = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
-weekly_floor = daily_floor - timedelta(days=(daily_floor.weekday() + 1) % 7)
-monthly_floor = daily_floor.replace(day=1)
-yearly_floor = daily_floor.replace(month=1, day=1)
+_start_dates = {
+    "hourly": _start.replace(minute=0, second=0, microsecond=0),
+    "daily": _midnight,
+    "weekly": _midnight - timedelta(days=(_midnight.weekday() + 1) % 7),
+    "monthly": _midnight.replace(day=1),
+    "yearly": _midnight.replace(month=1, day=1),
+}
 
-hourly_partitions = dg.HourlyPartitionsDefinition(start_date=hourly_floor, end_offset=1)
+hourly_partitions = dg.HourlyPartitionsDefinition(
+    start_date=_start_dates["hourly"], end_offset=1
+)
 daily_partitions = dg.DailyPartitionsDefinition(
-    start_date=daily_floor, fmt="%Y-%m-%d", end_offset=1
+    start_date=_start_dates["daily"], fmt="%Y-%m-%d", end_offset=1
 )
 weekly_partitions = dg.WeeklyPartitionsDefinition(
-    start_date=weekly_floor, fmt="%Y-%m-%d", end_offset=1
+    start_date=_start_dates["weekly"], fmt="%Y-%m-%d", end_offset=1
 )
 monthly_partitions = dg.MonthlyPartitionsDefinition(
-    start_date=monthly_floor, fmt="%Y-%m", end_offset=1
+    start_date=_start_dates["monthly"], fmt="%Y-%m", end_offset=1
 )
 yearly_partitions = dg.TimeWindowPartitionsDefinition(
-    start=yearly_floor,
+    start=_start_dates["yearly"],
     cron_schedule="0 0 1 1 *",  # every Jan 1st
     fmt="%Y",
     end_offset=1,
