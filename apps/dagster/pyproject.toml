@@ -12,6 +12,7 @@ dependencies = [
 dev = [
     "dagster-webserver",
     "dagster-dg-cli",
+    "mypy>=1.19.1",
 ]
 
 [build-system]
