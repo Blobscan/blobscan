@@ -17,7 +17,7 @@ import dagster as dg
 import pytest
 from sqlalchemy import text
 
-from analytics.defs.assets import hourly_metrics, daily_metrics, weekly_metrics, monthly_metrics, yearly_metrics
+from analytics.defs.assets import hourly_metrics, daily_metrics, weekly_metrics, monthly_metrics, yearly_metrics, all_time_metrics
 from analytics.defs.resources.postgres import PostgresResource
 
 
@@ -46,6 +46,7 @@ YEARLY_PARTITION_KEY = "2024"
 YEARLY_PERIOD_START = datetime(2024, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
 YEARLY_PERIOD_END = datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
 
+
 # An arbitrary period that has no fixture data — used to assert isolation.
 DIFFERENT_PERIOD_START = datetime(2024, 6, 1, 0, 0, 0, tzinfo=timezone.utc)
 
@@ -58,7 +59,9 @@ _FIXTURES = json.loads((Path(__file__).parent / "db-fixtures.json").read_text())
 
 
 
-def get_enriched_txs(start: datetime, end: datetime) -> list[dict]:
+def get_enriched_txs(
+    start: datetime | None = None, end: datetime | None = None
+) -> list[dict]:
     """
     Return fixture transactions whose block_timestamp falls in [start, end),
     excluding forked transactions, enriched with rollup/category and per-tx
@@ -71,7 +74,10 @@ def get_enriched_txs(start: datetime, end: datetime) -> list[dict]:
     result = []
     for tx in _FIXTURES["txs"]:
         ts = datetime.fromisoformat(tx["blockTimestamp"].replace("Z", "+00:00"))
-        if not (start <= ts < end):
+
+        if start is not None and ts < start:
+            continue
+        if end is not None and ts >= end:
             continue
         if (tx["blockHash"], tx["hash"]) in forked:
             continue
@@ -95,17 +101,21 @@ def get_enriched_txs(start: datetime, end: datetime) -> list[dict]:
     return result
 
 
-def get_enriched_blocks(start: datetime, end: datetime) -> list[dict]:
+def get_enriched_blocks(
+    start: datetime | None = None, end: datetime | None = None
+) -> list[dict]:
     """
     Return fixture blocks whose timestamp falls in [start, end).
     """
     result = []
     for block in _FIXTURES["blocks"]:
         ts = datetime.fromisoformat(block["timestamp"].replace("Z", "+00:00"))
-        if start <= ts < end:
-            result.append(block)
+        if start is not None and ts < start:
+            continue
+        if end is not None and ts >= end:
+            continue
+        result.append(block)
     return result
-
 
 def get_enriched_blobs(txs_in_window: list[dict]) -> list[dict]:
     """
@@ -150,6 +160,9 @@ _MONTHLY_BLOCKS = get_enriched_blocks(MONTHLY_PERIOD_START, MONTHLY_PERIOD_END)
 _YEARLY_TXS = get_enriched_txs(YEARLY_PERIOD_START, YEARLY_PERIOD_END)
 _YEARLY_BLOBS = get_enriched_blobs(_YEARLY_TXS)
 _YEARLY_BLOCKS = get_enriched_blocks(YEARLY_PERIOD_START, YEARLY_PERIOD_END)
+_ALL_TXS = get_enriched_txs()
+_ALL_BLOBS = get_enriched_blobs(_ALL_TXS)
+_ALL_BLOCKS = get_enriched_blocks()
 
 _ADDR_MAP = {a["address"]: a for a in _FIXTURES["addresses"]}
 
@@ -205,6 +218,17 @@ def _unique_monthly_partition_keys() -> list[str]:
     return keys
 
 
+def _unique_yearly_partition_keys() -> list[str]:
+    seen = set()
+    keys = []
+    for ts in _fixture_block_timestamps():
+        key = ts.strftime("%Y")
+        if key not in seen:
+            seen.add(key)
+            keys.append(key)
+    return keys
+
+
 def _seed_hourly(postgres: PostgresResource):
     for key in _unique_hourly_partition_keys():
         _run_asset(postgres, key, hourly_metrics)
@@ -220,6 +244,10 @@ def _seed_monthly(postgres: PostgresResource):
         _run_asset(postgres, key, monthly_metrics)
 
 
+def _seed_yearly(postgres: PostgresResource):
+    for key in _unique_yearly_partition_keys():
+        _run_asset(postgres, key, yearly_metrics)
+
 def _query_metrics_table(postgres: PostgresResource, table: str, period_start: datetime) -> dict:
     """Return rows for period_start from the given table keyed by (category, rollup)."""
     with postgres.get_connection() as conn:
@@ -227,6 +255,13 @@ def _query_metrics_table(postgres: PostgresResource, table: str, period_start: d
             text(f"SELECT * FROM {table} WHERE period_start = :ps"),
             {"ps": period_start},
         ).mappings().fetchall()
+    return {(row["category"], row["rollup"]): dict(row) for row in rows}
+
+
+def _query_all_time_metrics(postgres: PostgresResource) -> dict:
+    """Return all rows from all_time_metrics keyed by (category, rollup)."""
+    with postgres.get_connection() as conn:
+        rows = conn.execute(text("SELECT * FROM all_time_metrics")).mappings().fetchall()
     return {(row["category"], row["rollup"]): dict(row) for row in rows}
 
 
@@ -250,10 +285,11 @@ def clean_metrics(postgres):
         _delete_all_tables(conn)
         conn.commit()
 
-
 # ---------------------------------------------------------------------------
 # Abstract test mixins
 # ---------------------------------------------------------------------------
+
+
 
 
 class _BlobMetricsMixin:
@@ -419,6 +455,7 @@ class _TxMetricsMixin:
 
     def test_avg_blob_base_fee(self, postgres):
         expected = sum(tx["blob_base_fee"] for tx in self._txs) / len(self._txs)
+
         assert self._result(postgres)[(None, None)]["avg_blob_base_fee"] == expected
 
     def test_total_blob_base_fee(self, postgres):
@@ -478,6 +515,22 @@ class _TxMetricsMixin:
     def test_total_max_blob_gas_fee(self, postgres):
         expected = sum(tx["maxFeePerBlobGas"] for tx in self._txs)
         assert self._result(postgres)[(None, None)]["total_max_blob_gas_fee"] == expected
+
+
+class _AllTimeBlobMetricsMixin(_BlobMetricsMixin):
+    def _result(self, postgres):
+        return _query_all_time_metrics(postgres)
+
+    def test_no_metrics_created_for_other_periods(self, postgres):
+        pass  # all_time_metrics has no period dimension
+
+
+class _AllTimeTxMetricsMixin(_TxMetricsMixin):
+    def _result(self, postgres):
+        return _query_all_time_metrics(postgres)
+
+    def test_no_metrics_created_for_other_periods(self, postgres):
+        pass  # all_time_metrics has no period dimension
 
 
 # ---------------------------------------------------------------------------
@@ -641,3 +694,38 @@ class TestYearlyTxMetricsCalculation(_TxMetricsMixin):
         _seed_monthly(postgres)
 
         _run_asset(postgres, YEARLY_PARTITION_KEY, yearly_metrics)
+
+
+# ---------------------------------------------------------------------------
+# All-time metric tests
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.integration
+class TestAllTimeBlobMetricsCalculation(_AllTimeBlobMetricsMixin):
+    _table = "all_time_metrics"
+    _txs = _ALL_TXS
+    _blobs = _ALL_BLOBS
+    _blocks = _ALL_BLOCKS
+
+    def _seed_metrics(self, postgres):
+        _seed_hourly(postgres)
+        _seed_daily(postgres)
+        _seed_monthly(postgres)
+        _seed_yearly(postgres)
+        all_time_metrics(postgres=postgres)
+
+
+@pytest.mark.integration
+class TestAllTimeTxMetricsCalculation(_AllTimeTxMetricsMixin):
+    _table = "all_time_metrics"
+    _txs = _ALL_TXS
+    _blobs = _ALL_BLOBS
+    _blocks = _ALL_BLOCKS
+
+    def _seed_metrics(self, postgres):
+        _seed_hourly(postgres)
+        _seed_daily(postgres)
+        _seed_monthly(postgres)
+        _seed_yearly(postgres)
+        all_time_metrics(postgres=postgres)
