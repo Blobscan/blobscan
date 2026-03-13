@@ -80,3 +80,6 @@ event_log_storage:
         env: DAGSTER_POSTGRES_DB
       port:
         env: DAGSTER_POSTGRES_PORT
+
+telemetry:
+  enabled: false
