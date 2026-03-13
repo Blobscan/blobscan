@@ -13,6 +13,7 @@ dev = [
     "dagster-webserver",
     "dagster-dg-cli",
     "mypy>=1.19.1",
+    "ruff>=0.15.6",
 ]
 
 [build-system]
