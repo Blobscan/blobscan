@@ -80,7 +80,7 @@ def get_partition_start_date() -> datetime:
                     "Use YYYY-MM-DD or YYYY-MM-DDTHH:MM."
                 )
 
-    chain_id = int(os.getenv("CHAIN_ID", ""))
+    chain_id = int(os.environ["CHAIN_ID"])
 
     try:
         activation_date = DENCUN_ACTIVATION[chain_id]

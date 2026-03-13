@@ -1,30 +1,31 @@
-FROM python:3.14
-
+FROM python:3.14-slim
 
 ARG BUILD_TIMESTAMP
 ENV BUILD_TIMESTAMP=$BUILD_TIMESTAMP
 ARG GIT_COMMIT
 ENV GIT_COMMIT=$GIT_COMMIT
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
 
 WORKDIR /app
+ENV VIRTUAL_ENV=/app/.venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev
+COPY src/ ./
 
-# Copy project metadata and source
-COPY pyproject.toml .
+RUN useradd --create-home --shell /bin/bash app \
+    && chown -R app:app /app
+USER app
 
-# This makes sure that logs show up immediately instead of being buffered
-ENV PYTHONUNBUFFERED=1
+# Run dagster gRPC server on port 4000
+EXPOSE 4000
 
+HEALTHCHECK --timeout=1s --start-period=3s --interval=3s --retries=20 \
+    CMD ["dagster", "api", "grpc-health-check", "-p", "4000"]
 
-
-RUN uv pip install --system --no-cache \
-  -r pyproject.toml \
-  dagster \
-  dagster-postgres \
-  dagster-k8s
-
-COPY src/ src/
-
-# Expose the port that your Dagster instance will run on
-EXPOSE 80
+CMD ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "4000", "-m", "analytics.definitions"]

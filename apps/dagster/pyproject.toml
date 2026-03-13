@@ -3,9 +3,12 @@ name = "blobscan-dagster"
 requires-python = ">=3.10,<3.15"
 version = "0.1.0"
 dependencies = [
-    "dagster==1.12.14",
+    "dagster (>=1.12.19,<2.0.0)",
+    "dagster-docker (>=0.28.19,<0.29.0)",
+    "dagster-postgres",
     "sqlalchemy>=2.0",
     "psycopg2-binary>=2.9",
+    "dagster-k8s (>=0.28.19,<0.29.0)",
 ]
 
 [dependency-groups]

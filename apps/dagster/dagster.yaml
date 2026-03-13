@@ -1,7 +1,11 @@
+# Scheduler: uses the daemon-based scheduler so cron-like schedules
+# are evaluated by the dagster-daemon process rather than the webserver.
 scheduler:
   module: dagster.core.scheduler
   class: DagsterDaemonScheduler
 
+# Run coordinator: queues runs instead of launching them immediately,
+# enforcing concurrency limits across the deployment.
 run_coordinator:
   module: dagster.core.run_coordinator
   class: QueuedRunCoordinator
@@ -12,6 +16,8 @@ run_coordinator:
         value: "example"
         limit: 5
 
+# Run launcher: spins up a new Docker container for each pipeline run.
+# Environment variables and volumes are forwarded to launched containers.
 run_launcher:
   module: dagster_docker
   class: DockerRunLauncher
@@ -20,11 +26,13 @@ run_launcher:
       - DAGSTER_POSTGRES_USER
       - DAGSTER_POSTGRES_PASSWORD
       - DAGSTER_POSTGRES_DB
+      - DAGSTER_POSTGRES_PORT
     container_kwargs:
-      volumes: # Make docker client accessible to any launched containers as well
-        - /var/run/docker.sock:/var/run/docker.sock
-        - /tmp/io_manager_storage:/tmp/io_manager_storage
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock # Docker-in-Docker access
+        - /tmp/io_manager_storage:/tmp/io_manager_storage # Shared IO manager storage
 
+# Run storage: persists pipeline run status and metadata to Postgres.
 run_storage:
   module: dagster_postgres.run_storage
   class: PostgresRunStorage
@@ -37,8 +45,10 @@ run_storage:
         env: DAGSTER_POSTGRES_PASSWORD
       db_name:
         env: DAGSTER_POSTGRES_DB
-      port: 5432
+      port:
+        env: DAGSTER_POSTGRES_PORT
 
+# Schedule storage: persists schedule state (ticks, cursors) to Postgres.
 schedule_storage:
   module: dagster_postgres.schedule_storage
   class: PostgresScheduleStorage
@@ -51,8 +61,11 @@ schedule_storage:
         env: DAGSTER_POSTGRES_PASSWORD
       db_name:
         env: DAGSTER_POSTGRES_DB
-      port: 5432
+      port:
+        env: DAGSTER_POSTGRES_PORT
 
+# Event log storage: persists asset materializations, run events, and
+# sensor/schedule ticks to Postgres.
 event_log_storage:
   module: dagster_postgres.event_log
   class: PostgresEventLogStorage
@@ -65,4 +78,5 @@ event_log_storage:
         env: DAGSTER_POSTGRES_PASSWORD
       db_name:
         env: DAGSTER_POSTGRES_DB
-      port: 5432
+      port:
+        env: DAGSTER_POSTGRES_PORT

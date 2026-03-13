@@ -83,16 +83,17 @@ services:
     volumes:
       - ./otel-config.yaml:/etc/otel-config.yaml
 
-  dagster:
+  dagster-blobscan:
     build:
       context: ./apps/dagster
-      dockerfile: ./Dockerfile.usercode
+      dockerfile: ./Dockerfile
     restart: always
     environment:
       CHAIN_ID: "${CHAIN_ID}"
       DAGSTER_POSTGRES_USER: "blobscan"
       DAGSTER_POSTGRES_PASSWORD: "s3cr3t"
       DAGSTER_POSTGRES_DB: "dagster_dev"
+      DAGSTER_POSTGRES_PORT: 5432
     volumes:
       - dagster-home:/dagster_home
     depends_on:
@@ -125,13 +126,14 @@ services:
       DAGSTER_POSTGRES_USER: "blobscan"
       DAGSTER_POSTGRES_PASSWORD: "s3cr3t"
       DAGSTER_POSTGRES_DB: "dagster_dev"
+      DAGSTER_POSTGRES_PORT: 5432
     volumes: # Make docker client accessible so we can terminate containers from the webserver
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
     depends_on:
       postgres:
         condition: service_healthy
-      dagster:
+      dagster-blobscan:
         condition: service_healthy
 
   dagster-daemon:
@@ -147,13 +149,14 @@ services:
       DAGSTER_POSTGRES_USER: "blobscan"
       DAGSTER_POSTGRES_PASSWORD: "s3cr3t"
       DAGSTER_POSTGRES_DB: "dagster_dev"
+      DAGSTER_POSTGRES_PORT: 5432
     volumes: # Make docker client accessible so we can launch containers using host docker
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
     depends_on:
       postgres:
         condition: service_healthy
-      dagster:
+      dagster-blobscan:
         condition: service_started
 
 volumes:
