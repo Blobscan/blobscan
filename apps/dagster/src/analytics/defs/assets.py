@@ -1,13 +1,14 @@
 from datetime import timedelta
 import time
 
-from analytics.defs.asset_factories import make_metrics_asset
 from analytics.defs.helpers import (
     AGGREGATE_ALL_TIME_SQL,
     AGGREGATE_BLOB_HOURLY_SQL,
     AGGREGATE_TX_HOURLY_SQL,
     build_aggregate_sql,
+    execute_sql_window,
     get_partition_start_date,
+    partition_meta,
 )
 import dagster as dg
 
@@ -128,40 +129,85 @@ def hourly_metrics(
     )
 
 
-daily_metrics = make_metrics_asset(
-    name="daily_metrics",
+_daily_sql = build_aggregate_sql("hourly_metrics", "daily_metrics", "day")
+_weekly_sql = build_aggregate_sql("daily_metrics", "weekly_metrics", "week")
+_monthly_sql = build_aggregate_sql("daily_metrics", "monthly_metrics", "month")
+_yearly_sql = build_aggregate_sql("monthly_metrics", "yearly_metrics", "year")
+
+
+@dg.asset(
     deps=[dg.AssetDep(hourly_metrics, partition_mapping=_ignore_missing)],
     partitions_def=daily_partitions,
-    sql=build_aggregate_sql("hourly_metrics", "daily_metrics", "day"),
     automation_condition=daily_completed_only,
     backfill_policy=dg.BackfillPolicy.multi_run(30),
 )
+def daily_metrics(
+    context: dg.AssetExecutionContext, postgres: PostgresResource
+) -> dg.MaterializeResult:
+    rowcount, ms = execute_sql_window(context=context, postgres=postgres, sql=_daily_sql)
+    return dg.MaterializeResult(
+        metadata={
+            "partition_range": partition_meta(context),
+            "rows_affected": dg.MetadataValue.int(rowcount),
+            "query_ms": dg.MetadataValue.int(ms),
+        }
+    )
 
-weekly_metrics = make_metrics_asset(
-    name="weekly_metrics",
+
+@dg.asset(
     deps=[dg.AssetDep(daily_metrics, partition_mapping=_ignore_missing)],
     partitions_def=weekly_partitions,
-    sql=build_aggregate_sql("daily_metrics", "weekly_metrics", "week"),
     automation_condition=weekly_completed_only,
     backfill_policy=dg.BackfillPolicy.multi_run(30),
 )
+def weekly_metrics(
+    context: dg.AssetExecutionContext, postgres: PostgresResource
+) -> dg.MaterializeResult:
+    rowcount, ms = execute_sql_window(context=context, postgres=postgres, sql=_weekly_sql)
+    return dg.MaterializeResult(
+        metadata={
+            "partition_range": partition_meta(context),
+            "rows_affected": dg.MetadataValue.int(rowcount),
+            "query_ms": dg.MetadataValue.int(ms),
+        }
+    )
 
-monthly_metrics = make_metrics_asset(
-    name="monthly_metrics",
+
+@dg.asset(
     deps=[dg.AssetDep(daily_metrics, partition_mapping=_ignore_missing)],
     partitions_def=monthly_partitions,
-    sql=build_aggregate_sql("daily_metrics", "monthly_metrics", "month"),
     automation_condition=monthly_completed_only,
     backfill_policy=dg.BackfillPolicy.multi_run(12),
 )
+def monthly_metrics(
+    context: dg.AssetExecutionContext, postgres: PostgresResource
+) -> dg.MaterializeResult:
+    rowcount, ms = execute_sql_window(context=context, postgres=postgres, sql=_monthly_sql)
+    return dg.MaterializeResult(
+        metadata={
+            "partition_range": partition_meta(context),
+            "rows_affected": dg.MetadataValue.int(rowcount),
+            "query_ms": dg.MetadataValue.int(ms),
+        }
+    )
 
-yearly_metrics = make_metrics_asset(
-    name="yearly_metrics",
+
+@dg.asset(
     deps=[dg.AssetDep(monthly_metrics, partition_mapping=_ignore_missing)],
     partitions_def=yearly_partitions,
-    sql=build_aggregate_sql("monthly_metrics", "yearly_metrics", "year"),
     automation_condition=yearly_completed_only,
 )
+def yearly_metrics(
+    context: dg.AssetExecutionContext, postgres: PostgresResource
+) -> dg.MaterializeResult:
+    rowcount, ms = execute_sql_window(context=context, postgres=postgres, sql=_yearly_sql)
+    return dg.MaterializeResult(
+        metadata={
+            "partition_range": partition_meta(context),
+            "rows_affected": dg.MetadataValue.int(rowcount),
+            "query_ms": dg.MetadataValue.int(ms),
+        }
+    )
 
 
 @dg.asset(
