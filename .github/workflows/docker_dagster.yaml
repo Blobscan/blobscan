@@ -4,10 +4,10 @@ on:
   push:
     tags: ["v*"]
     paths:
-      - "apps/analytics/**"
+      - "apps/dagster/**"
 
 jobs:
-  release_analytics_docker:
+  release_dagster_docker:
     name: Build Docker image (Analytics)
     runs-on: ubuntu-latest
     steps:
@@ -33,23 +33,23 @@ jobs:
           echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
 
       - name: Extract metadata (tags, labels) for Docker (Analytics)
-        id: meta_analytics
+        id: meta_dagster
         uses: docker/metadata-action@v5
         with:
           images: |
-            blossomlabs/blobscan-analytics
+            blossomlabs/blobscan-dagster
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
 
-      - name: Build and push (analytics)
+      - name: Build and push (dagster)
         uses: docker/build-push-action@v6.5.0
         with:
-          context: ./apps/analytics
+          context: ./apps/dagster
           push: true
-          tags: ${{ steps.meta_analytics.outputs.tags }}
-          labels: ${{ steps.meta_analytics.outputs.labels }}
+          tags: ${{ steps.meta_dagster.outputs.tags }}
+          labels: ${{ steps.meta_dagster.outputs.labels }}
           build-args: |
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}

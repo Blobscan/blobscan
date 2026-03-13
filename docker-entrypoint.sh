@@ -15,10 +15,10 @@ _is_sourced() {
 
 _main() {
 	if [ "$1" = 'web' ]; then
-		apply_prisma_migrations --schema node_modules/.prisma/client/schema.prisma
+		apply_prisma_migrations --schema node_modules/.prisma/client
 		node /app/apps/web/server.js
 	elif [ "$1" = 'api' ]; then
-		apply_prisma_migrations --schema schema.prisma
+		apply_prisma_migrations --schema .
 		node /app/index.js
 	elif [ "$1" = '--help' ]; then
 		echo "## Blobscan ##"

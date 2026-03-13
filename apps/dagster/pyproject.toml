@@ -1,5 +1,5 @@
 [project]
-name = "analytics"
+name = "blobscan-dagster"
 requires-python = ">=3.10,<3.15"
 version = "0.1.0"
 dependencies = [

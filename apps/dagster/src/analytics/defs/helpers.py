@@ -14,13 +14,13 @@ DENCUN_ACTIVATION = {
     1: "2024-03-13-13:55",
     11155111: "2024-01-30-22:51",
     560048: "2025-03-17-12:00",
-    100: "2024-03-11-18:30"
+    100: "2024-03-11-18:30",
 }
+
 
 def build_aggregate_sql(source: str, target: str, trunc: str):
     return text(
-        SQL_TEMPLATE
-        .replace("{{source_table}}", source)
+        SQL_TEMPLATE.replace("{{source_table}}", source)
         .replace("{{target_table}}", target)
         .replace("{{trunc}}", trunc)
     )
@@ -36,6 +36,7 @@ def partition_meta(context: dg.AssetExecutionContext) -> str | None:
     if pk_range:
         return f"{pk_range.start}..{pk_range.end}"
     return getattr(context, "partition_key", None)
+
 
 def execute_sql_window(
     *,
@@ -60,8 +61,6 @@ def execute_sql_window(
     return res.rowcount, ms
 
 
-
-    
 def get_partition_start_date() -> str:
     custom_start_date = os.getenv("DAGSTER_METRICS_START_DATE")
 
@@ -83,11 +82,10 @@ def get_partition_start_date() -> str:
     try:
         activation_date = DENCUN_ACTIVATION[chain_id]
 
-        return datetime.strptime(
-            activation_date,
-            "%Y-%m-%d-%H:%M"
-        ).replace(tzinfo=timezone.utc)
-        
+        return datetime.strptime(activation_date, "%Y-%m-%d-%H:%M").replace(
+            tzinfo=timezone.utc
+        )
+
     except KeyError:
         raise ValueError(
             f"Partition start date could not be determined.\n"

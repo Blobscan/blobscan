@@ -83,9 +83,9 @@ services:
     volumes:
       - ./otel-config.yaml:/etc/otel-config.yaml
 
-  analytics:
+  dagster:
     build:
-      context: ./apps/analytics
+      context: ./apps/dagster
       dockerfile: ./Dockerfile.usercode
     restart: always
     environment:
@@ -104,9 +104,9 @@ services:
       retries: 5
       start_period: 30s
 
-  analytics-webserver:
+  dagster-webserver:
     build:
-      context: ./apps/analytics
+      context: ./apps/dagster
       dockerfile: ./Dockerfile.dagster
     entrypoint:
       - dagster-webserver
@@ -116,7 +116,7 @@ services:
       - "3003"
       - -w
       - workspace.yaml
-    container_name: analytics-webserver
+    container_name: dagster-webserver
     expose:
       - "3003"
     ports:
@@ -131,17 +131,17 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      analytics:
+      dagster:
         condition: service_healthy
 
-  analytics-daemon:
+  dagster-daemon:
     build:
-      context: ./apps/analytics
+      context: ./apps/dagster
       dockerfile: ./Dockerfile.dagster
     entrypoint:
       - dagster-daemon
       - run
-    container_name: analytics-daemon
+    container_name: dagster-daemon
     restart: on-failure
     environment:
       DAGSTER_POSTGRES_USER: "blobscan"
@@ -153,7 +153,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      analytics:
+      dagster:
         condition: service_started
 
 volumes:

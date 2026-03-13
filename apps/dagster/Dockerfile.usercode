@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.14-slim
 
 WORKDIR /opt/dagster/app
 
@@ -6,7 +6,7 @@ WORKDIR /opt/dagster/app
 COPY pyproject.toml .
 COPY src/ src/
 
-# Install the analytics package (pulls pinned dagster==1.12.14 and other deps from pyproject.toml)
+# Install the dagster package (pulls pinned dagster==1.12.14 and other deps from pyproject.toml)
 # plus dagster-postgres and dagster-docker which aren't in pyproject.toml dependencies
 RUN pip install dagster-postgres dagster-docker -e .
 

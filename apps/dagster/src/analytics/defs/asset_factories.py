@@ -1,10 +1,10 @@
-import time
 from typing import Optional, Sequence
 from analytics.defs.helpers import execute_sql_window, partition_meta
 import dagster as dg
 
 from sqlalchemy.sql.elements import TextClause
 from .resources.postgres import PostgresResource
+
 
 def make_metrics_asset(
     *,
@@ -22,7 +22,9 @@ def make_metrics_asset(
         automation_condition=automation_condition,
         backfill_policy=backfill_policy,
     )
-    def _asset(context: dg.AssetExecutionContext, postgres: PostgresResource) -> dg.MaterializeResult:
+    def _asset(
+        context: dg.AssetExecutionContext, postgres: PostgresResource
+    ) -> dg.MaterializeResult:
         rowcount, ms = execute_sql_window(context=context, postgres=postgres, sql=sql)
         return dg.MaterializeResult(
             metadata={
