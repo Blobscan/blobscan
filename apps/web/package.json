@@ -6,7 +6,7 @@
     "analyze": "ANALYZE=true pnpm build",
     "build": "pnpm with-env next build --webpack",
     "clean": "git clean -xdf .next .turbo node_modules",
-    "dev": "pnpm with-env next dev -p 3000",
+    "dev": "pnpm with-env next dev -p 3000 --webpack",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "start": "pnpm with-env next start",
