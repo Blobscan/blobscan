@@ -18,5 +18,9 @@
   ],
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.tsdk": "node_modules/typescript/lib",
-  "python.defaultInterpreterPath": "./apps/dagster/.venv/bin/python"
+  "python.defaultInterpreterPath": "./apps/dagster/.venv/bin/python",
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true
+  }
 }
