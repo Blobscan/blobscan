@@ -1,6 +1,5 @@
 import time
 from datetime import timedelta
-from typing import TYPE_CHECKING
 
 import dagster as dg
 
@@ -13,9 +12,7 @@ from analytics.defs.helpers import (
     get_partition_start_date,
     partition_meta,
 )
-
-if TYPE_CHECKING:
-    from .resources.postgres import PostgresResource
+from analytics.defs.resources.postgres import PostgresResource
 
 _start = get_partition_start_date()
 _midnight = _start.replace(hour=0, minute=0, second=0, microsecond=0)
