@@ -4,4 +4,8 @@ target-version = "py314"
 select = [
     "ALL", # include all the rules, including new ones
 ]
-ignore = ["ANN201", "D100", "D101", "D102", "D103", "D104"]
+ignore = ["ANN201", "D100", "D101", "D102", "D103", "D104", "TC001"]
+
+[lint.per-file-ignores]
+"tests/**" = ["S101", "ANN001", "ANN202", "S105", "PLR2004", "S607"]
+"scripts/generate_models.py" = ["ALL"]
