@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 
 import dagster as dg
-from sqlalchemy import create_engine, Engine
+from sqlalchemy import Engine, create_engine
 
 
 class PostgresResource(dg.ConfigurableResource):
@@ -23,6 +23,6 @@ def resources() -> dg.Definitions:
         resources={
             "postgres": PostgresResource(
                 connection_url=dg.EnvVar("DATABASE_URL"),
-            )
-        }
+            ),
+        },
     )

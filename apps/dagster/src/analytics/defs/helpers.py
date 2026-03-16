@@ -1,10 +1,16 @@
-from datetime import datetime, timezone
+from __future__ import annotations
+
 import os
-from pathlib import Path
 import time
-import dagster as dg
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import dagster as dg
+    from sqlalchemy.sql.elements import TextClause
+
 from sqlalchemy import text
-from sqlalchemy.sql.elements import TextClause
 
 SQL_DIR = Path(__file__).parent / "sql"
 
@@ -22,7 +28,7 @@ def build_aggregate_sql(source: str, target: str, trunc: str):
     return text(
         SQL_TEMPLATE.replace("{{source_table}}", source)
         .replace("{{target_table}}", target)
-        .replace("{{trunc}}", trunc)
+        .replace("{{trunc}}", trunc),
     )
 
 
@@ -41,10 +47,11 @@ def partition_meta(context: dg.AssetExecutionContext) -> str | None:
 def execute_sql_window(
     *,
     context: dg.AssetExecutionContext,
-    postgres,
+    postgres: dg.ResourceDefinition,
     sql: TextClause,
 ) -> tuple[int, int]:
-    """Executes a single SQL statement for the partition window.
+    """Execute a single SQL statement for the partition window.
+
     Returns (rowcount, elapsed_ms).
     """
     start = context.partition_time_window.start
@@ -67,18 +74,19 @@ def get_partition_start_date() -> datetime:
     if custom_start_date:
         try:
             return datetime.strptime(custom_start_date, "%Y-%m-%dT%H:%M").replace(
-                tzinfo=timezone.utc
+                tzinfo=UTC,
             )
         except ValueError:
             try:
                 return datetime.strptime(custom_start_date, "%Y-%m-%d").replace(
-                    tzinfo=timezone.utc
+                    tzinfo=UTC,
                 )
             except ValueError:
-                raise ValueError(
+                msg = (
                     "Invalid DAGSTER_METRICS_START_DATE format.\n"
                     "Use YYYY-MM-DD or YYYY-MM-DDTHH:MM."
                 )
+                raise ValueError(msg) from None
 
     chain_id = int(os.environ["CHAIN_ID"])
 
@@ -86,11 +94,11 @@ def get_partition_start_date() -> datetime:
         activation_date = DENCUN_ACTIVATION[chain_id]
 
         return datetime.strptime(activation_date, "%Y-%m-%dT%H:%M").replace(
-            tzinfo=timezone.utc
+            tzinfo=UTC,
         )
 
     except KeyError:
-        raise ValueError(
+        msg = (
             f"Partition start date could not be determined.\n"
             f"- DAGSTER_METRICS_START_DATE not set\n"
             f"- No Dencun activation date configured for CHAIN_ID={chain_id}\n\n"
@@ -98,3 +106,4 @@ def get_partition_start_date() -> datetime:
             "• set DAGSTER_METRICS_START_DATE env var, or\n"
             "• add the chain to DENCUN_ACTIVATION."
         )
+        raise ValueError(msg) from None

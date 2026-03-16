@@ -1,0 +1,7 @@
+target-version = "py314"
+
+[lint]
+select = [
+    "ALL", # include all the rules, including new ones
+]
+ignore = ["ANN201", "D100", "D101", "D102", "D103", "D104"]
