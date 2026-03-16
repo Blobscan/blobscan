@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "devDependencies": {
-    "@prisma/client": "^5.22.0"
+    "@prisma/client": "^5.19.0"
   },
   "scripts": {
     "dev": "pnpm with-env uv run dagster dev -p 3003",
