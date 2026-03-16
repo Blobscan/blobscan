@@ -23,6 +23,7 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src"]
 markers = [
     "integration: mark test as requiring a live PostgreSQL container (Docker must be running)",
 ]

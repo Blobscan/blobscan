@@ -1,5 +1,4 @@
-"""
-Unit tests for the hourly catch-up schedule.
+"""Unit tests for the hourly catch-up schedule.
 
 The schedule fires at :05 past each hour and re-aggregates the *previous* hour
 to capture data that arrived after the live sensor's last tick before the hour
@@ -17,7 +16,7 @@ from analytics.defs.schedules import hourly_catch_up_schedule
 class TestHourlyCatchUpSchedule:
     def _run(self, execution_time: datetime) -> dg.RunRequest:
         context = dg.build_schedule_context(scheduled_execution_time=execution_time)
-        return cast(dg.RunRequest, hourly_catch_up_schedule(context))
+        return cast("dg.RunRequest", hourly_catch_up_schedule(context))
 
     def test_returns_previous_hour_partition_key(self):
         # Fires at 15:05 → should re-aggregate the 14:00 partition
@@ -30,7 +29,8 @@ class TestHourlyCatchUpSchedule:
         assert result.partition_key == "2024-03-14T23:00"
 
     def test_crosses_month_boundary(self):
-        # Fires at 00:05 on March 1 → should re-aggregate Feb 28 23:00 (2024 is a leap year)
+        # Fires at 00:05 on March 1 → should re-aggregate Feb 28 23:00
+        # (2024 is a leap year)
         result = self._run(datetime(2024, 3, 1, 0, 5, tzinfo=UTC))
         assert result.partition_key == "2024-02-29T23:00"
 
