@@ -26,13 +26,16 @@ _start_dates = {
 }
 
 hourly_partitions = dg.HourlyPartitionsDefinition(
-    start_date=_start_dates["hourly"], end_offset=1,
+    start_date=_start_dates["hourly"], fmt="%Y-%m-%dT%H:%M", end_offset=1,
 )
 daily_partitions = dg.DailyPartitionsDefinition(
     start_date=_start_dates["daily"], fmt="%Y-%m-%d", end_offset=1,
 )
 weekly_partitions = dg.WeeklyPartitionsDefinition(
-    start_date=_start_dates["weekly"], fmt="%Y-%m-%d", end_offset=1,
+    start_date=_start_dates["weekly"],
+    fmt="%Y-%m-%d",
+    day_offset=1, # Start partitions on Monday instead of Sunday
+    end_offset=1,
 )
 monthly_partitions = dg.MonthlyPartitionsDefinition(
     start_date=_start_dates["monthly"], fmt="%Y-%m", end_offset=1,
