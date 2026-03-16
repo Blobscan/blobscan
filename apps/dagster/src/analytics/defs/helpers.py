@@ -10,6 +10,8 @@ if TYPE_CHECKING:
     import dagster as dg
     from sqlalchemy.sql.elements import TextClause
 
+    from analytics.defs.resources.postgres import PostgresResource
+
 from sqlalchemy import text
 
 SQL_DIR = Path(__file__).parent / "sql"
@@ -47,7 +49,7 @@ def partition_meta(context: dg.AssetExecutionContext) -> str | None:
 def execute_sql_window(
     *,
     context: dg.AssetExecutionContext,
-    postgres: dg.ResourceDefinition,
+    postgres: PostgresResource,
     sql: TextClause,
 ) -> tuple[int, int]:
     """Execute a single SQL statement for the partition window.
