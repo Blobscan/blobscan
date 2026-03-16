@@ -88,7 +88,7 @@ def get_partition_start_date() -> datetime:
                 )
                 raise ValueError(msg) from None
 
-    chain_id = int(os.environ["CHAIN_ID"])
+    chain_id = int(os.getenv("CHAIN_ID", ""))
 
     try:
         activation_date = DENCUN_ACTIVATION[chain_id]
