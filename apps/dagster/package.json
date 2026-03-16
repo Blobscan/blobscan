@@ -2,14 +2,16 @@
   "name": "@blobscan/dagster",
   "version": "0.0.1",
   "private": true,
+  "devDependencies": {
+    "@prisma/client": "^5.22.0"
+  },
   "scripts": {
     "dev": "pnpm with-env uv run dagster dev -p 3003",
     "lint": "uv run ruff check .",
     "lint:fix": "uv run ruff check . --fix",
     "type-check": "uv run mypy src/analytics/",
-    "test": "pnpm with-env:test uv run pytest tests/ -v",
+    "test": "uv run pytest tests/ -v",
     "start": "uv run dagster-webserver -h 0.0.0.0 -p 3003",
-    "with-env": "dotenv -e ../../.env --",
-    "with-env:test": "dotenv -e ../../.env.test --"
+    "with-env": "dotenv -e ../../.env --"
   }
 }
