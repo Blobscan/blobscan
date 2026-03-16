@@ -29,8 +29,8 @@ class TestHourlyCatchUpSchedule:
         assert result.partition_key == "2024-03-14T23:00"
 
     def test_crosses_month_boundary(self):
-        # Fires at 00:05 on March 1 → should re-aggregate Feb 28 23:00
-        # (2024 is a leap year)
+        # Fires at 00:05 on March 1 → should re-aggregate
+        # Feb 28 23:00 (2024 is a leap year)
         result = self._run(datetime(2024, 3, 1, 0, 5, tzinfo=UTC))
         assert result.partition_key == "2024-02-29T23:00"
 
