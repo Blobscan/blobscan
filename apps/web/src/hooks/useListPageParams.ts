@@ -21,7 +21,7 @@ export function useListPageParams() {
       : undefined,
   };
 
-  const pagination = { page: p, pageSize: ps };
+  const pagination = { p, ps };
 
   return {
     filterParams,

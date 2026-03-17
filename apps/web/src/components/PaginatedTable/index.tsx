@@ -22,8 +22,8 @@ export interface PaginatedTableQueryFilters {
 }
 
 type PaginationData = {
-  page?: number;
-  pageSize?: number;
+  p?: number;
+  ps?: number;
 };
 
 export type PaginatedTableProps = {
@@ -60,7 +60,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
   isExpandable = false,
   rowSkeletonHeight = DEFAULT_ROW_SKELETON_HEIGHT,
 }) {
-  const { page = 1, pageSize = 50 } = paginationData || {};
+  const { p = 1, ps = 50 } = paginationData || {};
   const isEmpty = !isLoading && !rows?.length;
 
   const router = useRouter();
@@ -68,7 +68,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
     totalItems !== undefined
       ? totalItems === 0
         ? 1
-        : Math.ceil(totalItems / pageSize)
+        : Math.ceil(totalItems / ps)
       : undefined;
 
   const handlePageSizeSelection = useCallback(
@@ -101,11 +101,11 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
         query: {
           ...router.query,
           p: newPage,
-          ps: pageSize,
+          ps,
         },
       });
     },
-    [pageSize, router]
+    [ps, router]
   );
 
   return (
@@ -115,7 +115,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
           <div className={`flex flex-col justify-end md:flex-row`}>
             <div className="w-full self-center sm:w-auto">
               <Pagination
-                selected={page}
+                selected={p}
                 pages={pages}
                 onChange={handlePageSelection}
               />
@@ -149,13 +149,13 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
             <div className="flex items-center justify-start gap-2">
               Displayed items:
               <PageSizeSelector
-                selected={{ value: pageSize }}
+                selected={{ value: ps }}
                 onChange={handlePageSizeSelection}
               />
             </div>
             <div className="w-full sm:w-auto">
               <Pagination
-                selected={page}
+                selected={p}
                 pages={pages}
                 inverseCompact
                 onChange={handlePageSelection}

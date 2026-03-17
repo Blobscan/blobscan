@@ -207,10 +207,7 @@ const Blobs: NextPage = function () {
         headers={blobHeaders}
         rows={blobRows}
         totalItems={totalBlobs}
-        paginationData={{
-          page: pagination.page,
-          pageSize: pagination.pageSize,
-        }}
+        paginationData={pagination}
       />
     </>
   );
