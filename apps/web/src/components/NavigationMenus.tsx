@@ -43,13 +43,13 @@ const NavigationLinkBase: FC<{
 }> = function ({ label, icon, isHovered }) {
   return (
     <div
-      className={`flex items-center gap-1 border ${
+      className={`flex items-center gap-1 ${
         isHovered
           ? "text-iconHighlight-light dark:text-iconHighlight-dark"
           : "text-content-light dark:text-content-dark"
       }  text-sm transition-colors`}
     >
-      <Icon src={icon} size="sm" />
+      <Icon src={icon} />
       {label}
     </div>
   );

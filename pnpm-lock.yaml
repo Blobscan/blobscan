@@ -379,8 +379,8 @@ importers:
         specifier: ^3.3.1
         version: 3.5.0(react@18.2.0)
       react-tailwindcss-datepicker:
-        specifier: ^1.6.6
-        version: 1.7.4(dayjs@1.11.19)(react@18.2.0)
+        specifier: 1.6.6
+        version: 1.6.6(dayjs@1.11.19)(react@18.2.0)
       sharp:
         specifier: ^0.34.2
         version: 0.34.5
@@ -7191,12 +7191,11 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
 
-  react-tailwindcss-datepicker@1.7.4:
-    resolution: {integrity: sha512-UBlDFS9Wzu/1bL59LhAZafo8r/3AhHRRMgC5h1XdQeQnQcwWtRkXgUtPrRryHYaH0v6DalAyum24iamlnYElGA==}
-    deprecated: 'This version is only compatible with react 19 and not retro compatible with earlier versions. Please use a more recent version. I.e. from 2.x onwards. But if you use react 18 on your project, please install version 1.7.3: npm install react-tailwindcss-datepicker@1.7.3'
+  react-tailwindcss-datepicker@1.6.6:
+    resolution: {integrity: sha512-kHSUonRO86PoYQQWPqpaSw2JeEn9OafdLsLBG85zO5Sfs23Ku8Ixt/YO+Is3TCBcFeOKnZgzhGLmP3NAXVlFkA==}
     peerDependencies:
-      dayjs: ^1.11.12
-      react: ^17.0.2 || ^18.2.0 || ^19.0.0
+      dayjs: ^1.11.6
+      react: ^17.0.2 || ^18.2.0
 
   react@18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
@@ -15684,7 +15683,7 @@ snapshots:
     dependencies:
       react: 18.2.0
 
-  react-tailwindcss-datepicker@1.7.4(dayjs@1.11.19)(react@18.2.0):
+  react-tailwindcss-datepicker@1.6.6(dayjs@1.11.19)(react@18.2.0):
     dependencies:
       dayjs: 1.11.19
       react: 18.2.0

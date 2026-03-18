@@ -213,6 +213,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     chart.dispatchAction({ type: "hideTip" });
 
     const cleanup = setUpChartFinishedEventHandler(chart);
+
     return cleanup;
   }, [dataset, series, isLoading, setUpChartFinishedEventHandler]);
 
@@ -224,26 +225,35 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     chart.setOption({ tooltip: { show: !isLoading } }, { notMerge: false });
   }, [dataset, series, isLoading]);
 
-  const onChartReady = useCallback((chart: EChartsInstance) => {
-    chart.on(
-      "mouseover",
-      ({ componentType, seriesName, seriesIndex }: ECElementEvent) => {
-        if (componentType !== "series") return;
+  useEffect(() => {
+    const chart = chartInstanceRef.current?.getEchartsInstance();
 
-        setSelectedLegendItem(seriesName);
-        hoveredSeriesRef.current = {
-          seriesIndex,
-          seriesName,
-        };
-      }
-    );
+    if (!chart) return;
 
-    chart.on("globalout", () => {
+    const onMouseover = ({
+      componentType,
+      seriesName,
+      seriesIndex,
+    }: ECElementEvent) => {
+      if (componentType !== "series") return;
+      setSelectedLegendItem(seriesName);
+      hoveredSeriesRef.current = { seriesIndex, seriesName };
+    };
+
+    const onGlobalout = () => {
       chart.dispatchAction({ type: "downplay" });
       chart.dispatchAction({ type: "hideTip" });
       hoveredSeriesRef.current = null;
       setSelectedLegendItem(undefined);
-    });
+    };
+
+    chart.on("mouseover", onMouseover);
+    chart.on("globalout", onGlobalout);
+
+    return () => {
+      chart.off("mouseover", onMouseover);
+      chart.off("globalout", onGlobalout);
+    };
   }, []);
 
   const handleLegendItemHover = useCallback<
@@ -400,7 +410,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           <ReactEChartsCore
             echarts={echarts}
             ref={chartInstanceRef}
-            onChartReady={onChartReady}
             option={baseOptions}
             style={{ height: "100%", width: "100%" }}
           />
