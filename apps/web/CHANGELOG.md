@@ -1,5 +1,15 @@
 # @blobscan/web
 
+## 0.49.1
+
+### Patch Changes
+
+- [#970](https://github.com/Blobscan/blobscan/pull/970) [`7653783`](https://github.com/Blobscan/blobscan/commit/7653783dfc7ff3ae9d85667f6c073ef12d3c95b4) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed pagination navigation not working correctly in data tables
+
+- [#970](https://github.com/Blobscan/blobscan/pull/970) [`7653783`](https://github.com/Blobscan/blobscan/commit/7653783dfc7ff3ae9d85667f6c073ef12d3c95b4) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed inconsistent icon sizes in the navigation menu.
+
+- [#970](https://github.com/Blobscan/blobscan/pull/970) [`7653783`](https://github.com/Blobscan/blobscan/commit/7653783dfc7ff3ae9d85667f6c073ef12d3c95b4) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed a React version mismatch with the Tailwind datepicker component
+
 ## 0.49.0
 
 ### Minor Changes
