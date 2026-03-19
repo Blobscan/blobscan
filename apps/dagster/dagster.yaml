@@ -24,10 +24,10 @@ run_launcher:
   config:
     hostname: postgres
     env_vars:
-      - DAGSTER_POSTGRES_USER
-      - DAGSTER_POSTGRES_PASSWORD
-      - DAGSTER_POSTGRES_DB
-      - DAGSTER_POSTGRES_PORT
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_PORT
     container_kwargs:
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock # Docker-in-Docker access
@@ -41,13 +41,13 @@ run_storage:
     postgres_db:
       hostname: postgres
       username:
-        env: DAGSTER_POSTGRES_USER
+        env: POSTGRES_USER
       password:
-        env: DAGSTER_POSTGRES_PASSWORD
+        env: POSTGRES_PASSWORD
       db_name:
-        env: DAGSTER_POSTGRES_DB
+        env: POSTGRES_DB
       port:
-        env: DAGSTER_POSTGRES_PORT
+        env: POSTGRES_PORT
 
 # Schedule storage: persists schedule state (ticks, cursors) to Postgres.
 schedule_storage:
@@ -57,13 +57,13 @@ schedule_storage:
     postgres_db:
       hostname: postgres
       username:
-        env: DAGSTER_POSTGRES_USER
+        env: POSTGRES_USER
       password:
-        env: DAGSTER_POSTGRES_PASSWORD
+        env: POSTGRES_PASSWORD
       db_name:
-        env: DAGSTER_POSTGRES_DB
+        env: POSTGRES_DB
       port:
-        env: DAGSTER_POSTGRES_PORT
+        env: POSTGRES_PORT
 
 # Event log storage: persists asset materializations, run events, and
 # sensor/schedule ticks to Postgres.
@@ -74,13 +74,13 @@ event_log_storage:
     postgres_db:
       hostname: postgres
       username:
-        env: DAGSTER_POSTGRES_USER
+        env: POSTGRES_USER
       password:
-        env: DAGSTER_POSTGRES_PASSWORD
+        env: POSTGRES_PASSWORD
       db_name:
-        env: DAGSTER_POSTGRES_DB
+        env: POSTGRES_DB
       port:
-        env: DAGSTER_POSTGRES_PORT
+        env: POSTGRES_PORT
 
 telemetry:
   enabled: false
