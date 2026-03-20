@@ -1,5 +1,15 @@
 # @blobscan/web
 
+## 0.49.2
+
+### Patch Changes
+
+- [`df4eb9d`](https://github.com/Blobscan/blobscan/commit/df4eb9dc3e01cfd5671df6c0f3e8ef1047cf8268) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add /contact page with email and Discord links
+
+- [`df4eb9d`](https://github.com/Blobscan/blobscan/commit/df4eb9dc3e01cfd5671df6c0f3e8ef1047cf8268) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add /discord redirect page
+
+- [`df4eb9d`](https://github.com/Blobscan/blobscan/commit/df4eb9dc3e01cfd5671df6c0f3e8ef1047cf8268) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Update copyright year to 2026
+
 ## 0.49.1
 
 ### Patch Changes
