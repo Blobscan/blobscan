@@ -1,4 +1,5 @@
 import React from "react";
+import { EnvelopeIcon } from "@heroicons/react/24/outline";
 
 import { BlobscanSocialLinks } from "~/components/BlobscanSocialLinks";
 import { BlobscanVersionInfo } from "~/components/BlobscanVersionInfo";
@@ -41,10 +42,15 @@ export const BottomBarLayout = () => {
         </div>
         <BlobscanVersionInfo />
 
-        <div className="flex gap-2">
-          <div className="text-sm text-contentTertiary-light dark:text-contentTertiary-dark">
-            Blobscan © 2024-2026
-          </div>
+        <div className="flex gap-2 text-sm text-contentTertiary-light dark:text-contentTertiary-dark">
+          <span>Blobscan © 2024-2026</span>
+          <span>·</span>
+          <Link href="/contact">
+            <span className="inline-flex items-center gap-1">
+              <EnvelopeIcon className="h-3.5 w-3.5" />
+              Contact
+            </span>
+          </Link>
         </div>
       </div>
     </div>
