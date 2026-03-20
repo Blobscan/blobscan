@@ -22,6 +22,15 @@ const bundleAnalyzer = withBundleAnalyzer({
 const config: NextConfig = {
   reactStrictMode: true,
   output: process.env.NEXT_BUILD_OUTPUT as NextConfig["output"],
+  async redirects() {
+    return [
+      {
+        source: "/discord",
+        destination: "https://discordapp.com/invite/fmqrqhkjHY/",
+        permanent: false,
+      },
+    ];
+  },
   async rewrites() {
     /**
      * Redirect Grafana's metrics scrape requests from /metrics to the Next.js
