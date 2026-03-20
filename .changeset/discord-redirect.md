@@ -1,4 +1,4 @@
-[---](---)
+---
 "@blobscan/web": patch
 ---
 
