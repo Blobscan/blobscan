@@ -43,7 +43,7 @@ export const BottomBarLayout = () => {
 
         <div className="flex gap-2">
           <div className="text-sm text-contentTertiary-light dark:text-contentTertiary-dark">
-            Blobscan © 2024-2025
+            Blobscan © 2024-2026
           </div>
         </div>
       </div>
