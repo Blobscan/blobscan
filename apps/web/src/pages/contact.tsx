@@ -1,6 +1,7 @@
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
 
 import { Card } from "~/components/Cards/Card";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import DiscordIcon from "~/icons/discord.svg";
@@ -11,7 +12,12 @@ const EMAIL = "contact@blobscan.com";
 
 export default function Contact() {
   return (
-    <div className="flex flex-col gap-8">
+    <>
+      <SeoMetaTags
+        title="Contact Us"
+        description="Get in touch with the Blobscan team via email, Discord, X, or Farcaster."
+      />
+      <div className="flex flex-col gap-8">
       <Header>Contact Us</Header>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <Card>
@@ -58,5 +64,6 @@ export default function Contact() {
         </Card>
       </div>
     </div>
+    </>
   );
 }

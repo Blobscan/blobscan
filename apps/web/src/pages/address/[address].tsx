@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { EthIdenticon } from "~/components/EthIdenticon";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
@@ -49,6 +50,10 @@ const Address: NextPage = () => {
 
   return (
     <>
+      <SeoMetaTags
+        title={`Address ${address}`}
+        description={`Explore blob transactions for address ${address} on Blobscan.`}
+      />
       <DetailsLayout
         header="Address Details"
         resource={{

@@ -4,6 +4,7 @@ import type { NextPage } from "next";
 import { z } from "@blobscan/zod";
 
 import { Card } from "~/components/Cards/Card";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { MetricCard } from "~/components/Cards/MetricCard";
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
 import type { ChartBaseProps } from "~/components/Charts/ChartBase";
@@ -498,8 +499,13 @@ const Stats: NextPage = function () {
   }
 
   return (
-    <div className="flex flex-col gap-8">
-      <Header>Stats Overview</Header>
+    <>
+      <SeoMetaTags
+        title="Stats Overview"
+        description="Explore comprehensive statistics about EIP-4844 blobs, blocks, transactions, gas usage, and fees."
+      />
+      <div className="flex flex-col gap-8">
+        <Header>Stats Overview</Header>
       <Card>
         <div className="flex w-full flex-wrap items-center justify-start gap-4">
           <div className="w-36">
@@ -551,6 +557,7 @@ const Stats: NextPage = function () {
         ))}
       </div>
     </div>
+    </>
   );
 };
 

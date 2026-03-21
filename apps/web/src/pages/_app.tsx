@@ -9,12 +9,13 @@ import "@fontsource/public-sans/400.css";
 import "@fontsource/public-sans/500.css";
 import { useEffect } from "react";
 import { useRouter } from "next/compat/router";
-import Head from "next/head";
+
 import { SkeletonTheme } from "react-loading-skeleton";
 
 import AppLayout from "~/components/AppLayout/AppLayout";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { FeedbackWidget } from "~/components/FeedbackWidget/FeedbackWidget";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { AppStateProvider } from "~/providers/AppState";
@@ -65,14 +66,7 @@ function App({ Component, pageProps }: NextAppProps) {
       baseColor={resolvedTheme === "dark" ? "#434672" : "#EADEFD"}
       highlightColor={resolvedTheme === "dark" ? "#7D80AB" : "#E2CFFF"}
     >
-      <Head>
-        <title>Blobscan</title>
-        <meta
-          name="description"
-          content="Blobscan is the first EIP4844 Blob Transaction explorer, a web-based application that offers a seamless experience for navigating and indexing blob data."
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <SeoMetaTags />
       <AppLayout>
         <Component {...pageProps} />
       </AppLayout>

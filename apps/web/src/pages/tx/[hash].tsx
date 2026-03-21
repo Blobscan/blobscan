@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
@@ -307,6 +308,10 @@ const Tx: NextPage = () => {
 
   return (
     <>
+      <SeoMetaTags
+        title={`Transaction ${tx ? tx.hash : "Details"}`}
+        description={`Explore transaction details${tx ? ` for ${tx.hash}` : ""} on Blobscan.`}
+      />
       <DetailsLayout
         header={
           <div className="flex items-center justify-start gap-4">
