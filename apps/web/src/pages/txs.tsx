@@ -5,6 +5,7 @@ import dayjs from "@blobscan/dayjs";
 import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
@@ -336,6 +337,10 @@ const Txs: NextPage = function () {
 
   return (
     <>
+      <SeoMetaTags
+        title="Blob Transactions"
+        description="Browse and explore all EIP-4844 blob transactions on the Ethereum network."
+      />
       <Header>
         <div className="flex items-center gap-2">
           <div>Blob Transactions</div>

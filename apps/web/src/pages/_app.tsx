@@ -9,7 +9,7 @@ import "@fontsource/public-sans/400.css";
 import "@fontsource/public-sans/500.css";
 import { useEffect } from "react";
 import { useRouter } from "next/compat/router";
-import Head from "next/head";
+
 import { SkeletonTheme } from "react-loading-skeleton";
 
 import AppLayout from "~/components/AppLayout/AppLayout";
@@ -52,31 +52,17 @@ function App({ Component, pageProps }: NextAppProps) {
     }
   }, [env?.PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL]);
 
-  if (!router || !router.isReady) {
-    return null;
-  }
-
-  if (!isMounted) {
-    return null;
-  }
+  const isReady = !!router?.isReady && isMounted;
 
   return (
     <SkeletonTheme
       baseColor={resolvedTheme === "dark" ? "#434672" : "#EADEFD"}
       highlightColor={resolvedTheme === "dark" ? "#7D80AB" : "#E2CFFF"}
     >
-      <Head>
-        <title>Blobscan</title>
-        <meta
-          name="description"
-          content="Blobscan is the first EIP4844 Blob Transaction explorer, a web-based application that offers a seamless experience for navigating and indexing blob data."
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <AppLayout>
+      <AppLayout hidden={!isReady}>
         <Component {...pageProps} />
       </AppLayout>
-      <FeedbackWidget />
+      {isReady && <FeedbackWidget />}
     </SkeletonTheme>
   );
 }

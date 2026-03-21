@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
@@ -348,6 +349,10 @@ const Block: NextPage = function () {
 
   return (
     <>
+      <SeoMetaTags
+        title={`Block ${blockData ? blockData.number : blockNumberOrHash ?? "Details"}`}
+        description={`Explore block details${blockData ? ` for block #${blockData.number}` : ""} on Blobscan.`}
+      />
       <DetailsLayout
         header={
           <div className="flex items-center justify-start gap-4">
