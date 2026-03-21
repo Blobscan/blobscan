@@ -52,23 +52,17 @@ function App({ Component, pageProps }: NextAppProps) {
     }
   }, [env?.PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL]);
 
-  if (!router || !router.isReady) {
-    return null;
-  }
-
-  if (!isMounted) {
-    return null;
-  }
+  const isReady = !!router?.isReady && isMounted;
 
   return (
     <SkeletonTheme
       baseColor={resolvedTheme === "dark" ? "#434672" : "#EADEFD"}
       highlightColor={resolvedTheme === "dark" ? "#7D80AB" : "#E2CFFF"}
     >
-      <AppLayout>
+      <AppLayout hidden={!isReady}>
         <Component {...pageProps} />
       </AppLayout>
-      <FeedbackWidget />
+      {isReady && <FeedbackWidget />}
     </SkeletonTheme>
   );
 }

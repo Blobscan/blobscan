@@ -6,14 +6,15 @@ import { TopBarLayout } from "./TopBarLayout";
 
 interface LayoutProps {
   children: React.ReactNode;
+  hidden?: boolean;
   variant?: string;
 }
 
-const AppLayout = ({ children }: LayoutProps) => {
+const AppLayout = ({ children, hidden }: LayoutProps) => {
   const isHomepage = useIsHomepage();
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className={cn("flex min-h-screen flex-col", { invisible: hidden })}>
       <TopBarLayout />
       <main
         className={cn("container mx-auto grow", {
