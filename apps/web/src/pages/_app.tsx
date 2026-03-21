@@ -15,7 +15,6 @@ import { SkeletonTheme } from "react-loading-skeleton";
 import AppLayout from "~/components/AppLayout/AppLayout";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { FeedbackWidget } from "~/components/FeedbackWidget/FeedbackWidget";
-import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { AppStateProvider } from "~/providers/AppState";
@@ -66,7 +65,6 @@ function App({ Component, pageProps }: NextAppProps) {
       baseColor={resolvedTheme === "dark" ? "#434672" : "#EADEFD"}
       highlightColor={resolvedTheme === "dark" ? "#7D80AB" : "#E2CFFF"}
     >
-      <SeoMetaTags />
       <AppLayout>
         <Component {...pageProps} />
       </AppLayout>
