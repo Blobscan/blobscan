@@ -13,7 +13,7 @@ export default function Contact() {
   return (
     <div className="flex flex-col gap-8">
       <Header>Contact Us</Header>
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <Card>
           <div className="flex flex-col items-center gap-4 py-4">
             <EnvelopeIcon className="h-10 w-10 text-content-light dark:text-content-dark" />
