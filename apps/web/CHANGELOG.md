@@ -1,5 +1,13 @@
 # @blobscan/web
 
+## 0.50.0
+
+### Minor Changes
+
+- [`9c1be11`](https://github.com/Blobscan/blobscan/commit/9c1be111a99c98be3b2b091007abd70bcd121593) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fix style in contact page and add X and farcaster links
+
+- [`9c1be11`](https://github.com/Blobscan/blobscan/commit/9c1be111a99c98be3b2b091007abd70bcd121593) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - update docker tag defaults in .env.example
+
 ## 0.49.2
 
 ### Patch Changes
