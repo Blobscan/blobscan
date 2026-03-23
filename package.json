@@ -21,6 +21,7 @@
     "lint:fix": "turbo lint:fix && manypkg fix",
     "start": "turbo start",
     "test": "pnpm with-env:test vitest",
+    "test:dagster": "pnpm -F @blobscan/dagster test",
     "coverage": "pnpm with-env:test vitest --coverage",
     "test:ui": "pnpm with-env:test vitest --ui",
     "test:setup": "turbo test:setup",
