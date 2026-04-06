@@ -1,4 +1,3 @@
-/* eslint-disable no-case-declarations */
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { api } from "@blobscan/open-telemetry";
@@ -25,35 +24,41 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     return res.status(500).json({ message: "Feedback is not enabled" });
   }
 
+  if (method !== "POST") {
+    res.setHeader("Allow", "POST");
+    return res.status(405).json({ message: "Method not allowed" });
+  }
+
+  if (!rate || typeof rate !== "string") {
+    return res.status(400).json({ message: "A reaction is required" });
+  }
+
   try {
-    switch (method) {
-      case "POST":
-        const text = `New Feedback ✨
+    const text = `New Feedback ✨
 
   Message: ${message ? message : "-"}
-  Rate: ${rate ? rate : "-"}
+  Rate: ${rate}
   Metadata: \`\`\`${JSON.stringify(metadata)}\`\`\``;
 
-        await fetch(env.FEEDBACK_WEBHOOK_URL, {
-          method: "POST",
-          body: JSON.stringify({ content: text }),
-          headers: { "Content-Type": "application/json" },
-        });
+    const webhookRes = await fetch(env.FEEDBACK_WEBHOOK_URL, {
+      method: "POST",
+      body: JSON.stringify({ content: text }),
+      headers: { "Content-Type": "application/json" },
+    });
 
-        feedbackMessagesTotalCounter.add(1);
-
-        return res.status(200).json({ message: "success" });
-
-      default:
-        throw new Error("Method not allowed");
+    if (!webhookRes.ok) {
+      return res
+        .status(502)
+        .json({ message: "Failed to deliver feedback" });
     }
+
+    feedbackMessagesTotalCounter.add(1);
+
+    return res.status(200).json({ message: "success" });
   } catch (err) {
-    let message = err;
+    const errorMessage =
+      err instanceof Error ? err.message : "Unknown error";
 
-    if (err instanceof TypeError) {
-      message = err.message;
-    }
-
-    return res.status(400).json({ message });
+    return res.status(500).json({ message: errorMessage });
   }
 }
