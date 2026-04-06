@@ -14,6 +14,9 @@ nextjs:
 | `DATABASE_URL`                         | PostgreSQL database URI                                                                     | Yes      | (empty)                    |
 | `DIRECT_URL`                           | Direct connection to the database used by Prisma CLI for e.g. migrations.                   | Yes      | (empty)                    |
 | `FEEDBACK_WEBHOOK_URL`                 | Discord webhook URL for feedback                                                            | No       | (empty)                    |
+| `PUBLIC_BANNER_TEXT`                   | Text displayed in the announcement banner. Banner is hidden when empty                      | No       | (empty)                    |
+| `PUBLIC_BANNER_LINK_TEXT`              | Label for the banner call-to-action button                                                  | No       | `Read more`                |
+| `PUBLIC_BANNER_LINK_URL`               | URL the banner button links to. Button is hidden when empty                                 | No       | (empty)                    |
 | `PUBLIC_NETWORK_NAME`                  | Network name                                                                                | No       | mainnet                    |
 | `PUBLIC_EXPLORER_BASE_URL`             | Block explorer URL                                                                          | No       | `https://etherscan.io`     |
 | `PUBLIC_BEACON_BASE_URL`               | Beacon explorer URL                                                                         | No       | `https://beaconcha.in/`    |
