@@ -1,3 +1,5 @@
+import { createHash } from "crypto";
+
 import type { Request, Response, NextFunction } from "express";
 
 import { env } from "@blobscan/env";
@@ -43,6 +45,42 @@ function shouldSkipTracking(req: Request): boolean {
   });
 }
 
+function hashToHex(value: string): string {
+  return createHash("sha256").update(value).digest("hex").slice(0, 16);
+}
+
+/**
+ * Extract the bearer token from the Authorization header, if present.
+ */
+function getBearerToken(req: Request): string | undefined {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return;
+  }
+
+  const [type, token] = authHeader.split(" ");
+
+  return type === "Bearer" && token ? token : undefined;
+}
+
+/**
+ * Generate a stable 16-character hex visitor ID for Matomo's `cid` parameter.
+ *
+ * Priority:
+ *  1. Hash of the bearer token (authenticated clients)
+ *  2. Hash of IP + User-Agent (anonymous clients)
+ */
+function getVisitorId(req: Request): string {
+  const token = getBearerToken(req);
+
+  if (token) {
+    return hashToHex(token);
+  }
+
+  return hashToHex(`${getClientIp(req)}:${req.headers["user-agent"] || "unknown"}`);
+}
+
 export function matomoMiddleware(
   req: Request,
   res: Response,
@@ -60,9 +98,9 @@ export function matomoMiddleware(
     return;
   }
 
-  res.on("finish", () => {
-    const start = Date.now();
+  const start = Date.now();
 
+  res.on("finish", () => {
     const clientIp = getClientIp(req);
     const userAgent = req.headers["user-agent"] || "unknown";
     const acceptLanguage = req.headers["accept-language"] || "unknown";
@@ -75,6 +113,9 @@ export function matomoMiddleware(
 
     const fullUrl = `${req.protocol}://${req.get("host") || "unknown"}${url}`;
 
+    const visitorId = getVisitorId(req);
+    const bearerToken = getBearerToken(req);
+
     matomoTracker
       ?.track({
         url: fullUrl,
@@ -82,6 +123,8 @@ export function matomoMiddleware(
         token_auth: env.MATOMO_AUTH_TOKEN,
         ua: userAgent,
         cip: clientIp,
+        cid: visitorId,
+        ...(bearerToken && { uid: hashToHex(bearerToken) }),
         lang: acceptLanguage,
         pf_srv: (Date.now() - start).toString(),
         cvar: JSON.stringify({
