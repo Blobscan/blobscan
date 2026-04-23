@@ -21,12 +21,13 @@ function getActiveBreakpoint(): AugmentedSize {
 }
 
 export function useBreakpoint() {
-  const [currentBreakpoint, setCurrentBreakpoint] = useState<AugmentedSize>(
-    getActiveBreakpoint()
-  );
+  const [currentBreakpoint, setCurrentBreakpoint] =
+    useState<AugmentedSize>("default");
   const breakpointRef = useRef<AugmentedSize>();
 
   useEffect(() => {
+    setCurrentBreakpoint(getActiveBreakpoint());
+
     function trackResize() {
       breakpointRef.current = getActiveBreakpoint();
       if (breakpointRef.current !== currentBreakpoint) {
@@ -39,7 +40,7 @@ export function useBreakpoint() {
     return () => {
       window.removeEventListener("resize", trackResize);
     };
-  });
+  }, [currentBreakpoint]);
 
   return currentBreakpoint;
 }
