@@ -129,7 +129,9 @@ export const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
         resetForm();
         onClose();
       }, SUCCESS_DISPLAY_MS);
-    } catch {
+    } catch (err) {
+      console.error(err);
+
       setError("Something went wrong. Please try again.");
       setSubmitting(false);
     }
@@ -217,11 +219,7 @@ export const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
               {error}
             </p>
           )}
-          <Button
-            className="mt-4 w-full"
-            type="submit"
-            disabled={submitting}
-          >
+          <Button className="mt-4 w-full" type="submit" disabled={submitting}>
             {submitting ? "Sending..." : "Submit"}
           </Button>
           <hr className="mt-4 border-border-light dark:border-border-dark" />
