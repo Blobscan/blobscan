@@ -5,6 +5,7 @@ import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransac
 import { EthIdenticon } from "~/components/EthIdenticon";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
 import { useUrlState } from "~/hooks/useUrlState";
 import ErrorPage from "~/pages/_error";
@@ -49,6 +50,10 @@ const Address: NextPage = () => {
 
   return (
     <>
+      <SeoMetaTags
+        title={`Address ${address ?? "Details"}`}
+        description={`Explore address ${address ?? "details"} on Blobscan.`}
+      />
       <DetailsLayout
         header="Address Details"
         resource={{

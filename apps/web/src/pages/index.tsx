@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
 import { BlobscanLogo } from "~/components/BlobscanLogo";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Button } from "~/components/Button";
 import type { CardProps } from "~/components/Cards/Card";
 import { Card } from "~/components/Cards/Card";
@@ -109,7 +110,9 @@ const Home: NextPage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
+    <>
+      <SeoMetaTags />
+      <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
       <div className=" flex flex-col items-center justify-center gap-8 md:w-[650px]">
         <BlobscanLogo className="w-64 md:w-80" />
         <div className="flex w-full  flex-col items-stretch justify-center space-y-2">
@@ -336,6 +339,7 @@ const Home: NextPage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
