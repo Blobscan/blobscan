@@ -1,0 +1,86 @@
+# Scheduler: uses the daemon-based scheduler so cron-like schedules
+# are evaluated by the dagster-daemon process rather than the webserver.
+scheduler:
+  module: dagster.core.scheduler
+  class: DagsterDaemonScheduler
+
+# Run coordinator: queues runs instead of launching them immediately,
+# enforcing concurrency limits across the deployment.
+run_coordinator:
+  module: dagster.core.run_coordinator
+  class: QueuedRunCoordinator
+  config:
+    max_concurrent_runs: 5
+    tag_concurrency_limits:
+      - key: "operation"
+        value: "example"
+        limit: 5
+
+# Run launcher: spins up a new Docker container for each pipeline run.
+# Environment variables and volumes are forwarded to launched containers.
+run_launcher:
+  module: dagster_docker
+  class: DockerRunLauncher
+  config:
+    hostname: postgres
+    env_vars:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_PORT
+    container_kwargs:
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock # Docker-in-Docker access
+        - /tmp/io_manager_storage:/tmp/io_manager_storage # Shared IO manager storage
+
+# Run storage: persists pipeline run status and metadata to Postgres.
+run_storage:
+  module: dagster_postgres.run_storage
+  class: PostgresRunStorage
+  config:
+    postgres_db:
+      hostname: postgres
+      username:
+        env: POSTGRES_USER
+      password:
+        env: POSTGRES_PASSWORD
+      db_name:
+        env: POSTGRES_DB
+      port:
+        env: POSTGRES_PORT
+
+# Schedule storage: persists schedule state (ticks, cursors) to Postgres.
+schedule_storage:
+  module: dagster_postgres.schedule_storage
+  class: PostgresScheduleStorage
+  config:
+    postgres_db:
+      hostname: postgres
+      username:
+        env: POSTGRES_USER
+      password:
+        env: POSTGRES_PASSWORD
+      db_name:
+        env: POSTGRES_DB
+      port:
+        env: POSTGRES_PORT
+
+# Event log storage: persists asset materializations, run events, and
+# sensor/schedule ticks to Postgres.
+event_log_storage:
+  module: dagster_postgres.event_log
+  class: PostgresEventLogStorage
+  config:
+    postgres_db:
+      hostname: postgres
+      username:
+        env: POSTGRES_USER
+      password:
+        env: POSTGRES_PASSWORD
+      db_name:
+        env: POSTGRES_DB
+      port:
+        env: POSTGRES_PORT
+
+telemetry:
+  enabled: false

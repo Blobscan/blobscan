@@ -1,0 +1,5 @@
+load_from:
+  - grpc_server:
+      host: dagster-blobscan
+      port: 4000
+      location_name: "dagster"
