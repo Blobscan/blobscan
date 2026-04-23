@@ -2,10 +2,10 @@ import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
-import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { EthIdenticon } from "~/components/EthIdenticon";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
 import { useUrlState } from "~/hooks/useUrlState";
 import ErrorPage from "~/pages/_error";
@@ -51,8 +51,8 @@ const Address: NextPage = () => {
   return (
     <>
       <SeoMetaTags
-        title={`Address ${address}`}
-        description={`Explore blob transactions for address ${address} on Blobscan.`}
+        title={`Address ${address ?? "Details"}`}
+        description={`Explore address ${address ?? "details"} on Blobscan.`}
       />
       <DetailsLayout
         header="Address Details"

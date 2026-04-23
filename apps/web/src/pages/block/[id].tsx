@@ -3,7 +3,6 @@ import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
-import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
@@ -16,6 +15,7 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrow } from "~/components/NavArrow";
 import type { NavArrowProps } from "~/components/NavArrow";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { useChain } from "~/hooks/useChain";
@@ -350,8 +350,10 @@ const Block: NextPage = function () {
   return (
     <>
       <SeoMetaTags
-        title={`Block ${blockData ? blockData.number : blockNumberOrHash ?? "Details"}`}
-        description={`Explore block details${blockData ? ` for block #${blockData.number}` : ""} on Blobscan.`}
+        title={`Block ${blockNumberOrHash ?? "Details"}`}
+        description={`Explore block details${
+          blockNumberOrHash ? ` for block ${blockNumberOrHash}` : ""
+        } on Blobscan.`}
       />
       <DetailsLayout
         header={

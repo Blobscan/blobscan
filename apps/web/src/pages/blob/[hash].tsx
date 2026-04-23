@@ -11,7 +11,6 @@ import type { Decoder } from "@blobscan/blob-decoder";
 import dayjs from "@blobscan/dayjs";
 
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
-import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
@@ -26,6 +25,7 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import type { SelectOption } from "~/components/Selects";
 import { Listbox } from "~/components/Selects";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { routes } from "~/routes";
@@ -306,8 +306,10 @@ const Blob: NextPage = function () {
   return (
     <>
       <SeoMetaTags
-        title={`Blob ${blob ? blob.versionedHash : "Details"}`}
-        description={`Explore blob details${blob ? ` for ${blob.versionedHash}` : ""} on Blobscan.`}
+        title={`Blob ${blob?.versionedHash ?? "Details"}`}
+        description={`Explore blob details${
+          blob ? ` for ${blob.versionedHash}` : ""
+        } on Blobscan.`}
       />
       <DetailsLayout
         header="Blob Details"

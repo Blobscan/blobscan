@@ -3,7 +3,6 @@ import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
-import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
@@ -17,6 +16,7 @@ import { Link } from "~/components/Link";
 import { NavArrow } from "~/components/NavArrow";
 import type { NavArrowProps } from "~/components/NavArrow";
 import { OptimismCard } from "~/components/OptimismCard";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
 import ErrorPage from "~/pages/_error";
@@ -310,7 +310,9 @@ const Tx: NextPage = () => {
     <>
       <SeoMetaTags
         title={`Transaction ${tx ? tx.hash : "Details"}`}
-        description={`Explore transaction details${tx ? ` for ${tx.hash}` : ""} on Blobscan.`}
+        description={`Explore transaction details${
+          tx ? ` for ${tx.hash}` : ""
+        } on Blobscan.`}
       />
       <DetailsLayout
         header={

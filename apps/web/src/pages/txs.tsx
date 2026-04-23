@@ -5,7 +5,6 @@ import dayjs from "@blobscan/dayjs";
 import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
-import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
@@ -13,6 +12,7 @@ import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
 import type { TimestampFormat } from "~/components/Toggles";
@@ -339,7 +339,7 @@ const Txs: NextPage = function () {
     <>
       <SeoMetaTags
         title="Blob Transactions"
-        description="Browse and explore all EIP-4844 blob transactions on the Ethereum network."
+        description="Browse and explore all blob transactions."
       />
       <Header>
         <div className="flex items-center gap-2">

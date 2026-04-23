@@ -4,7 +4,6 @@ import type { NextPage } from "next";
 import dayjs from "@blobscan/dayjs";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
-import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
@@ -12,6 +11,7 @@ import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Skeleton } from "~/components/Skeleton";
 import { TimestampToggle } from "~/components/Toggles";
 import type { TimestampFormat } from "~/components/Toggles";
@@ -187,10 +187,7 @@ const Blobs: NextPage = function () {
 
   return (
     <>
-      <SeoMetaTags
-        title="Blobs"
-        description="Browse and explore all EIP-4844 blobs on the Ethereum network."
-      />
+      <SeoMetaTags title="Blobs" description="Browse and explore all blobs." />
       <Header>
         <div className="flex items-center gap-2">
           <div>Blobs</div>
