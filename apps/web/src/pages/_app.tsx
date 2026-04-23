@@ -9,7 +9,6 @@ import "@fontsource/public-sans/400.css";
 import "@fontsource/public-sans/500.css";
 import { useEffect } from "react";
 import { useRouter } from "next/compat/router";
-
 import { SkeletonTheme } from "react-loading-skeleton";
 
 import AppLayout from "~/components/AppLayout/AppLayout";
@@ -52,17 +51,19 @@ function App({ Component, pageProps }: NextAppProps) {
     }
   }, [env?.PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL]);
 
-  const isReady = !!router?.isReady && isMounted;
+  if (!router || !router.isReady || !isMounted) {
+    return null;
+  }
 
   return (
     <SkeletonTheme
       baseColor={resolvedTheme === "dark" ? "#434672" : "#EADEFD"}
       highlightColor={resolvedTheme === "dark" ? "#7D80AB" : "#E2CFFF"}
     >
-      <AppLayout hidden={!isReady}>
+      <AppLayout>
         <Component {...pageProps} />
       </AppLayout>
-      {isReady && <FeedbackWidget />}
+      <FeedbackWidget />
     </SkeletonTheme>
   );
 }
