@@ -25,6 +25,7 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import type { SelectOption } from "~/components/Selects";
 import { Listbox } from "~/components/Selects";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { routes } from "~/routes";
@@ -304,6 +305,12 @@ const Blob: NextPage = function () {
 
   return (
     <>
+      <SeoMetaTags
+        title={`Blob ${blob?.versionedHash ?? "Details"}`}
+        description={`Explore blob details${
+          blob ? ` for ${blob.versionedHash}` : ""
+        } on Blobscan.`}
+      />
       <DetailsLayout
         header="Blob Details"
         fields={blob ? detailsFields : undefined}

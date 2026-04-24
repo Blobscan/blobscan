@@ -15,6 +15,7 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrow } from "~/components/NavArrow";
 import type { NavArrowProps } from "~/components/NavArrow";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { useChain } from "~/hooks/useChain";
@@ -348,6 +349,12 @@ const Block: NextPage = function () {
 
   return (
     <>
+      <SeoMetaTags
+        title={`Block ${blockNumberOrHash ?? "Details"}`}
+        description={`Explore block details${
+          blockNumberOrHash ? ` for block ${blockNumberOrHash}` : ""
+        } on Blobscan.`}
+      />
       <DetailsLayout
         header={
           <div className="flex items-center justify-start gap-4">

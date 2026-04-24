@@ -12,6 +12,7 @@ import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
 import type { TimestampFormat } from "~/components/Toggles";
@@ -336,6 +337,10 @@ const Txs: NextPage = function () {
 
   return (
     <>
+      <SeoMetaTags
+        title="Blob Transactions"
+        description="Browse and explore all blob transactions."
+      />
       <Header>
         <div className="flex items-center gap-2">
           <div>Blob Transactions</div>

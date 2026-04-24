@@ -23,9 +23,7 @@ const AppLayout = ({ children }: LayoutProps) => {
           "mb-12  mt-10  sm:mb-16 sm:mt-20": !isHomepage,
         })}
       >
-        <div className="mx-auto flex w-11/12 flex-col gap-8">
-          {children}
-        </div>
+        <div className="mx-auto flex w-11/12 flex-col gap-8">{children}</div>
       </main>
       <BottomBarLayout />
     </div>
