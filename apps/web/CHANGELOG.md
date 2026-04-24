@@ -1,5 +1,15 @@
 # @blobscan/web
 
+## 0.51.0
+
+### Minor Changes
+
+- [#977](https://github.com/Blobscan/blobscan/pull/977) [`068abce`](https://github.com/Blobscan/blobscan/commit/068abced3df3fe9a0f7cce3a8e5df531c7eef3ee) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added TheDAO Security Fund QF Round announcement banner
+
+- [#976](https://github.com/Blobscan/blobscan/pull/976) [`bbf30c0`](https://github.com/Blobscan/blobscan/commit/bbf30c0e4b54e256dbfb16ddd248ac0e64a7a19b) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Improve feedback widget: add emoji validation with error message, success confirmation, loading state, error handling for failed requests, Escape key and click-outside to close, form state reset on close, server-side validation, webhook failure handling, proper 405 responses, and accessibility improvements
+
+- [#973](https://github.com/Blobscan/blobscan/pull/973) [`92efc45`](https://github.com/Blobscan/blobscan/commit/92efc45c39014c8b27ee132d6dcacd0b8e0ba712) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added Open Graph and Twitter Card support
+
 ## 0.50.0
 
 ### Minor Changes

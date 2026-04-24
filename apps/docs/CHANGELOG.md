@@ -1,5 +1,10 @@
 # @blobscan/docs
 
+## 0.1.1
+
+### Patch Changes
+
+- [#975](https://github.com/Blobscan/blobscan/pull/975) [`5266dd8`](https://github.com/Blobscan/blobscan/commit/5266dd80b17e2af25120f5d0aaf06a685bee6345) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Update funding page
 
 ## 0.1.0
 
