@@ -1,17 +1,12 @@
 import { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 
-import { useEnv } from "~/providers/Env";
+import { Link } from "../Link";
 
 export default function Banner() {
-  const { env } = useEnv();
   const [visible, setVisible] = useState(true);
 
-  const bannerText = env?.PUBLIC_BANNER_TEXT;
-  const linkText = env?.PUBLIC_BANNER_LINK_TEXT;
-  const linkUrl = env?.PUBLIC_BANNER_LINK_URL;
-
-  if (!bannerText || !visible) {
+  if (!visible) {
     return null;
   }
 
@@ -41,21 +36,30 @@ export default function Banner() {
           }}
         />
       </div>
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <p className="text-sm leading-6 text-content-light dark:text-content-dark">
-          {bannerText}
-        </p>
-        {linkUrl && (
-          <a
-            href={linkUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-none rounded-full bg-primary-400 px-3.5 py-1 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
+      <div className="flex flex-col items-center gap-y-1 text-sm">
+        <div className="flex flex-wrap items-center gap-x-4">
+          <p className="leading-6 text-content-light dark:text-content-dark">
+            ⚡ Blobscan needs your support! We only have 6 months of runway.
+          </p>
+          <Link
+            href="https://paragraph.com/@blobscan/blobscan-the-cost-of-archiving-ethereums-blob-data"
+            isExternal
           >
-            {linkText ?? "Read more"}{" "}
-            <span aria-hidden="true">&rarr;</span>
-          </a>
-        )}
+            Read our latest blog post
+          </Link>
+        </div>
+        <div className="flex flex-wrap items-center gap-x-4">
+          <p className="leading-6 text-content-light dark:text-content-dark">
+            The good news: we&apos;re part of the TheDAO Security Fund Quadratic
+            Funding Round — every donation is amplified.
+          </p>
+          <Link
+            href="https://qf.giveth.io/project/blobscan?roundId=16"
+            isExternal
+          >
+            Donate on Giveth
+          </Link>
+        </div>
       </div>
       <div className="flex flex-1 justify-end">
         <button
