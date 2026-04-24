@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { FC, FormEvent } from "react";
 import { ChevronLeftIcon } from "@heroicons/react/24/outline";
+import cn from "classnames";
 
 import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
@@ -40,11 +41,16 @@ export const Emoji: FC<EmojiProps> = ({
     <IconButton
       type="button"
       onClick={() => onChange(!activated)}
-      className={`text-2xl ${!activated && "grayscale"}`}
       aria-label={label}
       aria-pressed={activated}
     >
-      {emoji}
+      <span
+        className={cn("text-2xl", {
+          "opacity-30 hover:dark:opacity-60": !activated,
+        })}
+      >
+        {emoji}
+      </span>
     </IconButton>
   );
 };
