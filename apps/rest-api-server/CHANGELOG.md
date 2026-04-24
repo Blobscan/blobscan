@@ -1,5 +1,11 @@
 # @blobscan/rest-api-server
 
+## 0.12.6
+
+### Patch Changes
+
+- [#979](https://github.com/Blobscan/blobscan/pull/979) [`d25f65e`](https://github.com/Blobscan/blobscan/commit/d25f65e898120ecb2bdd187e4a73b3759246684a) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fix Matomo unique visitor tracking by sending a stable `cid` (visitor ID) per client. Authenticated clients get a deterministic ID derived from their bearer token hash; anonymous clients fall back to an IP + User-Agent hash. Authenticated clients also get `uid` for cross-session tracking. Also fixed `pf_srv` to correctly measure request duration.
+
 ## 0.12.5
 
 ### Patch Changes
