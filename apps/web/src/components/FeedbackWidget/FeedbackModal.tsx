@@ -107,17 +107,6 @@ export const FeedbackModal: FC<FeedbackCardProps> = ({ open, onClose }) => {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open, handleClose]);
 
-  // useEffect(() => {
-  //   if (!open) return;
-  //   function handleClickOutside(e: MouseEvent) {
-  //     if (cardRef.current && !cardRef.current.contains(e.target as Node)) {
-  //       handleClose();
-  //     }
-  //   }
-  //   document.addEventListener("mousedown", handleClickOutside);
-  //   return () => document.removeEventListener("mousedown", handleClickOutside);
-  // }, [open, handleClose]);
-
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!router || submitting) return;
@@ -199,7 +188,15 @@ export const FeedbackModal: FC<FeedbackCardProps> = ({ open, onClose }) => {
                   onSubmit={onSubmit}
                 />
               )}
-              {item === "success" && <SuccessScreen onClose={handleClose} />}
+              {item === "success" && (
+                <SuccessScreen
+                  onClose={handleClose}
+                  onPostMore={() => {
+                    resetForm();
+                    navigate("menu", "back");
+                  }}
+                />
+              )}
               {item === "error" && (
                 <ErrorScreen
                   onRetry={() => {
