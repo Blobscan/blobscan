@@ -1,4 +1,5 @@
 import { createEnv } from "@t3-oss/env-nextjs";
+
 import { booleanSchema, z } from "@blobscan/zod";
 
 export const networkSchema = z.enum([
@@ -18,9 +19,6 @@ export const chainIdSchema = z.enum([
 ]);
 
 const clientEnvVars = {
-  PUBLIC_BANNER_TEXT: z.string().optional(),
-  PUBLIC_BANNER_LINK_TEXT: z.string().optional(),
-  PUBLIC_BANNER_LINK_URL: z.string().url().optional(),
   PUBLIC_BEACON_BASE_URL: z.string().url().optional(),
   PUBLIC_EXPLORER_BASE_URL: z.string().url().optional(),
   PUBLIC_NETWORK_NAME: networkSchema.default("mainnet"),
@@ -97,9 +95,6 @@ export const env = createEnv({
     S3_STORAGE_ENDPOINT: process.env.S3_STORAGE_ENDPOINT,
     WEAVEVM_STORAGE_API_BASE_URL: process.env.WEAVEVM_STORAGE_API_BASE_URL,
 
-    PUBLIC_BANNER_TEXT: process.env.PUBLIC_BANNER_TEXT,
-    PUBLIC_BANNER_LINK_TEXT: process.env.PUBLIC_BANNER_LINK_TEXT,
-    PUBLIC_BANNER_LINK_URL: process.env.PUBLIC_BANNER_LINK_URL,
     PUBLIC_BEACON_BASE_URL: process.env.PUBLIC_BEACON_BASE_URL,
     PUBLIC_EXPLORER_BASE_URL: process.env.PUBLIC_EXPLORER_BASE_URL,
     PUBLIC_NETWORK_NAME: process.env.PUBLIC_NETWORK_NAME,
