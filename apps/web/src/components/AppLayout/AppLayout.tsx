@@ -1,6 +1,7 @@
 import cn from "classnames";
 
 import { useIsHomepage } from "~/hooks/useIsHomePage";
+import Banner from "./Banner";
 import { BottomBarLayout } from "./BottomBarLayout";
 import { TopBarLayout } from "./TopBarLayout";
 
@@ -13,7 +14,8 @@ const AppLayout = ({ children }: LayoutProps) => {
   const isHomepage = useIsHomepage();
 
   return (
-    <div className={"flex min-h-screen flex-col"}>
+    <div className="flex min-h-screen flex-col">
+      <Banner />
       <TopBarLayout />
       <main
         className={cn("container mx-auto grow", {

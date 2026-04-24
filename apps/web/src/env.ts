@@ -1,4 +1,5 @@
 import { createEnv } from "@t3-oss/env-nextjs";
+
 import { booleanSchema, z } from "@blobscan/zod";
 
 export const networkSchema = z.enum([
