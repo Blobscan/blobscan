@@ -40,13 +40,14 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
 }: SearchInputProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [outsideClicked, setOutsideClicked] = useState(false);
   const trimmedSearchQuery = searchQuery.trim();
   const { value: debouncedSearchQuery, isDebouncing } = useDebounce(
     trimmedSearchQuery,
     200
   );
   const searchRef = useRef<HTMLFormElement>(null);
-  const outsideClicked = useClickOutside(searchRef);
+
   const {
     data: searchData,
     error: searchError,
@@ -61,6 +62,10 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
       staleTime: Infinity,
     }
   );
+
+  useClickOutside(searchRef, () => {
+    setOutsideClicked(true);
+  });
 
   const displayResults =
     !isDebouncing &&
@@ -125,6 +130,8 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
     <form ref={searchRef} onSubmit={handleSubmit}>
       <div
         className={`relative flex rounded-md border-border-light shadow-sm dark:border-border-dark ${className}`}
+        onClick={() => setOutsideClicked(false)}
+        aria-hidden="true"
       >
         <div className="relative flex flex-grow items-stretch focus-within:z-10">
           <Input
