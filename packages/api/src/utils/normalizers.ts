@@ -70,10 +70,11 @@ export function normalizePrismaTransactionFields({
 }
 
 export function normalizePrismaBlobDataStorageReferencesFields(
-  dataStorageReferences: ExtendedBlobDataStorageReference[]
+  dataStorageReferences: ExtendedBlobDataStorageReference[],
+  urlOverrides?: Map<string, string>
 ) {
-  return dataStorageReferences.map(({ blobStorage, url }) => ({
+  return dataStorageReferences.map(({ blobStorage, dataReference, url }) => ({
     storage: blobStorage,
-    url,
+    url: urlOverrides?.get(dataReference) ?? url,
   }));
 }

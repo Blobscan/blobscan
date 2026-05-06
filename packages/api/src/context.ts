@@ -5,6 +5,7 @@ import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import type IORedis from "ioredis";
 
 import type { BlobPropagator } from "@blobscan/blob-propagator";
+import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import type { Chain } from "@blobscan/chains";
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import type { RollupRegistry } from "@blobscan/rollups/src/RollupRegistry";
@@ -19,6 +20,7 @@ export type CreateContextOptions =
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
   apiClient?: ApiClient;
   blobPropagator?: BlobPropagator;
+  blobStorageManager?: BlobStorageManager;
   chain: Chain;
   redis?: IORedis;
   prisma: BlobscanPrismaClient;
@@ -43,6 +45,7 @@ export type ApiKeys = Partial<{
 export type CreateContextParams = {
   apiKeys?: ApiKeys;
   blobPropagator?: BlobPropagator;
+  blobStorageManager?: BlobStorageManager;
   chain: Chain;
   rollupRegistry: RollupRegistry;
   enableTracing?: boolean;
@@ -55,6 +58,7 @@ export type TRPCInnerContext = {
   chain: Chain;
   prisma: BlobscanPrismaClient;
   blobPropagator?: BlobPropagator;
+  blobStorageManager?: BlobStorageManager;
   redis?: IORedis;
   apiClient?: ApiClient;
 };
@@ -63,6 +67,7 @@ export function createTRPCInnerContext({
   chain,
   prisma,
   blobPropagator,
+  blobStorageManager,
   apiClient,
   redis,
   rollupRegistry,
@@ -71,6 +76,7 @@ export function createTRPCInnerContext({
     chain,
     prisma,
     blobPropagator,
+    blobStorageManager,
     apiClient,
     redis,
     rollupRegistry,
@@ -81,6 +87,7 @@ export type ContextScope = "web" | "rest-api";
 
 export function createTRPCContext({
   blobPropagator,
+  blobStorageManager,
   prisma,
   chain,
   rollupRegistry,
@@ -102,6 +109,7 @@ export function createTRPCContext({
         prisma,
         apiClient,
         blobPropagator,
+        blobStorageManager,
         redis,
         rollupRegistry,
       });

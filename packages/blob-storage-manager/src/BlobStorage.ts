@@ -12,6 +12,11 @@ export interface GetBlobOpts {
   fileType?: BlobFileType;
 }
 
+export interface GetReadUrlOpts {
+  signed?: boolean;
+  expirationSeconds?: number;
+}
+
 export abstract class BlobStorage {
   constructor(readonly name: BlobStorageName, readonly chainId: number) {}
 
@@ -81,5 +86,12 @@ export abstract class BlobStorage {
       `Failed to get blob uri for blob with versioned hash "${versionedHash}"`,
       new Error(`"getBlobUri" not implemented`)
     );
+  }
+
+  async getReadUrl(
+    _reference: string,
+    _opts?: GetReadUrlOpts
+  ): Promise<string | undefined> {
+    return undefined;
   }
 }

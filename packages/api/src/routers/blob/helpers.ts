@@ -5,6 +5,9 @@ import type {
   Prisma,
 } from "@blobscan/db";
 import { EthUsdPriceModel } from "@blobscan/db/prisma/zod";
+import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
+import { env } from "@blobscan/env";
+import { logger } from "@blobscan/logger";
 import { z } from "@blobscan/zod";
 
 import type {
@@ -28,6 +31,7 @@ import {
 
 const blobDataStorageReferenceSelect = {
   blobStorage: true,
+  dataReference: true,
   url: true,
 } satisfies ExtendedBlobDataStorageReferenceSelect;
 
@@ -235,12 +239,14 @@ export function toResponseBlob(
     transactions: blobOnTxs,
     ...prismaBlob
   }: CompletedPrismaBlob,
-  ethUsdPrices: EthUsdPrice["price"][]
+  ethUsdPrices: EthUsdPrice["price"][],
+  signedUrls?: Map<string, string>
 ): ResponseBlob {
   const responseBlob: ResponseBlob = {
     ...prismaBlob,
     dataStorageReferences: normalizePrismaBlobDataStorageReferencesFields(
-      dataStorageReferences
+      dataStorageReferences,
+      signedUrls
     ),
     transactions: blobOnTxs.map(
       (
@@ -310,7 +316,8 @@ export function toResponseBlob(
 
 export function toResponseBlobOnTransaction(
   prismaBlobOnTransaction: CompletedPrismaBlobOnTransaction,
-  ethUsdPrice?: EthUsdPrice["price"]
+  ethUsdPrice?: EthUsdPrice["price"],
+  signedUrls?: Map<string, string>
 ): ResponseBlobOnTransaction {
   const {
     blobHash,
@@ -324,7 +331,8 @@ export function toResponseBlobOnTransaction(
     ...blob,
     versionedHash: blobHash,
     dataStorageReferences: normalizePrismaBlobDataStorageReferencesFields(
-      dataStorageReferences
+      dataStorageReferences,
+      signedUrls
     ),
     ...restBlobOnTransaction,
   };
@@ -369,4 +377,46 @@ export function toResponseBlobOnTransaction(
   }
 
   return responseBlobOnTx;
+}
+
+export async function buildSignedUrlsMap(
+  dataStorageReferences: ExtendedBlobDataStorageReference[],
+  blobStorageManager: BlobStorageManager,
+  expirationSeconds?: number
+): Promise<Map<string, string>> {
+  const signedByDataReference = new Map<string, string>();
+
+  await Promise.all(
+    dataStorageReferences.map(async ({ blobStorage, dataReference }) => {
+      const storage = blobStorageManager.getStorage(blobStorage);
+      if (!storage) return;
+      try {
+        const signedUrl = await storage.getReadUrl(dataReference, {
+          signed: true,
+          expirationSeconds,
+        });
+        if (signedUrl) {
+          signedByDataReference.set(dataReference, signedUrl);
+        }
+      } catch (err) {
+        logger.error(
+          `Failed to generate signed URL for ${blobStorage} reference "${dataReference}": ${
+            (err as Error).message
+          }`
+        );
+      }
+    })
+  );
+
+  return signedByDataReference;
+}
+
+export async function maybeBuildSignedUrlsMap(
+  dataStorageReferences: ExtendedBlobDataStorageReference[],
+  blobStorageManager: BlobStorageManager | undefined
+): Promise<Map<string, string> | undefined> {
+  if (!blobStorageManager || !env.GOOGLE_STORAGE_SIGNED_URLS) {
+    return undefined;
+  }
+  return buildSignedUrlsMap(dataStorageReferences, blobStorageManager);
 }

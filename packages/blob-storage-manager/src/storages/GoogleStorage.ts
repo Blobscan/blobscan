@@ -3,7 +3,11 @@ import { Storage } from "@google-cloud/storage";
 
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
-import type { BlobStorageConfig, GetBlobOpts } from "../BlobStorage";
+import type {
+  BlobStorageConfig,
+  GetBlobOpts,
+  GetReadUrlOpts,
+} from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
 import { bytesToHex } from "../utils";
@@ -111,6 +115,28 @@ export class GoogleStorage extends BlobStorage {
       4,
       6
     )}/${hash.slice(6, 8)}/${hash.slice(2)}.bin`;
+  }
+
+  async getSignedBlobUrl(
+    uri: string,
+    expirationSeconds: number = 3600
+  ): Promise<string> {
+    const file = this._getBlobFile(uri);
+    const [url] = await file.getSignedUrl({
+      version: "v4",
+      action: "read",
+      expires: Date.now() + expirationSeconds * 1000,
+    });
+
+    return url;
+  }
+
+  async getReadUrl(
+    reference: string,
+    opts?: GetReadUrlOpts
+  ): Promise<string | undefined> {
+    if (!opts?.signed) return undefined;
+    return this.getSignedBlobUrl(reference, opts.expirationSeconds);
   }
 
   static async create(config: GoogleStorageConfig) {

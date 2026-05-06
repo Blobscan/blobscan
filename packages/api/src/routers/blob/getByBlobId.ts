@@ -13,6 +13,7 @@ import {
   responseBlobSchema,
   createBlobSelect,
   toResponseBlob,
+  maybeBuildSignedUrlsMap,
 } from "./helpers";
 
 const inputSchema = z
@@ -36,7 +37,7 @@ export const getByBlobId = publicProcedure
   .input(inputSchema)
   .use(withExpands)
   .output(outputSchema)
-  .query(async ({ ctx: { prisma, expands }, input }) => {
+  .query(async ({ ctx: { blobStorageManager, expands, prisma }, input }) => {
     const { id } = input;
     const isExpandEnabled = !!expands.block || !!expands.transaction;
 
@@ -57,8 +58,14 @@ export const getByBlobId = publicProcedure
       });
     }
 
+    const signedUrls = await maybeBuildSignedUrlsMap(
+      prismaBlob.dataStorageReferences,
+      blobStorageManager
+    );
+
     return toResponseBlob(
       prismaBlob,
-      ethUsdPrices.map(({ price }) => price)
+      ethUsdPrices.map(({ price }) => price),
+      signedUrls
     );
   });
