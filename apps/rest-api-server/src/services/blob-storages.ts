@@ -1,6 +1,7 @@
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import {
   GoogleStorage,
+  IpfsStorage,
   PostgresStorage,
   S3Storage,
   SwarmStorage,
@@ -101,6 +102,12 @@ export async function createStorageFromEnv(
       return WeaveVMStorage.create({
         chainId,
         apiBaseUrl: env.WEAVEVM_STORAGE_API_BASE_URL,
+      });
+    }
+    case BlobStorageName.IPFS: {
+      return IpfsStorage.create({
+        chainId,
+        gatewayUrl: env.IPFS_STORAGE_GATEWAY_URL,
       });
     }
     default: {

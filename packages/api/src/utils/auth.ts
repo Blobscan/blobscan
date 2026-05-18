@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 import type { ApiKeys } from "../context";
 
-export type ServiceClient = "indexer" | "load-network";
+export type ServiceClient = "indexer" | "ipfs" | "load-network";
 
 export type AccessClient = "blob-data";
 
@@ -22,7 +22,7 @@ export function createApiClient(
   const {
     admin: adminKey,
     accesses: { blobDataRead: blobDataReadKey } = {},
-    services: { indexer: indexerKey, loadNetwork: loadNetworkKey } = {},
+    services: { indexer: indexerKey, ipfs: ipfsKey, loadNetwork: loadNetworkKey } = {},
   } = apiKeys;
 
   try {
@@ -32,6 +32,10 @@ export function createApiClient(
 
     if (blobDataReadKey && blobDataReadKey === token) {
       return "blob-data";
+    }
+
+    if (ipfsKey && ipfsKey === token) {
+      return "ipfs";
     }
 
     if (loadNetworkKey && loadNetworkKey === token) {

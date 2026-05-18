@@ -12,6 +12,7 @@ const nodeEnvSchema = z.enum(["development", "test", "production"]);
 
 const BLOB_STORAGE = [
   "GOOGLE",
+  "IPFS",
   "POSTGRES",
   "SWARM",
   "SWARMYCLOUD",
@@ -240,6 +241,17 @@ export const env = createEnv({
         .optional()
         .superRefine(requireIfEnvEnabled("WEAVEVM_STORAGE_ENABLED")),
 
+      // IPFS storage (references registered externally by blobscan-ipld)
+      IPFS_STORAGE_ENABLED: booleanSchema.default("false"),
+      IPFS_STORAGE_GATEWAY_URL: z
+        .string()
+        .url()
+        .default("https://ipfs.filebase.io")
+        .superRefine(requireIfEnvEnabled("IPFS_STORAGE_ENABLED")),
+      IPFS_STORAGE_API_KEY: z
+        .string()
+        .optional(),
+
       VITEST_MAINNET_FORK_URL: z
         .string()
         .url()
@@ -271,7 +283,7 @@ export const env = createEnv({
     );
 
     console.log(
-      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, swarmy=${env.SWARMYCLOUD_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}`
+      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, swarmy=${env.SWARMYCLOUD_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}, ipfs=${env.IPFS_STORAGE_ENABLED}`
     );
 
     if (env.GOOGLE_STORAGE_ENABLED) {

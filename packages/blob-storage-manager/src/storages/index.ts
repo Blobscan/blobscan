@@ -1,4 +1,5 @@
 export * from "./GoogleStorage";
+export * from "./IpfsStorage";
 export * from "./PostgresStorage";
 export * from "./S3Storage";
 export * from "./SwarmStorage";
