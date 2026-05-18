@@ -37,6 +37,7 @@ export default function Banner() {
         />
       </div>
       <div className="flex flex-col items-center gap-y-1 text-sm">
+        {/* Example structure for future banners:
         <div className="flex flex-wrap items-center gap-x-4">
           <p className="leading-6 text-content-light dark:text-content-dark">
             ⚡ Blobscan needs your support! We only have 6 months of runway.
@@ -60,6 +61,7 @@ export default function Banner() {
             Donate on Giveth
           </Link>
         </div>
+        */}
       </div>
       <div className="flex flex-1 justify-end">
         <button
