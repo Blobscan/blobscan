@@ -14,6 +14,7 @@ Blobscan can be configured to use any of the following blob storages:
 - Google Cloud Storage
 - [Ethereum Swarm](https://www.ethswarm.org/)
 - [Load Network (prev. WeaveVM)](https://www.load.network) (currently supports blob reading only)
+- IPFS (read-only; CID references are registered externally by [blobscan-ipld](https://github.com/Blobscan/blobscan-ipld))
 - PostgreSQL
 - File system
 
