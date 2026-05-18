@@ -63,7 +63,7 @@ export function runTRPCQueryCacheTests<
         "Result was already cache before calling procedure"
       ).toBeNull();
       expect(cachedResult).not.toBeNull();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+       
       const parsedCachedRes = superjson.parse(cachedResult!);
 
       const outputCachedResult =

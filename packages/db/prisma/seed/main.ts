@@ -160,7 +160,7 @@ async function main() {
         }),
       ]);
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+       
       const { transactions: _, ...block } = fullBlocks[fullBlocks.length - 1]!;
       lastBlock = block;
 

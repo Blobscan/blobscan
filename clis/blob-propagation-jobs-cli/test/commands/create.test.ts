@@ -64,7 +64,7 @@ describe("Create command", () => {
       .map((b) => b.versionedHash)
       .sort((a, b) => a.localeCompare(b));
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+     
     await create(["-b", blobHashes[0]!, "-b", blobHashes[1]!]);
 
     await assertCreatedJobs(context, blobHashes);

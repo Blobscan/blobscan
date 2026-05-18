@@ -30,7 +30,7 @@ export function getDateFromISODateTime(isoDateTime: DateLike) {
     normalizedDateTime = isoDateTime.toISOString();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+   
   return normalizedDateTime.split("T")[0]!;
 }
 
