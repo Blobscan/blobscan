@@ -401,7 +401,7 @@ describe("indexData", () => {
           callerWithBlobPropagator = createIndexerCaller(ctxWithBlobPropagator);
 
           blobPropagatorSpy = vi.spyOn(
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+             
             ctxWithBlobPropagator.blobPropagator!,
             "propagateBlobs"
           );

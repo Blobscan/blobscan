@@ -70,7 +70,7 @@ describe("Retry command", () => {
 
   it("should retry failed jobs with a specific blob hash correctly", async () => {
     const failedJobsBeforeRetry = await context.getJobs(["failed"]);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+     
     const versionedHash = jobVersionedHashes[0]!;
 
     await retry(["-b", versionedHash]);

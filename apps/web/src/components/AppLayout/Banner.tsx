@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 
-import { Link } from "../Link";
+//import { Link } from "../Link";
 
 export default function Banner() {
   const [visible, setVisible] = useState(true);

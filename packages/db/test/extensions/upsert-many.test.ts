@@ -133,7 +133,7 @@ describe("Upsert Many Extension", () => {
                 versionedHash: blobHash,
               },
             })
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+             
             .then((b) => omitDBTimestampFields(b!));
         });
 
@@ -497,7 +497,7 @@ describe("Upsert Many Extension", () => {
         insertedAt: _,
         updatedAt: __,
         ...existingRawTx
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+         
       } = fixtures.txs[0]!;
       const existingTx: WithoutTimestampFields<Transaction> = {
         ...existingRawTx,
