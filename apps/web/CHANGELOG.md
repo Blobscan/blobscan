@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.51.1
+
+### Patch Changes
+
+- [#983](https://github.com/Blobscan/blobscan/pull/983) [`55158a7`](https://github.com/Blobscan/blobscan/commit/55158a78f54b3c707ff1fe5027ca7b2d330ff87f) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - fix: remove giveth banner
+
 ## 0.51.0
 
 ### Minor Changes
