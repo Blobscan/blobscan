@@ -34,12 +34,12 @@ export class SwarmStampSyncer extends BaseSyncer {
       cronPattern,
       redisUriOrConnection,
       syncerFn: async () => {
-        let response: AxiosResponse<BatchData>;
+        let response: AxiosResponse<BatchData[]>;
 
         try {
-          const url = `${beeEndpoint}/stamps/${batchId}`;
+          const url = `${beeEndpoint}/batches`;
 
-          response = await axios.get<BatchData>(url);
+          response = await axios.get<BatchData[]>(url);
         } catch (err) {
           let cause = err;
 
@@ -47,12 +47,17 @@ export class SwarmStampSyncer extends BaseSyncer {
             cause = new SwarmNodeError(err);
           }
 
-          throw new Error(`Failed to fetch stamp batch "${batchId}"`, {
+          throw new Error(`Failed to fetch stamp batches for Bee node`, {
             cause,
           });
         }
 
-        const { batchTTL } = response.data;
+        const { batchTTL } =
+          response.data.find((batch) => batch.batchID === batchId) ?? {};
+
+        if (!batchTTL) {
+          throw new Error(`Batch "${batchId}" not found`);
+        }
 
         await prisma.blobStoragesState.upsert({
           create: {
