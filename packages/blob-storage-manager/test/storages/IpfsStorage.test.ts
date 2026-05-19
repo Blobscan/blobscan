@@ -1,11 +1,13 @@
 import { http, HttpResponse } from "msw";
 import type { SetupServerApi } from "msw/node";
 import { setupServer } from "msw/node";
+import { CID } from "multiformats/cid";
+import { sha256 } from "multiformats/hashes/sha2";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { env, testValidError } from "@blobscan/test";
 
-import { BlobStorageError } from "../../src/errors";
+import { BlobStorageError, BlobTooLargeError } from "../../src/errors";
 import {
   IpfsGatewayError,
   IpfsStorage,
@@ -14,11 +16,27 @@ import {
 
 const MOCK_GATEWAY_URL = "https://ipfs.mock";
 
-const MOCK_CID = "bafkreib4bfzpv7hbfnkzxljtlbhanc5a4x6kbxzwrqxbxzwrqxbxzwrqx";
-// Valid base32 CID not present in the mock server → 404
-const MOCK_UNKNOWN_CID =
-  "bafkreib4bfzpv7hbfnkzxljtlbhanc5a4x6kbxzwrqxbxzwrqxbxzwrqy";
+const RAW_CODEC = 0x55;
+// Fixed CID used only by the store/remove cases (which reject before the CID
+// is ever inspected); kept stable so the error-message snapshot stays valid.
+const STATIC_CID =
+  "bafkreib4bfzpv7hbfnkzxljtlbhanc5a4x6kbxzwrqxbxzwrqxbxzwrqx";
 const MOCK_BLOB_HEX = "0x" + "ab".repeat(32);
+const MOCK_BLOB_BYTES = Buffer.from(MOCK_BLOB_HEX.slice(2), "hex");
+
+// Bytes the gateway will return that do NOT hash to the requested CID, used
+// to exercise the content-integrity check.
+const TAMPERED_BYTES = Buffer.from("cd".repeat(32), "hex");
+
+// Content-addressed CIDs derived from the bytes themselves, so the integrity
+// check (sha256(bytes) === cid.multihash.digest) passes for the happy path.
+async function rawCid(bytes: Uint8Array): Promise<string> {
+  return CID.create(1, RAW_CODEC, await sha256.digest(bytes)).toString();
+}
+
+let MOCK_CID: string;
+// A valid CID (of different bytes) that the mock server does not serve → 404.
+let MOCK_UNKNOWN_CID: string;
 
 class IpfsStorageMock extends IpfsStorage {
   constructor(opts: { gatewayUrl?: string; timeoutMs?: number } = {}) {
@@ -46,7 +64,10 @@ describe("IpfsStorage", () => {
   let ipfsServer: SetupServerApi;
   let storage: IpfsStorageMock;
 
-  beforeAll(() => {
+  beforeAll(async () => {
+    MOCK_CID = await rawCid(MOCK_BLOB_BYTES);
+    MOCK_UNKNOWN_CID = await rawCid(Buffer.from("ff".repeat(32), "hex"));
+
     ipfsServer = setupServer(
       http.head(`${MOCK_GATEWAY_URL}/ipfs/bafkqaaa`, () => {
         return new HttpResponse(null, { status: 200 });
@@ -58,10 +79,9 @@ describe("IpfsStorage", () => {
           return new HttpResponse(null, { status: 404 });
         }
 
-        const data = Buffer.from(MOCK_BLOB_HEX.slice(2), "hex");
-        return new HttpResponse(data, {
+        return new HttpResponse(MOCK_BLOB_BYTES, {
           status: 200,
-          headers: { "Content-Type": "application/octet-stream" },
+          headers: { "Content-Type": "application/vnd.ipld.raw" },
         });
       })
     );
@@ -108,9 +128,21 @@ describe("IpfsStorage", () => {
     await expect(storage.healthCheck()).rejects.toThrow();
   });
 
-  it("should retrieve a blob by CID", async () => {
+  it("should retrieve a blob by CID and verify its integrity", async () => {
     const result = await storage.getBlob(MOCK_CID);
     expect(result).toBe(MOCK_BLOB_HEX);
+  });
+
+  it("should fail when the returned bytes do not match the CID", async () => {
+    ipfsServer.use(
+      http.get(`${MOCK_GATEWAY_URL}/ipfs/:cid`, () => {
+        return new HttpResponse(TAMPERED_BYTES, { status: 200 });
+      })
+    );
+
+    const error = await storage.getBlob(MOCK_CID).catch((e) => e);
+    expect(error).toBeInstanceOf(BlobStorageError);
+    expect((error.cause as Error).message).toMatch(/integrity check failed/i);
   });
 
   it("should fail when gateway returns a non-ok response", async () => {
@@ -178,7 +210,7 @@ describe("IpfsStorage", () => {
       })
     );
 
-    await expect(storage.getBlob(MOCK_CID)).rejects.toThrow("Response too large");
+    await expect(storage.getBlob(MOCK_CID)).rejects.toBeInstanceOf(BlobTooLargeError);
   });
 
   it("should fail when response body is too large (streaming, no Content-Length)", async () => {
@@ -195,7 +227,7 @@ describe("IpfsStorage", () => {
       })
     );
 
-    await expect(storage.getBlob(MOCK_CID)).rejects.toThrow("Response too large");
+    await expect(storage.getBlob(MOCK_CID)).rejects.toBeInstanceOf(BlobTooLargeError);
   });
 
   it("should fail when gateway is unreachable during health check", async () => {
@@ -225,7 +257,7 @@ describe("IpfsStorage", () => {
   testValidError(
     "should fail when trying to store a blob",
     async () => {
-      await storage.storeBlob(MOCK_CID, "0xdeadbeef");
+      await storage.storeBlob(STATIC_CID, "0xdeadbeef");
     },
     BlobStorageError,
     { checkCause: true }
@@ -234,7 +266,7 @@ describe("IpfsStorage", () => {
   testValidError(
     "should fail when trying to remove a blob",
     async () => {
-      await storage.removeBlob(MOCK_CID);
+      await storage.removeBlob(STATIC_CID);
     },
     BlobStorageError,
     { checkCause: true }

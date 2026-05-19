@@ -38,7 +38,7 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
     })
     .input(inputSchema)
     .output(outputSchema)
-    .query(async ({ ctx: { prisma }, input: { id } }) => {
+    .query(async ({ ctx: { prisma, ipfsStorage }, input: { id } }) => {
       if (!isEnabled) {
         throw new TRPCError({
           code: "FORBIDDEN",
@@ -72,8 +72,33 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
 
       const storageErrors: Error[] = [];
 
-      for (const { blobStorage, dataReference, url } of storageUrls) {
+      // Try the cheaper / DB-backed storages first and only fall back to
+      // IPFS (a network round-trip through a gateway) when nothing else
+      // served the blob.
+      const orderedStorageUrls = [...storageUrls].sort(
+        (a, b) =>
+          Number(a.blobStorage === "IPFS") - Number(b.blobStorage === "IPFS")
+      );
+
+      for (const { blobStorage, dataReference, url } of orderedStorageUrls) {
+        if (blobData) {
+          break;
+        }
+
         try {
+          if (blobStorage === "IPFS") {
+            if (!ipfsStorage) {
+              continue;
+            }
+
+            // IPFS rows have no computed `url` (the CID is kept server-side):
+            // resolve by the stored content-addressed dataReference (dataCid),
+            // which the storage fetches and verifies in a single request.
+            blobData = await ipfsStorage.getBlob(dataReference);
+
+            continue;
+          }
+
           if (!url) {
             continue;
           }

@@ -15,7 +15,7 @@ import { logger } from "@blobscan/logger";
 
 import { prisma } from "../clients/prisma";
 
-function isBlobStorageEnabled(storageName: BlobStorageName) {
+export function isBlobStorageEnabled(storageName: BlobStorageName) {
   const storageEnabledKey =
     `${storageName}_STORAGE_ENABLED` as keyof Environment;
   const storageEnabled = env[storageEnabledKey];

@@ -1,11 +1,14 @@
+import { equals as bytesEquals } from "multiformats/bytes";
 import { CID } from "multiformats/cid";
+import { sha256 } from "multiformats/hashes/sha2";
 
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { ErrorException } from "@blobscan/errors";
+import { logger } from "@blobscan/logger";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
-import { StorageCreationError } from "../errors";
+import { BlobTooLargeError, StorageCreationError } from "../errors";
 import { bytesToHex } from "../utils";
 
 const DEFAULT_TIMEOUT_MS = 30_000;
@@ -17,12 +20,30 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function isValidCid(value: string): boolean {
-  try {
-    CID.parse(value);
-    return true;
-  } catch {
-    return false;
+// The dataCid is content-addressed: for the raw codec the CID is the
+// sha2-256 of the block bytes. Recomputing it locally turns the (possibly
+// untrusted) gateway into a dumb transport — a buggy or malicious gateway
+// cannot substitute different bytes without the check failing.
+async function assertMatchesCid(cid: CID, bytes: Uint8Array): Promise<void> {
+  if (cid.multihash.code !== sha256.code) {
+    // blobscan-ipld always uses sha2-256; skip rather than risk a false
+    // negative if some other multihash is ever encountered, but surface it:
+    // it means an unexpected CID shape slipped through and the bytes were
+    // returned unverified.
+    logger.error(
+      `IPFS integrity check skipped for CID "${cid.toString()}": unsupported multihash code ${
+        cid.multihash.code
+      } (expected sha2-256 ${sha256.code}); bytes returned unverified`
+    );
+    return;
+  }
+
+  const { digest } = await sha256.digest(bytes);
+
+  if (!bytesEquals(digest, cid.multihash.digest)) {
+    throw new Error(
+      `IPFS content integrity check failed: bytes do not match CID "${cid.toString()}"`
+    );
   }
 }
 
@@ -66,7 +87,7 @@ async function readBoundedBody(
   if (!reader) {
     const buffer = await response.arrayBuffer();
     if (buffer.byteLength > maxBytes) {
-      throw new Error(`Response too large: exceeded ${maxBytes} bytes`);
+      throw new BlobTooLargeError(buffer.byteLength, maxBytes);
     }
     return buffer;
   }
@@ -80,7 +101,7 @@ async function readBoundedBody(
     if (totalBytes > maxBytes) {
       reader.releaseLock();
       await response.body?.cancel();
-      throw new Error(`Response too large: exceeded ${maxBytes} bytes`);
+      throw new BlobTooLargeError(totalBytes, maxBytes);
     }
     chunks.push(value);
   }
@@ -129,7 +150,11 @@ export class IpfsStorage extends BlobStorage {
 
   #requestHeaders(): Record<string, string> {
     const headers: Record<string, string> = {
-      Accept: "application/octet-stream",
+      // Ask for the verbatim block, not a gateway-deserialized
+      // representation: combined with `?format=raw` this guarantees the
+      // response is exactly the bytes the CID addresses, so the integrity
+      // check is meaningful and the payload is deterministic.
+      Accept: "application/vnd.ipld.raw",
     };
     if (this.apiKey) {
       headers.Authorization = `Bearer ${this.apiKey}`;
@@ -158,11 +183,16 @@ export class IpfsStorage extends BlobStorage {
   }
 
   protected async _getBlob(uri: string): Promise<string> {
-    if (!isValidCid(uri)) {
+    let cid: CID;
+    try {
+      cid = CID.parse(uri);
+    } catch {
       throw new Error(`Invalid IPFS CID: "${uri}"`);
     }
 
     const buffer = await this.#fetchWithRetries(uri);
+
+    await assertMatchesCid(cid, new Uint8Array(buffer));
 
     return bytesToHex(buffer);
   }
@@ -190,10 +220,11 @@ export class IpfsStorage extends BlobStorage {
   async #fetchBlobOnce(uri: string): Promise<ArrayBuffer> {
     let response: Response;
     try {
-      // Request the deserialized file bytes explicitly: without an Accept
-      // header a gateway may return an HTML directory listing or apply
-      // content negotiation, yielding non-deterministic payloads.
-      response = await fetch(`${this.gatewayUrl}/ipfs/${uri}`, {
+      // `?format=raw` (+ the `application/vnd.ipld.raw` Accept header) asks
+      // the gateway for the verbatim block addressed by the CID, never a
+      // deserialized view or HTML directory listing. This keeps the payload
+      // deterministic and locally verifiable against the CID.
+      response = await fetch(`${this.gatewayUrl}/ipfs/${uri}?format=raw`, {
         headers: this.#requestHeaders(),
         signal: AbortSignal.timeout(this.timeoutMs),
       });
@@ -213,9 +244,7 @@ export class IpfsStorage extends BlobStorage {
     // Fast-path: reject before streaming when Content-Length is known
     const contentLength = response.headers.get("content-length");
     if (contentLength && Number(contentLength) > MAX_RESPONSE_BYTES) {
-      throw new Error(
-        `Response too large: ${contentLength} bytes (max ${MAX_RESPONSE_BYTES})`
-      );
+      throw new BlobTooLargeError(Number(contentLength), MAX_RESPONSE_BYTES);
     }
 
     try {
@@ -239,12 +268,12 @@ export class IpfsStorage extends BlobStorage {
     throw new Error('"removeBlob" is not supported: IPFS content is immutable');
   }
 
-  // getBlobUri intentionally not overridden: IPFS cannot resolve blobs by
-  // versioned hash without IPLD traversal (see TODO in git history).
-  // TODO: Implement IPLD DAG traversal to resolve blobs by versioned hash.
-  // The metaReference (metaCid) stored alongside dataCid contains the IPLD node
-  // linking versionedHash → dataCid. Future work: traverse epoch → slot → blob
-  // using IPLD linked data to enable getBlobByHash support.
+  // getBlobUri intentionally not overridden: there is no deterministic
+  // versioned-hash → CID mapping, so a versioned hash can only be resolved
+  // via a DB lookup of the stored, content-addressed dataReference (the raw
+  // blob's dataCid). That lookup happens at the DB-aware layer (the API),
+  // which then calls getBlob(dataCid) directly — no IPLD DAG traversal is
+  // required because the dataCid already addresses the raw blob bytes.
 
   static async create(config: IpfsStorageConfig): Promise<IpfsStorage> {
     try {
