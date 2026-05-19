@@ -1,21 +1,51 @@
 import { TRPCError } from "@trpc/server";
+import { CID } from "multiformats/cid";
 
 import { BlobStorage } from "@blobscan/db/prisma/enums";
 import { z } from "@blobscan/zod";
 
 import { createAuthedProcedure } from "../../procedures";
 
+// Postgres caps bind parameters at 65535; keep batches well below that so the
+// `IN` lookup and `createMany` stay within a single statement regardless of
+// how large a batch blobscan-ipld posts.
+const DB_BATCH_SIZE = 1_000;
+
+const cidSchema = z.string().refine(
+  (value) => {
+    try {
+      CID.parse(value);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+  { message: "Invalid IPFS CID" }
+);
+
+const versionedHashSchema = z
+  .string()
+  .regex(/^0x[0-9a-fA-F]{64}$/, "Invalid versioned hash");
+
 const inputSchema = z.object({
   references: z.array(
     z.object({
-      versionedHash: z.string(),
-      dataCid: z.string(),
-      metaCid: z.string(),
+      versionedHash: versionedHashSchema,
+      dataCid: cidSchema,
+      metaCid: cidSchema,
     })
   ),
 });
 
 const outputSchema = z.void();
+
+function chunk<T>(items: T[], size: number): T[][] {
+  const batches: T[][] = [];
+  for (let i = 0; i < items.length; i += size) {
+    batches.push(items.slice(i, i + size));
+  }
+  return batches;
+}
 
 export const createIpfsReferences = createAuthedProcedure("ipfs")
   .meta({
@@ -37,15 +67,19 @@ export const createIpfsReferences = createAuthedProcedure("ipfs")
 
     const versionedHashes = references.map((r) => r.versionedHash);
 
-    const dbVersionedHashes = await prisma.blob
-      .findMany({
+    const dbVersionedHashes = new Set<string>();
+    for (const batch of chunk(versionedHashes, DB_BATCH_SIZE)) {
+      const blobs = await prisma.blob.findMany({
         select: { versionedHash: true },
-        where: { versionedHash: { in: versionedHashes } },
-      })
-      .then((blobs) => blobs.map((b) => b.versionedHash));
+        where: { versionedHash: { in: batch } },
+      });
+      for (const { versionedHash } of blobs) {
+        dbVersionedHashes.add(versionedHash);
+      }
+    }
 
     const missingHashes = versionedHashes
-      .filter((hash) => !dbVersionedHashes.includes(hash))
+      .filter((hash) => !dbVersionedHashes.has(hash))
       .map((hash) => `"${hash}"`);
 
     if (missingHashes.length > 0) {
@@ -55,13 +89,15 @@ export const createIpfsReferences = createAuthedProcedure("ipfs")
       });
     }
 
-    await prisma.blobDataStorageReference.createMany({
-      data: references.map(({ versionedHash, dataCid, metaCid }) => ({
-        blobHash: versionedHash,
-        dataReference: dataCid,
-        metaReference: metaCid,
-        blobStorage: BlobStorage.IPFS,
-      })),
-      skipDuplicates: true,
-    });
+    for (const batch of chunk(references, DB_BATCH_SIZE)) {
+      await prisma.blobDataStorageReference.createMany({
+        data: batch.map(({ versionedHash, dataCid, metaCid }) => ({
+          blobHash: versionedHash,
+          dataReference: dataCid,
+          metaReference: metaCid,
+          blobStorage: BlobStorage.IPFS,
+        })),
+        skipDuplicates: true,
+      });
+    }
   });

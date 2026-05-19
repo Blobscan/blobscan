@@ -124,11 +124,19 @@ export class IpfsStorage extends BlobStorage {
   }
 
   protected async _healthCheck(): Promise<void> {
+    // bafkqaaa is the empty identity block: every spec-compliant gateway can
+    // serve it without a DHT lookup, so a successful GET is a representative
+    // liveness probe. HEAD is avoided because some gateways reject it (405),
+    // which a status-only check would silently treat as healthy.
     const response = await fetch(`${this.gatewayUrl}/ipfs/bafkqaaa`, {
-      method: "HEAD",
+      headers: { Accept: "application/octet-stream" },
       signal: AbortSignal.timeout(this.timeoutMs),
     });
-    if (response.status >= 500) {
+
+    // Drain the body so the connection can be reused / released.
+    await response.body?.cancel();
+
+    if (!response.ok) {
       throw new Error(
         `Gateway returned ${response.status} ${response.statusText}`
       );
@@ -174,7 +182,11 @@ export class IpfsStorage extends BlobStorage {
   async #fetchBlobOnce(uri: string): Promise<ArrayBuffer> {
     let response: Response;
     try {
+      // Request the deserialized file bytes explicitly: without an Accept
+      // header a gateway may return an HTML directory listing or apply
+      // content negotiation, yielding non-deterministic payloads.
       response = await fetch(`${this.gatewayUrl}/ipfs/${uri}`, {
+        headers: { Accept: "application/octet-stream" },
         signal: AbortSignal.timeout(this.timeoutMs),
       });
     } catch (err) {
