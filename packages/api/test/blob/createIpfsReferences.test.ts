@@ -16,19 +16,22 @@ describe("createIpfsReferences", () => {
 
   const references = [
     {
-      versionedHash: "blobHash001",
-      dataCid: "bafkreiDataCid001",
-      metaCid: "bafyreiMetaCid001",
+      versionedHash:
+        "0x01000000000000000000000000000000000000000000000000000000000000b1",
+      dataCid: "bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+      metaCid: "bafkreidvq553ihjzhnp3qrk44yhm3do2aaoqmmles2yu36t7rflfn3wkji",
     },
     {
-      versionedHash: "blobHash002",
-      dataCid: "bafkreiDataCid002",
-      metaCid: "bafyreiMetaCid002",
+      versionedHash:
+        "0x01000000000000000000000000000000000000000000000000000000000000b2",
+      dataCid: "bafkreiderks4k6p3gdzyv52e3f6w5scay6ure55etgqnpaht44yu5sqjbm",
+      metaCid: "bafkreie7j63i6pq5vsbcal42uwa44c57d53f34hjvq6iyv7cb5ufvovy5u",
     },
     {
-      versionedHash: "blobHash003",
-      dataCid: "bafkreiDataCid003",
-      metaCid: "bafyreiMetaCid003",
+      versionedHash:
+        "0x01000000000000000000000000000000000000000000000000000000000000b3",
+      dataCid: "bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+      metaCid: "bafkreidvq553ihjzhnp3qrk44yhm3do2aaoqmmles2yu36t7rflfn3wkji",
     },
   ];
 
@@ -103,9 +106,12 @@ describe("createIpfsReferences", () => {
       await authorizedBlobCaller.createIpfsReferences({
         references: [
           {
-            versionedHash: "nonExistingHash",
-            dataCid: "bafkreiSomeCid",
-            metaCid: "bafyreiSomeCid",
+            versionedHash:
+              "0x01ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            dataCid:
+              "bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+            metaCid:
+              "bafkreidvq553ihjzhnp3qrk44yhm3do2aaoqmmles2yu36t7rflfn3wkji",
           },
         ],
       });
