@@ -6,7 +6,11 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { env, testValidError } from "@blobscan/test";
 
 import { BlobStorageError } from "../../src/errors";
-import { IpfsStorage } from "../../src/storages/IpfsStorage";
+import {
+  IpfsGatewayError,
+  IpfsStorage,
+  MAX_RESPONSE_BYTES,
+} from "../../src/storages/IpfsStorage";
 
 const MOCK_GATEWAY_URL = "https://ipfs.mock";
 
@@ -91,13 +95,22 @@ describe("IpfsStorage", () => {
     expect(storage_.chainId).toBe(env.CHAIN_ID);
   });
 
-  it("should return the CID as blob URI", () => {
-    const uri = storage.getBlobUri(MOCK_CID);
-    expect(uri).toBe(MOCK_CID);
+  it("should throw when calling getBlobUri", () => {
+    expect(() => storage.getBlobUri(MOCK_CID)).toThrow(BlobStorageError);
   });
 
   it("should return 'OK' when gateway is reachable", async () => {
     await expect(storage.healthCheck()).resolves.toBe("OK");
+  });
+
+  it("should fail health check when gateway returns 5xx", async () => {
+    ipfsServer.use(
+      http.head(`${MOCK_GATEWAY_URL}/ipfs/bafkqaaa`, () => {
+        return new HttpResponse(null, { status: 503 });
+      })
+    );
+
+    await expect(storage.healthCheck()).rejects.toThrow();
   });
 
   it("should retrieve a blob by CID", async () => {
@@ -122,23 +135,50 @@ describe("IpfsStorage", () => {
     );
   });
 
-  it("should tag retryable errors for 429 responses", async () => {
+  it("should mark 429 responses as retryable", async () => {
     ipfsServer.use(
       http.get(`${MOCK_GATEWAY_URL}/ipfs/:cid`, () => {
         return new HttpResponse(null, { status: 429 });
       })
     );
 
-    await expect(storage.getBlob(MOCK_CID)).rejects.toThrow("retryable");
+    const error = await storage.getBlob(MOCK_CID).catch((e) => e);
+    expect(error).toBeInstanceOf(BlobStorageError);
+    expect(error.cause).toBeInstanceOf(IpfsGatewayError);
+    expect((error.cause as IpfsGatewayError).retryable).toBe(true);
   });
 
-  it("should fail with an invalid CID", async () => {
+  it("should mark 500 responses as retryable", async () => {
+    ipfsServer.use(
+      http.get(`${MOCK_GATEWAY_URL}/ipfs/:cid`, () => {
+        return new HttpResponse(null, { status: 500 });
+      })
+    );
+
+    const error = await storage.getBlob(MOCK_CID).catch((e) => e);
+    expect(error.cause).toBeInstanceOf(IpfsGatewayError);
+    expect((error.cause as IpfsGatewayError).retryable).toBe(true);
+  });
+
+  it("should mark 404 responses as non-retryable", async () => {
+    const error = await storage.getBlob("bafkreiinvalid00000000000000000000000000000000000000000000").catch((e) => e);
+    expect(error.cause).toBeInstanceOf(IpfsGatewayError);
+    expect((error.cause as IpfsGatewayError).retryable).toBe(false);
+  });
+
+  it("should fail with an invalid CID prefix", async () => {
     await expect(storage.getBlob("not-a-cid")).rejects.toThrow(
       "Invalid IPFS CID"
     );
   });
 
-  it("should fail when response body is too large", async () => {
+  it("should fail with a malformed CID (valid prefix, too short)", async () => {
+    await expect(storage.getBlob("bafkmalformed")).rejects.toThrow(
+      "Invalid IPFS CID"
+    );
+  });
+
+  it("should fail when response body is too large (Content-Length fast-path)", async () => {
     ipfsServer.use(
       http.get(`${MOCK_GATEWAY_URL}/ipfs/:cid`, () => {
         return new HttpResponse("x", {
@@ -148,9 +188,24 @@ describe("IpfsStorage", () => {
       })
     );
 
-    await expect(storage.getBlob(MOCK_CID)).rejects.toThrow(
-      "Response too large"
+    await expect(storage.getBlob(MOCK_CID)).rejects.toThrow("Response too large");
+  });
+
+  it("should fail when response body is too large (streaming, no Content-Length)", async () => {
+    ipfsServer.use(
+      http.get(`${MOCK_GATEWAY_URL}/ipfs/:cid`, () => {
+        const largeChunk = new Uint8Array(MAX_RESPONSE_BYTES + 1);
+        const stream = new ReadableStream({
+          start(controller) {
+            controller.enqueue(largeChunk);
+            controller.close();
+          },
+        });
+        return new HttpResponse(stream, { status: 200 });
+      })
     );
+
+    await expect(storage.getBlob(MOCK_CID)).rejects.toThrow("Response too large");
   });
 
   it("should fail when gateway is unreachable during health check", async () => {

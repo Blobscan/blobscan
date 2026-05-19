@@ -6,12 +6,59 @@ import { StorageCreationError } from "../errors";
 import { bytesToHex } from "../utils";
 
 const DEFAULT_TIMEOUT_MS = 30_000;
-const MAX_RESPONSE_BYTES = 1_048_576; // 1 MiB — generous limit vs 128 KiB blob size
+export const MAX_RESPONSE_BYTES = 1_048_576; // 1 MiB — generous vs 128 KiB blob size
 
-const CID_PREFIX_PATTERN = /^(bafy|bafk|Qm)/;
+// CIDv1 base32lower (bafy/bafk…) or CIDv0 base58btc (Qm…)
+const CID_PATTERN =
+  /^(bafy|bafk)[a-z2-7]{50,}$|^Qm[1-9A-HJ-NP-Za-km-z]{44}$/;
+
+export class IpfsGatewayError extends Error {
+  constructor(
+    message: string,
+    public readonly status: number,
+    public readonly retryable: boolean
+  ) {
+    super(message);
+    this.name = "IpfsGatewayError";
+  }
+}
 
 function isRetryableStatus(status: number): boolean {
   return status === 429 || (status >= 500 && status < 600);
+}
+
+async function readBoundedBody(
+  response: Response,
+  maxBytes: number
+): Promise<ArrayBuffer> {
+  const reader = response.body?.getReader();
+  if (!reader) return response.arrayBuffer();
+
+  const chunks: Uint8Array[] = [];
+  let totalBytes = 0;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    totalBytes += value.byteLength;
+    if (totalBytes > maxBytes) {
+      reader.releaseLock();
+      await response.body?.cancel();
+      throw new Error(
+        `Response too large: exceeded ${maxBytes} bytes (max ${maxBytes})`
+      );
+    }
+    chunks.push(value);
+  }
+  reader.releaseLock();
+
+  const result = new Uint8Array(totalBytes);
+  let offset = 0;
+  for (const chunk of chunks) {
+    result.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return result.buffer;
 }
 
 export interface IpfsStorageConfig extends BlobStorageConfig {
@@ -30,19 +77,23 @@ export class IpfsStorage extends BlobStorage {
   }
 
   protected async _healthCheck(): Promise<void> {
-    // Any response (including 404) means the gateway is reachable;
-    // network errors will throw automatically from fetch().
-    await fetch(`${this.gatewayUrl}/ipfs/bafkqaaa`, {
+    const response = await fetch(`${this.gatewayUrl}/ipfs/bafkqaaa`, {
       method: "HEAD",
       signal: AbortSignal.timeout(this.timeoutMs),
     });
+    if (response.status >= 500) {
+      throw new Error(
+        `Gateway returned ${response.status} ${response.statusText}`
+      );
+    }
   }
 
   protected async _getBlob(
     uri: string,
     { fileType }: GetBlobOpts = {}
   ): Promise<string> {
-    if (!CID_PREFIX_PATTERN.test(uri)) {
+    const baseCid = uri.includes(".") ? uri.slice(0, uri.lastIndexOf(".")) : uri;
+    if (!CID_PATTERN.test(baseCid)) {
       throw new Error(`Invalid IPFS CID: "${uri}"`);
     }
 
@@ -52,11 +103,14 @@ export class IpfsStorage extends BlobStorage {
 
     if (!response.ok) {
       const retryable = isRetryableStatus(response.status);
-      throw new Error(
-        `Failed to retrieve blob: ${response.status} ${response.statusText}${retryable ? " (retryable)" : ""}`
+      throw new IpfsGatewayError(
+        `Failed to retrieve blob: ${response.status} ${response.statusText}`,
+        response.status,
+        retryable
       );
     }
 
+    // Fast-path: reject before streaming when Content-Length is known
     const contentLength = response.headers.get("content-length");
     if (contentLength && Number(contentLength) > MAX_RESPONSE_BYTES) {
       throw new Error(
@@ -64,7 +118,7 @@ export class IpfsStorage extends BlobStorage {
       );
     }
 
-    const buffer = await response.arrayBuffer();
+    const buffer = await readBoundedBody(response, MAX_RESPONSE_BYTES);
 
     return fileType === "text"
       ? new TextDecoder().decode(buffer)
