@@ -98,6 +98,8 @@ async function readBoundedBody(
 
 export interface IpfsStorageConfig extends BlobStorageConfig {
   gatewayUrl: string;
+  /** Optional bearer token for gated gateways (e.g. Filebase, Infura). */
+  apiKey?: string;
   timeoutMs?: number;
   maxRetries?: number;
   retryBaseDelayMs?: number;
@@ -105,6 +107,7 @@ export interface IpfsStorageConfig extends BlobStorageConfig {
 
 export class IpfsStorage extends BlobStorage {
   protected readonly gatewayUrl: string;
+  protected readonly apiKey?: string;
   protected readonly timeoutMs: number;
   protected readonly maxRetries: number;
   protected readonly retryBaseDelayMs: number;
@@ -112,15 +115,27 @@ export class IpfsStorage extends BlobStorage {
   protected constructor({
     chainId,
     gatewayUrl,
+    apiKey,
     timeoutMs,
     maxRetries,
     retryBaseDelayMs,
   }: IpfsStorageConfig) {
     super(BlobStorageName.IPFS, chainId);
     this.gatewayUrl = gatewayUrl.replace(/\/$/, "");
+    this.apiKey = apiKey;
     this.timeoutMs = timeoutMs ?? DEFAULT_TIMEOUT_MS;
     this.maxRetries = maxRetries ?? DEFAULT_MAX_RETRIES;
     this.retryBaseDelayMs = retryBaseDelayMs ?? DEFAULT_RETRY_BASE_DELAY_MS;
+  }
+
+  #requestHeaders(): Record<string, string> {
+    const headers: Record<string, string> = {
+      Accept: "application/octet-stream",
+    };
+    if (this.apiKey) {
+      headers.Authorization = `Bearer ${this.apiKey}`;
+    }
+    return headers;
   }
 
   protected async _healthCheck(): Promise<void> {
@@ -129,7 +144,7 @@ export class IpfsStorage extends BlobStorage {
     // liveness probe. HEAD is avoided because some gateways reject it (405),
     // which a status-only check would silently treat as healthy.
     const response = await fetch(`${this.gatewayUrl}/ipfs/bafkqaaa`, {
-      headers: { Accept: "application/octet-stream" },
+      headers: this.#requestHeaders(),
       signal: AbortSignal.timeout(this.timeoutMs),
     });
 
@@ -186,7 +201,7 @@ export class IpfsStorage extends BlobStorage {
       // header a gateway may return an HTML directory listing or apply
       // content negotiation, yielding non-deterministic payloads.
       response = await fetch(`${this.gatewayUrl}/ipfs/${uri}`, {
-        headers: { Accept: "application/octet-stream" },
+        headers: this.#requestHeaders(),
         signal: AbortSignal.timeout(this.timeoutMs),
       });
     } catch (err) {

@@ -248,6 +248,8 @@ export const env = createEnv({
         .url()
         .default("https://ipfs.filebase.io")
         .superRefine(requireIfEnvEnabled("IPFS_STORAGE_ENABLED")),
+      // Optional bearer token sent to gated IPFS gateways (Filebase, Infura…).
+      IPFS_STORAGE_API_KEY: z.string().optional(),
       // Bearer token authenticating inbound blobscan-ipld requests to the
       // /blobs/ipfs-references endpoint (not a gateway/storage credential).
       IPFS_API_KEY: z.string().optional(),

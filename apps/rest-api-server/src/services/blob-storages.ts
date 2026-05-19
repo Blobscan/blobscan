@@ -108,6 +108,7 @@ export async function createStorageFromEnv(
       return IpfsStorage.create({
         chainId,
         gatewayUrl: env.IPFS_STORAGE_GATEWAY_URL,
+        apiKey: env.IPFS_STORAGE_API_KEY,
       });
     }
     default: {
