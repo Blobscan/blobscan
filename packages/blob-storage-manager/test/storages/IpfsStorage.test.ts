@@ -138,6 +138,21 @@ describe("IpfsStorage", () => {
     );
   });
 
+  it("should fail when response body is too large", async () => {
+    ipfsServer.use(
+      http.get(`${MOCK_GATEWAY_URL}/ipfs/:cid`, () => {
+        return new HttpResponse("x", {
+          status: 200,
+          headers: { "Content-Length": "2000000" },
+        });
+      })
+    );
+
+    await expect(storage.getBlob(MOCK_CID)).rejects.toThrow(
+      "Response too large"
+    );
+  });
+
   it("should fail when gateway is unreachable during health check", async () => {
     ipfsServer.use(
       http.head(`${MOCK_GATEWAY_URL}/ipfs/bafkqaaa`, () => {

@@ -56,9 +56,10 @@ export const createIpfsReferences = createAuthedProcedure("ipfs")
     }
 
     await prisma.blobDataStorageReference.createMany({
-      data: references.map(({ versionedHash, dataCid }) => ({
+      data: references.map(({ versionedHash, dataCid, metaCid }) => ({
         blobHash: versionedHash,
         dataReference: dataCid,
+        metaReference: metaCid,
         blobStorage: BlobStorage.IPFS,
       })),
       skipDuplicates: true,

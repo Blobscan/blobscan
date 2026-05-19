@@ -6,6 +6,7 @@ import { StorageCreationError } from "../errors";
 import { bytesToHex } from "../utils";
 
 const DEFAULT_TIMEOUT_MS = 30_000;
+const MAX_RESPONSE_BYTES = 1_048_576; // 1 MiB — generous limit vs 128 KiB blob size
 
 const CID_PREFIX_PATTERN = /^(bafy|bafk|Qm)/;
 
@@ -53,6 +54,13 @@ export class IpfsStorage extends BlobStorage {
       const retryable = isRetryableStatus(response.status);
       throw new Error(
         `Failed to retrieve blob: ${response.status} ${response.statusText}${retryable ? " (retryable)" : ""}`
+      );
+    }
+
+    const contentLength = response.headers.get("content-length");
+    if (contentLength && Number(contentLength) > MAX_RESPONSE_BYTES) {
+      throw new Error(
+        `Response too large: ${contentLength} bytes (max ${MAX_RESPONSE_BYTES})`
       );
     }
 

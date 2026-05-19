@@ -57,15 +57,20 @@ describe("createIpfsReferences", () => {
       .findMany({ where })
       .then((refs) =>
         refs
-          .map(({ blobHash, dataReference }) => ({ blobHash, dataReference }))
+          .map(({ blobHash, dataReference, metaReference }) => ({
+            blobHash,
+            dataReference,
+            metaReference,
+          }))
           .sort((a, b) => a.blobHash.localeCompare(b.blobHash))
       );
 
     expect(after).toEqual(
       references
-        .map(({ versionedHash, dataCid }) => ({
+        .map(({ versionedHash, dataCid, metaCid }) => ({
           blobHash: versionedHash,
           dataReference: dataCid,
+          metaReference: metaCid,
         }))
         .sort((a, b) => a.blobHash.localeCompare(b.blobHash))
     );
