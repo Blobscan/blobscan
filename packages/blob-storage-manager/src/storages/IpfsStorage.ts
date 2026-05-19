@@ -1,4 +1,5 @@
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
+import { ErrorException } from "@blobscan/errors";
 
 import type { BlobStorageConfig, GetBlobOpts } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
@@ -12,14 +13,13 @@ export const MAX_RESPONSE_BYTES = 1_048_576; // 1 MiB — generous vs 128 KiB bl
 const CID_PATTERN =
   /^(bafy|bafk)[a-z2-7]{50,}$|^Qm[1-9A-HJ-NP-Za-km-z]{44}$/;
 
-export class IpfsGatewayError extends Error {
+export class IpfsGatewayError extends ErrorException {
   constructor(
     message: string,
     public readonly status: number,
     public readonly retryable: boolean
   ) {
     super(message);
-    this.name = "IpfsGatewayError";
   }
 }
 
@@ -44,9 +44,7 @@ async function readBoundedBody(
     if (totalBytes > maxBytes) {
       reader.releaseLock();
       await response.body?.cancel();
-      throw new Error(
-        `Response too large: exceeded ${maxBytes} bytes (max ${maxBytes})`
-      );
+      throw new Error(`Response too large: exceeded ${maxBytes} bytes`);
     }
     chunks.push(value);
   }
@@ -135,9 +133,12 @@ export class IpfsStorage extends BlobStorage {
     throw new Error('"removeBlob" is not supported: IPFS content is immutable');
   }
 
-  getBlobUri(versionedHash: string) {
-    return versionedHash;
-  }
+  // getBlobUri intentionally not overridden: IPFS cannot resolve blobs by
+  // versioned hash without IPLD traversal (see TODO in git history).
+  // TODO: Implement IPLD DAG traversal to resolve blobs by versioned hash.
+  // The metaReference (metaCid) stored alongside dataCid contains the IPLD node
+  // linking versionedHash → dataCid. Future work: traverse epoch → slot → blob
+  // using IPLD linked data to enable getBlobByHash support.
 
   static async create(config: IpfsStorageConfig): Promise<IpfsStorage> {
     try {

@@ -15,6 +15,9 @@ import {
 const MOCK_GATEWAY_URL = "https://ipfs.mock";
 
 const MOCK_CID = "bafkreib4bfzpv7hbfnkzxljtlbhanc5a4x6kbxzwrqxbxzwrqxbxzwrqx";
+// Valid base32 CID not present in the mock server → 404
+const MOCK_UNKNOWN_CID =
+  "bafkreib4bfzpv7hbfnkzxljtlbhanc5a4x6kbxzwrqxbxzwrqxbxzwrqy";
 const MOCK_BLOB_HEX = "0x" + "ab".repeat(32);
 const MOCK_TEXT_CONTENT = "hello blob";
 
@@ -161,7 +164,7 @@ describe("IpfsStorage", () => {
   });
 
   it("should mark 404 responses as non-retryable", async () => {
-    const error = await storage.getBlob("bafkreiinvalid00000000000000000000000000000000000000000000").catch((e) => e);
+    const error = await storage.getBlob(MOCK_UNKNOWN_CID).catch((e) => e);
     expect(error.cause).toBeInstanceOf(IpfsGatewayError);
     expect((error.cause as IpfsGatewayError).retryable).toBe(false);
   });
