@@ -67,37 +67,44 @@ export const createIpfsReferences = createAuthedProcedure("ipfs")
 
     const versionedHashes = references.map((r) => r.versionedHash);
 
-    const dbVersionedHashes = new Set<string>();
-    for (const batch of chunk(versionedHashes, DB_BATCH_SIZE)) {
-      const blobs = await prisma.blob.findMany({
-        select: { versionedHash: true },
-        where: { versionedHash: { in: batch } },
-      });
-      for (const { versionedHash } of blobs) {
-        dbVersionedHashes.add(versionedHash);
+    // Run the existence check and the inserts in a single transaction so a
+    // blob deleted between the two steps can't cause a partially-applied
+    // batch: the foreign-key violation rolls the whole operation back.
+    await prisma.$transaction(async (tx) => {
+      const dbVersionedHashes = new Set<string>();
+      for (const batch of chunk(versionedHashes, DB_BATCH_SIZE)) {
+        const blobs = await tx.blob.findMany({
+          select: { versionedHash: true },
+          where: { versionedHash: { in: batch } },
+        });
+        for (const { versionedHash } of blobs) {
+          dbVersionedHashes.add(versionedHash);
+        }
       }
-    }
 
-    const missingHashes = versionedHashes
-      .filter((hash) => !dbVersionedHashes.has(hash))
-      .map((hash) => `"${hash}"`);
+      const missingHashes = versionedHashes
+        .filter((hash) => !dbVersionedHashes.has(hash))
+        .map((hash) => `"${hash}"`);
 
-    if (missingHashes.length > 0) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: `Couldn't find the following blobs: ${missingHashes.join(", ")}`,
-      });
-    }
+      if (missingHashes.length > 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Couldn't find the following blobs: ${missingHashes.join(
+            ", "
+          )}`,
+        });
+      }
 
-    for (const batch of chunk(references, DB_BATCH_SIZE)) {
-      await prisma.blobDataStorageReference.createMany({
-        data: batch.map(({ versionedHash, dataCid, metaCid }) => ({
-          blobHash: versionedHash,
-          dataReference: dataCid,
-          metaReference: metaCid,
-          blobStorage: BlobStorage.IPFS,
-        })),
-        skipDuplicates: true,
-      });
-    }
+      for (const batch of chunk(references, DB_BATCH_SIZE)) {
+        await tx.blobDataStorageReference.createMany({
+          data: batch.map(({ versionedHash, dataCid, metaCid }) => ({
+            blobHash: versionedHash,
+            dataReference: dataCid,
+            metaReference: metaCid,
+            blobStorage: BlobStorage.IPFS,
+          })),
+          skipDuplicates: true,
+        });
+      }
+    });
   });
