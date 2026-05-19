@@ -603,6 +603,9 @@ importers:
       '@google-cloud/storage':
         specifier: ^6.10.1
         version: 6.12.0
+      multiformats:
+        specifier: ^14.0.0
+        version: 14.0.0
     devDependencies:
       '@blobscan/db':
         specifier: workspace:^0.26.0
@@ -6524,6 +6527,9 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  multiformats@14.0.0:
+    resolution: {integrity: sha512-iWK1RrAS58p2NDfeZFuSUSv3ZPewTIhsGbh/5NgeGGJwJmRljLxGtjRR3nkn+loG3zl+IrfR/W1590QnrSK+Gg==}
 
   mute-stream@2.0.0:
     resolution: {integrity: sha512-WWdIxpyjEn+FhQJQQv9aQAYlHoNVdzIzUySNV1gHUPDSdZJ3yZn7pAAbQcV7B56Mvu881q9FZV+0Vx2xC44VWA==}
@@ -15124,6 +15130,8 @@ snapshots:
       typescript: 5.5.3
     transitivePeerDependencies:
       - '@types/node'
+
+  multiformats@14.0.0: {}
 
   mute-stream@2.0.0: {}
 

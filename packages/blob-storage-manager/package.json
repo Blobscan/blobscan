@@ -21,7 +21,8 @@
     "@blobscan/open-telemetry": "workspace:^0.0.10",
     "@blobscan/zod": "workspace:^0.1.0",
     "@ethersphere/bee-js": "9.3.0",
-    "@google-cloud/storage": "^6.10.1"
+    "@google-cloud/storage": "^6.10.1",
+    "multiformats": "^14.0.0"
   },
   "devDependencies": {
     "@blobscan/db": "workspace:^0.26.0"

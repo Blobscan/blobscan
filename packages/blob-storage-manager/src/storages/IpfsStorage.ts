@@ -1,3 +1,5 @@
+import { CID } from "multiformats/cid";
+
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { ErrorException } from "@blobscan/errors";
 
@@ -7,11 +9,22 @@ import { StorageCreationError } from "../errors";
 import { bytesToHex } from "../utils";
 
 const DEFAULT_TIMEOUT_MS = 30_000;
+const DEFAULT_MAX_RETRIES = 2; // 3 attempts total
+const DEFAULT_RETRY_BASE_DELAY_MS = 500;
 export const MAX_RESPONSE_BYTES = 1_048_576; // 1 MiB — generous vs 128 KiB blob size
 
-// CIDv1 base32lower (bafy/bafk…) or CIDv0 base58btc (Qm…)
-const CID_PATTERN =
-  /^(bafy|bafk)[a-z2-7]{50,}$|^Qm[1-9A-HJ-NP-Za-km-z]{44}$/;
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isValidCid(value: string): boolean {
+  try {
+    CID.parse(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export class IpfsGatewayError extends ErrorException {
   constructor(
@@ -27,12 +40,36 @@ function isRetryableStatus(status: number): boolean {
   return status === 429 || (status >= 500 && status < 600);
 }
 
+// fetch rejects with a TypeError on network failure and with an AbortError /
+// TimeoutError DOMException when the timeout signal fires. All of these are
+// transient and safe to retry, so surface them as retryable gateway errors
+// instead of letting them escape as opaque generic errors.
+function toGatewayError(err: unknown): IpfsGatewayError {
+  const name = (err as { name?: string })?.name;
+  const isTimeout = name === "TimeoutError" || name === "AbortError";
+  const message = (err as Error)?.message ?? String(err);
+
+  return new IpfsGatewayError(
+    isTimeout
+      ? `IPFS gateway request timed out: ${message}`
+      : `IPFS gateway request failed: ${message}`,
+    0,
+    true
+  );
+}
+
 async function readBoundedBody(
   response: Response,
   maxBytes: number
 ): Promise<ArrayBuffer> {
   const reader = response.body?.getReader();
-  if (!reader) return response.arrayBuffer();
+  if (!reader) {
+    const buffer = await response.arrayBuffer();
+    if (buffer.byteLength > maxBytes) {
+      throw new Error(`Response too large: exceeded ${maxBytes} bytes`);
+    }
+    return buffer;
+  }
 
   const chunks: Uint8Array[] = [];
   let totalBytes = 0;
@@ -62,16 +99,28 @@ async function readBoundedBody(
 export interface IpfsStorageConfig extends BlobStorageConfig {
   gatewayUrl: string;
   timeoutMs?: number;
+  maxRetries?: number;
+  retryBaseDelayMs?: number;
 }
 
 export class IpfsStorage extends BlobStorage {
   protected readonly gatewayUrl: string;
   protected readonly timeoutMs: number;
+  protected readonly maxRetries: number;
+  protected readonly retryBaseDelayMs: number;
 
-  protected constructor({ chainId, gatewayUrl, timeoutMs }: IpfsStorageConfig) {
+  protected constructor({
+    chainId,
+    gatewayUrl,
+    timeoutMs,
+    maxRetries,
+    retryBaseDelayMs,
+  }: IpfsStorageConfig) {
     super(BlobStorageName.IPFS, chainId);
     this.gatewayUrl = gatewayUrl.replace(/\/$/, "");
     this.timeoutMs = timeoutMs ?? DEFAULT_TIMEOUT_MS;
+    this.maxRetries = maxRetries ?? DEFAULT_MAX_RETRIES;
+    this.retryBaseDelayMs = retryBaseDelayMs ?? DEFAULT_RETRY_BASE_DELAY_MS;
   }
 
   protected async _healthCheck(): Promise<void> {
@@ -91,13 +140,46 @@ export class IpfsStorage extends BlobStorage {
     { fileType }: GetBlobOpts = {}
   ): Promise<string> {
     const baseCid = uri.includes(".") ? uri.slice(0, uri.lastIndexOf(".")) : uri;
-    if (!CID_PATTERN.test(baseCid)) {
+    if (!isValidCid(baseCid)) {
       throw new Error(`Invalid IPFS CID: "${uri}"`);
     }
 
-    const response = await fetch(`${this.gatewayUrl}/ipfs/${uri}`, {
-      signal: AbortSignal.timeout(this.timeoutMs),
-    });
+    const buffer = await this.#fetchWithRetries(uri);
+
+    return fileType === "text"
+      ? new TextDecoder().decode(buffer)
+      : bytesToHex(buffer);
+  }
+
+  // Retries transient gateway failures (5xx, 429, network errors, timeouts)
+  // with exponential backoff. Permanent failures (4xx other than 429,
+  // oversized responses) are surfaced immediately without retrying.
+  async #fetchWithRetries(uri: string): Promise<ArrayBuffer> {
+    for (let attempt = 0; ; attempt++) {
+      try {
+        return await this.#fetchBlobOnce(uri);
+      } catch (err) {
+        const isRetryable =
+          err instanceof IpfsGatewayError && err.retryable;
+
+        if (!isRetryable || attempt >= this.maxRetries) {
+          throw err;
+        }
+
+        await sleep(this.retryBaseDelayMs * 2 ** attempt);
+      }
+    }
+  }
+
+  async #fetchBlobOnce(uri: string): Promise<ArrayBuffer> {
+    let response: Response;
+    try {
+      response = await fetch(`${this.gatewayUrl}/ipfs/${uri}`, {
+        signal: AbortSignal.timeout(this.timeoutMs),
+      });
+    } catch (err) {
+      throw toGatewayError(err);
+    }
 
     if (!response.ok) {
       const retryable = isRetryableStatus(response.status);
@@ -116,11 +198,15 @@ export class IpfsStorage extends BlobStorage {
       );
     }
 
-    const buffer = await readBoundedBody(response, MAX_RESPONSE_BYTES);
-
-    return fileType === "text"
-      ? new TextDecoder().decode(buffer)
-      : bytesToHex(buffer);
+    try {
+      return await readBoundedBody(response, MAX_RESPONSE_BYTES);
+    } catch (err) {
+      const name = (err as { name?: string })?.name;
+      if (name === "TimeoutError" || name === "AbortError") {
+        throw toGatewayError(err);
+      }
+      throw err;
+    }
   }
 
   protected async _storeBlob(_: string, __: Buffer): Promise<string> {
