@@ -389,11 +389,13 @@ describe("Upsert Many Extension", () => {
             blobHash: newBlob.versionedHash,
             blobStorage: BlobStorage.POSTGRES,
             dataReference: "newReference",
+            metaReference: null,
           },
           {
             blobHash: newBlob.versionedHash,
             blobStorage: BlobStorage.SWARM,
             dataReference: "newReference",
+            metaReference: null,
           },
         ];
 
@@ -408,6 +410,7 @@ describe("Upsert Many Extension", () => {
             blobHash: true,
             blobStorage: true,
             dataReference: true,
+            metaReference: true,
           },
           where: {
             blobHash: newBlob.versionedHash,
@@ -426,16 +429,19 @@ describe("Upsert Many Extension", () => {
             blobHash: "blobHash001",
             blobStorage: BlobStorage.GOOGLE,
             dataReference: "updatedReference",
+            metaReference: null,
           },
           {
             blobHash: "blobHash001",
             blobStorage: BlobStorage.SWARM,
             dataReference: "updatedReference",
+            metaReference: null,
           },
           {
             blobHash: "blobHash002",
             blobStorage: BlobStorage.GOOGLE,
             dataReference: "updatedReference",
+            metaReference: null,
           },
         ];
 
@@ -449,6 +455,7 @@ describe("Upsert Many Extension", () => {
             blobHash: true,
             blobStorage: true,
             dataReference: true,
+            metaReference: true,
           },
           where: {
             blobHash: {
@@ -480,6 +487,7 @@ describe("Upsert Many Extension", () => {
             blobHash: "nonExistentBlobHash",
             blobStorage: BlobStorage.GOOGLE,
             dataReference: "reference",
+            metaReference: null,
           },
         ];
 

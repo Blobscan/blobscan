@@ -74,9 +74,8 @@ async function readBoundedBody(
   const chunks: Uint8Array[] = [];
   let totalBytes = 0;
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
+  for (let read = await reader.read(); !read.done; read = await reader.read()) {
+    const { value } = read;
     totalBytes += value.byteLength;
     if (totalBytes > maxBytes) {
       reader.releaseLock();
