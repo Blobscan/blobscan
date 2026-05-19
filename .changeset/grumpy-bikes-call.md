@@ -14,4 +14,4 @@ configurable IPFS gateway. CID references are registered externally
 via a new POST /blobs/ipfs-references endpoint,
 following the same pattern as the existing WeaveVM integration.
 Introduces a dedicated `ipfs` service auth role and
-IPFS_STORAGE_ENABLED / IPFS_STORAGE_GATEWAY_URL / IPFS_STORAGE_API_KEY env vars.
+IPFS_STORAGE_ENABLED / IPFS_STORAGE_GATEWAY_URL / IPFS_API_KEY env vars.
