@@ -8,7 +8,7 @@ import { logger } from "@blobscan/logger";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
-import { BlobTooLargeError, StorageCreationError } from "../errors";
+import { BlobTooLargeError, InvalidBlobCidError, StorageCreationError } from "../errors";
 import { bytesToHex } from "../utils";
 
 const DEFAULT_TIMEOUT_MS = 30_000;
@@ -187,7 +187,7 @@ export class IpfsStorage extends BlobStorage {
     try {
       cid = CID.parse(uri);
     } catch {
-      throw new Error(`Invalid IPFS CID: "${uri}"`);
+      throw new InvalidBlobCidError(uri);
     }
 
     const buffer = await this.#fetchWithRetries(uri);

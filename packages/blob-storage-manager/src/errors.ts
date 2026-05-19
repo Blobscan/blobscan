@@ -7,6 +7,13 @@ export class BlobTooLargeError extends Error {
   }
 }
 
+export class InvalidBlobCidError extends Error {
+  constructor(uri: string) {
+    super(`Invalid IPFS CID: "${uri}"`);
+    this.name = "InvalidBlobCidError";
+  }
+}
+
 export class BlobStorageError extends ErrorException {
   constructor(storageName: string, message: string, cause?: Error) {
     super(`${storageName} failed: ${message}`, cause);

@@ -7,7 +7,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { env, testValidError } from "@blobscan/test";
 
-import { BlobStorageError, BlobTooLargeError } from "../../src/errors";
+import { BlobStorageError, BlobTooLargeError, InvalidBlobCidError } from "../../src/errors";
 import {
   IpfsGatewayError,
   IpfsStorage,
@@ -189,14 +189,14 @@ describe("IpfsStorage", () => {
   });
 
   it("should fail with an invalid CID prefix", async () => {
-    await expect(storage.getBlob("not-a-cid")).rejects.toThrow(
-      "Invalid IPFS CID"
+    await expect(storage.getBlob("not-a-cid")).rejects.toBeInstanceOf(
+      InvalidBlobCidError
     );
   });
 
   it("should fail with a malformed CID (valid prefix, too short)", async () => {
-    await expect(storage.getBlob("bafkmalformed")).rejects.toThrow(
-      "Invalid IPFS CID"
+    await expect(storage.getBlob("bafkmalformed")).rejects.toBeInstanceOf(
+      InvalidBlobCidError
     );
   });
 

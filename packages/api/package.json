@@ -32,10 +32,12 @@
   },
   "devDependencies": {
     "@blobscan/blob-propagator": "workspace:^0.6.5",
+    "@blobscan/blob-storage-manager": "workspace:^0.8.3",
     "@types/jsonwebtoken": "^9.0.2"
   },
   "peerDependencies": {
-    "@blobscan/blob-propagator": "workspace:^0.6.5"
+    "@blobscan/blob-propagator": "workspace:^0.6.5",
+    "@blobscan/blob-storage-manager": "workspace:^0.8.3"
   },
   "eslintConfig": {
     "root": true,
