@@ -19,7 +19,6 @@ const MOCK_CID = "bafkreib4bfzpv7hbfnkzxljtlbhanc5a4x6kbxzwrqxbxzwrqxbxzwrqx";
 const MOCK_UNKNOWN_CID =
   "bafkreib4bfzpv7hbfnkzxljtlbhanc5a4x6kbxzwrqxbxzwrqxbxzwrqy";
 const MOCK_BLOB_HEX = "0x" + "ab".repeat(32);
-const MOCK_TEXT_CONTENT = "hello blob";
 
 class IpfsStorageMock extends IpfsStorage {
   constructor(opts: { gatewayUrl?: string; timeoutMs?: number } = {}) {
@@ -54,13 +53,6 @@ describe("IpfsStorage", () => {
       }),
       http.get(`${MOCK_GATEWAY_URL}/ipfs/:cid`, ({ params }) => {
         const { cid } = params;
-
-        if (cid === `${MOCK_CID}.txt`) {
-          return new HttpResponse(MOCK_TEXT_CONTENT, {
-            status: 200,
-            headers: { "Content-Type": "text/plain" },
-          });
-        }
 
         if (cid !== MOCK_CID) {
           return new HttpResponse(null, { status: 404 });
@@ -119,11 +111,6 @@ describe("IpfsStorage", () => {
   it("should retrieve a blob by CID", async () => {
     const result = await storage.getBlob(MOCK_CID);
     expect(result).toBe(MOCK_BLOB_HEX);
-  });
-
-  it("should retrieve a text blob by CID with .txt extension", async () => {
-    const result = await storage.getBlob(`${MOCK_CID}.txt`);
-    expect(result).toBe(MOCK_TEXT_CONTENT);
   });
 
   it("should fail when gateway returns a non-ok response", async () => {

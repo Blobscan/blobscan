@@ -3,7 +3,7 @@ import { CID } from "multiformats/cid";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { ErrorException } from "@blobscan/errors";
 
-import type { BlobStorageConfig, GetBlobOpts } from "../BlobStorage";
+import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
 import { bytesToHex } from "../utils";
@@ -158,20 +158,14 @@ export class IpfsStorage extends BlobStorage {
     }
   }
 
-  protected async _getBlob(
-    uri: string,
-    { fileType }: GetBlobOpts = {}
-  ): Promise<string> {
-    const baseCid = uri.includes(".") ? uri.slice(0, uri.lastIndexOf(".")) : uri;
-    if (!isValidCid(baseCid)) {
+  protected async _getBlob(uri: string): Promise<string> {
+    if (!isValidCid(uri)) {
       throw new Error(`Invalid IPFS CID: "${uri}"`);
     }
 
     const buffer = await this.#fetchWithRetries(uri);
 
-    return fileType === "text"
-      ? new TextDecoder().decode(buffer)
-      : bytesToHex(buffer);
+    return bytesToHex(buffer);
   }
 
   // Retries transient gateway failures (5xx, 429, network errors, timeouts)
