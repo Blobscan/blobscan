@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 
-//import { Link } from "../Link";
+import { Link } from "../Link";
 
+// To enable this banner, uncomment the import and <Banner /> in AppLayout.tsx.
+// To disable it, comment them out again.
 export default function Banner() {
   const [visible, setVisible] = useState(true);
 
@@ -37,7 +39,6 @@ export default function Banner() {
         />
       </div>
       <div className="flex flex-col items-center gap-y-1 text-sm">
-        {/* Example structure for future banners:
         <div className="flex flex-wrap items-center gap-x-4">
           <p className="leading-6 text-content-light dark:text-content-dark">
             ⚡ Blobscan needs your support! We only have 6 months of runway.
@@ -61,7 +62,6 @@ export default function Banner() {
             Donate on Giveth
           </Link>
         </div>
-        */}
       </div>
       <div className="flex flex-1 justify-end">
         <button
