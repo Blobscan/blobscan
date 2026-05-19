@@ -12,17 +12,27 @@ const MOCK_GATEWAY_URL = "https://ipfs.mock";
 
 const MOCK_CID = "bafkreib4bfzpv7hbfnkzxljtlbhanc5a4x6kbxzwrqxbxzwrqxbxzwrqx";
 const MOCK_BLOB_HEX = "0x" + "ab".repeat(32);
+const MOCK_TEXT_CONTENT = "hello blob";
 
 class IpfsStorageMock extends IpfsStorage {
-  constructor() {
+  constructor(opts: { gatewayUrl?: string; timeoutMs?: number } = {}) {
     super({
-      gatewayUrl: MOCK_GATEWAY_URL,
+      gatewayUrl: opts.gatewayUrl ?? MOCK_GATEWAY_URL,
       chainId: env.CHAIN_ID,
+      timeoutMs: opts.timeoutMs,
     });
   }
 
   healthCheck() {
     return super.healthCheck();
+  }
+
+  get resolvedGatewayUrl() {
+    return this.gatewayUrl;
+  }
+
+  get resolvedTimeoutMs() {
+    return this.timeoutMs;
   }
 }
 
@@ -37,6 +47,13 @@ describe("IpfsStorage", () => {
       }),
       http.get(`${MOCK_GATEWAY_URL}/ipfs/:cid`, ({ params }) => {
         const { cid } = params;
+
+        if (cid === `${MOCK_CID}.txt`) {
+          return new HttpResponse(MOCK_TEXT_CONTENT, {
+            status: 200,
+            headers: { "Content-Type": "text/plain" },
+          });
+        }
 
         if (cid !== MOCK_CID) {
           return new HttpResponse(null, { status: 404 });
@@ -88,6 +105,11 @@ describe("IpfsStorage", () => {
     expect(result).toBe(MOCK_BLOB_HEX);
   });
 
+  it("should retrieve a text blob by CID with .txt extension", async () => {
+    const result = await storage.getBlob(`${MOCK_CID}.txt`);
+    expect(result).toBe(MOCK_TEXT_CONTENT);
+  });
+
   it("should fail when gateway returns a non-ok response", async () => {
     ipfsServer.use(
       http.get(`${MOCK_GATEWAY_URL}/ipfs/:cid`, () => {
@@ -98,6 +120,46 @@ describe("IpfsStorage", () => {
     await expect(storage.getBlob(MOCK_CID)).rejects.toBeInstanceOf(
       BlobStorageError
     );
+  });
+
+  it("should tag retryable errors for 429 responses", async () => {
+    ipfsServer.use(
+      http.get(`${MOCK_GATEWAY_URL}/ipfs/:cid`, () => {
+        return new HttpResponse(null, { status: 429 });
+      })
+    );
+
+    await expect(storage.getBlob(MOCK_CID)).rejects.toThrow("retryable");
+  });
+
+  it("should fail with an invalid CID", async () => {
+    await expect(storage.getBlob("not-a-cid")).rejects.toThrow(
+      "Invalid IPFS CID"
+    );
+  });
+
+  it("should fail when gateway is unreachable during health check", async () => {
+    ipfsServer.use(
+      http.head(`${MOCK_GATEWAY_URL}/ipfs/bafkqaaa`, () => {
+        return HttpResponse.error();
+      })
+    );
+
+    await expect(storage.healthCheck()).rejects.toThrow();
+  });
+
+  it("should strip trailing slash from gateway URL", () => {
+    const s = new IpfsStorageMock({ gatewayUrl: `${MOCK_GATEWAY_URL}/` });
+    expect(s.resolvedGatewayUrl).toBe(MOCK_GATEWAY_URL);
+  });
+
+  it("should use default timeout when not specified", () => {
+    expect(storage.resolvedTimeoutMs).toBe(30_000);
+  });
+
+  it("should accept a custom timeout", () => {
+    const s = new IpfsStorageMock({ timeoutMs: 5000 });
+    expect(s.resolvedTimeoutMs).toBe(5000);
   });
 
   testValidError(
