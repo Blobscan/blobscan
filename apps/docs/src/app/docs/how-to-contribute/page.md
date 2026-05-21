@@ -29,3 +29,37 @@ All contributors are expected to follow our [Code of Conduct](/docs/code-of-cond
 ## Contact
 
 If you have questions or need help with your contribution, join our [Discord](https://discordapp.com/invite/fmqrqhkjHY/) server and ask in the `#🔎-blobscan` channel.
+
+# Examples
+
+## Add support for a new network
+
+Steps:
+
+1. Update Network type in package network-blob-config
+2. Update networkSchema in web app
+
+Check out the following PRs:
+
+* https://github.com/Blobscan/blobscan/pull/823
+* https://github.com/Blobscan/blobscan/commit/0a2a94c587e9b93f6b36ad15fd55065e824b5049
+* https://github.com/Blobscan/blobscan/pull/826
+
+## Add a new storage provider
+
+Steps:
+
+1. Add new environment variables, if required
+2. Update documentation
+3. Add svg icon (StorageBadge component)
+4. Add a new BlobPropagationWorkerProcessor
+5. Add tests for the new storage provider
+
+Check out the following PRs
+
+* https://github.com/Blobscan/blobscan/pull/820
+
+## Label a new rollup
+
+TBW
+
