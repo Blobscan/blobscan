@@ -6,7 +6,7 @@ import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import type {
   BlobStorageConfig,
   GetBlobOpts,
-  GetReadUrlOpts,
+  GetSignedUrlOpts,
 } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
@@ -34,8 +34,9 @@ export class GoogleStorage extends BlobStorage {
     projectId,
     serviceKey,
     apiEndpoint,
+    signedUrlsEnabled,
   }: GoogleStorageConfig) {
-    super(BlobStorageName.GOOGLE, chainId);
+    super(BlobStorageName.GOOGLE, chainId, { signedUrlsEnabled });
 
     try {
       const storageOptions: StorageOptions = {};
@@ -117,11 +118,11 @@ export class GoogleStorage extends BlobStorage {
     )}/${hash.slice(6, 8)}/${hash.slice(2)}.bin`;
   }
 
-  async getSignedBlobUrl(
-    uri: string,
-    expirationSeconds: number = 3600
+  protected async _getSignedUrl(
+    reference: string,
+    { expirationSeconds = 3600 }: GetSignedUrlOpts = {}
   ): Promise<string> {
-    const file = this._getBlobFile(uri);
+    const file = this._getBlobFile(reference);
     const [url] = await file.getSignedUrl({
       version: "v4",
       action: "read",
@@ -129,14 +130,6 @@ export class GoogleStorage extends BlobStorage {
     });
 
     return url;
-  }
-
-  async getReadUrl(
-    reference: string,
-    opts?: GetReadUrlOpts
-  ): Promise<string | undefined> {
-    if (!opts?.signed) return undefined;
-    return this.getSignedBlobUrl(reference, opts.expirationSeconds);
   }
 
   static async create(config: GoogleStorageConfig) {

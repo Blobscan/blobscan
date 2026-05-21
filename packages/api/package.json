@@ -12,7 +12,6 @@
     "type-check": "tsc --noEmit",
     "with-env:test": "dotenv -e ../../.env.test --",
     "test": "pnpm with-env:test vitest",
-    "test:unit": "SKIP_ENV_VALIDATION=1 vitest run --config vitest.unit.config.ts",
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {

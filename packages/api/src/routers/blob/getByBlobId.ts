@@ -13,7 +13,7 @@ import {
   responseBlobSchema,
   createBlobSelect,
   toResponseBlob,
-  maybeBuildSignedUrlsMap,
+  toBlobReferences,
 } from "./helpers";
 
 const inputSchema = z
@@ -58,9 +58,8 @@ export const getByBlobId = publicProcedure
       });
     }
 
-    const signedUrls = await maybeBuildSignedUrlsMap(
-      prismaBlob.dataStorageReferences,
-      blobStorageManager
+    const signedUrls = await blobStorageManager?.buildSignedUrls(
+      toBlobReferences(prismaBlob.dataStorageReferences)
     );
 
     return toResponseBlob(

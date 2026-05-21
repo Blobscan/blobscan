@@ -1,7 +1,8 @@
 import type { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
+import { logger } from "@blobscan/logger";
 import { api, SemanticAttributes } from "@blobscan/open-telemetry";
 
-import type { BlobStorage } from "./BlobStorage";
+import type { BlobStorage, GetSignedUrlOpts } from "./BlobStorage";
 import { BlobStorageManagerError } from "./errors";
 import type { BlobStorageError } from "./errors";
 import { tracer, updateBlobStorageMetrics } from "./instrumentation";
@@ -82,6 +83,32 @@ export class BlobStorageManager {
       .filter((op): op is GetBlobOperation => !!op);
 
     return this.#getBlob(getBlobOperations);
+  }
+
+  async buildSignedUrls(
+    references: BlobReference<BlobStorageName>[],
+    opts?: GetSignedUrlOpts
+  ): Promise<Map<string, string>> {
+    const signedByReference = new Map<string, string>();
+
+    await Promise.all(
+      references.map(async ({ reference, storage: storageName }) => {
+        const storage = this.getStorage(storageName);
+        if (!storage) return;
+        try {
+          const signedUrl = await storage.getSignedUrl(reference, opts);
+          if (signedUrl) signedByReference.set(reference, signedUrl);
+        } catch (err) {
+          logger.error(
+            `Failed to generate signed URL for ${storageName} reference "${reference}": ${
+              (err as Error).message
+            }`
+          );
+        }
+      })
+    );
+
+    return signedByReference;
   }
 
   async getBlobByHash(hash: string) {

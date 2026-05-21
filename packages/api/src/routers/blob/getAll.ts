@@ -21,7 +21,7 @@ import {
   responseBlobOnTransactionSchema,
   createBlobsOnTransactionsSelect,
   toResponseBlobOnTransaction,
-  maybeBuildSignedUrlsMap,
+  toBlobReferences,
 } from "./helpers";
 
 const outputSchema = z
@@ -107,13 +107,14 @@ export const getAll = publicProcedure
         countOp,
       ]);
 
-      const signedUrls = await maybeBuildSignedUrlsMap(
-        prismaBlobsOnTxs.flatMap(
-          (b) =>
-            (b as unknown as CompletedPrismaBlobOnTransaction).blob
-              .dataStorageReferences
-        ),
-        blobStorageManager
+      const signedUrls = await blobStorageManager?.buildSignedUrls(
+        toBlobReferences(
+          prismaBlobsOnTxs.flatMap(
+            (b) =>
+              (b as unknown as CompletedPrismaBlobOnTransaction).blob
+                .dataStorageReferences
+          )
+        )
       );
 
       return {
