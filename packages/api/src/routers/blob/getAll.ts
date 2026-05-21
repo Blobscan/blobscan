@@ -21,6 +21,7 @@ import {
   responseBlobOnTransactionSchema,
   createBlobsOnTransactionsSelect,
   toResponseBlobOnTransaction,
+  toBlobReferences,
 } from "./helpers";
 
 const outputSchema = z
@@ -48,7 +49,15 @@ export const getAll = publicProcedure
   .output(outputSchema)
   .query(
     async ({
-      ctx: { count, expands, filters, pagination, prisma, rollupRegistry },
+      ctx: {
+        blobStorageManager,
+        count,
+        expands,
+        filters,
+        pagination,
+        prisma,
+        rollupRegistry,
+      },
     }) => {
       const {
         blockFilters = {},
@@ -98,10 +107,22 @@ export const getAll = publicProcedure
         countOp,
       ]);
 
+      const signedUrls = await blobStorageManager?.buildSignedUrls(
+        toBlobReferences(
+          prismaBlobsOnTxs.flatMap(
+            (b) =>
+              (b as unknown as CompletedPrismaBlobOnTransaction).blob
+                .dataStorageReferences
+          )
+        )
+      );
+
       return {
         blobs: prismaBlobsOnTxs.map((prismaBlobOnTx) =>
           toResponseBlobOnTransaction(
-            prismaBlobOnTx as unknown as CompletedPrismaBlobOnTransaction
+            prismaBlobOnTx as unknown as CompletedPrismaBlobOnTransaction,
+            undefined,
+            signedUrls
           )
         ),
         ...(count ? { totalBlobs } : {}),
