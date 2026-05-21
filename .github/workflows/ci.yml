@@ -151,6 +151,9 @@ jobs:
         env:
           VITEST_MAINNET_FORK_URL: ${{ secrets.VITEST_MAINNET_FORK_URL }}
 
+      - name: Test (dagster)
+        run: pnpm test:dagster
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
         with:

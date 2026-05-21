@@ -10,4 +10,4 @@ $DIR/wait-for-it.sh -t 1 "${GOOGLE_STORAGE_API_ENDPOINT}" -- echo '🟢 - Storag
 echo '🟡 - Waiting for redis to be ready...'
 $DIR/wait-for-it.sh -t 1 "${REDIS_URI}" -- echo '🟢 - Redis is ready!'
 npx prisma migrate reset --force
-npx prisma migrate dev --skip-seed --name init --schema $DIR/../packages/db/prisma/schema.prisma
+npx prisma migrate dev --skip-seed --name init --schema $DIR/../packages/db/prisma

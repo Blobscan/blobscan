@@ -27,6 +27,7 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "prisma": {
+    "schema": "./prisma/schema/",
     "seed": "tsx prisma/seed/main.ts"
   },
   "dependencies": {
