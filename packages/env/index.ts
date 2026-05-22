@@ -172,7 +172,20 @@ export const env = createEnv({
        */
 
       // General storage settings
-      PRIMARY_BLOB_STORAGE: blobStorageCoercionSchema.default("POSTGRES"),
+      // IPFS and WEAVEVM are populated by external services and don't
+      // implement the write side of the BlobStorage interface, so they
+      // can't act as the primary storage (the source the propagator reads
+      // from and the reconciler walks).
+      PRIMARY_BLOB_STORAGE: blobStorageCoercionSchema
+        .default("POSTGRES")
+        .superRefine((value, ctx) => {
+          if (value === "IPFS" || value === "WEAVEVM") {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: `"${value.toLowerCase()}" cannot be used as PRIMARY_BLOB_STORAGE: it is populated by an external service and does not support writes`,
+            });
+          }
+        }),
 
       // Postgres blob storage
       POSTGRES_STORAGE_ENABLED: booleanSchema.default("false"),
