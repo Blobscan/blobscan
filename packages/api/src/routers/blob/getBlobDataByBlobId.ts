@@ -1,9 +1,11 @@
 import { TRPCError } from "@trpc/server";
 
+import { IpfsGatewayError } from "@blobscan/blob-storage-manager";
 import {
   blobVersionedHashSchema,
   hexSchema,
 } from "@blobscan/db/prisma/zod-utils";
+import { logger } from "@blobscan/logger";
 import { z } from "@blobscan/zod";
 
 import { createAuthedProcedure, publicProcedure } from "../../procedures";
@@ -136,14 +138,23 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
           }
         } catch (err) {
           if (err instanceof Error) {
-            storageErrors.push(
-              new Error(
-                `Failed to fetch blob data with reference with URI '${dataReference}'  from storage ${blobStorage}`,
-                {
-                  cause: err,
-                }
-              )
+            // Surface gateway HTTP status / retryability inline instead of
+            // burying them inside `cause`, so they show up directly in
+            // operator logs and TRPCError chains.
+            const suffix =
+              err instanceof IpfsGatewayError
+                ? ` (status=${err.status}, retryable=${err.retryable})`
+                : "";
+            const wrapped = new Error(
+              `Failed to fetch blob data with reference '${dataReference}' from storage ${blobStorage}${suffix}`,
+              { cause: err }
             );
+            if (err instanceof IpfsGatewayError) {
+              logger.warn(
+                `IPFS gateway request failed for dataCid=${dataReference}: status=${err.status} retryable=${err.retryable} message="${err.message}"`
+              );
+            }
+            storageErrors.push(wrapped);
           }
         }
       }

@@ -9,6 +9,7 @@ import { logger } from "@blobscan/logger";
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { BlobTooLargeError, InvalidBlobCidError, StorageCreationError } from "../errors";
+import { recordIpfsGatewayAttempt } from "../instrumentation";
 import { bytesToHex } from "../utils";
 
 const DEFAULT_TIMEOUT_MS = 30_000;
@@ -192,7 +193,16 @@ export class IpfsStorage extends BlobStorage {
 
     const buffer = await this.#fetchWithRetries(uri);
 
-    await assertMatchesCid(cid, new Uint8Array(buffer));
+    try {
+      await assertMatchesCid(cid, new Uint8Array(buffer));
+    } catch (err) {
+      recordIpfsGatewayAttempt({
+        outcome: "integrity_failure",
+        status: 200,
+        durationMs: 0,
+      });
+      throw err;
+    }
 
     return bytesToHex(buffer);
   }
@@ -212,12 +222,22 @@ export class IpfsStorage extends BlobStorage {
           throw err;
         }
 
+        // The failed attempt was already recorded as gateway_error/network_error;
+        // mark a separate "retry" tick so dashboards can count retry pressure
+        // without double-counting outcomes.
+        recordIpfsGatewayAttempt({
+          outcome: "retry",
+          status: err instanceof IpfsGatewayError ? err.status : 0,
+          durationMs: 0,
+        });
+
         await sleep(this.retryBaseDelayMs * 2 ** attempt);
       }
     }
   }
 
   async #fetchBlobOnce(uri: string): Promise<ArrayBuffer> {
+    const startedAt = Date.now();
     let response: Response;
     try {
       // `?format=raw` (+ the `application/vnd.ipld.raw` Accept header) asks
@@ -229,11 +249,22 @@ export class IpfsStorage extends BlobStorage {
         signal: AbortSignal.timeout(this.timeoutMs),
       });
     } catch (err) {
-      throw toGatewayError(err);
+      const gatewayErr = toGatewayError(err);
+      recordIpfsGatewayAttempt({
+        outcome: "network_error",
+        status: 0,
+        durationMs: Date.now() - startedAt,
+      });
+      throw gatewayErr;
     }
 
     if (!response.ok) {
       const retryable = isRetryableStatus(response.status);
+      recordIpfsGatewayAttempt({
+        outcome: "gateway_error",
+        status: response.status,
+        durationMs: Date.now() - startedAt,
+      });
       throw new IpfsGatewayError(
         `Failed to retrieve blob: ${response.status} ${response.statusText}`,
         response.status,
@@ -244,16 +275,37 @@ export class IpfsStorage extends BlobStorage {
     // Fast-path: reject before streaming when Content-Length is known
     const contentLength = response.headers.get("content-length");
     if (contentLength && Number(contentLength) > MAX_RESPONSE_BYTES) {
+      recordIpfsGatewayAttempt({
+        outcome: "too_large",
+        status: response.status,
+        durationMs: Date.now() - startedAt,
+      });
       throw new BlobTooLargeError(Number(contentLength), MAX_RESPONSE_BYTES);
     }
 
     try {
-      return await readBoundedBody(response, MAX_RESPONSE_BYTES);
+      const buffer = await readBoundedBody(response, MAX_RESPONSE_BYTES);
+      recordIpfsGatewayAttempt({
+        outcome: "success",
+        status: response.status,
+        durationMs: Date.now() - startedAt,
+      });
+      return buffer;
     } catch (err) {
       const name = (err as { name?: string })?.name;
       if (name === "TimeoutError" || name === "AbortError") {
+        recordIpfsGatewayAttempt({
+          outcome: "network_error",
+          status: response.status,
+          durationMs: Date.now() - startedAt,
+        });
         throw toGatewayError(err);
       }
+      recordIpfsGatewayAttempt({
+        outcome: err instanceof BlobTooLargeError ? "too_large" : "gateway_error",
+        status: response.status,
+        durationMs: Date.now() - startedAt,
+      });
       throw err;
     }
   }
