@@ -16,16 +16,19 @@ const DB_BATCH_SIZE = 1_000;
 // runs into multiple posts.
 const MAX_REFERENCES_PER_REQUEST = 10_000;
 
+// raw codec (0x55) is the only codec for which the CID digest is the sha256
+// of the block bytes directly, which is what IpfsStorage verifies on read.
+const RAW_CODEC = 0x55;
+
 const cidSchema = z.string().refine(
   (value) => {
     try {
-      CID.parse(value);
-      return true;
+      return CID.parse(value).code === RAW_CODEC;
     } catch {
       return false;
     }
   },
-  { message: "Invalid IPFS CID" }
+  { message: "Invalid IPFS CID: must be a raw-codec (0x55) CID" }
 );
 
 const versionedHashSchema = z
@@ -92,16 +95,20 @@ export const createIpfsReferences = createAuthedProcedure("ipfs")
         }
       }
 
-      const missingHashes = versionedHashes
-        .filter((hash) => !dbVersionedHashes.has(hash))
-        .map((hash) => `"${hash}"`);
+      const missingHashes = versionedHashes.filter(
+        (hash) => !dbVersionedHashes.has(hash)
+      );
 
       if (missingHashes.length > 0) {
+        const preview = missingHashes.slice(0, 5).map((h) => `"${h}"`);
+        const overflow = missingHashes.length - preview.length;
+        const list =
+          overflow > 0
+            ? `${preview.join(", ")} … and ${overflow} more`
+            : preview.join(", ");
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: `Couldn't find the following blobs: ${missingHashes.join(
-            ", "
-          )}`,
+          message: `Couldn't find the following blobs: ${list}`,
         });
       }
 

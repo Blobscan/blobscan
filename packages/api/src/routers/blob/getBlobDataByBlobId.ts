@@ -102,8 +102,7 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
             continue;
           }
 
-          const isBinaryFile =
-            url.includes(".bin") || blobStorage === "POSTGRES";
+          const isBinaryFile = url.includes(".bin");
 
           if (blobStorage === "POSTGRES") {
             const res = await prisma.blobData.findFirst({
@@ -138,25 +137,25 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
             break;
           }
         } catch (err) {
-          if (err instanceof Error) {
-            // Surface gateway HTTP status / retryability inline instead of
-            // burying them inside `cause`, so they show up directly in
-            // operator logs and TRPCError chains.
-            const suffix =
-              err instanceof IpfsGatewayError
-                ? ` (status=${err.status}, retryable=${err.retryable})`
-                : "";
-            const wrapped = new Error(
-              `Failed to fetch blob data with reference '${dataReference}' from storage ${blobStorage}${suffix}`,
-              { cause: err }
+          const asError =
+            err instanceof Error ? err : new Error(String(err));
+          // Surface gateway HTTP status / retryability inline instead of
+          // burying them inside `cause`, so they show up directly in
+          // operator logs and TRPCError chains.
+          const suffix =
+            err instanceof IpfsGatewayError
+              ? ` (status=${err.status}, retryable=${err.retryable})`
+              : "";
+          const wrapped = new Error(
+            `Failed to fetch blob data with reference '${dataReference}' from storage ${blobStorage}${suffix}`,
+            { cause: asError }
+          );
+          if (err instanceof IpfsGatewayError) {
+            logger.warn(
+              `IPFS gateway request failed for dataCid=${dataReference}: status=${err.status} retryable=${err.retryable} message="${err.message}"`
             );
-            if (err instanceof IpfsGatewayError) {
-              logger.warn(
-                `IPFS gateway request failed for dataCid=${dataReference}: status=${err.status} retryable=${err.retryable} message="${err.message}"`
-              );
-            }
-            storageErrors.push(wrapped);
           }
+          storageErrors.push(wrapped);
         }
       }
 

@@ -15,10 +15,6 @@ let pending: Promise<IpfsStorage | undefined> | undefined;
 let lastFailureAt = 0;
 
 async function build(): Promise<IpfsStorage | undefined> {
-  if (!isBlobStorageEnabled(BlobStorageName.IPFS)) {
-    return undefined;
-  }
-
   try {
     const storage = (await createStorageFromEnv(
       BlobStorageName.IPFS
@@ -44,6 +40,10 @@ async function build(): Promise<IpfsStorage | undefined> {
  * window so a transient gateway outage doesn't disable IPFS forever.
  */
 export async function getIpfsStorage(): Promise<IpfsStorage | undefined> {
+  if (!isBlobStorageEnabled(BlobStorageName.IPFS)) {
+    return undefined;
+  }
+
   if (cached) {
     return cached;
   }
