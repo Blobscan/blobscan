@@ -11,6 +11,11 @@ import { createAuthedProcedure } from "../../procedures";
 // how large a batch blobscan-ipld posts.
 const DB_BATCH_SIZE = 1_000;
 
+// Hard cap on a single request: above this we'd hold a long transaction and
+// risk DoS-ing the DB even with batching. blobscan-ipld can split larger
+// runs into multiple posts.
+const MAX_REFERENCES_PER_REQUEST = 10_000;
+
 const cidSchema = z.string().refine(
   (value) => {
     try {
@@ -28,13 +33,18 @@ const versionedHashSchema = z
   .regex(/^0x[0-9a-fA-F]{64}$/, "Invalid versioned hash");
 
 const inputSchema = z.object({
-  references: z.array(
-    z.object({
-      versionedHash: versionedHashSchema,
-      dataCid: cidSchema,
-      metaCid: cidSchema,
-    })
-  ),
+  references: z
+    .array(
+      z.object({
+        versionedHash: versionedHashSchema,
+        dataCid: cidSchema,
+        metaCid: cidSchema,
+      })
+    )
+    .max(
+      MAX_REFERENCES_PER_REQUEST,
+      `Too many references in a single request (max ${MAX_REFERENCES_PER_REQUEST})`
+    ),
 });
 
 const outputSchema = z.void();

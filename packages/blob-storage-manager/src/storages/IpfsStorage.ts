@@ -4,7 +4,6 @@ import { sha256 } from "multiformats/hashes/sha2";
 
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { ErrorException } from "@blobscan/errors";
-import { logger } from "@blobscan/logger";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
@@ -17,6 +16,12 @@ const DEFAULT_MAX_RETRIES = 2; // 3 attempts total
 const DEFAULT_RETRY_BASE_DELAY_MS = 500;
 export const MAX_RESPONSE_BYTES = 1_048_576; // 1 MiB — generous vs 128 KiB blob size
 
+// multicodec code for the `raw` IPLD codec — the only codec under which the
+// CID's multihash is the digest of the response bytes verbatim. For other
+// codecs (e.g. dag-pb 0x70) the digest is of the encoded IPLD block, so a
+// bytes==digest comparison would be meaningless.
+const RAW_CODEC = 0x55;
+
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -25,18 +30,25 @@ function sleep(ms: number): Promise<void> {
 // sha2-256 of the block bytes. Recomputing it locally turns the (possibly
 // untrusted) gateway into a dumb transport — a buggy or malicious gateway
 // cannot substitute different bytes without the check failing.
+//
+// Fails closed: any CID shape we cannot verify (non-raw codec or non-sha256
+// multihash) is rejected outright instead of returning unverified bytes,
+// because the entire trust model of this storage assumes a successful local
+// verification.
 async function assertMatchesCid(cid: CID, bytes: Uint8Array): Promise<void> {
-  if (cid.multihash.code !== sha256.code) {
-    // blobscan-ipld always uses sha2-256; skip rather than risk a false
-    // negative if some other multihash is ever encountered, but surface it:
-    // it means an unexpected CID shape slipped through and the bytes were
-    // returned unverified.
-    logger.error(
-      `IPFS integrity check skipped for CID "${cid.toString()}": unsupported multihash code ${
-        cid.multihash.code
-      } (expected sha2-256 ${sha256.code}); bytes returned unverified`
+  if (cid.code !== RAW_CODEC) {
+    throw new InvalidBlobCidError(
+      `${cid.toString()} (unsupported codec 0x${cid.code.toString(
+        16
+      )}, expected raw 0x55)`
     );
-    return;
+  }
+  if (cid.multihash.code !== sha256.code) {
+    throw new InvalidBlobCidError(
+      `${cid.toString()} (unsupported multihash 0x${cid.multihash.code.toString(
+        16
+      )}, expected sha2-256 0x12)`
+    );
   }
 
   const { digest } = await sha256.digest(bytes);
@@ -86,11 +98,16 @@ async function readBoundedBody(
 ): Promise<ArrayBuffer> {
   const reader = response.body?.getReader();
   if (!reader) {
-    const buffer = await response.arrayBuffer();
-    if (buffer.byteLength > maxBytes) {
-      throw new BlobTooLargeError(buffer.byteLength, maxBytes);
-    }
-    return buffer;
+    // Without a streaming reader we cannot bound memory usage while reading —
+    // calling arrayBuffer() would buffer the full response before any size
+    // check could trip. Fail closed instead of trusting the gateway not to
+    // ship an oversized payload.
+    await response.body?.cancel();
+    throw new IpfsGatewayError(
+      "IPFS gateway response body is not streamable; cannot enforce size limit",
+      response.status,
+      false
+    );
   }
 
   const chunks: Uint8Array[] = [];
