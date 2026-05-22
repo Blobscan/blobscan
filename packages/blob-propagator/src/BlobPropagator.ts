@@ -11,6 +11,7 @@ import { createLogger, logger } from "@blobscan/logger";
 import {
   DEFAULT_JOB_OPTIONS,
   DEFAULT_WORKER_OPTIONS,
+  NON_PROPAGATABLE_STORAGES,
   RECONCILER_WORKER_NAME,
   STORAGE_WORKER_NAMES,
 } from "./constants";
@@ -346,13 +347,12 @@ export class BlobPropagator {
     params: Omit<BlobPropagationWorkerParams, "targetBlobStorage">,
     opts: WorkerOptions
   ): StoragePropagator[] {
-    // IPFS and WEAVEVM are populated by external services (blobscan-ipld and
-    // the load-network indexer respectively), not by writing through the
-    // BlobStorage interface. Their `_storeBlob` always throws, so creating
-    // a propagator worker for them would just produce a stream of failed
-    // BullMQ jobs (3 retries each) for every indexed blob.
+    // See NON_PROPAGATABLE_STORAGES: these storages are populated by
+    // external services (blobscan-ipld, load-network indexer) and don't
+    // implement storeBlob. A propagator worker for them would just produce
+    // a stream of failed BullMQ jobs for every indexed blob.
     const supportedBlobStorages = blobStorages.filter(
-      (s) => s.name !== "WEAVEVM" && s.name !== "IPFS"
+      (s) => !NON_PROPAGATABLE_STORAGES.has(s.name)
     );
 
     return supportedBlobStorages.map((targetBlobStorage) => {
