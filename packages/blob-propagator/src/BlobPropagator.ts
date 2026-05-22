@@ -346,8 +346,13 @@ export class BlobPropagator {
     params: Omit<BlobPropagationWorkerParams, "targetBlobStorage">,
     opts: WorkerOptions
   ): StoragePropagator[] {
+    // IPFS and WEAVEVM are populated by external services (blobscan-ipld and
+    // the load-network indexer respectively), not by writing through the
+    // BlobStorage interface. Their `_storeBlob` always throws, so creating
+    // a propagator worker for them would just produce a stream of failed
+    // BullMQ jobs (3 retries each) for every indexed blob.
     const supportedBlobStorages = blobStorages.filter(
-      (s) => s.name !== "WEAVEVM"
+      (s) => s.name !== "WEAVEVM" && s.name !== "IPFS"
     );
 
     return supportedBlobStorages.map((targetBlobStorage) => {
