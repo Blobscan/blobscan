@@ -13,6 +13,8 @@ import type { ProcedureConfig } from "../../types";
 import { bytesToHex, computeVersionedHash, normalize } from "../../utils";
 import { blobIdSchema } from "../../zod-schemas";
 
+const FETCH_TIMEOUT_MS = 30_000;
+
 const inputSchema = z.object({
   id: blobIdSchema,
 });
@@ -21,7 +23,7 @@ const outputSchema = hexSchema.transform(normalize);
 
 export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
   const isEnabled = !!config?.enabled;
-  const isProtected = !!config?.enabled;
+  const isProtected = !!config?.protected;
 
   const procedure = isProtected
     ? createAuthedProcedure("blob-data")
@@ -83,10 +85,6 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
       );
 
       for (const { blobStorage, dataReference, url } of orderedStorageUrls) {
-        if (blobData) {
-          break;
-        }
-
         try {
           if (blobStorage === "IPFS") {
             if (!ipfsStorage) {
@@ -97,8 +95,7 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
             // resolve by the stored content-addressed dataReference (dataCid),
             // which the storage fetches and verifies in a single request.
             blobData = await ipfsStorage.getBlob(dataReference);
-
-            continue;
+            break;
           }
 
           if (!url) {
@@ -120,8 +117,11 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
             }
 
             blobData = bytesToHex(res.data);
+            break;
           } else {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+              signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+            });
 
             if (!response.ok) {
               const error = await response.json();
@@ -135,6 +135,7 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
             } else {
               blobData = await response.text();
             }
+            break;
           }
         } catch (err) {
           if (err instanceof Error) {

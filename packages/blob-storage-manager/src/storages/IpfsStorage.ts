@@ -253,7 +253,7 @@ export class IpfsStorage extends BlobStorage {
         // without double-counting outcomes.
         recordIpfsGatewayAttempt({
           outcome: "retry",
-          status: err instanceof IpfsGatewayError ? err.status : 0,
+          status: (err as IpfsGatewayError).status,
           durationMs: 0,
         });
 
