@@ -19,6 +19,10 @@ import { bytesToHex } from "../utils";
 const DEFAULT_TIMEOUT_MS = 30_000;
 const DEFAULT_MAX_RETRIES = 2; // 3 attempts total
 const DEFAULT_RETRY_BASE_DELAY_MS = 500;
+// Cap any server-supplied Retry-After so a misbehaving gateway can't park a
+// request for minutes; 30 s is well past the longest realistic rate-limit
+// window for the gated gateways we target.
+const MAX_RETRY_AFTER_MS = 30_000;
 export const MAX_RESPONSE_BYTES = 1_048_576; // 1 MiB — generous vs 128 KiB blob size
 
 // multicodec code for the `raw` IPLD codec — the only codec under which the
@@ -67,7 +71,8 @@ export class IpfsGatewayError extends ErrorException {
   constructor(
     message: string,
     public readonly status: number,
-    public readonly retryable: boolean
+    public readonly retryable: boolean,
+    public readonly retryAfterMs?: number
   ) {
     super(message);
   }
@@ -75,6 +80,29 @@ export class IpfsGatewayError extends ErrorException {
 
 function isRetryableStatus(status: number): boolean {
   return status === 429 || (status >= 500 && status < 600);
+}
+
+// Retry-After is either delta-seconds or an HTTP-date (RFC 7231). Parse both,
+// reject negatives/NaN, and clamp to MAX_RETRY_AFTER_MS so the gateway can't
+// stall a caller arbitrarily.
+function parseRetryAfter(headerValue: string | null): number | undefined {
+  if (!headerValue) return undefined;
+
+  const trimmed = headerValue.trim();
+  const seconds = Number(trimmed);
+  if (Number.isFinite(seconds)) {
+    if (seconds <= 0) return undefined;
+    return Math.min(seconds * 1000, MAX_RETRY_AFTER_MS);
+  }
+
+  const dateMs = Date.parse(trimmed);
+  if (Number.isFinite(dateMs)) {
+    const delta = dateMs - Date.now();
+    if (delta <= 0) return undefined;
+    return Math.min(delta, MAX_RETRY_AFTER_MS);
+  }
+
+  return undefined;
 }
 
 // fetch rejects with a TypeError on network failure and with an AbortError /
@@ -169,7 +197,11 @@ export class IpfsStorage extends BlobStorage {
   }: IpfsStorageConfig) {
     super(BlobStorageName.IPFS, chainId);
     this.gatewayUrl = gatewayUrl.replace(/\/$/, "");
-    this.apiKey = apiKey;
+    // Treat empty/whitespace-only keys as absent: a `Bearer ` header with no
+    // token is rejected by most gated gateways and would mask a misconfigured
+    // env var as a generic 401.
+    const trimmedKey = apiKey?.trim();
+    this.apiKey = trimmedKey ? trimmedKey : undefined;
     this.timeoutMs = timeoutMs ?? DEFAULT_TIMEOUT_MS;
     this.maxRetries = maxRetries ?? DEFAULT_MAX_RETRIES;
     this.retryBaseDelayMs = retryBaseDelayMs ?? DEFAULT_RETRY_BASE_DELAY_MS;
@@ -257,9 +289,13 @@ export class IpfsStorage extends BlobStorage {
           durationMs: 0,
         });
 
-        await sleep(
-          this.retryBaseDelayMs * 2 ** attempt * (0.5 + Math.random() * 0.5)
-        );
+        // Prefer a server-supplied Retry-After (rate-limit hint) over our own
+        // backoff: if the gateway tells us how long to wait we should respect
+        // it instead of piling on retries that will be rejected again.
+        const backoffMs =
+          this.retryBaseDelayMs * 2 ** attempt * (0.5 + Math.random() * 0.5);
+        const retryAfterMs = (err as IpfsGatewayError).retryAfterMs;
+        await sleep(retryAfterMs ?? backoffMs);
       }
     }
   }
@@ -288,6 +324,9 @@ export class IpfsStorage extends BlobStorage {
 
     if (!response.ok) {
       const retryable = isRetryableStatus(response.status);
+      const retryAfterMs = retryable
+        ? parseRetryAfter(response.headers.get("retry-after"))
+        : undefined;
       recordIpfsGatewayAttempt({
         outcome: "gateway_error",
         status: response.status,
@@ -296,7 +335,8 @@ export class IpfsStorage extends BlobStorage {
       throw new IpfsGatewayError(
         `Failed to retrieve blob: ${response.status} ${response.statusText}`,
         response.status,
-        retryable
+        retryable,
+        retryAfterMs
       );
     }
 
