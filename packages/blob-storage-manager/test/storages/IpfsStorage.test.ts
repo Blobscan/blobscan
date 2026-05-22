@@ -44,6 +44,9 @@ class IpfsStorageMock extends IpfsStorage {
       gatewayUrl: opts.gatewayUrl ?? MOCK_GATEWAY_URL,
       chainId: env.CHAIN_ID,
       timeoutMs: opts.timeoutMs,
+      // Keep retry-induced sleep negligible so retryable-error tests run
+      // comfortably under the default vitest timeout.
+      retryBaseDelayMs: 1,
     });
   }
 
@@ -69,7 +72,7 @@ describe("IpfsStorage", () => {
     MOCK_UNKNOWN_CID = await rawCid(Buffer.from("ff".repeat(32), "hex"));
 
     ipfsServer = setupServer(
-      http.head(`${MOCK_GATEWAY_URL}/ipfs/bafkqaaa`, () => {
+      http.get(`${MOCK_GATEWAY_URL}/ipfs/bafkqaaa`, () => {
         return new HttpResponse(null, { status: 200 });
       }),
       http.get(`${MOCK_GATEWAY_URL}/ipfs/:cid`, ({ params }) => {
@@ -120,7 +123,7 @@ describe("IpfsStorage", () => {
 
   it("should fail health check when gateway returns 5xx", async () => {
     ipfsServer.use(
-      http.head(`${MOCK_GATEWAY_URL}/ipfs/bafkqaaa`, () => {
+      http.get(`${MOCK_GATEWAY_URL}/ipfs/bafkqaaa`, () => {
         return new HttpResponse(null, { status: 503 });
       })
     );
@@ -232,7 +235,7 @@ describe("IpfsStorage", () => {
 
   it("should fail when gateway is unreachable during health check", async () => {
     ipfsServer.use(
-      http.head(`${MOCK_GATEWAY_URL}/ipfs/bafkqaaa`, () => {
+      http.get(`${MOCK_GATEWAY_URL}/ipfs/bafkqaaa`, () => {
         return HttpResponse.error();
       })
     );
