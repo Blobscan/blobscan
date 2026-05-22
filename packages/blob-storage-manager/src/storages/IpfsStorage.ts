@@ -113,17 +113,23 @@ async function readBoundedBody(
   const chunks: Uint8Array[] = [];
   let totalBytes = 0;
 
-  for (let read = await reader.read(); !read.done; read = await reader.read()) {
-    const { value } = read;
-    totalBytes += value.byteLength;
-    if (totalBytes > maxBytes) {
-      reader.releaseLock();
-      await response.body?.cancel();
-      throw new BlobTooLargeError(totalBytes, maxBytes);
+  try {
+    for (
+      let read = await reader.read();
+      !read.done;
+      read = await reader.read()
+    ) {
+      const { value } = read;
+      totalBytes += value.byteLength;
+      if (totalBytes > maxBytes) {
+        throw new BlobTooLargeError(totalBytes, maxBytes);
+      }
+      chunks.push(value);
     }
-    chunks.push(value);
+  } finally {
+    reader.releaseLock();
+    await response.body?.cancel().catch(() => undefined);
   }
-  reader.releaseLock();
 
   const result = new Uint8Array(totalBytes);
   let offset = 0;
@@ -289,15 +295,21 @@ export class IpfsStorage extends BlobStorage {
       );
     }
 
-    // Fast-path: reject before streaming when Content-Length is known
-    const contentLength = response.headers.get("content-length");
-    if (contentLength && Number(contentLength) > MAX_RESPONSE_BYTES) {
+    // Fast-path: reject before streaming when Content-Length is known.
+    // A malformed header parses as NaN, which fails every numeric comparison
+    // silently — parse explicitly and fall through to the streaming cap when
+    // the value is not a usable integer.
+    const contentLengthHeader = response.headers.get("content-length");
+    const contentLength = contentLengthHeader
+      ? Number.parseInt(contentLengthHeader, 10)
+      : NaN;
+    if (Number.isFinite(contentLength) && contentLength > MAX_RESPONSE_BYTES) {
       recordIpfsGatewayAttempt({
         outcome: "too_large",
         status: response.status,
         durationMs: Date.now() - startedAt,
       });
-      throw new BlobTooLargeError(Number(contentLength), MAX_RESPONSE_BYTES);
+      throw new BlobTooLargeError(contentLength, MAX_RESPONSE_BYTES);
     }
 
     try {
