@@ -7,7 +7,12 @@ import { ErrorException } from "@blobscan/errors";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
-import { BlobTooLargeError, InvalidBlobCidError, StorageCreationError } from "../errors";
+import {
+  BlobIntegrityError,
+  BlobTooLargeError,
+  InvalidBlobCidError,
+  StorageCreationError,
+} from "../errors";
 import { recordIpfsGatewayAttempt } from "../instrumentation";
 import { bytesToHex } from "../utils";
 
@@ -54,9 +59,7 @@ async function assertMatchesCid(cid: CID, bytes: Uint8Array): Promise<void> {
   const { digest } = await sha256.digest(bytes);
 
   if (!bytesEquals(digest, cid.multihash.digest)) {
-    throw new Error(
-      `IPFS content integrity check failed: bytes do not match CID "${cid.toString()}"`
-    );
+    throw new BlobIntegrityError(cid.toString());
   }
 }
 
@@ -102,7 +105,7 @@ async function readBoundedBody(
     // calling arrayBuffer() would buffer the full response before any size
     // check could trip. Fail closed instead of trusting the gateway not to
     // ship an oversized payload.
-    await response.body?.cancel();
+    await response.body?.cancel().catch(() => undefined);
     throw new IpfsGatewayError(
       "IPFS gateway response body is not streamable; cannot enforce size limit",
       response.status,
@@ -197,7 +200,7 @@ export class IpfsStorage extends BlobStorage {
     });
 
     // Drain the body so the connection can be reused / released.
-    await response.body?.cancel();
+    await response.body?.cancel().catch(() => undefined);
 
     if (!response.ok) {
       throw new Error(
@@ -254,7 +257,9 @@ export class IpfsStorage extends BlobStorage {
           durationMs: 0,
         });
 
-        await sleep(this.retryBaseDelayMs * 2 ** attempt);
+        await sleep(
+          this.retryBaseDelayMs * 2 ** attempt * (0.5 + Math.random() * 0.5)
+        );
       }
     }
   }

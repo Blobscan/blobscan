@@ -1,16 +1,22 @@
 import { ErrorException } from "@blobscan/errors";
 
-export class BlobTooLargeError extends Error {
+export class BlobTooLargeError extends ErrorException {
   constructor(bytes: number, max: number) {
     super(`Response too large: ${bytes} bytes exceeds limit of ${max} bytes`);
-    this.name = "BlobTooLargeError";
   }
 }
 
-export class InvalidBlobCidError extends Error {
+export class InvalidBlobCidError extends ErrorException {
   constructor(uri: string) {
     super(`Invalid IPFS CID: "${uri}"`);
-    this.name = "InvalidBlobCidError";
+  }
+}
+
+export class BlobIntegrityError extends ErrorException {
+  constructor(cid: string) {
+    super(
+      `IPFS content integrity check failed: bytes do not match CID "${cid}"`
+    );
   }
 }
 
