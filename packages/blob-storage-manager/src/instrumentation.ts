@@ -43,6 +43,55 @@ const transferDurationHistogram =
     }
   );
 
+export type IpfsGatewayOutcome =
+  | "success"
+  | "retry"
+  | "gateway_error"
+  | "too_large"
+  | "integrity_failure"
+  | "network_error";
+
+export type IpfsGatewayMetricAttributes = {
+  outcome: IpfsGatewayOutcome;
+  // HTTP status when available; 0 for network/timeout errors.
+  status: number;
+};
+
+const ipfsGatewayRequestsTotalCounter =
+  meter.createCounter<IpfsGatewayMetricAttributes>(
+    "blobscan_ipfs_gateway_requests_total",
+    {
+      description:
+        "Number of requests issued to the IPFS gateway, labelled by outcome and HTTP status",
+      valueType: api.ValueType.INT,
+    }
+  );
+
+const ipfsGatewayRequestDurationHistogram =
+  meter.createHistogram<IpfsGatewayMetricAttributes>(
+    "blobscan_ipfs_gateway_request_duration_ms",
+    {
+      description:
+        "Duration of individual IPFS gateway requests (per attempt, not per getBlob call)",
+      valueType: api.ValueType.INT,
+      unit: "ms",
+    }
+  );
+
+export function recordIpfsGatewayAttempt({
+  outcome,
+  status,
+  durationMs,
+}: {
+  outcome: IpfsGatewayOutcome;
+  status: number;
+  durationMs: number;
+}) {
+  const attrs: IpfsGatewayMetricAttributes = { outcome, status };
+  ipfsGatewayRequestsTotalCounter.add(1, attrs);
+  ipfsGatewayRequestDurationHistogram.record(durationMs, attrs);
+}
+
 export function updateBlobStorageMetrics({
   storage,
   blobSize,

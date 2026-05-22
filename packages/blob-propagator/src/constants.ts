@@ -2,8 +2,18 @@ import type { JobsOptions, WorkerOptions } from "bullmq";
 
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
+// Storages whose blob payload is uploaded by an external service rather
+// than through the BlobStorage.storeBlob interface — see also the matching
+// filter in BlobPropagator.#createPropagators. Kept in sync here so the
+// blob-propagation-jobs CLI doesn't expose queue names for workers that
+// never get created.
+export const NON_PROPAGATABLE_STORAGES: ReadonlySet<BlobStorageName> = new Set([
+  "WEAVEVM",
+  "IPFS",
+]);
+
 export const STORAGE_WORKER_NAMES = Object.values(BlobStorageName)
-  .filter((blobStorageName) => blobStorageName !== "WEAVEVM")
+  .filter((blobStorageName) => !NON_PROPAGATABLE_STORAGES.has(blobStorageName))
   .reduce<Record<BlobStorageName, string>>(
     (names, storage) => ({
       ...names,

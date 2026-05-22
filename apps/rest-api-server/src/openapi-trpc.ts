@@ -14,6 +14,7 @@ import { chain, rollupRegistry } from "./chain";
 import { prisma } from "./clients/prisma";
 import { redis } from "./clients/redis";
 import { getBlobPropagator } from "./services/blob-propagator";
+import { getIpfsStorage } from "./services/ipfs-storage";
 
 export async function setUpOpenApiTRPC(app: Express): Promise<void> {
   const appRouter = createAppRouter({
@@ -34,8 +35,10 @@ export async function setUpOpenApiTRPC(app: Express): Promise<void> {
     tags: ["blobs", "transactions", "blocks", "stats", "indexer", "system"],
   });
   const blobPropagator = await getBlobPropagator();
+  const ipfsStorage = await getIpfsStorage();
   const createContext = createTRPCContext({
     blobPropagator,
+    ipfsStorage,
     chain: chain,
     rollupRegistry,
     enableTracing: env.TRACES_ENABLED,
@@ -49,6 +52,7 @@ export async function setUpOpenApiTRPC(app: Express): Promise<void> {
       },
       services: {
         indexer: env.SECRET_KEY,
+        ipfs: env.IPFS_API_KEY,
         loadNetwork: env.WEAVEVM_API_KEY,
       },
     },

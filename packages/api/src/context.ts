@@ -5,6 +5,7 @@ import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import type IORedis from "ioredis";
 
 import type { BlobPropagator } from "@blobscan/blob-propagator";
+import type { IpfsStorage } from "@blobscan/blob-storage-manager";
 import type { Chain } from "@blobscan/chains";
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import type { RollupRegistry } from "@blobscan/rollups/src/RollupRegistry";
@@ -19,6 +20,7 @@ export type CreateContextOptions =
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
   apiClient?: ApiClient;
   blobPropagator?: BlobPropagator;
+  ipfsStorage?: IpfsStorage;
   chain: Chain;
   redis?: IORedis;
   prisma: BlobscanPrismaClient;
@@ -27,6 +29,7 @@ type CreateInnerContextOptions = Partial<CreateContextOptions> & {
 
 export type ServiceApiKeys = Partial<{
   indexer: string;
+  ipfs: string;
   loadNetwork: string;
 }>;
 
@@ -43,6 +46,7 @@ export type ApiKeys = Partial<{
 export type CreateContextParams = {
   apiKeys?: ApiKeys;
   blobPropagator?: BlobPropagator;
+  ipfsStorage?: IpfsStorage;
   chain: Chain;
   rollupRegistry: RollupRegistry;
   enableTracing?: boolean;
@@ -55,6 +59,7 @@ export type TRPCInnerContext = {
   chain: Chain;
   prisma: BlobscanPrismaClient;
   blobPropagator?: BlobPropagator;
+  ipfsStorage?: IpfsStorage;
   redis?: IORedis;
   apiClient?: ApiClient;
 };
@@ -63,6 +68,7 @@ export function createTRPCInnerContext({
   chain,
   prisma,
   blobPropagator,
+  ipfsStorage,
   apiClient,
   redis,
   rollupRegistry,
@@ -71,6 +77,7 @@ export function createTRPCInnerContext({
     chain,
     prisma,
     blobPropagator,
+    ipfsStorage,
     apiClient,
     redis,
     rollupRegistry,
@@ -81,6 +88,7 @@ export type ContextScope = "web" | "rest-api";
 
 export function createTRPCContext({
   blobPropagator,
+  ipfsStorage,
   prisma,
   chain,
   rollupRegistry,
@@ -102,6 +110,7 @@ export function createTRPCContext({
         prisma,
         apiClient,
         blobPropagator,
+        ipfsStorage,
         redis,
         rollupRegistry,
       });

@@ -1,6 +1,7 @@
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import {
   GoogleStorage,
+  IpfsStorage,
   PostgresStorage,
   S3Storage,
   SwarmStorage,
@@ -14,7 +15,7 @@ import { logger } from "@blobscan/logger";
 
 import { prisma } from "../clients/prisma";
 
-function isBlobStorageEnabled(storageName: BlobStorageName) {
+export function isBlobStorageEnabled(storageName: BlobStorageName) {
   const storageEnabledKey =
     `${storageName}_STORAGE_ENABLED` as keyof Environment;
   const storageEnabled = env[storageEnabledKey];
@@ -101,6 +102,13 @@ export async function createStorageFromEnv(
       return WeaveVMStorage.create({
         chainId,
         apiBaseUrl: env.WEAVEVM_STORAGE_API_BASE_URL,
+      });
+    }
+    case BlobStorageName.IPFS: {
+      return IpfsStorage.create({
+        chainId,
+        gatewayUrl: env.IPFS_STORAGE_GATEWAY_URL,
+        apiKey: env.IPFS_STORAGE_API_KEY,
       });
     }
     default: {

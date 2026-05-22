@@ -12,6 +12,7 @@ const nodeEnvSchema = z.enum(["development", "test", "production"]);
 
 const BLOB_STORAGE = [
   "GOOGLE",
+  "IPFS",
   "POSTGRES",
   "SWARM",
   "SWARMYCLOUD",
@@ -171,7 +172,20 @@ export const env = createEnv({
        */
 
       // General storage settings
-      PRIMARY_BLOB_STORAGE: blobStorageCoercionSchema.default("POSTGRES"),
+      // IPFS and WEAVEVM are populated by external services and don't
+      // implement the write side of the BlobStorage interface, so they
+      // can't act as the primary storage (the source the propagator reads
+      // from and the reconciler walks).
+      PRIMARY_BLOB_STORAGE: blobStorageCoercionSchema
+        .default("POSTGRES")
+        .superRefine((value, ctx) => {
+          if (value === "IPFS" || value === "WEAVEVM") {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: `"${value.toLowerCase()}" cannot be used as PRIMARY_BLOB_STORAGE: it is populated by an external service and does not support writes`,
+            });
+          }
+        }),
 
       // Postgres blob storage
       POSTGRES_STORAGE_ENABLED: booleanSchema.default("false"),
@@ -240,6 +254,19 @@ export const env = createEnv({
         .optional()
         .superRefine(requireIfEnvEnabled("WEAVEVM_STORAGE_ENABLED")),
 
+      // IPFS storage (references registered externally by blobscan-ipld)
+      IPFS_STORAGE_ENABLED: booleanSchema.default("false"),
+      IPFS_STORAGE_GATEWAY_URL: z
+        .string()
+        .url()
+        .default("https://ipfs.filebase.io")
+        .superRefine(requireIfEnvEnabled("IPFS_STORAGE_ENABLED")),
+      // Optional bearer token sent to gated IPFS gateways (Filebase, Infura…).
+      IPFS_STORAGE_API_KEY: z.string().optional(),
+      // Bearer token authenticating inbound blobscan-ipld requests to the
+      // /blobs/ipfs-references endpoint (not a gateway/storage credential).
+      IPFS_API_KEY: z.string().optional(),
+
       VITEST_MAINNET_FORK_URL: z
         .string()
         .url()
@@ -270,8 +297,18 @@ export const env = createEnv({
       `Blob propagator configuration: primaryBlobStorage=${env.PRIMARY_BLOB_STORAGE} completedJobsAge=${env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE} seconds, failedJobsAge=${env.BLOB_PROPAGATOR_FAILED_JOBS_AGE} seconds, reconcilerEnabled=${env.BLOB_RECONCILER_ENABLED}, reconcilerCronPattern=${env.BLOB_RECONCILER_CRON_PATTERN}`
     );
 
+    const enabledStorages = [
+      env.POSTGRES_STORAGE_ENABLED && "postgres",
+      env.GOOGLE_STORAGE_ENABLED && "gcs",
+      env.SWARM_STORAGE_ENABLED && "swarm",
+      env.SWARMYCLOUD_STORAGE_ENABLED && "swarmy",
+      env.S3_STORAGE_ENABLED && "s3",
+      env.WEAVEVM_STORAGE_ENABLED && "weavevm",
+      env.IPFS_STORAGE_ENABLED && "ipfs",
+    ].filter(Boolean);
     console.log(
-      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, swarmy=${env.SWARMYCLOUD_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}`
+      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, enabledStorages:`,
+      enabledStorages
     );
 
     if (env.GOOGLE_STORAGE_ENABLED) {

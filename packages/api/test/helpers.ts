@@ -62,6 +62,8 @@ export async function createTestContext({
     if (apiClient === "indexer") {
       const token = jwt.sign("foobar", env.SECRET_KEY);
       req.headers.authorization = `Bearer ${token}`;
+    } else if (apiClient === "ipfs") {
+      req.headers.authorization = `Bearer ${env.IPFS_API_KEY}`;
     } else if (apiClient === "load-network") {
       req.headers.authorization = `Bearer ${env.WEAVEVM_API_KEY}`;
     } else if (apiClient === "blob-data") {
@@ -85,6 +87,7 @@ export async function createTestContext({
   const ctx: TRPCContext = {
     apiClient,
     blobPropagator: undefined,
+    ipfsStorage: undefined,
     chain,
     enableTracing: false,
     req,
