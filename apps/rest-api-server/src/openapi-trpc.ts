@@ -7,6 +7,7 @@ import {
 } from "trpc-openapi";
 
 import { createAppRouter, createTRPCContext } from "@blobscan/api";
+import { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import { env } from "@blobscan/env";
 import { logger } from "@blobscan/logger";
 
@@ -14,6 +15,7 @@ import { chain, rollupRegistry } from "./chain";
 import { prisma } from "./clients/prisma";
 import { redis } from "./clients/redis";
 import { getBlobPropagator } from "./services/blob-propagator";
+import { createBlobStorages } from "./services/blob-storages";
 
 export async function setUpOpenApiTRPC(app: Express): Promise<void> {
   const appRouter = createAppRouter({
@@ -34,8 +36,13 @@ export async function setUpOpenApiTRPC(app: Express): Promise<void> {
     tags: ["blobs", "transactions", "blocks", "stats", "indexer", "system"],
   });
   const blobPropagator = await getBlobPropagator();
+  const blobStorages = await createBlobStorages();
+  const blobStorageManager = blobStorages.length
+    ? new BlobStorageManager(blobStorages)
+    : undefined;
   const createContext = createTRPCContext({
     blobPropagator,
+    blobStorageManager,
     chain: chain,
     rollupRegistry,
     enableTracing: env.TRACES_ENABLED,

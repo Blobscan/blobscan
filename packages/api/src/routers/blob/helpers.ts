@@ -28,6 +28,7 @@ import {
 
 const blobDataStorageReferenceSelect = {
   blobStorage: true,
+  dataReference: true,
   url: true,
 } satisfies ExtendedBlobDataStorageReferenceSelect;
 
@@ -235,12 +236,14 @@ export function toResponseBlob(
     transactions: blobOnTxs,
     ...prismaBlob
   }: CompletedPrismaBlob,
-  ethUsdPrices: EthUsdPrice["price"][]
+  ethUsdPrices: EthUsdPrice["price"][],
+  signedUrls?: Map<string, string>
 ): ResponseBlob {
   const responseBlob: ResponseBlob = {
     ...prismaBlob,
     dataStorageReferences: normalizePrismaBlobDataStorageReferencesFields(
-      dataStorageReferences
+      dataStorageReferences,
+      signedUrls
     ),
     transactions: blobOnTxs.map(
       (
@@ -310,7 +313,8 @@ export function toResponseBlob(
 
 export function toResponseBlobOnTransaction(
   prismaBlobOnTransaction: CompletedPrismaBlobOnTransaction,
-  ethUsdPrice?: EthUsdPrice["price"]
+  ethUsdPrice?: EthUsdPrice["price"],
+  signedUrls?: Map<string, string>
 ): ResponseBlobOnTransaction {
   const {
     blobHash,
@@ -324,7 +328,8 @@ export function toResponseBlobOnTransaction(
     ...blob,
     versionedHash: blobHash,
     dataStorageReferences: normalizePrismaBlobDataStorageReferencesFields(
-      dataStorageReferences
+      dataStorageReferences,
+      signedUrls
     ),
     ...restBlobOnTransaction,
   };
@@ -369,4 +374,13 @@ export function toResponseBlobOnTransaction(
   }
 
   return responseBlobOnTx;
+}
+
+export function toBlobReferences(
+  dataStorageReferences: ExtendedBlobDataStorageReference[]
+) {
+  return dataStorageReferences.map(({ blobStorage, dataReference }) => ({
+    storage: blobStorage,
+    reference: dataReference,
+  }));
 }

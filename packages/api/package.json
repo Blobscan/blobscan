@@ -15,9 +15,11 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
+    "@blobscan/blob-storage-manager": "workspace:^0.8.3",
     "@blobscan/chains": "workspace:^0.4.0",
     "@blobscan/dayjs": "workspace:^0.1.1",
     "@blobscan/db": "workspace:^0.26.1",
+    "@blobscan/env": "workspace:^0.2.0",
     "@blobscan/logger": "workspace:^0.1.4",
     "@blobscan/open-telemetry": "workspace:^0.0.10",
     "@blobscan/rollups": "workspace:^0.4.2",
