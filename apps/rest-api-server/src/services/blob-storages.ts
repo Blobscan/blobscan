@@ -61,7 +61,7 @@ export async function createStorageFromEnv(
         apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
         projectId: env.GOOGLE_STORAGE_PROJECT_ID,
         serviceKey: env.GOOGLE_SERVICE_KEY,
-        signedUrlsEnabled: env.GOOGLE_STORAGE_SIGNED_URLS,
+        signedUrlsEnabled: env.GOOGLE_STORAGE_SIGNED_URLS_ENABLED,
       });
     }
     case BlobStorageName.POSTGRES: {

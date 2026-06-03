@@ -188,7 +188,7 @@ export const env = createEnv({
         .string()
         .optional()
         .superRefine(requireIfEnvEnabled("GOOGLE_STORAGE_ENABLED")),
-      GOOGLE_STORAGE_SIGNED_URLS: booleanSchema.default("false"),
+      GOOGLE_STORAGE_SIGNED_URLS_ENABLED: booleanSchema.default("false"),
 
       // Swarm storage
       SWARM_STORAGE_ENABLED: booleanSchema.default("false"),

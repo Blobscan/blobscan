@@ -23,7 +23,7 @@ Note that the database size can grow quickly. For this reason, it is not recomme
 
 ## Google Cloud Storage signed URLs
 
-When `GOOGLE_STORAGE_SIGNED_URLS` is set to `true`, the API will return signed URLs for blobs stored in Google Cloud Storage instead of public URLs. Signed URLs provide time-limited access to private objects without requiring users to make the bucket publicly accessible.
+When `GOOGLE_STORAGE_SIGNED_URLS_ENABLED` is set to `true`, the API will return signed URLs for blobs stored in Google Cloud Storage instead of public URLs. Signed URLs provide time-limited access to private objects without requiring users to make the bucket publicly accessible.
 
 If signing fails for a given object (for example, missing IAM permission), the API logs an error and falls back to the original URL — the request itself does not fail.
 
@@ -33,12 +33,12 @@ The required permissions depend on what the Blobscan instance does. The same ser
 
 #### Permissions matrix
 
-| Permission | Where granted | Read-only API instance | Indexer / propagator (writes blobs) |
-|---|---|---|---|
-| `storage.objects.get` | bucket | ✅ — required to read blobs and to make signed URLs valid for clients | ✅ |
-| `storage.objects.create` | bucket |  | ✅ — required to upload blobs |
-| `storage.objects.delete` | bucket |  | ✅ — required to remove blobs |
-| `storage.buckets.list` | **project** | ✅ — required by the startup health check | ✅ |
+| Permission               | Where granted | Read-only API instance                                                | Indexer / propagator (writes blobs) |
+| ------------------------ | ------------- | --------------------------------------------------------------------- | ----------------------------------- |
+| `storage.objects.get`    | bucket        | ✅ — required to read blobs and to make signed URLs valid for clients | ✅                                  |
+| `storage.objects.create` | bucket        |                                                                       | ✅ — required to upload blobs       |
+| `storage.objects.delete` | bucket        |                                                                       | ✅ — required to remove blobs       |
+| `storage.buckets.list`   | **project**   | ✅ — required by the startup health check                             | ✅                                  |
 
 > The `storage.buckets.list` requirement comes from the bucket health check that runs at startup. It must be granted at **project** level (no bucket-scoped variant exists). If you cannot grant it project-wide, define a custom role with only that permission rather than using a broader predefined role.
 
@@ -110,13 +110,13 @@ DOKS is not GKE, so there is no Workload Identity bridge to GCP. The simplest an
    ```yaml
    env:
      - name: GOOGLE_STORAGE_ENABLED
-       value: "true"
+       value: 'true'
      - name: GOOGLE_STORAGE_BUCKET_NAME
        value: your-bucket-name
      - name: GOOGLE_STORAGE_PROJECT_ID
        value: your-project-id
-     - name: GOOGLE_STORAGE_SIGNED_URLS
-       value: "true"
+     - name: GOOGLE_STORAGE_SIGNED_URLS_ENABLED
+       value: 'true'
      - name: GOOGLE_SERVICE_KEY
        valueFrom:
          secretKeyRef:
