@@ -60,6 +60,12 @@ export const env = createEnv({
     S3_STORAGE_BUCKET_NAME: z.string().optional(),
     S3_STORAGE_ENDPOINT: z.string().url().optional(),
     WEAVEVM_STORAGE_API_BASE_URL: z.string().optional(),
+    IPFS_STORAGE_ENABLED: booleanSchema.default("false"),
+    IPFS_STORAGE_GATEWAY_URL: z
+      .string()
+      .url()
+      .default("https://ipfs.filebase.io"),
+    IPFS_STORAGE_API_KEY: z.string().optional(),
 
     ...clientEnvVars,
   },
@@ -94,6 +100,9 @@ export const env = createEnv({
     S3_STORAGE_BUCKET_NAME: process.env.S3_STORAGE_BUCKET_NAME,
     S3_STORAGE_ENDPOINT: process.env.S3_STORAGE_ENDPOINT,
     WEAVEVM_STORAGE_API_BASE_URL: process.env.WEAVEVM_STORAGE_API_BASE_URL,
+    IPFS_STORAGE_ENABLED: process.env.IPFS_STORAGE_ENABLED,
+    IPFS_STORAGE_GATEWAY_URL: process.env.IPFS_STORAGE_GATEWAY_URL,
+    IPFS_STORAGE_API_KEY: process.env.IPFS_STORAGE_API_KEY,
 
     PUBLIC_BEACON_BASE_URL: process.env.PUBLIC_BEACON_BASE_URL,
     PUBLIC_EXPLORER_BASE_URL: process.env.PUBLIC_EXPLORER_BASE_URL,

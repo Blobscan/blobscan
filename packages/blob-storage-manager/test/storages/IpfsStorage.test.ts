@@ -7,9 +7,8 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { env, testValidError } from "@blobscan/test";
 
-import { BlobStorageError, BlobTooLargeError, InvalidBlobCidError } from "../../src/errors";
+import { BlobStorageError, BlobTooLargeError, IpfsGatewayError, InvalidBlobCidError } from "../../src/errors";
 import {
-  IpfsGatewayError,
   IpfsStorage,
   MAX_RESPONSE_BYTES,
 } from "../../src/storages/IpfsStorage";
@@ -168,9 +167,8 @@ describe("IpfsStorage", () => {
     );
 
     const error = await storage.getBlob(MOCK_CID).catch((e) => e);
-    expect(error).toBeInstanceOf(BlobStorageError);
-    expect(error.cause).toBeInstanceOf(IpfsGatewayError);
-    expect((error.cause as IpfsGatewayError).retryable).toBe(true);
+    expect(error).toBeInstanceOf(IpfsGatewayError);
+    expect((error as IpfsGatewayError).retryable).toBe(true);
   });
 
   it("should mark 500 responses as retryable", async () => {
@@ -181,14 +179,14 @@ describe("IpfsStorage", () => {
     );
 
     const error = await storage.getBlob(MOCK_CID).catch((e) => e);
-    expect(error.cause).toBeInstanceOf(IpfsGatewayError);
-    expect((error.cause as IpfsGatewayError).retryable).toBe(true);
+    expect(error).toBeInstanceOf(IpfsGatewayError);
+    expect((error as IpfsGatewayError).retryable).toBe(true);
   });
 
   it("should mark 404 responses as non-retryable", async () => {
     const error = await storage.getBlob(MOCK_UNKNOWN_CID).catch((e) => e);
-    expect(error.cause).toBeInstanceOf(IpfsGatewayError);
-    expect((error.cause as IpfsGatewayError).retryable).toBe(false);
+    expect(error).toBeInstanceOf(IpfsGatewayError);
+    expect((error as IpfsGatewayError).retryable).toBe(false);
   });
 
   it("should fail with an invalid CID prefix", async () => {

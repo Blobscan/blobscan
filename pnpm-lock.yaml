@@ -273,6 +273,9 @@ importers:
       '@blobscan/blob-decoder':
         specifier: workspace:^0.2.2
         version: link:../../packages/blob-decoder
+      '@blobscan/blob-storage-manager':
+        specifier: workspace:^0.8.3
+        version: link:../../packages/blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.4.1
         version: link:../../packages/chains
@@ -285,6 +288,9 @@ importers:
       '@blobscan/db':
         specifier: workspace:^0.26.1
         version: link:../../packages/db
+      '@blobscan/env':
+        specifier: workspace:^0.2.0
+        version: link:../../packages/env
       '@blobscan/eth-format':
         specifier: workspace:^0.1.0
         version: link:../../packages/eth-format

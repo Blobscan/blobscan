@@ -1,5 +1,16 @@
 import { ErrorException } from "@blobscan/errors";
 
+export class IpfsGatewayError extends ErrorException {
+  constructor(
+    message: string,
+    public readonly status: number,
+    public readonly retryable: boolean,
+    public readonly retryAfterMs?: number
+  ) {
+    super(message);
+  }
+}
+
 export class BlobTooLargeError extends ErrorException {
   constructor(bytes: number, max: number) {
     super(`Response too large: ${bytes} bytes exceeds limit of ${max} bytes`);

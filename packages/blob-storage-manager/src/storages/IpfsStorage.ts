@@ -3,13 +3,12 @@ import { CID } from "multiformats/cid";
 import { sha256 } from "multiformats/hashes/sha2";
 
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
-import { ErrorException } from "@blobscan/errors";
-
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import {
   BlobIntegrityError,
   BlobTooLargeError,
+  IpfsGatewayError,
   InvalidBlobCidError,
   StorageCreationError,
 } from "../errors";
@@ -64,17 +63,6 @@ async function assertMatchesCid(cid: CID, bytes: Uint8Array): Promise<void> {
 
   if (!bytesEquals(digest, cid.multihash.digest)) {
     throw new BlobIntegrityError(cid.toString());
-  }
-}
-
-export class IpfsGatewayError extends ErrorException {
-  constructor(
-    message: string,
-    public readonly status: number,
-    public readonly retryable: boolean,
-    public readonly retryAfterMs?: number
-  ) {
-    super(message);
   }
 }
 

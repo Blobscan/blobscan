@@ -265,7 +265,10 @@ export const env = createEnv({
       IPFS_STORAGE_API_KEY: z.string().optional(),
       // Bearer token authenticating inbound blobscan-ipld requests to the
       // /blobs/ipfs-references endpoint (not a gateway/storage credential).
-      IPFS_API_KEY: z.string().optional(),
+      IPFS_API_KEY: z
+        .string()
+        .optional()
+        .superRefine(requireIfEnvEnabled("IPFS_STORAGE_ENABLED")),
 
       VITEST_MAINNET_FORK_URL: z
         .string()
