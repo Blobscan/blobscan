@@ -61,5 +61,16 @@ Check out the following PRs
 
 ## Label a new rollup
 
-TBW
+Steps:
+
+1. Add the new rollup value to the `Rollup` enum in `packages/db/prisma/schema.prisma`
+2. Create a Prisma migration to add the new enum value to the database
+3. Add the sender address(es) → rollup mapping in `packages/rollups/src/index.ts` (per chain)
+4. Add an SVG (or PNG) icon to `apps/web/src/icons/rollups/` (or `apps/web/public/rollups/` for PNGs)
+5. Register the icon in `apps/web/src/icons/rollups/index.ts`
+6. Add the badge style (and optional label override) in the `ROLLUP_CONFIG` object in `apps/web/src/components/Badges/RollupBadge.tsx`
+
+Check out the following PRs:
+
+* https://github.com/Blobscan/blobscan/pull/923
 
