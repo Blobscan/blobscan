@@ -15,4 +15,10 @@ export function printBanner() {
       .FEEDBACK_WEBHOOK_URL} tracesEnabled=${!!process.env
       .TRACES_ENABLED} sentryEnabled=${!!process.env.PUBLIC_SENTRY_DSN_WEB}`
   );
+  console.log(
+    `Blob storage manager configuration: gcs=${!!process.env
+      .GOOGLE_STORAGE_BUCKET_NAME} s3=${!!process.env
+      .S3_STORAGE_BUCKET_NAME} weavevm=${!!process.env
+      .WEAVEVM_STORAGE_API_BASE_URL}`
+  );
 }
