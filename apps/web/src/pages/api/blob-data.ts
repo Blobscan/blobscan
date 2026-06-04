@@ -35,11 +35,20 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       return res.status(response.status).json({ message: response.statusText });
     }
 
+    // Signed URLs carry a query string (e.g. `?X-Goog-Signature=...`), so the
+    // file extension must be read from the pathname rather than the full URL.
+    let pathname: string;
+    try {
+      pathname = new URL(url).pathname;
+    } catch {
+      pathname = url;
+    }
+
     const contentType = response.headers.get("content-type");
     const isBinaryFile =
-      url.endsWith(".bin") || contentType === "application/octet-stream";
+      pathname.endsWith(".bin") || contentType === "application/octet-stream";
     const isTextPlainFile =
-      url.endsWith(".txt") ||
+      pathname.endsWith(".txt") ||
       contentType === "text/plain" ||
       contentType === "application/x-www-form-urlencoded";
     let blobData: Buffer;
