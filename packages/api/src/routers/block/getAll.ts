@@ -12,6 +12,7 @@ import {
   withPaginationSchema,
   withPagination,
 } from "../../middlewares/withPagination";
+import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import { countBlocks } from "./getCount";
@@ -45,6 +46,7 @@ export const getAll = publicProcedure
   .input(withPaginationSchema)
   .use(withPagination)
   .output(outputSchema)
+  .use(withBlobSignedUrls)
   .query(async ({ ctx: { expands, filters, pagination, prisma, count } }) => {
     const {
       blockFilters = {},
