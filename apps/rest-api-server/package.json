@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/rest-api-server",
-  "version": "0.12.6",
+  "version": "0.13.0",
   "private": true,
   "scripts": {
     "build": "ncc build src/index.ts --target es2020 --minify",
@@ -17,12 +17,12 @@
   "keywords": [],
   "license": "MIT",
   "dependencies": {
-    "@blobscan/api": "workspace:^0.33.0",
-    "@blobscan/blob-propagator": "workspace:^0.6.5",
-    "@blobscan/blob-storage-manager": "workspace:^0.8.3",
+    "@blobscan/api": "workspace:^0.34.0",
+    "@blobscan/blob-propagator": "workspace:^0.6.6",
+    "@blobscan/blob-storage-manager": "workspace:^0.9.0",
     "@blobscan/chains": "workspace:^0.4.0",
     "@blobscan/db": "workspace:^0.26.0",
-    "@blobscan/env": "workspace:^0.2.0",
+    "@blobscan/env": "workspace:^0.3.0",
     "@blobscan/errors": "workspace:^0.0.2",
     "@blobscan/logger": "workspace:^0.1.5",
     "@blobscan/open-telemetry": "workspace:^0.0.10",
