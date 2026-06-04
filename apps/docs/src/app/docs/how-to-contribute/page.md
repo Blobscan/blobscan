@@ -36,8 +36,9 @@ If you have questions or need help with your contribution, join our [Discord](ht
 
 Steps:
 
-1. Update Network type in package network-blob-config
-2. Update networkSchema in web app
+1. Add a new chain file under `packages/chains/src/chains/` (see existing chains for reference) and export it from `packages/chains/src/chains/index.ts`
+2. Add the new network name to the `networkSchema` enum in `packages/env/index.ts`
+3. Update environment documentation in `apps/docs/src/app/docs/environment/page.md`
 
 Check out the following PRs:
 
@@ -49,13 +50,15 @@ Check out the following PRs:
 
 Steps:
 
-1. Add new environment variables, if required
-2. Update documentation
-3. Add svg icon (StorageBadge component)
-4. Add a new BlobPropagationWorkerProcessor
-5. Add tests for the new storage provider
+1. Add the new storage value to the `BlobStorage` enum in `packages/db/prisma/schema.prisma` and create a Prisma migration
+2. Implement the storage class in `packages/blob-storage-manager/src/storages/` extending `BlobStorage` and export it from its `index.ts`
+3. Add any new environment variables to `packages/env/index.ts` and document them in `apps/docs/src/app/docs/environment/page.md`
+4. Wire up the new storage in `packages/blob-storage-manager/src/utils/storage.ts` (`createStorageFromEnv`)
+5. Add a worker processor file in `packages/blob-propagator/src/worker-processors/` and register it in `packages/blob-propagator/src/BlobPropagator.ts`
+6. Add an SVG icon to `apps/web/src/icons/blob-storages/`, register it in `apps/web/src/icons/blob-storages/index.ts`, and add the badge entry in `apps/web/src/components/Badges/StorageBadge.tsx`
+7. Add tests for the new storage class and worker processor
 
-Check out the following PRs
+Check out the following PRs:
 
 * https://github.com/Blobscan/blobscan/pull/820
 
@@ -63,12 +66,11 @@ Check out the following PRs
 
 Steps:
 
-1. Add the new rollup value to the `Rollup` enum in `packages/db/prisma/schema.prisma`
-2. Create a Prisma migration to add the new enum value to the database
-3. Add the sender address(es) → rollup mapping in `packages/rollups/src/index.ts` (per chain)
-4. Add an SVG (or PNG) icon to `apps/web/src/icons/rollups/` (or `apps/web/public/rollups/` for PNGs)
-5. Register the icon in `apps/web/src/icons/rollups/index.ts`
-6. Add the badge style (and optional label override) in the `ROLLUP_CONFIG` object in `apps/web/src/components/Badges/RollupBadge.tsx`
+1. Add the new rollup value to the `Rollup` enum in `packages/db/prisma/schema.prisma` and create a Prisma migration
+2. Add the sender address(es) → rollup mapping in `packages/rollups/src/index.ts` (per chain ID)
+3. Add an SVG (or PNG) icon to `apps/web/src/icons/rollups/` (or `apps/web/public/rollups/` for PNGs)
+4. Register the icon in `apps/web/src/icons/rollups/index.ts`
+5. Add the badge style (and optional label override) in the `ROLLUP_CONFIG` object in `apps/web/src/components/Badges/RollupBadge.tsx`
 
 Check out the following PRs:
 
