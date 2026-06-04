@@ -57,6 +57,7 @@ export const env = createEnv({
       .default(`http://localhost:${process.env.BLOBSCAN_API_PORT ?? 3001}`),
     GOOGLE_STORAGE_BUCKET_NAME: z.string().optional(),
     GOOGLE_STORAGE_API_ENDPOINT: z.string().url().optional(),
+    GOOGLE_STORAGE_SIGNED_URLS_ENABLED: booleanSchema.default("false"),
     S3_STORAGE_BUCKET_NAME: z.string().optional(),
     S3_STORAGE_ENDPOINT: z.string().url().optional(),
     WEAVEVM_STORAGE_API_BASE_URL: z.string().optional(),
