@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.51.3
+
+### Patch Changes
+
+- [#988](https://github.com/Blobscan/blobscan/pull/988) [`d4474d5`](https://github.com/Blobscan/blobscan/commit/d4474d521e24982962d384989748cfabf39482db) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed blob data retrieval failing for signed storage URLs. The blob data proxy now URL-encodes the reference URL and derives the file type from the URL pathname, so signed GCS URLs (which carry `X-Goog-*` query parameters) are no longer truncated.
+
 ## 0.51.2
 
 ### Patch Changes
