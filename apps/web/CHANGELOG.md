@@ -7,7 +7,7 @@
 - [#987](https://github.com/Blobscan/blobscan/pull/987) [`7eb4941`](https://github.com/Blobscan/blobscan/commit/7eb494149a56764148cbca2271c9a05586781564) Thanks [@PJColombo](https://github.com/PJColombo)! - Centralized blob signed URL resolution into a `withBlobSignedUrls` tRPC middleware. Transaction and block endpoints now return signed URLs for blob data storage references (previously only the blob endpoints did), falling back to the plain stored URL when signing is unavailable. Added the `GOOGLE_STORAGE_SIGNED_URLS_ENABLED` env var to the web app.
 
 - Updated dependencies [[`7eb4941`](https://github.com/Blobscan/blobscan/commit/7eb494149a56764148cbca2271c9a05586781564), [`904831c`](https://github.com/Blobscan/blobscan/commit/904831cc5f3507fc1488a16ff952469281654500)]:
-  - @blobscan/api@1.0.0
+  - @blobscan/api@0.34.0
   - @blobscan/blob-storage-manager@0.9.0
   - @blobscan/env@0.3.0
 

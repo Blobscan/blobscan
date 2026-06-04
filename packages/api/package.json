@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/api",
-  "version": "1.0.0",
+  "version": "0.34.0",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -32,11 +32,11 @@
     "trpc-openapi": "^1.2.0"
   },
   "devDependencies": {
-    "@blobscan/blob-propagator": "workspace:^1.0.0",
+    "@blobscan/blob-propagator": "workspace:^0.6.6",
     "@types/jsonwebtoken": "^9.0.2"
   },
   "peerDependencies": {
-    "@blobscan/blob-propagator": "workspace:^1.0.0"
+    "@blobscan/blob-propagator": "workspace:^0.6.6"
   },
   "eslintConfig": {
     "root": true,

@@ -6,7 +6,7 @@
 
 - Updated dependencies [[`904831c`](https://github.com/Blobscan/blobscan/commit/904831cc5f3507fc1488a16ff952469281654500)]:
   - @blobscan/env@0.3.0
-  - @blobscan/blob-propagator@1.0.0
+  - @blobscan/blob-propagator@0.6.6
 
 ## 0.2.16
 
