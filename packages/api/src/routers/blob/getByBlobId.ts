@@ -6,6 +6,7 @@ import {
   createExpandsSchema,
   withExpands,
 } from "../../middlewares/withExpands";
+import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import type { CompletedPrismaBlob } from "./helpers";
@@ -13,7 +14,6 @@ import {
   responseBlobSchema,
   createBlobSelect,
   toResponseBlob,
-  toBlobReferences,
 } from "./helpers";
 
 const inputSchema = z
@@ -37,7 +37,8 @@ export const getByBlobId = publicProcedure
   .input(inputSchema)
   .use(withExpands)
   .output(outputSchema)
-  .query(async ({ ctx: { blobStorageManager, expands, prisma }, input }) => {
+  .use(withBlobSignedUrls)
+  .query(async ({ ctx: { expands, prisma }, input }) => {
     const { id } = input;
     const isExpandEnabled = !!expands.block || !!expands.transaction;
 
@@ -58,13 +59,8 @@ export const getByBlobId = publicProcedure
       });
     }
 
-    const signedUrls = await blobStorageManager?.buildSignedUrls(
-      toBlobReferences(prismaBlob.dataStorageReferences)
-    );
-
     return toResponseBlob(
       prismaBlob,
-      ethUsdPrices.map(({ price }) => price),
-      signedUrls
+      ethUsdPrices.map(({ price }) => price)
     );
   });

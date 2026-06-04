@@ -8,6 +8,7 @@ import {
   withExpands,
 } from "../../middlewares/withExpands";
 import { withFilters } from "../../middlewares/withFilters";
+import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import { responseBlockSchema, fetchBlock, toResponseBlock } from "./helpers";
@@ -33,6 +34,7 @@ export const getBySlot = publicProcedure
   .output(outputSchema)
   .use(withExpands)
   .use(withFilters)
+  .use(withBlobSignedUrls)
   .query(async ({ ctx: { prisma, filters, expands }, input: { slot } }) => {
     const blockIdField: BlockIdField = { type: "slot", value: slot };
 

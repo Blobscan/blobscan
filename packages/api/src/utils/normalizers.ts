@@ -70,11 +70,14 @@ export function normalizePrismaTransactionFields({
 }
 
 export function normalizePrismaBlobDataStorageReferencesFields(
-  dataStorageReferences: ExtendedBlobDataStorageReference[],
-  urlOverrides?: Map<string, string>
+  dataStorageReferences: ExtendedBlobDataStorageReference[]
 ) {
   return dataStorageReferences.map(({ blobStorage, dataReference, url }) => ({
     storage: blobStorage,
-    url: urlOverrides?.get(dataReference) ?? url,
+    // `dataReference` is preserved so the `withBlobSignedUrls` middleware can
+    // resolve a signed URL for it. It is stripped from the final response by
+    // the endpoint's output schema (which only exposes `{ storage, url }`).
+    dataReference,
+    url,
   }));
 }
