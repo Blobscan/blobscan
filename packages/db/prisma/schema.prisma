@@ -209,7 +209,6 @@ model BlobDataStorageReference {
   blobHash      String      @map("blob_hash")
   blobStorage   BlobStorage @map("storage")
   dataReference String      @map("data_reference")
-  metaReference String?     @map("meta_reference")
 
   blob Blob @relation(fields: [blobHash], references: [versionedHash])
 

@@ -388,15 +388,11 @@ describe("Upsert Many Extension", () => {
           {
             blobHash: newBlob.versionedHash,
             blobStorage: BlobStorage.POSTGRES,
-            dataReference: "newReference",
-            metaReference: null,
-          },
+            dataReference: "newReference",          },
           {
             blobHash: newBlob.versionedHash,
             blobStorage: BlobStorage.SWARM,
-            dataReference: "newReference",
-            metaReference: null,
-          },
+            dataReference: "newReference",          },
         ];
 
         await prisma.blob.create({
@@ -409,9 +405,7 @@ describe("Upsert Many Extension", () => {
           select: {
             blobHash: true,
             blobStorage: true,
-            dataReference: true,
-            metaReference: true,
-          },
+            dataReference: true,          },
           where: {
             blobHash: newBlob.versionedHash,
           },
@@ -428,21 +422,15 @@ describe("Upsert Many Extension", () => {
           {
             blobHash: "blobHash001",
             blobStorage: BlobStorage.GOOGLE,
-            dataReference: "updatedReference",
-            metaReference: null,
-          },
+            dataReference: "updatedReference",          },
           {
             blobHash: "blobHash001",
             blobStorage: BlobStorage.SWARM,
-            dataReference: "updatedReference",
-            metaReference: null,
-          },
+            dataReference: "updatedReference",          },
           {
             blobHash: "blobHash002",
             blobStorage: BlobStorage.GOOGLE,
-            dataReference: "updatedReference",
-            metaReference: null,
-          },
+            dataReference: "updatedReference",          },
         ];
 
         await prisma.blobDataStorageReference.upsertMany(input);
@@ -454,9 +442,7 @@ describe("Upsert Many Extension", () => {
           select: {
             blobHash: true,
             blobStorage: true,
-            dataReference: true,
-            metaReference: true,
-          },
+            dataReference: true,          },
           where: {
             blobHash: {
               in: updatedBlobVersionedHashes,
@@ -486,9 +472,7 @@ describe("Upsert Many Extension", () => {
           {
             blobHash: "nonExistentBlobHash",
             blobStorage: BlobStorage.GOOGLE,
-            dataReference: "reference",
-            metaReference: null,
-          },
+            dataReference: "reference",          },
         ];
 
         await expect(

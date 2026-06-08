@@ -19,19 +19,16 @@ describe("createIpfsReferences", () => {
       versionedHash:
         "0x01000000000000000000000000000000000000000000000000000000000000b1",
       dataCid: "bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
-      metaCid: "bafkreidvq553ihjzhnp3qrk44yhm3do2aaoqmmles2yu36t7rflfn3wkji",
     },
     {
       versionedHash:
         "0x01000000000000000000000000000000000000000000000000000000000000b2",
       dataCid: "bafkreiderks4k6p3gdzyv52e3f6w5scay6ure55etgqnpaht44yu5sqjbm",
-      metaCid: "bafkreie7j63i6pq5vsbcal42uwa44c57d53f34hjvq6iyv7cb5ufvovy5u",
     },
     {
       versionedHash:
         "0x01000000000000000000000000000000000000000000000000000000000000b3",
       dataCid: "bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
-      metaCid: "bafkreidvq553ihjzhnp3qrk44yhm3do2aaoqmmles2yu36t7rflfn3wkji",
     },
   ];
 
@@ -60,20 +57,18 @@ describe("createIpfsReferences", () => {
       .findMany({ where })
       .then((refs) =>
         refs
-          .map(({ blobHash, dataReference, metaReference }) => ({
+          .map(({ blobHash, dataReference }) => ({
             blobHash,
             dataReference,
-            metaReference,
           }))
           .sort((a, b) => a.blobHash.localeCompare(b.blobHash))
       );
 
     expect(after).toEqual(
       references
-        .map(({ versionedHash, dataCid, metaCid }) => ({
+        .map(({ versionedHash, dataCid }) => ({
           blobHash: versionedHash,
           dataReference: dataCid,
-          metaReference: metaCid,
         }))
         .sort((a, b) => a.blobHash.localeCompare(b.blobHash))
     );
@@ -110,8 +105,6 @@ describe("createIpfsReferences", () => {
               "0x01ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
             dataCid:
               "bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
-            metaCid:
-              "bafkreidvq553ihjzhnp3qrk44yhm3do2aaoqmmles2yu36t7rflfn3wkji",
           },
         ],
       });

@@ -41,7 +41,6 @@ const inputSchema = z.object({
       z.object({
         versionedHash: versionedHashSchema,
         dataCid: cidSchema,
-        metaCid: cidSchema,
       })
     )
     .max(
@@ -114,10 +113,9 @@ export const createIpfsReferences = createAuthedProcedure("ipfs")
 
       for (const batch of chunk(references, DB_BATCH_SIZE)) {
         await tx.blobDataStorageReference.createMany({
-          data: batch.map(({ versionedHash, dataCid, metaCid }) => ({
+          data: batch.map(({ versionedHash, dataCid }) => ({
             blobHash: versionedHash,
             dataReference: dataCid,
-            metaReference: metaCid,
             blobStorage: BlobStorage.IPFS,
           })),
           skipDuplicates: true,

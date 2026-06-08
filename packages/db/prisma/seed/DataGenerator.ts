@@ -117,7 +117,6 @@ export class DataGenerator {
       blobHash: blob.versionedHash,
       blobStorage,
       dataReference: blob.versionedHash,
-      metaReference: null,
     }));
   }
 

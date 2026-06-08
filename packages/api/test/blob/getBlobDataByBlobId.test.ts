@@ -80,7 +80,6 @@ describe("getBlobDataByBlobId", () => {
           blobHash: blobHash,
           blobStorage: blobStorage,
           dataReference: `1/01/00/00/01000000000000000000000000000000000000000000000000000000000000b1.${extension}`,
-          metaReference: null,
         };
       }
 
