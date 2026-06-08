@@ -87,7 +87,6 @@ export async function createTestContext({
   const ctx: TRPCContext = {
     apiClient,
     blobPropagator: undefined,
-    ipfsStorage: undefined,
     blobStorageManager: undefined,
     chain,
     enableTracing: false,

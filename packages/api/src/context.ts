@@ -5,10 +5,7 @@ import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import type IORedis from "ioredis";
 
 import type { BlobPropagator } from "@blobscan/blob-propagator";
-import type {
-  BlobStorageManager,
-  IpfsStorage,
-} from "@blobscan/blob-storage-manager";
+import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import type { Chain } from "@blobscan/chains";
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import type { RollupRegistry } from "@blobscan/rollups/src/RollupRegistry";
@@ -23,7 +20,6 @@ export type CreateContextOptions =
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
   apiClient?: ApiClient;
   blobPropagator?: BlobPropagator;
-  ipfsStorage?: IpfsStorage;
   blobStorageManager?: BlobStorageManager;
   chain: Chain;
   redis?: IORedis;
@@ -50,7 +46,6 @@ export type ApiKeys = Partial<{
 export type CreateContextParams = {
   apiKeys?: ApiKeys;
   blobPropagator?: BlobPropagator;
-  ipfsStorage?: IpfsStorage;
   blobStorageManager?: BlobStorageManager;
   chain: Chain;
   rollupRegistry: RollupRegistry;
@@ -64,7 +59,6 @@ export type TRPCInnerContext = {
   chain: Chain;
   prisma: BlobscanPrismaClient;
   blobPropagator?: BlobPropagator;
-  ipfsStorage?: IpfsStorage;
   blobStorageManager?: BlobStorageManager;
   redis?: IORedis;
   apiClient?: ApiClient;
@@ -74,7 +68,6 @@ export function createTRPCInnerContext({
   chain,
   prisma,
   blobPropagator,
-  ipfsStorage,
   blobStorageManager,
   apiClient,
   redis,
@@ -84,7 +77,6 @@ export function createTRPCInnerContext({
     chain,
     prisma,
     blobPropagator,
-    ipfsStorage,
     blobStorageManager,
     apiClient,
     redis,
@@ -96,7 +88,6 @@ export type ContextScope = "web" | "rest-api";
 
 export function createTRPCContext({
   blobPropagator,
-  ipfsStorage,
   blobStorageManager,
   prisma,
   chain,
@@ -119,7 +110,6 @@ export function createTRPCContext({
         prisma,
         apiClient,
         blobPropagator,
-        ipfsStorage,
         blobStorageManager,
         redis,
         rollupRegistry,

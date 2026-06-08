@@ -3,6 +3,8 @@ import { CID } from "multiformats/cid";
 import { sha256 } from "multiformats/hashes/sha2";
 
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
+import { logger } from "@blobscan/logger";
+
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import {
@@ -166,6 +168,14 @@ export interface IpfsStorageConfig extends BlobStorageConfig {
   timeoutMs?: number;
   maxRetries?: number;
   retryBaseDelayMs?: number;
+  /**
+   * When false, a failed gateway health-check at construction is logged but
+   * does not prevent the storage from being created — the gateway may be
+   * transiently down, and per-request retries plus storage-level fallback
+   * recover once it's reachable again. Defaults to true (fail fast on an
+   * unreachable gateway).
+   */
+  verifyGatewayOnInit?: boolean;
 }
 
 export class IpfsStorage extends BlobStorage {
@@ -390,20 +400,30 @@ export class IpfsStorage extends BlobStorage {
   // required because the dataCid already addresses the raw blob bytes.
 
   static async create(config: IpfsStorageConfig): Promise<IpfsStorage> {
+    const storage = new IpfsStorage(config);
+
     try {
-      const storage = new IpfsStorage(config);
-
       await storage.healthCheck();
-
-      return storage;
     } catch (err) {
       const err_ = err as Error;
 
-      throw new StorageCreationError(
-        this.name,
-        err_.message,
-        err_.cause as Error
+      // Fail fast only when the caller opted into upfront verification.
+      // Otherwise register the storage despite an unreachable gateway: a
+      // transient boot-time outage shouldn't disable IPFS for the process
+      // lifetime, and reads recover via per-request retries and fallback.
+      if (config.verifyGatewayOnInit ?? true) {
+        throw new StorageCreationError(
+          this.name,
+          err_.message,
+          err_.cause as Error
+        );
+      }
+
+      logger.warn(
+        `IPFS gateway health-check failed at startup; registering storage anyway: ${err_.message}`
       );
     }
+
+    return storage;
   }
 }

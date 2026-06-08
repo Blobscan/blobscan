@@ -15,6 +15,29 @@ import { blobIdSchema } from "../../zod-schemas";
 
 const FETCH_TIMEOUT_MS = 30_000;
 
+// Walks an error's `cause` chain (which may branch into an array when the
+// BlobStorageManager aggregates per-storage failures) to recover the
+// originating IpfsGatewayError, if any.
+function findIpfsGatewayError(err: unknown): IpfsGatewayError | undefined {
+  if (err instanceof IpfsGatewayError) {
+    return err;
+  }
+
+  const cause = (err as { cause?: unknown } | undefined)?.cause;
+
+  if (Array.isArray(cause)) {
+    for (const c of cause) {
+      const found = findIpfsGatewayError(c);
+      if (found) {
+        return found;
+      }
+    }
+    return undefined;
+  }
+
+  return cause ? findIpfsGatewayError(cause) : undefined;
+}
+
 const inputSchema = z.object({
   id: blobIdSchema,
 });
@@ -42,7 +65,7 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
     })
     .input(inputSchema)
     .output(outputSchema)
-    .query(async ({ ctx: { prisma, ipfsStorage }, input: { id } }) => {
+    .query(async ({ ctx: { prisma, blobStorageManager }, input: { id } }) => {
       if (!isEnabled) {
         throw new TRPCError({
           code: "FORBIDDEN",
@@ -87,14 +110,18 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
       for (const { blobStorage, dataReference, url } of orderedStorageUrls) {
         try {
           if (blobStorage === "IPFS") {
-            if (!ipfsStorage) {
+            if (!blobStorageManager?.hasStorage("IPFS")) {
               continue;
             }
 
             // IPFS rows have no computed `url` (the CID is kept server-side):
-            // resolve by the stored content-addressed dataReference (dataCid),
-            // which the storage fetches and verifies in a single request.
-            blobData = await ipfsStorage.getBlob(dataReference);
+            // resolve by the stored content-addressed dataReference (dataCid)
+            // through the manager, which fetches and verifies in one request.
+            const { data } = await blobStorageManager.getBlobByReferences({
+              reference: dataReference,
+              storage: "IPFS",
+            });
+            blobData = data;
             break;
           }
 
@@ -139,20 +166,21 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
         } catch (err) {
           const asError =
             err instanceof Error ? err : new Error(String(err));
-          // Surface gateway HTTP status / retryability inline instead of
-          // burying them inside `cause`, so they show up directly in
-          // operator logs and TRPCError chains.
-          const suffix =
-            err instanceof IpfsGatewayError
-              ? ` (status=${err.status}, retryable=${err.retryable})`
-              : "";
+          // The manager wraps the underlying failure in a
+          // BlobStorageManagerError, so dig the gateway error out of the
+          // error chain to keep surfacing its HTTP status / retryability
+          // inline instead of burying them inside `cause`.
+          const gatewayError = findIpfsGatewayError(err);
+          const suffix = gatewayError
+            ? ` (status=${gatewayError.status}, retryable=${gatewayError.retryable})`
+            : "";
           const wrapped = new Error(
             `Failed to fetch blob data with reference '${dataReference}' from storage ${blobStorage}${suffix}`,
             { cause: asError }
           );
-          if (err instanceof IpfsGatewayError) {
+          if (gatewayError) {
             logger.warn(
-              `IPFS gateway request failed for dataCid=${dataReference}: status=${err.status} retryable=${err.retryable} message="${err.message}"`
+              `IPFS gateway request failed for dataCid=${dataReference}: status=${gatewayError.status} retryable=${gatewayError.retryable} message="${gatewayError.message}"`
             );
           }
           storageErrors.push(wrapped);
