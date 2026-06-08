@@ -3,7 +3,16 @@ import type { SetupServerApi } from "msw/node";
 import { setupServer } from "msw/node";
 import { CID } from "multiformats/cid";
 import { sha256 } from "multiformats/hashes/sha2";
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 import { env, testValidError } from "@blobscan/test";
 
@@ -67,6 +76,12 @@ describe("IpfsStorage", () => {
   let storage: IpfsStorageMock;
 
   beforeAll(async () => {
+    // The shared test setup installs fake timers (vi.useFakeTimers), which
+    // would stall the retry backoff's setTimeout and hang every test that
+    // exercises a retryable gateway failure. None of these tests depend on a
+    // mocked clock, so run them with real timers.
+    vi.useRealTimers();
+
     MOCK_CID = await rawCid(MOCK_BLOB_BYTES);
     MOCK_UNKNOWN_CID = await rawCid(Buffer.from("ff".repeat(32), "hex"));
 
@@ -101,6 +116,11 @@ describe("IpfsStorage", () => {
 
   afterEach(() => {
     ipfsServer.resetHandlers();
+  });
+
+  afterAll(() => {
+    // Restore the shared setup's fake timers so we don't leak real timers.
+    vi.useFakeTimers();
   });
 
   it("should create a storage", async () => {
@@ -154,8 +174,10 @@ describe("IpfsStorage", () => {
       })
     );
 
+    // A non-ok gateway response surfaces as an IpfsGatewayError (propagated
+    // unwrapped so callers can inspect its HTTP status / retryability).
     await expect(storage.getBlob(MOCK_CID)).rejects.toBeInstanceOf(
-      BlobStorageError
+      IpfsGatewayError
     );
   });
 
