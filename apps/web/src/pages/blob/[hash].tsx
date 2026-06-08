@@ -62,9 +62,13 @@ const Blob: NextPage = function () {
       }
 
       for (const { storage, url } of blob.dataStorageReferences) {
+        if (!url) {
+          continue;
+        }
+
         try {
           const response = await fetch(
-            `/api/blob-data?storage=${storage}&url=${url}`
+            `/api/blob-data?storage=${storage}&url=${encodeURIComponent(url)}`
           );
 
           if (!response.ok) {

@@ -20,7 +20,7 @@ afterAll(async () => {
   );
 
   let teardownPromise = Promise.all([
-    ...queues.map((q) => q.obliterate({ force: true })),
+    ...queues.map((q) => q.pause().then(() => q.obliterate({ force: true }))),
   ]);
 
   queues.forEach((q) => {

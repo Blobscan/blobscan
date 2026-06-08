@@ -1,10 +1,12 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import type { DeepMockProxy } from "vitest-mock-extended";
 import { mockDeep } from "vitest-mock-extended";
 
 import { getPrisma } from "@blobscan/db";
+import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { env, testValidError } from "@blobscan/test";
 
+import type { BlobStorage } from "../src/BlobStorage";
 import { BlobStorageManager } from "../src/BlobStorageManager";
 import { BlobStorageError, BlobStorageManagerError } from "../src/errors";
 import { GoogleStorage, PostgresStorage, SwarmStorage } from "../src/storages";
@@ -259,5 +261,109 @@ describe("BlobStorageManager", () => {
         checkCause: true,
       }
     );
+  });
+
+  describe("when building signed urls", () => {
+    function makeSigningStorage(
+      name: BlobStorageName,
+      getSignedUrl: (ref: string) => Promise<string | undefined>
+    ): BlobStorage {
+      return {
+        name,
+        getSignedUrl: vi.fn(async (ref: string) => getSignedUrl(ref)),
+      } as unknown as BlobStorage;
+    }
+
+    it("should return an empty map when no references are provided", async () => {
+      const bsm = new BlobStorageManager([
+        makeSigningStorage(BlobStorageName.GOOGLE, async () => undefined),
+      ]);
+
+      const result = await bsm.buildSignedUrls([]);
+
+      expect(result.size).toBe(0);
+    });
+
+    it("should return an empty map when no storage produces a signed url", async () => {
+      const bsm = new BlobStorageManager([
+        makeSigningStorage(BlobStorageName.GOOGLE, async () => undefined),
+      ]);
+
+      const result = await bsm.buildSignedUrls([
+        { storage: BlobStorageName.GOOGLE, reference: "ref-1" },
+        { storage: BlobStorageName.S3, reference: "ref-2" },
+      ]);
+
+      expect(result.size).toBe(0);
+    });
+
+    it("should return a map of signed urls keyed by reference", async () => {
+      const bsm = new BlobStorageManager([
+        makeSigningStorage(
+          BlobStorageName.GOOGLE,
+          async (ref) => `https://signed/${ref}`
+        ),
+      ]);
+
+      const result = await bsm.buildSignedUrls([
+        { storage: BlobStorageName.GOOGLE, reference: "ref-1" },
+        { storage: BlobStorageName.GOOGLE, reference: "ref-2" },
+      ]);
+
+      expect(Object.fromEntries(result)).toEqual({
+        "ref-1": "https://signed/ref-1",
+        "ref-2": "https://signed/ref-2",
+      });
+    });
+
+    it("should skip references for storages not registered in the manager", async () => {
+      const bsm = new BlobStorageManager([
+        makeSigningStorage(
+          BlobStorageName.GOOGLE,
+          async (ref) => `https://signed/${ref}`
+        ),
+      ]);
+
+      const result = await bsm.buildSignedUrls([
+        { storage: BlobStorageName.GOOGLE, reference: "gcs-ref" },
+        { storage: BlobStorageName.S3, reference: "s3-ref" },
+      ]);
+
+      expect(Object.fromEntries(result)).toEqual({
+        "gcs-ref": "https://signed/gcs-ref",
+      });
+    });
+
+    it("should skip a reference whose signing call throws and sign the rest", async () => {
+      const bsm = new BlobStorageManager([
+        makeSigningStorage(BlobStorageName.GOOGLE, async (ref) => {
+          if (ref === "ref-bad") throw new Error("boom");
+          return `https://signed/${ref}`;
+        }),
+      ]);
+
+      const result = await bsm.buildSignedUrls([
+        { storage: BlobStorageName.GOOGLE, reference: "ref-bad" },
+        { storage: BlobStorageName.GOOGLE, reference: "ref-good" },
+      ]);
+
+      expect(Object.fromEntries(result)).toEqual({
+        "ref-good": "https://signed/ref-good",
+      });
+    });
+
+    it("should return an empty map when every signing call throws", async () => {
+      const bsm = new BlobStorageManager([
+        makeSigningStorage(BlobStorageName.GOOGLE, async () => {
+          throw new Error("nope");
+        }),
+      ]);
+
+      const result = await bsm.buildSignedUrls([
+        { storage: BlobStorageName.GOOGLE, reference: "ref-1" },
+      ]);
+
+      expect(result.size).toBe(0);
+    });
   });
 });

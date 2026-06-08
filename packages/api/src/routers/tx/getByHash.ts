@@ -6,6 +6,7 @@ import {
   createExpandsSchema,
   withExpands,
 } from "../../middlewares/withExpands";
+import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import type { CompletedPrismaTransaction } from "./helpers";
@@ -35,6 +36,7 @@ export const getByHash = publicProcedure
   .input(inputSchema)
   .use(withExpands)
   .output(outputSchema)
+  .use(withBlobSignedUrls)
   .query(async ({ ctx: { expands, prisma }, input: { hash } }) => {
     const [prismaTx, ethUsdPrice] = await Promise.all([
       prisma.transaction.findUnique({

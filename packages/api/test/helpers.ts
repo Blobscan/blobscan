@@ -88,6 +88,7 @@ export async function createTestContext({
     apiClient,
     blobPropagator: undefined,
     ipfsStorage: undefined,
+    blobStorageManager: undefined,
     chain,
     enableTracing: false,
     req,

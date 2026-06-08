@@ -1,5 +1,28 @@
 # @blobscan/web
 
+## 0.51.3
+
+### Patch Changes
+
+- [#988](https://github.com/Blobscan/blobscan/pull/988) [`d4474d5`](https://github.com/Blobscan/blobscan/commit/d4474d521e24982962d384989748cfabf39482db) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed blob data retrieval failing for signed storage URLs. The blob data proxy now URL-encodes the reference URL and derives the file type from the URL pathname, so signed GCS URLs (which carry `X-Goog-*` query parameters) are no longer truncated.
+
+## 0.51.2
+
+### Patch Changes
+
+- [#987](https://github.com/Blobscan/blobscan/pull/987) [`7eb4941`](https://github.com/Blobscan/blobscan/commit/7eb494149a56764148cbca2271c9a05586781564) Thanks [@PJColombo](https://github.com/PJColombo)! - Centralized blob signed URL resolution into a `withBlobSignedUrls` tRPC middleware. Transaction and block endpoints now return signed URLs for blob data storage references (previously only the blob endpoints did), falling back to the plain stored URL when signing is unavailable. Added the `GOOGLE_STORAGE_SIGNED_URLS_ENABLED` env var to the web app.
+
+- Updated dependencies [[`7eb4941`](https://github.com/Blobscan/blobscan/commit/7eb494149a56764148cbca2271c9a05586781564), [`904831c`](https://github.com/Blobscan/blobscan/commit/904831cc5f3507fc1488a16ff952469281654500)]:
+  - @blobscan/api@0.34.0
+  - @blobscan/blob-storage-manager@0.9.0
+  - @blobscan/env@0.3.0
+
+## 0.51.1
+
+### Patch Changes
+
+- [#983](https://github.com/Blobscan/blobscan/pull/983) [`55158a7`](https://github.com/Blobscan/blobscan/commit/55158a78f54b3c707ff1fe5027ca7b2d330ff87f) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - fix: remove giveth banner
+
 ## 0.51.0
 
 ### Minor Changes

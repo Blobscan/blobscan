@@ -2,9 +2,12 @@ import { createServerSideHelpers as _createServerSideHelepers } from "@trpc/reac
 
 import { createAppRouter, createTRPCContext } from "@blobscan/api";
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
+
+import { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import { getChain } from "@blobscan/chains";
 import { RollupRegistry } from "@blobscan/rollups/src/RollupRegistry";
 
+import { createBlobStorages } from "./blob-storages";
 import { env } from "./env";
 import { getIpfsStorage } from "./ipfs-storage";
 import { prisma } from "./prisma";
@@ -13,6 +16,11 @@ import { redis } from "./redis";
 const chain = getChain(env.CHAIN_ID);
 
 const rollupRegistry = RollupRegistry.create(env.CHAIN_ID);
+
+const blobStorages = await createBlobStorages();
+const blobStorageManager = blobStorages.length
+  ? new BlobStorageManager(blobStorages)
+  : undefined;
 
 export const appRouter = createAppRouter({
   blobRouter: {
@@ -33,6 +41,7 @@ export async function createContext(opts: CreateNextContextOptions) {
     rollupRegistry,
     prisma,
     redis,
+    blobStorageManager,
     enableTracing: env.TRACES_ENABLED,
     ipfsStorage,
     apiKeys: {

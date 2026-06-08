@@ -1,7 +1,6 @@
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import {
   GoogleStorage,
-  IpfsStorage,
   PostgresStorage,
   S3Storage,
   SwarmStorage,
@@ -13,9 +12,9 @@ import { env } from "@blobscan/env";
 import type { Environment } from "@blobscan/env";
 import { logger } from "@blobscan/logger";
 
-import { prisma } from "../clients/prisma";
+import { prisma } from "./prisma";
 
-export function isBlobStorageEnabled(storageName: BlobStorageName) {
+function isBlobStorageEnabled(storageName: BlobStorageName) {
   const storageEnabledKey =
     `${storageName}_STORAGE_ENABLED` as keyof Environment;
   const storageEnabled = env[storageEnabledKey];
@@ -23,7 +22,7 @@ export function isBlobStorageEnabled(storageName: BlobStorageName) {
   return storageEnabled === true || storageEnabled === "true";
 }
 
-export async function createStorageFromEnv(
+async function createStorageFromEnv(
   storageName: BlobStorageName
 ): Promise<BlobStorage> {
   const chainId = env.CHAIN_ID;
@@ -35,7 +34,6 @@ export async function createStorageFromEnv(
           "Missing required env variables for S3Storage: S3_STORAGE_BUCKET_NAME, S3_STORAGE_REGION"
         );
       }
-
       return S3Storage.create({
         chainId,
         bucketName: env.S3_STORAGE_BUCKET_NAME,
@@ -55,7 +53,6 @@ export async function createStorageFromEnv(
           "Missing required env variables for GoogleStorage: GOOGLE_STORAGE_BUCKET_NAME, GOOGLE_SERVICE_KEY or GOOGLE_STORAGE_API_ENDPOINT"
         );
       }
-
       return GoogleStorage.create({
         chainId,
         bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
@@ -74,7 +71,6 @@ export async function createStorageFromEnv(
           "Missing required env variable for SwarmStorage: BEE_ENDPOINT"
         );
       }
-
       return SwarmStorage.create({
         chainId,
         beeEndpoint: env.BEE_ENDPOINT,
@@ -87,7 +83,6 @@ export async function createStorageFromEnv(
           "Missing required env variable for SwarmyCloudStorage: SWARMY_API_KEY"
         );
       }
-
       return SwarmyCloudStorage.create({
         chainId,
         apiKey: env.SWARMY_API_KEY,
@@ -99,17 +94,9 @@ export async function createStorageFromEnv(
           "Missing required env variable for WeavevmStorage: WEAVEVM_STORAGE_API_BASE_URL"
         );
       }
-
       return WeaveVMStorage.create({
         chainId,
         apiBaseUrl: env.WEAVEVM_STORAGE_API_BASE_URL,
-      });
-    }
-    case BlobStorageName.IPFS: {
-      return IpfsStorage.create({
-        chainId,
-        gatewayUrl: env.IPFS_STORAGE_GATEWAY_URL,
-        apiKey: env.IPFS_STORAGE_API_KEY,
       });
     }
     default: {
@@ -118,7 +105,7 @@ export async function createStorageFromEnv(
   }
 }
 
-export async function createBlobStorages() {
+export async function createBlobStorages(): Promise<BlobStorage[]> {
   const enabledBlobStorages = Object.values(BlobStorageName).filter(
     (storageName) => isBlobStorageEnabled(storageName)
   );
@@ -130,10 +117,8 @@ export async function createBlobStorages() {
   for (const result of results) {
     if (result.status === "rejected") {
       logger.warn(result.reason);
-
       continue;
     }
-
     storages.push(result.value);
   }
 
