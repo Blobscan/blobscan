@@ -1,0 +1,125 @@
+import { TRPCError } from "@trpc/server";
+import { CID } from "multiformats/cid";
+
+import { BlobStorage } from "@blobscan/db/prisma/enums";
+import { z } from "@blobscan/zod";
+
+import { createAuthedProcedure } from "../../procedures";
+
+// Postgres caps bind parameters at 65535; keep batches well below that so the
+// `IN` lookup and `createMany` stay within a single statement regardless of
+// how large a batch blobscan-ipld posts.
+const DB_BATCH_SIZE = 1_000;
+
+// Hard cap on a single request: above this we'd hold a long transaction and
+// risk DoS-ing the DB even with batching. blobscan-ipld can split larger
+// runs into multiple posts.
+const MAX_REFERENCES_PER_REQUEST = 10_000;
+
+// raw codec (0x55) is the only codec for which the CID digest is the sha256
+// of the block bytes directly, which is what IpfsStorage verifies on read.
+const RAW_CODEC = 0x55;
+
+const cidSchema = z.string().refine(
+  (value) => {
+    try {
+      return CID.parse(value).code === RAW_CODEC;
+    } catch {
+      return false;
+    }
+  },
+  { message: "Invalid IPFS CID: must be a raw-codec (0x55) CID" }
+);
+
+const versionedHashSchema = z
+  .string()
+  .regex(/^0x[0-9a-fA-F]{64}$/, "Invalid versioned hash");
+
+const inputSchema = z.object({
+  references: z
+    .array(
+      z.object({
+        versionedHash: versionedHashSchema,
+        dataCid: cidSchema,
+      })
+    )
+    .max(
+      MAX_REFERENCES_PER_REQUEST,
+      `Too many references in a single request (max ${MAX_REFERENCES_PER_REQUEST})`
+    ),
+});
+
+const outputSchema = z.void();
+
+function chunk<T>(items: T[], size: number): T[][] {
+  const batches: T[][] = [];
+  for (let i = 0; i < items.length; i += size) {
+    batches.push(items.slice(i, i + size));
+  }
+  return batches;
+}
+
+export const createIpfsReferences = createAuthedProcedure("ipfs")
+  .meta({
+    openapi: {
+      method: "POST",
+      path: "/blobs/ipfs-references",
+      tags: ["blobs"],
+      summary:
+        "Creates IPFS CID references for a given set of blobs. Called by blobscan-ipld after storing blobs on IPFS.",
+      protect: true,
+    },
+  })
+  .input(inputSchema)
+  .output(outputSchema)
+  .mutation(async ({ ctx: { prisma }, input: { references } }) => {
+    if (!references.length) {
+      return;
+    }
+
+    const versionedHashes = references.map((r) => r.versionedHash);
+
+    // Run the existence check and the inserts in a single transaction so a
+    // blob deleted between the two steps can't cause a partially-applied
+    // batch: the foreign-key violation rolls the whole operation back.
+    await prisma.$transaction(async (tx) => {
+      const dbVersionedHashes = new Set<string>();
+      for (const batch of chunk(versionedHashes, DB_BATCH_SIZE)) {
+        const blobs = await tx.blob.findMany({
+          select: { versionedHash: true },
+          where: { versionedHash: { in: batch } },
+        });
+        for (const { versionedHash } of blobs) {
+          dbVersionedHashes.add(versionedHash);
+        }
+      }
+
+      const missingHashes = versionedHashes.filter(
+        (hash) => !dbVersionedHashes.has(hash)
+      );
+
+      if (missingHashes.length > 0) {
+        const preview = missingHashes.slice(0, 5).map((h) => `"${h}"`);
+        const overflow = missingHashes.length - preview.length;
+        const list =
+          overflow > 0
+            ? `${preview.join(", ")} … and ${overflow} more`
+            : preview.join(", ");
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Couldn't find the following blobs: ${list}`,
+        });
+      }
+
+      for (const batch of chunk(references, DB_BATCH_SIZE)) {
+        await tx.blobDataStorageReference.createMany({
+          data: batch.map(({ versionedHash, dataCid }) => ({
+            blobHash: versionedHash,
+            dataReference: dataCid,
+            blobStorage: BlobStorage.IPFS,
+          })),
+          skipDuplicates: true,
+        });
+      }
+    });
+  });

@@ -35,4 +35,9 @@ export const STORAGE_DEFINITIONS: Record<
     badgeClassname:
       "bg-yellow-100 hover:bg-yellow-200 text-yellow-800 hover:text-yellow-900 dark:bg-yellow-900 dark:text-yellow-300 dark:hover:bg-yellow-800 dark:hover:text-yellow-200",
   },
+  ipfs: {
+    name: "IPFS",
+    badgeClassname:
+      "bg-teal-100 hover:bg-teal-200 text-teal-800 hover:text-teal-900 dark:bg-teal-900 dark:text-teal-300 dark:hover:bg-teal-800 dark:hover:text-teal-200",
+  },
 };

@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`IpfsStorage > should fail when trying to remove a blob 1`] = `"IpfsStorageMock failed: Failed to remove blob with uri \\"bafkreib4bfzpv7hbfnkzxljtlbhanc5a4x6kbxzwrqxbxzwrqxbxzwrqx\\""`;
+
+exports[`IpfsStorage > should fail when trying to remove a blob 2`] = `[Error: "removeBlob" is not supported: IPFS content is immutable]`;
+
+exports[`IpfsStorage > should fail when trying to store a blob 1`] = `"IpfsStorageMock failed: Failed to store blob with hash \\"bafkreib4bfzpv7hbfnkzxljtlbhanc5a4x6kbxzwrqxbxzwrqxbxzwrqx\\""`;
+
+exports[`IpfsStorage > should fail when trying to store a blob 2`] = `[Error: "storeBlob" is not supported: IPFS references are registered externally by blobscan-ipld]`;

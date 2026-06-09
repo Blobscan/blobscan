@@ -388,13 +388,11 @@ describe("Upsert Many Extension", () => {
           {
             blobHash: newBlob.versionedHash,
             blobStorage: BlobStorage.POSTGRES,
-            dataReference: "newReference",
-          },
+            dataReference: "newReference",          },
           {
             blobHash: newBlob.versionedHash,
             blobStorage: BlobStorage.SWARM,
-            dataReference: "newReference",
-          },
+            dataReference: "newReference",          },
         ];
 
         await prisma.blob.create({
@@ -407,8 +405,7 @@ describe("Upsert Many Extension", () => {
           select: {
             blobHash: true,
             blobStorage: true,
-            dataReference: true,
-          },
+            dataReference: true,          },
           where: {
             blobHash: newBlob.versionedHash,
           },
@@ -425,18 +422,15 @@ describe("Upsert Many Extension", () => {
           {
             blobHash: "blobHash001",
             blobStorage: BlobStorage.GOOGLE,
-            dataReference: "updatedReference",
-          },
+            dataReference: "updatedReference",          },
           {
             blobHash: "blobHash001",
             blobStorage: BlobStorage.SWARM,
-            dataReference: "updatedReference",
-          },
+            dataReference: "updatedReference",          },
           {
             blobHash: "blobHash002",
             blobStorage: BlobStorage.GOOGLE,
-            dataReference: "updatedReference",
-          },
+            dataReference: "updatedReference",          },
         ];
 
         await prisma.blobDataStorageReference.upsertMany(input);
@@ -448,8 +442,7 @@ describe("Upsert Many Extension", () => {
           select: {
             blobHash: true,
             blobStorage: true,
-            dataReference: true,
-          },
+            dataReference: true,          },
           where: {
             blobHash: {
               in: updatedBlobVersionedHashes,
@@ -479,8 +472,7 @@ describe("Upsert Many Extension", () => {
           {
             blobHash: "nonExistentBlobHash",
             blobStorage: BlobStorage.GOOGLE,
-            dataReference: "reference",
-          },
+            dataReference: "reference",          },
         ];
 
         await expect(

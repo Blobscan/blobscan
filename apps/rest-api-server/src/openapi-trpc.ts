@@ -56,6 +56,7 @@ export async function setUpOpenApiTRPC(app: Express): Promise<void> {
       },
       services: {
         indexer: env.SECRET_KEY,
+        ipfs: env.IPFS_API_KEY,
         loadNetwork: env.WEAVEVM_API_KEY,
       },
     },
