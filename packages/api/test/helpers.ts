@@ -272,6 +272,35 @@ export function runFiltersTestsSuite(
       expect(result).toMatchSnapshot();
     });
 
+    it("should return the results starting from the epoch specified", async () => {
+      // epoch 4 starts at slot 128; all fixtures are in epoch 3 (slots 96–127)
+      // so startEpoch=4 returns nothing, startEpoch=3 returns all — use 3
+      const result = await fetcher({
+        startEpoch: 3,
+      });
+
+      expect(result).toMatchSnapshot();
+    });
+
+    it("should return results up to and including the specified epoch", async () => {
+      // epoch 2 ends at slot 95; all fixtures start at slot 101, so endEpoch=2
+      // returns nothing. Use endEpoch=3 to include all fixtures
+      const result = await fetcher({
+        endEpoch: 3,
+      });
+
+      expect(result).toMatchSnapshot();
+    });
+
+    it("should return the results corresponding to the epoch range specified", async () => {
+      const result = await fetcher({
+        startEpoch: 3,
+        endEpoch: 3,
+      });
+
+      expect(result).toMatchSnapshot();
+    });
+
     it("should return the results corresponding to the sender address specified", async () => {
       const result = await fetcher({
         from: "address1",
