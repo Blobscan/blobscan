@@ -13,5 +13,6 @@ export const gnosis = new Chain(
       activationDate: new Date("2025-04-30T14:03:40Z"),
       activationSlot: 21_405_696,
     },
-  }
+  },
+  16
 );

@@ -59,6 +59,11 @@ export const withSlotRangeFilterSchema = z.object({
   endSlot: BlockModel.shape.slot.optional(),
 });
 
+export const withEpochRangeFilterSchema = z.object({
+  startEpoch: z.coerce.number().int().nonnegative().optional(),
+  endEpoch: z.coerce.number().int().nonnegative().optional(),
+});
+
 export const withRollupsFilterSchema = z.object({
   rollups: commaSeparatedValuesSchema.transform((values) =>
     values?.map((v) => dbRollupCoercionSchema.parse(v))
@@ -93,6 +98,7 @@ export const withAllFiltersSchema = withSortFilterSchema
   .merge(withBlockRangeFilterSchema)
   .merge(withDateRangeFilterSchema)
   .merge(withSlotRangeFilterSchema)
+  .merge(withEpochRangeFilterSchema)
   .merge(withRollupsFilterSchema)
   .merge(withCategoriesFilterSchema)
   .merge(withAddressFilterSchema)
@@ -111,7 +117,7 @@ export function hasCustomFilters(filters: Filters) {
 }
 
 export const withFilters = t.middleware(
-  ({ next, input = {}, ctx: { rollupRegistry } }) => {
+  ({ next, input = {}, ctx: { rollupRegistry, chain } }) => {
     const filters: Filters = {
       sort: "desc",
     };
@@ -121,10 +127,12 @@ export const withFilters = t.middleware(
       type,
       endBlock,
       endSlot,
+      endEpoch,
       rollups,
       categories,
       startBlock,
       startSlot,
+      startEpoch,
       startDate,
       endDate,
       from,
@@ -134,6 +142,7 @@ export const withFilters = t.middleware(
     const blockRangeExists = startBlock !== undefined || endBlock !== undefined;
     const dateRangeExists = startDate !== undefined || endDate !== undefined;
     const slotRangeExists = startSlot !== undefined || endSlot !== undefined;
+    const epochRangeExists = startEpoch !== undefined || endEpoch !== undefined;
 
     const blockFilters: Filters["blockFilters"] = {};
     const transactionFilters: Filters["transactionFilters"] = {};
@@ -156,6 +165,18 @@ export const withFilters = t.middleware(
       blockFilters.slot = {
         lte: endSlot,
         gte: startSlot,
+      };
+    } else if (epochRangeExists) {
+      const slotsPerEpoch = chain.slotsPerEpoch;
+      blockFilters.slot = {
+        gte:
+          startEpoch !== undefined
+            ? startEpoch * slotsPerEpoch
+            : undefined,
+        lte:
+          endEpoch !== undefined
+            ? (endEpoch + 1) * slotsPerEpoch - 1
+            : undefined,
       };
     }
 
