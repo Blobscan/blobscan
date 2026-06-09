@@ -6,6 +6,8 @@ export const blockNumberSchema = z.coerce.number();
 
 export const slotSchema = z.coerce.number();
 
+export const epochSchema = z.coerce.number().int().nonnegative();
+
 export const dateSchema = z.coerce.date();
 
 export const allSchema = z.literal("all");

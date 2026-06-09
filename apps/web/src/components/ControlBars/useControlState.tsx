@@ -23,7 +23,7 @@ type RangeFilterBase<T extends Range, U> = {
 };
 
 type RangeFilter =
-  | RangeFilterBase<"block" | "slot", number>
+  | RangeFilterBase<"block" | "slot" | "epoch", number>
   | RangeFilterBase<"date", DateType>;
 
 type ControlState = {
@@ -64,6 +64,8 @@ function toControlState(queryParams: ControlParams): Partial<ControlState> {
     endBlock,
     startSlot,
     endSlot,
+    startEpoch,
+    endEpoch,
     rollups,
     sort,
   } = queryParams;
@@ -105,6 +107,14 @@ function toControlState(queryParams: ControlParams): Partial<ControlState> {
       values: {
         start: startSlot ?? null,
         end: endSlot ?? null,
+      },
+    };
+  } else if (startEpoch !== undefined || endEpoch !== undefined) {
+    next.range = {
+      type: "epoch",
+      values: {
+        start: startEpoch ?? null,
+        end: endEpoch ?? null,
       },
     };
   }
@@ -152,6 +162,8 @@ export function useControlState() {
       endBlock: undefined,
       startSlot: undefined,
       endSlot: undefined,
+      startEpoch: undefined,
+      endEpoch: undefined,
       startDate: undefined,
       endDate: undefined,
     };
@@ -173,6 +185,9 @@ export function useControlState() {
       } else if (type === "slot") {
         clearedRange.startSlot = values.start ?? undefined;
         clearedRange.endSlot = values.end ?? undefined;
+      } else if (type === "epoch") {
+        clearedRange.startEpoch = values.start ?? undefined;
+        clearedRange.endEpoch = values.end ?? undefined;
       }
     }
 
