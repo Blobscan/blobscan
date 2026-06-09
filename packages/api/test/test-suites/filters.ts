@@ -16,6 +16,8 @@ const splitAndCleanCommaSeparatedString = (values?: string) => {
   return parts.length > 0 ? parts : undefined;
 };
 
+const SLOTS_PER_EPOCH = 32;
+
 function filterBlock(
   b: (typeof fixtures.blocks)[number],
   {
@@ -25,6 +27,8 @@ function filterBlock(
     endDate,
     startSlot,
     endSlot,
+    startEpoch,
+    endEpoch,
     type,
   }: FiltersInputSchema
 ) {
@@ -42,10 +46,23 @@ function filterBlock(
     ? dayjs(b.timestamp).isAfter(startDate)
     : true;
   const endDateFilter = endDate ? dayjs(b.timestamp).isBefore(endDate) : true;
+
+  // Epoch filter takes precedence over slot filter (mirrors middleware else-if logic)
+  const effectiveStartSlot =
+    startEpoch !== undefined ? startEpoch * SLOTS_PER_EPOCH : startSlot;
+  const effectiveEndSlot =
+    endEpoch !== undefined
+      ? (endEpoch + 1) * SLOTS_PER_EPOCH - 1
+      : endSlot;
+
   const slotRangeFilter =
-    startSlot && endSlot ? b.slot >= startSlot && b.slot <= endSlot : true;
-  const startSlotFilter = startSlot ? b.slot >= startSlot : true;
-  const endSlotFilter = endSlot ? b.slot <= endSlot : true;
+    effectiveStartSlot && effectiveEndSlot
+      ? b.slot >= effectiveStartSlot && b.slot <= effectiveEndSlot
+      : true;
+  const startSlotFilter = effectiveStartSlot
+    ? b.slot >= effectiveStartSlot
+    : true;
+  const endSlotFilter = effectiveEndSlot ? b.slot <= effectiveEndSlot : true;
   const blockTypeFilter = fixtures.txForks.find((txF) =>
     type === "reorged" ? txF.blockHash === b.hash : txF.blockHash !== b.hash
   );
@@ -123,21 +140,26 @@ export function getFilteredBlobs(filters: FiltersInputSchema) {
 export function requiresDirectCount({
   endBlock,
   endSlot,
+  endEpoch,
   from,
   to,
   type,
   startBlock,
   startSlot,
+  startEpoch,
 }: FiltersInputSchema) {
   const blockNumberRangeFilterEnabled = !!startBlock || !!endBlock;
   const reorgedFilterEnabled = type === "reorged";
   const slotRangeFilterEnabled = !!startSlot || !!endSlot;
+  const epochRangeFilterEnabled =
+    startEpoch !== undefined || endEpoch !== undefined;
   const addressFilterEnabled = splitAndCleanCommaSeparatedString(from) || !!to;
 
   return (
     blockNumberRangeFilterEnabled ||
     reorgedFilterEnabled ||
     slotRangeFilterEnabled ||
+    epochRangeFilterEnabled ||
     addressFilterEnabled
   );
 }
@@ -205,6 +227,25 @@ export function runFilterTests(
     it("should return the correct results when filtering by an end slot", async () => {
       await assertFilters({
         endSlot: 102,
+      });
+    });
+
+    it("should return the correct results when filtering by a start epoch", async () => {
+      await assertFilters({
+        startEpoch: 3,
+      });
+    });
+
+    it("should return the correct results when filtering by an end epoch", async () => {
+      await assertFilters({
+        endEpoch: 3,
+      });
+    });
+
+    it("should return the correct results when filtering by an epoch range", async () => {
+      await assertFilters({
+        startEpoch: 3,
+        endEpoch: 3,
       });
     });
 
