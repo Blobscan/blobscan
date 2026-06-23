@@ -428,6 +428,10 @@ describe("Upsert Many Extension", () => {
             blobStorage: BlobStorage.SWARM,
             dataReference: "updatedReference",          },
           {
+            blobHash: "blobHash001",
+            blobStorage: BlobStorage.IPFS,
+            dataReference: "updatedReference",          },
+          {
             blobHash: "blobHash002",
             blobStorage: BlobStorage.GOOGLE,
             dataReference: "updatedReference",          },

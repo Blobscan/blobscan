@@ -2318,6 +2318,279 @@ exports[`getAll > when getting filtered block results > should return the result
 ]
 `;
 
+exports[`getAll > when getting filtered block results > should return the results starting from the epoch specified 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
+    "number": 1008,
+    "slot": 108,
+    "timestamp": 2023-08-31T16:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+              },
+            ],
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
+          },
+        ],
+        "hash": "txHash016",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
+    "number": 1007,
+    "slot": 107,
+    "timestamp": 2023-08-31T14:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+        ],
+        "hash": "txHash015",
+      },
+    ],
+  },
+]
+`;
+
+exports[`getAll > when getting filtered block results > should return results up to and including the specified epoch 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
+    "number": 1008,
+    "slot": 108,
+    "timestamp": 2023-08-31T16:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+              },
+            ],
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
+          },
+        ],
+        "hash": "txHash016",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
+    "number": 1007,
+    "slot": 107,
+    "timestamp": 2023-08-31T14:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+        ],
+        "hash": "txHash015",
+      },
+    ],
+  },
+]
+`;
+
+exports[`getAll > when getting filtered block results > should return the results corresponding to the epoch range specified 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
+    "number": 1008,
+    "slot": 108,
+    "timestamp": 2023-08-31T16:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+              },
+            ],
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
+          },
+        ],
+        "hash": "txHash016",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
+    "number": 1007,
+    "slot": 107,
+    "timestamp": 2023-08-31T14:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+        ],
+        "hash": "txHash015",
+      },
+    ],
+  },
+]
+`;
+
 exports[`getAll > when getting filtered block results > should return the results starting from the slot specified 1`] = `
 [
   {
