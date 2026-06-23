@@ -9,6 +9,16 @@ export interface BlobStorageConfig {
   signedUrlsEnabled?: boolean;
 }
 
+// Number of extra attempts after the first one when probing reachability at
+// startup. A transient network blip (e.g. a premature close while fetching a
+// GCS auth token) shouldn't abort boot.
+const HEALTH_CHECK_MAX_RETRIES = 3;
+const HEALTH_CHECK_RETRY_BASE_DELAY_MS = 500;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export interface GetBlobOpts {
   fileType?: BlobFileType;
 }
@@ -41,15 +51,35 @@ export abstract class BlobStorage {
   }
 
   protected async healthCheck(): Promise<"OK"> {
-    try {
-      await this._healthCheck();
+    let lastErr: unknown;
 
-      return "OK";
-    } catch (err) {
-      throw new Error("Storage is not reachable", {
-        cause: err as Error,
-      });
+    for (let attempt = 0; attempt <= HEALTH_CHECK_MAX_RETRIES; attempt++) {
+      try {
+        await this._healthCheck();
+
+        return "OK";
+      } catch (err) {
+        lastErr = err;
+
+        if (attempt >= HEALTH_CHECK_MAX_RETRIES) {
+          break;
+        }
+
+        // Exponential backoff with jitter so transient network failures
+        // (timeouts, premature connection closes) get a few chances before
+        // we declare the storage unreachable.
+        const backoffMs =
+          HEALTH_CHECK_RETRY_BASE_DELAY_MS *
+          2 ** attempt *
+          (0.5 + Math.random() * 0.5);
+
+        await sleep(backoffMs);
+      }
     }
+
+    throw new Error("Storage is not reachable", {
+      cause: lastErr as Error,
+    });
   }
 
   async getBlob(uri: string): Promise<string> {
