@@ -38,6 +38,9 @@ const prisma = getPrisma({
         apiBaseUrl: env.S3_STORAGE_ENDPOINT,
         bucketName: env.S3_STORAGE_BUCKET_NAME,
       },
+      ipfs: {
+        gatewayUrl: env.IPFS_STORAGE_GATEWAY_URL,
+      },
     },
   },
 });
