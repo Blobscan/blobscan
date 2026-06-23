@@ -1,5 +1,19 @@
 # @blobscan/docs
 
+## 0.2.0
+
+### Minor Changes
+
+- [#985](https://github.com/Blobscan/blobscan/pull/985) [`8c1375d`](https://github.com/Blobscan/blobscan/commit/8c1375d7230cf4ca47ef4b37237c21d748d84264) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add IPFS storage provider backed by blobscan-ipld
+
+  Add a read-only IpfsStorage backend that retrieves blobs from a
+  configurable IPFS gateway. CID references are registered externally
+  via a new POST /blobs/ipfs-references endpoint,
+  following the same pattern as the existing WeaveVM integration.
+  Introduces a dedicated `ipfs` service auth role and
+  IPFS_STORAGE_ENABLED / IPFS_STORAGE_GATEWAY_URL / IPFS_STORAGE_API_KEY /
+  IPFS_API_KEY env vars.
+
 ## 0.1.2
 
 ### Patch Changes
