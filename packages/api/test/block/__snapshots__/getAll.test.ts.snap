@@ -4461,4 +4461,4 @@ exports[`getAll > when getting paginated block results > should return the corre
 ]
 `;
 
-exports[`getAll > when getting paginated block results > should return the total number of items when count is provided 1`] = `0`;
+exports[`getAll > when getting paginated block results > should return the total number of items when count is provided 1`] = `8`;
