@@ -422,6 +422,10 @@ exports[`getAll > when getting filtered block results > should return results up
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
@@ -462,6 +466,10 @@ exports[`getAll > when getting filtered block results > should return results up
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
@@ -478,6 +486,10 @@ exports[`getAll > when getting filtered block results > should return results up
               {
                 "storage": "google",
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -649,6 +661,10 @@ exports[`getAll > when getting filtered block results > should return the oldest
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
@@ -689,6 +705,10 @@ exports[`getAll > when getting filtered block results > should return the oldest
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
@@ -705,6 +725,10 @@ exports[`getAll > when getting filtered block results > should return the oldest
               {
                 "storage": "google",
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -812,6 +836,10 @@ exports[`getAll > when getting filtered block results > should return the oldest
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
@@ -830,17 +858,8 @@ exports[`getAll > when getting filtered block results > should return the oldest
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
-                "storage": "swarm",
-                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
-              },
-            ],
-            "versionedHash": "blobHash001",
-          },
-          {
-            "dataStorageReferences": [
-              {
-                "storage": "google",
-                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -854,6 +873,27 @@ exports[`getAll > when getting filtered block results > should return the oldest
               {
                 "storage": "google",
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -951,17 +991,8 @@ exports[`getAll > when getting filtered block results > should return the result
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
-                "storage": "swarm",
-                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
-              },
-            ],
-            "versionedHash": "blobHash001",
-          },
-          {
-            "dataStorageReferences": [
-              {
-                "storage": "google",
-                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -975,6 +1006,27 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "google",
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -1009,6 +1061,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
@@ -1039,6 +1095,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "google",
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -1152,17 +1212,8 @@ exports[`getAll > when getting filtered block results > should return the result
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
-                "storage": "swarm",
-                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
-              },
-            ],
-            "versionedHash": "blobHash001",
-          },
-          {
-            "dataStorageReferences": [
-              {
-                "storage": "google",
-                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -1176,6 +1227,27 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "google",
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -1194,6 +1266,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "google",
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -1226,6 +1302,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "google",
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -1327,6 +1407,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "google",
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -1443,6 +1527,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
@@ -1461,17 +1549,8 @@ exports[`getAll > when getting filtered block results > should return the result
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
-                "storage": "swarm",
-                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
-              },
-            ],
-            "versionedHash": "blobHash001",
-          },
-          {
-            "dataStorageReferences": [
-              {
-                "storage": "google",
-                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -1485,6 +1564,27 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "google",
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -1524,6 +1624,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
@@ -1554,6 +1658,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "google",
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -1615,6 +1723,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
@@ -1672,6 +1784,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "google",
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -1779,6 +1895,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
@@ -1819,6 +1939,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
@@ -1835,6 +1959,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "google",
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -1883,6 +2011,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
@@ -1923,6 +2055,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
@@ -1939,6 +2075,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "google",
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -2383,6 +2523,10 @@ exports[`getAll > when getting paginated block results > should return the corre
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
@@ -2497,6 +2641,10 @@ exports[`getAll > when getting paginated block results > should return the corre
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
@@ -2515,17 +2663,8 @@ exports[`getAll > when getting paginated block results > should return the corre
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
               },
               {
-                "storage": "swarm",
-                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
-              },
-            ],
-            "versionedHash": "blobHash001",
-          },
-          {
-            "dataStorageReferences": [
-              {
-                "storage": "google",
-                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
@@ -2539,6 +2678,27 @@ exports[`getAll > when getting paginated block results > should return the corre
               {
                 "storage": "google",
                 "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
               {
                 "storage": "swarm",
