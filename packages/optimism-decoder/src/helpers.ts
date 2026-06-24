@@ -11,9 +11,9 @@ import type { OptimismDecodedData } from "./decoder";
  * @returns An array of chunks.
  */
 export function chunks(buffer: Uint8Array, chunkSize: number): Uint8Array[] {
-  const result = [];
+  const result = new Array(Math.ceil(buffer.length / chunkSize));
   for (let i = 0; i < buffer.length; i += chunkSize) {
-    result.push(buffer.slice(i, i + chunkSize));
+    result[i / chunkSize] = buffer.slice(i, i + chunkSize);
   }
   return result;
 }
