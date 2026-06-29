@@ -40,6 +40,7 @@ exports[`getBySlot > should get a block by slot 1`] = `
   "blobGasBaseFee": 17301504n,
   "blobGasPrice": 22n,
   "blobGasUsed": 786432n,
+  "epoch": 3,
   "ethUsdPrice": undefined,
   "excessBlobGas": 15000n,
   "hash": "0x1000000000000000000000000000000000000000000000000000000000000000",

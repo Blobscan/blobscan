@@ -199,9 +199,6 @@ export const blobIdSchema = z
   );
 
 export const prismaBlockSchema = BlockModel.omit({
-  // `epoch` is derived from `slot` and only used internally for indexing and
-  // epoch-range filtering, so it's not surfaced in API responses.
-  epoch: true,
   insertedAt: true,
   updatedAt: true,
 });

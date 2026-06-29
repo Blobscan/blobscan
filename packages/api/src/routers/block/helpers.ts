@@ -33,6 +33,7 @@ const prismaBlockSelect = {
   number: true,
   timestamp: true,
   slot: true,
+  epoch: true,
   blobGasBaseFee: true,
   blobGasUsed: true,
   blobAsCalldataGasUsed: true,
