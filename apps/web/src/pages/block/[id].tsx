@@ -152,6 +152,7 @@ const Block: NextPage = function () {
       targetBlobGasPerBlock,
     } = activeFork.blobParams;
     const blobSize = bytesPerFieldElement * fieldElementsPerBlob;
+    const epoch = blockData.epoch ?? chain.getEpochBySlot(blockData.slot);
 
     const totalBlobSize = blockData?.transactions.reduce((acc, { blobs }) => {
       const totalBlobsSize = blobs.reduce(
@@ -217,6 +218,23 @@ const Block: NextPage = function () {
               isExternal
             >
               {blockData.slot}
+            </Link>
+          </Copyable>
+        ),
+      },
+      {
+        name: "Epoch",
+        helpText: "The consensus layer epoch the block's slot belongs to.",
+        value: (
+          <Copyable value={epoch.toString()} tooltipText="Copy Epoch">
+            <Link
+              href={buildResourceUrl("beaconchain", {
+                type: "epoch",
+                value: epoch,
+              })}
+              isExternal
+            >
+              {epoch}
             </Link>
           </Copyable>
         ),

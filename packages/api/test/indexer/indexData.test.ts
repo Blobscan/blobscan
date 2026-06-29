@@ -94,6 +94,7 @@ describe("indexData", () => {
             "blobGasBaseFee": "10000",
             "blobGasUsed": "10000",
             "computeUsdFields": [Function],
+            "epoch": 4,
             "excessBlobGas": "5000",
             "hash": "blockHash2010",
             "number": 2010,

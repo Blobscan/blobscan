@@ -99,8 +99,9 @@ export const indexData = createAuthedProcedure("indexer")
       const now = new Date();
 
       // 1. Prepare address, block, transaction and blob insertions
+      const epoch = chain.getEpochBySlot(input.block.slot);
       const dbTxs = createDBTransactions(input, forkBlobParams);
-      const dbBlock = createDBBlock(input, dbTxs, forkBlobParams);
+      const dbBlock = createDBBlock(input, dbTxs, forkBlobParams, epoch);
       const dbBlobs = createDBBlobs(input);
       const dbBlobsOnTransactions = createDBBlobsOnTransactions(input);
       const dbAddress = createDBAddresses(input, rollupRegistry);
