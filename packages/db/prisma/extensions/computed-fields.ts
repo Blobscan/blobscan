@@ -23,6 +23,9 @@ export type BlobUrlFieldParams = {
   postgres: Partial<{
     apiBaseUrl: string;
   }>;
+  ipfs: Partial<{
+    gatewayUrl: string;
+  }>;
 };
 
 export type ExtensionConfig = {
@@ -87,7 +90,7 @@ export type BlockAllComputedFields = z.output<
 export const createComputedFieldsExtension = ({
   blobUrlField,
 }: ExtensionConfig = {}) => {
-  const { gcs, loadNetwork, postgres, s3 } =
+  const { gcs, ipfs, loadNetwork, postgres, s3 } =
     blobUrlField ?? ({} as BlobUrlFieldParams);
   return Prisma.defineExtension((prisma) =>
     prisma
@@ -146,6 +149,12 @@ export const createComputedFieldsExtension = ({
                       return;
                     }
                     return `${s3.apiBaseUrl}/${s3.bucketName}/${dataReference}`;
+                  }
+                  case "IPFS": {
+                    if (!ipfs?.gatewayUrl) {
+                      return;
+                    }
+                    return `${ipfs.gatewayUrl.replace(/\/$/, "")}/ipfs/${dataReference}`;
                   }
                 }
               },

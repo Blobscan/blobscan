@@ -1,5 +1,37 @@
 # @blobscan/rest-api-server
 
+## 0.14.0
+
+### Minor Changes
+
+- [#985](https://github.com/Blobscan/blobscan/pull/985) [`8c1375d`](https://github.com/Blobscan/blobscan/commit/8c1375d7230cf4ca47ef4b37237c21d748d84264) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add IPFS storage provider backed by blobscan-ipld
+
+  Add a read-only IpfsStorage backend that retrieves blobs from a
+  configurable IPFS gateway. CID references are registered externally
+  via a new POST /blobs/ipfs-references endpoint,
+  following the same pattern as the existing WeaveVM integration.
+  Introduces a dedicated `ipfs` service auth role and
+  IPFS_STORAGE_ENABLED / IPFS_STORAGE_GATEWAY_URL / IPFS_STORAGE_API_KEY /
+  IPFS_API_KEY env vars.
+
+### Patch Changes
+
+- [#992](https://github.com/Blobscan/blobscan/pull/992) [`4541f90`](https://github.com/Blobscan/blobscan/commit/4541f904031ffbcdde29c6cded0aa173efc65251) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fix IPFS storage badge URL in blob explorer
+
+  The `blobDataStorageReference` computed `url` field was missing a case
+  for IPFS, so the IPFS badge in the blob list had no link. Add the
+  `IPFS` case returning `${gatewayUrl}/ipfs/${dataCid}` and wire
+  `IPFS_STORAGE_GATEWAY_URL` through the prisma clients in the web app
+  and REST API server.
+
+- Updated dependencies [[`8c1375d`](https://github.com/Blobscan/blobscan/commit/8c1375d7230cf4ca47ef4b37237c21d748d84264), [`4541f90`](https://github.com/Blobscan/blobscan/commit/4541f904031ffbcdde29c6cded0aa173efc65251)]:
+  - @blobscan/blob-storage-manager@1.0.0
+  - @blobscan/api@1.0.0
+  - @blobscan/db@0.27.0
+  - @blobscan/blob-propagator@1.0.0
+  - @blobscan/rollups@1.0.0
+  - @blobscan/syncers@0.6.5
+
 ## 0.13.0
 
 ### Minor Changes

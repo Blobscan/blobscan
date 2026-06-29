@@ -29,18 +29,9 @@ exports[`getAdjacentBlock > should get a next block 1`] = `
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
             },
-          ],
-          "versionedHash": "blobHash001",
-        },
-        {
-          "dataStorageReferences": [
             {
-              "storage": "google",
-              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
-            },
-            {
-              "storage": "swarm",
-              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
             },
           ],
           "versionedHash": "blobHash001",
@@ -54,6 +45,27 @@ exports[`getAdjacentBlock > should get a next block 1`] = `
             {
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+            },
+          ],
+          "versionedHash": "blobHash001",
+        },
+        {
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+            },
+            {
+              "storage": "swarm",
+              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
             },
           ],
           "versionedHash": "blobHash001",
@@ -72,6 +84,10 @@ exports[`getAdjacentBlock > should get a next block 1`] = `
             {
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
             },
           ],
           "versionedHash": "blobHash001",
@@ -126,6 +142,10 @@ exports[`getAdjacentBlock > should get a previous block 1`] = `
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
             },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+            },
           ],
           "versionedHash": "blobHash001",
         },
@@ -144,18 +164,9 @@ exports[`getAdjacentBlock > should get a previous block 1`] = `
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
             },
-          ],
-          "versionedHash": "blobHash001",
-        },
-        {
-          "dataStorageReferences": [
             {
-              "storage": "google",
-              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
-            },
-            {
-              "storage": "swarm",
-              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
             },
           ],
           "versionedHash": "blobHash001",
@@ -169,6 +180,27 @@ exports[`getAdjacentBlock > should get a previous block 1`] = `
             {
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+            },
+          ],
+          "versionedHash": "blobHash001",
+        },
+        {
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+            },
+            {
+              "storage": "swarm",
+              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
             },
           ],
           "versionedHash": "blobHash001",
@@ -206,22 +238,9 @@ exports[`getAdjacentBlock > when getting expanded block results > should return 
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
             },
-          ],
-          "proof": "proof001",
-          "size": 1000,
-          "usageSize": 1000,
-          "versionedHash": "blobHash001",
-        },
-        {
-          "commitment": "commitment001",
-          "dataStorageReferences": [
             {
-              "storage": "google",
-              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
-            },
-            {
-              "storage": "swarm",
-              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
             },
           ],
           "proof": "proof001",
@@ -239,6 +258,31 @@ exports[`getAdjacentBlock > when getting expanded block results > should return 
             {
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+            },
+          ],
+          "proof": "proof001",
+          "size": 1000,
+          "usageSize": 1000,
+          "versionedHash": "blobHash001",
+        },
+        {
+          "commitment": "commitment001",
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+            },
+            {
+              "storage": "swarm",
+              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
             },
           ],
           "proof": "proof001",
@@ -261,6 +305,10 @@ exports[`getAdjacentBlock > when getting expanded block results > should return 
             {
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
             },
           ],
           "proof": "proof001",
@@ -306,22 +354,9 @@ exports[`getAdjacentBlock > when getting expanded block results > should return 
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
             },
-          ],
-          "proof": "proof001",
-          "size": 1000,
-          "usageSize": 1000,
-          "versionedHash": "blobHash001",
-        },
-        {
-          "commitment": "commitment001",
-          "dataStorageReferences": [
             {
-              "storage": "google",
-              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
-            },
-            {
-              "storage": "swarm",
-              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
             },
           ],
           "proof": "proof001",
@@ -339,6 +374,31 @@ exports[`getAdjacentBlock > when getting expanded block results > should return 
             {
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+            },
+          ],
+          "proof": "proof001",
+          "size": 1000,
+          "usageSize": 1000,
+          "versionedHash": "blobHash001",
+        },
+        {
+          "commitment": "commitment001",
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+            },
+            {
+              "storage": "swarm",
+              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
             },
           ],
           "proof": "proof001",
@@ -373,6 +433,10 @@ exports[`getAdjacentBlock > when getting expanded block results > should return 
             {
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
             },
           ],
           "proof": "proof001",
@@ -424,18 +488,9 @@ exports[`getAdjacentBlock > when getting expanded block results > should return 
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
             },
-          ],
-          "versionedHash": "blobHash001",
-        },
-        {
-          "dataStorageReferences": [
             {
-              "storage": "google",
-              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
-            },
-            {
-              "storage": "swarm",
-              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
             },
           ],
           "versionedHash": "blobHash001",
@@ -449,6 +504,27 @@ exports[`getAdjacentBlock > when getting expanded block results > should return 
             {
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+            },
+          ],
+          "versionedHash": "blobHash001",
+        },
+        {
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+            },
+            {
+              "storage": "swarm",
+              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
             },
           ],
           "versionedHash": "blobHash001",
@@ -479,6 +555,10 @@ exports[`getAdjacentBlock > when getting expanded block results > should return 
             {
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
             },
           ],
           "versionedHash": "blobHash001",

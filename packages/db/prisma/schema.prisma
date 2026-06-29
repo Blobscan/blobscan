@@ -27,6 +27,7 @@ datasource db {
 
 enum BlobStorage {
   GOOGLE      @map("google")
+  IPFS        @map("ipfs")
   POSTGRES    @map("postgres")
   SWARM       @map("swarm")
   SWARMYCLOUD @map("swarmycloud")
@@ -212,6 +213,7 @@ model BlobDataStorageReference {
   blob Blob @relation(fields: [blobHash], references: [versionedHash])
 
   @@id([blobHash, blobStorage])
+  @@index([blobStorage])
   @@map("blob_data_storage_reference")
 }
 

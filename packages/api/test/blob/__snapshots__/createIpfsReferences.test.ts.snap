@@ -1,0 +1,5 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`createIpfsReferences > should fail when one or more blobs do not exist 1`] = `"Couldn't find the following blobs: \\"0x01ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\\""`;
+
+exports[`createIpfsReferences > should fail when one or more blobs do not exist 2`] = `undefined`;

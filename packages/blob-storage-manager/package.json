@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/blob-storage-manager",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -21,13 +21,14 @@
     "@blobscan/open-telemetry": "workspace:^0.0.10",
     "@blobscan/zod": "workspace:^0.1.0",
     "@ethersphere/bee-js": "9.3.0",
-    "@google-cloud/storage": "^6.10.1"
+    "@google-cloud/storage": "^6.10.1",
+    "multiformats": "^14.0.0"
   },
   "devDependencies": {
-    "@blobscan/db": "workspace:^0.26.0"
+    "@blobscan/db": "workspace:^0.27.0"
   },
   "peerDependencies": {
-    "@blobscan/db": "workspace:^0.26.0"
+    "@blobscan/db": "workspace:^0.27.0"
   },
   "eslintConfig": {
     "root": true,

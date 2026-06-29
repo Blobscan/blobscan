@@ -167,6 +167,10 @@ exports[`getByBlockId > should get oldest block 1`] = `
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
             },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+            },
           ],
           "versionedHash": "blobHash001",
         },
@@ -207,6 +211,10 @@ exports[`getByBlockId > should get oldest block 1`] = `
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
             },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+            },
           ],
           "versionedHash": "blobHash001",
         },
@@ -224,6 +232,10 @@ exports[`getByBlockId > should get oldest block 1`] = `
             {
               "storage": "swarm",
               "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+            {
+              "storage": "ipfs",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
             },
           ],
           "versionedHash": "blobHash001",

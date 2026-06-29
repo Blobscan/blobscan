@@ -38,3 +38,24 @@ services:
     restart: always
     ports:
       - ${EXTERNAL_DOCS_PORT:-3002}:3002
+
+  ipfs:
+    image: ipfs/kubo:latest
+    restart: unless-stopped
+    environment:
+      IPFS_PROFILE: "server,pebbleds"
+      GOLOG_LOG_LEVEL: "info"
+    volumes:
+      - ipfs_data:/data/ipfs
+    ports:
+      - "4001:4001"
+      - "127.0.0.1:5001:5001"
+      - "127.0.0.1:8080:8080"
+    healthcheck:
+      test: ["CMD", "ipfs", "id"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  ipfs_data:

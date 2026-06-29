@@ -9,9 +9,7 @@ export function hexToBytes(hex: HexString) {
 }
 
 export function bytesToHex(bytes: Buffer | ArrayBuffer) {
-  const buffer =
-    bytes instanceof Buffer ? bytes : Buffer.from(new Uint8Array(bytes));
-
+  const buffer = bytes instanceof Buffer ? bytes : Buffer.from(bytes);
   return `0x${buffer.toString("hex")}`;
 }
 

@@ -1,6 +1,7 @@
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import {
   GoogleStorage,
+  IpfsStorage,
   PostgresStorage,
   S3Storage,
   SwarmStorage,
@@ -97,6 +98,16 @@ async function createStorageFromEnv(
       return WeaveVMStorage.create({
         chainId,
         apiBaseUrl: env.WEAVEVM_STORAGE_API_BASE_URL,
+      });
+    }
+    case BlobStorageName.IPFS: {
+      return IpfsStorage.create({
+        chainId,
+        gatewayUrl: env.IPFS_STORAGE_GATEWAY_URL,
+        apiKey: env.IPFS_STORAGE_API_KEY,
+        // Keep IPFS in the manager even if the gateway is down at boot; reads
+        // recover via per-request retries and fall back to other storages.
+        verifyGatewayOnInit: false,
       });
     }
     default: {

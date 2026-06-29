@@ -655,6 +655,11 @@
       "blobHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       "blobStorage": "SWARM",
       "dataReference": "bzz://sfsfsdfsdfsdfs"
+    },
+    {
+      "blobHash": "blobHash001",
+      "blobStorage": "IPFS",
+      "dataReference": "bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm"
     }
   ],
   "blobDatas": [

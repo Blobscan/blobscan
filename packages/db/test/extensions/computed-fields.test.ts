@@ -30,6 +30,9 @@ describe("Computed Fields Extension", () => {
           apiBaseUrl: env.S3_STORAGE_ENDPOINT,
           bucketName: env.S3_STORAGE_BUCKET_NAME,
         },
+        ipfs: {
+          gatewayUrl: env.IPFS_STORAGE_GATEWAY_URL,
+        },
       },
     },
   });
@@ -122,11 +125,25 @@ describe("Computed Fields Extension", () => {
         );
       });
 
+      it("should return the correct ipfs url", async () => {
+        const { dataReference, url } =
+          await prisma.blobDataStorageReference.findFirstOrThrow({
+            where: {
+              blobStorage: "IPFS",
+            },
+          });
+
+        expect(url).toBe(
+          `${env.IPFS_STORAGE_GATEWAY_URL}/ipfs/${dataReference}`
+        );
+      });
+
       test.each<[BlobStorage, string]>([
         ["GOOGLE", "bucket name"],
         ["POSTGRES", "api base url"],
         ["S3", "api base url or bucket name"],
         ["WEAVEVM", "api base url"],
+        ["IPFS", "gateway url"],
       ])(
         "should return undefined when returning a %s url without a configured %s",
         async (storage, _) => {

@@ -21,6 +21,10 @@ exports[`getByHash > should get a transaction by hash correctly 1`] = `
           "storage": "swarm",
           "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
         },
+        {
+          "storage": "ipfs",
+          "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        },
       ],
       "versionedHash": "blobHash001",
     },
@@ -84,6 +88,10 @@ exports[`getByHash > when getting expanded transaction results > should return t
         {
           "storage": "swarm",
           "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+        },
+        {
+          "storage": "ipfs",
+          "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
         },
       ],
       "proof": "proof001",
@@ -159,6 +167,10 @@ exports[`getByHash > when getting expanded transaction results > should return t
           "storage": "swarm",
           "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
         },
+        {
+          "storage": "ipfs",
+          "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        },
       ],
       "versionedHash": "blobHash001",
     },
@@ -227,6 +239,10 @@ exports[`getByHash > when getting expanded transaction results > should return t
         {
           "storage": "swarm",
           "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+        },
+        {
+          "storage": "ipfs",
+          "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
         },
       ],
       "proof": "proof001",

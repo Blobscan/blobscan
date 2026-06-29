@@ -1,6 +1,6 @@
 import type { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
-import { BlobStorageError } from "./errors";
+import { BlobStorageError, BlobTooLargeError, IpfsGatewayError, InvalidBlobCidError } from "./errors";
 import type { BlobFileType } from "./types";
 import { getBlobFileType, normalizeBlobData } from "./utils/blob";
 
@@ -59,6 +59,12 @@ export abstract class BlobStorage {
 
       return blob;
     } catch (err) {
+      if (
+        err instanceof BlobTooLargeError ||
+        err instanceof InvalidBlobCidError ||
+        err instanceof IpfsGatewayError
+      )
+        throw err;
       throw new BlobStorageError(
         this.constructor.name,
         `Failed to get blob with uri "${uri}"`,

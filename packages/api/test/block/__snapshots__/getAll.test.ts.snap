@@ -353,6 +353,588 @@ exports[`getAll > when getting expanded block results > should return the correc
 ]
 `;
 
+exports[`getAll > when getting filtered block results > should return results up to and including the specified epoch 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
+    "number": 1008,
+    "slot": 108,
+    "timestamp": 2023-08-31T16:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+              },
+            ],
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
+          },
+        ],
+        "hash": "txHash016",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
+    "number": 1007,
+    "slot": 107,
+    "timestamp": 2023-08-31T14:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+        ],
+        "hash": "txHash015",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "blockHash006",
+    "number": 1006,
+    "slot": 106,
+    "timestamp": 2023-08-31T12:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash006",
+              },
+            ],
+            "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+          },
+        ],
+        "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 250000n,
+    "blobGasBaseFee": 100000000n,
+    "blobGasPrice": 20n,
+    "blobGasUsed": 5000000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 10000n,
+    "hash": "blockHash005",
+    "number": 1005,
+    "slot": 105,
+    "timestamp": 2023-08-28T10:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash012",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash013",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "blockHash004",
+    "number": 1004,
+    "slot": 104,
+    "timestamp": 2023-08-20T12:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash007",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+              },
+            ],
+            "versionedHash": "blobHash002",
+          },
+        ],
+        "hash": "txHash008",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
+              },
+            ],
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash009",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
+              },
+            ],
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash010",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash005/data",
+              },
+            ],
+            "versionedHash": "blobHash005",
+          },
+        ],
+        "hash": "txHash011",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "blockHash003",
+    "number": 1003,
+    "slot": 103,
+    "timestamp": 2023-08-03T12:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+              },
+            ],
+            "versionedHash": "blobHash002",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+              },
+            ],
+            "versionedHash": "blobHash002",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash005",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash006",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "blockHash002",
+    "number": 1002,
+    "slot": 102,
+    "timestamp": 2023-05-10T12:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b1/data",
+              },
+            ],
+            "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b2/data",
+              },
+            ],
+            "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b2",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b3/data",
+              },
+            ],
+            "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b3",
+          },
+        ],
+        "hash": "txHash004",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 2042780n,
+    "blobGasBaseFee": 17301504n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 786432n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "0x1000000000000000000000000000000000000000000000000000000000000000",
+    "number": 1001,
+    "slot": 101,
+    "timestamp": 2022-10-16T12:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+              },
+            ],
+            "versionedHash": "blobHash002",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
+              },
+            ],
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash001",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash002",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+              },
+            ],
+            "versionedHash": "blobHash002",
+          },
+        ],
+        "hash": "txHash003",
+      },
+    ],
+  },
+]
+`;
+
 exports[`getAll > when getting filtered block results > should return results up to and including the specified slot 1`] = `
 [
   {
@@ -425,6 +1007,10 @@ exports[`getAll > when getting filtered block results > should return results up
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
             ],
             "versionedHash": "blobHash001",
           },
@@ -465,6 +1051,10 @@ exports[`getAll > when getting filtered block results > should return results up
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
             ],
             "versionedHash": "blobHash001",
           },
@@ -482,6 +1072,10 @@ exports[`getAll > when getting filtered block results > should return results up
               {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -652,6 +1246,10 @@ exports[`getAll > when getting filtered block results > should return the oldest
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
             ],
             "versionedHash": "blobHash001",
           },
@@ -692,6 +1290,10 @@ exports[`getAll > when getting filtered block results > should return the oldest
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
             ],
             "versionedHash": "blobHash001",
           },
@@ -709,6 +1311,10 @@ exports[`getAll > when getting filtered block results > should return the oldest
               {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -815,6 +1421,10 @@ exports[`getAll > when getting filtered block results > should return the oldest
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
             ],
             "versionedHash": "blobHash001",
           },
@@ -833,18 +1443,9 @@ exports[`getAll > when getting filtered block results > should return the oldest
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
-            ],
-            "versionedHash": "blobHash001",
-          },
-          {
-            "dataStorageReferences": [
               {
-                "storage": "google",
-                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
-              },
-              {
-                "storage": "swarm",
-                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -858,6 +1459,27 @@ exports[`getAll > when getting filtered block results > should return the oldest
               {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -954,18 +1576,9 @@ exports[`getAll > when getting filtered block results > should return the result
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
-            ],
-            "versionedHash": "blobHash001",
-          },
-          {
-            "dataStorageReferences": [
               {
-                "storage": "google",
-                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
-              },
-              {
-                "storage": "swarm",
-                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -979,6 +1592,27 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1012,6 +1646,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
             ],
             "versionedHash": "blobHash001",
           },
@@ -1043,6 +1681,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1155,18 +1797,9 @@ exports[`getAll > when getting filtered block results > should return the result
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
-            ],
-            "versionedHash": "blobHash001",
-          },
-          {
-            "dataStorageReferences": [
               {
-                "storage": "google",
-                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
-              },
-              {
-                "storage": "swarm",
-                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1180,6 +1813,27 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1198,6 +1852,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1230,6 +1888,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1331,6 +1993,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1446,6 +2112,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
             ],
             "versionedHash": "blobHash001",
           },
@@ -1464,18 +2134,9 @@ exports[`getAll > when getting filtered block results > should return the result
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
-            ],
-            "versionedHash": "blobHash001",
-          },
-          {
-            "dataStorageReferences": [
               {
-                "storage": "google",
-                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
-              },
-              {
-                "storage": "swarm",
-                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1489,12 +2150,615 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
           },
         ],
         "hash": "txHash006",
+      },
+    ],
+  },
+]
+`;
+
+exports[`getAll > when getting filtered block results > should return the results corresponding to the epoch range specified 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
+    "number": 1008,
+    "slot": 108,
+    "timestamp": 2023-08-31T16:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+              },
+            ],
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
+          },
+        ],
+        "hash": "txHash016",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
+    "number": 1007,
+    "slot": 107,
+    "timestamp": 2023-08-31T14:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+        ],
+        "hash": "txHash015",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "blockHash006",
+    "number": 1006,
+    "slot": 106,
+    "timestamp": 2023-08-31T12:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash006",
+              },
+            ],
+            "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+          },
+        ],
+        "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 250000n,
+    "blobGasBaseFee": 100000000n,
+    "blobGasPrice": 20n,
+    "blobGasUsed": 5000000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 10000n,
+    "hash": "blockHash005",
+    "number": 1005,
+    "slot": 105,
+    "timestamp": 2023-08-28T10:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash012",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash013",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "blockHash004",
+    "number": 1004,
+    "slot": 104,
+    "timestamp": 2023-08-20T12:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash007",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+              },
+            ],
+            "versionedHash": "blobHash002",
+          },
+        ],
+        "hash": "txHash008",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
+              },
+            ],
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash009",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
+              },
+            ],
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash010",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash005/data",
+              },
+            ],
+            "versionedHash": "blobHash005",
+          },
+        ],
+        "hash": "txHash011",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "blockHash003",
+    "number": 1003,
+    "slot": 103,
+    "timestamp": 2023-08-03T12:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+              },
+            ],
+            "versionedHash": "blobHash002",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+              },
+            ],
+            "versionedHash": "blobHash002",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash005",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash006",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "blockHash002",
+    "number": 1002,
+    "slot": 102,
+    "timestamp": 2023-05-10T12:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b1/data",
+              },
+            ],
+            "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b2/data",
+              },
+            ],
+            "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b2",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b3/data",
+              },
+            ],
+            "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b3",
+          },
+        ],
+        "hash": "txHash004",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 2042780n,
+    "blobGasBaseFee": 17301504n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 786432n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "0x1000000000000000000000000000000000000000000000000000000000000000",
+    "number": 1001,
+    "slot": 101,
+    "timestamp": 2022-10-16T12:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+              },
+            ],
+            "versionedHash": "blobHash002",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
+              },
+            ],
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash001",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash002",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+              },
+            ],
+            "versionedHash": "blobHash002",
+          },
+        ],
+        "hash": "txHash003",
       },
     ],
   },
@@ -1527,6 +2791,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
             ],
             "versionedHash": "blobHash001",
           },
@@ -1558,6 +2826,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1618,6 +2890,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
             ],
             "versionedHash": "blobHash001",
           },
@@ -1676,6 +2952,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1782,6 +3062,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
             ],
             "versionedHash": "blobHash001",
           },
@@ -1822,6 +3106,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
             ],
             "versionedHash": "blobHash001",
           },
@@ -1839,6 +3127,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1886,6 +3178,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
             ],
             "versionedHash": "blobHash001",
           },
@@ -1926,6 +3222,10 @@ exports[`getAll > when getting filtered block results > should return the result
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
             ],
             "versionedHash": "blobHash001",
           },
@@ -1943,6 +3243,10 @@ exports[`getAll > when getting filtered block results > should return the result
               {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -2178,6 +3482,588 @@ exports[`getAll > when getting filtered block results > should return the result
 ]
 `;
 
+exports[`getAll > when getting filtered block results > should return the results starting from the epoch specified 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
+    "number": 1008,
+    "slot": 108,
+    "timestamp": 2023-08-31T16:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+              },
+            ],
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
+          },
+        ],
+        "hash": "txHash016",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
+    "number": 1007,
+    "slot": 107,
+    "timestamp": 2023-08-31T14:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash004.bin?alt=media",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
+            "versionedHash": "blobHash004",
+          },
+        ],
+        "hash": "txHash015",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "blockHash006",
+    "number": 1006,
+    "slot": 106,
+    "timestamp": 2023-08-31T12:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash006",
+              },
+            ],
+            "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+          },
+        ],
+        "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 250000n,
+    "blobGasBaseFee": 100000000n,
+    "blobGasPrice": 20n,
+    "blobGasUsed": 5000000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 10000n,
+    "hash": "blockHash005",
+    "number": 1005,
+    "slot": 105,
+    "timestamp": 2023-08-28T10:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash012",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash013",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "blockHash004",
+    "number": 1004,
+    "slot": 104,
+    "timestamp": 2023-08-20T12:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash007",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+              },
+            ],
+            "versionedHash": "blobHash002",
+          },
+        ],
+        "hash": "txHash008",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
+              },
+            ],
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash009",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
+              },
+            ],
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash010",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash005/data",
+              },
+            ],
+            "versionedHash": "blobHash005",
+          },
+        ],
+        "hash": "txHash011",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "blockHash003",
+    "number": 1003,
+    "slot": 103,
+    "timestamp": 2023-08-03T12:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+              },
+            ],
+            "versionedHash": "blobHash002",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+              },
+            ],
+            "versionedHash": "blobHash002",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash005",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash006",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasBaseFee": 121000000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "blockHash002",
+    "number": 1002,
+    "slot": 102,
+    "timestamp": 2023-05-10T12:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b1/data",
+              },
+            ],
+            "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b2/data",
+              },
+            ],
+            "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b2",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x01000000000000000000000000000000000000000000000000000000000000b3/data",
+              },
+            ],
+            "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b3",
+          },
+        ],
+        "hash": "txHash004",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": 2042780n,
+    "blobGasBaseFee": 17301504n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 786432n,
+    "ethUsdPrice": undefined,
+    "excessBlobGas": 15000n,
+    "hash": "0x1000000000000000000000000000000000000000000000000000000000000000",
+    "number": 1001,
+    "slot": 101,
+    "timestamp": 2022-10-16T12:00:00.000Z,
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+              },
+            ],
+            "versionedHash": "blobHash002",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
+              },
+            ],
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash001",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash002",
+      },
+      {
+        "blobs": [
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+              },
+            ],
+            "versionedHash": "blobHash002",
+          },
+        ],
+        "hash": "txHash003",
+      },
+    ],
+  },
+]
+`;
+
 exports[`getAll > when getting filtered block results > should return the results starting from the slot specified 1`] = `
 [
   {
@@ -2386,6 +4272,10 @@ exports[`getAll > when getting paginated block results > should return the corre
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
             ],
             "versionedHash": "blobHash001",
           },
@@ -2500,6 +4390,10 @@ exports[`getAll > when getting paginated block results > should return the corre
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
             ],
             "versionedHash": "blobHash001",
           },
@@ -2518,18 +4412,9 @@ exports[`getAll > when getting paginated block results > should return the corre
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
-            ],
-            "versionedHash": "blobHash001",
-          },
-          {
-            "dataStorageReferences": [
               {
-                "storage": "google",
-                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
-              },
-              {
-                "storage": "swarm",
-                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",
@@ -2543,6 +4428,27 @@ exports[`getAll > when getting paginated block results > should return the corre
               {
                 "storage": "swarm",
                 "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              },
+            ],
+            "versionedHash": "blobHash001",
+          },
+          {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+              },
+              {
+                "storage": "ipfs",
+                "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
               },
             ],
             "versionedHash": "blobHash001",

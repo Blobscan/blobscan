@@ -29,6 +29,7 @@ type CreateInnerContextOptions = Partial<CreateContextOptions> & {
 
 export type ServiceApiKeys = Partial<{
   indexer: string;
+  ipfs: string;
   loadNetwork: string;
 }>;
 

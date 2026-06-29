@@ -38,6 +38,9 @@ const prisma = getPrisma({
         apiBaseUrl: env.S3_STORAGE_ENDPOINT,
         bucketName: env.S3_STORAGE_BUCKET_NAME,
       },
+      ipfs: {
+        gatewayUrl: env.IPFS_STORAGE_GATEWAY_URL,
+      },
     },
   },
 });
@@ -62,6 +65,8 @@ export async function createTestContext({
     if (apiClient === "indexer") {
       const token = jwt.sign("foobar", env.SECRET_KEY);
       req.headers.authorization = `Bearer ${token}`;
+    } else if (apiClient === "ipfs") {
+      req.headers.authorization = `Bearer ${env.IPFS_API_KEY}`;
     } else if (apiClient === "load-network") {
       req.headers.authorization = `Bearer ${env.WEAVEVM_API_KEY}`;
     } else if (apiClient === "blob-data") {
