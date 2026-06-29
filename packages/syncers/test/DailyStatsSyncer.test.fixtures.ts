@@ -8,6 +8,7 @@ export const CURRENT_DAY_DATA = {
     number: 1009,
     timestamp: "2023-09-01T17:00:00Z",
     slot: 109,
+    epoch: 3,
     blobGasUsed: 5500000,
     excessBlobGas: 15000,
     blobGasPrice: 22,

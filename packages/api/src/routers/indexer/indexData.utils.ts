@@ -132,7 +132,8 @@ export function createDBBlock(
     block: { blobGasUsed, excessBlobGas, hash, number, slot, timestamp },
   }: IndexDataFormattedInput,
   dbTxs: Pick<Transaction, "blobAsCalldataGasUsed">[],
-  params: ChainBlobParams
+  params: ChainBlobParams,
+  epoch: number
 ): WithoutTimestampFields<Block> {
   const blobAsCalldataGasUsed = dbTxs.reduce(
     (acc, tx) => acc.add(tx.blobAsCalldataGasUsed),
@@ -145,6 +146,7 @@ export function createDBBlock(
     hash,
     timestamp: timestampToDate(timestamp),
     slot,
+    epoch,
     blobGasUsed: bigIntToDecimal(blobGasUsed),
     blobGasPrice: bigIntToDecimal(blobGasPrice),
     excessBlobGas: bigIntToDecimal(excessBlobGas),

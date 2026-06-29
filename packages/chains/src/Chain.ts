@@ -44,6 +44,10 @@ export class Chain {
     return this.forks[this.forks.length - 1] ?? this.forks[0];
   }
 
+  getEpochBySlot(slot: number) {
+    return Math.floor(slot / this.slotsPerEpoch);
+  }
+
   getActiveForkBySlot(slot: number) {
     return (
       this.forks.findLast((fork) => slot >= fork.activationSlot) ??
