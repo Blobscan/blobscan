@@ -1,5 +1,28 @@
 # @blobscan/api
 
+## 2.0.0
+
+### Minor Changes
+
+- [#996](https://github.com/Blobscan/blobscan/pull/996) [`2f38f03`](https://github.com/Blobscan/blobscan/commit/2f38f0347a86c330338f9f5cd00100dd09445901) Thanks [@PJColombo](https://github.com/PJColombo)! - Add an `epoch` field to blocks
+
+  Track the consensus-layer epoch for each block. The indexer derives the
+  epoch from the block slot (`floor(slot / slotsPerEpoch)`, via the new
+  `Chain.getEpochBySlot` helper) and stores it on the block row, the block
+  API responses now return it, and the block details page displays it. The
+  column is nullable for now so existing rows can be backfilled in a
+  follow-up before it's made non-nullable; until then the web falls back to
+  deriving the epoch from the slot.
+
+### Patch Changes
+
+- Updated dependencies [[`2f38f03`](https://github.com/Blobscan/blobscan/commit/2f38f0347a86c330338f9f5cd00100dd09445901)]:
+  - @blobscan/chains@0.5.0
+  - @blobscan/db@0.28.0
+  - @blobscan/blob-propagator@2.0.0
+  - @blobscan/blob-storage-manager@2.0.0
+  - @blobscan/rollups@2.0.0
+
 ## 1.0.0
 
 ### Minor Changes
