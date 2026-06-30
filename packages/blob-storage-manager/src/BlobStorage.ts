@@ -1,7 +1,7 @@
 import type { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
 import { BlobStorageError, BlobTooLargeError, IpfsGatewayError, InvalidBlobCidError } from "./errors";
-import type { BlobFileType } from "./types";
+import type { BlobContext, BlobFileType } from "./types";
 import { getBlobFileType, normalizeBlobData } from "./utils/blob";
 
 export interface BlobStorageConfig {
@@ -30,7 +30,11 @@ export abstract class BlobStorage {
 
   protected abstract _healthCheck(): Promise<void>;
   protected abstract _getBlob(uri: string, opts?: GetBlobOpts): Promise<string>;
-  protected abstract _storeBlob(hash: string, data: Buffer): Promise<string>;
+  protected abstract _storeBlob(
+    hash: string,
+    data: Buffer,
+    context?: BlobContext
+  ): Promise<string>;
   protected abstract _removeBlob(uri: string): Promise<void>;
 
   protected async _getSignedUrl(
@@ -85,11 +89,15 @@ export abstract class BlobStorage {
     }
   }
 
-  async storeBlob(hash: string, data: string | Buffer): Promise<string> {
+  async storeBlob(
+    hash: string,
+    data: string | Buffer,
+    context?: BlobContext
+  ): Promise<string> {
     try {
       const normalizedData = normalizeBlobData(data);
 
-      const uri = await this._storeBlob(hash, normalizedData);
+      const uri = await this._storeBlob(hash, normalizedData, context);
 
       return uri;
     } catch (err) {

@@ -15,6 +15,7 @@ import {
   StorageCreationError,
 } from "../errors";
 import { recordIpfsGatewayAttempt } from "../instrumentation";
+import type { BlobContext } from "../types";
 import { bytesToHex } from "../utils";
 
 const DEFAULT_TIMEOUT_MS = 30_000;
@@ -163,6 +164,12 @@ async function readBoundedBody(
 
 export interface IpfsStorageConfig extends BlobStorageConfig {
   gatewayUrl: string;
+  /**
+   * Base URL of the blobscan-ipld node's write API (POST /blob). Distinct from
+   * the read `gatewayUrl`; required only when storing blobs (IPFS as a writable
+   * storage).
+   */
+  apiUrl?: string;
   /** Optional bearer token for gated gateways (e.g. Filebase, Infura). */
   apiKey?: string;
   timeoutMs?: number;
@@ -180,6 +187,7 @@ export interface IpfsStorageConfig extends BlobStorageConfig {
 
 export class IpfsStorage extends BlobStorage {
   protected readonly gatewayUrl: string;
+  protected readonly apiUrl?: string;
   protected readonly apiKey?: string;
   protected readonly timeoutMs: number;
   protected readonly maxRetries: number;
@@ -188,6 +196,7 @@ export class IpfsStorage extends BlobStorage {
   protected constructor({
     chainId,
     gatewayUrl,
+    apiUrl,
     apiKey,
     timeoutMs,
     maxRetries,
@@ -195,6 +204,7 @@ export class IpfsStorage extends BlobStorage {
   }: IpfsStorageConfig) {
     super(BlobStorageName.IPFS, chainId);
     this.gatewayUrl = gatewayUrl.replace(/\/$/, "");
+    this.apiUrl = apiUrl?.replace(/\/$/, "");
     // Treat empty/whitespace-only keys as absent: a `Bearer ` header with no
     // token is rejected by most gated gateways and would mask a misconfigured
     // env var as a generic 401.
@@ -382,10 +392,187 @@ export class IpfsStorage extends BlobStorage {
     }
   }
 
-  protected async _storeBlob(_: string, __: Buffer): Promise<string> {
-    throw new Error(
-      '"storeBlob" is not supported: IPFS references are registered externally by blobscan-ipld'
-    );
+  // Pushes a blob to the blobscan-ipld node, which runs the IPLD pipeline and
+  // returns the content-addressed CID of the raw blob (`data_cid`). That CID is
+  // what we persist as the dataReference and later resolve via _getBlob.
+  //
+  // The full beacon/execution context is required: the node needs commitment,
+  // slot, epoch, etc. to build its per-epoch DAG. Unlike reads, this can't fall
+  // back to deriving anything from the versioned hash, so a missing context is
+  // a programming error and fails loudly.
+  //
+  // `finalize` is always false: it instructs the node to build the EpochNode
+  // immediately, which is only correct once every blob of an epoch is stored.
+  // Blobscan indexes block-by-block and can't know an epoch is complete here,
+  // so finalization is left to the node (out-of-band) rather than guessed per
+  // blob.
+  protected async _storeBlob(
+    hash: string,
+    data: Buffer,
+    context?: BlobContext
+  ): Promise<string> {
+    if (!this.apiUrl) {
+      throw new Error(
+        '"storeBlob" requires a configured IPFS write API URL (IPFS_STORAGE_API_URL)'
+      );
+    }
+
+    if (!context) {
+      throw new Error(
+        '"storeBlob" requires blob context (commitment, slot, epoch, …) for the IPFS push endpoint'
+      );
+    }
+
+    const body = JSON.stringify({
+      commitment: context.commitment,
+      versioned_hash: hash,
+      data: bytesToHex(data),
+      tx_hash: context.txHash,
+      block_number: context.blockNumber,
+      block_hash: context.blockHash,
+      slot: context.slot,
+      epoch: context.epoch,
+      index: context.index,
+      finalize: false,
+    });
+
+    return this.#pushBlobWithRetries(body);
+  }
+
+  // Mirrors #fetchWithRetries: retry transient failures (5xx, 429, network
+  // errors, timeouts) with exponential backoff; surface permanent failures
+  // immediately.
+  async #pushBlobWithRetries(body: string): Promise<string> {
+    for (let attempt = 0; ; attempt++) {
+      try {
+        return await this.#pushBlobOnce(body);
+      } catch (err) {
+        const isRetryable = err instanceof IpfsGatewayError && err.retryable;
+
+        if (!isRetryable || attempt >= this.maxRetries) {
+          throw err;
+        }
+
+        recordIpfsGatewayAttempt({
+          outcome: "retry",
+          status: (err as IpfsGatewayError).status,
+          durationMs: 0,
+        });
+
+        const backoffMs =
+          this.retryBaseDelayMs * 2 ** attempt * (0.5 + Math.random() * 0.5);
+        const retryAfterMs = (err as IpfsGatewayError).retryAfterMs;
+        await sleep(retryAfterMs ?? backoffMs);
+      }
+    }
+  }
+
+  async #pushBlobOnce(body: string): Promise<string> {
+    const startedAt = Date.now();
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    };
+    if (this.apiKey) {
+      headers.Authorization = `Bearer ${this.apiKey}`;
+    }
+
+    let response: Response;
+    try {
+      response = await fetch(`${this.apiUrl}/blob`, {
+        method: "POST",
+        headers,
+        body,
+        signal: AbortSignal.timeout(this.timeoutMs),
+      });
+    } catch (err) {
+      const gatewayErr = toGatewayError(err);
+      recordIpfsGatewayAttempt({
+        outcome: "network_error",
+        status: 0,
+        durationMs: Date.now() - startedAt,
+      });
+      throw gatewayErr;
+    }
+
+    if (!response.ok) {
+      const retryable = isRetryableStatus(response.status);
+      const retryAfterMs = retryable
+        ? parseRetryAfter(response.headers.get("retry-after"))
+        : undefined;
+      // Surface the node's `{ "error": "…" }` message when present; it pinpoints
+      // validation failures (missing field, bad hex) far better than the status.
+      const detail = await response
+        .text()
+        .then((text) => {
+          try {
+            return (JSON.parse(text) as { error?: string }).error ?? text;
+          } catch {
+            return text;
+          }
+        })
+        .catch(() => "");
+      recordIpfsGatewayAttempt({
+        outcome: "gateway_error",
+        status: response.status,
+        durationMs: Date.now() - startedAt,
+      });
+      throw new IpfsGatewayError(
+        `Failed to store blob: ${response.status} ${response.statusText}${
+          detail ? ` - ${detail}` : ""
+        }`,
+        response.status,
+        retryable,
+        retryAfterMs
+      );
+    }
+
+    let dataCid: string | undefined;
+    try {
+      ({ data_cid: dataCid } = (await response.json()) as {
+        data_cid?: string;
+      });
+    } catch (err) {
+      recordIpfsGatewayAttempt({
+        outcome: "gateway_error",
+        status: response.status,
+        durationMs: Date.now() - startedAt,
+      });
+      throw new IpfsGatewayError(
+        `Failed to parse store response: ${(err as Error).message}`,
+        response.status,
+        false
+      );
+    }
+
+    if (!dataCid) {
+      recordIpfsGatewayAttempt({
+        outcome: "gateway_error",
+        status: response.status,
+        durationMs: Date.now() - startedAt,
+      });
+      throw new IpfsGatewayError(
+        "Store response did not include a data_cid",
+        response.status,
+        false
+      );
+    }
+
+    // Fail closed on a malformed CID rather than persisting a reference that
+    // _getBlob could never parse or verify.
+    try {
+      CID.parse(dataCid);
+    } catch {
+      throw new InvalidBlobCidError(dataCid);
+    }
+
+    recordIpfsGatewayAttempt({
+      outcome: "success",
+      status: response.status,
+      durationMs: Date.now() - startedAt,
+    });
+
+    return dataCid;
   }
 
   protected async _removeBlob(_: string): Promise<void> {

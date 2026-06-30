@@ -134,7 +134,7 @@ export class BlobStorageManager {
     return this.#getBlob(operations);
   }
 
-  async storeBlob({ data, versionedHash }: Blob): Promise<{
+  async storeBlob({ data, versionedHash, context }: Blob): Promise<{
     references: BlobReference<BlobStorageName>[];
     errors: BlobStorageError[];
   }> {
@@ -159,7 +159,7 @@ export class BlobStorageManager {
               async (storageSpan) => {
                 const start = performance.now();
                 const blobReference = await storage
-                  .storeBlob(versionedHash, data)
+                  .storeBlob(versionedHash, data, context)
                   .then<BlobReference<BlobStorageName>>((reference) => ({
                     reference,
                     storage: storage.name,
