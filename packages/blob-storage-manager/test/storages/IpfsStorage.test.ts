@@ -49,11 +49,17 @@ let MOCK_UNKNOWN_CID: string;
 
 class IpfsStorageMock extends IpfsStorage {
   constructor(
-    opts: { gatewayUrl?: string; apiUrl?: string; timeoutMs?: number } = {}
+    opts: {
+      gatewayUrl?: string;
+      // Use `null` to explicitly omit the IPLD write URL (read-only gateway
+      // mode); leaving it `undefined` defaults to MOCK_API_URL.
+      ipldUrl?: string | null;
+      timeoutMs?: number;
+    } = {}
   ) {
     super({
       gatewayUrl: opts.gatewayUrl ?? MOCK_GATEWAY_URL,
-      apiUrl: opts.apiUrl ?? MOCK_API_URL,
+      ipldUrl: opts.ipldUrl === null ? undefined : opts.ipldUrl ?? MOCK_API_URL,
       chainId: env.CHAIN_ID,
       timeoutMs: opts.timeoutMs,
       // Keep retry-induced sleep negligible so retryable-error tests run
@@ -90,6 +96,10 @@ describe("IpfsStorage", () => {
     MOCK_UNKNOWN_CID = await rawCid(Buffer.from("ff".repeat(32), "hex"));
 
     ipfsServer = setupServer(
+      // blobscan-ipld service readiness probe (used by the health check when ipldUrl is set).
+      http.get(`${MOCK_API_URL}/readyz`, () => {
+        return new HttpResponse(null, { status: 200 });
+      }),
       http.get(`${MOCK_GATEWAY_URL}/ipfs/bafkqaaa`, () => {
         return new HttpResponse(null, { status: 200 });
       }),
@@ -140,18 +150,33 @@ describe("IpfsStorage", () => {
     expect(() => storage.getBlobUri(MOCK_CID)).toThrow(BlobStorageError);
   });
 
-  it("should return 'OK' when gateway is reachable", async () => {
+  it("should return 'OK' when the blobscan-ipld service /readyz is reachable", async () => {
+    // The default mock storage has an ipldUrl, so the health check probes the
+    // blobscan-ipld service's /readyz rather than the read gateway.
     await expect(storage.healthCheck()).resolves.toBe("OK");
   });
 
-  it("should fail health check when gateway returns 5xx", async () => {
+  it("should fail health check when the blobscan-ipld service /readyz returns 5xx", async () => {
+    ipfsServer.use(
+      http.get(`${MOCK_API_URL}/readyz`, () => {
+        return new HttpResponse(null, { status: 503 });
+      })
+    );
+
+    await expect(storage.healthCheck()).rejects.toThrow();
+  });
+
+  it("should probe the read gateway when no blobscan-ipld service URL is configured", async () => {
+    const gatewayOnly = new IpfsStorageMock({ ipldUrl: null });
+    await expect(gatewayOnly.healthCheck()).resolves.toBe("OK");
+
     ipfsServer.use(
       http.get(`${MOCK_GATEWAY_URL}/ipfs/bafkqaaa`, () => {
         return new HttpResponse(null, { status: 503 });
       })
     );
 
-    await expect(storage.healthCheck()).rejects.toThrow();
+    await expect(gatewayOnly.healthCheck()).rejects.toThrow();
   });
 
   it("should retrieve a blob by CID and verify its integrity", async () => {
@@ -257,9 +282,9 @@ describe("IpfsStorage", () => {
     await expect(storage.getBlob(MOCK_CID)).rejects.toBeInstanceOf(BlobTooLargeError);
   });
 
-  it("should fail when gateway is unreachable during health check", async () => {
+  it("should fail when the blobscan-ipld service is unreachable during health check", async () => {
     ipfsServer.use(
-      http.get(`${MOCK_GATEWAY_URL}/ipfs/bafkqaaa`, () => {
+      http.get(`${MOCK_API_URL}/readyz`, () => {
         return HttpResponse.error();
       })
     );

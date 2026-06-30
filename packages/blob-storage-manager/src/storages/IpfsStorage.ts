@@ -163,13 +163,14 @@ async function readBoundedBody(
 }
 
 export interface IpfsStorageConfig extends BlobStorageConfig {
+  /** Read gateway for fetching blobs by CID (an IPFS HTTP gateway). */
   gatewayUrl: string;
   /**
-   * Base URL of the blobscan-ipld node's write API (POST /blob). Distinct from
+   * Base URL of the blobscan-ipld service's write API (POST /blob). Distinct from
    * the read `gatewayUrl`; required only when storing blobs (IPFS as a writable
    * storage).
    */
-  apiUrl?: string;
+  ipldUrl?: string;
   /** Optional bearer token for gated gateways (e.g. Filebase, Infura). */
   apiKey?: string;
   timeoutMs?: number;
@@ -187,7 +188,7 @@ export interface IpfsStorageConfig extends BlobStorageConfig {
 
 export class IpfsStorage extends BlobStorage {
   protected readonly gatewayUrl: string;
-  protected readonly apiUrl?: string;
+  protected readonly ipldUrl?: string;
   protected readonly apiKey?: string;
   protected readonly timeoutMs: number;
   protected readonly maxRetries: number;
@@ -196,7 +197,7 @@ export class IpfsStorage extends BlobStorage {
   protected constructor({
     chainId,
     gatewayUrl,
-    apiUrl,
+    ipldUrl,
     apiKey,
     timeoutMs,
     maxRetries,
@@ -204,7 +205,7 @@ export class IpfsStorage extends BlobStorage {
   }: IpfsStorageConfig) {
     super(BlobStorageName.IPFS, chainId);
     this.gatewayUrl = gatewayUrl.replace(/\/$/, "");
-    this.apiUrl = apiUrl?.replace(/\/$/, "");
+    this.ipldUrl = ipldUrl?.replace(/\/$/, "");
     // Treat empty/whitespace-only keys as absent: a `Bearer ` header with no
     // token is rejected by most gated gateways and would mask a misconfigured
     // env var as a generic 401.
@@ -229,7 +230,32 @@ export class IpfsStorage extends BlobStorage {
     return headers;
   }
 
+  #authHeaders(): Record<string, string> {
+    return this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {};
+  }
+
   protected async _healthCheck(): Promise<void> {
+    // When a write API is configured, the blobscan-ipld service is the
+    // component that owns the kubo client and the write path, so its /readyz
+    // (which pings kubo) is the representative health probe for this storage.
+    if (this.ipldUrl) {
+      const response = await fetch(`${this.ipldUrl}/readyz`, {
+        headers: this.#authHeaders(),
+        signal: AbortSignal.timeout(this.timeoutMs),
+      });
+
+      // Drain the body so the connection can be reused / released.
+      await response.body?.cancel().catch(() => undefined);
+
+      if (!response.ok) {
+        throw new Error(
+          `blobscan-ipld service /readyz returned ${response.status} ${response.statusText}`
+        );
+      }
+      return;
+    }
+
+    // Read-only deployment (gateway only, no blobscan-ipld API): probe the read gateway.
     // bafkqaaa is the empty identity block: every spec-compliant gateway can
     // serve it without a DHT lookup, so a successful GET is a representative
     // liveness probe. HEAD is avoided because some gateways reject it (405),
@@ -392,7 +418,7 @@ export class IpfsStorage extends BlobStorage {
     }
   }
 
-  // Pushes a blob to the blobscan-ipld node, which runs the IPLD pipeline and
+  // Pushes a blob to the blobscan-ipld service, which runs the IPLD pipeline and
   // returns the content-addressed CID of the raw blob (`data_cid`). That CID is
   // what we persist as the dataReference and later resolve via _getBlob.
   //
@@ -411,9 +437,9 @@ export class IpfsStorage extends BlobStorage {
     data: Buffer,
     context?: BlobContext
   ): Promise<string> {
-    if (!this.apiUrl) {
+    if (!this.ipldUrl) {
       throw new Error(
-        '"storeBlob" requires a configured IPFS write API URL (IPFS_STORAGE_API_URL)'
+        '"storeBlob" requires a configured IPFS write API URL (IPFS_STORAGE_IPLD_URL)'
       );
     }
 
@@ -479,7 +505,7 @@ export class IpfsStorage extends BlobStorage {
 
     let response: Response;
     try {
-      response = await fetch(`${this.apiUrl}/blob`, {
+      response = await fetch(`${this.ipldUrl}/blob`, {
         method: "POST",
         headers,
         body,
@@ -500,7 +526,7 @@ export class IpfsStorage extends BlobStorage {
       const retryAfterMs = retryable
         ? parseRetryAfter(response.headers.get("retry-after"))
         : undefined;
-      // Surface the node's `{ "error": "…" }` message when present; it pinpoints
+      // Surface the service's `{ "error": "…" }` message when present; it pinpoints
       // validation failures (missing field, bad hex) far better than the status.
       const detail = await response
         .text()
