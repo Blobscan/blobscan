@@ -4,7 +4,7 @@ import { Worker, Queue } from "bullmq";
 import type { JobsOptions, Processor, WorkerOptions } from "bullmq";
 import IORedis from "ioredis";
 
-import type { BlobStorage } from "@blobscan/blob-storage-manager";
+import type { BlobContext, BlobStorage } from "@blobscan/blob-storage-manager";
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import { createLogger, logger } from "@blobscan/logger";
 
@@ -157,9 +157,10 @@ export class BlobPropagator {
     blockNumber,
     versionedHash,
     data,
+    context,
   }: BlobPropagationInput) {
     try {
-      const blobReference = await this.#storeBlob(versionedHash, data);
+      const blobReference = await this.#storeBlob(versionedHash, data, context);
 
       const queueOperations = this.propagators.map(({ queue }) => {
         const priority = this.computeJobPriority(blockNumber);
@@ -201,8 +202,8 @@ export class BlobPropagator {
       });
 
       const blobReferences = await Promise.all(
-        uniqueBlobs.map(({ versionedHash, data }) =>
-          this.#storeBlob(versionedHash, data)
+        uniqueBlobs.map(({ versionedHash, data, context }) =>
+          this.#storeBlob(versionedHash, data, context)
         )
       );
 
@@ -279,11 +280,12 @@ export class BlobPropagator {
     await teardownPromise;
   }
 
-  async #storeBlob(versionedHash: string, data: string) {
+  async #storeBlob(versionedHash: string, data: string, context?: BlobContext) {
     const blobStorage = this.primaryBlobStorage.name;
     const blobUri = await this.primaryBlobStorage.storeBlob(
       versionedHash,
-      data
+      data,
+      context
     );
 
     return this.prisma.blobDataStorageReference.upsert({

@@ -63,6 +63,20 @@ function requireIfEnvEnabled(envName: string) {
   };
 }
 
+function requireIfPrimaryStorage(storageName: string) {
+  return (value: unknown, ctx: RefinementCtx) => {
+    if (
+      process.env.PRIMARY_BLOB_STORAGE?.toUpperCase() === storageName &&
+      value === undefined
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `This field is required when PRIMARY_BLOB_STORAGE is "${storageName.toLowerCase()}"`,
+      });
+    }
+  };
+}
+
 export const env = createEnv({
   envOptions: {
     server: {
@@ -179,7 +193,7 @@ export const env = createEnv({
       PRIMARY_BLOB_STORAGE: blobStorageCoercionSchema
         .default("POSTGRES")
         .superRefine((value, ctx) => {
-          if (value === "IPFS" || value === "WEAVEVM") {
+          if (value === "WEAVEVM") {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: `"${value.toLowerCase()}" cannot be used as PRIMARY_BLOB_STORAGE: it is populated by an external service and does not support writes`,
@@ -262,6 +276,14 @@ export const env = createEnv({
         .url()
         .default("https://ipfs.filebase.io")
         .superRefine(requireIfEnvEnabled("IPFS_STORAGE_ENABLED")),
+      // Base URL of the blobscan-ipld node's write API (POST /blob). Distinct
+      // from the read gateway above; required when IPFS is the primary
+      // (writable) storage.
+      IPFS_STORAGE_API_URL: z
+        .string()
+        .url()
+        .optional()
+        .superRefine(requireIfPrimaryStorage("IPFS")),
       // Optional bearer token sent to gated IPFS gateways (Filebase, Infura…).
       IPFS_STORAGE_API_KEY: z.string().optional(),
       // Bearer token authenticating inbound blobscan-ipld requests to the

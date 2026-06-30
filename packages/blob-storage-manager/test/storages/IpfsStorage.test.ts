@@ -23,6 +23,7 @@ import {
 } from "../../src/storages/IpfsStorage";
 
 const MOCK_GATEWAY_URL = "https://ipfs.mock";
+const MOCK_API_URL = "https://ipld.mock";
 
 const RAW_CODEC = 0x55;
 // Fixed CID used only by the store/remove cases (which reject before the CID
@@ -47,9 +48,12 @@ let MOCK_CID: string;
 let MOCK_UNKNOWN_CID: string;
 
 class IpfsStorageMock extends IpfsStorage {
-  constructor(opts: { gatewayUrl?: string; timeoutMs?: number } = {}) {
+  constructor(
+    opts: { gatewayUrl?: string; apiUrl?: string; timeoutMs?: number } = {}
+  ) {
     super({
       gatewayUrl: opts.gatewayUrl ?? MOCK_GATEWAY_URL,
+      apiUrl: opts.apiUrl ?? MOCK_API_URL,
       chainId: env.CHAIN_ID,
       timeoutMs: opts.timeoutMs,
       // Keep retry-induced sleep negligible so retryable-error tests run
@@ -277,14 +281,78 @@ describe("IpfsStorage", () => {
     expect(s.resolvedTimeoutMs).toBe(5000);
   });
 
+  const MOCK_CONTEXT = {
+    commitment: "0x" + "11".repeat(48),
+    txHash: "0x" + "22".repeat(32),
+    index: 0,
+    slot: 1234,
+    epoch: 38,
+    blockNumber: 100,
+    blockHash: "0x" + "33".repeat(32),
+  };
+
+  it("should store a blob and return its data_cid", async () => {
+    let received: Record<string, unknown> | undefined;
+    ipfsServer.use(
+      http.post(`${MOCK_API_URL}/blob`, async ({ request }) => {
+        received = (await request.json()) as Record<string, unknown>;
+        return HttpResponse.json({ data_cid: MOCK_CID }, { status: 201 });
+      })
+    );
+
+    const reference = await storage.storeBlob(
+      MOCK_BLOB_HEX,
+      MOCK_BLOB_HEX,
+      MOCK_CONTEXT
+    );
+
+    expect(reference).toBe(MOCK_CID);
+    expect(received).toMatchObject({
+      versioned_hash: MOCK_BLOB_HEX,
+      data: MOCK_BLOB_HEX,
+      commitment: MOCK_CONTEXT.commitment,
+      tx_hash: MOCK_CONTEXT.txHash,
+      slot: MOCK_CONTEXT.slot,
+      epoch: MOCK_CONTEXT.epoch,
+      index: MOCK_CONTEXT.index,
+      finalize: false,
+    });
+  });
+
   testValidError(
-    "should fail when trying to store a blob",
+    "should fail when storing a blob without context",
     async () => {
-      await storage.storeBlob(STATIC_CID, "0xdeadbeef");
+      await storage.storeBlob(MOCK_BLOB_HEX, MOCK_BLOB_HEX);
     },
     BlobStorageError,
     { checkCause: true }
   );
+
+  it("should mark a 503 store response as retryable", async () => {
+    ipfsServer.use(
+      http.post(`${MOCK_API_URL}/blob`, () => {
+        return new HttpResponse(null, { status: 503 });
+      })
+    );
+
+    const error = await storage
+      .storeBlob(MOCK_BLOB_HEX, MOCK_BLOB_HEX, MOCK_CONTEXT)
+      .catch((e) => (e as BlobStorageError).cause);
+    expect(error).toBeInstanceOf(IpfsGatewayError);
+    expect((error as IpfsGatewayError).retryable).toBe(true);
+  });
+
+  it("should fail when the store response omits data_cid", async () => {
+    ipfsServer.use(
+      http.post(`${MOCK_API_URL}/blob`, () => {
+        return HttpResponse.json({}, { status: 201 });
+      })
+    );
+
+    await expect(
+      storage.storeBlob(MOCK_BLOB_HEX, MOCK_BLOB_HEX, MOCK_CONTEXT)
+    ).rejects.toBeInstanceOf(BlobStorageError);
+  });
 
   testValidError(
     "should fail when trying to remove a blob",

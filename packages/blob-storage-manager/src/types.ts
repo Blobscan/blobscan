@@ -21,9 +21,26 @@ export type StorageError<N extends BlobStorage = BlobStorage> = {
   error: BlobStorageError;
 };
 
+/**
+ * Per-blob beacon/execution metadata that some storages (e.g. IPFS) require
+ * beyond the raw bytes. It is optional at the storage interface because most
+ * backends only need `{ hash, data }`; the indexer always supplies it.
+ */
+export type BlobContext = {
+  commitment: string;
+  txHash: string;
+  /** Blob index within the transaction (0-based). */
+  index: number;
+  slot: number;
+  epoch: number;
+  blockNumber: number;
+  blockHash: string;
+};
+
 export type Blob = {
   data: string;
   versionedHash: string;
+  context?: BlobContext;
 };
 
 export type StoreOptions = {

@@ -66,6 +66,7 @@ export const env = createEnv({
       .string()
       .url()
       .default("https://ipfs.filebase.io"),
+    IPFS_STORAGE_API_URL: z.string().url().optional(),
     IPFS_STORAGE_API_KEY: z.string().optional(),
 
     ...clientEnvVars,
@@ -105,6 +106,7 @@ export const env = createEnv({
     WEAVEVM_STORAGE_API_BASE_URL: process.env.WEAVEVM_STORAGE_API_BASE_URL,
     IPFS_STORAGE_ENABLED: process.env.IPFS_STORAGE_ENABLED,
     IPFS_STORAGE_GATEWAY_URL: process.env.IPFS_STORAGE_GATEWAY_URL,
+    IPFS_STORAGE_API_URL: process.env.IPFS_STORAGE_API_URL,
     IPFS_STORAGE_API_KEY: process.env.IPFS_STORAGE_API_KEY,
 
     PUBLIC_BEACON_BASE_URL: process.env.PUBLIC_BEACON_BASE_URL,

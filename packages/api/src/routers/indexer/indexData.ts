@@ -148,8 +148,18 @@ export const indexData = createAuthedProcedure("indexer")
       p0 = performance.now();
       // 3. Propagate blobs
       const propagatorInput = input.blobs.map((b) => ({
-        ...b,
+        versionedHash: b.versionedHash,
+        data: b.data,
         blockNumber: input.block.number,
+        context: {
+          commitment: b.commitment,
+          txHash: b.txHash,
+          index: b.index,
+          slot: input.block.slot,
+          epoch,
+          blockNumber: input.block.number,
+          blockHash: input.block.hash,
+        },
       }));
       await blobPropagator.propagateBlobs(propagatorInput);
 
