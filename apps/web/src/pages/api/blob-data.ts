@@ -81,6 +81,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     return res.status(200).send(blobData);
   } catch (err) {
+    console.error("Failed to fetch blob data: ", err);
     return res.status(500).json({ message: "Failed to fetch blob data" });
   }
 }
