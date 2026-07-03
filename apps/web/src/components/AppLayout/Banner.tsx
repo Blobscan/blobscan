@@ -39,27 +39,17 @@ export default function Banner() {
         />
       </div>
       <div className="flex flex-col items-center gap-y-1 text-sm">
-        <div className="flex flex-wrap items-center gap-x-4">
+        <div className="flex flex-wrap items-center justify-center gap-x-2">
           <p className="leading-6 text-content-light dark:text-content-dark">
-            ⚡ Blobscan needs your support! We only have 6 months of runway.
+            🌐 Blobscan is migrating to IPFS. Mainnet blobs remain permanently
+            pinned on IPFS. Sepolia and Hoodi blobs are now served via IPFS on a
+            best-effort basis without pinning guarantees.
           </p>
           <Link
-            href="https://paragraph.com/@blobscan/blobscan-the-cost-of-archiving-ethereums-blob-data"
+            href="https://paragraph.com/@blobscan/announcing-transition-to-decentralized-blob-storage"
             isExternal
           >
-            Read our latest blog post
-          </Link>
-        </div>
-        <div className="flex flex-wrap items-center gap-x-4">
-          <p className="leading-6 text-content-light dark:text-content-dark">
-            The good news: we&apos;re part of the TheDAO Security Fund Quadratic
-            Funding Round — every donation is amplified.
-          </p>
-          <Link
-            href="https://qf.giveth.io/project/blobscan?roundId=16"
-            isExternal
-          >
-            Donate on Giveth
+            Learn more →
           </Link>
         </div>
       </div>
