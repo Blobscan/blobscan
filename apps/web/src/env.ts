@@ -46,6 +46,11 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "test", "production"]),
     METRICS_ENABLED: booleanSchema.default("false"),
     REDIS_URI: z.string().default("redis://localhost:6379"),
+    // Number of trusted reverse-proxy hops in front of the app (e.g. ingress).
+    // Used to pick the real client IP from X-Forwarded-For instead of trusting
+    // the spoofable left-most value. 0 (default) preserves legacy behavior for
+    // local/dev where there is no proxy.
+    TRUSTED_PROXY_COUNT: z.coerce.number().int().nonnegative().default(0),
     TRACES_ENABLED: booleanSchema.default("false"),
     OTEL_DIAG_ENABLED: z.boolean().default(false),
     OTLP_AUTH_USERNAME: z.coerce.string().optional(),
@@ -88,6 +93,7 @@ export const env = createEnv({
     METRICS_ENABLED: process.env.METRICS_ENABLED,
     NODE_ENV: process.env.NODE_ENV,
     REDIS_URI: process.env.REDIS_URI,
+    TRUSTED_PROXY_COUNT: process.env.TRUSTED_PROXY_COUNT,
     TRACES_ENABLED: process.env.TRACES_ENABLED,
     OTEL_DIAG_ENABLED: process.env.OTEL_DIAG_ENABLED,
     OTLP_AUTH_USERNAME: process.env.OTLP_AUTH_USERNAME,
