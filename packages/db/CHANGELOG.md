@@ -1,5 +1,26 @@
 # @blobscan/db
 
+## 0.29.1
+
+### Patch Changes
+
+- [#1005](https://github.com/Blobscan/blobscan/pull/1005) [`68d6570`](https://github.com/Blobscan/blobscan/commit/68d6570999479564e9a8acded06b431812eb1ae3) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Drop the unused `inserted_at` indexes
+
+  No application query filters or orders by `inserted_at` on `address`,
+  `blob`, `block`, or `transaction`, and production index statistics show
+  zero scans over the database's entire lifetime while the four indexes
+  occupied ~635 MB combined and added maintenance work to every insert.
+
+- [#1003](https://github.com/Blobscan/blobscan/pull/1003) [`f9accce`](https://github.com/Blobscan/blobscan/commit/f9acccec34b8c34e2cea93989f626eab96b0ca1a) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Drop three redundant database indexes
+
+  `transaction(from_id, block_timestamp)` is a strict prefix of
+  `transaction(from_id, block_timestamp, index)`,
+  `blobs_on_transactions(tx_hash)` is a prefix of both the primary key
+  `(tx_hash, index)` and `(tx_hash, blob_hash)`, and
+  `address(address, rollup)` leads with the primary-key column. Every query
+  they served is served identically by the longer index or primary key, so
+  they only added write and storage overhead on the largest tables.
+
 ## 0.29.0
 
 ### Minor Changes

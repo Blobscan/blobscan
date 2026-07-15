@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/api",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -18,7 +18,7 @@
     "@blobscan/blob-storage-manager": "workspace:^3.0.0",
     "@blobscan/chains": "workspace:^0.5.0",
     "@blobscan/dayjs": "workspace:^0.1.1",
-    "@blobscan/db": "workspace:^0.29.0",
+    "@blobscan/db": "workspace:^0.29.1",
     "@blobscan/env": "workspace:^0.4.0",
     "@blobscan/logger": "workspace:^0.1.4",
     "@blobscan/open-telemetry": "workspace:^0.0.10",
