@@ -32,6 +32,10 @@ async function main() {
 
   const app = express();
 
+  if (env.TRUSTED_PROXIES) {
+    app.set("trust proxy", env.TRUSTED_PROXIES.split(",").map((p) => p.trim()));
+  }
+
   app.use(corsMiddleware);
   app.use(bodyParserMiddleware);
   app.use(morganMiddleware);

@@ -95,6 +95,7 @@ export const env = createEnv({
         .string()
         .url()
         .default(`http://localhost:${process.env.BLOBSCAN_API_PORT ?? 3001}`),
+      TRUSTED_PROXIES: z.string().optional(),
 
       // Logging
       LOG_LEVEL: z
