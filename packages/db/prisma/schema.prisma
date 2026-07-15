@@ -174,7 +174,7 @@ model Address {
   @@index([rollup])
   @@index([firstBlockNumberAsReceiver])
   @@index([firstBlockNumberAsSender])
-  @@index([insertedAt])
+  @@index([insertedAt], type: Brin)
   @@map("address")
 }
 
@@ -194,7 +194,7 @@ model Blob {
 
   @@index([firstBlockNumber])
   @@index([proof])
-  @@index([insertedAt])
+  @@index([insertedAt], type: Brin)
   @@map("blob")
 }
 
@@ -242,7 +242,7 @@ model Block {
   transactionForks    TransactionFork[]
 
   @@index([number])
-  @@index([insertedAt])
+  @@index([insertedAt], type: Brin)
   @@map("block")
 }
 
@@ -282,7 +282,7 @@ model Transaction {
   @@index([fromId, blockTimestamp, index])
   @@index([fromId, blockTimestamp]) // Rollup queries by time
   @@index([toId, blockTimestamp, index])
-  @@index([insertedAt])
+  @@index([insertedAt], type: Brin)
   @@map("transaction")
 }
 
