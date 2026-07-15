@@ -1,5 +1,15 @@
 # @blobscan/rest-api-server
 
+## 0.16.1
+
+### Patch Changes
+
+- [#1002](https://github.com/Blobscan/blobscan/pull/1002) [`b954d1e`](https://github.com/Blobscan/blobscan/commit/b954d1ec7f899da8b09f53959c38e7f170e58b10) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fixed slow GET /blocks queries when filtering by slot range by ordering on `slot` instead of `number` (~9.5s → ~5ms). Fixed a REST API crash from the Matomo middleware calling the non-existent `logger.warning()`.
+
+- Updated dependencies [[`68d6570`](https://github.com/Blobscan/blobscan/commit/68d6570999479564e9a8acded06b431812eb1ae3), [`f9accce`](https://github.com/Blobscan/blobscan/commit/f9acccec34b8c34e2cea93989f626eab96b0ca1a), [`b954d1e`](https://github.com/Blobscan/blobscan/commit/b954d1ec7f899da8b09f53959c38e7f170e58b10)]:
+  - @blobscan/db@0.29.1
+  - @blobscan/api@3.0.1
+
 ## 0.16.0
 
 ### Minor Changes
