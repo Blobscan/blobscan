@@ -133,7 +133,7 @@ export function matomoMiddleware(
         }),
       })
       .catch((error) => {
-        logger.warning(`Failed to track request ${actionName} `, error);
+        logger.warn(`Failed to track request ${actionName} `, error);
       });
   });
 
