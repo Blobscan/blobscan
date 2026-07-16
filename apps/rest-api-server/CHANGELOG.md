@@ -1,5 +1,11 @@
 # @blobscan/rest-api-server
 
+## 0.16.2
+
+### Patch Changes
+
+- [`6726c0d`](https://github.com/Blobscan/blobscan/commit/6726c0d1ca94e0865ff00b565e333925edd48d9c) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Declared the `TRUSTED_PROXIES` env var in the Turbo config so Turbo accounts for it in task caching and no longer warns about an undeclared runtime env var.
+
 ## 0.16.1
 
 ### Patch Changes
