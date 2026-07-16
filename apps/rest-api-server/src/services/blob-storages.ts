@@ -109,6 +109,7 @@ export async function createStorageFromEnv(
       return IpfsStorage.create({
         chainId,
         gatewayUrl: env.IPFS_STORAGE_GATEWAY_URL,
+        readGatewayUrl: env.IPFS_STORAGE_INTERNAL_GATEWAY_URL,
         ipldUrl: env.IPFS_STORAGE_IPLD_URL,
         apiKey: env.IPFS_STORAGE_API_KEY,
         // Keep IPFS in the manager even if the gateway is down at boot; reads

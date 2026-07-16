@@ -71,6 +71,10 @@ export const env = createEnv({
       .string()
       .url()
       .default("https://ipfs.filebase.io"),
+    // Gateway this process reads blobs from server-side. Defaults to
+    // IPFS_STORAGE_GATEWAY_URL when unset. Set this separately when that URL
+    // is a public hostname that routes back to this same service.
+    IPFS_STORAGE_INTERNAL_GATEWAY_URL: z.string().url().optional(),
     IPFS_STORAGE_IPLD_URL: z.string().url().optional(),
     IPFS_STORAGE_API_KEY: z.string().optional(),
 
@@ -112,6 +116,8 @@ export const env = createEnv({
     WEAVEVM_STORAGE_API_BASE_URL: process.env.WEAVEVM_STORAGE_API_BASE_URL,
     IPFS_STORAGE_ENABLED: process.env.IPFS_STORAGE_ENABLED,
     IPFS_STORAGE_GATEWAY_URL: process.env.IPFS_STORAGE_GATEWAY_URL,
+    IPFS_STORAGE_INTERNAL_GATEWAY_URL:
+      process.env.IPFS_STORAGE_INTERNAL_GATEWAY_URL,
     IPFS_STORAGE_IPLD_URL: process.env.IPFS_STORAGE_IPLD_URL,
     IPFS_STORAGE_API_KEY: process.env.IPFS_STORAGE_API_KEY,
 

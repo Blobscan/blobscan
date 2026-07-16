@@ -272,12 +272,20 @@ export const env = createEnv({
 
       // IPFS storage (references registered externally by blobscan-ipld)
       IPFS_STORAGE_ENABLED: booleanSchema.default("false"),
-      // Read gateway for fetching blobs by CID (an IPFS HTTP gateway).
+      // Public gateway used to build the blob `url` shown to API/website
+      // consumers so they can fetch the blob themselves.
       IPFS_STORAGE_GATEWAY_URL: z
         .string()
         .url()
         .default("https://ipfs.filebase.io")
         .superRefine(requireIfEnvEnabled("IPFS_STORAGE_ENABLED")),
+      // Gateway this process reads blobs from server-side. Defaults to
+      // IPFS_STORAGE_GATEWAY_URL when unset. Set this separately when that
+      // URL is a public hostname that routes back to this same service
+      // (e.g. the API's own public domain) — using it directly here would
+      // make the process call back out to itself over the internet for
+      // every IPFS-backed blob read.
+      IPFS_STORAGE_INTERNAL_GATEWAY_URL: z.string().url().optional(),
       // Base URL of the blobscan-ipld service's write API (POST /blob). Distinct
       // from the read gateway above; required when IPFS is the primary
       // (writable) storage.

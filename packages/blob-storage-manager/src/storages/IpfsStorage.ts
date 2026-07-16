@@ -163,8 +163,21 @@ async function readBoundedBody(
 }
 
 export interface IpfsStorageConfig extends BlobStorageConfig {
-  /** Read gateway for fetching blobs by CID (an IPFS HTTP gateway). */
+  /**
+   * Public read gateway used to build the `url` shown to API/website
+   * consumers so they can fetch the blob themselves. Never fetched from by
+   * this class directly — see `readGatewayUrl` for that.
+   */
   gatewayUrl: string;
+  /**
+   * Gateway this process actually issues read requests against. Defaults to
+   * `gatewayUrl` when unset. Set this separately when `gatewayUrl` is a
+   * public hostname that routes back through this same service (e.g. the
+   * API's own public domain) — using it directly for server-side fetches
+   * would make the process call back out to itself over the internet for
+   * every IPFS-backed blob read.
+   */
+  readGatewayUrl?: string;
   /**
    * Base URL of the blobscan-ipld service's write API (POST /blob). Distinct from
    * the read `gatewayUrl`; required only when storing blobs (IPFS as a writable
@@ -188,6 +201,7 @@ export interface IpfsStorageConfig extends BlobStorageConfig {
 
 export class IpfsStorage extends BlobStorage {
   protected readonly gatewayUrl: string;
+  protected readonly readGatewayUrl: string;
   protected readonly ipldUrl?: string;
   protected readonly apiKey?: string;
   protected readonly timeoutMs: number;
@@ -197,6 +211,7 @@ export class IpfsStorage extends BlobStorage {
   protected constructor({
     chainId,
     gatewayUrl,
+    readGatewayUrl,
     ipldUrl,
     apiKey,
     timeoutMs,
@@ -205,6 +220,7 @@ export class IpfsStorage extends BlobStorage {
   }: IpfsStorageConfig) {
     super(BlobStorageName.IPFS, chainId);
     this.gatewayUrl = gatewayUrl.replace(/\/$/, "");
+    this.readGatewayUrl = (readGatewayUrl ?? gatewayUrl).replace(/\/$/, "");
     this.ipldUrl = ipldUrl?.replace(/\/$/, "");
     // Treat empty/whitespace-only keys as absent: a `Bearer ` header with no
     // token is rejected by most gated gateways and would mask a misconfigured
@@ -260,7 +276,7 @@ export class IpfsStorage extends BlobStorage {
     // serve it without a DHT lookup, so a successful GET is a representative
     // liveness probe. HEAD is avoided because some gateways reject it (405),
     // which a status-only check would silently treat as healthy.
-    const response = await fetch(`${this.gatewayUrl}/ipfs/bafkqaaa`, {
+    const response = await fetch(`${this.readGatewayUrl}/ipfs/bafkqaaa`, {
       headers: this.#requestHeaders(),
       signal: AbortSignal.timeout(this.timeoutMs),
     });
@@ -342,7 +358,7 @@ export class IpfsStorage extends BlobStorage {
       // the gateway for the verbatim block addressed by the CID, never a
       // deserialized view or HTML directory listing. This keeps the payload
       // deterministic and locally verifiable against the CID.
-      response = await fetch(`${this.gatewayUrl}/ipfs/${uri}?format=raw`, {
+      response = await fetch(`${this.readGatewayUrl}/ipfs/${uri}?format=raw`, {
         headers: this.#requestHeaders(),
         signal: AbortSignal.timeout(this.timeoutMs),
       });
