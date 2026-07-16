@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/rest-api-server",
-  "version": "0.16.2",
+  "version": "0.16.3",
   "private": true,
   "scripts": {
     "build": "ncc build src/index.ts --target es2020 --minify",
