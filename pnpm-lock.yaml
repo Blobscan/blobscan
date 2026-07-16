@@ -183,7 +183,7 @@ importers:
         specifier: workspace:^3.0.0
         version: link:../../packages/blob-propagator
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^3.0.0
+        specifier: workspace:^3.0.1
         version: link:../../packages/blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.5.0
@@ -192,7 +192,7 @@ importers:
         specifier: workspace:^0.29.1
         version: link:../../packages/db
       '@blobscan/env':
-        specifier: workspace:^0.4.0
+        specifier: workspace:^0.4.1
         version: link:../../packages/env
       '@blobscan/errors':
         specifier: workspace:^0.0.2
@@ -274,7 +274,7 @@ importers:
         specifier: workspace:^0.2.2
         version: link:../../packages/blob-decoder
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^3.0.0
+        specifier: workspace:^3.0.1
         version: link:../../packages/blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.5.0
@@ -289,7 +289,7 @@ importers:
         specifier: workspace:^0.29.0
         version: link:../../packages/db
       '@blobscan/env':
-        specifier: workspace:^0.4.0
+        specifier: workspace:^0.4.1
         version: link:../../packages/env
       '@blobscan/eth-format':
         specifier: workspace:^0.1.0
@@ -807,7 +807,7 @@ importers:
         specifier: workspace:^0.1.1
         version: link:../dayjs
       '@blobscan/env':
-        specifier: workspace:^0.4.0
+        specifier: workspace:^0.4.1
         version: link:../env
       '@prisma/client':
         specifier: ^5.19.1
