@@ -18,13 +18,11 @@ const TRACKING_EXCLUSIONS: { methods?: RequestMethod[]; path: string }[] = [
 ];
 
 function getClientIp(req: Request): string {
-  const forwarded = req.headers["x-forwarded-for"];
-  const ip =
-    typeof forwarded === "string"
-      ? forwarded.split(",")[0]?.trim()
-      : req.socket.remoteAddress;
-
-  return ip || "unknown";
+  // Rely on Express's `trust proxy` setting (configured from TRUSTED_PROXIES)
+  // so `req.ip` resolves to the left-most untrusted address in
+  // `x-forwarded-for`, walking past internal proxy hops. Reading the header
+  // directly would ignore that config and log the internal proxy IP.
+  return req.ip || req.socket.remoteAddress || "unknown";
 }
 
 function shouldSkipTracking(req: Request): boolean {
