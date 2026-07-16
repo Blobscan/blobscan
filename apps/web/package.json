@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/web",
-  "version": "0.54.0",
+  "version": "0.54.1",
   "private": true,
   "scripts": {
     "analyze": "ANALYZE=true pnpm build",
@@ -17,12 +17,12 @@
   "dependencies": {
     "@blobscan/api": "workspace:^3.0.0",
     "@blobscan/blob-decoder": "workspace:^0.2.2",
-    "@blobscan/blob-storage-manager": "workspace:^3.0.0",
+    "@blobscan/blob-storage-manager": "workspace:^3.0.1",
     "@blobscan/chains": "workspace:^0.5.0",
     "@blobscan/dates": "workspace:*",
     "@blobscan/dayjs": "workspace:^0.1.1",
     "@blobscan/db": "workspace:^0.29.0",
-    "@blobscan/env": "workspace:^0.4.0",
+    "@blobscan/env": "workspace:^0.4.1",
     "@blobscan/eth-format": "workspace:^0.1.0",
     "@blobscan/logger": "workspace:^0.1.4",
     "@blobscan/open-telemetry": "workspace:^0.0.10",
