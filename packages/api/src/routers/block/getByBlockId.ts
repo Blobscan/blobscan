@@ -32,6 +32,7 @@ export const getByBlockId = publicProcedure
       path: `/blocks/{id}`,
       tags: ["blocks"],
       summary: "retrieves block details for given block number or hash.",
+      description: "This endpoint retrieves block details for given block number or hash. However, blocks are only stored if they contain blobs. If a valid block id is entered, but that blob does not contain any blobs, then the endpoint will return an error."
     },
   })
   .input(inputSchema)
