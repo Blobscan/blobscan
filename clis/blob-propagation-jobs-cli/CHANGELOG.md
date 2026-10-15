@@ -1,5 +1,11 @@
 # @blobscan/blob-propagation-jobs-cli
 
+## 0.2.21
+
+### Patch Changes
+
+- [#969](https://github.com/Blobscan/blobscan/pull/969) [`e9f545d`](https://github.com/Blobscan/blobscan/commit/e9f545d73158b44b638dd8a56451ca84a17964fb) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Filtered out undefined jobs returned by BullMQ when listing queue jobs
+
 ## 0.2.20
 
 ### Patch Changes
