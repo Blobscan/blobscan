@@ -144,6 +144,7 @@ class TestExecuteSqlWindow:
             context=context,
             postgres=mock_postgres,
             sql=text("SELECT 1"),
+            table="daily_metrics",
         )
 
         assert rowcount == 42
@@ -157,9 +158,30 @@ class TestExecuteSqlWindow:
         mock_postgres, mock_conn = self.make_postgres_mock(rowcount=0)
         sql = text("SELECT :from, :to")
 
-        execute_sql_window(context=context, postgres=mock_postgres, sql=sql)
+        execute_sql_window(
+            context=context, postgres=mock_postgres, sql=sql, table="daily_metrics",
+        )
 
-        mock_conn.execute.assert_called_once_with(sql, {"from": start, "to": end})
+        mock_conn.execute.assert_called_with(sql, {"from": start, "to": end})
+
+    def test_deletes_window_before_aggregating(self):
+        start = datetime(2024, 6, 1, 10, 0, tzinfo=UTC)
+        end = datetime(2024, 6, 1, 11, 0, tzinfo=UTC)
+        context = self._make_context(start, end)
+        mock_postgres, mock_conn = self.make_postgres_mock(rowcount=0)
+        sql = text("SELECT :from, :to")
+
+        execute_sql_window(
+            context=context, postgres=mock_postgres, sql=sql, table="daily_metrics",
+        )
+
+        assert mock_conn.execute.call_count == 2
+        delete_sql, delete_params = mock_conn.execute.call_args_list[0].args
+        assert str(delete_sql) == (
+            "DELETE FROM daily_metrics "
+            "WHERE period_start >= :from AND period_start < :to"
+        )
+        assert delete_params == {"from": start, "to": end}
 
     def test_commits_after_execution(self):
         context = self._make_context(
@@ -172,6 +194,7 @@ class TestExecuteSqlWindow:
             context=context,
             postgres=mock_postgres,
             sql=text("SELECT 1"),
+            table="daily_metrics",
         )
 
         mock_conn.commit.assert_called_once()

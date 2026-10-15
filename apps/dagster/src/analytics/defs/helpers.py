@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import dagster as dg
+    from sqlalchemy.engine import Connection
     from sqlalchemy.sql.elements import TextClause
 
     from analytics.defs.resources.postgres import PostgresResource
@@ -46,13 +47,30 @@ def partition_meta(context: dg.AssetExecutionContext) -> str | None:
     return getattr(context, "partition_key", None)
 
 
+def delete_window(conn: Connection, table: str, params: dict) -> None:
+    """Delete the rows of ``table`` within the [from, to) window.
+
+    Run in the same transaction as the aggregate SQL so a re-aggregation fully
+    replaces the window: groups that no longer have data (e.g. after a reorg)
+    are removed instead of keeping their stale values.
+    """
+    conn.execute(
+        text(
+            f"DELETE FROM {table} "  # noqa: S608 - table names are internal constants
+            "WHERE period_start >= :from AND period_start < :to",
+        ),
+        params,
+    )
+
+
 def execute_sql_window(
     *,
     context: dg.AssetExecutionContext,
     postgres: PostgresResource,
     sql: TextClause,
+    table: str,
 ) -> tuple[int, int]:
-    """Execute a single SQL statement for the partition window.
+    """Replace ``table`` rows in the partition window with the result of ``sql``.
 
     Returns (rowcount, elapsed_ms).
     """
@@ -62,6 +80,7 @@ def execute_sql_window(
 
     with postgres.get_connection() as conn:
         t0 = time.perf_counter()
+        delete_window(conn, table, params)
         res = conn.execute(sql, params)
         t1 = time.perf_counter()
         conn.commit()
