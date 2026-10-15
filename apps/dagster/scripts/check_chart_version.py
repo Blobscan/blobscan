@@ -2,12 +2,12 @@
 """Check that the blobscan-dagster Helm chart runs this app's Dagster version.
 
 The chart's webserver and daemon use the upstream dagster/dagster-k8s image,
-pinned by tag; the code location and run pods use this app's image, built from
-uv.lock. When the two drift, the webserver and daemon talk to a code server on
-another Dagster version.
+pinned by tag (empty means the chart's appVersion); the code location and run
+pods use this app's image, built from uv.lock. When the two drift, the
+webserver and daemon talk to a code server on another Dagster version.
 
 Usage (from apps/dagster):
-    uv run python scripts/check_chart_version.py [values.yaml URL or path]
+    uv run python scripts/check_chart_version.py [chart directory URL or path]
 """
 
 import sys
@@ -18,9 +18,9 @@ from pathlib import Path
 import yaml
 
 DAGSTER_ROOT = Path(__file__).parent.parent
-DEFAULT_VALUES = (
+DEFAULT_CHART = (
     "https://raw.githubusercontent.com/Blobscan/blobscan-helm-charts/"
-    "master/charts/blobscan-dagster/values.yaml"
+    "master/charts/blobscan-dagster"
 )
 
 
@@ -29,7 +29,7 @@ def locked_dagster_version() -> str:
     return next(p["version"] for p in lock["package"] if p["name"] == "dagster")
 
 
-def load_values(source: str) -> dict:
+def load_yaml(source: str) -> dict:
     if source.startswith(("http://", "https://")):
         # Only http(s) gets here; anything else is read as a local path.
         with urllib.request.urlopen(source, timeout=30) as response:  # noqa: S310
@@ -38,13 +38,14 @@ def load_values(source: str) -> dict:
 
 
 def main() -> int:
-    source = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_VALUES
+    source = (sys.argv[1] if len(sys.argv) > 1 else DEFAULT_CHART).rstrip("/")
     locked = locked_dagster_version()
-    values = load_values(source)
+    values = load_yaml(f"{source}/values.yaml")
+    app_version = str(load_yaml(f"{source}/Chart.yaml")["appVersion"])
 
     mismatches = []
     for component in ("webserver", "daemon"):
-        tag = str(values[component]["image"]["tag"])
+        tag = str(values[component]["image"]["tag"] or app_version)
         print(f"{component}: dagster/dagster-k8s:{tag}")
         if tag != locked:
             mismatches.append(component)
@@ -54,8 +55,8 @@ def main() -> int:
         print(
             f"::error::blobscan-dagster chart ({source}) runs "
             f"{', '.join(mismatches)} on a different Dagster version than "
-            f"apps/dagster/uv.lock ({locked}). Release a chart with "
-            f"webserver.image.tag and daemon.image.tag set to {locked}.",
+            f"apps/dagster/uv.lock ({locked}). Release a chart with appVersion "
+            f"{locked} (and webserver/daemon.image.tag empty or {locked}).",
         )
         return 1
     return 0
