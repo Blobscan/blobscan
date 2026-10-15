@@ -94,6 +94,8 @@ services:
       DAGSTER_CURRENT_IMAGE: blobscan-dagster
       CHAIN_ID: "${CHAIN_ID}"
       DAGSTER_METRICS_START_DATE: "${DAGSTER_METRICS_START_DATE:-}"
+      # Slack-compatible incoming webhook for run failure / staleness alerts
+      DAGSTER_ALERT_WEBHOOK_URL: "${DAGSTER_ALERT_WEBHOOK_URL:-}"
       DATABASE_URL: "postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev"
       POSTGRES_USER: "blobscan"
       POSTGRES_PASSWORD: "s3cr3t"

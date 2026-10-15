@@ -9,27 +9,42 @@ from analytics.defs.assets import (
     yearly_metrics,
 )
 
+# Used by dagster.yaml's tag_concurrency_limits to run at most one live run
+# per metrics table at a time.
+METRICS_TABLE_TAG = "blobscan/metrics_table"
+
 all_time_metrics_job = dg.define_asset_job(
     name="all_time_metrics_job",
     selection=[all_time_metrics],
+    tags={METRICS_TABLE_TAG: "all_time_metrics"},
 )
 
 hourly_metrics_job = dg.define_asset_job(
-    name="hourly_metrics_job", selection=[hourly_metrics],
+    name="hourly_metrics_job",
+    selection=[hourly_metrics],
+    tags={METRICS_TABLE_TAG: "hourly_metrics"},
 )
 
 daily_metrics_job = dg.define_asset_job(
-    name="daily_metrics_job", selection=[daily_metrics],
+    name="daily_metrics_job",
+    selection=[daily_metrics],
+    tags={METRICS_TABLE_TAG: "daily_metrics"},
 )
 
 weekly_metrics_job = dg.define_asset_job(
-    name="weekly_metrics_job", selection=[weekly_metrics],
+    name="weekly_metrics_job",
+    selection=[weekly_metrics],
+    tags={METRICS_TABLE_TAG: "weekly_metrics"},
 )
 
 monthly_metrics_job = dg.define_asset_job(
-    name="monthly_metrics_job", selection=[monthly_metrics],
+    name="monthly_metrics_job",
+    selection=[monthly_metrics],
+    tags={METRICS_TABLE_TAG: "monthly_metrics"},
 )
 
 yearly_metrics_job = dg.define_asset_job(
-    name="yearly_metrics_job", selection=[yearly_metrics],
+    name="yearly_metrics_job",
+    selection=[yearly_metrics],
+    tags={METRICS_TABLE_TAG: "yearly_metrics"},
 )
