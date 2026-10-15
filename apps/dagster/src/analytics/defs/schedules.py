@@ -40,7 +40,7 @@ def _build_live_schedule(
     """
 
     @dg.schedule(name=name, cron_schedule=cron_schedule, job=job)
-    def _schedule(context: dg.ScheduleEvaluationContext):
+    def _schedule(context: dg.ScheduleEvaluationContext) -> dg.RunRequest:
         return dg.RunRequest(
             partition_key=partitions_def.get_partition_key_for_timestamp(
                 context.scheduled_execution_time.timestamp(),

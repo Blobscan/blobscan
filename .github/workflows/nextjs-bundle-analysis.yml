@@ -73,6 +73,10 @@ jobs:
         if: success() && github.event.number
         run: |
           cd apps/web
+          if [ ! -d .next/analyze/base/bundle ]; then
+            echo "Base branch bundle stats are unavailable, so no comparison was made." > .next/analyze/__bundle_analysis_comment.txt
+            exit 0
+          fi
           ls -laR .next/analyze/base && npx -p nextjs-bundle-analysis compare
 
       - name: Get Comment Body

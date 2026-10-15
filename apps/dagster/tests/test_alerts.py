@@ -1,16 +1,22 @@
+from __future__ import annotations
+
 import json
 import time
 from types import SimpleNamespace
+from typing import TYPE_CHECKING
 from unittest.mock import patch
 
 import dagster as dg
-import pytest
 
 from analytics.defs.alerts import (
     HOURLY_METRICS_STALE_AFTER_SECONDS,
     hourly_metrics_staleness_alert,
+    metrics_run_failure_alert,
     send_alert,
 )
+
+if TYPE_CHECKING:
+    import pytest
 
 
 class TestSendAlert:
@@ -86,6 +92,5 @@ class TestHourlyMetricsStalenessAlert:
 
 
 def test_run_failure_alert_is_registered():
-    from analytics.defs.alerts import metrics_run_failure_alert
-
-    assert isinstance(metrics_run_failure_alert, dg.RunFailureSensorDefinition)
+    # run_failure_sensor builds a RunStatusSensorDefinition (no failure subclass)
+    assert isinstance(metrics_run_failure_alert, dg.RunStatusSensorDefinition)

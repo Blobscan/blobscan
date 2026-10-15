@@ -223,12 +223,24 @@ class TestStartOfWeek:
         ("dt", "expected"),
         [
             # Monday is the start of its own week
-            (datetime(2024, 3, 11, 0, 0, tzinfo=UTC), datetime(2024, 3, 11, tzinfo=UTC)),
-            (datetime(2024, 3, 15, 14, 37, tzinfo=UTC), datetime(2024, 3, 11, tzinfo=UTC)),
+            (
+                datetime(2024, 3, 11, 0, 0, tzinfo=UTC),
+                datetime(2024, 3, 11, tzinfo=UTC),
+            ),
+            (
+                datetime(2024, 3, 15, 14, 37, tzinfo=UTC),
+                datetime(2024, 3, 11, tzinfo=UTC),
+            ),
             # Sunday belongs to the week that started the previous Monday
-            (datetime(2024, 3, 17, 23, 59, tzinfo=UTC), datetime(2024, 3, 11, tzinfo=UTC)),
+            (
+                datetime(2024, 3, 17, 23, 59, tzinfo=UTC),
+                datetime(2024, 3, 11, tzinfo=UTC),
+            ),
             # Crosses a year boundary
-            (datetime(2025, 1, 1, 12, 0, tzinfo=UTC), datetime(2024, 12, 30, tzinfo=UTC)),
+            (
+                datetime(2025, 1, 1, 12, 0, tzinfo=UTC),
+                datetime(2024, 12, 30, tzinfo=UTC),
+            ),
         ],
     )
     def test_returns_monday_midnight(self, dt, expected):

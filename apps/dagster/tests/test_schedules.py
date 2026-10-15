@@ -5,7 +5,7 @@ CATCH_UP_HOURS completed hours to capture data that arrived after the live
 schedule's last tick before the hour rolled over, and late-recorded reorgs.
 """
 
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 
 import dagster as dg
 import pytest
@@ -36,9 +36,10 @@ LIVE_SCHEDULES = [
 ]
 
 # Every 7 hours over ~5 weeks (every weekday at varying hours, plus the
-# leap-year Feb → Mar boundary), and the edges of a year boundary.
+# Mar → Apr boundary), and the edges of a year boundary. Must start after
+# DAGSTER_METRICS_START_DATE (see conftest.py) so the partitions exist.
 _SAMPLE_TIMES = [
-    datetime(2024, 2, 20, tzinfo=UTC) + timedelta(hours=7 * i) for i in range(120)
+    datetime(2024, 3, 20, tzinfo=UTC) + timedelta(hours=7 * i) for i in range(120)
 ] + [
     datetime(2024, 12, 31, 23, 59, tzinfo=UTC),
     datetime(2025, 1, 1, 0, 0, tzinfo=UTC),
@@ -46,8 +47,10 @@ _SAMPLE_TIMES = [
 
 
 def _run_live(schedule: dg.ScheduleDefinition, at: datetime) -> dg.RunRequest:
+    # Call the schedule function directly: evaluate_tick needs a repository_def
+    # to resolve partitioned run requests.
     context = dg.build_schedule_context(scheduled_execution_time=at)
-    return schedule.evaluate_tick(context).run_requests[0]
+    return schedule(context)
 
 
 class TestLiveSchedules:
@@ -61,14 +64,15 @@ class TestLiveSchedules:
         # so a mismatch between schedule and partitions can't be locked in.
         for at in _SAMPLE_TIMES:
             key = _run_live(schedule, at).partition_key
-            assert partitions_def.has_partition_key(key, current_time=at), (at, key)
+            with dg.partition_loading_context(effective_dt=at):
+                assert partitions_def.has_partition_key(key), (at, key)
             window = partitions_def.time_window_for_partition_key(key)
             assert window.start <= at < window.end, (at, key)
 
     def test_weekly_partition_starts_on_monday(self):
         for at in _SAMPLE_TIMES:
             key = _run_live(live_weekly_schedule, at).partition_key
-            assert datetime.strptime(key, "%Y-%m-%d").weekday() == 0, (at, key)
+            assert date.fromisoformat(key).weekday() == 0, (at, key)
 
     def test_hourly_key_format(self):
         at = datetime(2024, 3, 15, 14, 37, 12, tzinfo=UTC)

@@ -1,11 +1,17 @@
+from __future__ import annotations
+
 import json
 import os
 import time
 import urllib.request
+from typing import TYPE_CHECKING
 
 import dagster as dg
 
 from analytics.defs.assets import hourly_metrics
+
+if TYPE_CHECKING:
+    import logging
 
 # hourly_metrics is refreshed every 10 minutes by the live schedule, so not
 # being updated for this long means the pipeline is stuck.
@@ -14,7 +20,10 @@ HOURLY_METRICS_STALE_AFTER_SECONDS = 30 * 60
 _WEBHOOK_TIMEOUT_SECONDS = 10
 
 
-def send_alert(text: str, log: dg.DagsterLogManager | None = None) -> None:
+def send_alert(
+    text: str,
+    log: logging.Logger | dg.DagsterLogManager | None = None,
+) -> None:
     """Post ``text`` to DAGSTER_ALERT_WEBHOOK_URL (Slack-compatible payload).
 
     Always logs the alert; delivery errors are logged and never raised, so a
@@ -36,8 +45,8 @@ def send_alert(text: str, log: dg.DagsterLogManager | None = None) -> None:
     try:
         with urllib.request.urlopen(request, timeout=_WEBHOOK_TIMEOUT_SECONDS):  # noqa: S310
             pass
-    except OSError as err:
-        logger.error(f"Failed to deliver alert: {err}")
+    except OSError:
+        logger.exception("Failed to deliver alert")
 
 
 @dg.run_failure_sensor(
@@ -86,7 +95,10 @@ def hourly_metrics_staleness_alert(context: dg.SensorEvaluationContext):
             context.log,
         )
     elif was_stale and not is_stale:
-        send_alert(":white_check_mark: `hourly_metrics` is updating again.", context.log)
+        send_alert(
+            ":white_check_mark: `hourly_metrics` is updating again.",
+            context.log,
+        )
 
     context.update_cursor("stale" if is_stale else "fresh")
     return dg.SkipReason("stale" if is_stale else "fresh")
