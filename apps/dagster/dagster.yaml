@@ -4,23 +4,25 @@ scheduler:
   module: dagster.core.scheduler
   class: DagsterDaemonScheduler
 
-# Run coordinator: queues runs instead of launching them immediately,
-# enforcing concurrency limits across the deployment.
+# Run coordinator: queues runs instead of launching them immediately. Its
+# limits are set under `concurrency.runs` below: once a `concurrency` block
+# exists, Dagster rejects max_concurrent_runs here ("incompatible with the
+# `concurrency > runs` config") and the daemon and webserver fail to start.
 run_coordinator:
   module: dagster.core.run_coordinator
   class: QueuedRunCoordinator
-  config:
-    max_concurrent_runs: 5
-    tag_concurrency_limits:
-      # Leave room for live runs while a backfill is in progress.
-      - key: "dagster/backfill"
-        limit: 3
 
 # Concurrency pools: each metrics asset has its own pool (pool="metrics/<table>"
 # in assets.py). A limit of 1 lets at most one run write a metrics table at a
 # time, for all run types (schedules, automation conditions and backfills), so
 # slow runs queue up instead of piling on the DB.
 concurrency:
+  runs:
+    max_concurrent_runs: 5
+    tag_concurrency_limits:
+      # Leave room for live runs while a backfill is in progress.
+      - key: "dagster/backfill"
+        limit: 3
   pools:
     default_limit: 1
 
