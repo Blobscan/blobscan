@@ -3,13 +3,17 @@ from __future__ import annotations
 import json
 import time
 from datetime import UTC, datetime
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import dagster as dg
 import pytest
 
 from analytics.defs.alerts import (
+    BACKFILL_FAILURE_STATUSES,
     HOURLY_METRICS_STALE_AFTER_SECONDS,
+    BulkActionStatus,
+    backfill_failure_alert,
     hourly_metrics_staleness_alert,
     last_live_update,
     metrics_run_failure_alert,
@@ -130,3 +134,65 @@ class TestHourlyMetricsStalenessAlert:
 def test_run_failure_alert_is_registered():
     # run_failure_sensor builds a RunStatusSensorDefinition (no failure subclass)
     assert isinstance(metrics_run_failure_alert, dg.RunStatusSensorDefinition)
+
+
+def _backfill(backfill_id: str, end: float | None, error: str | None = None):
+    return SimpleNamespace(
+        backfill_id=backfill_id,
+        status=BulkActionStatus.FAILED,
+        title=None,
+        error=SimpleNamespace(message=error) if error else None,
+        backfill_timestamp=1_000.0,
+        backfill_end_timestamp=end,
+    )
+
+
+class TestBackfillFailureAlert:
+    def _evaluate(self, backfills: list, cursor: str | None):
+        instance = dg.DagsterInstance.ephemeral()
+        context = dg.build_sensor_context(instance=instance, cursor=cursor)
+        with (
+            patch.object(
+                dg.DagsterInstance, "get_backfills", return_value=backfills,
+            ) as get_backfills,
+            patch("analytics.defs.alerts.send_alert") as alert,
+        ):
+            backfill_failure_alert(context)
+        return alert, context.cursor, get_backfills
+
+    def test_is_running_by_default(self):
+        assert backfill_failure_alert.default_status == dg.DefaultSensorStatus.RUNNING
+
+    def test_queries_failed_states_only(self):
+        _, _, get_backfills = self._evaluate([], cursor="0")
+        statuses = get_backfills.call_args.kwargs["filters"].statuses
+        assert set(statuses) == set(BACKFILL_FAILURE_STATUSES)
+        assert BulkActionStatus.CANCELED not in statuses
+
+    def test_first_evaluation_does_not_report_old_failures(self):
+        alert, cursor, _ = self._evaluate([_backfill("old", 2_000.0)], cursor=None)
+        alert.assert_not_called()
+        assert cursor == "2000.0"
+
+    def test_reports_new_failures_once_in_order(self):
+        backfills = [
+            _backfill("newer", 3_000.0, error="code location failing to load"),
+            _backfill("new", 2_500.0),
+            _backfill("seen", 2_000.0),
+        ]
+        alert, cursor, _ = self._evaluate(backfills, cursor="2000.0")
+        messages = [c.args[0] for c in alert.call_args_list]
+        assert len(messages) == 2
+        assert "`new`" in messages[0]
+        assert "`newer`" in messages[1]
+        assert "code location failing to load" in messages[1]
+        assert cursor == "3000.0"
+
+    def test_no_repeat_after_reporting(self):
+        alert, cursor, _ = self._evaluate([_backfill("seen", 3_000.0)], "3000.0")
+        alert.assert_not_called()
+        assert cursor == "3000.0"
+
+    def test_falls_back_to_creation_time_without_end_time(self):
+        alert, _, _ = self._evaluate([_backfill("no-end", None)], cursor="500.0")
+        alert.assert_called_once()

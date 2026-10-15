@@ -8,6 +8,14 @@ from typing import TYPE_CHECKING
 
 import dagster as dg
 
+# Not exported from the top-level dagster package (1.13); the instance's
+# get_backfills() API takes them as-is.
+from dagster._core.execution.backfill import (
+    BulkActionsFilter,
+    BulkActionStatus,
+    PartitionBackfill,
+)
+
 from analytics.defs.assets import hourly_metrics, hourly_partitions
 
 if TYPE_CHECKING:
@@ -18,6 +26,16 @@ if TYPE_CHECKING:
 HOURLY_METRICS_STALE_AFTER_SECONDS = 30 * 60
 
 _WEBHOOK_TIMEOUT_SECONDS = 10
+
+# Terminal backfill states worth a page. CANCELED is left out: a person did it.
+# FAILED is the backfill itself erroring out (e.g. its code location failing to
+# load), which also cancels its queued runs: no run fails, so
+# metrics_run_failure_alert never sees it.
+BACKFILL_FAILURE_STATUSES = (
+    BulkActionStatus.FAILED,
+    BulkActionStatus.COMPLETED_FAILED,
+)
+_BACKFILLS_PER_EVALUATION = 50
 
 
 def send_alert(
@@ -124,3 +142,48 @@ def hourly_metrics_staleness_alert(context: dg.SensorEvaluationContext):
 
     context.update_cursor("stale" if is_stale else "fresh")
     return dg.SkipReason("stale" if is_stale else "fresh")
+
+
+def backfill_end_time(backfill: PartitionBackfill) -> float:
+    return backfill.backfill_end_timestamp or backfill.backfill_timestamp
+
+
+@dg.sensor(
+    name="backfill_failure_alert",
+    minimum_interval_seconds=60,
+    default_status=dg.DefaultSensorStatus.RUNNING,
+)
+def backfill_failure_alert(context: dg.SensorEvaluationContext):
+    """Alert once per backfill that ends FAILED or COMPLETED_FAILED.
+
+    The cursor is the end time of the newest backfill already reported. The
+    first evaluation only sets it, so turning the sensor on doesn't report old
+    backfills.
+    """
+    backfills = context.instance.get_backfills(
+        filters=BulkActionsFilter(statuses=list(BACKFILL_FAILURE_STATUSES)),
+        limit=_BACKFILLS_PER_EVALUATION,
+    )
+    if context.cursor is None:
+        newest = max(map(backfill_end_time, backfills), default=time.time())
+        context.update_cursor(str(newest))
+        return dg.SkipReason("cursor initialized")
+
+    reported_until = float(context.cursor)
+    new_failures = sorted(
+        (b for b in backfills if backfill_end_time(b) > reported_until),
+        key=backfill_end_time,
+    )
+    for backfill in new_failures:
+        error = backfill.error.message.strip() if backfill.error else None
+        send_alert(
+            f":rotating_light: Dagster backfill `{backfill.backfill_id}` "
+            f"ended {backfill.status.value}"
+            + (f": {backfill.title}" if backfill.title else "")
+            + (f"\n{error}" if error else ""),
+            context.log,
+        )
+        reported_until = backfill_end_time(backfill)
+
+    context.update_cursor(str(reported_until))
+    return dg.SkipReason(f"{len(new_failures)} failed backfill(s) reported")
