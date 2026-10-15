@@ -116,7 +116,10 @@ jobs:
         run: |
           echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')" >> $GITHUB_ENV
           echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
+          echo "SHORT_SHA=$(git rev-parse --short=7 HEAD)" >> $GITHUB_ENV
 
+      # sha-<commit> never moves, so a deployment can pin it and only update
+      # when told to. :development moves on every merge to main.
       - name: Build and push (dagster)
         uses: docker/build-push-action@v6.5.0
         with:
@@ -124,6 +127,7 @@ jobs:
           push: true
           tags: |
             blossomlabs/blobscan-dagster:development
+            blossomlabs/blobscan-dagster:sha-${{ env.SHORT_SHA }}
           cache-from: type=gha,scope=dagster
           cache-to: type=gha,scope=dagster,mode=max
           build-args: |

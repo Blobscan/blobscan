@@ -154,6 +154,13 @@ jobs:
       - name: Test (dagster)
         run: pnpm test:dagster
 
+      # The blobscan-dagster chart pins dagster/dagster-k8s for the webserver
+      # and daemon; it has to match the dagster version in uv.lock. A PR that
+      # bumps dagster fails here until a chart with the new tag is released.
+      - name: Check Dagster version (Helm chart)
+        working-directory: apps/dagster
+        run: uv run python scripts/check_chart_version.py
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
