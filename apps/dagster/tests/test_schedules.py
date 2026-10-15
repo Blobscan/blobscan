@@ -113,14 +113,23 @@ class TestHourlyCatchUpSchedule:
         ]
 
     def test_crosses_month_boundary(self):
-        # Fires at 00:05 on March 1 → Feb 29 (2024 is a leap year)
-        keys = self._keys(datetime(2024, 3, 1, 0, 5, tzinfo=UTC))
-        assert keys[0] == "2024-02-29T23:00"
+        # Fires at 00:05 on April 1 → March 31. Must be after the partitions
+        # start date (see conftest.py), or the keys are skipped.
+        keys = self._keys(datetime(2024, 4, 1, 0, 5, tzinfo=UTC))
+        assert keys[0] == "2024-03-31T23:00"
 
     def test_minutes_and_seconds_are_zeroed(self):
         # Even if the schedule fires late, the partition key must be zero-padded
         keys = self._keys(datetime(2024, 6, 15, 10, 59, 59, tzinfo=UTC))
         assert keys[0] == "2024-06-15T09:00"
+
+    def test_skips_hours_before_partitions_start(self):
+        # conftest.py sets the start date to 2024-03-13T13:55, so the first
+        # hourly partition is 13:00. At 15:05, 12:00 is not in the set.
+        assert self._keys(datetime(2024, 3, 13, 15, 5, tzinfo=UTC)) == [
+            "2024-03-13T14:00",
+            "2024-03-13T13:00",
+        ]
 
     def test_run_keys_are_unique(self):
         requests = self._run(datetime(2024, 3, 15, 15, 5, tzinfo=UTC))

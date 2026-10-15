@@ -1,4 +1,3 @@
-import time
 from datetime import timedelta
 
 import dagster as dg
@@ -9,8 +8,8 @@ from analytics.defs.helpers import (
     AGGREGATE_BLOB_HOURLY_SQL,
     AGGREGATE_TX_HOURLY_SQL,
     build_aggregate_sql,
-    delete_window,
     execute_sql_window,
+    execute_sqls_window,
     get_partition_start_date,
     partition_meta,
     start_of_week,
@@ -76,8 +75,9 @@ monthly_completed_only = (
     _eager_no_time_window
     & ~dg.AutomationCondition.in_latest_time_window(lookback_delta=timedelta(days=32))
 )
-yearly_completed_only = dg.AutomationCondition.eager().without(
-    dg.AutomationCondition.in_latest_time_window(),
+yearly_completed_only = (
+    _eager_no_time_window
+    & ~dg.AutomationCondition.in_latest_time_window(lookback_delta=timedelta(days=366))
 )
 
 # Recompute whenever something upstream was newly materialized. The all-time
@@ -95,45 +95,26 @@ all_time_condition = (
 @dg.asset(
     partitions_def=hourly_partitions,
     backfill_policy=dg.BackfillPolicy.multi_run(24 * 7),
+    pool="metrics/hourly_metrics",
 )
 def hourly_metrics(
     context: dg.AssetExecutionContext, postgres: PostgresResource,
 ) -> dg.MaterializeResult:
-    partition_start = context.partition_time_window.start
-    partition_end = context.partition_time_window.end
-
-    with postgres.get_connection() as conn:
-        params = {"from": partition_start, "to": partition_end}
-
-        tx_query_start = time.perf_counter()
-        delete_window(conn, "hourly_metrics", params)
-        tx_query_result = conn.execute(AGGREGATE_TX_HOURLY_SQL, params)
-        tx_query_end = time.perf_counter()
-
-        blob_query_start = time.perf_counter()
-        blob_query_result = conn.execute(AGGREGATE_BLOB_HOURLY_SQL, params)
-        blob_query_end = time.perf_counter()
-
-        conn.commit()
-
-    blob_query_ms = (blob_query_end - blob_query_start) * 1000
-    tx_query_ms = (tx_query_end - tx_query_start) * 1000
-    total_queries_ms = (blob_query_end - tx_query_start) * 1000
-    pk_range = getattr(context, "partition_key_range", None)
-    partition_meta = (
-        f"{pk_range.start}..{pk_range.end}"
-        if pk_range
-        else getattr(context, "partition_key", None)
+    (tx_rowcount, tx_query_ms), (blob_rowcount, blob_query_ms) = execute_sqls_window(
+        context=context,
+        postgres=postgres,
+        sqls=[AGGREGATE_TX_HOURLY_SQL, AGGREGATE_BLOB_HOURLY_SQL],
+        table="hourly_metrics",
     )
 
     return dg.MaterializeResult(
         metadata={
-            "partition_range": partition_meta,
-            "rows_affected": dg.MetadataValue.int(int(tx_query_result.rowcount)),
-            "blob_rows_affected": dg.MetadataValue.int(int(blob_query_result.rowcount)),
-            "blob_query_ms": dg.MetadataValue.int(int(blob_query_ms)),
-            "tx_query_ms": dg.MetadataValue.int(int(tx_query_ms)),
-            "query_ms": dg.MetadataValue.int(int(total_queries_ms)),
+            "partition_range": partition_meta(context),
+            "rows_affected": dg.MetadataValue.int(tx_rowcount),
+            "blob_rows_affected": dg.MetadataValue.int(blob_rowcount),
+            "blob_query_ms": dg.MetadataValue.int(blob_query_ms),
+            "tx_query_ms": dg.MetadataValue.int(tx_query_ms),
+            "query_ms": dg.MetadataValue.int(tx_query_ms + blob_query_ms),
         },
     )
 
@@ -149,6 +130,7 @@ _yearly_sql = build_aggregate_sql("monthly_metrics", "yearly_metrics", "year")
     partitions_def=daily_partitions,
     automation_condition=daily_completed_only,
     backfill_policy=dg.BackfillPolicy.multi_run(30),
+    pool="metrics/daily_metrics",
 )
 def daily_metrics(
     context: dg.AssetExecutionContext, postgres: PostgresResource,
@@ -174,6 +156,7 @@ def daily_metrics(
     partitions_def=weekly_partitions,
     automation_condition=weekly_completed_only,
     backfill_policy=dg.BackfillPolicy.multi_run(30),
+    pool="metrics/weekly_metrics",
 )
 def weekly_metrics(
     context: dg.AssetExecutionContext, postgres: PostgresResource,
@@ -198,6 +181,7 @@ def weekly_metrics(
     partitions_def=monthly_partitions,
     automation_condition=monthly_completed_only,
     backfill_policy=dg.BackfillPolicy.multi_run(12),
+    pool="metrics/monthly_metrics",
 )
 def monthly_metrics(
     context: dg.AssetExecutionContext, postgres: PostgresResource,
@@ -221,6 +205,7 @@ def monthly_metrics(
     deps=[dg.AssetDep(monthly_metrics, partition_mapping=_ignore_missing)],
     partitions_def=yearly_partitions,
     automation_condition=yearly_completed_only,
+    pool="metrics/yearly_metrics",
 )
 def yearly_metrics(
     context: dg.AssetExecutionContext, postgres: PostgresResource,
@@ -249,6 +234,7 @@ def yearly_metrics(
         yearly_metrics,
     ],
     automation_condition=all_time_condition,
+    pool="metrics/all_time_metrics",
 )
 def all_time_metrics(postgres: PostgresResource):
     with postgres.get_connection() as conn:

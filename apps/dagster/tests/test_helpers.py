@@ -9,6 +9,7 @@ from analytics.defs.helpers import (
     DENCUN_ACTIVATION,
     build_aggregate_sql,
     execute_sql_window,
+    execute_sqls_window,
     get_partition_start_date,
     partition_meta,
     start_of_week,
@@ -215,6 +216,27 @@ class TestExecuteSqlWindow:
             table="daily_metrics",
         )
 
+        mock_conn.commit.assert_called_once()
+
+    def test_runs_several_statements_in_one_transaction(self):
+        start = datetime(2024, 6, 1, 10, 0, tzinfo=UTC)
+        end = datetime(2024, 6, 1, 11, 0, tzinfo=UTC)
+        context = self._make_context(start, end)
+        mock_postgres, mock_conn = self.make_postgres_mock(rowcount=3)
+        first, second = text("SELECT 1"), text("SELECT 2")
+
+        results = execute_sqls_window(
+            context=context,
+            postgres=mock_postgres,
+            sqls=[first, second],
+            table="hourly_metrics",
+        )
+
+        assert [rowcount for rowcount, _ in results] == [3, 3]
+        executed = [c.args[0] for c in mock_conn.execute.call_args_list]
+        assert str(executed[0]).startswith("DELETE FROM hourly_metrics")
+        assert executed[1:] == [first, second]
+        mock_postgres.get_connection.assert_called_once()
         mock_conn.commit.assert_called_once()
 
 

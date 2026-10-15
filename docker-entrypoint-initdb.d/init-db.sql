@@ -1,2 +1,0 @@
-CREATE DATABASE dagster_dev;
-GRANT ALL PRIVILEGES ON DATABASE dagster_dev TO blobscan;

@@ -137,16 +137,22 @@ validated:
 - `hourly_metrics_staleness_alert`: `hourly_metrics` not updated for 30
   minutes; alerts once when it goes stale and once when it recovers.
 
-Both sensors are enabled by default and always log the alert. To also post
+`metrics_run_failure_alert` is enabled by default.
+`hourly_metrics_staleness_alert` is stopped by default, the same as the live
+schedules: enable it after you enable them. Only updates of the current or the
+previous hour partition count, so a backfill does not hide a stopped live
+schedule. Both sensors always log the alert. To also post
 it to Slack (or any service accepting a Slack-compatible `{"text": ...}`
 payload), set `DAGSTER_ALERT_WEBHOOK_URL` on the code location
 (`dagster-blobscan`) container.
 
 ### Concurrency
 
-`dagster.yaml` allows at most 5 concurrent runs, at most one run per metrics
-table for the scheduled jobs (tag `blobscan/metrics_table`), and at most 3
-backfill runs, so live refreshes keep running during a backfill.
+`dagster.yaml` allows at most 5 concurrent runs and at most 3 backfill runs,
+so live refreshes keep running during a backfill. Each metrics asset has its
+own concurrency pool (`metrics/<table>`) with a default limit of 1. Thus at
+most one run writes a metrics table at a time, for scheduled, automation and
+backfill runs.
 
 ## Learn more
 

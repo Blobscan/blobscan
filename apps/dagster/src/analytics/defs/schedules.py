@@ -100,13 +100,17 @@ def hourly_catch_up_schedule(context: dg.ScheduleEvaluationContext):
     hour rolled over, and reorgs (forked txs, re-included txs) that the
     indexer recorded after an hour was first aggregated.
     """
-    current_hour = context.scheduled_execution_time.replace(
-        minute=0, second=0, microsecond=0,
-    )
+    scheduled_at = context.scheduled_execution_time
+    current_hour = scheduled_at.replace(minute=0, second=0, microsecond=0)
     for hours_back in range(1, CATCH_UP_HOURS + 1):
         partition_key = (current_hour - timedelta(hours=hours_back)).strftime(
             "%Y-%m-%dT%H:%M",
         )
+        # Hours before the partitions start date (e.g. right after a fresh
+        # deploy) are not in the partition set and would fail the tick.
+        with dg.partition_loading_context(effective_dt=scheduled_at):
+            if not hourly_partitions.has_partition_key(partition_key):
+                continue
         yield dg.RunRequest(
             partition_key=partition_key,
             # Schedules returning multiple RunRequests must set a unique run_key

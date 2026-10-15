@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 
 import dagster as dg
 
-from analytics.defs.assets import hourly_metrics
+from analytics.defs.assets import hourly_metrics, hourly_partitions
 
 if TYPE_CHECKING:
     import logging
@@ -36,16 +36,17 @@ def send_alert(
     if not url:
         return
 
-    request = urllib.request.Request(  # noqa: S310 - URL comes from deployment config
-        url,
-        data=json.dumps({"text": text}).encode(),
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
     try:
+        # Request() raises ValueError for a malformed URL (e.g. no scheme)
+        request = urllib.request.Request(  # noqa: S310 - URL comes from deployment config
+            url,
+            data=json.dumps({"text": text}).encode(),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
         with urllib.request.urlopen(request, timeout=_WEBHOOK_TIMEOUT_SECONDS):  # noqa: S310
             pass
-    except OSError:
+    except (OSError, ValueError):
         logger.exception("Failed to deliver alert")
 
 
@@ -65,10 +66,32 @@ def metrics_run_failure_alert(context: dg.RunFailureSensorContext):
     )
 
 
+def last_live_update(instance: dg.DagsterInstance, now: float) -> float | None:
+    """Return the time of the latest live update of hourly_metrics.
+
+    Only the current and the previous hour partitions count. A backfill of
+    older partitions does not show that the live schedule is running.
+    """
+    current_hour = hourly_partitions.get_partition_key_for_timestamp(now)
+    previous_hour = hourly_partitions.get_partition_key_for_timestamp(
+        now - 60 * 60,
+    )
+    result = instance.fetch_materializations(
+        dg.AssetRecordsFilter(
+            asset_key=hourly_metrics.key,
+            asset_partitions=[current_hour, previous_hour],
+        ),
+        limit=1,
+    )
+    return result.records[0].timestamp if result.records else None
+
+
+# Stopped by default, the same as the live schedules: enable it after them,
+# or it alerts before the first live run.
 @dg.sensor(
     name="hourly_metrics_staleness_alert",
     minimum_interval_seconds=5 * 60,
-    default_status=dg.DefaultSensorStatus.RUNNING,
+    default_status=dg.DefaultSensorStatus.STOPPED,
 )
 def hourly_metrics_staleness_alert(context: dg.SensorEvaluationContext):
     """Alert once when hourly_metrics goes stale, and once when it recovers.
@@ -76,8 +99,7 @@ def hourly_metrics_staleness_alert(context: dg.SensorEvaluationContext):
     The cursor stores whether we're currently in a stale episode, so the
     alert isn't repeated on every evaluation.
     """
-    event = context.instance.get_latest_materialization_event(hourly_metrics.key)
-    last_update = event.timestamp if event else None
+    last_update = last_live_update(context.instance, time.time())
     is_stale = (
         last_update is None
         or time.time() - last_update > HOURLY_METRICS_STALE_AFTER_SECONDS

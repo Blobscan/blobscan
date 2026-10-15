@@ -7,6 +7,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     import dagster as dg
     from sqlalchemy.engine import Connection
     from sqlalchemy.sql.elements import TextClause
@@ -63,6 +65,37 @@ def delete_window(conn: Connection, table: str, params: dict) -> None:
     )
 
 
+def execute_sqls_window(
+    *,
+    context: dg.AssetExecutionContext,
+    postgres: PostgresResource,
+    sqls: Sequence[TextClause],
+    table: str,
+) -> list[tuple[int, int]]:
+    """Replace ``table`` rows in the partition window with the result of ``sqls``.
+
+    The delete and all statements run in one transaction, in order. Returns
+    (rowcount, elapsed_ms) for each statement; the time of the delete is
+    added to the first one.
+    """
+    start = context.partition_time_window.start
+    end = context.partition_time_window.end
+    params = {"from": start, "to": end}
+
+    results = []
+    with postgres.get_connection() as conn:
+        t0 = time.perf_counter()
+        delete_window(conn, table, params)
+        for sql in sqls:
+            res = conn.execute(sql, params)
+            t1 = time.perf_counter()
+            results.append((res.rowcount, int((t1 - t0) * 1000)))
+            t0 = t1
+        conn.commit()
+
+    return results
+
+
 def execute_sql_window(
     *,
     context: dg.AssetExecutionContext,
@@ -74,19 +107,10 @@ def execute_sql_window(
 
     Returns (rowcount, elapsed_ms).
     """
-    start = context.partition_time_window.start
-    end = context.partition_time_window.end
-    params = {"from": start, "to": end}
-
-    with postgres.get_connection() as conn:
-        t0 = time.perf_counter()
-        delete_window(conn, table, params)
-        res = conn.execute(sql, params)
-        t1 = time.perf_counter()
-        conn.commit()
-
-    ms = int((t1 - t0) * 1000)
-    return res.rowcount, ms
+    [result] = execute_sqls_window(
+        context=context, postgres=postgres, sqls=[sql], table=table,
+    )
+    return result
 
 
 def start_of_week(dt: datetime) -> datetime:

@@ -36,7 +36,6 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - /tmp:/tmp
-      - ./docker-entrypoint-initdb.d/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     environment:
       - POSTGRES_USER=blobscan
       - POSTGRES_DB=blobscan_dev
@@ -101,6 +100,26 @@ services:
     volumes:
       - ./otel-config.yaml:/etc/otel-config.yaml
 
+  # Creates the Dagster instance database if it does not exist. A script in
+  # docker-entrypoint-initdb.d runs only on an empty data directory, so it
+  # would not create it on an existing postgres-data volume.
+  dagster-db-init:
+    image: postgres:16
+    environment:
+      PGHOST: postgres
+      PGUSER: blobscan
+      PGPASSWORD: s3cr3t
+      PGDATABASE: blobscan_dev
+    entrypoint:
+      - sh
+      - -c
+      - >-
+        psql -tAc "SELECT 1 FROM pg_database WHERE datname = 'dagster_dev'" | grep -q 1
+        || psql -c "CREATE DATABASE dagster_dev"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   dagster-blobscan:
     build:
       context: ./apps/dagster
@@ -158,6 +177,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      dagster-db-init:
+        condition: service_completed_successfully
       dagster-blobscan:
         condition: service_healthy
 
@@ -186,6 +207,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      dagster-db-init:
+        condition: service_completed_successfully
       dagster-blobscan:
         condition: service_started
 

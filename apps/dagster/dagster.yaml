@@ -12,15 +12,17 @@ run_coordinator:
   config:
     max_concurrent_runs: 5
     tag_concurrency_limits:
-      # At most one scheduled run per metrics table at a time (tag set on the
-      # jobs in jobs.py), so slow runs queue up instead of piling on the DB.
-      - key: "blobscan/metrics_table"
-        value:
-          applyLimitPerUniqueValue: true
-        limit: 1
       # Leave room for live runs while a backfill is in progress.
       - key: "dagster/backfill"
         limit: 3
+
+# Concurrency pools: each metrics asset has its own pool (pool="metrics/<table>"
+# in assets.py). A limit of 1 lets at most one run write a metrics table at a
+# time, for all run types (schedules, automation conditions and backfills), so
+# slow runs queue up instead of piling on the DB.
+concurrency:
+  pools:
+    default_limit: 1
 
 # Run launcher: spins up a new Docker container for each pipeline run.
 # Environment variables and volumes are forwarded to launched containers.
