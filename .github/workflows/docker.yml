@@ -109,3 +109,49 @@ jobs:
             GIT_COMMIT=${{ env.GIT_COMMIT }}
             DATABASE_URL=${{ env.DATABASE_URL }}
             DIRECT_URL=${{ env.DIRECT_URL }}
+
+  release_dagster_docker:
+    name: Build docker image (Dagster)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set Github ENV variables
+        shell: bash
+        run: |
+          echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')" >> $GITHUB_ENV
+          echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
+
+      - name: Extract metadata (tags, labels) for Docker (Dagster)
+        id: meta_dagster
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            blossomlabs/blobscan-dagster
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+
+      - name: Build and push (dagster)
+        uses: docker/build-push-action@v6.5.0
+        with:
+          context: ./apps/dagster
+          push: true
+          tags: ${{ steps.meta_dagster.outputs.tags }}
+          labels: ${{ steps.meta_dagster.outputs.labels }}
+          cache-from: type=gha,scope=dagster
+          cache-to: type=gha,scope=dagster,mode=max
+          build-args: |
+            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+            GIT_COMMIT=${{ env.GIT_COMMIT }}
