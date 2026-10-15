@@ -67,6 +67,54 @@ rolls it up into `daily_metrics`, `weekly_metrics`, `monthly_metrics`,
 - Every run **replaces** the rows of its time window, so re-running a partition
   or backfilling a range after a SQL change is safe.
 
+### Initial backfill
+
+Partitions start at `DAGSTER_METRICS_START_DATE` or, if unset, at the Dencun
+activation date of `CHAIN_ID` (mainnet: 2024-03-13 13:55 UTC). On a fresh
+deployment, every partition from that date to now has to be backfilled once.
+
+1. Check that the code location loads and `DATABASE_URL` points at the right
+   database (**Deployment** → code location `dagster`).
+2. Measure the cost of a run first: materialize a single recent
+   `hourly_metrics` partition and look at its `query_ms` metadata.
+3. Launch the backfill from the UI: **Assets** → select `hourly_metrics`,
+   `daily_metrics`, `weekly_metrics`, `monthly_metrics`, `yearly_metrics` and
+   `all_time_metrics` → **Materialize selected** → **All partitions** →
+   **Launch backfill**. Dagster runs each level after its upstream partitions
+   are done, so a single backfill covers the whole chain.
+4. Enable the schedules once the backfill has caught up to the current
+   period. Starting them earlier also works: runs replace their window, so
+   overlapping live and backfill runs don't corrupt data.
+
+Each backfill run covers several partitions in a single query (the
+`backfill_policy` of each asset), and at most 3 backfill runs execute at once
+(`dagster.yaml`). For mainnet from Dencun to late 2026 (~950 days) that means
+roughly:
+
+| Asset | Partitions | Partitions per run | Runs |
+| --- | --- | --- | --- |
+| `hourly_metrics` | ~22,800 | 168 (1 week) | ~136 |
+| `daily_metrics` | ~950 | 30 | ~32 |
+| `weekly_metrics` | ~136 | 30 | ~5 |
+| `monthly_metrics` | ~32 | 12 | ~3 |
+| `yearly_metrics` | 3 | 1 | 3 |
+
+`hourly_metrics` dominates: estimate the total as about
+`136 × (query_ms of a 1-week run) / 3`. The rollup levels read the
+already-aggregated tables and are cheap in comparison.
+
+Avoid `dg launch --partition-range` for large ranges: it executes the whole
+range in-process as a single run and a single query, without the backfill
+policy or the concurrency limits.
+
+### Reprocessing after a SQL change
+
+Runs replace the rows of their window, so reprocessing is a backfill of the
+affected range: select the changed asset and everything downstream of it, pick
+the partition range, and launch the backfill. For example, a fix to
+`aggregate_tx_hourly.sql` means backfilling `hourly_metrics` and all rollup
+levels for the affected dates.
+
 ### Migration from `daily_stats` / `overall_stats`
 
 The API still serves stats from the legacy `daily_stats` and `overall_stats`
