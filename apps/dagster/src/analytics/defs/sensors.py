@@ -41,7 +41,7 @@ def live_daily_sensor(_: dg.SensorEvaluationContext):
 )
 def live_weekly_sensor(_: dg.SensorEvaluationContext):
     now = datetime.now(UTC)
-    week_start = now - timedelta(days=(now.weekday() + 1) % 7)
+    week_start = now - timedelta(days=now.weekday())  # Monday
     yield dg.RunRequest(
         partition_key=week_start.strftime("%Y-%m-%d"),
     )

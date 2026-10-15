@@ -58,31 +58,43 @@ class TestLiveDailySensor:
 
 class TestLiveWeeklySensor:
     def test_partition_key_is_start_of_current_week_on_friday(self):
-        # Friday March 15: weekday()=4, (4+1)%7=5 days back → Sunday March 10
+        # Friday March 15: weekday()=4 → Monday March 11
         with patch("analytics.defs.sensors.datetime") as mock_dt:
             mock_dt.now.return_value = FIXED_NOW
             requests = _run_sensor(live_weekly_sensor)
 
         assert len(requests) == 1
-        assert requests[0].partition_key == "2024-03-10"
+        assert requests[0].partition_key == "2024-03-11"
 
-    def test_partition_key_on_sunday_is_same_day(self):
-        # Sunday: weekday()=6, (6+1)%7=0 days back → same day
-        sunday = datetime(2024, 3, 10, 8, 0, 0, tzinfo=UTC)
+    def test_partition_key_on_sunday_is_previous_monday(self):
+        # Sunday: weekday()=6 → previous Monday
+        sunday = datetime(2024, 3, 17, 8, 0, 0, tzinfo=UTC)
         with patch("analytics.defs.sensors.datetime") as mock_dt:
             mock_dt.now.return_value = sunday
             requests = _run_sensor(live_weekly_sensor)
 
-        assert requests[0].partition_key == "2024-03-10"
+        assert requests[0].partition_key == "2024-03-11"
 
-    def test_partition_key_on_monday_is_previous_sunday(self):
-        # Monday: weekday()=0, (0+1)%7=1 day back → previous Sunday
+    def test_partition_key_on_monday_is_same_day(self):
+        # Monday: weekday()=0 → same day
         monday = datetime(2024, 3, 11, 12, 0, 0, tzinfo=UTC)
         with patch("analytics.defs.sensors.datetime") as mock_dt:
             mock_dt.now.return_value = monday
             requests = _run_sensor(live_weekly_sensor)
 
-        assert requests[0].partition_key == "2024-03-10"
+        assert requests[0].partition_key == "2024-03-11"
+
+    def test_partition_key_is_valid_weekly_partition(self):
+        from analytics.defs.assets import weekly_partitions
+
+        with patch("analytics.defs.sensors.datetime") as mock_dt:
+            mock_dt.now.return_value = FIXED_NOW
+            requests = _run_sensor(live_weekly_sensor)
+
+        assert weekly_partitions.has_partition_key(
+            requests[0].partition_key,
+            current_time=FIXED_NOW,
+        )
 
 
 class TestLiveMonthlySensor:

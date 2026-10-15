@@ -7,7 +7,7 @@
       "cache": false
     },
     "push": {
-      "inputs": ["prisma/schema.prisma"],
+      "inputs": ["prisma/schema/**"],
       "cache": false
     },
     "dev": {

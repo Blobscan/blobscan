@@ -20,7 +20,7 @@ _midnight = _start.replace(hour=0, minute=0, second=0, microsecond=0)
 _start_dates = {
     "hourly": _start.replace(minute=0, second=0, microsecond=0),
     "daily": _midnight,
-    "weekly": _midnight - timedelta(days=(_midnight.weekday() + 1) % 7),
+    "weekly": _midnight - timedelta(days=_midnight.weekday()),  # Monday
     "monthly": _midnight.replace(day=1),
     "yearly": _midnight.replace(month=1, day=1),
 }
