@@ -46,7 +46,6 @@ aggregated AS (
     u.category,
     u.rollup,
 
-    -- counters
     SUM(u.total_blob_base_fee)              AS total_blob_base_fee,
     SUM(u.total_blob_gas_price)             AS total_blob_gas_price,
     SUM(u.total_blocks)                     AS total_blocks,
@@ -63,17 +62,7 @@ aggregated AS (
     SUM(u.total_unique_blobs)               AS total_unique_blobs,
     SUM(u.total_unique_receivers)           AS total_unique_receivers,
     SUM(u.total_unique_senders)             AS total_unique_senders,
-    SUM(u.total_max_blob_gas_fee)           AS total_max_blob_gas_fee,
-
-    -- averages: total / count, as in aggregate.sql
-    (SUM(u.total_blob_base_fee) / NULLIF(SUM(u.total_transactions), 0))::float            AS avg_blob_base_fee,
-    (SUM(u.total_blob_gas_price) / NULLIF(SUM(u.total_blocks), 0))::float                 AS avg_blob_gas_price,
-    (SUM(u.total_blob_as_calldata_fee) / NULLIF(SUM(u.total_transactions), 0))::float     AS avg_blob_as_calldata_fee,
-    (SUM(u.total_blob_as_calldata_max_fee) / NULLIF(SUM(u.total_transactions), 0))::float AS avg_blob_as_calldata_max_fee,
-    (SUM(u.total_blob_max_fee) / NULLIF(SUM(u.total_transactions), 0))::float             AS avg_blob_max_fee,
-    (SUM(u.total_blob_usage_size) / NULLIF(SUM(u.total_blobs), 0))::float                 AS avg_blob_usage_size,
-    (SUM(u.total_max_blob_gas_fee) / NULLIF(SUM(u.total_transactions), 0))::float         AS avg_max_blob_gas_fee
-
+    SUM(u.total_max_blob_gas_fee)           AS total_max_blob_gas_fee
   FROM unioned u
   GROUP BY u.category, u.rollup
 )
@@ -82,18 +71,9 @@ INSERT INTO all_time_metrics (
   category,
   rollup,
 
-  avg_blob_base_fee,
-  avg_blob_gas_price,
-
   total_blob_base_fee,
   total_blob_gas_price,
   total_blocks,
-
-  avg_blob_as_calldata_fee,
-  avg_blob_as_calldata_max_fee,
-  avg_blob_max_fee,
-  avg_blob_usage_size,
-  avg_max_blob_gas_fee,
 
   total_blob_as_calldata_fee,
   total_blob_as_calldata_gas_used,
@@ -112,17 +92,9 @@ INSERT INTO all_time_metrics (
 )
 SELECT
   category, rollup,
-  avg_blob_base_fee,
-  avg_blob_gas_price,
   total_blob_base_fee,
   total_blob_gas_price,
   total_blocks,
-
-  avg_blob_as_calldata_fee,
-  avg_blob_as_calldata_max_fee,
-  avg_blob_max_fee,
-  avg_blob_usage_size,
-  avg_max_blob_gas_fee,
 
   total_blob_as_calldata_fee,
   total_blob_as_calldata_gas_used,
@@ -140,17 +112,9 @@ SELECT
 FROM aggregated
 ON CONFLICT (category, rollup)
 DO UPDATE SET
-  avg_blob_base_fee = EXCLUDED.avg_blob_base_fee,
-  avg_blob_gas_price = EXCLUDED.avg_blob_gas_price,
   total_blob_base_fee = EXCLUDED.total_blob_base_fee,
   total_blob_gas_price = EXCLUDED.total_blob_gas_price,
   total_blocks = EXCLUDED.total_blocks,
-
-  avg_blob_as_calldata_fee = EXCLUDED.avg_blob_as_calldata_fee,
-  avg_blob_as_calldata_max_fee = EXCLUDED.avg_blob_as_calldata_max_fee,
-  avg_blob_max_fee = EXCLUDED.avg_blob_max_fee,
-  avg_blob_usage_size = EXCLUDED.avg_blob_usage_size,
-  avg_max_blob_gas_fee = EXCLUDED.avg_max_blob_gas_fee,
 
   total_blob_as_calldata_fee = EXCLUDED.total_blob_as_calldata_fee,
   total_blob_as_calldata_gas_used = EXCLUDED.total_blob_as_calldata_gas_used,
