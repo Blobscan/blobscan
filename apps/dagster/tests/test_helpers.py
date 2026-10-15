@@ -1,4 +1,4 @@
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from unittest.mock import MagicMock
 
 import pytest
@@ -11,6 +11,7 @@ from analytics.defs.helpers import (
     execute_sql_window,
     get_partition_start_date,
     partition_meta,
+    start_of_week,
 )
 
 
@@ -113,6 +114,23 @@ class TestGetPartitionStartDate:
         ):
             get_partition_start_date()
 
+    @pytest.mark.parametrize("chain_id", ["", "  ", "mainnet"])
+    def test_missing_or_invalid_chain_id_raises_value_error(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+        chain_id: str,
+    ):
+        monkeypatch.delenv("DAGSTER_METRICS_START_DATE", raising=False)
+        monkeypatch.setenv("CHAIN_ID", chain_id)
+        with pytest.raises(ValueError, match="Invalid CHAIN_ID"):
+            get_partition_start_date()
+
+    def test_unset_chain_id_raises_value_error(self, monkeypatch: pytest.MonkeyPatch):
+        monkeypatch.delenv("DAGSTER_METRICS_START_DATE", raising=False)
+        monkeypatch.delenv("CHAIN_ID", raising=False)
+        with pytest.raises(ValueError, match="Invalid CHAIN_ID"):
+            get_partition_start_date()
+
     def test_dencun_activation_covers_all_known_chains(self):
         assert set(DENCUN_ACTIVATION.keys()) == {1, 11155111, 560048, 100}
 
@@ -144,6 +162,7 @@ class TestExecuteSqlWindow:
             context=context,
             postgres=mock_postgres,
             sql=text("SELECT 1"),
+            table="daily_metrics",
         )
 
         assert rowcount == 42
@@ -157,9 +176,30 @@ class TestExecuteSqlWindow:
         mock_postgres, mock_conn = self.make_postgres_mock(rowcount=0)
         sql = text("SELECT :from, :to")
 
-        execute_sql_window(context=context, postgres=mock_postgres, sql=sql)
+        execute_sql_window(
+            context=context, postgres=mock_postgres, sql=sql, table="daily_metrics",
+        )
 
-        mock_conn.execute.assert_called_once_with(sql, {"from": start, "to": end})
+        mock_conn.execute.assert_called_with(sql, {"from": start, "to": end})
+
+    def test_deletes_window_before_aggregating(self):
+        start = datetime(2024, 6, 1, 10, 0, tzinfo=UTC)
+        end = datetime(2024, 6, 1, 11, 0, tzinfo=UTC)
+        context = self._make_context(start, end)
+        mock_postgres, mock_conn = self.make_postgres_mock(rowcount=0)
+        sql = text("SELECT :from, :to")
+
+        execute_sql_window(
+            context=context, postgres=mock_postgres, sql=sql, table="daily_metrics",
+        )
+
+        assert mock_conn.execute.call_count == 2
+        delete_sql, delete_params = mock_conn.execute.call_args_list[0].args
+        assert str(delete_sql) == (
+            "DELETE FROM daily_metrics "
+            "WHERE period_start >= :from AND period_start < :to"
+        )
+        assert delete_params == {"from": start, "to": end}
 
     def test_commits_after_execution(self):
         context = self._make_context(
@@ -172,6 +212,39 @@ class TestExecuteSqlWindow:
             context=context,
             postgres=mock_postgres,
             sql=text("SELECT 1"),
+            table="daily_metrics",
         )
 
         mock_conn.commit.assert_called_once()
+
+
+class TestStartOfWeek:
+    @pytest.mark.parametrize(
+        ("dt", "expected"),
+        [
+            # Monday is the start of its own week
+            (datetime(2024, 3, 11, 0, 0, tzinfo=UTC), datetime(2024, 3, 11, tzinfo=UTC)),
+            (datetime(2024, 3, 15, 14, 37, tzinfo=UTC), datetime(2024, 3, 11, tzinfo=UTC)),
+            # Sunday belongs to the week that started the previous Monday
+            (datetime(2024, 3, 17, 23, 59, tzinfo=UTC), datetime(2024, 3, 11, tzinfo=UTC)),
+            # Crosses a year boundary
+            (datetime(2025, 1, 1, 12, 0, tzinfo=UTC), datetime(2024, 12, 30, tzinfo=UTC)),
+        ],
+    )
+    def test_returns_monday_midnight(self, dt, expected):
+        assert start_of_week(dt) == expected
+
+    @pytest.mark.integration
+    def test_matches_postgres_date_trunc_week(self, postgres):
+        # Python and SQL must agree on what a week is.
+        times = [
+            datetime(2024, 2, 20, tzinfo=UTC) + timedelta(hours=7 * i)
+            for i in range(120)
+        ]
+        with postgres.get_connection() as conn:
+            for dt in times:
+                db_week = conn.execute(
+                    text("SELECT DATE_TRUNC('week', CAST(:dt AS timestamptz))"),
+                    {"dt": dt},
+                ).scalar_one()
+                assert start_of_week(dt) == db_week, dt

@@ -105,9 +105,16 @@ services:
     build:
       context: ./apps/dagster
       dockerfile: ./Dockerfile
+    image: blobscan-dagster
     restart: always
     environment:
+      # Image used by the DockerRunLauncher to launch run containers
+      DAGSTER_CURRENT_IMAGE: blobscan-dagster
       CHAIN_ID: "${CHAIN_ID}"
+      DAGSTER_METRICS_START_DATE: "${DAGSTER_METRICS_START_DATE:-}"
+      # Slack-compatible incoming webhook for run failure / staleness alerts
+      DAGSTER_ALERT_WEBHOOK_URL: "${DAGSTER_ALERT_WEBHOOK_URL:-}"
+      DATABASE_URL: "postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev"
       POSTGRES_USER: "blobscan"
       POSTGRES_PASSWORD: "s3cr3t"
       POSTGRES_DB: "dagster_dev"
@@ -168,6 +175,11 @@ services:
       POSTGRES_PASSWORD: "s3cr3t"
       POSTGRES_DB: "dagster_dev"
       POSTGRES_PORT: 5432
+      # Forwarded to run containers by the DockerRunLauncher (see dagster.yaml)
+      DAGSTER_DOCKER_NETWORK: blobscan_default
+      CHAIN_ID: "${CHAIN_ID}"
+      DAGSTER_METRICS_START_DATE: "${DAGSTER_METRICS_START_DATE:-}"
+      DATABASE_URL: "postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev"
     volumes: # Make docker client accessible so we can launch containers using host docker
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/io_manager_storage:/tmp/io_manager_storage
@@ -176,6 +188,11 @@ services:
         condition: service_healthy
       dagster-blobscan:
         condition: service_started
+
+networks:
+  default:
+    # Fixed name so dagster.yaml can attach run containers to it
+    name: blobscan_default
 
 volumes:
   postgres-data:

@@ -38,7 +38,7 @@ DAILY_PARTITION_KEY = "2025-02-01"
 DAILY_PERIOD_START = datetime(2025, 2, 1, 0, 0, 0, tzinfo=UTC)
 DAILY_PERIOD_END = DAILY_PERIOD_START + timedelta(days=1)
 
-# 2025-02-05 is a Wednesday; Dagster WeeklyPartitionsDefinition starts on Sunday.
+# 2025-02-05 is a Wednesday; weekly partitions start on Monday (day_offset=1).
 WEEKLY_PARTITION_KEY = "2025-02-03"
 WEEKLY_PERIOD_START = datetime(2025, 2, 3, 0, 0, 0, tzinfo=UTC)
 WEEKLY_PERIOD_END = WEEKLY_PERIOD_START + timedelta(days=7)
@@ -764,3 +764,86 @@ class TestAllTimeTxMetricsCalculation(_AllTimeTxMetricsMixin):
         _seed_monthly(postgres)
         _seed_yearly(postgres)
         all_time_metrics(postgres=postgres)
+
+
+# ---------------------------------------------------------------------------
+# Reorg re-aggregation tests
+# ---------------------------------------------------------------------------
+
+# BASE has a single transaction in the hourly window and none elsewhere on
+# that day, so forking it leaves no BASE data in the hour or the day.
+_REORGED_ROLLUP = "BASE"
+_REORGED_TX = next(tx for tx in _HOUR_TXS if tx["rollup"] == _REORGED_ROLLUP)
+_REORG_DAILY_PARTITION_KEY = HOURLY_PERIOD_START.strftime("%Y-%m-%d")
+_REORG_DAILY_PERIOD_START = HOURLY_PERIOD_START.replace(hour=0)
+_REORG_MONTHLY_PARTITION_KEY = HOURLY_PERIOD_START.strftime("%Y-%m")
+_REORG_YEARLY_PARTITION_KEY = HOURLY_PERIOD_START.strftime("%Y")
+
+
+def _set_tx_forked(postgres: PostgresResource, tx: dict, *, forked: bool):
+    params = {"block_hash": tx["blockHash"], "hash": tx["hash"]}
+    with postgres.get_connection() as conn:
+        if forked:
+            conn.execute(
+                text(
+                    "INSERT INTO transaction_fork (block_hash, hash) "
+                    "VALUES (:block_hash, :hash)",
+                ),
+                params,
+            )
+        else:
+            conn.execute(
+                text(
+                    "DELETE FROM transaction_fork "
+                    "WHERE block_hash = :block_hash AND hash = :hash",
+                ),
+                params,
+            )
+        conn.commit()
+
+
+@pytest.mark.integration
+class TestReorgReaggregation:
+    """Re-aggregating a window after a reorg must drop groups left without data."""
+
+    @pytest.fixture(scope="class", autouse=True)
+    def setup_metrics(self, postgres, clean_metrics):  # noqa: ARG002
+        _seed_hourly(postgres)
+        _seed_daily(postgres)
+        _seed_monthly(postgres)
+        _seed_yearly(postgres)
+        all_time_metrics(postgres=postgres)
+        self.__class__.all_time_before = _query_all_time_metrics(postgres)
+
+        # Re-run the whole chain for the reorged window, as the catch-up
+        # schedule and eager automation would.
+        _set_tx_forked(postgres, _REORGED_TX, forked=True)
+        try:
+            _run_asset(postgres, HOURLY_PARTITION_KEY, hourly_metrics)
+            _run_asset(postgres, _REORG_DAILY_PARTITION_KEY, daily_metrics)
+            _run_asset(postgres, _REORG_MONTHLY_PARTITION_KEY, monthly_metrics)
+            _run_asset(postgres, _REORG_YEARLY_PARTITION_KEY, yearly_metrics)
+            all_time_metrics(postgres=postgres)
+            yield
+        finally:
+            _set_tx_forked(postgres, _REORGED_TX, forked=False)
+
+    def test_reorged_rollup_removed_from_hourly(self, postgres):
+        result = _query_metrics_table(postgres, "hourly_metrics", HOURLY_PERIOD_START)
+        assert (None, _REORGED_ROLLUP.lower()) not in result
+
+    def test_reorged_rollup_removed_from_daily(self, postgres):
+        result = _query_metrics_table(
+            postgres, "daily_metrics", _REORG_DAILY_PERIOD_START,
+        )
+        assert (None, _REORGED_ROLLUP.lower()) not in result
+
+    def test_hourly_global_transactions_exclude_reorged_tx(self, postgres):
+        result = _query_metrics_table(postgres, "hourly_metrics", HOURLY_PERIOD_START)
+        assert result[(None, None)]["total_transactions"] == len(_HOUR_TXS) - 1
+
+    def test_all_time_rollup_transactions_exclude_reorged_tx(self, postgres):
+        key = (None, _REORGED_ROLLUP.lower())
+        before = self.all_time_before[key]["total_transactions"]
+        after = _query_all_time_metrics(postgres)[key]["total_transactions"]
+        assert after == before - 1

@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import os
 import time
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import dagster as dg
+    from sqlalchemy.engine import Connection
     from sqlalchemy.sql.elements import TextClause
 
     from analytics.defs.resources.postgres import PostgresResource
@@ -46,13 +47,30 @@ def partition_meta(context: dg.AssetExecutionContext) -> str | None:
     return getattr(context, "partition_key", None)
 
 
+def delete_window(conn: Connection, table: str, params: dict) -> None:
+    """Delete the rows of ``table`` within the [from, to) window.
+
+    Run in the same transaction as the aggregate SQL so a re-aggregation fully
+    replaces the window: groups that no longer have data (e.g. after a reorg)
+    are removed instead of keeping their stale values.
+    """
+    conn.execute(
+        text(
+            f"DELETE FROM {table} "  # noqa: S608 - table names are internal constants
+            "WHERE period_start >= :from AND period_start < :to",
+        ),
+        params,
+    )
+
+
 def execute_sql_window(
     *,
     context: dg.AssetExecutionContext,
     postgres: PostgresResource,
     sql: TextClause,
+    table: str,
 ) -> tuple[int, int]:
-    """Execute a single SQL statement for the partition window.
+    """Replace ``table`` rows in the partition window with the result of ``sql``.
 
     Returns (rowcount, elapsed_ms).
     """
@@ -62,12 +80,24 @@ def execute_sql_window(
 
     with postgres.get_connection() as conn:
         t0 = time.perf_counter()
+        delete_window(conn, table, params)
         res = conn.execute(sql, params)
         t1 = time.perf_counter()
         conn.commit()
 
     ms = int((t1 - t0) * 1000)
     return res.rowcount, ms
+
+
+def start_of_week(dt: datetime) -> datetime:
+    """Return midnight of the Monday that starts ``dt``'s week.
+
+    Single Python definition of a week; it must match Postgres
+    ``DATE_TRUNC('week', ...)`` (ISO weeks, starting on Monday), which the
+    aggregate SQL uses to bucket weekly metrics.
+    """
+    midnight = dt.replace(hour=0, minute=0, second=0, microsecond=0)
+    return midnight - timedelta(days=midnight.weekday())
 
 
 def get_partition_start_date() -> datetime:
@@ -90,7 +120,15 @@ def get_partition_start_date() -> datetime:
                 )
                 raise ValueError(msg) from None
 
-    chain_id = int(os.getenv("CHAIN_ID", ""))
+    raw_chain_id = os.getenv("CHAIN_ID", "").strip()
+    try:
+        chain_id = int(raw_chain_id)
+    except ValueError:
+        msg = (
+            f"Invalid CHAIN_ID={raw_chain_id!r}.\n"
+            "Set CHAIN_ID to a numeric chain id, or set DAGSTER_METRICS_START_DATE."
+        )
+        raise ValueError(msg) from None
 
     try:
         activation_date = DENCUN_ACTIVATION[chain_id]

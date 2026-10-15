@@ -2,15 +2,18 @@ import time
 from datetime import timedelta
 
 import dagster as dg
+from sqlalchemy import text
 
 from analytics.defs.helpers import (
     AGGREGATE_ALL_TIME_SQL,
     AGGREGATE_BLOB_HOURLY_SQL,
     AGGREGATE_TX_HOURLY_SQL,
     build_aggregate_sql,
+    delete_window,
     execute_sql_window,
     get_partition_start_date,
     partition_meta,
+    start_of_week,
 )
 from analytics.defs.resources.postgres import PostgresResource
 
@@ -20,7 +23,7 @@ _midnight = _start.replace(hour=0, minute=0, second=0, microsecond=0)
 _start_dates = {
     "hourly": _start.replace(minute=0, second=0, microsecond=0),
     "daily": _midnight,
-    "weekly": _midnight - timedelta(days=_midnight.weekday()),  # Monday
+    "weekly": start_of_week(_start),
     "monthly": _midnight.replace(day=1),
     "yearly": _midnight.replace(month=1, day=1),
 }
@@ -34,7 +37,7 @@ daily_partitions = dg.DailyPartitionsDefinition(
 weekly_partitions = dg.WeeklyPartitionsDefinition(
     start_date=_start_dates["weekly"],
     fmt="%Y-%m-%d",
-    day_offset=1, # Start partitions on Monday instead of Sunday
+    day_offset=1,  # Monday-based weeks, matching start_of_week / DATE_TRUNC('week')
     end_offset=1,
 )
 monthly_partitions = dg.MonthlyPartitionsDefinition(
@@ -77,12 +80,14 @@ yearly_completed_only = dg.AutomationCondition.eager().without(
     dg.AutomationCondition.in_latest_time_window(),
 )
 
+# Recompute whenever something upstream was newly materialized. The all-time
+# SQL reads the stored metric tables directly, so it doesn't wait for every
+# upstream partition to exist: a single missing (or not-yet-run current)
+# partition would otherwise block all-time metrics indefinitely. Right after a
+# period rolls over, totals may briefly lag until the next level is
+# materialized, and catch up on the following run.
 all_time_condition = (
-    # trigger when something upstream was newly materialized
     dg.AutomationCondition.any_deps_match(dg.AutomationCondition.newly_updated())
-    &
-    # but only if ALL partitions of ALL deps are already materialized
-    dg.AutomationCondition.all_deps_match(~dg.AutomationCondition.missing())
     & ~dg.AutomationCondition.in_progress()
 )
 
@@ -101,6 +106,7 @@ def hourly_metrics(
         params = {"from": partition_start, "to": partition_end}
 
         tx_query_start = time.perf_counter()
+        delete_window(conn, "hourly_metrics", params)
         tx_query_result = conn.execute(AGGREGATE_TX_HOURLY_SQL, params)
         tx_query_end = time.perf_counter()
 
@@ -151,6 +157,7 @@ def daily_metrics(
         context=context,
         postgres=postgres,
         sql=_daily_sql,
+        table="daily_metrics",
     )
 
     return dg.MaterializeResult(
@@ -175,6 +182,7 @@ def weekly_metrics(
         context=context,
         postgres=postgres,
         sql=_weekly_sql,
+        table="weekly_metrics",
     )
     return dg.MaterializeResult(
         metadata={
@@ -198,6 +206,7 @@ def monthly_metrics(
         context=context,
         postgres=postgres,
         sql=_monthly_sql,
+        table="monthly_metrics",
     )
     return dg.MaterializeResult(
         metadata={
@@ -220,6 +229,7 @@ def yearly_metrics(
         context=context,
         postgres=postgres,
         sql=_yearly_sql,
+        table="yearly_metrics",
     )
     return dg.MaterializeResult(
         metadata={
@@ -242,6 +252,8 @@ def yearly_metrics(
 )
 def all_time_metrics(postgres: PostgresResource):
     with postgres.get_connection() as conn:
+        # Full recompute: drop groups (e.g. a rollup) that no longer have data
+        conn.execute(text("DELETE FROM all_time_metrics"))
         res = conn.execute(AGGREGATE_ALL_TIME_SQL)
         conn.commit()
 
