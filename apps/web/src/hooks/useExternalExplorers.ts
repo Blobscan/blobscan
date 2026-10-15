@@ -8,7 +8,7 @@ import {
 import { useEnv } from "~/providers/Env";
 
 export type ExplorerResource = {
-  type: "address" | "blob" | "block" | "tx" | "slot";
+  type: "address" | "blob" | "block" | "tx" | "slot" | "epoch";
   value: number | string;
 };
 

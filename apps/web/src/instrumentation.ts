@@ -1,8 +1,12 @@
 import { captureRequestError } from "@sentry/nextjs";
 
+import { printBanner } from "../banner";
+
 // Next.js calls this function when the server starts
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
+    printBanner();
+
     if (!!process.env.TRACES_ENABLED || !!process.env.METRICS_ENABLED) {
       await import("./instrumentation.node");
     }

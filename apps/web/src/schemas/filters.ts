@@ -6,6 +6,7 @@ import {
   categorySchema,
   createCommaSeparatedParam,
   dateSchema,
+  epochSchema,
   rollupSchema,
   slotSchema,
 } from "./utils";
@@ -40,10 +41,16 @@ export const slotParamsSchema = z.object({
   endSlot: slotSchema,
 });
 
+export const epochParamsSchema = z.object({
+  startEpoch: epochSchema,
+  endEpoch: epochSchema,
+});
+
 export const filterParamsSchema = z
   .object({})
   .merge(blockParamsSchema)
   .merge(slotParamsSchema)
+  .merge(epochParamsSchema)
   .merge(rollupsSchema)
   .merge(categoriesParamSchema)
   .merge(dateParamsSchema)

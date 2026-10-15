@@ -1,6 +1,7 @@
 import type { Job, Processor, Queue, Worker } from "bullmq";
 
 import type {
+  BlobContext,
   BlobReference,
   BlobStorage,
 } from "@blobscan/blob-storage-manager";
@@ -10,6 +11,7 @@ export type BlobPropagationInput = {
   blockNumber?: number;
   versionedHash: string;
   data: string;
+  context?: BlobContext;
 };
 
 export type BlobPropagationJobData = {

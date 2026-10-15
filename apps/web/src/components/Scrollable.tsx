@@ -22,7 +22,7 @@ function mergeRefs<T>(...refs: Array<React.Ref<T> | undefined>) {
 
 export const Scrollable = React.forwardRef<HTMLDivElement, ScrollableProps>(
   function Scrollable({ children, displayScrollbar = false }, forwardedRef) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+     
     const containerRef = useRef<HTMLDivElement>(null!);
 
     const { scrollYProgress, scrollXProgress } = useScroll({

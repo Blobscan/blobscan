@@ -1,5 +1,158 @@
 # @blobscan/rest-api-server
 
+## 0.16.4
+
+### Patch Changes
+
+- [`7aabab6`](https://github.com/Blobscan/blobscan/commit/7aabab66121ef2f95888598f58a6d9cf69241df5) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add optional `IPFS_STORAGE_INTERNAL_GATEWAY_URL` so IPFS-backed blob reads can use an internal gateway address separate from the public `IPFS_STORAGE_GATEWAY_URL` used to build user-facing blob links. Without this, deployments where the public gateway URL points back at the service's own public domain caused every IPFS-backed blob read to round-trip out to the internet and back to fetch its own data.
+
+- Updated dependencies [[`7aabab6`](https://github.com/Blobscan/blobscan/commit/7aabab66121ef2f95888598f58a6d9cf69241df5)]:
+  - @blobscan/blob-storage-manager@3.0.1
+  - @blobscan/env@0.4.1
+
+## 0.16.3
+
+### Patch Changes
+
+- [`fd0c601`](https://github.com/Blobscan/blobscan/commit/fd0c60164f60539d5b63eaac6103c98e15e9679b) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fixed the API logging internal proxy IPs to Matomo. The client-IP helper now relies on Express's `trust proxy` setting (configured from `TRUSTED_PROXIES`) via `req.ip` instead of reading the left-most `x-forwarded-for` entry directly, so it correctly resolves the real client IP behind internal proxy hops.
+
+## 0.16.2
+
+### Patch Changes
+
+- [`6726c0d`](https://github.com/Blobscan/blobscan/commit/6726c0d1ca94e0865ff00b565e333925edd48d9c) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Declared the `TRUSTED_PROXIES` env var in the Turbo config so Turbo accounts for it in task caching and no longer warns about an undeclared runtime env var.
+
+## 0.16.1
+
+### Patch Changes
+
+- [#1002](https://github.com/Blobscan/blobscan/pull/1002) [`b954d1e`](https://github.com/Blobscan/blobscan/commit/b954d1ec7f899da8b09f53959c38e7f170e58b10) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fixed slow GET /blocks queries when filtering by slot range by ordering on `slot` instead of `number` (~9.5s → ~5ms). Fixed a REST API crash from the Matomo middleware calling the non-existent `logger.warning()`.
+
+- Updated dependencies [[`68d6570`](https://github.com/Blobscan/blobscan/commit/68d6570999479564e9a8acded06b431812eb1ae3), [`f9accce`](https://github.com/Blobscan/blobscan/commit/f9acccec34b8c34e2cea93989f626eab96b0ca1a), [`b954d1e`](https://github.com/Blobscan/blobscan/commit/b954d1ec7f899da8b09f53959c38e7f170e58b10)]:
+  - @blobscan/db@0.29.1
+  - @blobscan/api@3.0.1
+
+## 0.16.0
+
+### Minor Changes
+
+- [#998](https://github.com/Blobscan/blobscan/pull/998) [`74b33ba`](https://github.com/Blobscan/blobscan/commit/74b33ba464a10b31127a1f395ff67ee585e2e70a) Thanks [@PJColombo](https://github.com/PJColombo)! - Implement `IpfsStorage.storeBlob` via the blobscan-ipld push endpoint
+
+  `IpfsStorage` can now write blobs (previously read-only): `_storeBlob`
+  POSTs the blob plus its beacon/execution context to the blobscan-ipld
+  service's `POST /blob` endpoint and persists the returned `data_cid` as the
+  reference. To carry the extra fields the endpoint requires (commitment,
+  tx hash, blob index, slot, epoch, block number, block hash), a new
+  optional `BlobContext` is threaded through `BlobStorage.storeBlob`,
+  `BlobStorageManager`, the propagator's `BlobPropagationInput`, and the
+  indexer. The context is optional at the storage interface so other
+  backends are unaffected; `IpfsStorage` asserts its presence at runtime.
+  `finalize` is always sent as `false` since epoch completeness can't be
+  known per blob.
+
+  IPFS can now be selected as `PRIMARY_BLOB_STORAGE` (it was previously
+  rejected as write-incapable). The write endpoint lives at a different
+  base URL than the read gateway, so a new `IPFS_STORAGE_IPLD_URL` env var
+  configures it; it's passed to `IpfsStorage` as a dedicated `ipldUrl` and
+  is required when IPFS is the primary storage.
+
+  `IpfsStorage`'s health check now targets the blobscan-ipld service's
+  `/readyz` endpoint when a write URL (`ipldUrl`) is configured, since that
+  service owns the kubo client and the write path; read-only deployments
+  (gateway only) still probe the IPFS gateway directly.
+
+### Patch Changes
+
+- Updated dependencies [[`74b33ba`](https://github.com/Blobscan/blobscan/commit/74b33ba464a10b31127a1f395ff67ee585e2e70a)]:
+  - @blobscan/blob-storage-manager@3.0.0
+  - @blobscan/blob-propagator@3.0.0
+  - @blobscan/api@3.0.0
+  - @blobscan/db@0.29.0
+  - @blobscan/env@0.4.0
+  - @blobscan/rollups@3.0.0
+  - @blobscan/syncers@0.6.7
+
+## 0.15.0
+
+### Minor Changes
+
+- [#996](https://github.com/Blobscan/blobscan/pull/996) [`2f38f03`](https://github.com/Blobscan/blobscan/commit/2f38f0347a86c330338f9f5cd00100dd09445901) Thanks [@PJColombo](https://github.com/PJColombo)! - Add an `epoch` field to blocks
+
+  Track the consensus-layer epoch for each block. The indexer derives the
+  epoch from the block slot (`floor(slot / slotsPerEpoch)`, via the new
+  `Chain.getEpochBySlot` helper) and stores it on the block row, the block
+  API responses now return it, and the block details page displays it. The
+  column is nullable for now so existing rows can be backfilled in a
+  follow-up before it's made non-nullable; until then the web falls back to
+  deriving the epoch from the slot.
+
+### Patch Changes
+
+- Updated dependencies [[`2f38f03`](https://github.com/Blobscan/blobscan/commit/2f38f0347a86c330338f9f5cd00100dd09445901)]:
+  - @blobscan/chains@0.5.0
+  - @blobscan/db@0.28.0
+  - @blobscan/api@2.0.0
+  - @blobscan/blob-propagator@2.0.0
+  - @blobscan/blob-storage-manager@2.0.0
+  - @blobscan/rollups@2.0.0
+  - @blobscan/syncers@0.6.6
+
+## 0.14.0
+
+### Minor Changes
+
+- [#985](https://github.com/Blobscan/blobscan/pull/985) [`8c1375d`](https://github.com/Blobscan/blobscan/commit/8c1375d7230cf4ca47ef4b37237c21d748d84264) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add IPFS storage provider backed by blobscan-ipld
+
+  Add a read-only IpfsStorage backend that retrieves blobs from a
+  configurable IPFS gateway. CID references are registered externally
+  via a new POST /blobs/ipfs-references endpoint,
+  following the same pattern as the existing WeaveVM integration.
+  Introduces a dedicated `ipfs` service auth role and
+  IPFS_STORAGE_ENABLED / IPFS_STORAGE_GATEWAY_URL / IPFS_STORAGE_API_KEY /
+  IPFS_API_KEY env vars.
+
+### Patch Changes
+
+- [#992](https://github.com/Blobscan/blobscan/pull/992) [`4541f90`](https://github.com/Blobscan/blobscan/commit/4541f904031ffbcdde29c6cded0aa173efc65251) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fix IPFS storage badge URL in blob explorer
+
+  The `blobDataStorageReference` computed `url` field was missing a case
+  for IPFS, so the IPFS badge in the blob list had no link. Add the
+  `IPFS` case returning `${gatewayUrl}/ipfs/${dataCid}` and wire
+  `IPFS_STORAGE_GATEWAY_URL` through the prisma clients in the web app
+  and REST API server.
+
+- Updated dependencies [[`8c1375d`](https://github.com/Blobscan/blobscan/commit/8c1375d7230cf4ca47ef4b37237c21d748d84264), [`4541f90`](https://github.com/Blobscan/blobscan/commit/4541f904031ffbcdde29c6cded0aa173efc65251)]:
+  - @blobscan/blob-storage-manager@1.0.0
+  - @blobscan/api@1.0.0
+  - @blobscan/db@0.27.0
+  - @blobscan/blob-propagator@1.0.0
+  - @blobscan/rollups@1.0.0
+  - @blobscan/syncers@0.6.5
+
+## 0.13.0
+
+### Minor Changes
+
+- [#981](https://github.com/Blobscan/blobscan/pull/981) [`904831c`](https://github.com/Blobscan/blobscan/commit/904831cc5f3507fc1488a16ff952469281654500) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add support for Google Cloud Storage signed URLs in blob API responses. When `GOOGLE_STORAGE_SIGNED_URLS_ENABLED` is set to `true`, the API returns time-limited signed URLs (1 hour) instead of public URLs for blobs stored in GCS, allowing private buckets to be used without exposing objects publicly. Defaults to `false`.
+
+  **Heads-up — production rollout:** Blobscan-hosted instances will enable this flag in production to reduce egress costs from public-bucket traffic. Self-hosted operators relying on stable public URLs (e.g. external caches, third-party integrations) should keep `GOOGLE_STORAGE_SIGNED_URLS_ENABLED=false` and be aware that signed URLs expire after 1 hour.
+
+  **Required permission:** the service account must have `roles/storage.objectViewer` (or equivalent signing permission) on the bucket. Without it, signing fails per request and the API logs an error and falls back to the original URL.
+
+### Patch Changes
+
+- Updated dependencies [[`7eb4941`](https://github.com/Blobscan/blobscan/commit/7eb494149a56764148cbca2271c9a05586781564), [`904831c`](https://github.com/Blobscan/blobscan/commit/904831cc5f3507fc1488a16ff952469281654500)]:
+  - @blobscan/api@0.34.0
+  - @blobscan/blob-storage-manager@0.9.0
+  - @blobscan/env@0.3.0
+  - @blobscan/blob-propagator@0.6.6
+
+## 0.12.6
+
+### Patch Changes
+
+- [#979](https://github.com/Blobscan/blobscan/pull/979) [`d25f65e`](https://github.com/Blobscan/blobscan/commit/d25f65e898120ecb2bdd187e4a73b3759246684a) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fix Matomo unique visitor tracking by sending a stable `cid` (visitor ID) per client. Authenticated clients get a deterministic ID derived from their bearer token hash; anonymous clients fall back to an IP + User-Agent hash. Authenticated clients also get `uid` for cross-session tracking. Also fixed `pf_srv` to correctly measure request duration.
+
 ## 0.12.5
 
 ### Patch Changes

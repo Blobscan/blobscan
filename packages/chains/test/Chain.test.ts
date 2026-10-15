@@ -3,7 +3,7 @@ import { describe, expect, it, test } from "vitest";
 import { testValidError } from "@blobscan/test";
 
 import { Chain } from "../src/Chain";
-import { mainnet } from "../src/chains";
+import { gnosis, mainnet } from "../src/chains";
 import * as forks from "../src/forks";
 import type { Fork } from "../src/types";
 
@@ -67,6 +67,33 @@ describe("Chain", () => {
         ).toEqual(expectedFork);
       }
     );
+  });
+
+  describe("slotsPerEpoch", () => {
+    it("should default to 32 slots per epoch", () => {
+      expect(mainnet.slotsPerEpoch).toBe(32);
+    });
+
+    it("should use the provided slotsPerEpoch value", () => {
+      expect(gnosis.slotsPerEpoch).toBe(16);
+    });
+
+    it("should accept a custom slotsPerEpoch in the constructor", () => {
+      const customChain = new Chain(
+        999,
+        "custom",
+        { number: 0 },
+        {
+          dencun: {
+            activationDate: new Date("2024-01-01T00:00:00Z"),
+            activationSlot: 0,
+          },
+        },
+        8
+      );
+
+      expect(customChain.slotsPerEpoch).toBe(8);
+    });
   });
 
   testValidError(

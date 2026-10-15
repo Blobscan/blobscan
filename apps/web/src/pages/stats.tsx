@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
+
 import { z } from "@blobscan/zod";
 
 import { Card } from "~/components/Cards/Card";
@@ -22,6 +23,7 @@ import {
   SECTION_OPTIONS,
   StatsSectionSelector,
 } from "~/components/Selectors/StatsSectionSelector";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { SubHeader } from "~/components/SubHeader";
 import { AvgBlobBaseFeeChart } from "~/components/TimeseriesCharts/AvgBlobBaseFeeChart";
 import { AvgBlobGasPriceChart } from "~/components/TimeseriesCharts/AvgBlobGasPriceChart";
@@ -498,59 +500,65 @@ const Stats: NextPage = function () {
   }
 
   return (
-    <div className="flex flex-col gap-8">
-      <Header>Stats Overview</Header>
-      <Card>
-        <div className="flex w-full flex-wrap items-center justify-start gap-4">
-          <div className="w-36">
-            <StatsSectionSelector
-              selected={selectedSection}
-              onChange={handleSectionChange}
-            />
-          </div>
-          <div className="w-64">
-            <RollupSelector
-              selected={selectedRollups}
-              onChange={(newRollups) => setSelectedRollups(newRollups ?? [])}
-            />
-          </div>
-        </div>
-      </Card>
+    <>
+      <SeoMetaTags
+        title="Stats Overview"
+        description="Explore comprehensive metrics and stats about blobs, blocks, transactions, gas usage, fees, etc."
+      />
       <div className="flex flex-col gap-8">
-        <SubHeader>Overall Metrics</SubHeader>
-        <Scrollable displayScrollbar>
-          <div
-            className={
-              currentSectionOption === "all"
-                ? "grid grid-flow-col grid-rows-3 gap-6"
-                : "flex flex-wrap gap-6"
-            }
-          >
-            {displayedSections
-              .flatMap((s) => s.metrics)
-              .map((p) => (
-                <div key={p.name} className="w-screen sm:w-[260px]">
-                  <MetricCard {...p} />
-                </div>
-              ))}
-          </div>
-        </Scrollable>
-      </div>
-      <div className="mt-4 flex flex-col gap-8">
-        {displayedSections.map(({ title: section, charts }) => (
-          <div key={section} className="flex flex-col gap-8">
-            <SubHeader>{section}</SubHeader>
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 [&>div]:w-full">
-              {charts.map((chart, index) => (
-                <div key={index} className="h-full">
-                  {chart}
-                </div>
-              ))}
+        <Header>Stats Overview</Header>
+        <Card>
+          <div className="flex w-full flex-wrap items-center justify-start gap-4">
+            <div className="w-36">
+              <StatsSectionSelector
+                selected={selectedSection}
+                onChange={handleSectionChange}
+              />
+            </div>
+            <div className="w-64">
+              <RollupSelector
+                selected={selectedRollups}
+                onChange={(newRollups) => setSelectedRollups(newRollups ?? [])}
+              />
             </div>
           </div>
-        ))}
+        </Card>
+        <div className="flex flex-col gap-8">
+          <SubHeader>Overall Metrics</SubHeader>
+          <Scrollable displayScrollbar>
+            <div
+              className={
+                currentSectionOption === "all"
+                  ? "grid grid-flow-col grid-rows-3 gap-6"
+                  : "flex flex-wrap gap-6"
+              }
+            >
+              {displayedSections
+                .flatMap((s) => s.metrics)
+                .map((p) => (
+                  <div key={p.name} className="w-screen sm:w-[260px]">
+                    <MetricCard {...p} />
+                  </div>
+                ))}
+            </div>
+          </Scrollable>
+        </div>
+        <div className="mt-4 flex flex-col gap-8">
+          {displayedSections.map(({ title: section, charts }) => (
+            <div key={section} className="flex flex-col gap-8">
+              <SubHeader>{section}</SubHeader>
+              <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 [&>div]:w-full">
+                {charts.map((chart, index) => (
+                  <div key={index} className="h-full">
+                    {chart}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

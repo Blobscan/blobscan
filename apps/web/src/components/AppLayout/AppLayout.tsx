@@ -1,6 +1,7 @@
 import cn from "classnames";
 
 import { useIsHomepage } from "~/hooks/useIsHomePage";
+import Banner from "./Banner";
 import { BottomBarLayout } from "./BottomBarLayout";
 import { TopBarLayout } from "./TopBarLayout";
 
@@ -14,6 +15,7 @@ const AppLayout = ({ children }: LayoutProps) => {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <Banner />
       <TopBarLayout />
       <main
         className={cn("container mx-auto grow", {
@@ -21,9 +23,7 @@ const AppLayout = ({ children }: LayoutProps) => {
           "mb-12  mt-10  sm:mb-16 sm:mt-20": !isHomepage,
         })}
       >
-        <div className="mx-auto flex min-h-[calc(100vh-180px)] w-11/12 flex-col gap-8">
-          {children}
-        </div>
+        <div className="mx-auto flex w-11/12 flex-col gap-8">{children}</div>
       </main>
       <BottomBarLayout />
     </div>

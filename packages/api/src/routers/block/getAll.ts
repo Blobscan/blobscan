@@ -1,3 +1,4 @@
+import type { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import {
@@ -12,6 +13,7 @@ import {
   withPaginationSchema,
   withPagination,
 } from "../../middlewares/withPagination";
+import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import { countBlocks } from "./getCount";
@@ -45,6 +47,7 @@ export const getAll = publicProcedure
   .input(withPaginationSchema)
   .use(withPagination)
   .output(outputSchema)
+  .use(withBlobSignedUrls)
   .query(async ({ ctx: { expands, filters, pagination, prisma, count } }) => {
     const {
       blockFilters = {},
@@ -52,6 +55,16 @@ export const getAll = publicProcedure
       transactionFilters = {},
       sort,
     } = filters;
+
+    // `slot` and `number` are monotonically correlated, so when the request
+    // filters by a slot range we order by `slot` to let Postgres satisfy both
+    // the range predicate and the ordering from the `slot` index alone. Ordering
+    // by `number` here forces a full scan of the `number` index, discarding
+    // millions of out-of-range rows (see EXPLAIN: ~9s vs ~5ms). The resulting
+    // order is identical because both columns increase together.
+    const orderBy: Prisma.BlockOrderByWithRelationInput = blockFilters.slot
+      ? { slot: sort }
+      : { number: sort };
 
     const blocksOp = prisma.block.findMany({
       select: createBlockSelect(expands, filters),
@@ -64,7 +77,7 @@ export const getAll = publicProcedure
             }
           : undefined,
       },
-      orderBy: { number: sort },
+      orderBy,
       ...pagination,
     });
     const countOp = count

@@ -15,6 +15,7 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrow } from "~/components/NavArrow";
 import type { NavArrowProps } from "~/components/NavArrow";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { useChain } from "~/hooks/useChain";
@@ -151,6 +152,7 @@ const Block: NextPage = function () {
       targetBlobGasPerBlock,
     } = activeFork.blobParams;
     const blobSize = bytesPerFieldElement * fieldElementsPerBlob;
+    const epoch = blockData.epoch ?? chain.getEpochBySlot(blockData.slot);
 
     const totalBlobSize = blockData?.transactions.reduce((acc, { blobs }) => {
       const totalBlobsSize = blobs.reduce(
@@ -216,6 +218,23 @@ const Block: NextPage = function () {
               isExternal
             >
               {blockData.slot}
+            </Link>
+          </Copyable>
+        ),
+      },
+      {
+        name: "Epoch",
+        helpText: "The consensus layer epoch the block's slot belongs to.",
+        value: (
+          <Copyable value={epoch.toString()} tooltipText="Copy Epoch">
+            <Link
+              href={buildResourceUrl("beaconchain", {
+                type: "epoch",
+                value: epoch,
+              })}
+              isExternal
+            >
+              {epoch}
             </Link>
           </Copyable>
         ),
@@ -348,6 +367,12 @@ const Block: NextPage = function () {
 
   return (
     <>
+      <SeoMetaTags
+        title={`Block ${blockNumberOrHash ?? "Details"}`}
+        description={`Explore block details${
+          blockNumberOrHash ? ` for block ${blockNumberOrHash}` : ""
+        } on Blobscan.`}
+      />
       <DetailsLayout
         header={
           <div className="flex items-center justify-start gap-4">

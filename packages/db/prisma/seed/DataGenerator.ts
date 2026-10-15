@@ -24,6 +24,7 @@ import {
 } from "./web3";
 
 const GAS_PER_BLOB = getChain("mainnet").forks[0].blobParams.gasPerBlob;
+const SLOTS_PER_EPOCH = getChain("mainnet").slotsPerEpoch;
 
 export type FullBlock = Block & {
   transactions: (Transaction & {
@@ -160,6 +161,7 @@ export class DataGenerator {
       number,
       timestamp: timestamp.toDate(),
       slot,
+      epoch: Math.floor(slot / SLOTS_PER_EPOCH),
       blobAsCalldataGasUsed: new Prisma.Decimal(0),
       blobGasUsed: new Prisma.Decimal(blobGasUsed.toString()),
       blobGasPrice: new Prisma.Decimal(blobGasPrice),
@@ -377,6 +379,7 @@ export class DataGenerator {
           min: parentBlock.slot + 1,
           max: b.slot - 1,
         });
+        forkBlock.epoch = Math.floor(forkBlock.slot / SLOTS_PER_EPOCH);
 
         forkBlock.timestamp = faker.date.between({
           from: dayjs(parentBlock.timestamp).add(1, "millisecond").toDate(),

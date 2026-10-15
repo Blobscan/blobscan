@@ -14,6 +14,8 @@ interface TrackOptions {
   action_name?: string;
   ua?: string;
   cip?: string;
+  cid?: string;
+  uid?: string;
   cvar?: string;
   cvar2?: string;
   lang?: string;

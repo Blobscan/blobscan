@@ -1,5 +1,93 @@
 # @blobscan/db
 
+## 0.29.1
+
+### Patch Changes
+
+- [#1005](https://github.com/Blobscan/blobscan/pull/1005) [`68d6570`](https://github.com/Blobscan/blobscan/commit/68d6570999479564e9a8acded06b431812eb1ae3) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Drop the unused `inserted_at` indexes
+
+  No application query filters or orders by `inserted_at` on `address`,
+  `blob`, `block`, or `transaction`, and production index statistics show
+  zero scans over the database's entire lifetime while the four indexes
+  occupied ~635 MB combined and added maintenance work to every insert.
+
+- [#1003](https://github.com/Blobscan/blobscan/pull/1003) [`f9accce`](https://github.com/Blobscan/blobscan/commit/f9acccec34b8c34e2cea93989f626eab96b0ca1a) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Drop three redundant database indexes
+
+  `transaction(from_id, block_timestamp)` is a strict prefix of
+  `transaction(from_id, block_timestamp, index)`,
+  `blobs_on_transactions(tx_hash)` is a prefix of both the primary key
+  `(tx_hash, index)` and `(tx_hash, blob_hash)`, and
+  `address(address, rollup)` leads with the primary-key column. Every query
+  they served is served identically by the longer index or primary key, so
+  they only added write and storage overhead on the largest tables.
+
+## 0.29.0
+
+### Minor Changes
+
+- [#998](https://github.com/Blobscan/blobscan/pull/998) [`74b33ba`](https://github.com/Blobscan/blobscan/commit/74b33ba464a10b31127a1f395ff67ee585e2e70a) Thanks [@PJColombo](https://github.com/PJColombo)! - Implement `IpfsStorage.storeBlob` via the blobscan-ipld push endpoint
+
+  `IpfsStorage` can now write blobs (previously read-only): `_storeBlob`
+  POSTs the blob plus its beacon/execution context to the blobscan-ipld
+  service's `POST /blob` endpoint and persists the returned `data_cid` as the
+  reference. To carry the extra fields the endpoint requires (commitment,
+  tx hash, blob index, slot, epoch, block number, block hash), a new
+  optional `BlobContext` is threaded through `BlobStorage.storeBlob`,
+  `BlobStorageManager`, the propagator's `BlobPropagationInput`, and the
+  indexer. The context is optional at the storage interface so other
+  backends are unaffected; `IpfsStorage` asserts its presence at runtime.
+  `finalize` is always sent as `false` since epoch completeness can't be
+  known per blob.
+
+  IPFS can now be selected as `PRIMARY_BLOB_STORAGE` (it was previously
+  rejected as write-incapable). The write endpoint lives at a different
+  base URL than the read gateway, so a new `IPFS_STORAGE_IPLD_URL` env var
+  configures it; it's passed to `IpfsStorage` as a dedicated `ipldUrl` and
+  is required when IPFS is the primary storage.
+
+  `IpfsStorage`'s health check now targets the blobscan-ipld service's
+  `/readyz` endpoint when a write URL (`ipldUrl`) is configured, since that
+  service owns the kubo client and the write path; read-only deployments
+  (gateway only) still probe the IPFS gateway directly.
+
+## 0.28.0
+
+### Minor Changes
+
+- [#996](https://github.com/Blobscan/blobscan/pull/996) [`2f38f03`](https://github.com/Blobscan/blobscan/commit/2f38f0347a86c330338f9f5cd00100dd09445901) Thanks [@PJColombo](https://github.com/PJColombo)! - Add an `epoch` field to blocks
+
+  Track the consensus-layer epoch for each block. The indexer derives the
+  epoch from the block slot (`floor(slot / slotsPerEpoch)`, via the new
+  `Chain.getEpochBySlot` helper) and stores it on the block row, the block
+  API responses now return it, and the block details page displays it. The
+  column is nullable for now so existing rows can be backfilled in a
+  follow-up before it's made non-nullable; until then the web falls back to
+  deriving the epoch from the slot.
+
+## 0.27.0
+
+### Minor Changes
+
+- [#985](https://github.com/Blobscan/blobscan/pull/985) [`8c1375d`](https://github.com/Blobscan/blobscan/commit/8c1375d7230cf4ca47ef4b37237c21d748d84264) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add IPFS storage provider backed by blobscan-ipld
+
+  Add a read-only IpfsStorage backend that retrieves blobs from a
+  configurable IPFS gateway. CID references are registered externally
+  via a new POST /blobs/ipfs-references endpoint,
+  following the same pattern as the existing WeaveVM integration.
+  Introduces a dedicated `ipfs` service auth role and
+  IPFS_STORAGE_ENABLED / IPFS_STORAGE_GATEWAY_URL / IPFS_STORAGE_API_KEY /
+  IPFS_API_KEY env vars.
+
+### Patch Changes
+
+- [#992](https://github.com/Blobscan/blobscan/pull/992) [`4541f90`](https://github.com/Blobscan/blobscan/commit/4541f904031ffbcdde29c6cded0aa173efc65251) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fix IPFS storage badge URL in blob explorer
+
+  The `blobDataStorageReference` computed `url` field was missing a case
+  for IPFS, so the IPFS badge in the blob list had no link. Add the
+  `IPFS` case returning `${gatewayUrl}/ipfs/${dataCid}` and wire
+  `IPFS_STORAGE_GATEWAY_URL` through the prisma clients in the web app
+  and REST API server.
+
 ## 0.26.1
 
 ### Patch Changes

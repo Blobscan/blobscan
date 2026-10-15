@@ -16,6 +16,7 @@ import { Link } from "~/components/Link";
 import { NavArrow } from "~/components/NavArrow";
 import type { NavArrowProps } from "~/components/NavArrow";
 import { OptimismCard } from "~/components/OptimismCard";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
 import ErrorPage from "~/pages/_error";
@@ -307,6 +308,12 @@ const Tx: NextPage = () => {
 
   return (
     <>
+      <SeoMetaTags
+        title={`Transaction ${tx ? tx.hash : "Details"}`}
+        description={`Explore transaction details${
+          tx ? ` for ${tx.hash}` : ""
+        } on Blobscan.`}
+      />
       <DetailsLayout
         header={
           <div className="flex items-center justify-start gap-4">

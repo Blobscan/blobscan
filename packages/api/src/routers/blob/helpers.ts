@@ -28,6 +28,7 @@ import {
 
 const blobDataStorageReferenceSelect = {
   blobStorage: true,
+  dataReference: true,
   url: true,
 } satisfies ExtendedBlobDataStorageReferenceSelect;
 

@@ -99,8 +99,9 @@ export const indexData = createAuthedProcedure("indexer")
       const now = new Date();
 
       // 1. Prepare address, block, transaction and blob insertions
+      const epoch = chain.getEpochBySlot(input.block.slot);
       const dbTxs = createDBTransactions(input, forkBlobParams);
-      const dbBlock = createDBBlock(input, dbTxs, forkBlobParams);
+      const dbBlock = createDBBlock(input, dbTxs, forkBlobParams, epoch);
       const dbBlobs = createDBBlobs(input);
       const dbBlobsOnTransactions = createDBBlobsOnTransactions(input);
       const dbAddress = createDBAddresses(input, rollupRegistry);
@@ -147,8 +148,18 @@ export const indexData = createAuthedProcedure("indexer")
       p0 = performance.now();
       // 3. Propagate blobs
       const propagatorInput = input.blobs.map((b) => ({
-        ...b,
+        versionedHash: b.versionedHash,
+        data: b.data,
         blockNumber: input.block.number,
+        context: {
+          commitment: b.commitment,
+          txHash: b.txHash,
+          index: b.index,
+          slot: input.block.slot,
+          epoch,
+          blockNumber: input.block.number,
+          blockHash: input.block.hash,
+        },
       }));
       await blobPropagator.propagateBlobs(propagatorInput);
 

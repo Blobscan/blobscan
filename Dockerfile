@@ -1,4 +1,7 @@
-FROM node:22-alpine AS base
+# Pinned to 22.22.0 to avoid a regression in 22.23.0 that causes premature
+# connection closes against Google Cloud Storage (and other keep-alive HTTP
+# agents). See https://github.com/nodejs/node/issues/63989
+FROM node:22.22.0-alpine AS base
 
 ADD docker-entrypoint.sh /
 
@@ -70,6 +73,8 @@ COPY --from=web-builder --chown=nextjs:nodejs /prepare/api/full/packages/db/pris
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+
+RUN mkdir -p /app/apps/web/.next/cache && chown -R nextjs:nodejs /app/apps/web/.next
 
 USER nextjs
 

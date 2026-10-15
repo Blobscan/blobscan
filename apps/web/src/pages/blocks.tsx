@@ -5,6 +5,7 @@ import type { EtherUnit } from "@blobscan/eth-format";
 import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
@@ -360,6 +361,10 @@ const Blocks: NextPage = function () {
 
   return (
     <>
+      <SeoMetaTags
+        title="Blocks"
+        description="Browse and explore all blocks containing EIP-4844 blob transactions."
+      />
       <Header>
         <div className="flex items-center gap-2">
           <div>Blocks</div>

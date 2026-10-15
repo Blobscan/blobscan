@@ -1,4 +1,5 @@
 import { createEnv } from "@t3-oss/env-nextjs";
+
 import { booleanSchema, z } from "@blobscan/zod";
 
 export const networkSchema = z.enum([
@@ -45,6 +46,11 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "test", "production"]),
     METRICS_ENABLED: booleanSchema.default("false"),
     REDIS_URI: z.string().default("redis://localhost:6379"),
+    // Number of trusted reverse-proxy hops in front of the app (e.g. ingress).
+    // Used to pick the real client IP from X-Forwarded-For instead of trusting
+    // the spoofable left-most value. 0 (default) preserves legacy behavior for
+    // local/dev where there is no proxy.
+    TRUSTED_PROXY_COUNT: z.coerce.number().int().nonnegative().default(0),
     TRACES_ENABLED: booleanSchema.default("false"),
     OTEL_DIAG_ENABLED: z.boolean().default(false),
     OTLP_AUTH_USERNAME: z.coerce.string().optional(),
@@ -56,9 +62,21 @@ export const env = createEnv({
       .default(`http://localhost:${process.env.BLOBSCAN_API_PORT ?? 3001}`),
     GOOGLE_STORAGE_BUCKET_NAME: z.string().optional(),
     GOOGLE_STORAGE_API_ENDPOINT: z.string().url().optional(),
+    GOOGLE_STORAGE_SIGNED_URLS_ENABLED: booleanSchema.default("false"),
     S3_STORAGE_BUCKET_NAME: z.string().optional(),
     S3_STORAGE_ENDPOINT: z.string().url().optional(),
     WEAVEVM_STORAGE_API_BASE_URL: z.string().optional(),
+    IPFS_STORAGE_ENABLED: booleanSchema.default("false"),
+    IPFS_STORAGE_GATEWAY_URL: z
+      .string()
+      .url()
+      .default("https://ipfs.filebase.io"),
+    // Gateway this process reads blobs from server-side. Defaults to
+    // IPFS_STORAGE_GATEWAY_URL when unset. Set this separately when that URL
+    // is a public hostname that routes back to this same service.
+    IPFS_STORAGE_INTERNAL_GATEWAY_URL: z.string().url().optional(),
+    IPFS_STORAGE_IPLD_URL: z.string().url().optional(),
+    IPFS_STORAGE_API_KEY: z.string().optional(),
 
     ...clientEnvVars,
   },
@@ -79,6 +97,7 @@ export const env = createEnv({
     METRICS_ENABLED: process.env.METRICS_ENABLED,
     NODE_ENV: process.env.NODE_ENV,
     REDIS_URI: process.env.REDIS_URI,
+    TRUSTED_PROXY_COUNT: process.env.TRUSTED_PROXY_COUNT,
     TRACES_ENABLED: process.env.TRACES_ENABLED,
     OTEL_DIAG_ENABLED: process.env.OTEL_DIAG_ENABLED,
     OTLP_AUTH_USERNAME: process.env.OTLP_AUTH_USERNAME,
@@ -90,9 +109,17 @@ export const env = createEnv({
     BLOBSCAN_API_BASE_URL: process.env.BLOBSCAN_API_BASE_URL,
     GOOGLE_STORAGE_API_ENDPOINT: process.env.GOOGLE_STORAGE_API_ENDPOINT,
     GOOGLE_STORAGE_BUCKET_NAME: process.env.GOOGLE_STORAGE_BUCKET_NAME,
+    GOOGLE_STORAGE_SIGNED_URLS_ENABLED:
+      process.env.GOOGLE_STORAGE_SIGNED_URLS_ENABLED,
     S3_STORAGE_BUCKET_NAME: process.env.S3_STORAGE_BUCKET_NAME,
     S3_STORAGE_ENDPOINT: process.env.S3_STORAGE_ENDPOINT,
     WEAVEVM_STORAGE_API_BASE_URL: process.env.WEAVEVM_STORAGE_API_BASE_URL,
+    IPFS_STORAGE_ENABLED: process.env.IPFS_STORAGE_ENABLED,
+    IPFS_STORAGE_GATEWAY_URL: process.env.IPFS_STORAGE_GATEWAY_URL,
+    IPFS_STORAGE_INTERNAL_GATEWAY_URL:
+      process.env.IPFS_STORAGE_INTERNAL_GATEWAY_URL,
+    IPFS_STORAGE_IPLD_URL: process.env.IPFS_STORAGE_IPLD_URL,
+    IPFS_STORAGE_API_KEY: process.env.IPFS_STORAGE_API_KEY,
 
     PUBLIC_BEACON_BASE_URL: process.env.PUBLIC_BEACON_BASE_URL,
     PUBLIC_EXPLORER_BASE_URL: process.env.PUBLIC_EXPLORER_BASE_URL,

@@ -9,6 +9,12 @@ import { SortToggle } from "../Toggles";
 import { ControlBarLayout } from "./ControlBarLayout";
 import { useControlState } from "./useControlState";
 
+const RANGE_LABEL: Record<"block" | "slot" | "epoch", string> = {
+  block: "Block",
+  slot: "Slot",
+  epoch: "Epoch",
+};
+
 export const ListControlBar: FC = () => {
   const { state, actions, apply, clear } = useControlState();
   const rangeType = state.range.type;
@@ -79,24 +85,20 @@ export const ListControlBar: FC = () => {
               />
             )}
 
-            {(rangeType === "block" || rangeType === "slot") && (
+            {rangeType in RANGE_LABEL && (
               <NumberRangeInput
                 className="w-full rounded-s-none"
                 type="uint"
                 inputStartProps={{
-                  placeholder: `Start ${
-                    rangeType === "block" ? "Block" : "Slot"
-                  }`,
+                  placeholder: `Start ${RANGE_LABEL[rangeType as keyof typeof RANGE_LABEL]}`,
                 }}
                 inputEndProps={{
-                  placeholder: `End ${
-                    rangeType === "block" ? "Block" : "Slot"
-                  }`,
+                  placeholder: `End ${RANGE_LABEL[rangeType as keyof typeof RANGE_LABEL]}`,
                 }}
-                range={state.range.values}
+                range={state.range.values as { start: number | null; end: number | null }}
                 onChange={({ end = null, start = null }) =>
                   actions.setRange({
-                    type: rangeType,
+                    type: rangeType as "block" | "slot" | "epoch",
                     values: {
                       end,
                       start,

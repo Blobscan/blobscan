@@ -8,6 +8,7 @@ export function UnexpectedErrorView() {
       <Image
         src="/unexpected-error.png"
         alt="Unexpected error"
+        loading="eager"
         width={650}
         height={650}
         sizes="(max-width: 768px) 450px, (max-width: 1024px) 550px, 650px"

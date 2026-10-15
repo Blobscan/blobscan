@@ -32,9 +32,7 @@ model Transaction {
   @@index([blockTimestamp, index])
   @@index([blockNumber, index])
   @@index([fromId, blockTimestamp, index])
-  @@index([fromId, blockTimestamp]) // Rollup queries by time
   @@index([toId, blockTimestamp, index])
-  @@index([insertedAt])
   @@map("transaction")
 }
 

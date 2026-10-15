@@ -1,5 +1,169 @@
 # @blobscan/web
 
+## 0.54.1
+
+### Patch Changes
+
+- [`7aabab6`](https://github.com/Blobscan/blobscan/commit/7aabab66121ef2f95888598f58a6d9cf69241df5) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add optional `IPFS_STORAGE_INTERNAL_GATEWAY_URL` so IPFS-backed blob reads can use an internal gateway address separate from the public `IPFS_STORAGE_GATEWAY_URL` used to build user-facing blob links. Without this, deployments where the public gateway URL points back at the service's own public domain caused every IPFS-backed blob read to round-trip out to the internet and back to fetch its own data.
+
+- Updated dependencies [[`7aabab6`](https://github.com/Blobscan/blobscan/commit/7aabab66121ef2f95888598f58a6d9cf69241df5)]:
+  - @blobscan/blob-storage-manager@3.0.1
+  - @blobscan/env@0.4.1
+
+## 0.54.0
+
+### Minor Changes
+
+- [#1001](https://github.com/Blobscan/blobscan/pull/1001) [`2865527`](https://github.com/Blobscan/blobscan/commit/286552761a56ca0be2cec5f99114506273a4c733) Thanks [@PJColombo](https://github.com/PJColombo)! - Add a banner announcing the migration to IPFS-based blob storage
+
+- [#998](https://github.com/Blobscan/blobscan/pull/998) [`74b33ba`](https://github.com/Blobscan/blobscan/commit/74b33ba464a10b31127a1f395ff67ee585e2e70a) Thanks [@PJColombo](https://github.com/PJColombo)! - Implement `IpfsStorage.storeBlob` via the blobscan-ipld push endpoint
+
+  `IpfsStorage` can now write blobs (previously read-only): `_storeBlob`
+  POSTs the blob plus its beacon/execution context to the blobscan-ipld
+  service's `POST /blob` endpoint and persists the returned `data_cid` as the
+  reference. To carry the extra fields the endpoint requires (commitment,
+  tx hash, blob index, slot, epoch, block number, block hash), a new
+  optional `BlobContext` is threaded through `BlobStorage.storeBlob`,
+  `BlobStorageManager`, the propagator's `BlobPropagationInput`, and the
+  indexer. The context is optional at the storage interface so other
+  backends are unaffected; `IpfsStorage` asserts its presence at runtime.
+  `finalize` is always sent as `false` since epoch completeness can't be
+  known per blob.
+
+  IPFS can now be selected as `PRIMARY_BLOB_STORAGE` (it was previously
+  rejected as write-incapable). The write endpoint lives at a different
+  base URL than the read gateway, so a new `IPFS_STORAGE_IPLD_URL` env var
+  configures it; it's passed to `IpfsStorage` as a dedicated `ipldUrl` and
+  is required when IPFS is the primary storage.
+
+  `IpfsStorage`'s health check now targets the blobscan-ipld service's
+  `/readyz` endpoint when a write URL (`ipldUrl`) is configured, since that
+  service owns the kubo client and the write path; read-only deployments
+  (gateway only) still probe the IPFS gateway directly.
+
+### Patch Changes
+
+- Updated dependencies [[`74b33ba`](https://github.com/Blobscan/blobscan/commit/74b33ba464a10b31127a1f395ff67ee585e2e70a)]:
+  - @blobscan/blob-storage-manager@3.0.0
+  - @blobscan/api@3.0.0
+  - @blobscan/db@0.29.0
+  - @blobscan/env@0.4.0
+  - @blobscan/rollups@3.0.0
+
+## 0.53.0
+
+### Minor Changes
+
+- [#996](https://github.com/Blobscan/blobscan/pull/996) [`2f38f03`](https://github.com/Blobscan/blobscan/commit/2f38f0347a86c330338f9f5cd00100dd09445901) Thanks [@PJColombo](https://github.com/PJColombo)! - Add an `epoch` field to blocks
+
+  Track the consensus-layer epoch for each block. The indexer derives the
+  epoch from the block slot (`floor(slot / slotsPerEpoch)`, via the new
+  `Chain.getEpochBySlot` helper) and stores it on the block row, the block
+  API responses now return it, and the block details page displays it. The
+  column is nullable for now so existing rows can be backfilled in a
+  follow-up before it's made non-nullable; until then the web falls back to
+  deriving the epoch from the slot.
+
+### Patch Changes
+
+- Updated dependencies [[`2f38f03`](https://github.com/Blobscan/blobscan/commit/2f38f0347a86c330338f9f5cd00100dd09445901)]:
+  - @blobscan/chains@0.5.0
+  - @blobscan/db@0.28.0
+  - @blobscan/api@2.0.0
+  - @blobscan/blob-storage-manager@2.0.0
+  - @blobscan/rollups@2.0.0
+
+## 0.52.0
+
+### Minor Changes
+
+- [#985](https://github.com/Blobscan/blobscan/pull/985) [`8c1375d`](https://github.com/Blobscan/blobscan/commit/8c1375d7230cf4ca47ef4b37237c21d748d84264) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add IPFS storage provider backed by blobscan-ipld
+
+  Add a read-only IpfsStorage backend that retrieves blobs from a
+  configurable IPFS gateway. CID references are registered externally
+  via a new POST /blobs/ipfs-references endpoint,
+  following the same pattern as the existing WeaveVM integration.
+  Introduces a dedicated `ipfs` service auth role and
+  IPFS_STORAGE_ENABLED / IPFS_STORAGE_GATEWAY_URL / IPFS_STORAGE_API_KEY /
+  IPFS_API_KEY env vars.
+
+### Patch Changes
+
+- [#992](https://github.com/Blobscan/blobscan/pull/992) [`4541f90`](https://github.com/Blobscan/blobscan/commit/4541f904031ffbcdde29c6cded0aa173efc65251) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fix IPFS storage badge URL in blob explorer
+
+  The `blobDataStorageReference` computed `url` field was missing a case
+  for IPFS, so the IPFS badge in the blob list had no link. Add the
+  `IPFS` case returning `${gatewayUrl}/ipfs/${dataCid}` and wire
+  `IPFS_STORAGE_GATEWAY_URL` through the prisma clients in the web app
+  and REST API server.
+
+- Updated dependencies [[`8c1375d`](https://github.com/Blobscan/blobscan/commit/8c1375d7230cf4ca47ef4b37237c21d748d84264), [`4541f90`](https://github.com/Blobscan/blobscan/commit/4541f904031ffbcdde29c6cded0aa173efc65251)]:
+  - @blobscan/blob-storage-manager@1.0.0
+  - @blobscan/api@1.0.0
+  - @blobscan/db@0.27.0
+  - @blobscan/rollups@1.0.0
+
+## 0.51.3
+
+### Patch Changes
+
+- [#988](https://github.com/Blobscan/blobscan/pull/988) [`d4474d5`](https://github.com/Blobscan/blobscan/commit/d4474d521e24982962d384989748cfabf39482db) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed blob data retrieval failing for signed storage URLs. The blob data proxy now URL-encodes the reference URL and derives the file type from the URL pathname, so signed GCS URLs (which carry `X-Goog-*` query parameters) are no longer truncated.
+
+## 0.51.2
+
+### Patch Changes
+
+- [#987](https://github.com/Blobscan/blobscan/pull/987) [`7eb4941`](https://github.com/Blobscan/blobscan/commit/7eb494149a56764148cbca2271c9a05586781564) Thanks [@PJColombo](https://github.com/PJColombo)! - Centralized blob signed URL resolution into a `withBlobSignedUrls` tRPC middleware. Transaction and block endpoints now return signed URLs for blob data storage references (previously only the blob endpoints did), falling back to the plain stored URL when signing is unavailable. Added the `GOOGLE_STORAGE_SIGNED_URLS_ENABLED` env var to the web app.
+
+- Updated dependencies [[`7eb4941`](https://github.com/Blobscan/blobscan/commit/7eb494149a56764148cbca2271c9a05586781564), [`904831c`](https://github.com/Blobscan/blobscan/commit/904831cc5f3507fc1488a16ff952469281654500)]:
+  - @blobscan/api@0.34.0
+  - @blobscan/blob-storage-manager@0.9.0
+  - @blobscan/env@0.3.0
+
+## 0.51.1
+
+### Patch Changes
+
+- [#983](https://github.com/Blobscan/blobscan/pull/983) [`55158a7`](https://github.com/Blobscan/blobscan/commit/55158a78f54b3c707ff1fe5027ca7b2d330ff87f) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - fix: remove giveth banner
+
+## 0.51.0
+
+### Minor Changes
+
+- [#977](https://github.com/Blobscan/blobscan/pull/977) [`068abce`](https://github.com/Blobscan/blobscan/commit/068abced3df3fe9a0f7cce3a8e5df531c7eef3ee) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added TheDAO Security Fund QF Round announcement banner
+
+- [#976](https://github.com/Blobscan/blobscan/pull/976) [`bbf30c0`](https://github.com/Blobscan/blobscan/commit/bbf30c0e4b54e256dbfb16ddd248ac0e64a7a19b) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Improve feedback widget: add emoji validation with error message, success confirmation, loading state, error handling for failed requests, Escape key and click-outside to close, form state reset on close, server-side validation, webhook failure handling, proper 405 responses, and accessibility improvements
+
+- [#973](https://github.com/Blobscan/blobscan/pull/973) [`92efc45`](https://github.com/Blobscan/blobscan/commit/92efc45c39014c8b27ee132d6dcacd0b8e0ba712) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added Open Graph and Twitter Card support
+
+## 0.50.0
+
+### Minor Changes
+
+- [`9c1be11`](https://github.com/Blobscan/blobscan/commit/9c1be111a99c98be3b2b091007abd70bcd121593) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fix style in contact page and add X and farcaster links
+
+- [`9c1be11`](https://github.com/Blobscan/blobscan/commit/9c1be111a99c98be3b2b091007abd70bcd121593) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - update docker tag defaults in .env.example
+
+## 0.49.2
+
+### Patch Changes
+
+- [`df4eb9d`](https://github.com/Blobscan/blobscan/commit/df4eb9dc3e01cfd5671df6c0f3e8ef1047cf8268) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add /contact page with email and Discord links
+
+- [`df4eb9d`](https://github.com/Blobscan/blobscan/commit/df4eb9dc3e01cfd5671df6c0f3e8ef1047cf8268) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add /discord redirect page
+
+- [`df4eb9d`](https://github.com/Blobscan/blobscan/commit/df4eb9dc3e01cfd5671df6c0f3e8ef1047cf8268) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Update copyright year to 2026
+
+## 0.49.1
+
+### Patch Changes
+
+- [#970](https://github.com/Blobscan/blobscan/pull/970) [`7653783`](https://github.com/Blobscan/blobscan/commit/7653783dfc7ff3ae9d85667f6c073ef12d3c95b4) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed pagination navigation not working correctly in data tables
+
+- [#970](https://github.com/Blobscan/blobscan/pull/970) [`7653783`](https://github.com/Blobscan/blobscan/commit/7653783dfc7ff3ae9d85667f6c073ef12d3c95b4) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed inconsistent icon sizes in the navigation menu.
+
+- [#970](https://github.com/Blobscan/blobscan/pull/970) [`7653783`](https://github.com/Blobscan/blobscan/commit/7653783dfc7ff3ae9d85667f6c073ef12d3c95b4) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed a React version mismatch with the Tailwind datepicker component
+
 ## 0.49.0
 
 ### Minor Changes

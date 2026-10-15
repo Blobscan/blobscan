@@ -7,6 +7,7 @@ import {
   createExpandsSchema,
   withExpands,
 } from "../../middlewares/withExpands";
+import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import {
@@ -28,6 +29,7 @@ export const getAdjacentBlock = publicProcedure
   .input(inputSchema)
   .use(withExpands)
   .output(outputSchema)
+  .use(withBlobSignedUrls)
   .query(
     async ({ ctx: { expands, prisma }, input: { blockNumber, direction } }) => {
       const whereOperator = direction === "next" ? "gt" : "lt";

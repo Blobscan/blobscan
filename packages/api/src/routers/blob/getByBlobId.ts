@@ -6,6 +6,7 @@ import {
   createExpandsSchema,
   withExpands,
 } from "../../middlewares/withExpands";
+import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import type { CompletedPrismaBlob } from "./helpers";
@@ -36,7 +37,8 @@ export const getByBlobId = publicProcedure
   .input(inputSchema)
   .use(withExpands)
   .output(outputSchema)
-  .query(async ({ ctx: { prisma, expands }, input }) => {
+  .use(withBlobSignedUrls)
+  .query(async ({ ctx: { expands, prisma }, input }) => {
     const { id } = input;
     const isExpandEnabled = !!expands.block || !!expands.transaction;
 

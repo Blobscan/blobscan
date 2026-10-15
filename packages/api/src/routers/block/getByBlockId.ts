@@ -11,6 +11,7 @@ import {
   withFilters,
   withTypeFilterSchema,
 } from "../../middlewares/withFilters";
+import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import { fetchBlock, toResponseBlock, responseBlockSchema } from "./helpers";
@@ -37,6 +38,7 @@ export const getByBlockId = publicProcedure
   .use(withExpands)
   .use(withFilters)
   .output(outputSchema)
+  .use(withBlobSignedUrls)
   .query(async ({ ctx: { prisma, expands, filters }, input: { id } }) => {
     const res = await fetchBlock(id, {
       prisma,

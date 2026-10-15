@@ -12,6 +12,7 @@ import {
 } from "@blobscan/db/prisma/zod-utils";
 
 import { Button } from "~/components/Button";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { GlowableImage } from "~/components/GlowableImage";
 import { Icon } from "~/components/Icon";
 import { routes } from "~/routes";
@@ -71,7 +72,12 @@ export default function Search({ term }: SearchProps) {
   const router = useRouter();
 
   return (
-    <main className="flex w-full flex-col items-center gap-4">
+    <>
+      <SeoMetaTags
+        title="Search"
+        description="Search for blobs, transactions, blocks, and addresses on Blobscan."
+      />
+      <main className="flex w-full flex-col items-center gap-4">
       <GlowableImage
         top="70%"
         right="20%"
@@ -125,5 +131,6 @@ export default function Search({ term }: SearchProps) {
         </Button>
       </div>
     </main>
+    </>
   );
 }

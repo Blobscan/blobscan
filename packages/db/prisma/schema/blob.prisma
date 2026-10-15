@@ -14,7 +14,6 @@ model Blob {
 
   @@index([firstBlockNumber])
   @@index([proof])
-  @@index([insertedAt])
   @@map("blob")
 }
 
@@ -33,6 +32,7 @@ model BlobDataStorageReference {
   blob Blob @relation(fields: [blobHash], references: [versionedHash])
 
   @@id([blobHash, blobStorage])
+  @@index([blobStorage])
   @@map("blob_data_storage_reference")
 }
 
@@ -57,7 +57,6 @@ model BlobsOnTransactions {
   @@index([blockNumber, txIndex, index])
   @@index([blobHash])
   @@index([blockHash])
-  @@index([txHash])
   @@index([txHash, blobHash]) // Transaction-blob joins
   @@index([blockTimestamp, txHash]) // Time-based blob queries
   @@map("blobs_on_transactions")

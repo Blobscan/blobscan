@@ -25,6 +25,7 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import type { SelectOption } from "~/components/Selects";
 import { Listbox } from "~/components/Selects";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { routes } from "~/routes";
@@ -61,9 +62,13 @@ const Blob: NextPage = function () {
       }
 
       for (const { storage, url } of blob.dataStorageReferences) {
+        if (!url) {
+          continue;
+        }
+
         try {
           const response = await fetch(
-            `/api/blob-data?storage=${storage}&url=${url}`
+            `/api/blob-data?storage=${storage}&url=${encodeURIComponent(url)}`
           );
 
           if (!response.ok) {
@@ -304,6 +309,12 @@ const Blob: NextPage = function () {
 
   return (
     <>
+      <SeoMetaTags
+        title={`Blob ${blob?.versionedHash ?? "Details"}`}
+        description={`Explore blob details${
+          blob ? ` for ${blob.versionedHash}` : ""
+        } on Blobscan.`}
+      />
       <DetailsLayout
         header="Blob Details"
         fields={blob ? detailsFields : undefined}

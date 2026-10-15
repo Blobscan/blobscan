@@ -20,7 +20,6 @@ const bundleAnalyzer = withBundleAnalyzer({
 });
 
 const config: NextConfig = {
-  turbopack: {},
   reactStrictMode: true,
   output: process.env.NEXT_BUILD_OUTPUT as NextConfig["output"],
   async rewrites() {

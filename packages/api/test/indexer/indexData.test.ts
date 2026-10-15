@@ -94,6 +94,7 @@ describe("indexData", () => {
             "blobGasBaseFee": "10000",
             "blobGasUsed": "10000",
             "computeUsdFields": [Function],
+            "epoch": 4,
             "excessBlobGas": "5000",
             "hash": "blockHash2010",
             "number": 2010,
@@ -401,16 +402,27 @@ describe("indexData", () => {
           callerWithBlobPropagator = createIndexerCaller(ctxWithBlobPropagator);
 
           blobPropagatorSpy = vi.spyOn(
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+             
             ctxWithBlobPropagator.blobPropagator!,
             "propagateBlobs"
           );
         });
 
         it("should call blob propagator", async () => {
+          const { block } = INPUT_WITH_DUPLICATED_BLOBS;
           const expectedInput = INPUT_WITH_DUPLICATED_BLOBS.blobs.map((b) => ({
-            ...b,
-            blockNumber: INPUT_WITH_DUPLICATED_BLOBS.block.number,
+            versionedHash: b.versionedHash,
+            data: b.data,
+            blockNumber: block.number,
+            context: {
+              commitment: b.commitment,
+              txHash: b.txHash,
+              index: b.index,
+              slot: block.slot,
+              epoch: Math.floor(block.slot / 32),
+              blockNumber: block.number,
+              blockHash: block.hash,
+            },
           }));
 
           await callerWithBlobPropagator.indexData(INPUT_WITH_DUPLICATED_BLOBS);

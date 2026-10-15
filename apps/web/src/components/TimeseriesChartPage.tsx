@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { useUrlState } from "~/hooks/useUrlState";
 import { categoriesParamSchema, rollupsSchema } from "~/schemas/filters";
 import type { TimeseriesChartComponent } from "./Charts/TimeseriesChartBase";
@@ -45,8 +46,13 @@ export const TimeseriesChartPage = function ({
   }
 
   return (
-    <div className="flex flex-col gap-8">
-      <Header>{title}</Header>
+    <>
+      <SeoMetaTags
+        title={typeof title === "string" ? title : undefined}
+        description={typeof description === "string" ? description : undefined}
+      />
+      <div className="flex flex-col gap-8">
+        <Header>{title}</Header>
       <div>{description}</div>
       {isCategorizedTimeseries && <TimeseriesControlBar />}
       <Chart
@@ -65,5 +71,6 @@ export const TimeseriesChartPage = function ({
         }}
       />
     </div>
+    </>
   );
 };

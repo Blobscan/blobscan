@@ -12,6 +12,7 @@ const nodeEnvSchema = z.enum(["development", "test", "production"]);
 
 const BLOB_STORAGE = [
   "GOOGLE",
+  "IPFS",
   "POSTGRES",
   "SWARM",
   "SWARMYCLOUD",
@@ -62,6 +63,20 @@ function requireIfEnvEnabled(envName: string) {
   };
 }
 
+function requireIfPrimaryStorage(storageName: string) {
+  return (value: unknown, ctx: RefinementCtx) => {
+    if (
+      process.env.PRIMARY_BLOB_STORAGE?.toUpperCase() === storageName &&
+      value === undefined
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `This field is required when PRIMARY_BLOB_STORAGE is "${storageName.toLowerCase()}"`,
+      });
+    }
+  };
+}
+
 export const env = createEnv({
   envOptions: {
     server: {
@@ -80,6 +95,7 @@ export const env = createEnv({
         .string()
         .url()
         .default(`http://localhost:${process.env.BLOBSCAN_API_PORT ?? 3001}`),
+      TRUSTED_PROXIES: z.string().optional(),
 
       // Logging
       LOG_LEVEL: z
@@ -171,7 +187,20 @@ export const env = createEnv({
        */
 
       // General storage settings
-      PRIMARY_BLOB_STORAGE: blobStorageCoercionSchema.default("POSTGRES"),
+      // IPFS and WEAVEVM are populated by external services and don't
+      // implement the write side of the BlobStorage interface, so they
+      // can't act as the primary storage (the source the propagator reads
+      // from and the reconciler walks).
+      PRIMARY_BLOB_STORAGE: blobStorageCoercionSchema
+        .default("POSTGRES")
+        .superRefine((value, ctx) => {
+          if (value === "WEAVEVM") {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: `"${value.toLowerCase()}" cannot be used as PRIMARY_BLOB_STORAGE: it is populated by an external service and does not support writes`,
+            });
+          }
+        }),
 
       // Postgres blob storage
       POSTGRES_STORAGE_ENABLED: booleanSchema.default("false"),
@@ -188,6 +217,7 @@ export const env = createEnv({
         .string()
         .optional()
         .superRefine(requireIfEnvEnabled("GOOGLE_STORAGE_ENABLED")),
+      GOOGLE_STORAGE_SIGNED_URLS_ENABLED: booleanSchema.default("false"),
 
       // Swarm storage
       SWARM_STORAGE_ENABLED: booleanSchema.default("false"),
@@ -240,6 +270,39 @@ export const env = createEnv({
         .optional()
         .superRefine(requireIfEnvEnabled("WEAVEVM_STORAGE_ENABLED")),
 
+      // IPFS storage (references registered externally by blobscan-ipld)
+      IPFS_STORAGE_ENABLED: booleanSchema.default("false"),
+      // Public gateway used to build the blob `url` shown to API/website
+      // consumers so they can fetch the blob themselves.
+      IPFS_STORAGE_GATEWAY_URL: z
+        .string()
+        .url()
+        .default("https://ipfs.filebase.io")
+        .superRefine(requireIfEnvEnabled("IPFS_STORAGE_ENABLED")),
+      // Gateway this process reads blobs from server-side. Defaults to
+      // IPFS_STORAGE_GATEWAY_URL when unset. Set this separately when that
+      // URL is a public hostname that routes back to this same service
+      // (e.g. the API's own public domain) — using it directly here would
+      // make the process call back out to itself over the internet for
+      // every IPFS-backed blob read.
+      IPFS_STORAGE_INTERNAL_GATEWAY_URL: z.string().url().optional(),
+      // Base URL of the blobscan-ipld service's write API (POST /blob). Distinct
+      // from the read gateway above; required when IPFS is the primary
+      // (writable) storage.
+      IPFS_STORAGE_IPLD_URL: z
+        .string()
+        .url()
+        .optional()
+        .superRefine(requireIfPrimaryStorage("IPFS")),
+      // Optional bearer token sent to gated IPFS gateways (Filebase, Infura…).
+      IPFS_STORAGE_API_KEY: z.string().optional(),
+      // Bearer token authenticating inbound blobscan-ipld requests to the
+      // /blobs/ipfs-references endpoint (not a gateway/storage credential).
+      IPFS_API_KEY: z
+        .string()
+        .optional()
+        .superRefine(requireIfEnvEnabled("IPFS_STORAGE_ENABLED")),
+
       VITEST_MAINNET_FORK_URL: z
         .string()
         .url()
@@ -270,8 +333,18 @@ export const env = createEnv({
       `Blob propagator configuration: primaryBlobStorage=${env.PRIMARY_BLOB_STORAGE} completedJobsAge=${env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE} seconds, failedJobsAge=${env.BLOB_PROPAGATOR_FAILED_JOBS_AGE} seconds, reconcilerEnabled=${env.BLOB_RECONCILER_ENABLED}, reconcilerCronPattern=${env.BLOB_RECONCILER_CRON_PATTERN}`
     );
 
+    const enabledStorages = [
+      env.POSTGRES_STORAGE_ENABLED && "postgres",
+      env.GOOGLE_STORAGE_ENABLED && "gcs",
+      env.SWARM_STORAGE_ENABLED && "swarm",
+      env.SWARMYCLOUD_STORAGE_ENABLED && "swarmy",
+      env.S3_STORAGE_ENABLED && "s3",
+      env.WEAVEVM_STORAGE_ENABLED && "weavevm",
+      env.IPFS_STORAGE_ENABLED && "ipfs",
+    ].filter(Boolean);
     console.log(
-      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, swarmy=${env.SWARMYCLOUD_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}`
+      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, enabledStorages:`,
+      enabledStorages
     );
 
     if (env.GOOGLE_STORAGE_ENABLED) {

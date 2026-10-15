@@ -1,6 +1,7 @@
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import {
   GoogleStorage,
+  IpfsStorage,
   PostgresStorage,
   S3Storage,
   SwarmStorage,
@@ -14,7 +15,7 @@ import { logger } from "@blobscan/logger";
 
 import { prisma } from "../clients/prisma";
 
-function isBlobStorageEnabled(storageName: BlobStorageName) {
+export function isBlobStorageEnabled(storageName: BlobStorageName) {
   const storageEnabledKey =
     `${storageName}_STORAGE_ENABLED` as keyof Environment;
   const storageEnabled = env[storageEnabledKey];
@@ -61,6 +62,7 @@ export async function createStorageFromEnv(
         apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
         projectId: env.GOOGLE_STORAGE_PROJECT_ID,
         serviceKey: env.GOOGLE_SERVICE_KEY,
+        signedUrlsEnabled: env.GOOGLE_STORAGE_SIGNED_URLS_ENABLED,
       });
     }
     case BlobStorageName.POSTGRES: {
@@ -101,6 +103,18 @@ export async function createStorageFromEnv(
       return WeaveVMStorage.create({
         chainId,
         apiBaseUrl: env.WEAVEVM_STORAGE_API_BASE_URL,
+      });
+    }
+    case BlobStorageName.IPFS: {
+      return IpfsStorage.create({
+        chainId,
+        gatewayUrl: env.IPFS_STORAGE_GATEWAY_URL,
+        readGatewayUrl: env.IPFS_STORAGE_INTERNAL_GATEWAY_URL,
+        ipldUrl: env.IPFS_STORAGE_IPLD_URL,
+        apiKey: env.IPFS_STORAGE_API_KEY,
+        // Keep IPFS in the manager even if the gateway is down at boot; reads
+        // recover via per-request retries and fall back to other storages.
+        verifyGatewayOnInit: false,
       });
     }
     default: {

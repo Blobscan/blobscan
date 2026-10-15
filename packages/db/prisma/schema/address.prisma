@@ -11,10 +11,8 @@ model Address {
   transactionsAsSender   Transaction[] @relation("senderAddressRelation")
   transactionsAsReceiver Transaction[] @relation("receiverAddressRelation")
 
-  @@index([address, rollup])
   @@index([rollup])
   @@index([firstBlockNumberAsReceiver])
   @@index([firstBlockNumberAsSender])
-  @@index([insertedAt])
   @@map("address")
 }

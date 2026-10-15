@@ -1,11 +1,16 @@
 import { Radio, RadioGroup } from "@headlessui/react";
-import { CalendarIcon, ClockIcon, CubeIcon } from "@heroicons/react/24/solid";
+import {
+  CalendarIcon,
+  ClockIcon,
+  CubeIcon,
+  SquaresPlusIcon,
+} from "@heroicons/react/24/solid";
 import classNames from "classnames";
 
 import { Icon } from "./Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
 
-export type Range = "block" | "date" | "slot";
+export type Range = "block" | "date" | "slot" | "epoch";
 
 type RangeOption = {
   value: Range;
@@ -28,6 +33,11 @@ const RANGE_OPTIONS: RangeOption[] = [
     value: "slot",
     icon: <Icon src={ClockIcon} />,
     tooltipText: "Filter by Slot Range",
+  },
+  {
+    value: "epoch",
+    icon: <Icon src={SquaresPlusIcon} />,
+    tooltipText: "Filter by Epoch Range",
   },
 ];
 

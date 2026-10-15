@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import Chat from "~/icons/chat.svg";
 import { Button } from "../Button";
-import { FeedbackCard } from "./FeedbackCard";
+import { FeedbackModal } from "./FeedbackModal";
 
 async function getEnabled(): Promise<boolean> {
   const request = await fetch("/api/feedback/enabled");
@@ -27,12 +27,13 @@ export const FeedbackWidget: FC = () => {
       <div className="fixed bottom-8 right-8">
         <Button
           className="flex items-center justify-center gap-2"
+          onMouseDown={(e) => e.stopPropagation()}
           onClick={() => setOpen((prev) => !prev)}
         >
           Feedback <Chat className="h-5 w-5" />
         </Button>
       </div>
-      <FeedbackCard open={open} onClose={() => setOpen(false)} />
+      <FeedbackModal open={open} onClose={() => setOpen(false)} />
     </>
   );
 };

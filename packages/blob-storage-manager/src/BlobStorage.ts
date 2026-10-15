@@ -1,24 +1,48 @@
 import type { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
-import { BlobStorageError } from "./errors";
-import type { BlobFileType } from "./types";
+import { BlobStorageError, BlobTooLargeError, IpfsGatewayError, InvalidBlobCidError } from "./errors";
+import type { BlobContext, BlobFileType } from "./types";
 import { getBlobFileType, normalizeBlobData } from "./utils/blob";
 
 export interface BlobStorageConfig {
   chainId: number;
+  signedUrlsEnabled?: boolean;
 }
 
 export interface GetBlobOpts {
   fileType?: BlobFileType;
 }
 
+export interface GetSignedUrlOpts {
+  expirationSeconds?: number;
+}
+
 export abstract class BlobStorage {
-  constructor(readonly name: BlobStorageName, readonly chainId: number) {}
+  readonly signedUrlsEnabled: boolean;
+
+  constructor(
+    readonly name: BlobStorageName,
+    readonly chainId: number,
+    opts: { signedUrlsEnabled?: boolean } = {}
+  ) {
+    this.signedUrlsEnabled = opts.signedUrlsEnabled ?? false;
+  }
 
   protected abstract _healthCheck(): Promise<void>;
   protected abstract _getBlob(uri: string, opts?: GetBlobOpts): Promise<string>;
-  protected abstract _storeBlob(hash: string, data: Buffer): Promise<string>;
+  protected abstract _storeBlob(
+    hash: string,
+    data: Buffer,
+    context?: BlobContext
+  ): Promise<string>;
   protected abstract _removeBlob(uri: string): Promise<void>;
+
+  protected async _getSignedUrl(
+    _reference: string,
+    _opts?: GetSignedUrlOpts
+  ): Promise<string | undefined> {
+    return undefined;
+  }
 
   protected async healthCheck(): Promise<"OK"> {
     try {
@@ -39,6 +63,12 @@ export abstract class BlobStorage {
 
       return blob;
     } catch (err) {
+      if (
+        err instanceof BlobTooLargeError ||
+        err instanceof InvalidBlobCidError ||
+        err instanceof IpfsGatewayError
+      )
+        throw err;
       throw new BlobStorageError(
         this.constructor.name,
         `Failed to get blob with uri "${uri}"`,
@@ -59,11 +89,15 @@ export abstract class BlobStorage {
     }
   }
 
-  async storeBlob(hash: string, data: string | Buffer): Promise<string> {
+  async storeBlob(
+    hash: string,
+    data: string | Buffer,
+    context?: BlobContext
+  ): Promise<string> {
     try {
       const normalizedData = normalizeBlobData(data);
 
-      const uri = await this._storeBlob(hash, normalizedData);
+      const uri = await this._storeBlob(hash, normalizedData, context);
 
       return uri;
     } catch (err) {
@@ -81,5 +115,13 @@ export abstract class BlobStorage {
       `Failed to get blob uri for blob with versioned hash "${versionedHash}"`,
       new Error(`"getBlobUri" not implemented`)
     );
+  }
+
+  async getSignedUrl(
+    reference: string,
+    opts?: GetSignedUrlOpts
+  ): Promise<string | undefined> {
+    if (!this.signedUrlsEnabled) return undefined;
+    return this._getSignedUrl(reference, opts);
   }
 }

@@ -8,7 +8,8 @@ export class Chain {
     public readonly id: number,
     public readonly name: string,
     public readonly firstBlobBlock: { number: number },
-    activeForks: Partial<Record<ForkName, ForkActivationParams>>
+    activeForks: Partial<Record<ForkName, ForkActivationParams>>,
+    public readonly slotsPerEpoch: number = 32
   ) {
     const forks_ = Object.entries(activeForks)
       .reduce((acc, [forkName_, { activationSlot, activationDate }]) => {
@@ -41,6 +42,10 @@ export class Chain {
 
   get latestFork() {
     return this.forks[this.forks.length - 1] ?? this.forks[0];
+  }
+
+  getEpochBySlot(slot: number) {
+    return Math.floor(slot / this.slotsPerEpoch);
   }
 
   getActiveForkBySlot(slot: number) {

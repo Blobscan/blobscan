@@ -1,5 +1,63 @@
 # @blobscan/blob-propagator
 
+## 3.0.0
+
+### Minor Changes
+
+- [#998](https://github.com/Blobscan/blobscan/pull/998) [`74b33ba`](https://github.com/Blobscan/blobscan/commit/74b33ba464a10b31127a1f395ff67ee585e2e70a) Thanks [@PJColombo](https://github.com/PJColombo)! - Implement `IpfsStorage.storeBlob` via the blobscan-ipld push endpoint
+
+  `IpfsStorage` can now write blobs (previously read-only): `_storeBlob`
+  POSTs the blob plus its beacon/execution context to the blobscan-ipld
+  service's `POST /blob` endpoint and persists the returned `data_cid` as the
+  reference. To carry the extra fields the endpoint requires (commitment,
+  tx hash, blob index, slot, epoch, block number, block hash), a new
+  optional `BlobContext` is threaded through `BlobStorage.storeBlob`,
+  `BlobStorageManager`, the propagator's `BlobPropagationInput`, and the
+  indexer. The context is optional at the storage interface so other
+  backends are unaffected; `IpfsStorage` asserts its presence at runtime.
+  `finalize` is always sent as `false` since epoch completeness can't be
+  known per blob.
+
+  IPFS can now be selected as `PRIMARY_BLOB_STORAGE` (it was previously
+  rejected as write-incapable). The write endpoint lives at a different
+  base URL than the read gateway, so a new `IPFS_STORAGE_IPLD_URL` env var
+  configures it; it's passed to `IpfsStorage` as a dedicated `ipldUrl` and
+  is required when IPFS is the primary storage.
+
+  `IpfsStorage`'s health check now targets the blobscan-ipld service's
+  `/readyz` endpoint when a write URL (`ipldUrl`) is configured, since that
+  service owns the kubo client and the write path; read-only deployments
+  (gateway only) still probe the IPFS gateway directly.
+
+### Patch Changes
+
+- Updated dependencies [[`74b33ba`](https://github.com/Blobscan/blobscan/commit/74b33ba464a10b31127a1f395ff67ee585e2e70a)]:
+  - @blobscan/blob-storage-manager@3.0.0
+  - @blobscan/db@0.29.0
+
+## 2.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`2f38f03`](https://github.com/Blobscan/blobscan/commit/2f38f0347a86c330338f9f5cd00100dd09445901)]:
+  - @blobscan/db@0.28.0
+  - @blobscan/blob-storage-manager@2.0.0
+
+## 1.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`8c1375d`](https://github.com/Blobscan/blobscan/commit/8c1375d7230cf4ca47ef4b37237c21d748d84264), [`4541f90`](https://github.com/Blobscan/blobscan/commit/4541f904031ffbcdde29c6cded0aa173efc65251)]:
+  - @blobscan/blob-storage-manager@1.0.0
+  - @blobscan/db@0.27.0
+
+## 0.6.6
+
+### Patch Changes
+
+- Updated dependencies [[`904831c`](https://github.com/Blobscan/blobscan/commit/904831cc5f3507fc1488a16ff952469281654500)]:
+  - @blobscan/blob-storage-manager@0.9.0
+
 ## 0.6.5
 
 ### Patch Changes

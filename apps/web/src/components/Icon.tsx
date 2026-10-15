@@ -84,8 +84,11 @@ export const Icon: FC<IconProps> = function ({
       className={className}
     />
   ) : (
-    <div title={title} className={className}>
-      <IconOrSrc className={classNameProp} />
-    </div>
+    <IconOrSrc
+      title={title}
+      className={`${className}${classNameProp ? ` ${classNameProp}` : ""}`}
+      width={width}
+      height={height}
+    />
   );
 };

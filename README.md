@@ -55,6 +55,10 @@ We extend our gratitude to each one of them. Thank you 🙏
   </a>
 </p>
 
+# Donate
+
+If you'd like to support the development of Blobscan, consider donating through our [Giveth project page](https://giveth.io/project/blobscan).
+
 #
 
 [Join us on Discord!](https://discordapp.com/invite/fmqrqhkjHY/)

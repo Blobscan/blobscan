@@ -5,6 +5,8 @@ model Block {
   timestamp             DateTime @unique
   /// @zod.nonnegative()
   slot                  Int      @unique
+  /// @zod.nonnegative()
+  epoch                 Int?
   /// @zod.custom(imports.nonNegativeDecimalSchema)
   blobGasUsed           Decimal  @map("blob_gas_used") @db.Decimal(100, 0)
   /// @zod.custom(imports.nonNegativeDecimalSchema)
@@ -21,6 +23,5 @@ model Block {
   transactionForks    TransactionFork[]
 
   @@index([number])
-  @@index([insertedAt])
   @@map("block")
 }

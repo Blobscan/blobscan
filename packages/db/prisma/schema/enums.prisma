@@ -1,5 +1,6 @@
 enum BlobStorage {
   GOOGLE      @map("google")
+  IPFS        @map("ipfs")
   POSTGRES    @map("postgres")
   SWARM       @map("swarm")
   SWARMYCLOUD @map("swarmycloud")

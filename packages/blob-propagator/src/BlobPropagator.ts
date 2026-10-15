@@ -4,13 +4,14 @@ import { Worker, Queue } from "bullmq";
 import type { JobsOptions, Processor, WorkerOptions } from "bullmq";
 import IORedis from "ioredis";
 
-import type { BlobStorage } from "@blobscan/blob-storage-manager";
+import type { BlobContext, BlobStorage } from "@blobscan/blob-storage-manager";
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import { createLogger, logger } from "@blobscan/logger";
 
 import {
   DEFAULT_JOB_OPTIONS,
   DEFAULT_WORKER_OPTIONS,
+  NON_PROPAGATABLE_STORAGES,
   RECONCILER_WORKER_NAME,
   STORAGE_WORKER_NAMES,
 } from "./constants";
@@ -156,9 +157,10 @@ export class BlobPropagator {
     blockNumber,
     versionedHash,
     data,
+    context,
   }: BlobPropagationInput) {
     try {
-      const blobReference = await this.#storeBlob(versionedHash, data);
+      const blobReference = await this.#storeBlob(versionedHash, data, context);
 
       const queueOperations = this.propagators.map(({ queue }) => {
         const priority = this.computeJobPriority(blockNumber);
@@ -200,8 +202,8 @@ export class BlobPropagator {
       });
 
       const blobReferences = await Promise.all(
-        uniqueBlobs.map(({ versionedHash, data }) =>
-          this.#storeBlob(versionedHash, data)
+        uniqueBlobs.map(({ versionedHash, data, context }) =>
+          this.#storeBlob(versionedHash, data, context)
         )
       );
 
@@ -278,11 +280,12 @@ export class BlobPropagator {
     await teardownPromise;
   }
 
-  async #storeBlob(versionedHash: string, data: string) {
+  async #storeBlob(versionedHash: string, data: string, context?: BlobContext) {
     const blobStorage = this.primaryBlobStorage.name;
     const blobUri = await this.primaryBlobStorage.storeBlob(
       versionedHash,
-      data
+      data,
+      context
     );
 
     return this.prisma.blobDataStorageReference.upsert({
@@ -346,8 +349,12 @@ export class BlobPropagator {
     params: Omit<BlobPropagationWorkerParams, "targetBlobStorage">,
     opts: WorkerOptions
   ): StoragePropagator[] {
+    // See NON_PROPAGATABLE_STORAGES: these storages are populated by
+    // external services (blobscan-ipld, load-network indexer) and don't
+    // implement storeBlob. A propagator worker for them would just produce
+    // a stream of failed BullMQ jobs for every indexed blob.
     const supportedBlobStorages = blobStorages.filter(
-      (s) => s.name !== "WEAVEVM"
+      (s) => !NON_PROPAGATABLE_STORAGES.has(s.name)
     );
 
     return supportedBlobStorages.map((targetBlobStorage) => {

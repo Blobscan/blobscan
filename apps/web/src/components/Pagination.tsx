@@ -20,7 +20,7 @@ export type PaginationProps = {
   onChange(page: number): void;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
+ 
 const NOOP = () => {};
 
 const FirstButton: FC<NavigationButton> = function ({ disabled, onChange }) {
