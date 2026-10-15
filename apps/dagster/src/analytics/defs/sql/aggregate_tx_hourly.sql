@@ -30,7 +30,6 @@ WITH base AS (
 block_metric AS (
   SELECT
     period_start,
-    AVG(blob_gas_price)::FLOAT AS avg_blob_gas_price,
     SUM(blob_gas_price)::DECIMAL AS total_blob_gas_price,
     COUNT(*)::INT            AS total_blocks
   FROM (
@@ -48,18 +47,10 @@ INSERT INTO hourly_metrics (
   rollup,
 
   -- ------------- GLOBAL-ONLY METRICS -------------
-  avg_blob_gas_price,
-
   total_blob_gas_price,
   total_blocks,
 
   -- ------------- DIMENSIONAL METRICS -------------
-  avg_blob_base_fee,
-  avg_blob_max_fee,
-  avg_blob_as_calldata_fee,
-  avg_blob_as_calldata_max_fee,
-  avg_max_blob_gas_fee,
-
   total_transactions,
   total_unique_receivers,
   total_unique_senders,
@@ -79,9 +70,6 @@ SELECT
   -- ------------- GLOBAL-ONLY METRICS -------------
   -- Only computed for the global grouping set (period_start)
   CASE WHEN GROUPING(category) = 1 AND GROUPING(rollup) = 1
-    THEN COALESCE(ANY_VALUE(avg_blob_gas_price), 0)
-  END AS avg_blob_gas_price,
-  CASE WHEN GROUPING(category) = 1 AND GROUPING(rollup) = 1
     THEN COALESCE(ANY_VALUE(total_blob_gas_price), 0)
   END AS total_blob_gas_price,
   CASE WHEN GROUPING(category) = 1 AND GROUPING(rollup) = 1
@@ -89,12 +77,6 @@ SELECT
   END AS total_blocks,
 
   -- ------------- DIMENSIONAL METRICS -------------
-  AVG(blob_base_fee)::FLOAT AS avg_blob_base_fee,
-  AVG(blob_max_fee)::FLOAT AS avg_blob_max_fee,
-  AVG(blob_as_calldata_fee)::FLOAT AS avg_blob_as_calldata_fee,
-  AVG(blob_as_calldata_max_fee)::FLOAT AS avg_blob_as_calldata_max_fee,
-  AVG(max_fee_per_blob_gas)::FLOAT AS avg_max_blob_gas_fee,
-
   COUNT(hash)::INT AS total_transactions,
   COUNT(
     DISTINCT CASE
@@ -124,16 +106,8 @@ HAVING NOT (
   rollup IS NULL
 )
 ON CONFLICT (period_start, category, rollup) DO UPDATE SET
-  avg_blob_gas_price = EXCLUDED.avg_blob_gas_price,
-
   total_blob_gas_price = EXCLUDED.total_blob_gas_price,
   total_blocks = EXCLUDED.total_blocks,
-
-  avg_blob_base_fee = EXCLUDED.avg_blob_base_fee,
-  avg_blob_max_fee = EXCLUDED.avg_blob_max_fee,
-  avg_blob_as_calldata_fee = EXCLUDED.avg_blob_as_calldata_fee,
-  avg_blob_as_calldata_max_fee = EXCLUDED.avg_blob_as_calldata_max_fee,
-  avg_max_blob_gas_fee = EXCLUDED.avg_max_blob_gas_fee,
 
   total_transactions = EXCLUDED.total_transactions,
   total_unique_receivers = EXCLUDED.total_unique_receivers,
