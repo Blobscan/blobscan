@@ -18,16 +18,25 @@ run_coordinator:
 
 # Run launcher: spins up a new Docker container for each pipeline run.
 # Environment variables and volumes are forwarded to launched containers.
+# Values are read from the daemon's environment, so every var listed here
+# must be set (possibly empty) on the dagster-daemon service.
 run_launcher:
   module: dagster_docker
   class: DockerRunLauncher
   config:
-    hostname: postgres
+    # Network shared with postgres so run containers can resolve its hostname
+    network:
+      env: DAGSTER_DOCKER_NETWORK
     env_vars:
+      # Dagster instance storage
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
       - POSTGRES_PORT
+      # Blobscan metrics assets
+      - DATABASE_URL
+      - CHAIN_ID
+      - DAGSTER_METRICS_START_DATE
     container_kwargs:
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock # Docker-in-Docker access

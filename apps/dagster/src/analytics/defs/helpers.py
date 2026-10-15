@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 import time
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -89,6 +89,17 @@ def execute_sql_window(
     return res.rowcount, ms
 
 
+def start_of_week(dt: datetime) -> datetime:
+    """Return midnight of the Monday that starts ``dt``'s week.
+
+    Single Python definition of a week; it must match Postgres
+    ``DATE_TRUNC('week', ...)`` (ISO weeks, starting on Monday), which the
+    aggregate SQL uses to bucket weekly metrics.
+    """
+    midnight = dt.replace(hour=0, minute=0, second=0, microsecond=0)
+    return midnight - timedelta(days=midnight.weekday())
+
+
 def get_partition_start_date() -> datetime:
     custom_start_date = os.getenv("DAGSTER_METRICS_START_DATE")
 
@@ -109,7 +120,15 @@ def get_partition_start_date() -> datetime:
                 )
                 raise ValueError(msg) from None
 
-    chain_id = int(os.getenv("CHAIN_ID", ""))
+    raw_chain_id = os.getenv("CHAIN_ID", "").strip()
+    try:
+        chain_id = int(raw_chain_id)
+    except ValueError:
+        msg = (
+            f"Invalid CHAIN_ID={raw_chain_id!r}.\n"
+            "Set CHAIN_ID to a numeric chain id, or set DAGSTER_METRICS_START_DATE."
+        )
+        raise ValueError(msg) from None
 
     try:
         activation_date = DENCUN_ACTIVATION[chain_id]

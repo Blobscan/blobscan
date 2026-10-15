@@ -9,5 +9,5 @@ echo '🟡 - Waiting for storage to be ready...'
 $DIR/wait-for-it.sh -t 1 "${GOOGLE_STORAGE_API_ENDPOINT}" -- echo '🟢 - Storage is ready!'
 echo '🟡 - Waiting for redis to be ready...'
 $DIR/wait-for-it.sh -t 1 "${REDIS_URI}" -- echo '🟢 - Redis is ready!'
+# Drops the database and applies all existing migrations (never creates new ones)
 npx prisma migrate reset --force --schema $DIR/../packages/db/prisma/schema
-npx prisma migrate dev --skip-seed --name init --schema $DIR/../packages/db/prisma/schema
