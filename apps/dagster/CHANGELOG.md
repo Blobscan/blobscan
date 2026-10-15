@@ -1,5 +1,15 @@
 # @blobscan/dagster
 
+## 0.2.0
+
+### Minor Changes
+
+- [#1022](https://github.com/Blobscan/blobscan/pull/1022) [`3d43190`](https://github.com/Blobscan/blobscan/commit/3d431905cba50d5ce598cdd0efafacef5e0d8f74) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added a `backfill_failure_alert` sensor that reports backfills ending FAILED or COMPLETED_FAILED to DAGSTER_ALERT_WEBHOOK_URL
+
+### Patch Changes
+
+- [#1019](https://github.com/Blobscan/blobscan/pull/1019) [`9514f99`](https://github.com/Blobscan/blobscan/commit/9514f995dcd428945f4da50a9e34f3c66ab8e85e) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Upgrade Dagster to 1.13.26 to fix a Postgres connection leak that exhausted the database's connections during backfills, and move the run concurrency limits under `concurrency.runs` so the instance config loads
+
 ## 0.1.0
 
 ### Minor Changes
