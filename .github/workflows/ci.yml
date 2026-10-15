@@ -32,7 +32,7 @@ jobs:
   typecheck:
     services:
       postgres:
-        image: postgres:16
+        image: postgres:17
         env:
           POSTGRES_DB: blobscan_dev
           POSTGRES_USER: blobscan
@@ -60,7 +60,7 @@ jobs:
   build:
     services:
       postgres:
-        image: postgres:16
+        image: postgres:17
         env:
           POSTGRES_DB: blobscan_dev
           POSTGRES_USER: blobscan
@@ -88,7 +88,7 @@ jobs:
   test:
     services:
       postgres:
-        image: postgres:16
+        image: postgres:17
         env:
           POSTGRES_DB: blobscan_dev
           POSTGRES_USER: blobscan
@@ -150,6 +150,9 @@ jobs:
         run: pnpm coverage
         env:
           VITEST_MAINNET_FORK_URL: ${{ secrets.VITEST_MAINNET_FORK_URL }}
+
+      - name: Test (dagster)
+        run: pnpm test:dagster
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5

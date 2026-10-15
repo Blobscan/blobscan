@@ -1,0 +1,103 @@
+# Scheduler: uses the daemon-based scheduler so cron-like schedules
+# are evaluated by the dagster-daemon process rather than the webserver.
+scheduler:
+  module: dagster.core.scheduler
+  class: DagsterDaemonScheduler
+
+# Run coordinator: queues runs instead of launching them immediately,
+# enforcing concurrency limits across the deployment.
+run_coordinator:
+  module: dagster.core.run_coordinator
+  class: QueuedRunCoordinator
+  config:
+    max_concurrent_runs: 5
+    tag_concurrency_limits:
+      # Leave room for live runs while a backfill is in progress.
+      - key: "dagster/backfill"
+        limit: 3
+
+# Concurrency pools: each metrics asset has its own pool (pool="metrics/<table>"
+# in assets.py). A limit of 1 lets at most one run write a metrics table at a
+# time, for all run types (schedules, automation conditions and backfills), so
+# slow runs queue up instead of piling on the DB.
+concurrency:
+  pools:
+    default_limit: 1
+
+# Run launcher: spins up a new Docker container for each pipeline run.
+# Environment variables and volumes are forwarded to launched containers.
+# Values are read from the daemon's environment, so every var listed here
+# must be set (possibly empty) on the dagster-daemon service.
+run_launcher:
+  module: dagster_docker
+  class: DockerRunLauncher
+  config:
+    # Network shared with postgres so run containers can resolve its hostname
+    network:
+      env: DAGSTER_DOCKER_NETWORK
+    env_vars:
+      # Dagster instance storage
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_PORT
+      # Blobscan metrics assets
+      - DATABASE_URL
+      - CHAIN_ID
+      - DAGSTER_METRICS_START_DATE
+    container_kwargs:
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock # Docker-in-Docker access
+        - /tmp/io_manager_storage:/tmp/io_manager_storage # Shared IO manager storage
+
+# Run storage: persists pipeline run status and metadata to Postgres.
+run_storage:
+  module: dagster_postgres.run_storage
+  class: PostgresRunStorage
+  config:
+    postgres_db:
+      hostname: postgres
+      username:
+        env: POSTGRES_USER
+      password:
+        env: POSTGRES_PASSWORD
+      db_name:
+        env: POSTGRES_DB
+      port:
+        env: POSTGRES_PORT
+
+# Schedule storage: persists schedule state (ticks, cursors) to Postgres.
+schedule_storage:
+  module: dagster_postgres.schedule_storage
+  class: PostgresScheduleStorage
+  config:
+    postgres_db:
+      hostname: postgres
+      username:
+        env: POSTGRES_USER
+      password:
+        env: POSTGRES_PASSWORD
+      db_name:
+        env: POSTGRES_DB
+      port:
+        env: POSTGRES_PORT
+
+# Event log storage: persists asset materializations, run events, and
+# sensor/schedule ticks to Postgres.
+event_log_storage:
+  module: dagster_postgres.event_log
+  class: PostgresEventLogStorage
+  config:
+    postgres_db:
+      hostname: postgres
+      username:
+        env: POSTGRES_USER
+      password:
+        env: POSTGRES_PASSWORD
+      db_name:
+        env: POSTGRES_DB
+      port:
+        env: POSTGRES_PORT
+
+telemetry:
+  enabled: false

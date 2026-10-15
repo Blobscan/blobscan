@@ -1,0 +1,7 @@
+model EthUsdPrice {
+  id        Int      @id @default(autoincrement())
+  price     Decimal  @db.Decimal(18, 8)
+  timestamp DateTime @unique
+
+  @@map("eth_usd_price")
+}

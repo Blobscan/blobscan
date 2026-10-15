@@ -1,0 +1,20 @@
+# Dagster image with webserver, postgres, docker and k8s support.
+# Used to run both dagster-webserver and the dagster-daemon.
+FROM python:3.14-slim
+
+ENV DAGSTER_HOME=/opt/dagster/dagster_home/
+
+# Keep these versions the same as uv.lock: the webserver and the daemon must
+# use the same Dagster version as the code location and the run containers.
+RUN pip install \
+    dagster==1.12.19 \
+    dagster-webserver==1.12.19 \
+    dagster-postgres==0.28.19 \
+    dagster-docker==0.28.19 \
+    dagster-k8s==0.28.19
+
+RUN mkdir -p $DAGSTER_HOME
+
+COPY dagster.yaml workspace.yaml $DAGSTER_HOME
+
+WORKDIR $DAGSTER_HOME

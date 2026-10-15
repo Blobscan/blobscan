@@ -24,6 +24,13 @@ DOWNLOAD_URL=$(
     --jq '.artifacts[] | select(.name == "'"${ARTIFACT_NAME}"'") | .archive_download_url'
 )
 
+# Artifacts expire after the retention period, so the latest successful base
+# run may no longer have one. Skip the comparison instead of failing.
+if [ -z "$DOWNLOAD_URL" ]; then
+  echo "::warning::No '${ARTIFACT_NAME}' artifact found for the latest successful ${BASE_BRANCH} run (it may have expired). Skipping bundle comparison."
+  exit 0
+fi
+
 set +x
 curl -H "Accept: application/vnd.github+json" -H "Authorization: token $GH_TOKEN" -L -o "${DESTINATION}.zip" "$DOWNLOAD_URL"
 set -x

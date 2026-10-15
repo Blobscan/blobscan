@@ -15,5 +15,8 @@ runs:
         node-version: 22
         cache: "pnpm"
 
+    - name: Install uv
+      uses: astral-sh/setup-uv@v7
+
     - shell: bash
       run: pnpm add -g turbo

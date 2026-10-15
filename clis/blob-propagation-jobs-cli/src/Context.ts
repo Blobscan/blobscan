@@ -74,7 +74,11 @@ export class Context {
   getJobs(types?: JobType[]) {
     return Promise.all(
       this.#storageQueues.map((queue) => queue.getJobs(types))
-    ).then((jobs) => jobs.flat());
+    ).then((jobs) =>
+      // BullMQ may return undefined entries for jobs removed or moved
+      // between fetching their ids and their data
+      jobs.flat().filter((job) => !!job)
+    );
   }
 
   drainQueues() {

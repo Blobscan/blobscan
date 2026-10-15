@@ -30,7 +30,7 @@ services:
   # External dependencies
 
   postgres:
-    image: postgres:16
+    image: postgres:17
     ports:
       - 5432:5432
     volumes:
@@ -40,6 +40,11 @@ services:
       - POSTGRES_USER=blobscan
       - POSTGRES_DB=blobscan_dev
       - POSTGRES_PASSWORD=s3cr3t
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blobscan -d blobscan_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   ipfs:
     image: ipfs/kubo:latest
@@ -95,7 +100,125 @@ services:
     volumes:
       - ./otel-config.yaml:/etc/otel-config.yaml
 
+  # Creates the Dagster instance database if it does not exist. A script in
+  # docker-entrypoint-initdb.d runs only on an empty data directory, so it
+  # would not create it on an existing postgres-data volume.
+  dagster-db-init:
+    image: postgres:17
+    environment:
+      PGHOST: postgres
+      PGUSER: blobscan
+      PGPASSWORD: s3cr3t
+      PGDATABASE: blobscan_dev
+    entrypoint:
+      - sh
+      - -c
+      - >-
+        psql -tAc "SELECT 1 FROM pg_database WHERE datname = 'dagster_dev'" | grep -q 1
+        || psql -c "CREATE DATABASE dagster_dev"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  dagster-blobscan:
+    build:
+      context: ./apps/dagster
+      dockerfile: ./Dockerfile
+    image: blobscan-dagster
+    restart: always
+    environment:
+      # Image used by the DockerRunLauncher to launch run containers
+      DAGSTER_CURRENT_IMAGE: blobscan-dagster
+      CHAIN_ID: "${CHAIN_ID}"
+      DAGSTER_METRICS_START_DATE: "${DAGSTER_METRICS_START_DATE:-}"
+      # Slack-compatible incoming webhook for run failure / staleness alerts
+      DAGSTER_ALERT_WEBHOOK_URL: "${DAGSTER_ALERT_WEBHOOK_URL:-}"
+      DATABASE_URL: "postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev"
+      POSTGRES_USER: "blobscan"
+      POSTGRES_PASSWORD: "s3cr3t"
+      POSTGRES_DB: "dagster_dev"
+      POSTGRES_PORT: 5432
+    volumes:
+      - dagster-home:/dagster_home
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD-SHELL", "dagster api grpc-health-check -p 4000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  dagster-webserver:
+    build:
+      context: ./apps/dagster
+      dockerfile: ./Dockerfile.dagster
+    entrypoint:
+      - dagster-webserver
+      - -h
+      - "0.0.0.0"
+      - -p
+      - "3003"
+      - -w
+      - workspace.yaml
+    container_name: dagster-webserver
+    expose:
+      - "3003"
+    ports:
+      - "3003:3003"
+    environment:
+      POSTGRES_USER: "blobscan"
+      POSTGRES_PASSWORD: "s3cr3t"
+      POSTGRES_DB: "dagster_dev"
+      POSTGRES_PORT: 5432
+    volumes: # Make docker client accessible so we can terminate containers from the webserver
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/io_manager_storage:/tmp/io_manager_storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      dagster-db-init:
+        condition: service_completed_successfully
+      dagster-blobscan:
+        condition: service_healthy
+
+  dagster-daemon:
+    build:
+      context: ./apps/dagster
+      dockerfile: ./Dockerfile.dagster
+    entrypoint:
+      - dagster-daemon
+      - run
+    container_name: dagster-daemon
+    restart: on-failure
+    environment:
+      POSTGRES_USER: "blobscan"
+      POSTGRES_PASSWORD: "s3cr3t"
+      POSTGRES_DB: "dagster_dev"
+      POSTGRES_PORT: 5432
+      # Forwarded to run containers by the DockerRunLauncher (see dagster.yaml)
+      DAGSTER_DOCKER_NETWORK: blobscan_default
+      CHAIN_ID: "${CHAIN_ID}"
+      DAGSTER_METRICS_START_DATE: "${DAGSTER_METRICS_START_DATE:-}"
+      DATABASE_URL: "postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev"
+    volumes: # Make docker client accessible so we can launch containers using host docker
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/io_manager_storage:/tmp/io_manager_storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      dagster-db-init:
+        condition: service_completed_successfully
+      dagster-blobscan:
+        condition: service_started
+
+networks:
+  default:
+    # Fixed name so dagster.yaml can attach run containers to it
+    name: blobscan_default
+
 volumes:
   postgres-data:
   gcs_data:
+  dagster-home:
   ipfs_data:

@@ -1,0 +1,7 @@
+{
+  "venvPath": "apps/dagster",
+  "venv": ".venv",
+  "pythonVersion": "3.11",
+  "include": ["apps/dagster/src", "apps/dagster/tests"],
+  "extraPaths": ["apps/dagster/src"]
+}
