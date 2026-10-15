@@ -30,7 +30,7 @@ services:
   # External dependencies
 
   postgres:
-    image: postgres:16
+    image: postgres:17
     ports:
       - 5432:5432
     volumes:
@@ -104,7 +104,7 @@ services:
   # docker-entrypoint-initdb.d runs only on an empty data directory, so it
   # would not create it on an existing postgres-data volume.
   dagster-db-init:
-    image: postgres:16
+    image: postgres:17
     environment:
       PGHOST: postgres
       PGUSER: blobscan

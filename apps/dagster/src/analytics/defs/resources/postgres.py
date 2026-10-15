@@ -46,6 +46,15 @@ class PostgresResource(dg.ConfigurableResource):
         with self.get_engine().connect() as conn:
             yield conn
 
+    @contextmanager
+    def transaction(self):
+        """Yield a connection inside a transaction.
+
+        Commits when the block exits normally, rolls back if it raises.
+        """
+        with self.get_engine().begin() as conn:
+            yield conn
+
     def teardown_after_execution(self, context: dg.InitResourceContext) -> None:  # noqa: ARG002
         if self._engine is not None:
             self._engine.dispose()

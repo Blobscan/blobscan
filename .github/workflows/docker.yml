@@ -16,7 +16,7 @@ jobs:
     name: Build docker images (API, Web)
     services:
       postgres:
-        image: postgres:16
+        image: postgres:17
         env:
           POSTGRES_DB: blobscan_dev
           POSTGRES_USER: blobscan

@@ -1,13 +1,13 @@
 from datetime import timedelta
 
 import dagster as dg
-from sqlalchemy import text
 
 from analytics.defs.helpers import (
     AGGREGATE_ALL_TIME_SQL,
     AGGREGATE_BLOB_HOURLY_SQL,
     AGGREGATE_TX_HOURLY_SQL,
     build_aggregate_sql,
+    execute_full_refresh,
     execute_sql_window,
     execute_sqls_window,
     get_partition_start_date,
@@ -236,15 +236,16 @@ def yearly_metrics(
     automation_condition=all_time_condition,
     pool="metrics/all_time_metrics",
 )
-def all_time_metrics(postgres: PostgresResource):
-    with postgres.get_connection() as conn:
-        # Full recompute: drop groups (e.g. a rollup) that no longer have data
-        conn.execute(text("DELETE FROM all_time_metrics"))
-        res = conn.execute(AGGREGATE_ALL_TIME_SQL)
-        conn.commit()
+def all_time_metrics(postgres: PostgresResource) -> dg.MaterializeResult:
+    rowcount, ms = execute_full_refresh(
+        postgres=postgres,
+        sql=AGGREGATE_ALL_TIME_SQL,
+        table="all_time_metrics",
+    )
 
     return dg.MaterializeResult(
         metadata={
-            "rows_affected": dg.MetadataValue.int(res.rowcount),
+            "rows_affected": dg.MetadataValue.int(rowcount),
+            "query_ms": dg.MetadataValue.int(ms),
         },
     )

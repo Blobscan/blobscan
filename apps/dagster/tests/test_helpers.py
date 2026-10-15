@@ -8,6 +8,7 @@ from sqlalchemy.sql.elements import TextClause
 from analytics.defs.helpers import (
     DENCUN_ACTIVATION,
     build_aggregate_sql,
+    execute_full_refresh,
     execute_sql_window,
     execute_sqls_window,
     get_partition_start_date,
@@ -40,6 +41,10 @@ class TestBuildAggregateSql:
         result = build_aggregate_sql("src", "tgt", "month")
         assert "{{" not in result.text
         assert "}}" not in result.text
+
+    def test_rejects_unknown_trunc(self):
+        with pytest.raises(ValueError, match="Invalid trunc"):
+            build_aggregate_sql("src", "tgt", "hour; DROP TABLE x")
 
 
 class TestPartitionMeta:
@@ -136,16 +141,18 @@ class TestGetPartitionStartDate:
         assert set(DENCUN_ACTIVATION.keys()) == {1, 11155111, 560048, 100}
 
 
+def make_postgres_mock(rowcount: int):
+    mock_result = MagicMock()
+    mock_result.rowcount = rowcount
+    mock_conn = MagicMock()
+    mock_conn.execute.return_value = mock_result
+    mock_postgres = MagicMock()
+    mock_postgres.transaction.return_value.__enter__.return_value = mock_conn
+    mock_postgres.transaction.return_value.__exit__.return_value = False
+    return mock_postgres, mock_conn
+
+
 class TestExecuteSqlWindow:
-    def make_postgres_mock(self, rowcount: int):
-        mock_result = MagicMock()
-        mock_result.rowcount = rowcount
-        mock_conn = MagicMock()
-        mock_conn.execute.return_value = mock_result
-        mock_postgres = MagicMock()
-        mock_postgres.get_connection.return_value.__enter__.return_value = mock_conn
-        mock_postgres.get_connection.return_value.__exit__.return_value = False
-        return mock_postgres, mock_conn
 
     def _make_context(self, start, end):
         context = MagicMock()
@@ -157,7 +164,7 @@ class TestExecuteSqlWindow:
         start = datetime(2024, 1, 1, tzinfo=UTC)
         end = datetime(2024, 1, 1, 1, tzinfo=UTC)
         context = self._make_context(start, end)
-        mock_postgres, _ = self.make_postgres_mock(rowcount=42)
+        mock_postgres, _ = make_postgres_mock(rowcount=42)
 
         rowcount, ms = execute_sql_window(
             context=context,
@@ -174,7 +181,7 @@ class TestExecuteSqlWindow:
         start = datetime(2024, 6, 1, 10, 0, tzinfo=UTC)
         end = datetime(2024, 6, 1, 11, 0, tzinfo=UTC)
         context = self._make_context(start, end)
-        mock_postgres, mock_conn = self.make_postgres_mock(rowcount=0)
+        mock_postgres, mock_conn = make_postgres_mock(rowcount=0)
         sql = text("SELECT :from, :to")
 
         execute_sql_window(
@@ -187,7 +194,7 @@ class TestExecuteSqlWindow:
         start = datetime(2024, 6, 1, 10, 0, tzinfo=UTC)
         end = datetime(2024, 6, 1, 11, 0, tzinfo=UTC)
         context = self._make_context(start, end)
-        mock_postgres, mock_conn = self.make_postgres_mock(rowcount=0)
+        mock_postgres, mock_conn = make_postgres_mock(rowcount=0)
         sql = text("SELECT :from, :to")
 
         execute_sql_window(
@@ -202,12 +209,12 @@ class TestExecuteSqlWindow:
         )
         assert delete_params == {"from": start, "to": end}
 
-    def test_commits_after_execution(self):
+    def test_runs_in_a_transaction(self):
         context = self._make_context(
             datetime(2024, 1, 1, tzinfo=UTC),
             datetime(2024, 1, 1, 1, tzinfo=UTC),
         )
-        mock_postgres, mock_conn = self.make_postgres_mock(rowcount=5)
+        mock_postgres, _ = make_postgres_mock(rowcount=5)
 
         execute_sql_window(
             context=context,
@@ -216,13 +223,14 @@ class TestExecuteSqlWindow:
             table="daily_metrics",
         )
 
-        mock_conn.commit.assert_called_once()
+        mock_postgres.transaction.assert_called_once()
+        mock_postgres.get_connection.assert_not_called()
 
     def test_runs_several_statements_in_one_transaction(self):
         start = datetime(2024, 6, 1, 10, 0, tzinfo=UTC)
         end = datetime(2024, 6, 1, 11, 0, tzinfo=UTC)
         context = self._make_context(start, end)
-        mock_postgres, mock_conn = self.make_postgres_mock(rowcount=3)
+        mock_postgres, mock_conn = make_postgres_mock(rowcount=3)
         first, second = text("SELECT 1"), text("SELECT 2")
 
         results = execute_sqls_window(
@@ -236,8 +244,24 @@ class TestExecuteSqlWindow:
         executed = [c.args[0] for c in mock_conn.execute.call_args_list]
         assert str(executed[0]).startswith("DELETE FROM hourly_metrics")
         assert executed[1:] == [first, second]
-        mock_postgres.get_connection.assert_called_once()
-        mock_conn.commit.assert_called_once()
+        mock_postgres.transaction.assert_called_once()
+
+
+class TestExecuteFullRefresh:
+    def test_deletes_table_then_runs_sql_in_one_transaction(self):
+        mock_postgres, mock_conn = make_postgres_mock(rowcount=7)
+        sql = text("SELECT 1")
+
+        rowcount, ms = execute_full_refresh(
+            postgres=mock_postgres, sql=sql, table="all_time_metrics",
+        )
+
+        assert rowcount == 7
+        assert ms >= 0
+        executed = [c.args[0] for c in mock_conn.execute.call_args_list]
+        assert str(executed[0]) == "DELETE FROM all_time_metrics"
+        assert executed[1:] == [sql]
+        mock_postgres.transaction.assert_called_once()
 
 
 class TestStartOfWeek:

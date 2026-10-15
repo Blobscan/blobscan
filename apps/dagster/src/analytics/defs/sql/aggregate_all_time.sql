@@ -65,34 +65,14 @@ aggregated AS (
     SUM(u.total_unique_senders)             AS total_unique_senders,
     SUM(u.total_max_blob_gas_fee)           AS total_max_blob_gas_fee,
 
-    -- weighted averages (pick weights that match your semantics)
-    CASE WHEN COALESCE(SUM(u.total_transactions), 0) = 0 THEN NULL
-      ELSE (SUM(u.avg_blob_base_fee * u.total_transactions) / SUM(u.total_transactions))::float
-    END AS avg_blob_base_fee,
-
-    CASE WHEN COALESCE(SUM(u.total_blocks), 0) = 0 THEN NULL
-      ELSE (SUM(u.avg_blob_gas_price * u.total_blocks) / SUM(u.total_blocks))::float
-    END AS avg_blob_gas_price,
-
-    CASE WHEN COALESCE(SUM(u.total_transactions), 0) = 0 THEN NULL
-      ELSE (SUM(u.avg_blob_as_calldata_fee * u.total_transactions) / SUM(u.total_transactions))::float
-    END AS avg_blob_as_calldata_fee,
-
-    CASE WHEN COALESCE(SUM(u.total_transactions), 0) = 0 THEN NULL
-      ELSE (SUM(u.avg_blob_as_calldata_max_fee * u.total_transactions) / SUM(u.total_transactions))::float
-    END AS avg_blob_as_calldata_max_fee,
-
-    CASE WHEN COALESCE(SUM(u.total_transactions), 0) = 0 THEN NULL
-      ELSE (SUM(u.avg_blob_max_fee * u.total_transactions) / SUM(u.total_transactions))::float
-    END AS avg_blob_max_fee,
-
-    CASE WHEN COALESCE(SUM(u.total_blobs), 0) = 0 THEN NULL
-      ELSE (SUM(u.avg_blob_usage_size * u.total_blobs) / SUM(u.total_blobs))::float
-    END AS avg_blob_usage_size,
-
-    CASE WHEN COALESCE(SUM(u.total_transactions), 0) = 0 THEN NULL
-      ELSE (SUM(u.avg_max_blob_gas_fee * u.total_transactions) / SUM(u.total_transactions))::float
-    END AS avg_max_blob_gas_fee
+    -- averages: total / count, as in aggregate.sql
+    (SUM(u.total_blob_base_fee) / NULLIF(SUM(u.total_transactions), 0))::float            AS avg_blob_base_fee,
+    (SUM(u.total_blob_gas_price) / NULLIF(SUM(u.total_blocks), 0))::float                 AS avg_blob_gas_price,
+    (SUM(u.total_blob_as_calldata_fee) / NULLIF(SUM(u.total_transactions), 0))::float     AS avg_blob_as_calldata_fee,
+    (SUM(u.total_blob_as_calldata_max_fee) / NULLIF(SUM(u.total_transactions), 0))::float AS avg_blob_as_calldata_max_fee,
+    (SUM(u.total_blob_max_fee) / NULLIF(SUM(u.total_transactions), 0))::float             AS avg_blob_max_fee,
+    (SUM(u.total_blob_usage_size) / NULLIF(SUM(u.total_blobs), 0))::float                 AS avg_blob_usage_size,
+    (SUM(u.total_max_blob_gas_fee) / NULLIF(SUM(u.total_transactions), 0))::float         AS avg_max_blob_gas_fee
 
   FROM unioned u
   GROUP BY u.category, u.rollup

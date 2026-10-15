@@ -29,12 +29,25 @@ DENCUN_ACTIVATION = {
 }
 
 
+TRUNC_UNITS = frozenset({"day", "week", "month", "year"})
+
+
 def build_aggregate_sql(source: str, target: str, trunc: str):
-    return text(
+    if trunc not in TRUNC_UNITS:
+        msg = f"Invalid trunc {trunc!r}, expected one of {sorted(TRUNC_UNITS)}"
+        raise ValueError(msg)
+
+    sql = (
         SQL_TEMPLATE.replace("{{source_table}}", source)
         .replace("{{target_table}}", target)
-        .replace("{{trunc}}", trunc),
+        .replace("{{trunc}}", trunc)
     )
+    # Fail at import time rather than with a Postgres syntax error at run time
+    if "{{" in sql or "}}" in sql:
+        msg = "Unresolved placeholder in aggregate SQL template"
+        raise ValueError(msg)
+
+    return text(sql)
 
 
 AGGREGATE_TX_HOURLY_SQL = text((SQL_DIR / "aggregate_tx_hourly.sql").read_text())
@@ -83,7 +96,7 @@ def execute_sqls_window(
     params = {"from": start, "to": end}
 
     results = []
-    with postgres.get_connection() as conn:
+    with postgres.transaction() as conn:
         t0 = time.perf_counter()
         delete_window(conn, table, params)
         for sql in sqls:
@@ -91,7 +104,6 @@ def execute_sqls_window(
             t1 = time.perf_counter()
             results.append((res.rowcount, int((t1 - t0) * 1000)))
             t0 = t1
-        conn.commit()
 
     return results
 
@@ -111,6 +123,27 @@ def execute_sql_window(
         context=context, postgres=postgres, sqls=[sql], table=table,
     )
     return result
+
+
+def execute_full_refresh(
+    *,
+    postgres: PostgresResource,
+    sql: TextClause,
+    table: str,
+) -> tuple[int, int]:
+    """Replace every row of ``table`` with the result of ``sql``.
+
+    The delete drops groups (e.g. a rollup) that no longer have data. Both run
+    in one transaction, so readers see the old rows until it commits.
+    Returns (rowcount, elapsed_ms).
+    """
+    with postgres.transaction() as conn:
+        t0 = time.perf_counter()
+        conn.execute(text(f"DELETE FROM {table}"))  # noqa: S608 - table names are internal constants
+        res = conn.execute(sql)
+        ms = int((time.perf_counter() - t0) * 1000)
+
+    return res.rowcount, ms
 
 
 def start_of_week(dt: datetime) -> datetime:

@@ -9,13 +9,13 @@ WITH base AS (
     t.first_block_number_as_receiver                         AS to_first_block_number,
     tx.from_id,
     f.first_block_number_as_sender                           AS from_first_block_number,
-    blob_gas_price,
+    b.blob_gas_price,
     tx.blob_gas_used,
     tx.blob_as_calldata_gas_used,
     tx.max_fee_per_blob_gas,
-    (tx.blob_gas_used * blob_gas_price)                      AS blob_base_fee,
+    (tx.blob_gas_used * b.blob_gas_price)                    AS blob_base_fee,
     (tx.blob_gas_used * tx.max_fee_per_blob_gas)             AS blob_max_fee,
-    (tx.blob_as_calldata_gas_used * blob_gas_price)          AS blob_as_calldata_fee,
+    (tx.blob_as_calldata_gas_used * b.blob_gas_price)        AS blob_as_calldata_fee,
     (tx.blob_as_calldata_gas_used * tx.max_fee_per_blob_gas) AS blob_as_calldata_max_fee
   FROM transaction tx
     JOIN block b ON b.hash = tx.block_hash
@@ -89,11 +89,11 @@ SELECT
   END AS total_blocks,
 
   -- ------------- DIMENSIONAL METRICS -------------
-  COALESCE(AVG(blob_base_fee)::FLOAT, 0) AS avg_blob_base_fee,
-  COALESCE(AVG(blob_max_fee)::FLOAT, 0) AS avg_blob_max_fee,
-  COALESCE(AVG(blob_as_calldata_fee)::FLOAT, 0) AS avg_blob_as_calldata_fee,
-  COALESCE(AVG(blob_as_calldata_max_fee)::FLOAT, 0) AS avg_blob_as_calldata_max_fee,
-  COALESCE(AVG(max_fee_per_blob_gas)::FLOAT, 0) AS avg_max_blob_gas_fee,
+  AVG(blob_base_fee)::FLOAT AS avg_blob_base_fee,
+  AVG(blob_max_fee)::FLOAT AS avg_blob_max_fee,
+  AVG(blob_as_calldata_fee)::FLOAT AS avg_blob_as_calldata_fee,
+  AVG(blob_as_calldata_max_fee)::FLOAT AS avg_blob_as_calldata_max_fee,
+  AVG(max_fee_per_blob_gas)::FLOAT AS avg_max_blob_gas_fee,
 
   COUNT(hash)::INT AS total_transactions,
   COUNT(

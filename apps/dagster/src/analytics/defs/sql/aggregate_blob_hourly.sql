@@ -1,6 +1,6 @@
 WITH base AS (
   SELECT
-    DATE_TRUNC('hour', bck.timestamp) AS period_start,
+    DATE_TRUNC('hour', bl_tx.block_timestamp) AS period_start,
     CASE WHEN f.rollup IS NOT NULL THEN 'rollup'::category ELSE 'other'::category END AS category,
     f.rollup,
     bl_tx.blob_hash,
@@ -12,11 +12,10 @@ WITH base AS (
     JOIN blobs_on_transactions bl_tx ON bl_tx.blob_hash = b.versioned_hash
     JOIN transaction tx ON tx.hash = bl_tx.tx_hash
     JOIN address f ON f.address = tx.from_id
-    JOIN block bck ON bck.hash = tx.block_hash
-  WHERE bck.timestamp >= :from AND bck.timestamp < :to
+  WHERE bl_tx.block_timestamp >= :from AND bl_tx.block_timestamp < :to
     AND NOT EXISTS (
       SELECT 1 FROM transaction_fork tx_f
-      WHERE tx_f.block_hash = bck.hash AND tx_f.hash = tx.hash
+      WHERE tx_f.block_hash = bl_tx.block_hash AND tx_f.hash = bl_tx.tx_hash
     )
 )
 INSERT INTO hourly_metrics (
@@ -36,7 +35,7 @@ SELECT
   category,
   rollup,
 
-  COALESCE(AVG(usage_size)::FLOAT, 0) AS avg_blob_usage_size,
+  AVG(usage_size)::FLOAT AS avg_blob_usage_size,
 
   COUNT(blob_hash)::INT AS total_blobs,
   COUNT(
