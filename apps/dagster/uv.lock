@@ -104,6 +104,9 @@ dev = [
     { name = "ruff" },
     { name = "testcontainers" },
 ]
+webserver = [
+    { name = "dagster-webserver" },
+]
 
 [package.metadata]
 requires-dist = [
@@ -124,6 +127,7 @@ dev = [
     { name = "ruff", specifier = ">=0.15.6" },
     { name = "testcontainers", extras = ["postgres"], specifier = ">=4.0" },
 ]
+webserver = [{ name = "dagster-webserver" }]
 
 [[package]]
 name = "certifi"

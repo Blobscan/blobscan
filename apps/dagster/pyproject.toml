@@ -12,8 +12,11 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = [
+webserver = [
     "dagster-webserver",
+]
+dev = [
+    { include-group = "webserver" },
     "dagster-dg-cli",
     "mypy>=1.19.1",
     "pytest>=8.0",
