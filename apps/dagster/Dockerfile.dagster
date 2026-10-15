@@ -3,15 +3,11 @@
 FROM python:3.14-slim
 
 ENV DAGSTER_HOME=/opt/dagster/dagster_home/
-
-# Keep these versions the same as uv.lock: the webserver and the daemon must
-# use the same Dagster version as the code location and the run containers.
-RUN pip install \
-    dagster==1.12.19 \
-    dagster-webserver==1.12.19 \
-    dagster-postgres==0.28.19 \
-    dagster-docker==0.28.19 \
-    dagster-k8s==0.28.19
+ENV VIRTUAL_ENV=/opt/dagster/.venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
+COPY pyproject.toml uv.lock /opt/dagster/
+RUN cd /opt/dagster && uv sync --frozen --no-dev --group webserver --no-install-project
 
 RUN mkdir -p $DAGSTER_HOME
 
