@@ -92,7 +92,7 @@ export const withStatFiltersSchema = withMetricsFilterSchema
 
 export type StatFiltersOutputSchema = z.output<typeof withStatFiltersSchema>;
 
-function getRecommendedDaysInterval(
+export function getRecommendedDaysInterval(
   { from, to }: Required<DayjsDatePeriod>,
   { categories, rollups, metrics }: StatFiltersOutputSchema
 ) {
@@ -104,7 +104,7 @@ function getRecommendedDaysInterval(
   const rollupsCount =
     rollups === "all" ? Object.keys(Rollup).length : rollups?.length ?? 0;
   const metricsCount = metrics?.length ?? METRIC_NAMES.length;
-  const dimensionCount = categoriesCount * rollupsCount;
+  const dimensionCount = categoriesCount + rollupsCount || 1;
 
   const totalPotentialPoints = days * dimensionCount * metricsCount;
 
