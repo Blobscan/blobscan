@@ -62,7 +62,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         });
       }
 
-      blobData = Buffer.from(data.slice(2));
+      blobData = Buffer.from(data.slice(2), "hex");
     } else if (isTextPlainFile) {
       const data = await response.text();
 
