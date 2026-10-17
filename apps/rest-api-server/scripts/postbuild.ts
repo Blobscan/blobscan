@@ -29,6 +29,23 @@ async function main() {
   }
 
   console.log("postbuild: Swagger UI assets copied to `dist` directory");
+
+  // `rate-limiter-flexible` is kept external because ncc tries to compile its
+  // `.d.ts` files, so we ship it next to the bundle instead.
+  const rateLimiterDist = path.join(
+    "dist",
+    "node_modules",
+    "rate-limiter-flexible"
+  );
+
+  await $`mkdir -p ${path.dirname(rateLimiterDist)}`;
+  const rateLimiterSrc = path.dirname(
+    require.resolve("rate-limiter-flexible/package.json")
+  );
+
+  await $`cp -rL ${rateLimiterSrc} ${rateLimiterDist}`;
+
+  console.log("postbuild: rate-limiter-flexible copied to `dist` directory");
 }
 
 main().then(
