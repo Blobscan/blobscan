@@ -208,6 +208,62 @@ describe("Upsert Many Extension", () => {
 
           expect(updatedBlob?.firstBlockNumber).toBe(oldBlob.firstBlockNumber);
         });
+
+        describe("when the incoming proof is the placeholder", () => {
+          // Since Fulu, beacon nodes rebuild sidecars from PeerDAS data and return the
+          // point at infinity instead of the blob's KZG proof.
+          const PLACEHOLDER_PROOF = `0xc0${"00".repeat(47)}`;
+          const findProof = () =>
+            prisma.blob
+              .findUniqueOrThrow({ where: { versionedHash: blobHash } })
+              .then((b) => b.proof);
+
+          it("should not replace a real proof with it", async () => {
+            expect(oldBlob.proof).not.toBe(PLACEHOLDER_PROOF);
+
+            await prisma.blob.upsertMany([
+              { ...oldBlob, proof: PLACEHOLDER_PROOF, size: oldBlob.size + 1 },
+            ]);
+
+            expect(await findProof()).toBe(oldBlob.proof);
+          });
+
+          it("should still update the rest of the fields", async () => {
+            await prisma.blob.upsertMany([
+              { ...oldBlob, proof: PLACEHOLDER_PROOF, size: oldBlob.size + 1 },
+            ]);
+
+            const updatedBlob = await prisma.blob.findUniqueOrThrow({
+              where: { versionedHash: blobHash },
+            });
+
+            expect(updatedBlob.size).toBe(oldBlob.size + 1);
+          });
+
+          it("should keep the placeholder when the blob has no real proof yet", async () => {
+            await prisma.blob.update({
+              where: { versionedHash: blobHash },
+              data: { proof: PLACEHOLDER_PROOF },
+            });
+
+            await prisma.blob.upsertMany([
+              { ...oldBlob, proof: PLACEHOLDER_PROOF },
+            ]);
+
+            expect(await findProof()).toBe(PLACEHOLDER_PROOF);
+          });
+
+          it("should let a real proof replace a stored placeholder", async () => {
+            await prisma.blob.update({
+              where: { versionedHash: blobHash },
+              data: { proof: PLACEHOLDER_PROOF },
+            });
+
+            await prisma.blob.upsertMany([{ ...oldBlob, proof: oldBlob.proof }]);
+
+            expect(await findProof()).toBe(oldBlob.proof);
+          });
+        });
       });
 
       it("should update multiple blobs correctly", async () => {
