@@ -8,7 +8,6 @@ INSERT INTO {{target_table}} (
   total_blocks,
 
   -- ------------- DIMENSIONAL METRICS -------------
-
   total_transactions,
   total_unique_receivers,
   total_unique_senders,
