@@ -23,7 +23,7 @@ exports[`getByHash > should get a transaction by hash correctly 1`] = `
         },
         {
           "storage": "ipfs",
-          "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+          "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
         },
       ],
       "versionedHash": "blobHash001",
@@ -91,7 +91,7 @@ exports[`getByHash > when getting expanded transaction results > should return t
         },
         {
           "storage": "ipfs",
-          "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+          "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
         },
       ],
       "proof": "proof001",
@@ -169,7 +169,7 @@ exports[`getByHash > when getting expanded transaction results > should return t
         },
         {
           "storage": "ipfs",
-          "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+          "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
         },
       ],
       "versionedHash": "blobHash001",
@@ -242,7 +242,7 @@ exports[`getByHash > when getting expanded transaction results > should return t
         },
         {
           "storage": "ipfs",
-          "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+          "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
         },
       ],
       "proof": "proof001",

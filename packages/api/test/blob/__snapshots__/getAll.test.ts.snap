@@ -362,7 +362,7 @@ exports[`getAll > when getting filtered blob results > should return results up 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -389,7 +389,7 @@ exports[`getAll > when getting filtered blob results > should return results up 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 2,
@@ -416,7 +416,7 @@ exports[`getAll > when getting filtered blob results > should return results up 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 1,
@@ -443,7 +443,7 @@ exports[`getAll > when getting filtered blob results > should return results up 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -554,7 +554,7 @@ exports[`getAll > when getting filtered blob results > should return results up 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -581,7 +581,7 @@ exports[`getAll > when getting filtered blob results > should return results up 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 2,
@@ -608,7 +608,7 @@ exports[`getAll > when getting filtered blob results > should return results up 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 1,
@@ -635,7 +635,7 @@ exports[`getAll > when getting filtered blob results > should return results up 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -662,7 +662,7 @@ exports[`getAll > when getting filtered blob results > should return results up 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 2,
@@ -803,7 +803,7 @@ exports[`getAll > when getting filtered blob results > should return results up 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -830,7 +830,7 @@ exports[`getAll > when getting filtered blob results > should return results up 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -899,7 +899,7 @@ exports[`getAll > when getting filtered blob results > should return results up 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -1007,7 +1007,7 @@ exports[`getAll > when getting filtered blob results > should return results up 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -1034,7 +1034,7 @@ exports[`getAll > when getting filtered blob results > should return results up 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -1103,7 +1103,7 @@ exports[`getAll > when getting filtered blob results > should return results up 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -1205,7 +1205,7 @@ exports[`getAll > when getting filtered blob results > should return the oldest 
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -1348,7 +1348,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 2,
@@ -1375,7 +1375,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 1,
@@ -1402,7 +1402,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -1429,7 +1429,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -1475,7 +1475,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -1554,7 +1554,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -1581,7 +1581,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 2,
@@ -1608,7 +1608,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 1,
@@ -1635,7 +1635,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -1746,7 +1746,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -1862,7 +1862,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -1889,7 +1889,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 2,
@@ -1916,7 +1916,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 1,
@@ -1943,7 +1943,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -1970,7 +1970,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 2,
@@ -2151,7 +2151,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -2178,7 +2178,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 2,
@@ -2205,7 +2205,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 1,
@@ -2232,7 +2232,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -2343,7 +2343,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -2370,7 +2370,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 2,
@@ -2397,7 +2397,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 1,
@@ -2424,7 +2424,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -2451,7 +2451,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 2,
@@ -2592,7 +2592,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -2619,7 +2619,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -2688,7 +2688,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -2720,7 +2720,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -2789,7 +2789,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -2863,7 +2863,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -2937,7 +2937,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -3045,7 +3045,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -3072,7 +3072,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -3141,7 +3141,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -3192,7 +3192,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -3219,7 +3219,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -3288,7 +3288,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -3640,7 +3640,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -3667,7 +3667,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 2,
@@ -3694,7 +3694,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 1,
@@ -3721,7 +3721,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -3832,7 +3832,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -3859,7 +3859,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 2,
@@ -3886,7 +3886,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 1,
@@ -3913,7 +3913,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -3940,7 +3940,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 2,
@@ -4081,7 +4081,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -4108,7 +4108,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -4177,7 +4177,7 @@ exports[`getAll > when getting filtered blob results > should return the results
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,
@@ -4372,7 +4372,7 @@ exports[`getAll > when getting paginated blob results > should return the correc
       },
       {
         "storage": "ipfs",
-        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+        "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
       },
     ],
     "index": 0,

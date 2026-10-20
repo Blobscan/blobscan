@@ -174,7 +174,7 @@ exports[`getByBlockId > should get oldest block 1`] = `
             },
             {
               "storage": "ipfs",
-              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
             },
           ],
           "versionedHash": "blobHash001",
@@ -218,7 +218,7 @@ exports[`getByBlockId > should get oldest block 1`] = `
             },
             {
               "storage": "ipfs",
-              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
             },
           ],
           "versionedHash": "blobHash001",
@@ -240,7 +240,7 @@ exports[`getByBlockId > should get oldest block 1`] = `
             },
             {
               "storage": "ipfs",
-              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm",
+              "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
             },
           ],
           "versionedHash": "blobHash001",

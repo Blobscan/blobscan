@@ -154,7 +154,12 @@ export const createComputedFieldsExtension = ({
                     if (!ipfs?.gatewayUrl) {
                       return;
                     }
-                    return `${ipfs.gatewayUrl.replace(/\/$/, "")}/ipfs/${dataReference}`;
+                    // The gateway gets the Content-Type from the `filename`
+                    // extension when it is present. Without it, the gateway
+                    // sniffs the first bytes, and blobs that start with
+                    // 00 00 01 00 or 00 00 02 00 are served as image/x-icon.
+                    // `.bin` makes it application/octet-stream.
+                    return `${ipfs.gatewayUrl.replace(/\/$/, "")}/ipfs/${dataReference}?filename=${dataReference}.bin`;
                   }
                 }
               },
