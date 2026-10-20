@@ -13,6 +13,7 @@ import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
 import { getPrisma } from "../../prisma";
 import type { WithoutTimestampFields } from "../../prisma/types";
+import { KZG_PROOF_PLACEHOLDER } from "../../prisma/zod-utils";
 
 describe("Upsert Many Extension", () => {
   const prisma = getPrisma();
@@ -210,9 +211,7 @@ describe("Upsert Many Extension", () => {
         });
 
         describe("when the incoming proof is the placeholder", () => {
-          // Since Fulu, beacon nodes rebuild sidecars from PeerDAS data and return the
-          // point at infinity instead of the blob's KZG proof.
-          const PLACEHOLDER_PROOF = `0xc0${"00".repeat(47)}`;
+          const PLACEHOLDER_PROOF = KZG_PROOF_PLACEHOLDER;
           const findProof = () =>
             prisma.blob
               .findUniqueOrThrow({ where: { versionedHash: blobHash } })
@@ -228,16 +227,39 @@ describe("Upsert Many Extension", () => {
             expect(await findProof()).toBe(oldBlob.proof);
           });
 
-          it("should still update the rest of the fields", async () => {
+          it("should not replace a real proof with an uppercase placeholder", async () => {
             await prisma.blob.upsertMany([
-              { ...oldBlob, proof: PLACEHOLDER_PROOF, size: oldBlob.size + 1 },
+              { ...oldBlob, proof: `0xC0${"00".repeat(47)}` },
             ]);
+
+            expect(await findProof()).toBe(oldBlob.proof);
+          });
+
+          it("should still update the rest of the fields", async () => {
+            const { updatedAt: oldUpdatedAt } =
+              await prisma.blob.findUniqueOrThrow({
+                where: { versionedHash: blobHash },
+              });
+            const incomingBlob = {
+              ...oldBlob,
+              commitment: `0x${"ab".repeat(48)}`,
+              proof: PLACEHOLDER_PROOF,
+              size: oldBlob.size + 1,
+              usageSize: oldBlob.usageSize + 1,
+            };
+
+            await prisma.blob.upsertMany([incomingBlob]);
 
             const updatedBlob = await prisma.blob.findUniqueOrThrow({
               where: { versionedHash: blobHash },
             });
 
-            expect(updatedBlob.size).toBe(oldBlob.size + 1);
+            expect(updatedBlob.commitment).toBe(incomingBlob.commitment);
+            expect(updatedBlob.size).toBe(incomingBlob.size);
+            expect(updatedBlob.usageSize).toBe(incomingBlob.usageSize);
+            expect(updatedBlob.updatedAt.getTime()).toBeGreaterThan(
+              oldUpdatedAt.getTime()
+            );
           });
 
           it("should keep the placeholder when the blob has no real proof yet", async () => {

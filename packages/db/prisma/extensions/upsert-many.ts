@@ -10,17 +10,10 @@ import type {
 import { Prisma } from "@prisma/client";
 
 import type { WithoutTimestampFields } from "../types";
+import { KZG_PROOF_PLACEHOLDER } from "../zod-utils";
 import type { ZeroOpResult } from "./helpers";
 
 const NOW_SQL = Prisma.sql`NOW()`;
-
-/**
- * The compressed point at infinity. Since Fulu, beacon nodes rebuild blob sidecars from PeerDAS
- * data and cannot recover a blob's KZG proof, so they return this value in its place. It is not a
- * proof, and re-indexing a block must never overwrite a real one with it: until the indexer
- * computed real proofs, re-indexing an old block did exactly that.
- */
-const KZG_PROOF_PLACEHOLDER = `0xc0${"00".repeat(47)}`;
 
 export type RawBlob = {
   versionedHash: string;
@@ -124,8 +117,9 @@ export const upsertManyExtension = Prisma.defineExtension((prisma) =>
             ) VALUES ${Prisma.join(formattedValues)}
             ON CONFLICT (versioned_hash) DO UPDATE SET
               commitment = EXCLUDED.commitment,
+              -- Keep the stored proof when the incoming proof is the placeholder.
               proof = CASE
-                WHEN EXCLUDED.proof = ${KZG_PROOF_PLACEHOLDER} THEN b.proof
+                WHEN lower(EXCLUDED.proof) = ${KZG_PROOF_PLACEHOLDER} THEN b.proof
                 ELSE EXCLUDED.proof
               END,
               size = EXCLUDED.size,

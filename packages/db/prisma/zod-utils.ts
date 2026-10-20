@@ -90,6 +90,17 @@ export const blobProofSchema = hexSchema.length(
   "Invalid blob proof length"
 );
 
+/**
+ * The compressed point at infinity. Since Fulu, beacon nodes rebuild blob sidecars from PeerDAS
+ * data. They cannot recover the KZG proof of a blob, so they return this value in its place.
+ * This value is not a proof. Never replace a real proof with it.
+ */
+export const KZG_PROOF_PLACEHOLDER = `0xc0${"00".repeat(47)}`;
+
+export function isPlaceholderProof(proof: string) {
+  return proof.toLowerCase() === KZG_PROOF_PLACEHOLDER;
+}
+
 export const blobCommitmentSchema = hexSchema.length(
   98,
   "Invalid blob commitment or proof length"

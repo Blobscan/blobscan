@@ -13,6 +13,7 @@ import {
   blobVersionedHashSchema,
   blockNumberSchema,
   hashSchema,
+  isPlaceholderProof,
 } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
@@ -135,6 +136,9 @@ export const search = publicProcedure
         ? {
             versionedHash: query,
           }
+        : isPlaceholderProof(query)
+        ? // The placeholder is not a real proof, and very many blobs have it.
+          { commitment: query }
         : {
             OR: [{ commitment: query }, { proof: query }],
           };
