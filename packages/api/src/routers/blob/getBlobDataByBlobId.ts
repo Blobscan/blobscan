@@ -114,9 +114,9 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
               continue;
             }
 
-            // IPFS rows have no computed `url` (the CID is kept server-side):
-            // resolve by the stored content-addressed dataReference (dataCid)
-            // through the manager, which fetches and verifies in one request.
+            // Do not use the public gateway `url` of IPFS rows. Resolve by the
+            // stored content-addressed dataReference (dataCid) through the
+            // manager, which fetches and verifies in one request.
             const { data } = await blobStorageManager.getBlobByReferences({
               reference: dataReference,
               storage: "IPFS",
