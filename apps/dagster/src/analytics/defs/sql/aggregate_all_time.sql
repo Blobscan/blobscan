@@ -7,8 +7,28 @@ WITH cutoffs AS (
 ),
 
 unioned AS (
+  -- List the columns by name. UNION ALL matches columns by position, and the
+  -- column order of the source tables can be different.
   -- YEARLY: all completed years
-  SELECT y.*
+  SELECT
+    y.category,
+    y.rollup,
+    y.total_blob_base_fee,
+    y.total_blob_gas_price,
+    y.total_blocks,
+    y.total_blob_as_calldata_fee,
+    y.total_blob_as_calldata_gas_used,
+    y.total_blob_as_calldata_max_fee,
+    y.total_blob_gas_used,
+    y.total_blob_max_fee,
+    y.total_blobs,
+    y.total_blob_size,
+    y.total_blob_usage_size,
+    y.total_transactions,
+    y.total_unique_blobs,
+    y.total_unique_receivers,
+    y.total_unique_senders,
+    y.total_max_blob_gas_fee
   FROM yearly_metrics y
   CROSS JOIN cutoffs c
   WHERE y.period_start < c.cur_year
@@ -16,7 +36,25 @@ unioned AS (
   UNION ALL
 
   -- MONTHLY: completed months within the current year (not covered by yearly)
-  SELECT m.*
+  SELECT
+    m.category,
+    m.rollup,
+    m.total_blob_base_fee,
+    m.total_blob_gas_price,
+    m.total_blocks,
+    m.total_blob_as_calldata_fee,
+    m.total_blob_as_calldata_gas_used,
+    m.total_blob_as_calldata_max_fee,
+    m.total_blob_gas_used,
+    m.total_blob_max_fee,
+    m.total_blobs,
+    m.total_blob_size,
+    m.total_blob_usage_size,
+    m.total_transactions,
+    m.total_unique_blobs,
+    m.total_unique_receivers,
+    m.total_unique_senders,
+    m.total_max_blob_gas_fee
   FROM monthly_metrics m
   CROSS JOIN cutoffs c
   WHERE m.period_start >= c.cur_year
@@ -25,7 +63,25 @@ unioned AS (
   UNION ALL
 
   -- DAILY: completed days within the current month (not covered by monthly)
-  SELECT d.*
+  SELECT
+    d.category,
+    d.rollup,
+    d.total_blob_base_fee,
+    d.total_blob_gas_price,
+    d.total_blocks,
+    d.total_blob_as_calldata_fee,
+    d.total_blob_as_calldata_gas_used,
+    d.total_blob_as_calldata_max_fee,
+    d.total_blob_gas_used,
+    d.total_blob_max_fee,
+    d.total_blobs,
+    d.total_blob_size,
+    d.total_blob_usage_size,
+    d.total_transactions,
+    d.total_unique_blobs,
+    d.total_unique_receivers,
+    d.total_unique_senders,
+    d.total_max_blob_gas_fee
   FROM daily_metrics d
   CROSS JOIN cutoffs c
   WHERE d.period_start >= c.cur_month
@@ -34,7 +90,25 @@ unioned AS (
   UNION ALL
 
   -- HOURLY: hours within the current day (not covered by daily)
-  SELECT h.*
+  SELECT
+    h.category,
+    h.rollup,
+    h.total_blob_base_fee,
+    h.total_blob_gas_price,
+    h.total_blocks,
+    h.total_blob_as_calldata_fee,
+    h.total_blob_as_calldata_gas_used,
+    h.total_blob_as_calldata_max_fee,
+    h.total_blob_gas_used,
+    h.total_blob_max_fee,
+    h.total_blobs,
+    h.total_blob_size,
+    h.total_blob_usage_size,
+    h.total_transactions,
+    h.total_unique_blobs,
+    h.total_unique_receivers,
+    h.total_unique_senders,
+    h.total_max_blob_gas_fee
   FROM hourly_metrics h
   CROSS JOIN cutoffs c
   WHERE h.period_start >= c.cur_day
