@@ -1,7 +1,12 @@
-// The avg* fields are Postgres stored generated columns (total / count of the
-// same row, defined in the 20261016000000_generate_metrics_averages migration).
-// Prisma has no native support for them: @default(dbgenerated()) keeps them out
-// of create inputs and stops `migrate` from altering them. Never write them.
+// The avg* fields are Postgres stored generated columns. Each one is the total
+// divided by the count of the same row. The
+// 20261016000000_generate_metrics_averages migration defines them.
+// Prisma does not support generated columns. @default(dbgenerated()) makes the
+// fields optional in create inputs and stops `migrate` from changing them.
+// The Prisma Client types still accept these fields in create and update
+// inputs, but Postgres rejects a write to them. Do not write them.
+// `prisma db push` does not create them as generated columns. Use
+// `prisma migrate` to get the correct schema.
 
 model AllTimeMetrics {
   id       Int       @id @default(autoincrement())
