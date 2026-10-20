@@ -1,3 +1,13 @@
+// The avg* fields are Postgres stored generated columns. Each one is the total
+// divided by the count of the same row. The
+// 20261016000000_generate_metrics_averages migration defines them.
+// Prisma does not support generated columns. @default(dbgenerated()) makes the
+// fields optional in create inputs and stops `migrate` from changing them.
+// The Prisma Client types still accept these fields in create and update
+// inputs, but Postgres rejects a write to them. Do not write them.
+// `prisma db push` does not create them as generated columns. Use
+// `prisma migrate` to get the correct schema.
+
 model AllTimeMetrics {
   id       Int       @id @default(autoincrement())
   category Category?
@@ -10,9 +20,9 @@ model AllTimeMetrics {
   // Averages
 
   /// @zod.nonnegative()
-  avgBlobBaseFee  Float? @map("avg_blob_base_fee")
+  avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.nonnegative()
-  avgBlobGasPrice Float? @map("avg_blob_gas_price")
+  avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
 
   // Counters
 
@@ -28,15 +38,15 @@ model AllTimeMetrics {
   // Averages
 
   /// @zod.nonnegative()
-  avgBlobAsCalldataFee    Float? @map("avg_blob_as_calldata_fee")
+  avgBlobAsCalldataFee    Float? @default(dbgenerated()) @map("avg_blob_as_calldata_fee")
   /// @zod.nonnegative()
-  avgBlobAsCalldataMaxFee Float? @map("avg_blob_as_calldata_max_fee")
+  avgBlobAsCalldataMaxFee Float? @default(dbgenerated()) @map("avg_blob_as_calldata_max_fee")
   /// @zod.nonnegative()
-  avgBlobMaxFee           Float? @map("avg_blob_max_fee")
+  avgBlobMaxFee           Float? @default(dbgenerated()) @map("avg_blob_max_fee")
   /// @zod.nonnegative()
-  avgBlobUsageSize        Float? @map("avg_blob_usage_size")
+  avgBlobUsageSize        Float? @default(dbgenerated()) @map("avg_blob_usage_size")
   /// @zod.nonnegative()
-  avgMaxBlobGasFee        Float? @map("avg_max_blob_gas_fee")
+  avgMaxBlobGasFee        Float? @default(dbgenerated()) @map("avg_max_blob_gas_fee")
 
   // Counters 
 
@@ -82,9 +92,9 @@ model HourlyMetrics {
   // Averages
 
   /// @zod.nonnegative()
-  avgBlobBaseFee  Float? @map("avg_blob_base_fee")
+  avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.nonnegative()
-  avgBlobGasPrice Float? @map("avg_blob_gas_price")
+  avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
 
   // Counters
 
@@ -98,15 +108,15 @@ model HourlyMetrics {
   // ------------- DIMENSIONAL METRICS -------------
 
   /// @zod.nonnegative()
-  avgBlobAsCalldataFee    Float? @map("avg_blob_as_calldata_fee")
+  avgBlobAsCalldataFee    Float? @default(dbgenerated()) @map("avg_blob_as_calldata_fee")
   /// @zod.nonnegative()
-  avgBlobAsCalldataMaxFee Float? @map("avg_blob_as_calldata_max_fee")
+  avgBlobAsCalldataMaxFee Float? @default(dbgenerated()) @map("avg_blob_as_calldata_max_fee")
   /// @zod.nonnegative()
-  avgBlobMaxFee           Float? @map("avg_blob_max_fee")
+  avgBlobMaxFee           Float? @default(dbgenerated()) @map("avg_blob_max_fee")
   /// @zod.nonnegative()
-  avgBlobUsageSize        Float? @map("avg_blob_usage_size")
+  avgBlobUsageSize        Float? @default(dbgenerated()) @map("avg_blob_usage_size")
   /// @zod.nonnegative()
-  avgMaxBlobGasFee        Float? @map("avg_max_blob_gas_fee")
+  avgMaxBlobGasFee        Float? @default(dbgenerated()) @map("avg_max_blob_gas_fee")
   /// @zod.custom(imports.nonNegativeDecimalSchema)
 
   totalBlobAsCalldataFee     Decimal? @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
@@ -150,9 +160,9 @@ model DailyMetrics {
   // Averages
 
   /// @zod.nonnegative()
-  avgBlobBaseFee  Float? @map("avg_blob_base_fee")
+  avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.nonnegative()
-  avgBlobGasPrice Float? @map("avg_blob_gas_price")
+  avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
 
   // Counters
 
@@ -168,15 +178,15 @@ model DailyMetrics {
   // Averages
 
   /// @zod.nonnegative()
-  avgBlobAsCalldataFee    Float? @map("avg_blob_as_calldata_fee")
+  avgBlobAsCalldataFee    Float? @default(dbgenerated()) @map("avg_blob_as_calldata_fee")
   /// @zod.nonnegative()
-  avgBlobAsCalldataMaxFee Float? @map("avg_blob_as_calldata_max_fee")
+  avgBlobAsCalldataMaxFee Float? @default(dbgenerated()) @map("avg_blob_as_calldata_max_fee")
   /// @zod.nonnegative()
-  avgBlobMaxFee           Float? @map("avg_blob_max_fee")
+  avgBlobMaxFee           Float? @default(dbgenerated()) @map("avg_blob_max_fee")
   /// @zod.nonnegative()
-  avgBlobUsageSize        Float? @map("avg_blob_usage_size")
+  avgBlobUsageSize        Float? @default(dbgenerated()) @map("avg_blob_usage_size")
   /// @zod.nonnegative()
-  avgMaxBlobGasFee        Float? @map("avg_max_blob_gas_fee")
+  avgMaxBlobGasFee        Float? @default(dbgenerated()) @map("avg_max_blob_gas_fee")
 
   // Counters
 
@@ -222,9 +232,9 @@ model WeeklyMetrics {
   // Averages
 
   /// @zod.nonnegative()
-  avgBlobBaseFee  Float? @map("avg_blob_base_fee")
+  avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.nonnegative()
-  avgBlobGasPrice Float? @map("avg_blob_gas_price")
+  avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
 
   // Counters
   /// @zod.custom(imports.nonNegativeDecimalSchema)
@@ -239,15 +249,15 @@ model WeeklyMetrics {
   // Averages
 
   /// @zod.nonnegative()
-  avgBlobAsCalldataFee    Float? @map("avg_blob_as_calldata_fee")
+  avgBlobAsCalldataFee    Float? @default(dbgenerated()) @map("avg_blob_as_calldata_fee")
   /// @zod.nonnegative()
-  avgBlobAsCalldataMaxFee Float? @map("avg_blob_as_calldata_max_fee")
+  avgBlobAsCalldataMaxFee Float? @default(dbgenerated()) @map("avg_blob_as_calldata_max_fee")
   /// @zod.nonnegative()
-  avgBlobMaxFee           Float? @map("avg_blob_max_fee")
+  avgBlobMaxFee           Float? @default(dbgenerated()) @map("avg_blob_max_fee")
   /// @zod.nonnegative()
-  avgBlobUsageSize        Float? @map("avg_blob_usage_size")
+  avgBlobUsageSize        Float? @default(dbgenerated()) @map("avg_blob_usage_size")
   /// @zod.nonnegative()
-  avgMaxBlobGasFee        Float? @map("avg_max_blob_gas_fee")
+  avgMaxBlobGasFee        Float? @default(dbgenerated()) @map("avg_max_blob_gas_fee")
 
   // Counters
 
@@ -293,9 +303,9 @@ model MonthlyMetrics {
   // Averages
 
   /// @zod.nonnegative()
-  avgBlobBaseFee  Float? @map("avg_blob_base_fee")
+  avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.nonnegative()
-  avgBlobGasPrice Float? @map("avg_blob_gas_price")
+  avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
 
   // Counters
 
@@ -311,15 +321,15 @@ model MonthlyMetrics {
   // Averages
 
   /// @zod.nonnegative()
-  avgBlobAsCalldataFee    Float? @map("avg_blob_as_calldata_fee")
+  avgBlobAsCalldataFee    Float? @default(dbgenerated()) @map("avg_blob_as_calldata_fee")
   /// @zod.nonnegative()
-  avgBlobAsCalldataMaxFee Float? @map("avg_blob_as_calldata_max_fee")
+  avgBlobAsCalldataMaxFee Float? @default(dbgenerated()) @map("avg_blob_as_calldata_max_fee")
   /// @zod.nonnegative()
-  avgBlobMaxFee           Float? @map("avg_blob_max_fee")
+  avgBlobMaxFee           Float? @default(dbgenerated()) @map("avg_blob_max_fee")
   /// @zod.nonnegative()
-  avgBlobUsageSize        Float? @map("avg_blob_usage_size")
+  avgBlobUsageSize        Float? @default(dbgenerated()) @map("avg_blob_usage_size")
   /// @zod.nonnegative()
-  avgMaxBlobGasFee        Float? @map("avg_max_blob_gas_fee")
+  avgMaxBlobGasFee        Float? @default(dbgenerated()) @map("avg_max_blob_gas_fee")
 
   // Counters
 
@@ -365,9 +375,9 @@ model YearlyMetrics {
   // Averages
 
   /// @zod.nonnegative()
-  avgBlobBaseFee  Float? @map("avg_blob_base_fee")
+  avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.nonnegative()
-  avgBlobGasPrice Float? @map("avg_blob_gas_price")
+  avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
 
   // Counters
 
@@ -382,15 +392,15 @@ model YearlyMetrics {
 
   // Averages
   /// @zod.nonnegative()
-  avgBlobAsCalldataFee    Float? @map("avg_blob_as_calldata_fee")
+  avgBlobAsCalldataFee    Float? @default(dbgenerated()) @map("avg_blob_as_calldata_fee")
   /// @zod.nonnegative()
-  avgBlobAsCalldataMaxFee Float? @map("avg_blob_as_calldata_max_fee")
+  avgBlobAsCalldataMaxFee Float? @default(dbgenerated()) @map("avg_blob_as_calldata_max_fee")
   /// @zod.nonnegative()
-  avgBlobMaxFee           Float? @map("avg_blob_max_fee")
+  avgBlobMaxFee           Float? @default(dbgenerated()) @map("avg_blob_max_fee")
   /// @zod.nonnegative()
-  avgBlobUsageSize        Float? @map("avg_blob_usage_size")
+  avgBlobUsageSize        Float? @default(dbgenerated()) @map("avg_blob_usage_size")
   /// @zod.nonnegative()
-  avgMaxBlobGasFee        Float? @map("avg_max_blob_gas_fee")
+  avgMaxBlobGasFee        Float? @default(dbgenerated()) @map("avg_max_blob_gas_fee")
 
   // Counters
 

@@ -23,8 +23,6 @@ INSERT INTO hourly_metrics (
   category,
   rollup,
 
-  avg_blob_usage_size,
-
   total_blobs,
   total_unique_blobs,
   total_blob_size,
@@ -34,8 +32,6 @@ SELECT
   period_start,
   category,
   rollup,
-
-  AVG(usage_size)::FLOAT AS avg_blob_usage_size,
 
   COUNT(blob_hash)::INT AS total_blobs,
   COUNT(
@@ -56,8 +52,6 @@ HAVING NOT (
   rollup IS NULL
 )
 ON CONFLICT (period_start, category, rollup) DO UPDATE SET
-  avg_blob_usage_size = EXCLUDED.avg_blob_usage_size,
-
   total_blobs = EXCLUDED.total_blobs,
   total_unique_blobs = EXCLUDED.total_unique_blobs,
   total_blob_size = EXCLUDED.total_blob_size,
