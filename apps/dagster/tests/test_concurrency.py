@@ -32,6 +32,9 @@ def test_each_metrics_asset_has_its_own_pool(asset):
     assert pool == f"metrics/{asset.key.path[-1]}"
 
 
-def test_pools_allow_one_run_per_table():
+def test_pools_do_not_set_a_default_limit():
+    # A default limit makes Dagster's Postgres storage INSERT and then UPDATE in
+    # the same aborted transaction when the pool row already exists
+    # (InFailedSqlTransaction), so limits are set explicitly per pool.
     config = yaml.safe_load(_DAGSTER_YAML.read_text())
-    assert config["concurrency"]["pools"]["default_limit"] == 1
+    assert "default_limit" not in config["concurrency"].get("pools", {})

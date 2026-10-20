@@ -150,9 +150,20 @@ payload), set `DAGSTER_ALERT_WEBHOOK_URL` on the code location
 
 `dagster.yaml` allows at most 5 concurrent runs and at most 3 backfill runs,
 so live refreshes keep running during a backfill. Each metrics asset has its
-own concurrency pool (`metrics/<table>`) with a default limit of 1. Thus at
+own concurrency pool (`metrics/<table>`). Set each pool's limit to 1, so at
 most one run writes a metrics table at a time, for scheduled, automation and
-backfill runs.
+backfill runs:
+
+```bash
+for t in hourly daily weekly monthly yearly all_time; do
+  dagster instance concurrency set "metrics/${t}_metrics" 1
+done
+```
+
+Limits can also be set from the Dagster UI (Deployment > Concurrency). Do not
+use `concurrency.pools.default_limit` in `dagster.yaml`: with Postgres storage,
+initializing a pool whose row already exists fails with
+`InFailedSqlTransaction`. Pools without a limit are unlimited.
 
 ## Learn more
 

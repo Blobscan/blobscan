@@ -13,9 +13,10 @@ run_coordinator:
   class: QueuedRunCoordinator
 
 # Concurrency pools: each metrics asset has its own pool (pool="metrics/<table>"
-# in assets.py). A limit of 1 lets at most one run write a metrics table at a
-# time, for all run types (schedules, automation conditions and backfills), so
-# slow runs queue up instead of piling on the DB.
+# in assets.py). Do not set `pools.default_limit` here: on Postgres Dagster
+# initializes each pool with an INSERT and, when the row already exists, falls
+# back to an UPDATE in the same (already aborted) transaction, which fails with
+# InFailedSqlTransaction. Set the limits explicitly instead (see README).
 concurrency:
   runs:
     max_concurrent_runs: 5
@@ -23,8 +24,6 @@ concurrency:
       # Leave room for live runs while a backfill is in progress.
       - key: "dagster/backfill"
         limit: 3
-  pools:
-    default_limit: 1
 
 # Run launcher: spins up a new Docker container for each pipeline run.
 # Environment variables and volumes are forwarded to launched containers.
