@@ -15,6 +15,10 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   }
 
   const isBlobscanStorageRef = storage === "postgres";
+  // An IPFS raw block is always binary. Do not use the gateway Content-Type,
+  // because the gateway can find the type from the first bytes and label a
+  // blob as an image (for example image/x-icon).
+  const isIpfsStorageRef = storage === "ipfs";
 
   let requestInit: RequestInit | undefined;
 
@@ -46,7 +50,9 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     const contentType = response.headers.get("content-type");
     const isBinaryFile =
-      pathname.endsWith(".bin") || contentType === "application/octet-stream";
+      isIpfsStorageRef ||
+      pathname.endsWith(".bin") ||
+      contentType === "application/octet-stream";
     const isTextPlainFile =
       pathname.endsWith(".txt") ||
       contentType === "text/plain" ||
@@ -63,7 +69,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       }
 
       blobData = Buffer.from(data.slice(2));
-    } else if (isTextPlainFile) {
+    } else if (isTextPlainFile && !isIpfsStorageRef) {
       const data = await response.text();
 
       blobData = Buffer.from(data.slice(2), "hex");

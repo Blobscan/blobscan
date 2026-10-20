@@ -134,7 +134,7 @@ describe("Computed Fields Extension", () => {
           });
 
         expect(url).toBe(
-          `${env.IPFS_STORAGE_GATEWAY_URL}/ipfs/${dataReference}`
+          `${env.IPFS_STORAGE_GATEWAY_URL}/ipfs/${dataReference}?filename=${dataReference}.bin`
         );
       });
 
