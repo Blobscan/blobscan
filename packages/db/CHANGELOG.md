@@ -1,5 +1,20 @@
 # @blobscan/db
 
+## 0.30.0
+
+### Minor Changes
+
+- [#1017](https://github.com/Blobscan/blobscan/pull/1017) [`332f0b9`](https://github.com/Blobscan/blobscan/commit/332f0b9edd8d4195223e24317101b01d479b7f85) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Made the metrics `avg_*` columns Postgres stored generated columns (total / count of the same row) and removed the average calculations from the Dagster aggregation SQL
+
+### Patch Changes
+
+- [#1027](https://github.com/Blobscan/blobscan/pull/1027) [`501fc9b`](https://github.com/Blobscan/blobscan/commit/501fc9b820a3390d086cbbfea272faeae007c1e5) Thanks [@PJColombo](https://github.com/PJColombo)! - Fix IPFS blobs that the gateway serves as images.
+
+  - Add `?filename=<cid>.bin` to the IPFS blob URL. The gateway then serves the blob as `application/octet-stream`. Before, the gateway used the first bytes of the blob to find its type, and blobs that start with `00 00 01 00` or `00 00 02 00` were served as `image/x-icon`.
+  - The `/api/blob-data` proxy now reads IPFS data as binary for all Content-Types. Before, it returned an error when the gateway sent a type other than `application/octet-stream`.
+
+- [#1025](https://github.com/Blobscan/blobscan/pull/1025) [`d5db628`](https://github.com/Blobscan/blobscan/commit/d5db6280a013b4c6b12b7db5f743215487fcadba) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fixed re-indexing a blob overwriting its KZG proof with the point at infinity. Since Fulu, beacon nodes return that value in place of the proof of a blob they rebuilt from PeerDAS data; the upsert now keeps the stored proof when the incoming one is that placeholder.
+
 ## 0.29.1
 
 ### Patch Changes

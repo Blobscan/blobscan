@@ -183,19 +183,19 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^3.0.1
+        specifier: workspace:^4.0.0
         version: link:../../packages/api
       '@blobscan/blob-propagator':
-        specifier: workspace:^3.0.0
+        specifier: workspace:^4.0.0
         version: link:../../packages/blob-propagator
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^3.0.1
+        specifier: workspace:^4.0.0
         version: link:../../packages/blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.5.0
         version: link:../../packages/chains
       '@blobscan/db':
-        specifier: workspace:^0.29.1
+        specifier: workspace:^0.30.0
         version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.4.1
@@ -213,10 +213,10 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../../packages/price-feed
       '@blobscan/rollups':
-        specifier: workspace:^3.0.0
+        specifier: workspace:^4.0.0
         version: link:../../packages/rollups
       '@blobscan/syncers':
-        specifier: workspace:^0.6.7
+        specifier: workspace:^0.6.8
         version: link:../../packages/syncers
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -274,13 +274,13 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^3.0.0
+        specifier: workspace:^4.0.0
         version: link:../../packages/api
       '@blobscan/blob-decoder':
         specifier: workspace:^0.2.2
         version: link:../../packages/blob-decoder
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^3.0.1
+        specifier: workspace:^4.0.0
         version: link:../../packages/blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.5.0
@@ -292,7 +292,7 @@ importers:
         specifier: workspace:^0.1.1
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.29.0
+        specifier: workspace:^0.30.0
         version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.4.1
@@ -307,7 +307,7 @@ importers:
         specifier: workspace:^0.0.10
         version: link:../../packages/open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^3.0.0
+        specifier: workspace:^4.0.0
         version: link:../../packages/rollups
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -440,13 +440,13 @@ importers:
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^3.0.0
+        specifier: workspace:^4.0.0
         version: link:../../packages/blob-propagator
       '@blobscan/dayjs':
         specifier: workspace:^0.1.0
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.29.0
+        specifier: workspace:^0.30.0
         version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.4.0
@@ -470,7 +470,7 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.29.0
+        specifier: workspace:^0.30.0
         version: link:../../packages/db
       '@blobscan/logger':
         specifier: workspace:^0.1.4
@@ -485,7 +485,7 @@ importers:
   packages/api:
     dependencies:
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^3.0.0
+        specifier: workspace:^4.0.0
         version: link:../blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.5.0
@@ -494,7 +494,7 @@ importers:
         specifier: workspace:^0.1.1
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.29.1
+        specifier: workspace:^0.30.0
         version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.4.0
@@ -506,7 +506,7 @@ importers:
         specifier: workspace:^0.0.10
         version: link:../open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^3.0.0
+        specifier: workspace:^4.0.0
         version: link:../rollups
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -534,7 +534,7 @@ importers:
         version: 1.2.0(@trpc/server@10.45.4)(@types/express@4.17.25)(@types/node@22.19.11)(zod@3.23.8)
     devDependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^3.0.0
+        specifier: workspace:^4.0.0
         version: link:../blob-propagator
       '@types/jsonwebtoken':
         specifier: ^9.0.2
@@ -543,7 +543,7 @@ importers:
   packages/auth:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.29.0
+        specifier: workspace:^0.30.0
         version: link:../db
       '@next-auth/prisma-adapter':
         specifier: ^1.0.5
@@ -598,10 +598,10 @@ importers:
         version: 5.9.3
     devDependencies:
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^3.0.0
+        specifier: workspace:^4.0.0
         version: link:../blob-storage-manager
       '@blobscan/db':
-        specifier: workspace:^0.29.0
+        specifier: workspace:^0.30.0
         version: link:../db
 
   packages/blob-storage-manager:
@@ -632,7 +632,7 @@ importers:
         version: 14.0.0
     devDependencies:
       '@blobscan/db':
-        specifier: workspace:^0.29.0
+        specifier: workspace:^0.30.0
         version: link:../db
 
   packages/chains: {}
@@ -771,7 +771,7 @@ importers:
   packages/rollups:
     devDependencies:
       '@blobscan/db':
-        specifier: workspace:^0.29.0
+        specifier: workspace:^0.30.0
         version: link:../db
 
   packages/syncers:
@@ -783,7 +783,7 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.29.0
+        specifier: workspace:^0.30.0
         version: link:../db
       '@blobscan/errors':
         specifier: workspace:^0.0.2
@@ -2748,7 +2748,7 @@ packages:
   '@opentelemetry/exporter-jaeger@1.15.2':
     resolution: {integrity: sha512-BwYd5836GYvuiQcF4l5X0ca09jGJr/F37MMGyz94VH0b1dp0uYBwRJw2CQh56RlVZEdpKv29JyDRVZ/4UrRgLQ==}
     engines: {node: '>=14'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+    deprecated: Package no longer supported. See https://github.com/open-telemetry/opentelemetry-js/pull/7098
     peerDependencies:
       '@opentelemetry/api': ^1.0.0
 
@@ -3008,6 +3008,7 @@ packages:
   '@opentelemetry/propagator-jaeger@1.15.2':
     resolution: {integrity: sha512-6m1yu7PVDIRz6BwA36lacfBZJCfAEHKgu+kSyukNwVdVjsTNeyD9xNPQnkl0WN7Rvhk8/yWJ83tLPEyGhk1wCQ==}
     engines: {node: '>=14'}
+    deprecated: Package no longer supported. See https://github.com/open-telemetry/opentelemetry-js/pull/7077
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.5.0'
 
@@ -3055,24 +3056,28 @@ packages:
   '@opentelemetry/sdk-trace-base@1.15.2':
     resolution: {integrity: sha512-BEaxGZbWtvnSPchV98qqqqa96AOcb41pjgvhfzDij10tkBhIu9m0Jd6tZ1tJB5ZHfHbTffqYVYE0AOGobec/EQ==}
     engines: {node: '>=14'}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.5.0'
 
   '@opentelemetry/sdk-trace-base@1.30.1':
     resolution: {integrity: sha512-jVPgBbH1gCy2Lb7X0AVQ8XAfgg0pJ4nvl8/IiQA6nxOsPvS+0zMJaFSs2ltXe0J6C8dqjcnpyqINDJmU30+uOg==}
     engines: {node: '>=14'}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-base@2.5.1':
     resolution: {integrity: sha512-iZH3Gw8cxQn0gjpOjJMmKLd9GIaNh/E3v3ST67vyzLSxHBs14HsG4dy7jMYyC5WXGdBVEcM7U/XTF5hCQxjDMw==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-node@1.15.2':
     resolution: {integrity: sha512-5deakfKLCbPpKJRCE2GPI8LBE2LezyvR17y3t37ZI3sbaeogtyxmBaFV+slmG9fN8OaIT+EUsm1QAT1+z59gbQ==}
     engines: {node: '>=14'}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.5.0'
 
@@ -5000,6 +5005,7 @@ packages:
   cron-parser@4.9.0:
     resolution: {integrity: sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==}
     engines: {node: '>=12.0.0'}
+    deprecated: v4 is no longer maintained, upgrade to v5
 
   cross-spawn@5.1.0:
     resolution: {integrity: sha512-pTgQJ5KC0d2hcY8eyL1IzlBPYjTkyH72XRZPnLyKus2mBfNjQs3klqbJU2VILqZryAZUt9JOb3h/mWMy23/f5A==}
@@ -7147,6 +7153,7 @@ packages:
   prom-client@14.2.0:
     resolution: {integrity: sha512-sF308EhTenb/pDRPakm+WgiN+VdM/T1RaHj1x+MvAuT8UiQP8JmOEbxVqtkbfR4LrvOg5n7ic01kRBDGXjYikA==}
     engines: {node: '>=10'}
+    deprecated: prom-client has been replaced by @prometheus-io/client
 
   prool@0.0.23:
     resolution: {integrity: sha512-r1d0DIiVsp7aXqGiNGKmgrqJZa8GjMGEjsgjQO22DEClYYvK+HMPZTQ9diBqleGuwfiRk3lnsWRMbFTRmFbk9g==}
