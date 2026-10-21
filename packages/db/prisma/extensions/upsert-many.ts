@@ -10,6 +10,7 @@ import type {
 import { Prisma } from "@prisma/client";
 
 import type { WithoutTimestampFields } from "../types";
+import { KZG_PROOF_PLACEHOLDER } from "../zod-utils";
 import type { ZeroOpResult } from "./helpers";
 
 const NOW_SQL = Prisma.sql`NOW()`;
@@ -116,7 +117,11 @@ export const upsertManyExtension = Prisma.defineExtension((prisma) =>
             ) VALUES ${Prisma.join(formattedValues)}
             ON CONFLICT (versioned_hash) DO UPDATE SET
               commitment = EXCLUDED.commitment,
-              proof = EXCLUDED.proof,
+              -- Keep the stored proof when the incoming proof is the placeholder.
+              proof = CASE
+                WHEN lower(EXCLUDED.proof) = ${KZG_PROOF_PLACEHOLDER} THEN b.proof
+                ELSE EXCLUDED.proof
+              END,
               size = EXCLUDED.size,
               usage_size = EXCLUDED.usage_size,
               first_block_number = CASE 

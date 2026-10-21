@@ -36,7 +36,8 @@ const rawTxSchema = z.object({
 const rawBlobSchema = z.object({
   versionedHash: z.string(),
   commitment: z.string(),
-  proof: z.string(),
+  // Lowercase, so that the database can find the placeholder proof.
+  proof: z.string().transform((proof) => proof.toLowerCase()),
   data: z.string(),
   txHash: z.string(),
   index: z.coerce.number(),
