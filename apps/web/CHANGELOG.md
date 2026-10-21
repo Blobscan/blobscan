@@ -1,5 +1,20 @@
 # @blobscan/web
 
+## 0.54.2
+
+### Patch Changes
+
+- [#1027](https://github.com/Blobscan/blobscan/pull/1027) [`501fc9b`](https://github.com/Blobscan/blobscan/commit/501fc9b820a3390d086cbbfea272faeae007c1e5) Thanks [@PJColombo](https://github.com/PJColombo)! - Fix IPFS blobs that the gateway serves as images.
+
+  - Add `?filename=<cid>.bin` to the IPFS blob URL. The gateway then serves the blob as `application/octet-stream`. Before, the gateway used the first bytes of the blob to find its type, and blobs that start with `00 00 01 00` or `00 00 02 00` were served as `image/x-icon`.
+  - The `/api/blob-data` proxy now reads IPFS data as binary for all Content-Types. Before, it returned an error when the gateway sent a type other than `application/octet-stream`.
+
+- Updated dependencies [[`501fc9b`](https://github.com/Blobscan/blobscan/commit/501fc9b820a3390d086cbbfea272faeae007c1e5), [`d5db628`](https://github.com/Blobscan/blobscan/commit/d5db6280a013b4c6b12b7db5f743215487fcadba), [`332f0b9`](https://github.com/Blobscan/blobscan/commit/332f0b9edd8d4195223e24317101b01d479b7f85)]:
+  - @blobscan/db@0.30.0
+  - @blobscan/api@4.0.0
+  - @blobscan/blob-storage-manager@4.0.0
+  - @blobscan/rollups@4.0.0
+
 ## 0.54.1
 
 ### Patch Changes

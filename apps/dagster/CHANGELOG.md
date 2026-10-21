@@ -1,5 +1,13 @@
 # @blobscan/dagster
 
+## 0.2.1
+
+### Patch Changes
+
+- [`00825bc`](https://github.com/Blobscan/blobscan/commit/00825bcfa42547194293452603d1864080a076d7) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Remove `concurrency.pools.default_limit` from the Dagster instance config: with Postgres storage it fails with `InFailedSqlTransaction` when a pool row already exists. Pool limits are now set explicitly
+
+- [#1017](https://github.com/Blobscan/blobscan/pull/1017) [`332f0b9`](https://github.com/Blobscan/blobscan/commit/332f0b9edd8d4195223e24317101b01d479b7f85) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Made the metrics `avg_*` columns Postgres stored generated columns (total / count of the same row) and removed the average calculations from the Dagster aggregation SQL
+
 ## 0.2.0
 
 ### Minor Changes
