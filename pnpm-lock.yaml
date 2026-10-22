@@ -560,6 +560,12 @@ importers:
 
   packages/blob-propagator:
     dependencies:
+      '@blobscan/blob-storage-manager':
+        specifier: workspace:^4.1.0
+        version: link:../blob-storage-manager
+      '@blobscan/db':
+        specifier: workspace:^0.31.0
+        version: link:../db
       '@blobscan/errors':
         specifier: workspace:^0.0.2
         version: link:../errors
@@ -578,19 +584,15 @@ importers:
       ioredis:
         specifier: ^5.3.2
         version: 5.9.3
-    devDependencies:
-      '@blobscan/blob-storage-manager':
-        specifier: workspace:^4.1.0
-        version: link:../blob-storage-manager
-      '@blobscan/db':
-        specifier: workspace:^0.31.0
-        version: link:../db
 
   packages/blob-storage-manager:
     dependencies:
       '@aws-sdk/client-s3':
         specifier: ^3.840.0
         version: 3.990.0
+      '@blobscan/db':
+        specifier: workspace:^0.31.0
+        version: link:../db
       '@blobscan/errors':
         specifier: workspace:^0.0.2
         version: link:../errors
@@ -612,10 +614,6 @@ importers:
       multiformats:
         specifier: ^14.0.0
         version: 14.0.0
-    devDependencies:
-      '@blobscan/db':
-        specifier: workspace:^0.31.0
-        version: link:../db
 
   packages/chains: {}
 
@@ -751,7 +749,7 @@ importers:
         version: 2.46.1(typescript@5.5.3)(zod@3.23.8)
 
   packages/rollups:
-    devDependencies:
+    dependencies:
       '@blobscan/db':
         specifier: workspace:^0.31.0
         version: link:../db
