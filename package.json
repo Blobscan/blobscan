@@ -26,7 +26,6 @@
     "test:setup": "turbo test:setup",
     "test:dev": "pnpm test:setup && pnpm test",
     "type-check": "turbo type-check",
-    "stats": "pnpm with-env pnpm -F stats-aggregation-cli start",
     "propagator": "pnpm with-env pnpm -F blob-propagation-jobs-cli start",
     "svg:format": "turbo svg:format",
     "validate": "turbo lint type-check && manypkg check && pnpm test",

@@ -23,7 +23,7 @@ export async function countBlocks(
   filters: Filters
 ) {
   if (!hasCustomFilters(filters)) {
-    const overallStats = await prisma.overallStats.findFirst({
+    const allTimeMetrics = await prisma.allTimeMetrics.findFirst({
       select: {
         totalBlocks: true,
       },
@@ -33,7 +33,7 @@ export async function countBlocks(
       },
     });
 
-    return overallStats?.totalBlocks ?? 0;
+    return allTimeMetrics?.totalBlocks ?? 0;
   }
 
   const { blockFilters = {}, blockType, transactionFilters } = filters;

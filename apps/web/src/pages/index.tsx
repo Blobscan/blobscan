@@ -18,6 +18,7 @@ import { SlidableList } from "~/components/SlidableList";
 import { AvgBlobGasPriceChart } from "~/components/TimeseriesCharts/AvgBlobGasPriceChart";
 import { TotalBlobsChart } from "~/components/TimeseriesCharts/TotalBlobsChart";
 import { api } from "~/api-client";
+import { toAggregatedMetrics } from "~/hooks/useAggregateOverallStats";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
@@ -53,8 +54,13 @@ const Home: NextPage = () => {
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       refetchOnReconnect: false,
-      select: ({ data }) =>
-        data.find(({ dimension }) => dimension.type === "global")?.metrics,
+      select: ({ data }) => {
+        const globalMetrics = data.find(
+          ({ dimension }) => dimension.type === "global"
+        )?.metrics;
+
+        return globalMetrics ? toAggregatedMetrics(globalMetrics) : undefined;
+      },
     });
   const {
     data: globalChartDataset,
@@ -142,10 +148,13 @@ const Home: NextPage = () => {
                 name="Total Tx Fees Saved"
                 metric={{
                   primary: {
-                    value: globalOverallStats
-                      ? globalOverallStats.totalBlobAsCalldataFee -
-                        globalOverallStats.totalBlobFee
-                      : undefined,
+                    value:
+                      globalOverallStats?.totalBlobAsCalldataFee !==
+                        undefined &&
+                      globalOverallStats.totalBlobBaseFee !== undefined
+                        ? globalOverallStats.totalBlobAsCalldataFee -
+                          globalOverallStats.totalBlobBaseFee
+                        : undefined,
                     type: "ethereum",
                   },
                 }}

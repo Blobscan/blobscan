@@ -6,7 +6,6 @@ import type { ExtensionConfig as CustomFieldsExtensionConfig } from "./extension
 import {
   upsertManyExtension,
   createComputedFieldsExtension,
-  statsExtension,
   helpersExtension,
 } from "./extensions";
 import { ethUsdPriceExtension } from "./extensions/eth-usd-price";
@@ -64,8 +63,7 @@ export function getPrisma(params?: GetPrismaParams) {
     .$extends(helpersExtension)
     .$extends(customFieldsExtension)
     .$extends(ethUsdPriceExtension)
-    .$extends(upsertManyExtension)
-    .$extends(statsExtension);
+    .$extends(upsertManyExtension);
 }
 
 export type BlobscanPrismaClient = ReturnType<typeof getPrisma>;

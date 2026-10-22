@@ -12,7 +12,7 @@ export const TotalBlobBaseFeesChart = createTimeseriesChart({
     timeseries: [
       {
         type: "bar",
-        metric: "totalBlobFee",
+        metric: "totalBlobBaseFee",
         stack: "total",
       },
     ],
@@ -25,6 +25,6 @@ export const TotalBlobBaseFeesChart = createTimeseriesChart({
       displayTotal: true,
     },
   },
-  requiredMetrics: ["totalBlobFee"],
+  requiredMetrics: ["totalBlobBaseFee"],
   componentName: "TotalBlobBaseFeesChart",
 });

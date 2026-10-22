@@ -9,7 +9,7 @@ import {
   BlobModel,
   BlobsOnTransactionsModel,
   BlockModel,
-  DailyStatsModel,
+  DailyMetricsModel,
   TransactionModel,
 } from "@blobscan/db/prisma/zod";
 import {
@@ -66,9 +66,9 @@ export function getDimension(
   };
 }
 
-export const timeseriesMetricsSchema = DailyStatsModel.omit({
+export const timeseriesMetricsSchema = DailyMetricsModel.omit({
   id: true,
-  day: true,
+  periodStart: true,
   category: true,
   rollup: true,
 });

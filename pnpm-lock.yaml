@@ -464,24 +464,6 @@ importers:
         specifier: ^7.0.1
         version: 7.0.3
 
-  clis/stats-aggregation-cli:
-    dependencies:
-      '@blobscan/dayjs':
-        specifier: workspace:^0.1.0
-        version: link:../../packages/dayjs
-      '@blobscan/db':
-        specifier: workspace:^0.30.0
-        version: link:../../packages/db
-      '@blobscan/logger':
-        specifier: workspace:^0.1.4
-        version: link:../../packages/logger
-      command-line-args:
-        specifier: ^5.2.1
-        version: 5.2.1
-      command-line-usage:
-        specifier: ^7.0.1
-        version: 7.0.3
-
   packages/api:
     dependencies:
       '@blobscan/blob-storage-manager':

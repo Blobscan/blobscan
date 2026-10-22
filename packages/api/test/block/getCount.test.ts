@@ -4,6 +4,7 @@ import { fixtures } from "@blobscan/test";
 
 import type { TRPCContext } from "../../src";
 import { createTestContext } from "../helpers";
+import { aggregateMetrics } from "../metrics";
 import { getFilteredBlocks, runFilterTests } from "../test-suites/filters";
 import type { BlockCaller } from "./caller";
 import { createBlockCaller } from "./caller";
@@ -18,14 +19,14 @@ describe("getCount", () => {
   });
 
   it("should return the overall total blocks stat when no filters are provided", async () => {
-    await ctx.prisma.overallStats.aggregate();
+    await aggregateMetrics(ctx.prisma);
     const { totalBlocks } = await blockCaller.getCount({});
 
     expect(totalBlocks).toBe(fixtures.canonicalBlocks.length);
   });
 
   runFilterTests(async (filters) => {
-    await ctx.prisma.overallStats.aggregate();
+    await aggregateMetrics(ctx.prisma);
     const { totalBlocks } = await blockCaller.getCount(filters);
 
     expect(totalBlocks).toBe(getFilteredBlocks(filters).length);

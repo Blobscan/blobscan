@@ -9,6 +9,7 @@ import {
   runFiltersTestsSuite,
   runPaginationTestsSuite,
 } from "../helpers";
+import { aggregateMetrics } from "../metrics";
 import type { BlockCaller } from "./caller";
 import { createBlockCaller } from "./caller";
 
@@ -22,7 +23,7 @@ describe("getAll", () => {
   });
 
   beforeEach(async () => {
-    await ctx.prisma.overallStats.aggregate();
+    await aggregateMetrics(ctx.prisma);
   });
 
   runPaginationTestsSuite("block", (paginationInput) =>
