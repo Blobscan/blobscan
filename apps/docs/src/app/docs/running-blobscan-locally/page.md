@@ -69,27 +69,4 @@ pnpm db:seed
 
 ## Metrics aggregation
 
-Metrics are recalculated every 15 minutes by a background process.
-
-During development, you may want to force backfilling all the data, which can
-be achieved using the following commands:
-
-```shell
-# Aggregates all blob data since the beginning
-cd clis/stats-aggregation-cli
-pnpm start overall
-```
-
-```shell
-# Aggregates all blob data for yesterday
-cd clis/stats-aggregation-cli
-pnpm start daily
-```
-
-In case you need to delete aggregated metrics, you can use the stats aggregation cli:
-
-```shell
-cd clis/stats-aggregation-cli
-pnpm start daily --delete
-pnpm start overall --delete
-```
+Dagster calculates the metrics. To calculate the metrics during development, run Dagster and do a backfill of the metrics assets. For the procedure, refer to the [`apps/dagster`](https://github.com/Blobscan/blobscan/tree/main/apps/dagster) README.

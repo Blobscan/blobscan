@@ -13,7 +13,7 @@ export const AvgBlobBaseFeeChart = createTimeseriesChart({
       {
         name: "Avg. Blob Base Fee",
         type: "line",
-        metric: "avgBlobFee",
+        metric: "avgBlobBaseFee",
       },
     ],
     skeletonOpts: {
@@ -25,6 +25,6 @@ export const AvgBlobBaseFeeChart = createTimeseriesChart({
       },
     },
   },
-  requiredMetrics: ["avgBlobFee"],
+  requiredMetrics: ["avgBlobBaseFee"],
   componentName: "AvgBlobBaseFeeChart",
 });

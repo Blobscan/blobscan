@@ -151,12 +151,12 @@ export const getTimeseries = publicProcedure
   .query(
     cacheTRPCQuery(
       async ({ ctx: { prisma, statFilters }, input }) => {
-        const dailyStats = await prisma.dailyStats.findMany({
+        const dailyMetrics = await prisma.dailyMetrics.findMany({
           select: statFilters.select,
           where: statFilters.where,
           orderBy: [
             {
-              day: input.sort,
+              periodStart: input.sort,
             },
             {
               category: "asc",
@@ -178,8 +178,8 @@ export const getTimeseries = publicProcedure
         );
         const timestamps = new Set<string>();
 
-        for (const stats of dailyStats) {
-          const currTimestamp = stats.day;
+        for (const stats of dailyMetrics) {
+          const currTimestamp = stats.periodStart;
 
           if (!timestamps.has(currTimestamp.toUTCString())) {
             timestamps.add(currTimestamp.toUTCString());
@@ -207,7 +207,7 @@ export const getTimeseries = publicProcedure
           }
 
           for (const [metricName, metricValue] of Object.entries(stats)) {
-            const skippableFields = ["day", "category", "rollup", "id"];
+            const skippableFields = ["periodStart", "category", "rollup", "id"];
             const allowedMetricTypes = ["number", "bigint"];
 
             if (

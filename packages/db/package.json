@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
-    "db:generate": "pnpm with-env prisma generate --sql",
+    "db:generate": "pnpm with-env prisma generate",
     "db:migrate": "pnpm with-env prisma migrate dev",
     "db:seed": "pnpm with-env prisma db seed",
     "db:reset": "pnpm with-env prisma migrate reset",

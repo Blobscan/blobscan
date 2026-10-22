@@ -9,6 +9,7 @@ import {
   runFiltersTestsSuite,
   runPaginationTestsSuite,
 } from "../helpers";
+import { aggregateMetrics } from "../metrics";
 import { createTransactionCaller } from "./caller";
 import type { TxCaller } from "./caller";
 
@@ -23,7 +24,7 @@ describe("getAll", () => {
   });
 
   beforeEach(async () => {
-    await ctx.prisma.overallStats.aggregate();
+    await aggregateMetrics(ctx.prisma);
   });
 
   runPaginationTestsSuite("transaction", (paginationInput) =>

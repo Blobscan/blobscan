@@ -1,7 +1,6 @@
 import type { Address, Blob, BlobData, Block, Prisma } from "@prisma/client";
 import ora from "ora";
 
-import dayjs from "@blobscan/dayjs";
 
 import { getPrisma } from "..";
 import type { Rollup } from "../enums";
@@ -177,22 +176,6 @@ async function main() {
   spinner = spinner.info(
     `Data generated (${dbInsertionExecutionTime}s): ${totalBlocks} blocks, ${totalTxs} txs, ${totalBlobs} blobs, ${totalBlobsOnTxs} blobsOnTxs, ${totalForkTxs} fork txs`
   );
-
-  spinner = spinner.start(`Aggregating stats…`);
-
-  const statsExecutionTime = await measureExecutionTime(async () => {
-    const yesterdayPeriod = {
-      to: dayjs().subtract(1, "day").startOf("day").toISOString(),
-    };
-
-    spinner = spinner.start(`Aggregating stats…`);
-    await Promise.all([
-      prisma.dailyStats.aggregate(yesterdayPeriod),
-      prisma.overallStats.aggregate(),
-    ]);
-  });
-
-  spinner = spinner.info(`Stats aggregated (${statsExecutionTime}s)`);
 
   spinner = spinner.succeed("Database seeded!");
 }

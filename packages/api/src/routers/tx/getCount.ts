@@ -15,7 +15,7 @@ import { buildStatsWhereClause, requiresDirectCount } from "../../utils/count";
  * Counts transactions based on the provided filters.
  *
  * This function decides between counting transactions directly from the transaction table
- * or using pre-calculated aggregated data from daily or overall transaction stats to
+ * or using pre-calculated aggregated data from the daily or all-time metrics to
  * improve performance.
  *
  * The choice depends on the specificity of the filters provided.
@@ -44,30 +44,30 @@ export async function countTxs(
 
   const where = buildStatsWhereClause(filters, rollupRegistry);
 
-  // Get count by summing daily total transaction stats data if a date range is provided in filters
+  // Get count by summing daily total transaction metrics if a date range is provided in filters
   if (blockFilters.timestamp) {
-    const dailyStats = await prisma.dailyStats.findMany({
+    const dailyMetrics = await prisma.dailyMetrics.findMany({
       select: {
         totalTransactions: true,
       },
       where,
     });
 
-    return dailyStats.reduce(
-      (acc, { totalTransactions }) => acc + totalTransactions,
+    return dailyMetrics.reduce(
+      (acc, { totalTransactions }) => acc + (totalTransactions ?? 0),
       0
     );
   }
 
-  const overallStats = await prisma.overallStats.findMany({
+  const allTimeMetrics = await prisma.allTimeMetrics.findMany({
     select: {
       totalTransactions: true,
     },
     where,
   });
 
-  return overallStats.reduce(
-    (acc, { totalTransactions }) => acc + totalTransactions,
+  return allTimeMetrics.reduce(
+    (acc, { totalTransactions }) => acc + (totalTransactions ?? 0),
     0
   );
 }

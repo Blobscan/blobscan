@@ -6,7 +6,7 @@ import type { Filters } from "../middlewares/withFilters";
 
 /**
  * Determines if a direct count operation must be performed or the value can be obtained by using
- * pre-calculated values from aggregated stats tables, based on the provided filters.
+ * pre-calculated values from aggregated metrics tables, based on the provided filters.
  *
  * Aggregated stats are not available for certain filters, including:
  * - Reorged blocks (`blockType` filter)
@@ -71,7 +71,7 @@ export function buildStatsWhereClause(
   });
 
   if (from || to) {
-    clauses.push({ day: { gte: from, lt: to } });
+    clauses.push({ periodStart: { gte: from, lt: to } });
   }
 
   return {

@@ -29,7 +29,7 @@ export const timeFrameSchema = z.enum([
 export type TimeFrame = z.infer<typeof timeFrameSchema>;
 
 export type DayStatFilter = {
-  day: string | Date | Prisma.DateTimeFilter<"DailyStats">;
+  periodStart: string | Date | Prisma.DateTimeFilter<"DailyMetrics">;
 };
 
 export type CategoryStatFilter = {
@@ -40,7 +40,7 @@ export type RollupStatFilter = {
 };
 
 export type StatsFilters = {
-  select?: Prisma.DailyStatsSelect;
+  select?: Prisma.DailyMetricsSelect;
   where: Partial<
     DayStatFilter &
       CategoryStatFilter &
@@ -146,7 +146,7 @@ function buildDayWhereClause({
 }: {
   chain: Chain;
   input: StatFiltersOutputSchema;
-}): DayStatFilter["day"] {
+}): DayStatFilter["periodStart"] {
   let days: number;
   const to = dayjs().utc().subtract(1, "day").startOf("day");
   const toISO = to.utc().toISOString();
@@ -225,11 +225,11 @@ export const withStatFilters = t.middleware(
           ...acc,
           [key]: true,
         }),
-        { day: true, category: true, rollup: true }
+        { periodStart: true, category: true, rollup: true }
       );
     }
 
-    where.day = buildDayWhereClause({
+    where.periodStart = buildDayWhereClause({
       chain,
       input,
     });

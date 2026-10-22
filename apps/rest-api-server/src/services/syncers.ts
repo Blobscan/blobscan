@@ -7,15 +7,12 @@ import { logger } from "@blobscan/logger";
 import { PriceFeed } from "@blobscan/price-feed";
 import type { BaseSyncer } from "@blobscan/syncers";
 import {
-  DailyStatsSyncer,
   ETHPriceSyncer,
-  OverallStatsSyncer,
   SwarmStampSyncer,
   createRedisConnection,
 } from "@blobscan/syncers";
 
 import { prisma } from "../clients/prisma";
-import { getChainDencunForkSlot } from "../utils";
 
 export async function setUpSyncers() {
   const connection = createRedisConnection(env.REDIS_URI);
@@ -40,24 +37,6 @@ export async function setUpSyncers() {
       );
     }
   }
-
-  syncers.push(
-    new DailyStatsSyncer({
-      cronPattern: env.STATS_SYNCER_DAILY_CRON_PATTERN,
-      prisma,
-      redisUriOrConnection: connection,
-    })
-  );
-
-  syncers.push(
-    new OverallStatsSyncer({
-      cronPattern: env.STATS_SYNCER_OVERALL_CRON_PATTERN,
-      prisma,
-      redisUriOrConnection: connection,
-      lowestSlot:
-        env.DENCUN_FORK_SLOT ?? getChainDencunForkSlot(env.NETWORK_NAME),
-    })
-  );
 
   if (env.ETH_PRICE_SYNCER_ENABLED && env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL) {
     const chain = Object.values(chains).find(

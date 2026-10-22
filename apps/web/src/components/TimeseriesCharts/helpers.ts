@@ -53,7 +53,7 @@ export type TimeseriesDataset<T extends TimeseriesData = TimeseriesData> =
     };
   }>;
 
-function padSeries<S extends (string | number)[]>(
+function padSeries<S extends (string | number | null)[]>(
   series: S,
   offset: number,
   totalLength: number
@@ -89,9 +89,9 @@ export function transformToDatasets<T extends TimeseriesData>({
 
         const metricValues_ = (
           typeof sample === "bigint"
-            ? metricValues.map((v) => v.toString())
+            ? metricValues.map((v) => v?.toString() ?? null)
             : metricValues
-        ) as string[] | number[];
+        ) as (string | number | null)[];
 
         acc[metricName_] = padSeries(
           metricValues_,
