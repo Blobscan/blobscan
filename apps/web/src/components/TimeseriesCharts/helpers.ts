@@ -44,6 +44,11 @@ export type DatasetId = "global" | `category-${Category}` | `rollup-${Rollup}`;
 export type TimeseriesDataset<T extends TimeseriesData = TimeseriesData> =
   Prettify<{
     id: DatasetId;
+    /**
+     * The start of the current period when the data includes it. The current
+     * period is not complete, so its values are partial.
+     */
+    currentPeriodTimestamp?: Date;
     source: {
       timestamp: Date[];
     } & {
@@ -71,6 +76,7 @@ function padSeries<S extends (string | number | null)[]>(
 export function transformToDatasets<T extends TimeseriesData>({
   series,
   timestamps,
+  currentPeriod,
 }: T): TimeseriesDataset<T>[] {
   const allEmptySeries = series.every((s) => s.startTimestampIdx === undefined);
 
@@ -114,6 +120,7 @@ export function transformToDatasets<T extends TimeseriesData>({
       id: (dimension.type === "global"
         ? "global"
         : `${dimension.type}-${dimension.name}`) as DatasetId,
+      currentPeriodTimestamp: currentPeriod?.timestamp,
       source: {
         timestamp: timestamps,
         ...paddedMetrics,
