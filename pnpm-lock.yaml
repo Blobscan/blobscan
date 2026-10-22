@@ -183,22 +183,22 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^4.0.0
+        specifier: workspace:^5.0.0
         version: link:../../packages/api
       '@blobscan/blob-propagator':
-        specifier: workspace:^4.0.0
+        specifier: workspace:^5.0.0
         version: link:../../packages/blob-propagator
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^4.0.0
+        specifier: workspace:^5.0.0
         version: link:../../packages/blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.5.0
         version: link:../../packages/chains
       '@blobscan/db':
-        specifier: workspace:^0.30.0
+        specifier: workspace:^0.31.0
         version: link:../../packages/db
       '@blobscan/env':
-        specifier: workspace:^0.4.1
+        specifier: workspace:^0.5.0
         version: link:../../packages/env
       '@blobscan/errors':
         specifier: workspace:^0.0.2
@@ -213,10 +213,10 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../../packages/price-feed
       '@blobscan/rollups':
-        specifier: workspace:^4.0.0
+        specifier: workspace:^5.0.0
         version: link:../../packages/rollups
       '@blobscan/syncers':
-        specifier: workspace:^0.6.8
+        specifier: workspace:^0.7.0
         version: link:../../packages/syncers
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -274,13 +274,13 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^4.0.0
+        specifier: workspace:^5.0.0
         version: link:../../packages/api
       '@blobscan/blob-decoder':
         specifier: workspace:^0.2.2
         version: link:../../packages/blob-decoder
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^4.0.0
+        specifier: workspace:^5.0.0
         version: link:../../packages/blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.5.0
@@ -292,10 +292,10 @@ importers:
         specifier: workspace:^0.1.1
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.30.0
+        specifier: workspace:^0.31.0
         version: link:../../packages/db
       '@blobscan/env':
-        specifier: workspace:^0.4.1
+        specifier: workspace:^0.5.0
         version: link:../../packages/env
       '@blobscan/eth-format':
         specifier: workspace:^0.1.0
@@ -307,7 +307,7 @@ importers:
         specifier: workspace:^0.0.10
         version: link:../../packages/open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^4.0.0
+        specifier: workspace:^5.0.0
         version: link:../../packages/rollups
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -440,16 +440,16 @@ importers:
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^4.0.0
+        specifier: workspace:^5.0.0
         version: link:../../packages/blob-propagator
       '@blobscan/dayjs':
         specifier: workspace:^0.1.0
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.30.0
+        specifier: workspace:^0.31.0
         version: link:../../packages/db
       '@blobscan/env':
-        specifier: workspace:^0.4.0
+        specifier: workspace:^0.5.0
         version: link:../../packages/env
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -467,7 +467,7 @@ importers:
   packages/api:
     dependencies:
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^4.0.0
+        specifier: workspace:^5.0.0
         version: link:../blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.5.0
@@ -476,10 +476,10 @@ importers:
         specifier: workspace:^0.1.1
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.30.0
+        specifier: workspace:^0.31.0
         version: link:../db
       '@blobscan/env':
-        specifier: workspace:^0.4.0
+        specifier: workspace:^0.5.0
         version: link:../env
       '@blobscan/logger':
         specifier: workspace:^0.1.4
@@ -488,7 +488,7 @@ importers:
         specifier: workspace:^0.0.10
         version: link:../open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^4.0.0
+        specifier: workspace:^5.0.0
         version: link:../rollups
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -516,7 +516,7 @@ importers:
         version: 1.2.0(@trpc/server@10.45.4)(@types/express@4.17.25)(@types/node@22.19.11)(zod@3.23.8)
     devDependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^4.0.0
+        specifier: workspace:^5.0.0
         version: link:../blob-propagator
       '@types/jsonwebtoken':
         specifier: ^9.0.2
@@ -525,7 +525,7 @@ importers:
   packages/auth:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.30.0
+        specifier: workspace:^0.31.0
         version: link:../db
       '@next-auth/prisma-adapter':
         specifier: ^1.0.5
@@ -580,10 +580,10 @@ importers:
         version: 5.9.3
     devDependencies:
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^4.0.0
+        specifier: workspace:^5.0.0
         version: link:../blob-storage-manager
       '@blobscan/db':
-        specifier: workspace:^0.30.0
+        specifier: workspace:^0.31.0
         version: link:../db
 
   packages/blob-storage-manager:
@@ -614,7 +614,7 @@ importers:
         version: 14.0.0
     devDependencies:
       '@blobscan/db':
-        specifier: workspace:^0.30.0
+        specifier: workspace:^0.31.0
         version: link:../db
 
   packages/chains: {}
@@ -753,7 +753,7 @@ importers:
   packages/rollups:
     devDependencies:
       '@blobscan/db':
-        specifier: workspace:^0.30.0
+        specifier: workspace:^0.31.0
         version: link:../db
 
   packages/syncers:
@@ -765,7 +765,7 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.30.0
+        specifier: workspace:^0.31.0
         version: link:../db
       '@blobscan/errors':
         specifier: workspace:^0.0.2
@@ -795,7 +795,7 @@ importers:
         specifier: workspace:^0.1.1
         version: link:../dayjs
       '@blobscan/env':
-        specifier: workspace:^0.4.1
+        specifier: workspace:^0.5.0
         version: link:../env
       '@prisma/client':
         specifier: ^5.19.1

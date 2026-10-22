@@ -1,5 +1,20 @@
 # @blobscan/web
 
+## 0.55.0
+
+### Minor Changes
+
+- [#1028](https://github.com/Blobscan/blobscan/pull/1028) [`b9e38b8`](https://github.com/Blobscan/blobscan/commit/b9e38b8b90cf354ea306f543f7d8f0679a802415) Thanks [@PJColombo](https://github.com/PJColombo)! - Replaced the legacy `daily_stats` and `overall_stats` tables with the metrics tables that Dagster populates. The stats endpoints and the counts now read `daily_metrics` and `all_time_metrics`. Removed the legacy stats syncers, the stats aggregation CLI and the legacy parity check. The stats endpoints use the new metric names (for example, `totalBlobFee` is now `totalBlobBaseFee`), and their values can be `null`
+
+### Patch Changes
+
+- Updated dependencies [[`b9e38b8`](https://github.com/Blobscan/blobscan/commit/b9e38b8b90cf354ea306f543f7d8f0679a802415)]:
+  - @blobscan/api@5.0.0
+  - @blobscan/db@0.31.0
+  - @blobscan/env@0.5.0
+  - @blobscan/blob-storage-manager@5.0.0
+  - @blobscan/rollups@5.0.0
+
 ## 0.54.2
 
 ### Patch Changes
