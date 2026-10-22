@@ -212,7 +212,7 @@ describe("updateState", () => {
       await expect(
         authorizedCaller.updateState(newState)
       ).rejects.toThrowErrorMatchingInlineSnapshot(
-        '"Last lower synced slot must be less than or equal to last upper synced slot"'
+        `[TRPCError: Last lower synced slot must be less than or equal to last upper synced slot]`
       );
     });
   });

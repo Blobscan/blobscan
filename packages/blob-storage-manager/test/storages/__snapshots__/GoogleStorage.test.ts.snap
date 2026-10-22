@@ -4,7 +4,7 @@ exports[`GoogleStorage > should throw a valid error if the bucket does not exist
 
 exports[`GoogleStorage > should throw a valid error if the bucket does not exist 2`] = `[Error: Bucket non-existent-bucket does not exist]`;
 
-exports[`GoogleStorage > should throw a valid error when trying to get a non-existent blob 1`] = `"GoogleStorageMock failed: Failed to get blob with uri \\"missing-blob\\""`;
+exports[`GoogleStorage > should throw a valid error when trying to get a non-existent blob 1`] = `"GoogleStorageMock failed: Failed to get blob with uri "missing-blob""`;
 
 exports[`GoogleStorage > should throw a valid error when trying to get a non-existent blob 2`] = `
 [Error: Not Found

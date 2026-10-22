@@ -36,14 +36,16 @@ describe("Main", () => {
 
   runMainTests(["invalid-command"], () => {
     it("should fail when trying to run an invalid command", async () => {
-      expect(main).rejects.toMatchInlineSnapshot(
+      await expect(main).rejects.toMatchInlineSnapshot(
         "[Error: Invalid command: invalid-command]"
       );
     });
   });
 
   it("should fail when no command is given", async () => {
-    expect(main).rejects.toMatchInlineSnapshot("[Error: No command specified]");
+    await expect(main).rejects.toMatchInlineSnapshot(
+      "[Error: No command specified]"
+    );
   });
 });
 
@@ -71,7 +73,7 @@ function runMainCommandTest(commandName: any) {
     it(`should run the "${commandName}" command correctly`, async () => {
       const commandSpy = vi
         .spyOn(commands, commandName)
-        .mockImplementation(async () => void {});
+        .mockImplementation(() => {});
 
       await main();
 

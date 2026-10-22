@@ -57,7 +57,7 @@ exports[`BlobStorageManager > when storing a blob > should store the blob in all
 
 exports[`BlobStorageManager > when storing a blob > should store the blob in all available storages 2`] = `[]`;
 
-exports[`BlobStorageManager > when storing a blob > should throw an error if all uploads fail 1`] = `"Failed to upload blob with hash \\"0x6d6f636b2d64617461\\" to any storage"`;
+exports[`BlobStorageManager > when storing a blob > should throw an error if all uploads fail 1`] = `"Failed to upload blob with hash "0x6d6f636b2d64617461" to any storage"`;
 
 exports[`BlobStorageManager > when storing a blob > should throw an error if all uploads fail 2`] = `
 [

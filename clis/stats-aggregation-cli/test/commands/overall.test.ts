@@ -51,7 +51,7 @@ describe("Overall command", () => {
   });
 
   it("should fail when an invalid target block height is given", async () => {
-    expect(
+    await expect(
       overall(["--to", "invalid-block-height"])
     ).rejects.toMatchInlineSnapshot(
       '[Error: Overall stats aggregation failed: Invalid `to` flag value. Expected a block number, "latest" or "finalized" but got invalid-block-height]'

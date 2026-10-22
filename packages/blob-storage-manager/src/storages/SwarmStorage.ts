@@ -77,13 +77,13 @@ export class SwarmStorage extends BlobStorage {
 
   protected async _healthCheck() {
     return this.#performBeeAPICall(async () => {
-      await this._beeClient.checkConnection();
+      await this._beeClient.connectivity.checkConnection();
     });
   }
 
   protected async _getBlob(uri: string) {
     return this.#performBeeAPICall(async () => {
-      const file = await this._beeClient.downloadFile(uri);
+      const file = await this._beeClient.file.download(uri);
 
       return file.contentType === "text/plain"
         ? file.data.toUtf8()
@@ -92,7 +92,7 @@ export class SwarmStorage extends BlobStorage {
   }
 
   protected async _removeBlob(uri: string): Promise<void> {
-    await this.#performBeeAPICall(() => this._beeClient.unpin(uri));
+    await this.#performBeeAPICall(() => this._beeClient.pin.remove(uri));
   }
 
   protected async _storeBlob(versionedHash: string, data: Buffer) {
@@ -123,7 +123,7 @@ export class SwarmStorage extends BlobStorage {
   }
 
   async #sendToBeeNode(versionedHash: string, buffer: Buffer) {
-    const response = await this._beeClient.uploadFile(
+    const response = await this._beeClient.file.upload(
       this.batchId,
       buffer,
       versionedHash,

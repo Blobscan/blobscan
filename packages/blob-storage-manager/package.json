@@ -15,13 +15,13 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.840.0",
+    "@aws-sdk/client-s3": "^3.1155.0",
     "@blobscan/errors": "workspace:^0.0.2",
     "@blobscan/logger": "workspace:^0.1.4",
     "@blobscan/open-telemetry": "workspace:^0.0.10",
     "@blobscan/zod": "workspace:^0.1.0",
-    "@ethersphere/bee-js": "9.3.0",
-    "@google-cloud/storage": "^6.10.1",
+    "@ethersphere/bee-js": "13.2.0",
+    "@google-cloud/storage": "^8.4.0",
     "multiformats": "^14.0.0"
   },
   "devDependencies": {

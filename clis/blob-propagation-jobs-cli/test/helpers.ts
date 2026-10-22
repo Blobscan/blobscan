@@ -88,21 +88,21 @@ export function argHelpTest(c: Command, expectedDisplayedUsage: string) {
 }
 
 export function argInvalidQueueTests(c: Command) {
-  it("should fail when providing a non-existing queue", () => {
-    expect(
+  it("should fail when providing a non-existing queue", async () => {
+    await expect(
       c(["-q", "invalid-queue-name"])
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Invalid queue 'invalid-queue-name'. Valid values are google, postgres, swarm, swarmycloud, s3."`
+      `[Error: Invalid queue 'invalid-queue-name'. Valid values are google, postgres, swarm, swarmycloud, s3.]`
     );
   });
 }
 
 export function argInvalidBlobHashesTests(c: Command) {
-  it("should fail when providing non-existing blob hashes", () => {
-    expect(
+  it("should fail when providing non-existing blob hashes", async () => {
+    await expect(
       c(["-q", "postgres", "-b", "invalid-blob-hash"])
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      '"Couldn\'t find job with id postgres-worker-invalid-blob-hash"'
+      `[Error: Couldn't find job with id postgres-worker-invalid-blob-hash]`
     );
   });
 }

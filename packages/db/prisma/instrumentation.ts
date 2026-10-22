@@ -1,4 +1,4 @@
-import { api, SemanticAttributes } from "@blobscan/open-telemetry";
+import { api, ATTR_CODE_FUNCTION_NAME } from "@blobscan/open-telemetry";
 
 export const tracer = api.trace.getTracer("@blobscan/db");
 
@@ -12,7 +12,7 @@ export function curryPrismaExtensionFnSpan(extensionName: string) {
         "prisma:extension",
         {
           attributes: {
-            [SemanticAttributes.CODE_FUNCTION]: fnName,
+            [ATTR_CODE_FUNCTION_NAME]: fnName,
             extension: extensionName,
             model: modelName,
           },

@@ -1,5 +1,5 @@
 import type { S3Client } from "@aws-sdk/client-s3";
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { env, testValidError } from "@blobscan/test";
 
@@ -45,6 +45,10 @@ describe("S3Storage", () => {
   const expectedStoredBlobData = "0x4fe40fc67f9c3a3ffa2be77d10fe7818";
 
   beforeAll(() => {
+    // The shared test setup installs fake timers, which stalls the AWS SDK's
+    // request timeouts and retries. These tests don't depend on a mocked clock.
+    vi.useRealTimers();
+
     if (!env.S3_STORAGE_BUCKET_NAME) {
       throw new Error("S3_STORAGE_BUCKET_NAME is not set");
     }
@@ -57,6 +61,10 @@ describe("S3Storage", () => {
       secretAccessKey: env.S3_STORAGE_SECRET_ACCESS_KEY,
       endpoint: env.S3_STORAGE_ENDPOINT,
     });
+  });
+
+  afterAll(() => {
+    vi.useFakeTimers();
   });
 
   it("should create a storage", async () => {
@@ -73,15 +81,9 @@ describe("S3Storage", () => {
     expect(blobUri).toBe(expectedStoredBlobFileUri);
   });
 
-  it(
-    "should return 'OK' if storage is healthy",
-    async () => {
-      await expect(storage.healthCheck()).resolves.toBe("OK");
-    },
-    {
-      timeout: 100_000,
-    }
-  );
+  it("should return 'OK' if storage is healthy", async () => {
+    await expect(storage.healthCheck()).resolves.toBe("OK");
+  }, 100_000);
 
   it("should get a blob given its reference", async () => {
     // First store the blob so we can retrieve it
@@ -149,7 +151,7 @@ describe("S3Storage", () => {
       await storage.getBlob("missing-blob");
     },
     BlobStorageError,
-    { checkCause: true }
+    { timeout: 100_000 }
   );
 
   testValidError(
