@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.55.1
+
+### Patch Changes
+
+- [#1031](https://github.com/Blobscan/blobscan/pull/1031) [`7473c2d`](https://github.com/Blobscan/blobscan/commit/7473c2dd8f643a1f9fca60906c661994aa3dc19e) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Upgrade the runtime to Node.js 24 LTS, tracking the latest 24.x patch release so Node.js security fixes are picked up automatically.
+
 ## 0.55.0
 
 ### Minor Changes
