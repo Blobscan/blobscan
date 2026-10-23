@@ -4,7 +4,6 @@ import {
   addCurrentPeriodColumns,
   createCurrentPeriodSeries,
   CURRENT_PERIOD_SERIES_ID_SUFFIX,
-  getCurrentPeriodPulseOptions,
   getCurrentPeriodTimestamp,
   getMetricColumn,
   getSeriesMetricValue,
@@ -101,8 +100,8 @@ describe("getMetricColumn", () => {
 describe("createCurrentPeriodSeries", () => {
   const options = { seriesIdx: 0 };
 
-  it("should stop a line at the last closed period and add a dotted segment and a beacon", () => {
-    const [line, segment, beacon] = createCurrentPeriodSeries(
+  it("should stop a line at the last closed period and add a dotted segment and a static hollow point", () => {
+    const [line, segment, point] = createCurrentPeriodSeries(
       {
         id: "rollup-base",
         name: "Base",
@@ -120,34 +119,16 @@ describe("createCurrentPeriodSeries", () => {
       encode: { y: "totalBlobs__tail" },
       lineStyle: { type: "dotted", color: "#0052ff" },
     });
-    expect(beacon).toMatchObject({
+    expect(point).toMatchObject({
       name: "Base",
       type: "scatter",
       encode: { y: "totalBlobs__current" },
+      symbol: "emptyCircle",
+      itemStyle: { borderColor: "#0052ff" },
     });
     expect(isCurrentPeriodSeries(segment?.id)).toBe(true);
-    expect(isCurrentPeriodSeries(beacon?.id)).toBe(true);
+    expect(isCurrentPeriodSeries(point?.id)).toBe(true);
     expect(isCurrentPeriodSeries(line?.id)).toBe(false);
-  });
-
-  it("should give the beacon a larger glowing symbol at the second pulse step", () => {
-    const [, , beacon] = createCurrentPeriodSeries(
-      {
-        type: "line",
-        encode: { x: "timestamp", y: "totalBlobs" },
-        itemStyle: { color: "#0052ff" },
-      },
-      options
-    );
-
-    expect(getCurrentPeriodPulseOptions(beacon ?? {}, 0)).toEqual({
-      symbolSize: 7,
-      itemStyle: { color: "#0052ff", shadowColor: "#0052ff", shadowBlur: 0 },
-    });
-    expect(getCurrentPeriodPulseOptions(beacon ?? {}, 1)).toEqual({
-      symbolSize: 12,
-      itemStyle: { color: "#0052ff", shadowColor: "#0052ff", shadowBlur: 12 },
-    });
   });
 
   it("should put the current bar in the stack of its series", () => {
@@ -170,7 +151,7 @@ describe("createCurrentPeriodSeries", () => {
       type: "bar",
       stack: "total",
       encode: { y: "totalBlobs__current" },
-      itemStyle: { borderType: "dashed" },
+      itemStyle: { opacity: 0.5, borderType: "dashed" },
     });
   });
 
@@ -182,5 +163,26 @@ describe("createCurrentPeriodSeries", () => {
 
     expect(bar?.stack).toBeDefined();
     expect(currentBar?.stack).toBe(bar?.stack);
+  });
+});
+
+describe("current period series", () => {
+  it("should have no animation options of their own", () => {
+    const currentPeriodSeries = [
+      ...createCurrentPeriodSeries(
+        { type: "line", encode: { x: "timestamp", y: "totalBlobs" } },
+        { seriesIdx: 0 }
+      ),
+      ...createCurrentPeriodSeries(
+        { type: "bar", encode: { x: "timestamp", y: "totalBlobs" } },
+        { seriesIdx: 1 }
+      ),
+    ].filter((s) => isCurrentPeriodSeries(s.id));
+
+    for (const s of currentPeriodSeries) {
+      expect(
+        Object.keys(s).filter((key) => key.startsWith("animation"))
+      ).toEqual([]);
+    }
   });
 });

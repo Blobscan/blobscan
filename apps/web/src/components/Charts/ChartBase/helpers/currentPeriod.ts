@@ -1,7 +1,7 @@
 import type { EChartOption } from "echarts";
 
 // The current period is not complete. Separate series draw its point: a
-// dotted segment and a pulsing beacon for a line, a dashed pulsing bar for a
+// dotted segment and a hollow point for a line, a dashed and lighter bar for a
 // bar. These series read the extra columns that addCurrentPeriodColumns adds
 // to the dataset.
 const CLOSED_COLUMN_SUFFIX = "__closed";
@@ -13,19 +13,6 @@ const CURRENT_COLUMN_SUFFIX = "__current";
 const TAIL_COLUMN_SUFFIX = "__tail";
 
 export const CURRENT_PERIOD_SERIES_ID_SUFFIX = "__current-period";
-
-// The current period series pulse: at each interval, they change to the next
-// pulse step, and their update animation makes the change smooth. The
-// animation is shorter than the interval, because the chart becomes
-// interactive only after a "finished" event, which ECharts sends when no
-// animation runs. For the same reason, the beacon is not an effectScatter,
-// which animates all the time.
-export const CURRENT_PERIOD_PULSE_INTERVAL_MS = 1_200;
-export const CURRENT_PERIOD_PULSE_STEPS = 2;
-const PULSE_ANIMATION = {
-  animationDurationUpdate: 800,
-  animationEasingUpdate: "sinusoidalInOut",
-};
 
 export type ChartSeries = {
   id?: string;
@@ -46,23 +33,6 @@ export type ChartSeries = {
  */
 export type ChartDataset = EChartOption.Dataset & {
   currentPeriodTimestamp?: Date;
-};
-
-type PulsingSeriesType = "bar" | "scatter";
-
-// The options that change at each pulse step, for each type of current
-// period series
-const PULSE_STEP_OPTIONS: Record<
-  PulsingSeriesType,
-  (color: unknown, step: number) => Partial<ChartSeries>
-> = {
-  bar: (color, step) => ({
-    itemStyle: { color, opacity: [0.75, 0.35][step] },
-  }),
-  scatter: (color, step) => ({
-    symbolSize: [7, 12][step],
-    itemStyle: { color, shadowColor: color, shadowBlur: [0, 12][step] },
-  }),
 };
 
 export type PeriodUnit = "hour" | "day";
@@ -211,18 +181,6 @@ export function getSeriesMetricValue(
 }
 
 /**
- * Returns the options that change at a pulse step of a current period series.
- */
-export function getCurrentPeriodPulseOptions(
-  series: ChartSeries,
-  step: number
-): Partial<ChartSeries> | undefined {
-  const getStepOptions = PULSE_STEP_OPTIONS[series.type as PulsingSeriesType];
-
-  return getStepOptions?.(series.itemStyle?.color, step);
-}
-
-/**
  * Returns the series to draw for a series when a current period exists:
  * the series itself, with its line or bars stopped at the last closed period,
  * and the series that draw the current period.
@@ -254,16 +212,6 @@ export function createCurrentPeriodSeries(
     // The current bars use the stack of the series, so they are in the same
     // place on the axis as the closed bars.
     const stack = series.stack ?? idPrefix;
-    const currentBar: ChartSeries = {
-      ...currentPeriodSeriesBase,
-      id: `${idPrefix}-bar${CURRENT_PERIOD_SERIES_ID_SUFFIX}`,
-      type: "bar",
-      stack,
-      encode: { x: "timestamp", y: `${metric}${CURRENT_COLUMN_SUFFIX}` },
-      itemStyle: { color },
-      ...PULSE_ANIMATION,
-    };
-    const firstStep = getCurrentPeriodPulseOptions(currentBar, 0);
 
     return [
       {
@@ -272,10 +220,14 @@ export function createCurrentPeriodSeries(
         encode: { ...series.encode, y: `${metric}${CLOSED_BAR_COLUMN_SUFFIX}` },
       },
       {
-        ...currentBar,
-        ...firstStep,
+        ...currentPeriodSeriesBase,
+        id: `${idPrefix}-bar${CURRENT_PERIOD_SERIES_ID_SUFFIX}`,
+        type: "bar",
+        stack,
+        encode: { x: "timestamp", y: `${metric}${CURRENT_COLUMN_SUFFIX}` },
         itemStyle: {
-          ...firstStep?.itemStyle,
+          color,
+          opacity: 0.5,
           borderColor: color,
           borderType: "dashed",
           borderWidth: 1.5,
@@ -283,16 +235,6 @@ export function createCurrentPeriodSeries(
       },
     ];
   }
-
-  const beacon: ChartSeries = {
-    ...currentPeriodSeriesBase,
-    id: `${idPrefix}-beacon${CURRENT_PERIOD_SERIES_ID_SUFFIX}`,
-    type: "scatter",
-    encode: { x: "timestamp", y: `${metric}${CURRENT_COLUMN_SUFFIX}` },
-    itemStyle: { color },
-    ...PULSE_ANIMATION,
-    z: 5,
-  };
 
   return [
     {
@@ -314,6 +256,15 @@ export function createCurrentPeriodSeries(
         ? { ...series.areaStyle, opacity: 0.25 }
         : undefined,
     },
-    { ...beacon, ...getCurrentPeriodPulseOptions(beacon, 0) },
+    {
+      ...currentPeriodSeriesBase,
+      id: `${idPrefix}-point${CURRENT_PERIOD_SERIES_ID_SUFFIX}`,
+      type: "scatter",
+      encode: { x: "timestamp", y: `${metric}${CURRENT_COLUMN_SUFFIX}` },
+      symbol: "emptyCircle",
+      symbolSize: 8,
+      itemStyle: { color, borderColor: color, borderWidth: 2 },
+      z: 5,
+    },
   ];
 }

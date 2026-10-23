@@ -10,7 +10,6 @@ import { useTheme } from "next-themes";
 
 import { EmptyState } from "~/components/EmptyState";
 import echarts from "~/echarts";
-import { usePrefersReducedMotion } from "~/hooks/usePrefersReducedMotion";
 import type { Size, TimeseriesDimension } from "~/types";
 import { Legend } from "./Legend";
 import type { LegendItemData, LegendProps } from "./Legend";
@@ -21,15 +20,11 @@ import {
   createBaseTooltipOptions,
   createCurrentPeriodSeries,
   createYAxisOptions,
-  CURRENT_PERIOD_PULSE_INTERVAL_MS,
-  CURRENT_PERIOD_PULSE_STEPS,
   DEFAULT_SERIES_COLOR,
   createBaseSeriesOptions,
-  getCurrentPeriodPulseOptions,
   getCurrentPeriodTimestamp,
   getDimensionColor,
   getSeriesMetricValue,
-  isCurrentPeriodSeries,
 } from "./helpers";
 import type { ChartDataset, ChartSeries } from "./helpers";
 import type { SkeletonChartOptions } from "./helpers/skeleton";
@@ -102,7 +97,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   size = "md",
 }) {
   const { resolvedTheme } = useTheme();
-  const prefersReducedMotion = usePrefersReducedMotion();
   const themeMode = resolvedTheme as "light" | "dark";
   const chartInstanceRef = useRef<EChartsReactCore | null>(null);
   const hoveredSeriesRef = useRef<{
@@ -214,7 +208,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         animationDuration: 300,
         animationDelayUpdate: (idx: number) => idx * 2,
         animationThreshold: 20_000,
-        animation: !prefersReducedMotion,
+        animation: true,
         legend: {
           show: false,
         },
@@ -246,7 +240,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       themeMode,
       currentPeriodTimestamp,
       getSeriesValue,
-      prefersReducedMotion,
     ]
   );
 
@@ -444,34 +437,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       }
     );
   }, [baseOptions, chartDataset, chartSeries]);
-
-  // The current period series pulse. With reduced motion, the chart has no
-  // animation, and the series stay at the first pulse step.
-  useEffect(() => {
-    const chart = chartInstanceRef.current?.getEchartsInstance();
-    const currentPeriodSeries = (
-      chartSeries as ChartSeries[] | undefined
-    )?.filter((s) => isCurrentPeriodSeries(s.id));
-
-    if (!chart || !currentPeriodSeries?.length || prefersReducedMotion) {
-      return;
-    }
-
-    let step = 0;
-    const intervalId = window.setInterval(() => {
-      step = (step + 1) % CURRENT_PERIOD_PULSE_STEPS;
-
-      chart.setOption({
-        series: currentPeriodSeries.flatMap((s) => {
-          const pulseOptions = getCurrentPeriodPulseOptions(s, step);
-
-          return pulseOptions ? [{ id: s.id, ...pulseOptions }] : [];
-        }),
-      });
-    }, CURRENT_PERIOD_PULSE_INTERVAL_MS);
-
-    return () => window.clearInterval(intervalId);
-  }, [chartSeries, prefersReducedMotion]);
 
   useEffect(() => {
     const chart = chartInstanceRef.current?.getEchartsInstance();
