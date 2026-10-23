@@ -24,7 +24,9 @@ import {
   createBaseSeriesOptions,
   getCurrentPeriodTimestamp,
   getDimensionColor,
+  getMainSeriesIndex,
   getSeriesMetricValue,
+  isCurrentPeriodSeries,
 } from "./helpers";
 import type { ChartDataset, ChartSeries } from "./helpers";
 import type { SkeletonChartOptions } from "./helpers/skeleton";
@@ -298,6 +300,11 @@ export const ChartBase: FC<ChartBaseProps> = function ({
 
     if (!chart) return;
 
+    const hasCurrentPeriodSeries = () =>
+      !!(chartSeriesRef.current as ChartSeries[] | undefined)?.some((s) =>
+        isCurrentPeriodSeries(s.id)
+      );
+
     const onMouseover = ({
       componentType,
       seriesName,
@@ -305,7 +312,26 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     }: ECElementEvent) => {
       if (componentType !== "series") return;
       setSelectedLegendItem(seriesName);
-      hoveredSeriesRef.current = { seriesIndex, seriesName };
+      hoveredSeriesRef.current = {
+        seriesIndex: getMainSeriesIndex(
+          (chartSeriesRef.current as ChartSeries[] | undefined) ?? [],
+          seriesIndex
+        ),
+        seriesName,
+      };
+
+      // A series and its current period series are separate ECharts series,
+      // and a hover highlights only the series under the mouse. Highlight all
+      // the series with the name, as a hover on the legend does.
+      if (hasCurrentPeriodSeries()) {
+        chart.dispatchAction({ type: "highlight", seriesName });
+      }
+    };
+
+    const onMouseout = ({ componentType, seriesName }: ECElementEvent) => {
+      if (componentType !== "series" || !hasCurrentPeriodSeries()) return;
+
+      chart.dispatchAction({ type: "downplay", seriesName });
     };
 
     const onGlobalout = () => {
@@ -316,10 +342,12 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     };
 
     chart.on("mouseover", onMouseover);
+    chart.on("mouseout", onMouseout);
     chart.on("globalout", onGlobalout);
 
     return () => {
       chart.off("mouseover", onMouseover);
+      chart.off("mouseout", onMouseout);
       chart.off("globalout", onGlobalout);
     };
   }, []);

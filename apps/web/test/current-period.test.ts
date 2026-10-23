@@ -5,6 +5,7 @@ import {
   createCurrentPeriodSeries,
   CURRENT_PERIOD_SERIES_ID_SUFFIX,
   getCurrentPeriodTimestamp,
+  getMainSeriesIndex,
   getMetricColumn,
   getSeriesMetricValue,
   isCurrentPeriodSeries,
@@ -184,5 +185,45 @@ describe("current period series", () => {
         Object.keys(s).filter((key) => key.startsWith("animation"))
       ).toEqual([]);
     }
+  });
+});
+
+describe("current period hover", () => {
+  const series = {
+    id: "rollup-base",
+    name: "Base",
+    type: "bar",
+    stack: "total",
+    encode: { x: "timestamp", y: "totalBlobs" },
+    emphasis: { focus: "series" },
+  };
+
+  it("should give the current period series the hover style of their series", () => {
+    const [, currentBar] = createCurrentPeriodSeries(series, { seriesIdx: 0 });
+
+    expect(currentBar?.emphasis).toEqual({ focus: "series" });
+    expect(currentBar?.silent).toBeUndefined();
+  });
+
+  it("should map a current period series to the index of its series", () => {
+    const other = { ...series, id: "rollup-arbitrum", name: "Arbitrum" };
+    const [baseBar, baseCurrentBar] = createCurrentPeriodSeries(series, {
+      seriesIdx: 0,
+    });
+    const [otherBar, otherCurrentBar] = createCurrentPeriodSeries(other, {
+      seriesIdx: 1,
+    });
+    // The order of ChartBase: all the series, then the current period series
+    const chartSeries = [
+      baseBar,
+      otherBar,
+      baseCurrentBar,
+      otherCurrentBar,
+    ].filter((s) => s !== undefined);
+
+    expect(getMainSeriesIndex(chartSeries, 2)).toBe(0);
+    expect(getMainSeriesIndex(chartSeries, 3)).toBe(1);
+    expect(getMainSeriesIndex(chartSeries, 1)).toBe(1);
+    expect(getMainSeriesIndex(chartSeries, undefined)).toBeUndefined();
   });
 });

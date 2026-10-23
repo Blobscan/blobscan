@@ -54,6 +54,29 @@ export function isCurrentPeriodSeries(seriesId: unknown) {
 }
 
 /**
+ * Returns the index of the series that a hover on a series belongs to. A
+ * current period series belongs to the series with the same name, so the
+ * tooltip marks the row of that series.
+ */
+export function getMainSeriesIndex(
+  chartSeries: ChartSeries[],
+  seriesIndex: number | undefined
+) {
+  const series =
+    seriesIndex === undefined ? undefined : chartSeries[seriesIndex];
+
+  if (!series || !isCurrentPeriodSeries(series.id)) {
+    return seriesIndex;
+  }
+
+  const mainSeriesIndex = chartSeries.findIndex(
+    (s) => s.name === series.name && !isCurrentPeriodSeries(s.id)
+  );
+
+  return mainSeriesIndex === -1 ? seriesIndex : mainSeriesIndex;
+}
+
+/**
  * Returns the metric column of a column that addCurrentPeriodColumns added.
  */
 export function getMetricColumn(column: string) {
@@ -201,10 +224,13 @@ export function createCurrentPeriodSeries(
 
   const color = series.itemStyle?.color as string | undefined;
   const idPrefix = `${series.id ?? `series-${seriesIdx}`}`;
+  // The current period series have the name and the hover style (emphasis)
+  // of the series, so a hover on the series or on the current period
+  // highlights both (see ChartBase).
   const currentPeriodSeriesBase = {
     name: series.name,
     datasetIndex: series.datasetIndex,
-    silent: true,
+    emphasis: series.emphasis,
     tooltip: { show: false },
   };
 
