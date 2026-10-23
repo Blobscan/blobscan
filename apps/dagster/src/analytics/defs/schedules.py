@@ -5,20 +5,8 @@ from typing import TYPE_CHECKING
 
 import dagster as dg
 
-from .assets import (
-    daily_partitions,
-    hourly_partitions,
-    monthly_partitions,
-    weekly_partitions,
-    yearly_partitions,
-)
-from .jobs import (
-    daily_metrics_job,
-    hourly_metrics_job,
-    monthly_metrics_job,
-    weekly_metrics_job,
-    yearly_metrics_job,
-)
+from .assets import hourly_partitions
+from .jobs import all_time_metrics_job, hourly_metrics_job
 
 if TYPE_CHECKING:
     from dagster._core.definitions.unresolved_asset_job_definition import (
@@ -57,32 +45,23 @@ live_hourly_schedule = _build_live_schedule(
     partitions_def=hourly_partitions,
 )
 
-live_daily_schedule = _build_live_schedule(
-    name="live_daily_schedule",
-    cron_schedule="0 * * * *",  # every hour
-    job=daily_metrics_job,
-    partitions_def=daily_partitions,
-)
+# The current partitions of the rollup levels (daily, weekly, monthly, yearly)
+# have no live schedule: their automation condition materializes them after
+# each hourly update (see rollup_condition in assets.py).
 
-live_weekly_schedule = _build_live_schedule(
-    name="live_weekly_schedule",
-    cron_schedule="0 0 * * *",  # every day
-    job=weekly_metrics_job,
-    partitions_def=weekly_partitions,
-)
-
-live_monthly_schedule = _build_live_schedule(
-    name="live_monthly_schedule",
-    cron_schedule="0 0 * * *",  # every day
-    job=monthly_metrics_job,
-    partitions_def=monthly_partitions,
-)
-
-live_yearly_schedule = _build_live_schedule(
-    name="live_yearly_schedule",
-    cron_schedule="0 0 * * *",  # every day
-    job=yearly_metrics_job,
-    partitions_def=yearly_partitions,
+# all_time_metrics is a full refresh, so it runs on a schedule and not after
+# each update in the cascade. The 5-minute offset gives the cascade that the
+# live hourly schedule starts time to complete.
+#
+# Before, an automation condition updated all_time_metrics, which needs no
+# operator action. Thus this schedule is running by default, not stopped as
+# the live schedules are. A run before the backfill completes is safe: it
+# only reads the metrics tables.
+all_time_metrics_schedule = dg.ScheduleDefinition(
+    name="all_time_metrics_schedule",
+    cron_schedule="5-59/10 * * * *",  # every 10 minutes, at :05, :15, ...
+    job=all_time_metrics_job,
+    default_status=dg.DefaultScheduleStatus.RUNNING,
 )
 
 

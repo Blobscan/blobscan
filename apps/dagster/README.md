@@ -58,12 +58,20 @@ The pipeline aggregates blob and transaction data into `hourly_metrics`, then
 rolls it up into `daily_metrics`, `weekly_metrics`, `monthly_metrics`,
 `yearly_metrics` and `all_time_metrics`.
 
-- **Live schedules** (`live_*_schedule`) refresh the in-progress period of each
-  table. `hourly_catch_up_schedule` re-aggregates the last 3 hours at :05 to
-  pick up late data and reorgs. Schedules are created stopped: enable them in
-  the UI after deploying.
-- **Completed periods** are materialized by automation conditions once their
-  upstream data is updated.
+- **`live_hourly_schedule`** refreshes the in-progress hour every 10 minutes.
+  `hourly_catch_up_schedule` re-aggregates the last 3 hours at :05 to pick up
+  late data and reorgs.
+- **Rollup levels** (daily, weekly, monthly, yearly) are materialized by
+  automation conditions when their upstream partitions are updated. This
+  includes the in-progress period, so each live update of `hourly_metrics`
+  cascades to daily, then weekly and monthly, then yearly, within about a
+  minute.
+- **`all_time_metrics_schedule`** fully refreshes `all_time_metrics` every 10
+  minutes (at :05, :15, ...), after the cascade. It does not run from an
+  automation condition, so a full refresh does not run once for each level.
+  It is running by default.
+- The other schedules are created stopped: enable them in the UI after
+  deploying.
 - Every run **replaces** the rows of its time window, so re-running a partition
   or backfilling a range after a SQL change is safe.
 
