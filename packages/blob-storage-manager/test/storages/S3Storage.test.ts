@@ -1,7 +1,7 @@
 import type { S3Client } from "@aws-sdk/client-s3";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { env, testValidError } from "@blobscan/test";
+import { ensureS3Bucket, env, testValidError } from "@blobscan/test";
 
 import { S3Storage } from "../../src";
 import { BlobStorageError } from "../../src/errors";
@@ -44,7 +44,9 @@ describe("S3Storage", () => {
   )}.bin`;
   const expectedStoredBlobData = "0x4fe40fc67f9c3a3ffa2be77d10fe7818";
 
-  beforeAll(() => {
+  beforeAll(async () => {
+    await ensureS3Bucket();
+
     if (!env.S3_STORAGE_BUCKET_NAME) {
       throw new Error("S3_STORAGE_BUCKET_NAME is not set");
     }
@@ -73,15 +75,9 @@ describe("S3Storage", () => {
     expect(blobUri).toBe(expectedStoredBlobFileUri);
   });
 
-  it(
-    "should return 'OK' if storage is healthy",
-    async () => {
-      await expect(storage.healthCheck()).resolves.toBe("OK");
-    },
-    {
-      timeout: 100_000,
-    }
-  );
+  it("should return 'OK' if storage is healthy", async () => {
+    await expect(storage.healthCheck()).resolves.toBe("OK");
+  }, 100_000);
 
   it("should get a blob given its reference", async () => {
     // First store the blob so we can retrieve it
@@ -149,7 +145,7 @@ describe("S3Storage", () => {
       await storage.getBlob("missing-blob");
     },
     BlobStorageError,
-    { checkCause: true }
+    { timeout: 100_000 }
   );
 
   testValidError(

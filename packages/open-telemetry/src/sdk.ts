@@ -1,9 +1,14 @@
+import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import { WinstonInstrumentation } from "@opentelemetry/instrumentation-winston";
+import { resourceFromAttributes } from "@opentelemetry/resources";
 import type { NodeSDKConfiguration } from "@opentelemetry/sdk-node";
-import { NodeSDK, resources, api } from "@opentelemetry/sdk-node";
-import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
+import { NodeSDK } from "@opentelemetry/sdk-node";
+import {
+  ATTR_DEPLOYMENT_ENVIRONMENT_NAME,
+  ATTR_SERVICE_NAME,
+} from "@opentelemetry/semantic-conventions";
 import { PrismaInstrumentation } from "@prisma/instrumentation";
 
 import { logger } from "@blobscan/logger";
@@ -24,7 +29,7 @@ function buildExporterAuthHeader(username: string, password: string) {
 
 export function setUpOpenTelemetry(serviceName: string, config?: Config) {
   if (config?.enableDiagnosticLogs) {
-    api.diag.setLogger(new api.DiagConsoleLogger(), api.DiagLogLevel.INFO);
+    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
   }
   const otlpAuth = config?.exporter?.otlpAuth;
   /**
@@ -38,9 +43,9 @@ export function setUpOpenTelemetry(serviceName: string, config?: Config) {
 
   const sdk = new NodeSDK({
     ...config,
-    resource: new resources.Resource({
-      [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
-      [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV,
+    resource: resourceFromAttributes({
+      [ATTR_SERVICE_NAME]: serviceName,
+      [ATTR_DEPLOYMENT_ENVIRONMENT_NAME]: process.env.NODE_ENV,
       ...(config?.sdk?.resource?.attributes ?? {}),
     }),
     traceExporter:

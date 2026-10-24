@@ -1,5 +1,4 @@
- 
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { remove, removeCommandUsage } from "../../src/commands";
@@ -96,7 +95,7 @@ describe("Remove command", () => {
   });
 
   describe("when force flag is given", () => {
-    let queueSpies: SpyInstance[];
+    let queueSpies: MockInstance[];
 
     beforeEach(() => {
       queueSpies = context

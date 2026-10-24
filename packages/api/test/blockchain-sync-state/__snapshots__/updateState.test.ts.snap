@@ -3,14 +3,14 @@
 exports[`updateState > when authorized > should fail when trying to update last finalized slot to an invalid slot 1`] = `
 "[
   {
-    \\"code\\": \\"too_small\\",
-    \\"minimum\\": 0,
-    \\"type\\": \\"number\\",
-    \\"inclusive\\": true,
-    \\"exact\\": false,
-    \\"message\\": \\"Number must be greater than or equal to 0\\",
-    \\"path\\": [
-      \\"lastFinalizedBlock\\"
+    "code": "too_small",
+    "minimum": 0,
+    "type": "number",
+    "inclusive": true,
+    "exact": false,
+    "message": "Number must be greater than or equal to 0",
+    "path": [
+      "lastFinalizedBlock"
     ]
   }
 ]"
@@ -35,14 +35,14 @@ exports[`updateState > when authorized > should fail when trying to update last 
 exports[`updateState > when authorized > should fail when trying to update last lower synced slot to an invalid slot 1`] = `
 "[
   {
-    \\"code\\": \\"too_small\\",
-    \\"minimum\\": 0,
-    \\"type\\": \\"number\\",
-    \\"inclusive\\": true,
-    \\"exact\\": false,
-    \\"message\\": \\"Number must be greater than or equal to 0\\",
-    \\"path\\": [
-      \\"lastLowerSyncedSlot\\"
+    "code": "too_small",
+    "minimum": 0,
+    "type": "number",
+    "inclusive": true,
+    "exact": false,
+    "message": "Number must be greater than or equal to 0",
+    "path": [
+      "lastLowerSyncedSlot"
     ]
   }
 ]"
@@ -67,22 +67,22 @@ exports[`updateState > when authorized > should fail when trying to update last 
 exports[`updateState > when authorized > should fail when trying to update last upper synced block root to an invalid hash 1`] = `
 "[
   {
-    \\"validation\\": \\"regex\\",
-    \\"code\\": \\"invalid_string\\",
-    \\"message\\": \\"Invalid hexadecimal string\\",
-    \\"path\\": [
-      \\"lastUpperSyncedBlockRoot\\"
+    "validation": "regex",
+    "code": "invalid_string",
+    "message": "Invalid hexadecimal string",
+    "path": [
+      "lastUpperSyncedBlockRoot"
     ]
   },
   {
-    \\"code\\": \\"too_small\\",
-    \\"minimum\\": 66,
-    \\"type\\": \\"string\\",
-    \\"inclusive\\": true,
-    \\"exact\\": true,
-    \\"message\\": \\"Invalid block hash length\\",
-    \\"path\\": [
-      \\"lastUpperSyncedBlockRoot\\"
+    "code": "too_small",
+    "minimum": 66,
+    "type": "string",
+    "inclusive": true,
+    "exact": true,
+    "message": "Invalid block hash length",
+    "path": [
+      "lastUpperSyncedBlockRoot"
     ]
   }
 ]"
@@ -115,14 +115,14 @@ exports[`updateState > when authorized > should fail when trying to update last 
 exports[`updateState > when authorized > should fail when trying to update last upper synced block slot to an invalid slot 1`] = `
 "[
   {
-    \\"code\\": \\"too_small\\",
-    \\"minimum\\": 0,
-    \\"type\\": \\"number\\",
-    \\"inclusive\\": true,
-    \\"exact\\": false,
-    \\"message\\": \\"Number must be greater than or equal to 0\\",
-    \\"path\\": [
-      \\"lastUpperSyncedBlockSlot\\"
+    "code": "too_small",
+    "minimum": 0,
+    "type": "number",
+    "inclusive": true,
+    "exact": false,
+    "message": "Number must be greater than or equal to 0",
+    "path": [
+      "lastUpperSyncedBlockSlot"
     ]
   }
 ]"
@@ -147,14 +147,14 @@ exports[`updateState > when authorized > should fail when trying to update last 
 exports[`updateState > when authorized > should fail when trying to update last upper synced slot to an invalid slot 1`] = `
 "[
   {
-    \\"code\\": \\"too_small\\",
-    \\"minimum\\": 0,
-    \\"type\\": \\"number\\",
-    \\"inclusive\\": true,
-    \\"exact\\": false,
-    \\"message\\": \\"Number must be greater than or equal to 0\\",
-    \\"path\\": [
-      \\"lastUpperSyncedSlot\\"
+    "code": "too_small",
+    "minimum": 0,
+    "type": "number",
+    "inclusive": true,
+    "exact": false,
+    "message": "Number must be greater than or equal to 0",
+    "path": [
+      "lastUpperSyncedSlot"
     ]
   }
 ]"

@@ -1,5 +1,13 @@
 import type { JobsOptions } from "bullmq";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 import { WeaveVMStorage } from "@blobscan/blob-storage-manager";
 import type {
@@ -7,7 +15,7 @@ import type {
   PostgresStorage,
 } from "@blobscan/blob-storage-manager";
 import { getPrisma } from "@blobscan/db";
-import { env, fixtures, testValidError } from "@blobscan/test";
+import { ensureS3Bucket, env, fixtures, testValidError } from "@blobscan/test";
 
 import { buildJobId } from "../src";
 import type { BlobPropagatorConfig } from "../src/BlobPropagator";
@@ -96,6 +104,10 @@ class MockedWeaveVMStorage extends WeaveVMStorage {
 }
 
 describe("BlobPropagator", () => {
+  beforeAll(async () => {
+    await ensureS3Bucket();
+  });
+
   const prisma = getPrisma();
   let blobStorages: BlobStorage[];
   let primaryBlobStorage: PostgresStorage;

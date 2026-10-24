@@ -3,13 +3,13 @@
 exports[`updateLevel > should fail when providing an invalid log level 1`] = `
 "[
   {
-    \\"code\\": \\"custom\\",
-    \\"params\\": {
-      \\"value\\": \\"unknown-level\\"
+    "code": "custom",
+    "params": {
+      "value": "unknown-level"
     },
-    \\"message\\": \\"Log level provided is invalid\\",
-    \\"path\\": [
-      \\"level\\"
+    "message": "Log level provided is invalid",
+    "path": [
+      "level"
     ]
   }
 ]"

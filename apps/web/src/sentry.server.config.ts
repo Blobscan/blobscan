@@ -9,7 +9,9 @@ import { env } from "./env";
 SentryInit({
   dsn: env.PUBLIC_SENTRY_DSN_WEB,
   environment: env.PUBLIC_NETWORK_NAME,
-  sendDefaultPii: true,
+  dataCollection: {
+    userInfo: true,
+    httpHeaders: { request: true, response: true },
+  },
   tracesSampleRate: process.env.NODE_ENV === "development" ? 1.0 : 0.1,
-  enableLogs: true,
 });

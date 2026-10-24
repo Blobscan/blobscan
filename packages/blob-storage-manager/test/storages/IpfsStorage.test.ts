@@ -3,20 +3,16 @@ import type { SetupServerApi } from "msw/node";
 import { setupServer } from "msw/node";
 import { CID } from "multiformats/cid";
 import { sha256 } from "multiformats/hashes/sha2";
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { env, testValidError } from "@blobscan/test";
 
-import { BlobStorageError, BlobTooLargeError, IpfsGatewayError, InvalidBlobCidError } from "../../src/errors";
+import {
+  BlobStorageError,
+  BlobTooLargeError,
+  IpfsGatewayError,
+  InvalidBlobCidError,
+} from "../../src/errors";
 import {
   IpfsStorage,
   MAX_RESPONSE_BYTES,
@@ -28,8 +24,7 @@ const MOCK_API_URL = "https://ipld.mock";
 const RAW_CODEC = 0x55;
 // Fixed CID used only by the store/remove cases (which reject before the CID
 // is ever inspected); kept stable so the error-message snapshot stays valid.
-const STATIC_CID =
-  "bafkreib4bfzpv7hbfnkzxljtlbhanc5a4x6kbxzwrqxbxzwrqxbxzwrqx";
+const STATIC_CID = "bafkreib4bfzpv7hbfnkzxljtlbhanc5a4x6kbxzwrqxbxzwrqxbxzwrqx";
 const MOCK_BLOB_HEX = "0x" + "ab".repeat(32);
 const MOCK_BLOB_BYTES = Buffer.from(MOCK_BLOB_HEX.slice(2), "hex");
 
@@ -86,12 +81,6 @@ describe("IpfsStorage", () => {
   let storage: IpfsStorageMock;
 
   beforeAll(async () => {
-    // The shared test setup installs fake timers (vi.useFakeTimers), which
-    // would stall the retry backoff's setTimeout and hang every test that
-    // exercises a retryable gateway failure. None of these tests depend on a
-    // mocked clock, so run them with real timers.
-    vi.useRealTimers();
-
     MOCK_CID = await rawCid(MOCK_BLOB_BYTES);
     MOCK_UNKNOWN_CID = await rawCid(Buffer.from("ff".repeat(32), "hex"));
 
@@ -130,11 +119,6 @@ describe("IpfsStorage", () => {
 
   afterEach(() => {
     ipfsServer.resetHandlers();
-  });
-
-  afterAll(() => {
-    // Restore the shared setup's fake timers so we don't leak real timers.
-    vi.useFakeTimers();
   });
 
   it("should create a storage", async () => {
@@ -262,7 +246,9 @@ describe("IpfsStorage", () => {
       })
     );
 
-    await expect(storage.getBlob(MOCK_CID)).rejects.toBeInstanceOf(BlobTooLargeError);
+    await expect(storage.getBlob(MOCK_CID)).rejects.toBeInstanceOf(
+      BlobTooLargeError
+    );
   });
 
   it("should fail when response body is too large (streaming, no Content-Length)", async () => {
@@ -279,7 +265,9 @@ describe("IpfsStorage", () => {
       })
     );
 
-    await expect(storage.getBlob(MOCK_CID)).rejects.toBeInstanceOf(BlobTooLargeError);
+    await expect(storage.getBlob(MOCK_CID)).rejects.toBeInstanceOf(
+      BlobTooLargeError
+    );
   });
 
   it("should fail when the blobscan-ipld service is unreachable during health check", async () => {

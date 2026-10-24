@@ -1,9 +1,9 @@
 import Markdoc from '@markdoc/markdoc'
 import { slugifyWithCounter } from '@sindresorhus/slugify'
-import glob from 'fast-glob'
 import * as fs from 'fs'
 import * as path from 'path'
 import { createLoader } from 'simple-functional-loader'
+import { globSync } from 'tinyglobby'
 import * as url from 'url'
 
 const __filename = url.fileURLToPath(import.meta.url)
@@ -53,7 +53,7 @@ export default function withSearch(nextConfig = {}) {
             let pagesDir = path.resolve('./src/app')
             this.addContextDependency(pagesDir)
 
-            let files = glob.sync('**/page.md', { cwd: pagesDir })
+            let files = globSync('**/page.md', { cwd: pagesDir })
             let data = files.map((file) => {
               let url =
                 file === 'page.md' ? '/' : `/${file.replace(/\/page\.md$/, '')}`
@@ -129,7 +129,39 @@ export default function withSearch(nextConfig = {}) {
       })
 
       if (typeof nextConfig.webpack === 'function') {
-        return nextConfig.webpack(config, options)
+        const result = nextConfig.webpack(config, options)
+
+        const isMarkdocRule = (rule) =>
+          rule.test instanceof RegExp && rule.test.source === '\\.(md|mdoc)$'
+
+        // Next.js compiles .md pages in both the server and client graphs. The
+        // Markdoc loader output is a server component, so let the SWC server
+        // loader handle it and skip it in the client graph.
+        if (options.isServer) {
+          // Next's default SWC loader is shared by client and server
+          // compilations and has no bundle layer. Markdoc pages are RSC, so
+          // point them at the server-components layer explicitly.
+          config.module.rules.filter(isMarkdocRule).forEach((rule) => {
+            rule.use = (rule.use ?? []).map((loader) =>
+              loader.loader === 'next-swc-loader'
+                ? {
+                    ...loader,
+                    options: {
+                      ...loader.options,
+                      bundleLayer: 'rsc',
+                      esm: true,
+                    },
+                  }
+                : loader
+            )
+          })
+        } else {
+          config.module.rules = config.module.rules.filter(
+            (rule) => !isMarkdocRule(rule)
+          )
+        }
+
+        return result
       }
 
       return config

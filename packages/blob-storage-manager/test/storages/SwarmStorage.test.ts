@@ -69,9 +69,10 @@ describe("SwarmStorage", () => {
   testValidError(
     "should throw a valid error if bee client is not healthy",
     async () => {
-      vi.spyOn(storage.beeClient, "checkConnection").mockRejectedValueOnce(
-        new Error("Bee is not healthy: not ok")
-      );
+      vi.spyOn(
+        storage.beeClient.connectivity,
+        "checkConnection"
+      ).mockRejectedValueOnce(new Error("Bee is not healthy: not ok"));
 
       await storage.healthCheck();
     },
@@ -82,7 +83,7 @@ describe("SwarmStorage", () => {
   );
 
   it("should get a blob given its reference", async () => {
-    await storage._beeClient.uploadFile("mock-batch-id", NEW_BLOB_DATA);
+    await storage._beeClient.file.upload("mock-batch-id", NEW_BLOB_DATA);
 
     const blob = await storage.getBlob(SWARM_REFERENCE);
 
