@@ -25,7 +25,7 @@ const clientEnvVars = {
   PUBLIC_SENTRY_DSN_WEB: z.string().url().optional(),
   PUBLIC_POSTHOG_ID: z.string().optional(),
   PUBLIC_POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
-  PUBLIC_VERCEL_ANALYTICS_ENABLED: booleanSchema.default("false"),
+  PUBLIC_VERCEL_ANALYTICS_ENABLED: booleanSchema.default(false),
   PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL: z.string().url().optional(),
 };
 
@@ -41,17 +41,17 @@ export const env = createEnv({
     DATABASE_URL: z.string().url(),
     DIRECT_URL: z.string().url(),
     FEEDBACK_WEBHOOK_URL: z.string().optional(),
-    BLOB_DATA_API_ENABLED: booleanSchema.default("true"),
+    BLOB_DATA_API_ENABLED: booleanSchema.default(true),
     BLOB_DATA_API_KEY: z.string().optional(),
     NODE_ENV: z.enum(["development", "test", "production"]),
-    METRICS_ENABLED: booleanSchema.default("false"),
+    METRICS_ENABLED: booleanSchema.default(false),
     REDIS_URI: z.string().default("redis://localhost:6379"),
     // Number of trusted reverse-proxy hops in front of the app (e.g. ingress).
     // Used to pick the real client IP from X-Forwarded-For instead of trusting
     // the spoofable left-most value. 0 (default) preserves legacy behavior for
     // local/dev where there is no proxy.
     TRUSTED_PROXY_COUNT: z.coerce.number().int().nonnegative().default(0),
-    TRACES_ENABLED: booleanSchema.default("false"),
+    TRACES_ENABLED: booleanSchema.default(false),
     OTEL_DIAG_ENABLED: z.boolean().default(false),
     OTLP_AUTH_USERNAME: z.coerce.string().optional(),
     OTLP_AUTH_PASSWORD: z.string().optional(),
@@ -62,11 +62,11 @@ export const env = createEnv({
       .default(`http://localhost:${process.env.BLOBSCAN_API_PORT ?? 3001}`),
     GOOGLE_STORAGE_BUCKET_NAME: z.string().optional(),
     GOOGLE_STORAGE_API_ENDPOINT: z.string().url().optional(),
-    GOOGLE_STORAGE_SIGNED_URLS_ENABLED: booleanSchema.default("false"),
+    GOOGLE_STORAGE_SIGNED_URLS_ENABLED: booleanSchema.default(false),
     S3_STORAGE_BUCKET_NAME: z.string().optional(),
     S3_STORAGE_ENDPOINT: z.string().url().optional(),
     WEAVEVM_STORAGE_API_BASE_URL: z.string().optional(),
-    IPFS_STORAGE_ENABLED: booleanSchema.default("false"),
+    IPFS_STORAGE_ENABLED: booleanSchema.default(false),
     IPFS_STORAGE_GATEWAY_URL: z
       .string()
       .url()

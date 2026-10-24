@@ -1,5 +1,8 @@
 import type { MutableRefObject } from "react";
-import type { EChartOption } from "echarts";
+import type {
+  DefaultLabelFormatterCallbackParams,
+  TooltipComponentOption,
+} from "echarts";
 
 import { calculatePercentage, getNeighbouringElements } from "~/utils";
 import type { Numerish } from "~/utils";
@@ -22,22 +25,32 @@ export function isStandardEncoding(value: unknown): value is StandardEncoding {
   );
 }
 
-function getValue(param: EChartOption.Tooltip.Format) {
+function toNumerish(value: unknown): Numerish | undefined {
+  return typeof value === "number" ||
+    typeof value === "string" ||
+    typeof value === "bigint"
+    ? value
+    : undefined;
+}
+
+function getValue(
+  param: DefaultLabelFormatterCallbackParams
+): Numerish | undefined {
   const encode = param.encode;
 
   if (isStandardEncoding(encode)) {
     const dataIndex = encode.y[0];
 
-    if (dataIndex !== undefined) {
-      return param.data[dataIndex];
+    if (dataIndex !== undefined && param.data != null) {
+      return toNumerish((param.data as unknown as Array<unknown>)[dataIndex]);
     }
   }
 
   if (Array.isArray(param.value)) {
-    return param.value[1];
+    return toNumerish(param.value[1]);
   }
 
-  return param.value;
+  return toNumerish(param.value);
 }
 
 function buildSeriesHtmlElement({
@@ -107,7 +120,9 @@ function createTooltipFormater({
   displayTotal?: boolean;
 }) {
   return (
-    paramOrParams: EChartOption.Tooltip.Format | EChartOption.Tooltip.Format[]
+    paramOrParams:
+      | DefaultLabelFormatterCallbackParams
+      | DefaultLabelFormatterCallbackParams[]
   ) => {
     const seriesIndex = currentSeriesRef.current?.seriesIndex;
 
@@ -144,7 +159,13 @@ function createTooltipFormater({
         : Array.isArray(value)
         ? value[0]
         : value;
-      dateHTMLElement = date ? formatAxisValue(date, axes.x) : "-";
+      dateHTMLElement =
+        date &&
+        (typeof date === "string" ||
+          typeof date === "number" ||
+          date instanceof Date)
+          ? formatAxisValue(date, axes.x)
+          : "-";
 
       filteredParams.map((p) => {
         const { seriesName, value, color } = p;
@@ -166,7 +187,7 @@ function createTooltipFormater({
             value: getValue(p),
             total: dailyTotal,
             axis: axes.y,
-            markerColor: color,
+            markerColor: typeof color === "string" ? color : undefined,
             themeMode,
             isSelected,
           })
@@ -210,7 +231,7 @@ function createTooltipFormater({
           name: formattedName,
           value: (value as number | string) ?? 0,
           axis: axes.y,
-          markerColor: color,
+          markerColor: typeof color === "string" ? color : undefined,
           isSelected: true,
           themeMode,
         })
@@ -259,7 +280,7 @@ export function createBaseTooltipOptions({
   axes: Axes;
   displayTotal?: boolean;
   themeMode: "light" | "dark";
-}): EChartOption.Tooltip {
+}): TooltipComponentOption {
   return {
     trigger: "axis",
     confine: true,

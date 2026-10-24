@@ -1,4 +1,4 @@
-import type { EChartOption } from "echarts";
+import type { EChartsOption } from "echarts";
 
 import type { SkeletonOptions } from "..";
 
@@ -137,5 +137,5 @@ export function createChartSkeletonOptions({
       show: false,
     },
     dataZoom: undefined,
-  } satisfies EChartOption;
+  } satisfies EChartsOption;
 }

@@ -73,7 +73,11 @@ export async function setUpOpenApiTRPC(app: Express): Promise<void> {
     createOpenApiExpressMiddleware({
       router: appRouter,
       createContext,
-      onError({ error }) {
+      // trpc-openapi 1.2 loses the optional modifier on these adapter options.
+      responseMeta: undefined,
+      maxBodySize: undefined,
+      // Its typings also fail to contextually type the handler with tRPC 10.
+      onError({ error }: { error: { code: string } }) {
         if (error.code === "INTERNAL_SERVER_ERROR") {
           Sentry.captureException(error);
 

@@ -2,7 +2,12 @@ import type { FC, ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useState } from "react";
 import cn from "classnames";
-import type { EChartOption, ECElementEvent } from "echarts";
+import type {
+  DatasetComponentOption,
+  ECElementEvent,
+  EChartsOption,
+  SeriesOption,
+} from "echarts";
 import type { EChartsInstance } from "echarts-for-react";
 import ReactEChartsCore from "echarts-for-react/lib/core";
 import type EChartsReactCore from "echarts-for-react/lib/core";
@@ -34,8 +39,8 @@ export interface SkeletonOptions {
 export interface ChartBaseProps {
   title: ReactNode;
   headerControls?: ReactNode;
-  dataset?: EChartOption.Dataset | EChartOption.Dataset[];
-  series?: EChartOption.Series[];
+  dataset?: DatasetComponentOption | DatasetComponentOption[];
+  series?: SeriesOption[];
   axes: Axes;
   compact?: boolean;
   isLoading?: boolean;
@@ -120,7 +125,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           const { name: seriesNameProp, id, ...restSeries } = series;
 
           const baseSeriesOptions = createBaseSeriesOptions(i);
-          const [type, name] = id ? id.split("-") : [];
+          const [type, name] = id ? String(id).split("-") : [];
 
           const seriesLabel = seriesNameProp ?? name ?? "Unknown";
 
@@ -171,7 +176,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         dataZoom: !compact
           ? [{ type: "inside" }, { type: "slider", start: 0, end: 100 }]
           : undefined,
-      } satisfies EChartOption),
+      } satisfies EChartsOption),
     [compact, axes, tooltipOpts, themeMode]
   );
 
@@ -331,7 +336,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     const items = series
       .map(
         ({ name, itemStyle }): LegendItemData => ({
-          name: name ?? "",
+          name: name?.toString() ?? "",
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           color: itemStyle?.color ?? DEFAULT_SERIES_COLOR,
