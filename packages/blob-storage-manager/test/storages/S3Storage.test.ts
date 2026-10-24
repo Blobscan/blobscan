@@ -1,7 +1,7 @@
 import type { S3Client } from "@aws-sdk/client-s3";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-import { env, testValidError } from "@blobscan/test";
+import { ensureS3Bucket, env, testValidError } from "@blobscan/test";
 
 import { S3Storage } from "../../src";
 import { BlobStorageError } from "../../src/errors";
@@ -44,10 +44,8 @@ describe("S3Storage", () => {
   )}.bin`;
   const expectedStoredBlobData = "0x4fe40fc67f9c3a3ffa2be77d10fe7818";
 
-  beforeAll(() => {
-    // The shared test setup installs fake timers, which stalls the AWS SDK's
-    // request timeouts and retries. These tests don't depend on a mocked clock.
-    vi.useRealTimers();
+  beforeAll(async () => {
+    await ensureS3Bucket();
 
     if (!env.S3_STORAGE_BUCKET_NAME) {
       throw new Error("S3_STORAGE_BUCKET_NAME is not set");
@@ -61,10 +59,6 @@ describe("S3Storage", () => {
       secretAccessKey: env.S3_STORAGE_SECRET_ACCESS_KEY,
       endpoint: env.S3_STORAGE_ENDPOINT,
     });
-  });
-
-  afterAll(() => {
-    vi.useFakeTimers();
   });
 
   it("should create a storage", async () => {

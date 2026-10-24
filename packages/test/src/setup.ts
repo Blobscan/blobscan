@@ -10,7 +10,9 @@ const { anvil, server } = getAnvil();
 const prisma = getPrisma();
 
 beforeAll(async () => {
-  vi.useFakeTimers();
+  // Freeze Date without faking timers. Network clients such as the AWS SDK
+  // rely on real timers for request timeouts and retries.
+  vi.useFakeTimers({ toFake: ["Date"] });
   vi.setSystemTime(fixtures.systemDate);
 
   try {

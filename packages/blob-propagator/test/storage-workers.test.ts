@@ -15,7 +15,7 @@ import type {
   Blob as DBBlob,
   BlobStorage as BlobStorageName,
 } from "@blobscan/db";
-import { env, testValidError } from "@blobscan/test";
+import { ensureS3Bucket, env, testValidError } from "@blobscan/test";
 
 import type {
   BlobPropagationJob,
@@ -160,6 +160,8 @@ describe("Storage Worker", () => {
   const mockedSwarmBlobUri = "0xswarm-reference";
 
   beforeAll(async () => {
+    await ensureS3Bucket();
+
     const allBlobStorages = await createBlobStorages();
 
     primaryBlobStorage = allBlobStorages.find(
