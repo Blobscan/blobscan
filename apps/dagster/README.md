@@ -115,22 +115,6 @@ the partition range, and launch the backfill. For example, a fix to
 `aggregate_tx_hourly.sql` means backfilling `hourly_metrics` and all rollup
 levels for the affected dates.
 
-### Migration from `daily_stats` / `overall_stats`
-
-The API still serves stats from the legacy `daily_stats` and `overall_stats`
-tables, filled by the `DailyStatsSyncer` / `OverallStatsSyncer` in
-`@blobscan/syncers`. Both pipelines run side by side until the new one is
-validated:
-
-1. **Validate**: the `matches_legacy_daily_stats` asset check on
-   `daily_metrics` compares transaction, blob and block counts with
-   `daily_stats` for the last 7 completed days, and warns with a sample of
-   mismatching rows. Investigate any mismatch before moving on.
-2. **Migrate reads**: switch `stats.getTimeseries` to `daily_metrics` (and the
-   other period tables) and `stats.getOverall` to `all_time_metrics`.
-3. **Remove the legacy pipeline**: drop the stats syncers, the
-   `daily_stats` / `overall_stats` tables and this asset check.
-
 ### Alerts
 
 - `metrics_run_failure_alert`: any failed run.

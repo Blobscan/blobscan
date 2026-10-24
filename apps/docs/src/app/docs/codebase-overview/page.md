@@ -41,7 +41,6 @@ Blobscan has the following command line interfaces:
 | CLI                                                                                                                     | Description                            |
 | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
 |  [`@blobscan/blob-propagation-jobs-cli`](https://github.com/Blobscan/blobscan/tree/main/clis/blob-propagation-jobs-cli) | CLI to run the blob propagation jobs.  |
-|  [`@blobscan/stats-aggregation-cli`](https://github.com/Blobscan/blobscan/tree/main/clis/stats-aggregation-cli)         | CLI to run the stats aggregation jobs. |
 
 ### Packages
 

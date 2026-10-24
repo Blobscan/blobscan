@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
-import type { DailyStats, Prisma } from "@blobscan/db";
+import type { DailyMetrics, Prisma } from "@blobscan/db";
 import type { Rollup } from "@blobscan/db/prisma/enums";
 
 import type { TRPCContext } from "../../src";
@@ -23,38 +23,32 @@ describe("getCount", () => {
     txCaller = createTransactionCaller(ctx);
   });
 
-  // To test that the procedure retrieves the count from the stats table rather than
-  // performing a direct database count, we stored an arbitrary total blobs value in the stats table
-  // in each test, intentionally different from the actual number of blobs in the database.
-  // This setup allows us to verify that the procedure correctly uses the stats table count
+  // To test that the procedure retrieves the count from the metrics tables rather than
+  // performing a direct database count, we stored an arbitrary total value in the metrics tables
+  // in each test, intentionally different from the actual number of items in the database.
+  // This setup allows us to verify that the procedure correctly uses the metrics tables count
   // instead of performing a direct database count.
 
   const STATS_TOTAL_TRANSACTIONS = 999999;
 
-  async function createNewDailyStats(dailyStats: Partial<DailyStats>) {
-    const data: Prisma.DailyStatsCreateManyInput = {
-      day: new Date(),
+  async function createNewDailyMetrics(dailyMetrics: Partial<DailyMetrics>) {
+    const data: Prisma.DailyMetricsCreateManyInput = {
+      periodStart: new Date(),
       category: null,
       rollup: null,
       totalTransactions: 0,
-      avgBlobFee: 0,
-      avgBlobGasPrice: 0,
-      avgBlobMaxFee: 0,
-      avgMaxBlobGasFee: 0,
       totalBlobAsCalldataFee: 0,
       totalBlobAsCalldataGasUsed: 0,
-      totalBlobAsCalldataMaxFees: 0,
-      totalBlobFee: 0,
-      totalBlobMaxFees: 0,
+      totalBlobAsCalldataMaxFee: 0,
+      totalBlobBaseFee: 0,
+      totalBlobMaxFee: 0,
       totalBlobGasUsed: 0,
       totalUniqueReceivers: 0,
       totalUniqueSenders: 0,
-      avgBlobAsCalldataFee: 0,
-      avgBlobAsCalldataMaxFee: 0,
-      ...dailyStats,
+      ...dailyMetrics,
     };
 
-    await ctx.prisma.dailyStats.create({
+    await ctx.prisma.dailyMetrics.create({
       data,
     });
   }
@@ -62,7 +56,7 @@ describe("getCount", () => {
   it("should count txs correctly when no filters are provided", async () => {
     const expectedTotalTransactions = STATS_TOTAL_TRANSACTIONS;
 
-    await ctx.prisma.overallStats.create({
+    await ctx.prisma.allTimeMetrics.create({
       data: {
         category: null,
         rollup: null,
@@ -104,8 +98,8 @@ describe("getCount", () => {
           await Promise.all(
             rollups.map((r) =>
               dailyCounts.map(({ day, count }) =>
-                createNewDailyStats({
-                  day,
+                createNewDailyMetrics({
+                  periodStart: day,
                   totalTransactions: count,
                   category: null,
                   rollup: r,
@@ -117,8 +111,8 @@ describe("getCount", () => {
 
         await Promise.all(
           dailyCounts.map(({ day, count }) =>
-            createNewDailyStats({
-              day,
+            createNewDailyMetrics({
+              periodStart: day,
               totalTransactions: count,
               category: null,
               rollup: null,
@@ -131,7 +125,7 @@ describe("getCount", () => {
         if (rollups?.length) {
           await Promise.all(
             rollups.map((r) =>
-              ctx.prisma.overallStats.create({
+              ctx.prisma.allTimeMetrics.create({
                 data: {
                   totalTransactions: expectedTotalTransactions,
                   category: null,
@@ -142,7 +136,7 @@ describe("getCount", () => {
           );
         }
 
-        await ctx.prisma.overallStats.create({
+        await ctx.prisma.allTimeMetrics.create({
           data: {
             totalTransactions: expectedTotalTransactions,
             category: null,

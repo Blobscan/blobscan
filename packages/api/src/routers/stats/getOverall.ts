@@ -1,4 +1,4 @@
-import { OverallStatsModel } from "@blobscan/db/prisma/zod";
+import { AllTimeMetricsModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
@@ -6,7 +6,7 @@ import { normalize } from "../../utils";
 import { dimensionSchema, getDimension } from "../../zod-schemas";
 import { buildStatsPath } from "./helpers";
 
-const metricsSchema = OverallStatsModel.omit({
+const metricsSchema = AllTimeMetricsModel.omit({
   id: true,
   category: true,
   rollup: true,
@@ -19,7 +19,7 @@ const outputSchema = z
       .object({
         dimension: dimensionSchema,
         metrics: metricsSchema,
-        updatedAt: OverallStatsModel.shape.updatedAt,
+        updatedAt: AllTimeMetricsModel.shape.updatedAt,
       })
       .array(),
   })
@@ -37,12 +37,12 @@ export const getOverall = publicProcedure
   .input(z.void())
   .output(outputSchema)
   .query(async ({ ctx: { prisma } }) => {
-    const allOverallStats = await prisma.overallStats.findMany({
+    const allTimeMetrics = await prisma.allTimeMetrics.findMany({
       orderBy: [{ category: "asc" }, { rollup: "asc" }],
     });
 
     return {
-      data: allOverallStats.map(
+      data: allTimeMetrics.map(
         ({ category, rollup, updatedAt, ...metrics }) => ({
           dimension: getDimension(category, rollup),
           metrics,

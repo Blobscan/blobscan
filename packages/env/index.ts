@@ -88,7 +88,6 @@ export const env = createEnv({
       BLOB_DATA_API_KEY: z.string().optional(),
       ADMIN_API_KEY: z.string().optional(),
       CHAIN_ID: z.coerce.number().positive().default(1),
-      DENCUN_FORK_SLOT: z.coerce.number().optional(),
       NETWORK_NAME: networkSchema.default("mainnet"),
       TEST: booleanSchema.optional(),
       BLOBSCAN_API_BASE_URL: z
@@ -112,10 +111,6 @@ export const env = createEnv({
 
       // Sentry
       SENTRY_DSN_API: z.string().optional(),
-
-      // Stats syncer
-      STATS_SYNCER_DAILY_CRON_PATTERN: z.string().default("30 0 * * * *"),
-      STATS_SYNCER_OVERALL_CRON_PATTERN: z.string().default("*/15 * * * *"),
 
       // Blob Propagator
       BLOB_PROPAGATOR_COMPLETED_JOBS_AGE: z.coerce
@@ -320,13 +315,7 @@ export const env = createEnv({
         env.NETWORK_NAME
       } sentryEnabled=${!!env.SENTRY_DSN_API} metrics=${
         env.METRICS_ENABLED
-      } traces=${env.TRACES_ENABLED} port=${
-        env.BLOBSCAN_API_PORT
-      } dailyStatsCron=${
-        env.STATS_SYNCER_DAILY_CRON_PATTERN
-      } overallStatsCron=${
-        env.STATS_SYNCER_OVERALL_CRON_PATTERN
-      } dencunForkSlot=${env.DENCUN_FORK_SLOT ?? "auto"}`
+      } traces=${env.TRACES_ENABLED} port=${env.BLOBSCAN_API_PORT}`
     );
 
     console.log(

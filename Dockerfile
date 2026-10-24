@@ -1,7 +1,7 @@
-# Pinned to 22.22.0 to avoid a regression in 22.23.0 that causes premature
-# connection closes against Google Cloud Storage (and other keep-alive HTTP
-# agents). See https://github.com/nodejs/node/issues/63989
-FROM node:22.22.0-alpine AS base
+# Track the latest Node.js 24 LTS patch release so security fixes are picked up
+# automatically. The keep-alive premature-close regression introduced in 24.17.0
+# (https://github.com/nodejs/node/issues/63989) was fixed in 24.18.0.
+FROM node:24-alpine AS base
 
 ADD docker-entrypoint.sh /
 

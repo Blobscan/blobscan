@@ -23,8 +23,8 @@ const outputSchema = z
  * Counts blobs based on the provided filters.
  *
  * This function decides between counting blobs directly from the blob table
- * or using pre-calculated aggregated data from daily or overall blob stats
- * to improve performance.
+ * or using pre-calculated aggregated data from the daily or all-time
+ * metrics to improve performance.
  *
  * The choice depends on the specificity of the filters provided.
  */
@@ -51,26 +51,32 @@ export async function countBlobs(
 
   const where = buildStatsWhereClause(filters, rollupRegistry);
 
-  // Get count by summing daily total transaction stats data if a date range is provided in filters
+  // Get count by summing daily total blob metrics if a date range is provided in filters
   if (blockFilters.timestamp) {
-    const dailyStats = await prisma.dailyStats.findMany({
+    const dailyMetrics = await prisma.dailyMetrics.findMany({
       select: {
         totalBlobs: true,
       },
       where,
     });
 
-    return dailyStats.reduce((acc, { totalBlobs }) => acc + totalBlobs, 0);
+    return dailyMetrics.reduce(
+      (acc, { totalBlobs }) => acc + (totalBlobs ?? 0),
+      0
+    );
   }
 
-  const overallStats = await prisma.overallStats.findMany({
+  const allTimeMetrics = await prisma.allTimeMetrics.findMany({
     select: {
       totalBlobs: true,
     },
     where,
   });
 
-  return overallStats.reduce((acc, { totalBlobs }) => acc + totalBlobs, 0);
+  return allTimeMetrics.reduce(
+    (acc, { totalBlobs }) => acc + (totalBlobs ?? 0),
+    0
+  );
 }
 
 export const getCount = publicProcedure

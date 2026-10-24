@@ -7,6 +7,7 @@ import {
   runFiltersTestsSuite,
   runPaginationTestsSuite,
 } from "../helpers";
+import { aggregateMetrics } from "../metrics";
 import type { BlobCaller } from "./caller";
 import { createBlobCaller } from "./caller";
 
@@ -20,7 +21,7 @@ describe("getAll", () => {
   });
 
   beforeEach(async () => {
-    await ctx.prisma.overallStats.aggregate();
+    await aggregateMetrics(ctx.prisma);
   });
 
   runPaginationTestsSuite("blob", (paginationInput) =>

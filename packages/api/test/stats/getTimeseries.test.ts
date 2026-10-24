@@ -6,6 +6,7 @@ import { fixtures } from "@blobscan/test";
 import type { TRPCContext } from "../../src";
 import { outputSchema } from "../../src/routers/stats/getTimeseries";
 import { createTestContext } from "../helpers";
+import { aggregateMetrics } from "../metrics";
 import { runTRPCQueryCacheTests } from "../test-suites/cache";
 import type { StatsCaller } from "./caller";
 import { createStatsCaller } from "./caller";
@@ -27,16 +28,16 @@ describe("getTimeseriesStats", () => {
   });
 
   beforeEach(async () => {
-    await ctx.prisma.dailyStats.aggregate();
+    await aggregateMetrics(ctx.prisma);
 
     return async () => {
-      await ctx.prisma.dailyStats.deleteMany();
+      await ctx.prisma.dailyMetrics.deleteMany();
     };
   });
 
   runTimeFrameTests({
     statsFiller() {
-      return ctx.prisma.dailyStats.aggregate({ to });
+      return aggregateMetrics(ctx.prisma, { to });
     },
     statsFetcher(timeFrame) {
       return caller.getTimeseries({ timeFrame });

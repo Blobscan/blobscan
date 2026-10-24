@@ -92,7 +92,7 @@ const Stats: NextPage = function () {
       "totalBlobSize",
       "totalBlobUsageSize",
       "totalBlobGasUsed",
-      "totalBlobFee",
+      "totalBlobBaseFee",
       "totalTransactions",
       "totalUniqueReceivers",
       "totalUniqueSenders",
@@ -109,7 +109,7 @@ const Stats: NextPage = function () {
   } = useTimeseriesQuery({
     metrics: [
       "avgBlobGasPrice",
-      "avgBlobFee",
+      "avgBlobBaseFee",
       "avgBlobMaxFee",
       "totalBlocks",
       "totalUniqueReceivers",
@@ -286,10 +286,12 @@ const Stats: NextPage = function () {
             name: "Total Gas Saved",
             metric: {
               primary: {
-                value: aggregatedMetrics
-                  ? aggregatedMetrics.totalBlobAsCalldataGasUsed -
-                    aggregatedMetrics.totalBlobGasUsed
-                  : undefined,
+                value:
+                  aggregatedMetrics?.totalBlobAsCalldataGasUsed !== undefined &&
+                  aggregatedMetrics.totalBlobGasUsed !== undefined
+                    ? aggregatedMetrics.totalBlobAsCalldataGasUsed -
+                      aggregatedMetrics.totalBlobGasUsed
+                    : undefined,
               },
             },
             // secondaryMetric={
@@ -354,7 +356,7 @@ const Stats: NextPage = function () {
             name: "Total Blob Fees",
             metric: {
               primary: {
-                value: aggregatedMetrics?.totalBlobFee,
+                value: aggregatedMetrics?.totalBlobBaseFee,
                 type: "ethereum",
               },
             },
@@ -363,10 +365,12 @@ const Stats: NextPage = function () {
             name: "Total Tx Fees Saved",
             metric: {
               primary: {
-                value: aggregatedMetrics
-                  ? aggregatedMetrics.totalBlobAsCalldataFee -
-                    aggregatedMetrics.totalBlobFee
-                  : undefined,
+                value:
+                  aggregatedMetrics?.totalBlobAsCalldataFee !== undefined &&
+                  aggregatedMetrics.totalBlobBaseFee !== undefined
+                    ? aggregatedMetrics.totalBlobAsCalldataFee -
+                      aggregatedMetrics.totalBlobBaseFee
+                    : undefined,
                 type: "ethereum",
               },
             },
