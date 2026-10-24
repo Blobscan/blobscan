@@ -12,6 +12,7 @@ import { logger } from "@blobscan/logger";
 
 import { printBanner } from "./banner";
 import { prisma } from "./clients/prisma";
+import { createRedisRateLimiter } from "./clients/rate-limiter";
 import { errorHandler, metricsHandler } from "./handlers";
 import {
   bodyParserMiddleware,
@@ -19,6 +20,7 @@ import {
   matomoMiddleware,
   morganMiddleware,
 } from "./middlewares";
+import { createRateLimitMiddleware } from "./middlewares/rate-limit";
 import { setUpOpenApiTRPC } from "./openapi-trpc";
 import { getBlobPropagator } from "./services/blob-propagator";
 import { setUpSyncers } from "./services/syncers";
@@ -33,12 +35,28 @@ async function main() {
   const app = express();
 
   if (env.TRUSTED_PROXIES) {
-    app.set("trust proxy", env.TRUSTED_PROXIES.split(",").map((p) => p.trim()));
+    app.set(
+      "trust proxy",
+      env.TRUSTED_PROXIES.split(",").map((p) => p.trim())
+    );
   }
 
   app.use(corsMiddleware);
   app.use(bodyParserMiddleware);
   app.use(morganMiddleware);
+
+  if (env.RATE_LIMIT_REQUESTS_PER_SECOND) {
+    app.use(
+      createRateLimitMiddleware({
+        limiter: createRedisRateLimiter(
+          "rl:api",
+          env.RATE_LIMIT_REQUESTS_PER_SECOND
+        ),
+        allowlist: env.RATE_LIMIT_ALLOWLIST.split(","),
+      })
+    );
+  }
+
   app.use(matomoMiddleware);
 
   app.get("/metrics", metricsHandler);

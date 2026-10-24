@@ -46,6 +46,22 @@ describe("getBlobDataByBlobId", () => {
     }).createCaller(authorizedCtx);
   });
 
+  describe("when the endpoint is disabled", () => {
+    it("should explain how to get the data via the blob IPFS link", async () => {
+      const ctx = await createTestContext();
+      const caller = createBlobRouter({
+        blobDataProcedure: { enabled: false, protected: false },
+      }).createCaller(ctx);
+
+      await expect(
+        caller.getBlobDataByBlobId({ id: versionedHash })
+      ).rejects.toMatchObject({
+        code: "FORBIDDEN",
+        message: expect.stringContaining("GET /blobs/{id}"),
+      });
+    });
+  });
+
   describe("when authorized", () => {
     it("should fetch data by versioned hash", async () => {
       const result = await authorizedBlobDataCaller.getBlobDataByBlobId({
