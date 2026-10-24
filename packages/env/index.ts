@@ -84,7 +84,7 @@ export const env = createEnv({
       BLOBSCAN_API_PORT: z.coerce.number().positive().default(3001),
       NODE_ENV: nodeEnvSchema.optional(),
       SECRET_KEY: z.string(),
-      BLOB_DATA_API_ENABLED: booleanSchema.default("true"),
+      BLOB_DATA_API_ENABLED: booleanSchema.default(true),
       BLOB_DATA_API_KEY: z.string().optional(),
       ADMIN_API_KEY: z.string().optional(),
       CHAIN_ID: z.coerce.number().positive().default(1),
@@ -100,8 +100,8 @@ export const env = createEnv({
       LOG_LEVEL: z
         .enum(["debug", "http", "info", "warn", "error"])
         .default("info"),
-      METRICS_ENABLED: booleanSchema.default("false"),
-      TRACES_ENABLED: booleanSchema.default("false"),
+      METRICS_ENABLED: booleanSchema.default(false),
+      TRACES_ENABLED: booleanSchema.default(false),
 
       // Prisma
       PRISMA_BATCH_OPERATIONS_MAX_SIZE: prismaBatchOperationsMaxSizeSchema,
@@ -124,13 +124,13 @@ export const env = createEnv({
         .string()
         // Every hour
         .default("0 * * * *"),
-      BLOB_RECONCILER_ENABLED: booleanSchema.default("false"),
+      BLOB_RECONCILER_ENABLED: booleanSchema.default(false),
       // PostHog
       POSTHOG_ID: z.string().optional(),
       POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
 
       // Matomo
-      MATOMO_ENABLED: booleanSchema.default("false"),
+      MATOMO_ENABLED: booleanSchema.default(false),
       MATOMO_URL: z
         .string()
         .url()
@@ -166,7 +166,7 @@ export const env = createEnv({
 
       // ETH Price is retrieved every second from the Chainlink: ETH/USD oracle
       // in the Polygon network.
-      ETH_PRICE_SYNCER_ENABLED: booleanSchema.default("false"),
+      ETH_PRICE_SYNCER_ENABLED: booleanSchema.default(false),
       ETH_PRICE_SYNCER_CRON_PATTERN: z.string().default("* * * * *"),
       ETH_PRICE_SYNCER_CHAIN_ID: z.coerce.number().default(137),
       ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL: z.string().url().optional(),
@@ -198,10 +198,10 @@ export const env = createEnv({
         }),
 
       // Postgres blob storage
-      POSTGRES_STORAGE_ENABLED: booleanSchema.default("false"),
+      POSTGRES_STORAGE_ENABLED: booleanSchema.default(false),
 
       // Google Cloud Storage
-      GOOGLE_STORAGE_ENABLED: booleanSchema.default("false"),
+      GOOGLE_STORAGE_ENABLED: booleanSchema.default(false),
       GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
       GOOGLE_STORAGE_API_ENDPOINT: z.string().optional(),
       GOOGLE_STORAGE_BUCKET_NAME: z
@@ -212,11 +212,11 @@ export const env = createEnv({
         .string()
         .optional()
         .superRefine(requireIfEnvEnabled("GOOGLE_STORAGE_ENABLED")),
-      GOOGLE_STORAGE_SIGNED_URLS_ENABLED: booleanSchema.default("false"),
+      GOOGLE_STORAGE_SIGNED_URLS_ENABLED: booleanSchema.default(false),
 
       // Swarm storage
-      SWARM_STORAGE_ENABLED: booleanSchema.default("false"),
-      SWARM_DEFERRED_UPLOAD: booleanSchema.default("true"),
+      SWARM_STORAGE_ENABLED: booleanSchema.default(false),
+      SWARM_DEFERRED_UPLOAD: booleanSchema.default(true),
       SWARM_STAMP_CRON_PATTERN: z.string().default("*/15 * * * *"),
       SWARM_BATCH_ID: z.string().optional(),
       BEE_ENDPOINT: z
@@ -224,7 +224,7 @@ export const env = createEnv({
         .url()
         .optional()
         .superRefine(requireIfEnvEnabled("SWARM_STORAGE_ENABLED")),
-      SWARM_CHUNKSTORM_ENABLED: booleanSchema.default("false"),
+      SWARM_CHUNKSTORM_ENABLED: booleanSchema.default(false),
       SWARM_CHUNKSTORM_URL: z
         .string()
         .url()
@@ -232,7 +232,7 @@ export const env = createEnv({
         .default("http://localhost:3050"),
 
       // S3 storage
-      S3_STORAGE_ENABLED: booleanSchema.default("false"),
+      S3_STORAGE_ENABLED: booleanSchema.default(false),
       S3_STORAGE_REGION: z
         .string()
         .optional()
@@ -247,14 +247,14 @@ export const env = createEnv({
       S3_STORAGE_FORCE_PATH_STYLE: booleanSchema.optional(),
 
       // SwarmyCloud storage
-      SWARMYCLOUD_STORAGE_ENABLED: booleanSchema.default("false"),
+      SWARMYCLOUD_STORAGE_ENABLED: booleanSchema.default(false),
       SWARMY_API_KEY: z
         .string()
         .optional()
         .superRefine(requireIfEnvEnabled("SWARMYCLOUD_STORAGE_ENABLED")),
 
       // WeaveVM storage
-      WEAVEVM_STORAGE_ENABLED: booleanSchema.default("false"),
+      WEAVEVM_STORAGE_ENABLED: booleanSchema.default(false),
       WEAVEVM_STORAGE_API_BASE_URL: z
         .string()
         .url()
@@ -266,7 +266,7 @@ export const env = createEnv({
         .superRefine(requireIfEnvEnabled("WEAVEVM_STORAGE_ENABLED")),
 
       // IPFS storage (references registered externally by blobscan-ipld)
-      IPFS_STORAGE_ENABLED: booleanSchema.default("false"),
+      IPFS_STORAGE_ENABLED: booleanSchema.default(false),
       // Public gateway used to build the blob `url` shown to API/website
       // consumers so they can fetch the blob themselves.
       IPFS_STORAGE_GATEWAY_URL: z

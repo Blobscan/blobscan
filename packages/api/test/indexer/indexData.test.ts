@@ -408,6 +408,7 @@ describe("indexData", () => {
 
         it("should call blob propagator", async () => {
           const { block } = INPUT_WITH_DUPLICATED_BLOBS;
+          const slot = block.slot as number;
           const expectedInput = INPUT_WITH_DUPLICATED_BLOBS.blobs.map((b) => ({
             versionedHash: b.versionedHash,
             data: b.data,
@@ -416,8 +417,8 @@ describe("indexData", () => {
               commitment: b.commitment,
               txHash: b.txHash,
               index: b.index,
-              slot: block.slot,
-              epoch: Math.floor(block.slot / 32),
+              slot,
+              epoch: Math.floor(slot / 32),
               blockNumber: block.number,
               blockHash: block.hash,
             },

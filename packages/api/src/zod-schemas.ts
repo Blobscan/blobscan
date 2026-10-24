@@ -163,9 +163,9 @@ export const blobIdSchema = z
   .superRefine((val, ctx) => {
     if (!hexSchema.safeParse(val).success) {
       ctx.addIssue({
-        code: z.ZodIssueCode.invalid_string,
+        code: z.ZodIssueCode.invalid_format,
+        format: "regex",
         message: "Invalid input: must be a valid hex string",
-        validation: "regex",
         fatal: true,
       });
 
@@ -185,9 +185,9 @@ export const blobIdSchema = z
 
     if (val.length === 66 && !val.startsWith("0x01")) {
       ctx.addIssue({
-        code: z.ZodIssueCode.invalid_string,
+        code: z.ZodIssueCode.invalid_format,
+        format: "regex",
         message: 'Invalid versioned hash: must start with "0x01"',
-        validation: "regex",
         fatal: true,
       });
 

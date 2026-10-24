@@ -17,7 +17,7 @@ export const withPagination = t.middleware(({ next, input }) => {
     p: offset,
     ps: limit,
     count,
-  } = withPaginationSchema.default({}).parse(input) ?? {};
+  } = withPaginationSchema.parse(input ?? {});
 
   return next({
     ctx: {

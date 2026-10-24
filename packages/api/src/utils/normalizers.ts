@@ -56,16 +56,24 @@ export function normalizePrismaTransactionFields({
   fromId,
   toId,
   decodedFields,
-}: Pick<PrismaTransaction, "from" | "fromId" | "toId" | "decodedFields">) {
+}: Pick<PrismaTransaction, "from" | "fromId" | "toId"> & {
+  decodedFields?: Prisma.JsonValue | null;
+}) {
+  const hasDecodedFields =
+    decodedFields &&
+    typeof decodedFields === "object" &&
+    !Array.isArray(decodedFields)
+      ? hasProperties(decodedFields)
+      : false;
+
   return {
     category: from.category,
     rollup: from.rollup,
     from: fromId,
     to: toId,
-    decodedFields:
-      decodedFields && hasProperties(decodedFields)
-        ? (decodedFields as z.output<typeof optimismDecodedFieldsSchema>)
-        : null,
+    decodedFields: hasDecodedFields
+      ? (decodedFields as z.output<typeof optimismDecodedFieldsSchema>)
+      : null,
   };
 }
 

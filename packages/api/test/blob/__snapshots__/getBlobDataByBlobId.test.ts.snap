@@ -22,9 +22,9 @@ exports[`getBlobDataByBlobId > when authorized > when providing an invalid blob 
 exports[`getBlobDataByBlobId > when authorized > when providing an invalid blob id > should fail when providing a non-hex string 1`] = `
 "[
   {
-    "code": "invalid_string",
+    "code": "invalid_format",
+    "format": "regex",
     "message": "Invalid input: must be a valid hex string",
-    "validation": "regex",
     "fatal": true,
     "path": [
       "id"
@@ -36,9 +36,9 @@ exports[`getBlobDataByBlobId > when authorized > when providing an invalid blob 
 exports[`getBlobDataByBlobId > when authorized > when providing an invalid blob id > should fail when providing a versioned hash with invalid prefix 1`] = `
 "[
   {
-    "code": "invalid_string",
+    "code": "invalid_format",
+    "format": "regex",
     "message": "Invalid versioned hash: must start with \\"0x01\\"",
-    "validation": "regex",
     "fatal": true,
     "path": [
       "id"

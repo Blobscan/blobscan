@@ -1,0 +1,170 @@
+diff --git a/dist/generator/schema.js b/dist/generator/schema.js
+index e86de25d204050f5b35948f90790ab8f952b0edb..fed9d3e4cc6983e535ae1f7958355478725ccca6 100644
+--- a/dist/generator/schema.js
++++ b/dist/generator/schema.js
+@@ -17,11 +17,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.getResponsesObject = exports.errorResponseObject = exports.getRequestBodyObject = exports.getParameterObjects = void 0;
+ const server_1 = require("@trpc/server");
+ const zod_1 = require("zod");
+-const zod_to_json_schema_1 = __importDefault(require("zod-to-json-schema"));
+ const zod_2 = require("../utils/zod");
+ const zodSchemaToOpenApiSchemaObject = (zodSchema) => {
+-    // FIXME: https://github.com/StefanTerdell/zod-to-json-schema/issues/35
+-    return (0, zod_to_json_schema_1.default)(zodSchema, { target: 'openApi3', $refStrategy: 'none' });
++    return zod_1.z.toJSONSchema(zodSchema, {
++        target: 'openapi-3.0',
++        io: 'input',
++        reused: 'inline',
++        unrepresentable: 'any',
++        override: (ctx) => {
++            const type = ctx.zodSchema?._zod?.def?.type;
++            if (type === 'date') {
++                ctx.jsonSchema.type = 'string';
++                ctx.jsonSchema.format = 'date-time';
++            }
++            else if (type === 'bigint') {
++                ctx.jsonSchema.type = 'integer';
++                ctx.jsonSchema.format = 'int64';
++            }
++            else if (type === 'nan') {
++                ctx.jsonSchema.type = 'number';
++            }
++        },
++    });
+ };
+ const getParameterObjects = (schema, pathParameters, inType, example) => {
+     if (!(0, zod_2.instanceofZodType)(schema)) {
+diff --git a/dist/utils/zod.js b/dist/utils/zod.js
+index f9b479f56b52ceea1cab9b581c7dcd27d500d5d6..85a4eebb6a34abfcde01aef69d8976fc66a193b8 100644
+--- a/dist/utils/zod.js
++++ b/dist/utils/zod.js
+@@ -1,87 +1,76 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.instanceofZodTypeCoercible = exports.zodSupportsCoerce = exports.instanceofZodTypeLikeString = exports.unwrapZodType = exports.instanceofZodTypeLikeVoid = exports.instanceofZodTypeObject = exports.instanceofZodTypeOptional = exports.instanceofZodTypeKind = exports.instanceofZodType = void 0;
+-const zod_1 = require("zod");
+-const instanceofZodType = (type) => {
+-    var _a;
+-    return !!((_a = type === null || type === void 0 ? void 0 : type._def) === null || _a === void 0 ? void 0 : _a.typeName);
+-};
++const getDef = (type) => { var _a; return (_a = type === null || type === void 0 ? void 0 : type._zod) === null || _a === void 0 ? void 0 : _a.def; };
++const getType = (type) => { var _a; return (_a = getDef(type)) === null || _a === void 0 ? void 0 : _a.type; };
++const instanceofZodType = (type) => !!getType(type);
+ exports.instanceofZodType = instanceofZodType;
+-const instanceofZodTypeKind = (type, zodTypeKind) => {
+-    var _a;
+-    return ((_a = type === null || type === void 0 ? void 0 : type._def) === null || _a === void 0 ? void 0 : _a.typeName) === zodTypeKind;
+-};
++const instanceofZodTypeKind = (type, zodTypeKind) => getType(type) === zodTypeKind;
+ exports.instanceofZodTypeKind = instanceofZodTypeKind;
+ const instanceofZodTypeOptional = (type) => {
+-    return (0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodOptional);
++    return (0, exports.instanceofZodTypeKind)(type, 'optional');
+ };
+ exports.instanceofZodTypeOptional = instanceofZodTypeOptional;
+ const instanceofZodTypeObject = (type) => {
+-    return (0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodObject);
++    return (0, exports.instanceofZodTypeKind)(type, 'object');
+ };
+ exports.instanceofZodTypeObject = instanceofZodTypeObject;
+ const instanceofZodTypeLikeVoid = (type) => {
+-    return ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodVoid) ||
+-        (0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodUndefined) ||
+-        (0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodNever));
++    const typeName = getType(type);
++    return typeName === 'void' || typeName === 'undefined' || typeName === 'never';
+ };
+ exports.instanceofZodTypeLikeVoid = instanceofZodTypeLikeVoid;
+ const unwrapZodType = (type, unwrapPreprocess) => {
+-    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodOptional)) {
+-        return (0, exports.unwrapZodType)(type.unwrap(), unwrapPreprocess);
++    const def = getDef(type);
++    if (!def) {
++        return type;
+     }
+-    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodDefault)) {
+-        return (0, exports.unwrapZodType)(type.removeDefault(), unwrapPreprocess);
++    if (def.type === 'optional' || def.type === 'default' || def.type === 'nonoptional') {
++        return (0, exports.unwrapZodType)(def.innerType, unwrapPreprocess);
+     }
+-    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodLazy)) {
+-        return (0, exports.unwrapZodType)(type._def.getter(), unwrapPreprocess);
++    if (def.type === 'lazy') {
++        return (0, exports.unwrapZodType)(def.getter(), unwrapPreprocess);
+     }
+-    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodEffects)) {
+-        if (type._def.effect.type === 'refinement') {
+-            return (0, exports.unwrapZodType)(type._def.schema, unwrapPreprocess);
+-        }
+-        if (type._def.effect.type === 'transform') {
+-            return (0, exports.unwrapZodType)(type._def.schema, unwrapPreprocess);
+-        }
+-        if (unwrapPreprocess && type._def.effect.type === 'preprocess') {
+-            return (0, exports.unwrapZodType)(type._def.schema, unwrapPreprocess);
++    if (def.type === 'pipe') {
++        if (unwrapPreprocess && getType(def.in) === 'transform') {
++            return (0, exports.unwrapZodType)(def.out, unwrapPreprocess);
+         }
++        return (0, exports.unwrapZodType)(def.in, unwrapPreprocess);
+     }
+     return type;
+ };
+ exports.unwrapZodType = unwrapZodType;
+ const instanceofZodTypeLikeString = (_type) => {
+     const type = (0, exports.unwrapZodType)(_type, false);
+-    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodEffects)) {
+-        if (type._def.effect.type === 'preprocess') {
+-            return true;
+-        }
++    const def = getDef(type);
++    if (!def) {
++        return false;
+     }
+-    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodUnion)) {
+-        return !type._def.options.some((option) => !(0, exports.instanceofZodTypeLikeString)(option));
+-    }
+-    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodIntersection)) {
+-        return ((0, exports.instanceofZodTypeLikeString)(type._def.left) && (0, exports.instanceofZodTypeLikeString)(type._def.right));
+-    }
+-    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodLiteral)) {
+-        return typeof type._def.value === 'string';
+-    }
+-    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodEnum)) {
+-        return true;
+-    }
+-    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodNativeEnum)) {
+-        return !Object.values(type._def.values).some((value) => typeof value === 'number');
++    switch (def.type) {
++        case 'string':
++        case 'template_literal':
++        case 'transform':
++            return true;
++        case 'pipe':
++            return (0, exports.instanceofZodTypeLikeString)(def.in);
++        case 'union':
++            return def.options.every((option) => (0, exports.instanceofZodTypeLikeString)(option));
++        case 'intersection':
++            return (0, exports.instanceofZodTypeLikeString)(def.left) && (0, exports.instanceofZodTypeLikeString)(def.right);
++        case 'literal':
++            return def.values.every((value) => typeof value === 'string');
++        case 'enum':
++            return Object.values(def.entries).every((value) => typeof value === 'string');
++        default:
++            return false;
+     }
+-    return (0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodString);
+ };
+ exports.instanceofZodTypeLikeString = instanceofZodTypeLikeString;
+-exports.zodSupportsCoerce = 'coerce' in zod_1.z;
++exports.zodSupportsCoerce = true;
+ const instanceofZodTypeCoercible = (_type) => {
+     const type = (0, exports.unwrapZodType)(_type, false);
+-    return ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodNumber) ||
+-        (0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodBoolean) ||
+-        (0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodBigInt) ||
+-        (0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodDate));
++    const typeName = getType(type);
++    return typeName === 'number' || typeName === 'boolean' || typeName === 'bigint' || typeName === 'date';
+ };
+ exports.instanceofZodTypeCoercible = instanceofZodTypeCoercible;
+ //# sourceMappingURL=zod.js.map

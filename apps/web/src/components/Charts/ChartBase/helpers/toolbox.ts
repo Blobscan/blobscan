@@ -1,16 +1,14 @@
-import type { EChartOption } from "echarts";
+import type { ToolboxComponentOption } from "echarts";
 
 import { cumulativeSum } from "~/utils";
 
-function isDataObject(
-  element: unknown[]
-): element is EChartOption.SeriesLine.DataObject[] {
+interface SeriesDataObject {
+  value: unknown;
+}
+
+function isDataObject(element: unknown[]): element is SeriesDataObject[] {
   return element.every(
-    (el) =>
-      typeof el === "object" &&
-      el !== null &&
-      "value" in el &&
-      element.every((e) => typeof e === "number")
+    (el) => typeof el === "object" && el !== null && "value" in el
   );
 }
 
@@ -72,7 +70,7 @@ export function createBaseToolboxOptions({
       onClick: () => void;
     };
   };
-}): EChartOption<EChartOption.Series>["toolbox"] {
+}): ToolboxComponentOption {
   const cumulativeSumFeature = extraFeatures?.cumulativeSum
     ? {
         myCumulativeSum: {
