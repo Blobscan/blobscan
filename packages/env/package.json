@@ -9,7 +9,10 @@
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
-    "type-check": "tsc --noEmit"
+    "test": "pnpm with-env:test vitest",
+    "test:ui": "pnpm with-env:test vitest --ui",
+    "type-check": "tsc --noEmit",
+    "with-env:test": "dotenv -e ../../.env.test --"
   },
   "dependencies": {
     "@blobscan/zod": "workspace:^0.1.0"

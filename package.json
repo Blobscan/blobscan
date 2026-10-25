@@ -68,6 +68,7 @@
       "typescript": "5.5.3",
       "zod": "4.6.7",
       "zod-to-json-schema": "3.25.2",
+      "@prisma/config>deepmerge-ts": "8.0.2",
       "@prisma/instrumentation>@opentelemetry/instrumentation": "0.220.0",
       "@opentelemetry/core@>=2.0.0 <2.8.0": "2.9.0",
       "cross-spawn@<6.0.6": "6.0.6",

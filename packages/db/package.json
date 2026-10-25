@@ -34,10 +34,10 @@
     "@blobscan/logger": "workspace:^0.1.4",
     "@blobscan/open-telemetry": "workspace:^0.0.10",
     "@blobscan/zod": "workspace:^0.1.0",
-    "@prisma/client": "^5.19.1",
-    "@prisma/generator-helper": "^5.19.1",
+    "@prisma/client": "^6.19.3",
+    "@prisma/generator-helper": "^6.19.3",
     "decimal.js": "^10.6.0",
-    "prisma": "^5.19.1",
+    "prisma": "^6.19.3",
     "zod-prisma": "^0.5.4"
   },
   "devDependencies": {

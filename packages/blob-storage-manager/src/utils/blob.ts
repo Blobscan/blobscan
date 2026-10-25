@@ -8,9 +8,8 @@ export function hexToBytes(hex: HexString) {
   return Buffer.from(hex.slice(2), "hex");
 }
 
-export function bytesToHex(bytes: Buffer | ArrayBuffer) {
-  const buffer = bytes instanceof Buffer ? bytes : Buffer.from(bytes);
-  return `0x${buffer.toString("hex")}`;
+export function bytesToHex(bytes: ArrayBuffer | Uint8Array) {
+  return `0x${Buffer.from(bytes).toString("hex")}`;
 }
 
 export function isHexString(value: unknown): value is HexString {
