@@ -55,7 +55,7 @@
     "prettier-plugin-tailwindcss": "^0.2.8",
     "tsx": "^4.23.15",
     "turbo": "^2.11.10",
-    "typescript": "5.5.3",
+    "typescript": "5.9.3",
     "vite": "6.4.4",
     "vitest": "^5.0.5",
     "vitest-mock-extended": "^5.1.1"
@@ -65,9 +65,8 @@
   },
   "pnpm": {
     "overrides": {
-      "typescript": "5.5.3",
+      "typescript": "5.9.3",
       "zod": "4.6.7",
-      "zod-to-json-schema": "3.25.2",
       "@prisma/config>deepmerge-ts": "8.0.2",
       "@prisma/instrumentation>@opentelemetry/instrumentation": "0.220.0",
       "@opentelemetry/core@>=2.0.0 <2.8.0": "2.9.0",
@@ -117,9 +116,6 @@
       "postcss-selector-parser@<7.1.6": "7.1.7",
       "@sentry/webpack-plugin>uuid": "11.1.1",
       "bullmq>uuid": "11.1.1"
-    },
-    "patchedDependencies": {
-      "trpc-openapi@1.2.0": "patches/trpc-openapi@1.2.0.patch"
     }
   }
 }

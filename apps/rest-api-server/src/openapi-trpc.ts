@@ -4,9 +4,13 @@ import swaggerUi from "swagger-ui-express";
 import {
   createOpenApiExpressMiddleware,
   generateOpenApiDocument,
-} from "trpc-openapi";
+} from "trpc-to-openapi";
 
-import { createAppRouter, createTRPCContext } from "@blobscan/api";
+import {
+  createAppRouter,
+  createTRPCContext,
+  openApiOverride,
+} from "@blobscan/api";
 import { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import { env } from "@blobscan/env";
 import { logger } from "@blobscan/logger";
@@ -34,6 +38,10 @@ export async function setUpOpenApiTRPC(app: Express): Promise<void> {
     baseUrl: `${env.BLOBSCAN_API_BASE_URL}`,
     docsUrl: "https://docs.blobscan.com/",
     tags: ["blobs", "transactions", "blocks", "stats", "indexer", "system"],
+    openApiVersion: "3.0.3",
+    options: {
+      override: openApiOverride,
+    },
   });
   const blobPropagator = await getBlobPropagator();
   const blobStorages = await createBlobStorages();
@@ -73,11 +81,7 @@ export async function setUpOpenApiTRPC(app: Express): Promise<void> {
     createOpenApiExpressMiddleware({
       router: appRouter,
       createContext,
-      // trpc-openapi 1.2 loses the optional modifier on these adapter options.
-      responseMeta: undefined,
-      maxBodySize: undefined,
-      // Its typings also fail to contextually type the handler with tRPC 10.
-      onError({ error }: { error: { code: string } }) {
+      onError({ error }) {
         if (error.code === "INTERNAL_SERVER_ERROR") {
           Sentry.captureException(error);
 

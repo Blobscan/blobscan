@@ -9,7 +9,10 @@ export function hexToBytes(hex: HexString) {
 }
 
 export function bytesToHex(bytes: ArrayBuffer | Uint8Array) {
-  return `0x${Buffer.from(bytes).toString("hex")}`;
+  const bytesView =
+    bytes instanceof ArrayBuffer ? new Uint8Array(bytes) : bytes;
+
+  return `0x${Buffer.from(bytesView).toString("hex")}`;
 }
 
 export function isHexString(value: unknown): value is HexString {

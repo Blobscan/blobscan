@@ -18,7 +18,6 @@ Resolve the remaining dependency advisories.
 - Move Prisma CLI configuration to `prisma.config.ts` so Prisma 6 resolves the existing migrations directory
 - Override Prisma's `deepmerge-ts` dependency with a patched version
 - Handle Prisma 6 `Uint8Array` byte fields
-- Patch `trpc-openapi` for Zod 4 schema introspection and OpenAPI generation
 - Patch generated Prisma Zod schemas for Zod 4 compatibility
 - Migrate chart typings, env defaults, and generated error snapshots
 - Add regression coverage for env validation in Vitest/CI runs

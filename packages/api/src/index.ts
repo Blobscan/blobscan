@@ -10,4 +10,6 @@ export { createMetricsHandler } from "./instrumentation";
 
 export type { TimeFrame } from "./middlewares/withTimeFrame";
 
+export { openApiOverride } from "./openapi";
+
 export * from "./app-router";

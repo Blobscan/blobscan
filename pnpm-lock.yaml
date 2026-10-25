@@ -5,9 +5,8 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  typescript: 5.5.3
+  typescript: 5.9.3
   zod: 4.6.7
-  zod-to-json-schema: 3.25.2
   '@prisma/config>deepmerge-ts': 8.0.2
   '@prisma/instrumentation>@opentelemetry/instrumentation': 0.220.0
   '@opentelemetry/core@>=2.0.0 <2.8.0': 2.9.0
@@ -57,11 +56,6 @@ overrides:
   postcss-selector-parser@<7.1.6: 7.1.7
   '@sentry/webpack-plugin>uuid': 11.1.1
   bullmq>uuid: 11.1.1
-
-patchedDependencies:
-  trpc-openapi@1.2.0:
-    hash: e9ec6210ec3951a986970e95be69cd9d4257b31999acdd7ae249e0b2c286deb6
-    path: patches/trpc-openapi@1.2.0.patch
 
 importers:
 
@@ -120,7 +114,7 @@ importers:
         version: 7.4.4
       msw:
         specifier: ^2.3.1
-        version: 2.12.10(@types/node@24.19.2)(typescript@5.5.3)
+        version: 2.12.10(@types/node@24.19.2)(typescript@5.9.3)
       prettier:
         specifier: ^2.8.8
         version: 2.8.8
@@ -134,23 +128,23 @@ importers:
         specifier: ^2.11.10
         version: 2.11.10
       typescript:
-        specifier: 5.5.3
-        version: 5.5.3
+        specifier: 5.9.3
+        version: 5.9.3
       vite:
         specifier: 6.4.4
         version: 6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1)
       vitest:
         specifier: ^5.0.5
-        version: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(msw@2.12.10(@types/node@24.19.2)(typescript@5.5.3))(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))
+        version: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(msw@2.12.10(@types/node@24.19.2)(typescript@5.9.3))(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))
       vitest-mock-extended:
         specifier: ^5.1.1
-        version: 5.1.1(typescript@5.5.3)(vitest@5.0.5)
+        version: 5.1.1(typescript@5.9.3)(vitest@5.0.5)
 
   apps/dagster:
     devDependencies:
       '@prisma/client':
         specifier: ^6.19.3
-        version: 6.19.3(prisma@6.19.3(typescript@5.5.3))(typescript@5.5.3)
+        version: 6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3)
 
   apps/docs:
     dependencies:
@@ -229,7 +223,7 @@ importers:
         version: 8.57.1
       eslint-config-next:
         specifier: 13.4.13
-        version: 13.4.13(eslint@8.57.1)(typescript@5.5.3)
+        version: 13.4.13(eslint@8.57.1)(typescript@5.9.3)
       prettier:
         specifier: ^2.8.8
         version: 2.8.8
@@ -302,12 +296,15 @@ importers:
       swagger-ui-express:
         specifier: ^4.6.2
         version: 4.6.3(express@4.22.3)
-      trpc-openapi:
-        specifier: ^1.2.0
-        version: 1.2.0(patch_hash=e9ec6210ec3951a986970e95be69cd9d4257b31999acdd7ae249e0b2c286deb6)(@trpc/server@10.45.4)(@types/express@4.17.25)(@types/node@24.19.2)(zod@4.6.7)
+      trpc-to-openapi:
+        specifier: ^3.3.3
+        version: 3.3.3(@trpc/server@11.19.0(typescript@5.9.3))(zod-openapi@5.4.6(zod@4.6.7))(zod@4.6.7)
       viem:
         specifier: ^2.17.4
-        version: 2.46.1(typescript@5.5.3)(zod@4.6.7)
+        version: 2.46.1(typescript@5.9.3)(zod@4.6.7)
+      zod-openapi:
+        specifier: ^5.4.6
+        version: 5.4.6(zod@4.6.7)
     devDependencies:
       '@types/cors':
         specifier: ^2.8.13
@@ -398,19 +395,19 @@ importers:
         version: 11.9.0(next@16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))(webpack@5.105.2)
       '@t3-oss/env-nextjs':
         specifier: ^0.13.11
-        version: 0.13.11(typescript@5.5.3)(zod@4.6.7)
+        version: 0.13.11(typescript@5.9.3)(zod@4.6.7)
       '@tanstack/react-query':
-        specifier: ^4.28.0
-        version: 4.43.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^5.104.5
+        version: 5.104.5(@types/react@18.3.28)(react@18.2.0)
       '@trpc/client':
-        specifier: ^10.43.2
-        version: 10.45.4(@trpc/server@10.45.4)
+        specifier: ^11.19.0
+        version: 11.19.0(@trpc/server@11.19.0(typescript@5.9.3))(typescript@5.9.3)
       '@trpc/next':
-        specifier: ^10.43.2
-        version: 10.45.4(@tanstack/react-query@4.43.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.45.4(@trpc/server@10.45.4))(@trpc/react-query@10.45.4(@tanstack/react-query@4.43.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.45.4(@trpc/server@10.45.4))(@trpc/server@10.45.4)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/server@10.45.4)(next@16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^11.19.0
+        version: 11.19.0(@tanstack/react-query@5.104.5(@types/react@18.3.28)(react@18.2.0))(@trpc/client@11.19.0(@trpc/server@11.19.0(typescript@5.9.3))(typescript@5.9.3))(@trpc/react-query@11.19.0(@tanstack/react-query@5.104.5(@types/react@18.3.28)(react@18.2.0))(@trpc/client@11.19.0(@trpc/server@11.19.0(typescript@5.9.3))(typescript@5.9.3))(@trpc/server@11.19.0(typescript@5.9.3))(react@18.2.0)(typescript@5.9.3))(@trpc/server@11.19.0(typescript@5.9.3))(next@16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.9.3)
       '@trpc/react-query':
-        specifier: ^10.43.2
-        version: 10.45.4(@tanstack/react-query@4.43.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.45.4(@trpc/server@10.45.4))(@trpc/server@10.45.4)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^11.19.0
+        version: 11.19.0(@tanstack/react-query@5.104.5(@types/react@18.3.28)(react@18.2.0))(@trpc/client@11.19.0(@trpc/server@11.19.0(typescript@5.9.3))(typescript@5.9.3))(@trpc/server@11.19.0(typescript@5.9.3))(react@18.2.0)(typescript@5.9.3)
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.1
@@ -465,7 +462,7 @@ importers:
     devDependencies:
       '@svgr/webpack':
         specifier: ^8.1.0
-        version: 8.1.0(typescript@5.5.3)
+        version: 8.1.0(typescript@5.9.3)
       '@tailwindcss/forms':
         specifier: ^0.5.10
         version: 0.5.11(tailwindcss@3.4.19(tsx@4.23.15)(yaml@2.9.1))
@@ -545,8 +542,8 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../zod
       '@trpc/server':
-        specifier: ^10.43.2
-        version: 10.45.4
+        specifier: ^11.19.0
+        version: 11.19.0(typescript@5.9.3)
       ioredis:
         specifier: ^5.3.2
         version: 5.9.3
@@ -562,9 +559,12 @@ importers:
       superjson:
         specifier: 1.9.1
         version: 1.9.1
-      trpc-openapi:
-        specifier: ^1.2.0
-        version: 1.2.0(patch_hash=e9ec6210ec3951a986970e95be69cd9d4257b31999acdd7ae249e0b2c286deb6)(@trpc/server@10.45.4)(@types/express@4.17.25)(@types/node@24.19.2)(zod@4.6.7)
+      trpc-to-openapi:
+        specifier: ^3.3.3
+        version: 3.3.3(@trpc/server@11.19.0(typescript@5.9.3))(zod-openapi@5.4.6(zod@4.6.7))(zod@4.6.7)
+      zod-openapi:
+        specifier: ^5.4.6
+        version: 5.4.6(zod@4.6.7)
     devDependencies:
       '@blobscan/blob-propagator':
         specifier: workspace:^4.1.0
@@ -580,7 +580,7 @@ importers:
         version: link:../db
       '@next-auth/prisma-adapter':
         specifier: ^1.0.5
-        version: 1.0.7(@prisma/client@6.19.3(prisma@6.19.3(typescript@5.5.3))(typescript@5.5.3))(next-auth@4.24.15(next@16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0))
+        version: 1.0.7(@prisma/client@6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3))(next-auth@4.24.15(next@16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0))
       next:
         specifier: ~16.4.3
         version: 16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -694,7 +694,7 @@ importers:
         version: link:../zod
       '@prisma/client':
         specifier: ^6.19.3
-        version: 6.19.3(prisma@6.19.3(typescript@5.5.3))(typescript@5.5.3)
+        version: 6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3)
       '@prisma/generator-helper':
         specifier: ^6.19.3
         version: 6.19.3
@@ -703,10 +703,10 @@ importers:
         version: 10.6.0
       prisma:
         specifier: ^6.19.3
-        version: 6.19.3(typescript@5.5.3)
+        version: 6.19.3(typescript@5.9.3)
       zod-prisma:
         specifier: ^0.5.4
-        version: 0.5.4(decimal.js@10.6.0)(prisma@6.19.3(typescript@5.5.3))(zod@4.6.7)
+        version: 0.5.4(decimal.js@10.6.0)(prisma@6.19.3(typescript@5.9.3))(zod@4.6.7)
     devDependencies:
       '@blobscan/chains':
         specifier: workspace:^0.5.0
@@ -811,7 +811,7 @@ importers:
     devDependencies:
       viem:
         specifier: ^2.17.4
-        version: 2.46.1(typescript@5.5.3)(zod@4.6.7)
+        version: 2.46.1(typescript@5.9.3)(zod@4.6.7)
 
   packages/rollups:
     devDependencies:
@@ -862,7 +862,7 @@ importers:
         version: link:../env
       '@prisma/client':
         specifier: ^6.19.3
-        version: 6.19.3(prisma@6.19.3(typescript@5.5.3))(typescript@5.5.3)
+        version: 6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3)
       ioredis:
         specifier: ^5.3.2
         version: 5.9.3
@@ -871,13 +871,13 @@ importers:
         version: 0.0.25
       viem:
         specifier: ^2.17.4
-        version: 2.46.1(typescript@5.5.3)(zod@4.6.7)
+        version: 2.46.1(typescript@5.9.3)(zod@4.6.7)
 
   packages/zod:
     dependencies:
       '@t3-oss/env-core':
         specifier: ^0.13.11
-        version: 0.13.11(typescript@5.5.3)(zod@4.6.7)
+        version: 0.13.11(typescript@5.9.3)(zod@4.6.7)
       zod:
         specifier: 4.6.7
         version: 4.6.7
@@ -892,10 +892,10 @@ importers:
         version: 8.56.12
       '@typescript-eslint/eslint-plugin':
         specifier: ^7.18.0
-        version: 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.5.3))(eslint@8.57.1)(typescript@5.5.3)
+        version: 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.9.3))(eslint@8.57.1)(typescript@5.9.3)
       '@typescript-eslint/parser':
         specifier: ^7.18.0
-        version: 7.18.0(eslint@8.57.1)(typescript@5.5.3)
+        version: 7.18.0(eslint@8.57.1)(typescript@5.9.3)
       eslint-config-prettier:
         specifier: ^8.8.0
         version: 8.10.2(eslint@8.57.1)
@@ -904,7 +904,7 @@ importers:
         version: 2.11.10(eslint@8.57.1)(turbo@2.11.10)
       eslint-plugin-import:
         specifier: ^2.27.5
-        version: 2.32.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.5.3))(eslint@8.57.1)
+        version: 2.32.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.9.3))(eslint@8.57.1)
       eslint-plugin-jsx-a11y:
         specifier: ^6.7.1
         version: 6.10.2(eslint@8.57.1)
@@ -2965,7 +2965,7 @@ packages:
     engines: {node: '>=18.18'}
     peerDependencies:
       prisma: '*'
-      typescript: 5.5.3
+      typescript: 5.9.3
     peerDependenciesMeta:
       prisma:
         optional: true
@@ -3294,6 +3294,11 @@ packages:
     cpu: [x64]
     os: [linux]
 
+  '@rollup/rollup-linux-x64-gnu@4.6.1':
+    resolution: {integrity: sha512-DNGZvZDO5YF7jN5fX8ZqmGLjZEXIJRdJEdTFMhiyXqyXubBa0WVLDWSNlQ5JR2PNgDbEV1VQowhVRUh+74D+RA==}
+    cpu: [x64]
+    os: [linux]
+
   '@rollup/rollup-linux-x64-gnu@4.65.0':
     resolution: {integrity: sha512-GExdD15WPvu/x/drELjVam7vX8EsPgvTMOa/iJL/p/4m/oOqzbb7JXZg8fXR4hlXtg/sF2zyTZ3bR0AEtEMlhQ==}
     cpu: [x64]
@@ -3613,7 +3618,7 @@ packages:
     resolution: {integrity: sha512-sM7GYY+KL7H/Hl0BE0inWfk3nRHZOLhmVn7sHGxaZt9FAR6KqREXAE+6TqKfiavfXmpRxO/OZ2QgKRd+oiBYRQ==}
     peerDependencies:
       arktype: ^2.1.0
-      typescript: 5.5.3
+      typescript: 5.9.3
       valibot: ^1.0.0-beta.7 || ^1.0.0
       zod: 4.6.7
     peerDependenciesMeta:
@@ -3630,7 +3635,7 @@ packages:
     resolution: {integrity: sha512-NC+3j7YWgpzdFu1t5y/8wqibTK0lm5RS4bjXA1n8uwik3wIR4iZM4Fa+U2BaMa5k3Qk8RZiYhoAIX0WogmGkzg==}
     peerDependencies:
       arktype: ^2.1.0
-      typescript: 5.5.3
+      typescript: 5.9.3
       valibot: ^1.0.0-beta.7 || ^1.0.0
       zod: 4.6.7
     peerDependenciesMeta:
@@ -3653,19 +3658,16 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20 || >=4.0.0-beta.1'
 
-  '@tanstack/query-core@4.43.0':
-    resolution: {integrity: sha512-m1QeUUIpNXDYxmfuuWNFZLky0EwVmbE0hj8ulZ2nIGA1183raJgDCn0IKlxug80NotRqzodxAaoYTKHbE1/P/Q==}
+  '@tanstack/query-core@5.104.5':
+    resolution: {integrity: sha512-Q94gI8Opd+CbdVNOdj8ZCyV8WqLYitrDq1t96Xc8WZT6lY0r5iRnJLXYDxMex7EEf2v+mXvn4FcjaBKSxXZQ9A==}
 
-  '@tanstack/react-query@4.43.0':
-    resolution: {integrity: sha512-Lj8luFKHQL27oZbw5T8xdTbsfAPp2+bCtSCa2bAVvIwnvNfRP0hpB1GxfKFgCktat8lPcYBHAu8eMTXzz2sQtQ==}
+  '@tanstack/react-query@5.104.5':
+    resolution: {integrity: sha512-RORgFe052U+93weaNuqg7qHq7vNVNzXN/VrXqD4bbAuQCWUqOl2lV5Ui9flWk5CVvMyL/Bh27QWhzwH0aaOx9g==}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-native: '*'
+      '@types/react': ^18 || ^19
+      react: ^18 || ^19
     peerDependenciesMeta:
-      react-dom:
-        optional: true
-      react-native:
+      '@types/react':
         optional: true
 
   '@tanstack/react-virtual@3.13.18':
@@ -3677,33 +3679,45 @@ packages:
   '@tanstack/virtual-core@3.13.18':
     resolution: {integrity: sha512-Mx86Hqu1k39icq2Zusq+Ey2J6dDWTjDvEv43PJtRCoEYTLyfaPnxIQ6iy7YAOK0NV/qOEmZQ/uCufrppZxTgcg==}
 
-  '@trpc/client@10.45.4':
-    resolution: {integrity: sha512-ItpH5FMIJFt862kbAgC8hf5NJnDLo0FwEvMEX6zSLCenzWD0UH6H/fvAX1suFo1e0wcAmMhiEU1Tl6xKk/Pd1g==}
+  '@trpc/client@11.19.0':
+    resolution: {integrity: sha512-0MKkPq6MejsKB5Opca1Rl22KVIaqo2+A1EiXyZ8EGUsl9TLrPdpGn+Usux20TZKFwnSC2+wI/WilqNJaP4ODfw==}
+    hasBin: true
     peerDependencies:
-      '@trpc/server': 10.45.4
+      '@trpc/server': 11.19.0
+      typescript: 5.9.3
 
-  '@trpc/next@10.45.4':
-    resolution: {integrity: sha512-lsuFpZFIf4iFo71fWLS0F5s33fZrvvbblbXffFJBQw20wTQP5fZuZ6hXRbCgiUD+dLsZP1wDMKhky3mqZ5dKgA==}
+  '@trpc/next@11.19.0':
+    resolution: {integrity: sha512-6rSzxEm87zZP3XM4KZakhUTMFrrqs+eVV9zqyX5Xpu03s7VhXfvDYQ/ampnZ5NxL5wrvcl14jV2QYeJ6FSzBJw==}
+    hasBin: true
     peerDependencies:
-      '@tanstack/react-query': ^4.18.0
-      '@trpc/client': 10.45.4
-      '@trpc/react-query': 10.45.4
-      '@trpc/server': 10.45.4
+      '@tanstack/react-query': ^5.59.15
+      '@trpc/client': 11.19.0
+      '@trpc/react-query': 11.19.0
+      '@trpc/server': 11.19.0
       next: '*'
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
+      typescript: 5.9.3
+    peerDependenciesMeta:
+      '@tanstack/react-query':
+        optional: true
+      '@trpc/react-query':
+        optional: true
 
-  '@trpc/react-query@10.45.4':
-    resolution: {integrity: sha512-/JfbkFMztsYbpl94P9TWritMjbHqWxeHz4uwjHM3W2zUcIKT88FiFXVmD/jLitPLrKhi4yAONoaRks5SUm12fQ==}
+  '@trpc/react-query@11.19.0':
+    resolution: {integrity: sha512-TrqZBa/6weXX27mf0P2dMCI65duqO3B/wf9BkP1MezUWSUg7SRGJrIv6K8vjgjeHdafFBI1mmcqPEYXHF4AlVQ==}
     peerDependencies:
-      '@tanstack/react-query': ^4.18.0
-      '@trpc/client': 10.45.4
-      '@trpc/server': 10.45.4
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
+      '@tanstack/react-query': ^5.80.3
+      '@trpc/client': 11.19.0
+      '@trpc/server': 11.19.0
+      react: '>=18.2.0'
+      typescript: 5.9.3
 
-  '@trpc/server@10.45.4':
-    resolution: {integrity: sha512-5MuyK5sDuFVGHOT9EMVHgRjP5I5j3RqGymcb5D47UOp8tzn6LH0g1lEgYrAsOZ12vmk1gpxMw/v/y4xHHK/Qdg==}
+  '@trpc/server@11.19.0':
+    resolution: {integrity: sha512-7C1goiDurz82yFKtZUbEzjXd0Rg/jyisaIZQhdvus+1l7E6mwcEYZXjZ1US/HF8kOyz1LERL8UN3bcboJtjcyQ==}
+    hasBin: true
+    peerDependencies:
+      typescript: 5.9.3
 
   '@ts-morph/common@0.12.3':
     resolution: {integrity: sha512-4tUmeLyXJnJWvTFOKtcNJ1yh0a3SsTLi2MUoyj8iUNznFRN1ZquaNe7Oukqrnki2FzZkm0J9adCNLDZxUzvj+w==}
@@ -4160,7 +4174,7 @@ packages:
   abitype@1.2.3:
     resolution: {integrity: sha512-Ofer5QUnuUdTFsBRwARMoWKOH1ND5ehwYhJ3OJ/BQO+StkwQjHw0XyVh4vDttzHB7QOFhPHa/o413PJ82gU/Tg==}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
       zod: 4.6.7
     peerDependenciesMeta:
       typescript:
@@ -4641,8 +4655,8 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
-  cookie-es@1.2.2:
-    resolution: {integrity: sha512-+W7VmiVINB+ywl1HGXJXmrqkOhpKrIiVZV6tQuV54ZyQC7MMuBt81Vc336GMLoHBq5hV/F9eXgt5Mnx0Rha5Fg==}
+  cookie-es@1.2.3:
+    resolution: {integrity: sha512-lXVyvUvrNXblMqzIRrxHb57UUVmqsSWlxqt3XIjCkUP0wDAf6uicO6KMbEgYrMNtEvWgWHwe42CKxPu9MYAnWw==}
 
   cookie-signature@1.0.7:
     resolution: {integrity: sha512-NXdYc3dLr47pBkpUCHtKSwIOQXLVn8dZEuywboCOJY/osA0wFSLlSawr3KN8qXJEyX66FcONTH8EIlVuK0yyFA==}
@@ -4670,7 +4684,7 @@ packages:
     resolution: {integrity: sha512-kcZ6+W5QzcJ3P1Mt+83OUv/oHFqZHIx8DuxG6eZ5RGMERoLqp4BuGjhHLYGK+Kf5XVkQvqBSmAy/nGWN3qDgEA==}
     engines: {node: '>=14'}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -4803,6 +4817,9 @@ packages:
   defu@6.1.5:
     resolution: {integrity: sha512-pwdBJxJuJXmqrLO6s0VBmfbRz+G7FUzkjldAsdi9Yrv86mPyzq0ll1o8+8gB4Gsr6GJHbK1Lh3ngllgTInDCjA==}
 
+  defu@6.1.7:
+    resolution: {integrity: sha512-7z22QmUWiQ/2d0KkdYmANbRUVABpZ9SNYyH5vx6PZ+nE5bcC0l7uFvEfHlyld/HcGBFTL536ClDt3DEcSlEJAQ==}
+
   delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
@@ -4810,10 +4827,6 @@ packages:
   denque@2.1.0:
     resolution: {integrity: sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw==}
     engines: {node: '>=0.10'}
-
-  depd@1.1.2:
-    resolution: {integrity: sha512-7emPTl6Dpo6JRXOXjLRxck+FlLRX5847cLKEn00PLAgc3g2hTZZgr+e4c2v6QpSmLeFP3n5yUo7ft6avBK/5jQ==}
-    engines: {node: '>= 0.6'}
 
   depd@2.0.0:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
@@ -5020,7 +5033,7 @@ packages:
     resolution: {integrity: sha512-EXAh5h1yG/YTNa5YdskzaSZncBjKjvFe2zclMCi2KXyTsXha22wB6MPs/U7idB6a2qjpBdbZcruQY1TWjfNMZw==}
     peerDependencies:
       eslint: ^7.23.0 || ^8.0.0
-      typescript: 5.5.3
+      typescript: 5.9.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -5476,8 +5489,8 @@ packages:
     resolution: {integrity: sha512-ax7ZYomf6jqPTQ4+XCpUGyXKHk5WweS+e05MBO4/y3WJ5RkmPXNKvX+bx1behVILVwr6JSQvZAku021CHPXG3Q==}
     engines: {node: '>=10'}
 
-  h3@1.15.9:
-    resolution: {integrity: sha512-H7UPnyIupUOYUQu7f2x7ABVeMyF/IbJjqn20WSXpMdnQB260luADUkSgJU7QTWLutq8h3tUayMQ1DdbSYX5LkA==}
+  h3@1.15.11:
+    resolution: {integrity: sha512-L3THSe2MPeBwgIZVSH5zLdBBU90TOxarvhK9d04IDY2AmVS8j2Jz2LIWtwsGOU3lu2I5jCN7FNvVfY2+XyF+mg==}
 
   has-bigints@1.1.0:
     resolution: {integrity: sha512-R3pbpkcIqv2Pm3dUwgjclDRVmWpTJW2DcMzcIhEXEx1oh/CEMObMm3KLmRJOdvhM7o4uQBnwr8pzRK2sJWIqfg==}
@@ -5907,9 +5920,6 @@ packages:
     resolution: {integrity: sha512-GhrVeweiTD6uTmmn5hV/lzgCQhccwReIVRLHp7LT4SopOjqEZ5BbX8b5WWEtAKasjmy8hR7ZPwsYlxRCku5odg==}
     deprecated: This package is deprecated. Use structuredClone instead.
 
-  lodash.clonedeep@4.5.0:
-    resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
-
   lodash.debounce@4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
 
@@ -6122,7 +6132,7 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -6229,18 +6239,6 @@ packages:
   node-mock-http@1.0.4:
     resolution: {integrity: sha512-8DY+kFsDkNXy1sJglUfuODx1/opAGJGyrTuFqEoN90oRc2Vk0ZbD4K2qmKXBBEhZQzdKHIVfEJpDU8Ak2NJEvQ==}
 
-  node-mocks-http@1.17.2:
-    resolution: {integrity: sha512-HVxSnjNzE9NzoWMx9T9z4MLqwMpLwVvA0oVZ+L+gXskYXEJ6tFn3Kx4LargoB6ie7ZlCLplv7QbWO6N+MysWGA==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@types/express': ^4.17.21 || ^5.0.0
-      '@types/node': '*'
-    peerDependenciesMeta:
-      '@types/express':
-        optional: true
-      '@types/node':
-        optional: true
-
   node-releases@2.0.60:
     resolution: {integrity: sha512-OmO8+GM1JUZqXET720VrJCwkjUCXmCMQm0Z3UDDRbfNLHS4NEAvY60j5jiFv0tkKw2PNNlqOLhahVmwJIOLDIQ==}
     engines: {node: '>=18'}
@@ -6337,8 +6335,8 @@ packages:
     resolution: {integrity: sha512-VXJjc87FScF88uafS3JllDgvAm+c/Slfz06lorj2uAY34rlUu0Nt+v8wreiImcrgAjjIHp1rXpTDlLOGw29WwQ==}
     engines: {node: '>=18'}
 
-  openapi-types@12.1.3:
-    resolution: {integrity: sha512-N4YtSYJqghVu4iek2ZUvcN/0aqH1kRDuNqzcycDxhOUpg7GdvLa2F3DgS6yBNhInhv2r/6I0Flkn7CqL8+nIcw==}
+  openapi3-ts@4.6.2:
+    resolution: {integrity: sha512-gyyil3DweqhXiEhTqtAs9wwRLfWHmetwhI4kmM5Rn0d6gtmK863Ki7qqbQnp9+Wwlqoe3B1LFWj7kMp5ctE4rQ==}
 
   opener@1.5.2:
     resolution: {integrity: sha512-ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A==}
@@ -6365,7 +6363,7 @@ packages:
   ox@0.12.1:
     resolution: {integrity: sha512-uU0llpthaaw4UJoXlseCyBHmQ3bLrQmz9rRLIAUHqv46uHuae9SE+ukYBRIPVCnlEnHKuWjDUcDFHWx9gbGNoA==}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -6631,7 +6629,7 @@ packages:
     engines: {node: '>=18.18'}
     hasBin: true
     peerDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -7310,22 +7308,23 @@ packages:
     resolution: {integrity: sha512-aZbgViZrg1QNcG+LULa7nhZpJTZSLm/mXnHXnbAbjmN5aSa0y7V+wvv6+4WaBtpISJzThKy+PIPxc1Nq1EJ9mg==}
     engines: {node: '>= 14.0.0'}
 
-  trpc-openapi@1.2.0:
-    resolution: {integrity: sha512-pfYoCd/3KYXWXvUPZBKJw455OOwngKN/6SIcj7Yit19OMLJ+8yVZkEvGEeg5wUSwfsiTdRsKuvqkRPXVSwV7ew==}
+  trpc-to-openapi@3.3.3:
+    resolution: {integrity: sha512-N4uLkDwaUIUX8bFDNTG71HlQP3iOfHbu/hGxX7D1zFbwG3pC48ekj0KgyX5j2dP7u+/trLMGLYfG4ZwwgJtKBA==}
     peerDependencies:
-      '@trpc/server': ^10.0.0
+      '@trpc/server': ^11.1.0
       zod: 4.6.7
+      zod-openapi: ^5.4.4
 
   ts-api-utils@1.4.3:
     resolution: {integrity: sha512-i3eMG77UTMD0hZhgRS562pv83RC6ukSAC2GMNWc+9dieh/+jDM5u5YG+NHX6VNDRHQcHwmsTHctP9LhbC3WxVw==}
     engines: {node: '>=16'}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
 
   ts-essentials@10.2.1:
     resolution: {integrity: sha512-+Id1fRkuir+CsgK2x04/icS2b4V1hQmq7ObzIrDjhN0ozfRYivnP7aaKMVJfLApQm0trjR39A6NIMVchiB9Erw==}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -7352,7 +7351,7 @@ packages:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
     engines: {node: '>= 6'}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
 
   tsx@4.23.15:
     resolution: {integrity: sha512-Yiex1Ovn8z2xPpOWckIiysV1SSyRMY9BkLF++q0yKiDxCqRhosKfMg3janKkiLBwZ5c/YryloKwGZcrEmtwxKw==}
@@ -7399,8 +7398,8 @@ packages:
     resolution: {integrity: sha512-3KS2b+kL7fsuk/eJZ7EQdnEmQoaho/r6KUef7hxvltNA5DR8NAUM+8wJMbJyZ4G9/7i3v5zPBIMN5aybAh2/Jg==}
     engines: {node: '>= 0.4'}
 
-  typescript@5.5.3:
-    resolution: {integrity: sha512-/hreyEujaB0w76zKo6717l3L0o/qEUtRgdvUBvlkhoWeOVMjMuHNHk0BRBzikzuGDqNmPQbg5ifMEqsHLiIUcQ==}
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -7494,7 +7493,7 @@ packages:
   viem@2.46.1:
     resolution: {integrity: sha512-c5YPQR/VueqoPG09Tp1JBw2iItKVRGVI0YkWekquRDZw0ciNBhO3muu2QjO9xFelOXh18q3d/kLbW83B2Oxf0g==}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -7542,7 +7541,7 @@ packages:
   vitest-mock-extended@5.1.1:
     resolution: {integrity: sha512-k5Ji2+t4+nsdepXeakCkilyKydtgaULtP0HsjwQGIZsYr5hDTqrwCtC0+Sh0YBKUS7cY/Wxplf7SVjcZstTIMQ==}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
       vitest: '>=4.0.0'
 
   vitest@5.0.5:
@@ -7752,6 +7751,12 @@ packages:
     resolution: {integrity: sha512-CzhO+pFNo8ajLM2d2IW/R93ipy99LWjtwblvC1RsoSUMZgyLbYFr221TnSNT7GjGdYui6P459mw9JH/g/zW2ug==}
     engines: {node: '>=18'}
 
+  zod-openapi@5.4.6:
+    resolution: {integrity: sha512-P2jsOOBAq/6hCwUsMCjUATZ8szkMsV5VAwZENfyxp2Hc/XPJQpVwAgevWZc65xZauCwWB9LAn7zYeiCJFAEL+A==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      zod: 4.6.7
+
   zod-prisma@0.5.4:
     resolution: {integrity: sha512-5Ca4Qd1a1jy1T/NqCEpbr0c+EsbjJfJ/7euEHob3zDvtUK2rTuD1Rc/vfzH8q8PtaR2TZbysD88NHmrLwpv3Xg==}
     engines: {node: '>=14'}
@@ -7763,11 +7768,6 @@ packages:
     peerDependenciesMeta:
       decimal.js:
         optional: true
-
-  zod-to-json-schema@3.25.2:
-    resolution: {integrity: sha512-O/PgfnpT1xKSDeQYSCfRI5Gy3hPf91mKVDuYLUHZJMiDFptvP41MSnWofm8dnCm0256ZNfZIM7DSzuSMAFnjHA==}
-    peerDependencies:
-      zod: 4.6.7
 
   zod@4.6.7:
     resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
@@ -9542,9 +9542,9 @@ snapshots:
       '@tybys/wasm-util': 0.10.1
     optional: true
 
-  '@next-auth/prisma-adapter@1.0.7(@prisma/client@6.19.3(prisma@6.19.3(typescript@5.5.3))(typescript@5.5.3))(next-auth@4.24.15(next@16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0))':
+  '@next-auth/prisma-adapter@1.0.7(@prisma/client@6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3))(next-auth@4.24.15(next@16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0))':
     dependencies:
-      '@prisma/client': 6.19.3(prisma@6.19.3(typescript@5.5.3))(typescript@5.5.3)
+      '@prisma/client': 6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3)
       next-auth: 4.24.15(next@16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
 
   '@next/bundle-analyzer@16.4.3':
@@ -9976,10 +9976,10 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-  '@prisma/client@6.19.3(prisma@6.19.3(typescript@5.5.3))(typescript@5.5.3)':
+  '@prisma/client@6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3)':
     optionalDependencies:
-      prisma: 6.19.3(typescript@5.5.3)
-      typescript: 5.5.3
+      prisma: 6.19.3(typescript@5.9.3)
+      typescript: 5.9.3
 
   '@prisma/config@6.19.3':
     dependencies:
@@ -10265,6 +10265,9 @@ snapshots:
     optional: true
 
   '@rollup/rollup-linux-x64-gnu@4.59.0':
+    optional: true
+
+  '@rollup/rollup-linux-x64-gnu@4.6.1':
     optional: true
 
   '@rollup/rollup-linux-x64-gnu@4.65.0':
@@ -10582,12 +10585,12 @@ snapshots:
       '@svgr/babel-plugin-transform-react-native-svg': 8.1.0(@babel/core@7.29.6)
       '@svgr/babel-plugin-transform-svg-component': 8.0.0(@babel/core@7.29.6)
 
-  '@svgr/core@8.1.0(typescript@5.5.3)':
+  '@svgr/core@8.1.0(typescript@5.9.3)':
     dependencies:
       '@babel/core': 7.29.6
       '@svgr/babel-preset': 8.1.0(@babel/core@7.29.6)
       camelcase: 6.3.0
-      cosmiconfig: 8.3.6(typescript@5.5.3)
+      cosmiconfig: 8.3.6(typescript@5.9.3)
       snake-case: 3.0.4
     transitivePeerDependencies:
       - supports-color
@@ -10598,35 +10601,35 @@ snapshots:
       '@babel/types': 7.29.0
       entities: 4.5.0
 
-  '@svgr/plugin-jsx@8.1.0(@svgr/core@8.1.0(typescript@5.5.3))':
+  '@svgr/plugin-jsx@8.1.0(@svgr/core@8.1.0(typescript@5.9.3))':
     dependencies:
       '@babel/core': 7.29.6
       '@svgr/babel-preset': 8.1.0(@babel/core@7.29.6)
-      '@svgr/core': 8.1.0(typescript@5.5.3)
+      '@svgr/core': 8.1.0(typescript@5.9.3)
       '@svgr/hast-util-to-babel-ast': 8.0.0
       svg-parser: 2.0.4
     transitivePeerDependencies:
       - supports-color
 
-  '@svgr/plugin-svgo@8.1.0(@svgr/core@8.1.0(typescript@5.5.3))(typescript@5.5.3)':
+  '@svgr/plugin-svgo@8.1.0(@svgr/core@8.1.0(typescript@5.9.3))(typescript@5.9.3)':
     dependencies:
-      '@svgr/core': 8.1.0(typescript@5.5.3)
-      cosmiconfig: 8.3.6(typescript@5.5.3)
+      '@svgr/core': 8.1.0(typescript@5.9.3)
+      cosmiconfig: 8.3.6(typescript@5.9.3)
       deepmerge: 4.3.1
       svgo: 3.3.5
     transitivePeerDependencies:
       - typescript
 
-  '@svgr/webpack@8.1.0(typescript@5.5.3)':
+  '@svgr/webpack@8.1.0(typescript@5.9.3)':
     dependencies:
       '@babel/core': 7.29.6
       '@babel/plugin-transform-react-constant-elements': 7.27.1(@babel/core@7.29.6)
       '@babel/preset-env': 7.29.0(@babel/core@7.29.6)
       '@babel/preset-react': 7.28.5(@babel/core@7.29.6)
       '@babel/preset-typescript': 7.28.5(@babel/core@7.29.6)
-      '@svgr/core': 8.1.0(typescript@5.5.3)
-      '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@5.5.3))
-      '@svgr/plugin-svgo': 8.1.0(@svgr/core@8.1.0(typescript@5.5.3))(typescript@5.5.3)
+      '@svgr/core': 8.1.0(typescript@5.9.3)
+      '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@5.9.3))
+      '@svgr/plugin-svgo': 8.1.0(@svgr/core@8.1.0(typescript@5.9.3))(typescript@5.9.3)
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -10639,16 +10642,16 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@t3-oss/env-core@0.13.11(typescript@5.5.3)(zod@4.6.7)':
+  '@t3-oss/env-core@0.13.11(typescript@5.9.3)(zod@4.6.7)':
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
       zod: 4.6.7
 
-  '@t3-oss/env-nextjs@0.13.11(typescript@5.5.3)(zod@4.6.7)':
+  '@t3-oss/env-nextjs@0.13.11(typescript@5.9.3)(zod@4.6.7)':
     dependencies:
-      '@t3-oss/env-core': 0.13.11(typescript@5.5.3)(zod@4.6.7)
+      '@t3-oss/env-core': 0.13.11(typescript@5.9.3)(zod@4.6.7)
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
       zod: 4.6.7
 
   '@tailwindcss/forms@0.5.11(tailwindcss@3.4.19(tsx@4.23.15)(yaml@2.9.1))':
@@ -10661,15 +10664,14 @@ snapshots:
       postcss-selector-parser: 7.1.7
       tailwindcss: 3.4.19(tsx@4.23.15)(yaml@2.9.1)
 
-  '@tanstack/query-core@4.43.0': {}
+  '@tanstack/query-core@5.104.5': {}
 
-  '@tanstack/react-query@4.43.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@tanstack/react-query@5.104.5(@types/react@18.3.28)(react@18.2.0)':
     dependencies:
-      '@tanstack/query-core': 4.43.0
+      '@tanstack/query-core': 5.104.5
       react: 18.2.0
-      use-sync-external-store: 1.6.0(react@18.2.0)
     optionalDependencies:
-      react-dom: 18.2.0(react@18.2.0)
+      '@types/react': 18.3.28
 
   '@tanstack/react-virtual@3.13.18(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
@@ -10679,29 +10681,34 @@ snapshots:
 
   '@tanstack/virtual-core@3.13.18': {}
 
-  '@trpc/client@10.45.4(@trpc/server@10.45.4)':
+  '@trpc/client@11.19.0(@trpc/server@11.19.0(typescript@5.9.3))(typescript@5.9.3)':
     dependencies:
-      '@trpc/server': 10.45.4
+      '@trpc/server': 11.19.0(typescript@5.9.3)
+      typescript: 5.9.3
 
-  '@trpc/next@10.45.4(@tanstack/react-query@4.43.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.45.4(@trpc/server@10.45.4))(@trpc/react-query@10.45.4(@tanstack/react-query@4.43.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.45.4(@trpc/server@10.45.4))(@trpc/server@10.45.4)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/server@10.45.4)(next@16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@trpc/next@11.19.0(@tanstack/react-query@5.104.5(@types/react@18.3.28)(react@18.2.0))(@trpc/client@11.19.0(@trpc/server@11.19.0(typescript@5.9.3))(typescript@5.9.3))(@trpc/react-query@11.19.0(@tanstack/react-query@5.104.5(@types/react@18.3.28)(react@18.2.0))(@trpc/client@11.19.0(@trpc/server@11.19.0(typescript@5.9.3))(typescript@5.9.3))(@trpc/server@11.19.0(typescript@5.9.3))(react@18.2.0)(typescript@5.9.3))(@trpc/server@11.19.0(typescript@5.9.3))(next@16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.9.3)':
     dependencies:
-      '@tanstack/react-query': 4.43.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      '@trpc/client': 10.45.4(@trpc/server@10.45.4)
-      '@trpc/react-query': 10.45.4(@tanstack/react-query@4.43.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.45.4(@trpc/server@10.45.4))(@trpc/server@10.45.4)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      '@trpc/server': 10.45.4
+      '@trpc/client': 11.19.0(@trpc/server@11.19.0(typescript@5.9.3))(typescript@5.9.3)
+      '@trpc/server': 11.19.0(typescript@5.9.3)
       next: 16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+      typescript: 5.9.3
+    optionalDependencies:
+      '@tanstack/react-query': 5.104.5(@types/react@18.3.28)(react@18.2.0)
+      '@trpc/react-query': 11.19.0(@tanstack/react-query@5.104.5(@types/react@18.3.28)(react@18.2.0))(@trpc/client@11.19.0(@trpc/server@11.19.0(typescript@5.9.3))(typescript@5.9.3))(@trpc/server@11.19.0(typescript@5.9.3))(react@18.2.0)(typescript@5.9.3)
 
-  '@trpc/react-query@10.45.4(@tanstack/react-query@4.43.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.45.4(@trpc/server@10.45.4))(@trpc/server@10.45.4)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@trpc/react-query@11.19.0(@tanstack/react-query@5.104.5(@types/react@18.3.28)(react@18.2.0))(@trpc/client@11.19.0(@trpc/server@11.19.0(typescript@5.9.3))(typescript@5.9.3))(@trpc/server@11.19.0(typescript@5.9.3))(react@18.2.0)(typescript@5.9.3)':
     dependencies:
-      '@tanstack/react-query': 4.43.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      '@trpc/client': 10.45.4(@trpc/server@10.45.4)
-      '@trpc/server': 10.45.4
+      '@tanstack/react-query': 5.104.5(@types/react@18.3.28)(react@18.2.0)
+      '@trpc/client': 11.19.0(@trpc/server@11.19.0(typescript@5.9.3))(typescript@5.9.3)
+      '@trpc/server': 11.19.0(typescript@5.9.3)
       react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
+      typescript: 5.9.3
 
-  '@trpc/server@10.45.4': {}
+  '@trpc/server@11.19.0(typescript@5.9.3)':
+    dependencies:
+      typescript: 5.9.3
 
   '@ts-morph/common@0.12.3':
     dependencies:
@@ -10889,46 +10896,46 @@ snapshots:
 
   '@types/triple-beam@1.3.5': {}
 
-  '@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.5.3))(eslint@8.57.1)(typescript@5.5.3)':
+  '@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.9.3))(eslint@8.57.1)(typescript@5.9.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.5.3)
+      '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.9.3)
       '@typescript-eslint/scope-manager': 7.18.0
-      '@typescript-eslint/type-utils': 7.18.0(eslint@8.57.1)(typescript@5.5.3)
-      '@typescript-eslint/utils': 7.18.0(eslint@8.57.1)(typescript@5.5.3)
+      '@typescript-eslint/type-utils': 7.18.0(eslint@8.57.1)(typescript@5.9.3)
+      '@typescript-eslint/utils': 7.18.0(eslint@8.57.1)(typescript@5.9.3)
       '@typescript-eslint/visitor-keys': 7.18.0
       eslint: 8.57.1
       graphemer: 1.4.0
       ignore: 5.3.2
       natural-compare: 1.4.0
-      ts-api-utils: 1.4.3(typescript@5.5.3)
+      ts-api-utils: 1.4.3(typescript@5.9.3)
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.5.3)':
+  '@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 5.62.0
       '@typescript-eslint/types': 5.62.0
-      '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.5.3)
+      '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.9.3)
       debug: 4.4.3
       eslint: 8.57.1
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.5.3)':
+  '@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 7.18.0
       '@typescript-eslint/types': 7.18.0
-      '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.5.3)
+      '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.9.3)
       '@typescript-eslint/visitor-keys': 7.18.0
       debug: 4.4.3
       eslint: 8.57.1
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
@@ -10942,15 +10949,15 @@ snapshots:
       '@typescript-eslint/types': 7.18.0
       '@typescript-eslint/visitor-keys': 7.18.0
 
-  '@typescript-eslint/type-utils@7.18.0(eslint@8.57.1)(typescript@5.5.3)':
+  '@typescript-eslint/type-utils@7.18.0(eslint@8.57.1)(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.5.3)
-      '@typescript-eslint/utils': 7.18.0(eslint@8.57.1)(typescript@5.5.3)
+      '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.9.3)
+      '@typescript-eslint/utils': 7.18.0(eslint@8.57.1)(typescript@5.9.3)
       debug: 4.4.3
       eslint: 8.57.1
-      ts-api-utils: 1.4.3(typescript@5.5.3)
+      ts-api-utils: 1.4.3(typescript@5.9.3)
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
@@ -10958,7 +10965,7 @@ snapshots:
 
   '@typescript-eslint/types@7.18.0': {}
 
-  '@typescript-eslint/typescript-estree@5.62.0(typescript@5.5.3)':
+  '@typescript-eslint/typescript-estree@5.62.0(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/types': 5.62.0
       '@typescript-eslint/visitor-keys': 5.62.0
@@ -10966,13 +10973,13 @@ snapshots:
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.7.4
-      tsutils: 3.21.0(typescript@5.5.3)
+      tsutils: 3.21.0(typescript@5.9.3)
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/typescript-estree@7.18.0(typescript@5.5.3)':
+  '@typescript-eslint/typescript-estree@7.18.0(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/types': 7.18.0
       '@typescript-eslint/visitor-keys': 7.18.0
@@ -10981,18 +10988,18 @@ snapshots:
       is-glob: 4.0.3
       minimatch: 9.0.7
       semver: 7.7.4
-      ts-api-utils: 1.4.3(typescript@5.5.3)
+      ts-api-utils: 1.4.3(typescript@5.9.3)
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@7.18.0(eslint@8.57.1)(typescript@5.5.3)':
+  '@typescript-eslint/utils@7.18.0(eslint@8.57.1)(typescript@5.9.3)':
     dependencies:
       '@eslint-community/eslint-utils': 4.9.1(eslint@8.57.1)
       '@typescript-eslint/scope-manager': 7.18.0
       '@typescript-eslint/types': 7.18.0
-      '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.5.3)
+      '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.9.3)
       eslint: 8.57.1
     transitivePeerDependencies:
       - supports-color
@@ -11081,7 +11088,7 @@ snapshots:
       obug: 3.0.0
       std-env: 4.3.0
       tinyrainbow: 3.2.0
-      vitest: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(msw@2.12.10(@types/node@24.19.2)(typescript@5.5.3))(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))
+      vitest: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(msw@2.12.10(@types/node@24.19.2)(typescript@5.9.3))(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))
 
   '@vitest/istanbul-lib-coverage@1.0.2': {}
 
@@ -11089,14 +11096,14 @@ snapshots:
     dependencies:
       '@vitest/istanbul-lib-coverage': 1.0.2
 
-  '@vitest/mocker@5.0.5(msw@2.12.10(@types/node@24.19.2)(typescript@5.5.3))(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))':
+  '@vitest/mocker@5.0.5(msw@2.12.10(@types/node@24.19.2)(typescript@5.9.3))(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.0.5
       estree-walker: 3.0.3
       magic-string: 1.4.3
     optionalDependencies:
-      msw: 2.12.10(@types/node@24.19.2)(typescript@5.5.3)
+      msw: 2.12.10(@types/node@24.19.2)(typescript@5.9.3)
       vite: 6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1)
 
   '@vitest/pretty-format@5.0.5':
@@ -11113,7 +11120,7 @@ snapshots:
       pathe: 2.0.3
       sirv: 3.0.2
       tinyrainbow: 3.2.0
-      vitest: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(msw@2.12.10(@types/node@24.19.2)(typescript@5.5.3))(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))
+      vitest: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(msw@2.12.10(@types/node@24.19.2)(typescript@5.9.3))(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))
 
   '@vitest/utils@5.0.5':
     dependencies:
@@ -11218,9 +11225,9 @@ snapshots:
   '@xtuc/long@4.2.2':
     optional: true
 
-  abitype@1.2.3(typescript@5.5.3)(zod@4.6.7):
+  abitype@1.2.3(typescript@5.9.3)(zod@4.6.7):
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
       zod: 4.6.7
 
   abort-controller@3.0.0:
@@ -11749,7 +11756,7 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
-  cookie-es@1.2.2: {}
+  cookie-es@1.2.3: {}
 
   cookie-signature@1.0.7: {}
 
@@ -11770,14 +11777,14 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig@8.3.6(typescript@5.5.3):
+  cosmiconfig@8.3.6(typescript@5.9.3):
     dependencies:
       import-fresh: 3.3.1
       js-yaml: 4.3.2
       parse-json: 5.2.0
       path-type: 4.0.0
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
 
   cron-parser@4.9.0:
     dependencies:
@@ -11893,11 +11900,11 @@ snapshots:
 
   defu@6.1.5: {}
 
+  defu@6.1.7: {}
+
   delayed-stream@1.0.0: {}
 
   denque@2.1.0: {}
-
-  depd@1.1.2: {}
 
   depd@2.0.0: {}
 
@@ -12185,20 +12192,20 @@ snapshots:
 
   escape-string-regexp@5.0.0: {}
 
-  eslint-config-next@13.4.13(eslint@8.57.1)(typescript@5.5.3):
+  eslint-config-next@13.4.13(eslint@8.57.1)(typescript@5.9.3):
     dependencies:
       '@next/eslint-plugin-next': 13.4.13
       '@rushstack/eslint-patch': 1.15.0
-      '@typescript-eslint/parser': 5.62.0(eslint@8.57.1)(typescript@5.5.3)
+      '@typescript-eslint/parser': 5.62.0(eslint@8.57.1)(typescript@5.9.3)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.32.2(eslint@8.57.1)
       eslint-plugin-react-hooks: 5.0.0-canary-7118f5dd7-20230705(eslint@8.57.1)
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - eslint-import-resolver-webpack
       - eslint-plugin-import-x
@@ -12233,32 +12240,32 @@ snapshots:
       tinyglobby: 0.2.17
       unrs-resolver: 1.11.1
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
-      '@typescript-eslint/parser': 5.62.0(eslint@8.57.1)(typescript@5.5.3)
+      '@typescript-eslint/parser': 5.62.0(eslint@8.57.1)(typescript@5.9.3)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint@8.57.1):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
-      '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.5.3)
+      '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.9.3)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -12269,7 +12276,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -12281,13 +12288,13 @@ snapshots:
       string.prototype.trimend: 1.0.9
       tsconfig-paths: 3.15.0
     optionalDependencies:
-      '@typescript-eslint/parser': 5.62.0(eslint@8.57.1)(typescript@5.5.3)
+      '@typescript-eslint/parser': 5.62.0(eslint@8.57.1)(typescript@5.9.3)
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.5.3))(eslint@8.57.1):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.9.3))(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -12298,7 +12305,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint@8.57.1)
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -12310,7 +12317,7 @@ snapshots:
       string.prototype.trimend: 1.0.9
       tsconfig-paths: 3.15.0
     optionalDependencies:
-      '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.5.3)
+      '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.9.3)
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
@@ -12841,11 +12848,11 @@ snapshots:
     dependencies:
       duplexer: 0.1.2
 
-  h3@1.15.9:
+  h3@1.15.11:
     dependencies:
-      cookie-es: 1.2.2
+      cookie-es: 1.2.3
       crossws: 0.3.5
-      defu: 6.1.5
+      defu: 6.1.7
       destr: 2.0.5
       iron-webcrypto: 1.2.1
       node-mock-http: 1.0.4
@@ -13268,8 +13275,6 @@ snapshots:
 
   lodash.clone@4.5.0: {}
 
-  lodash.clonedeep@4.5.0: {}
-
   lodash.debounce@4.0.8: {}
 
   lodash.defaults@4.2.0: {}
@@ -13451,7 +13456,7 @@ snapshots:
     optionalDependencies:
       msgpackr-extract: 3.0.3
 
-  msw@2.12.10(@types/node@24.19.2)(typescript@5.5.3):
+  msw@2.12.10(@types/node@24.19.2)(typescript@5.9.3):
     dependencies:
       '@inquirer/confirm': 5.1.21(@types/node@24.19.2)
       '@mswjs/interceptors': 0.41.3
@@ -13472,7 +13477,7 @@ snapshots:
       until-async: 3.0.2
       yargs: 17.7.2
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - '@types/node'
 
@@ -13569,22 +13574,6 @@ snapshots:
     optional: true
 
   node-mock-http@1.0.4: {}
-
-  node-mocks-http@1.17.2(@types/express@4.17.25)(@types/node@24.19.2):
-    dependencies:
-      accepts: 1.3.8
-      content-disposition: 0.5.4
-      depd: 1.1.2
-      fresh: 0.5.2
-      merge-descriptors: 1.0.3
-      methods: 1.1.2
-      mime: 1.6.0
-      parseurl: 1.3.3
-      range-parser: 1.2.1
-      type-is: 1.6.18
-    optionalDependencies:
-      '@types/express': 4.17.25
-      '@types/node': 24.19.2
 
   node-releases@2.0.60: {}
 
@@ -13683,7 +13672,9 @@ snapshots:
     dependencies:
       mimic-function: 5.0.1
 
-  openapi-types@12.1.3: {}
+  openapi3-ts@4.6.2:
+    dependencies:
+      yaml: 2.9.1
 
   opener@1.5.2: {}
 
@@ -13723,7 +13714,7 @@ snapshots:
       object-keys: 1.1.1
       safe-push-apply: 1.0.0
 
-  ox@0.12.1(typescript@5.5.3)(zod@4.6.7):
+  ox@0.12.1(typescript@5.9.3)(zod@4.6.7):
     dependencies:
       '@adraffy/ens-normalize': 1.11.1
       '@noble/ciphers': 1.3.0
@@ -13731,10 +13722,10 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.2.3(typescript@5.5.3)(zod@4.6.7)
+      abitype: 1.2.3(typescript@5.9.3)(zod@4.6.7)
       eventemitter3: 5.0.1
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - zod
 
@@ -13932,12 +13923,12 @@ snapshots:
       clsx: 2.1.1
       react: 18.2.0
 
-  prisma@6.19.3(typescript@5.5.3):
+  prisma@6.19.3(typescript@5.9.3):
     dependencies:
       '@prisma/config': 6.19.3
       '@prisma/engines': 6.19.3
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - magicast
 
@@ -14775,27 +14766,24 @@ snapshots:
 
   triple-beam@1.4.1: {}
 
-  trpc-openapi@1.2.0(patch_hash=e9ec6210ec3951a986970e95be69cd9d4257b31999acdd7ae249e0b2c286deb6)(@trpc/server@10.45.4)(@types/express@4.17.25)(@types/node@24.19.2)(zod@4.6.7):
+  trpc-to-openapi@3.3.3(@trpc/server@11.19.0(typescript@5.9.3))(zod-openapi@5.4.6(zod@4.6.7))(zod@4.6.7):
     dependencies:
-      '@trpc/server': 10.45.4
+      '@trpc/server': 11.19.0(typescript@5.9.3)
       co-body: 6.2.0
-      h3: 1.15.9
-      lodash.clonedeep: 4.5.0
-      node-mocks-http: 1.17.2(@types/express@4.17.25)(@types/node@24.19.2)
-      openapi-types: 12.1.3
+      h3: 1.15.11
+      openapi3-ts: 4.6.2
       zod: 4.6.7
-      zod-to-json-schema: 3.25.2(zod@4.6.7)
-    transitivePeerDependencies:
-      - '@types/express'
-      - '@types/node'
-
-  ts-api-utils@1.4.3(typescript@5.5.3):
-    dependencies:
-      typescript: 5.5.3
-
-  ts-essentials@10.2.1(typescript@5.5.3):
+      zod-openapi: 5.4.6(zod@4.6.7)
     optionalDependencies:
-      typescript: 5.5.3
+      '@rollup/rollup-linux-x64-gnu': 4.6.1
+
+  ts-api-utils@1.4.3(typescript@5.9.3):
+    dependencies:
+      typescript: 5.9.3
+
+  ts-essentials@10.2.1(typescript@5.9.3):
+    optionalDependencies:
+      typescript: 5.9.3
 
   ts-interface-checker@0.1.13: {}
 
@@ -14817,10 +14805,10 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsutils@3.21.0(typescript@5.5.3):
+  tsutils@3.21.0(typescript@5.9.3):
     dependencies:
       tslib: 1.14.1
-      typescript: 5.5.3
+      typescript: 5.9.3
 
   tsx@4.23.15:
     dependencies:
@@ -14887,7 +14875,7 @@ snapshots:
       possible-typed-array-names: 1.1.0
       reflect.getprototypeof: 1.0.10
 
-  typescript@5.5.3: {}
+  typescript@5.9.3: {}
 
   typical@4.0.0: {}
 
@@ -14973,18 +14961,18 @@ snapshots:
 
   vary@1.1.2: {}
 
-  viem@2.46.1(typescript@5.5.3)(zod@4.6.7):
+  viem@2.46.1(typescript@5.9.3)(zod@4.6.7):
     dependencies:
       '@noble/curves': 1.9.1
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.2.3(typescript@5.5.3)(zod@4.6.7)
+      abitype: 1.2.3(typescript@5.9.3)(zod@4.6.7)
       isows: 1.0.7(ws@8.21.0)
-      ox: 0.12.1(typescript@5.5.3)(zod@4.6.7)
+      ox: 0.12.1(typescript@5.9.3)(zod@4.6.7)
       ws: 8.21.0
     optionalDependencies:
-      typescript: 5.5.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -15006,16 +14994,16 @@ snapshots:
       tsx: 4.23.15
       yaml: 2.9.1
 
-  vitest-mock-extended@5.1.1(typescript@5.5.3)(vitest@5.0.5):
+  vitest-mock-extended@5.1.1(typescript@5.9.3)(vitest@5.0.5):
     dependencies:
-      ts-essentials: 10.2.1(typescript@5.5.3)
-      typescript: 5.5.3
-      vitest: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(msw@2.12.10(@types/node@24.19.2)(typescript@5.5.3))(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))
+      ts-essentials: 10.2.1(typescript@5.9.3)
+      typescript: 5.9.3
+      vitest: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(msw@2.12.10(@types/node@24.19.2)(typescript@5.9.3))(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))
 
-  vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(msw@2.12.10(@types/node@24.19.2)(typescript@5.5.3))(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1)):
+  vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(msw@2.12.10(@types/node@24.19.2)(typescript@5.9.3))(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.5(msw@2.12.10(@types/node@24.19.2)(typescript@5.5.3))(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))
+      '@vitest/mocker': 5.0.5(msw@2.12.10(@types/node@24.19.2)(typescript@5.9.3))(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))
       chai: 6.3.0
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -15224,19 +15212,19 @@ snapshots:
 
   yoctocolors@2.1.2: {}
 
-  zod-prisma@0.5.4(decimal.js@10.6.0)(prisma@6.19.3(typescript@5.5.3))(zod@4.6.7):
+  zod-openapi@5.4.6(zod@4.6.7):
+    dependencies:
+      zod: 4.6.7
+
+  zod-prisma@0.5.4(decimal.js@10.6.0)(prisma@6.19.3(typescript@5.9.3))(zod@4.6.7):
     dependencies:
       '@prisma/generator-helper': 3.8.1
       parenthesis: 3.1.8
-      prisma: 6.19.3(typescript@5.5.3)
+      prisma: 6.19.3(typescript@5.9.3)
       ts-morph: 13.0.3
       zod: 4.6.7
     optionalDependencies:
       decimal.js: 10.6.0
-
-  zod-to-json-schema@3.25.2(zod@4.6.7):
-    dependencies:
-      zod: 4.6.7
 
   zod@4.6.7: {}
 

@@ -58,14 +58,15 @@ export class PostgresStorage extends BlobStorage {
 
   protected async _storeBlob(hash: string, data: Buffer) {
     const uri = this.getBlobUri(hash);
+    const blobData = Uint8Array.from(data);
 
     await this.client.blobData.upsert({
       create: {
-        data,
+        data: blobData,
         id: uri,
       },
       update: {
-        data,
+        data: blobData,
       },
       where: {
         id: uri,

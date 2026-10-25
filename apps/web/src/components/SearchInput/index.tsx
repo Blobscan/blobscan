@@ -57,7 +57,6 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
       query: debouncedSearchQuery,
     },
     {
-      queryKey: ["search", { query: debouncedSearchQuery }],
       enabled: Boolean(debouncedSearchQuery),
       staleTime: Infinity,
     }
