@@ -64,7 +64,6 @@ describe("Create command", () => {
       .map((b) => b.versionedHash)
       .sort((a, b) => a.localeCompare(b));
 
-     
     await create(["-b", blobHashes[0]!, "-b", blobHashes[1]!]);
 
     await assertCreatedJobs(context, blobHashes);
@@ -155,19 +154,19 @@ describe("Create command", () => {
 
   argHelpTest(create, createCommandUsage);
 
-  it("should fail when providing a non-existing storage", () => {
-    expect(
+  it("should fail when providing a non-existing storage", async () => {
+    await expect(
       create(["-q", "invalid-storage-name"])
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      "\"Invalid queue 'invalid-storage-name'. Valid values are google, postgres, swarm, swarmycloud, s3.\""
+      `[Error: Invalid queue 'invalid-storage-name'. Valid values are google, postgres, swarm, swarmycloud, s3.]`
     );
   });
 
-  it("should fail when providing non-existing blob hashes", () => {
-    expect(
+  it("should fail when providing non-existing blob hashes", async () => {
+    await expect(
       create(["-b", "invalid-blob-hash"])
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      '"Could not find blobs with the following hashes: invalid-blob-hash"'
+      `[Error: Could not find blobs with the following hashes: invalid-blob-hash]`
     );
   });
 });

@@ -4,7 +4,7 @@ import { afterAll } from "vitest";
 
 import { STORAGE_WORKER_NAMES } from "./src/constants";
 
-const REDIS_URI = "redis://localhost:6379/1";
+const REDIS_URI = process.env.REDIS_URI ?? "redis://localhost:6379/1";
 
 afterAll(async () => {
   const queues = [

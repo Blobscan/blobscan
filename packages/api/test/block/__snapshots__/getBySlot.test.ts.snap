@@ -3,14 +3,14 @@
 exports[`getBySlot > should fail when trying to get a block with a negative slot 1`] = `
 "[
   {
-    \\"code\\": \\"too_small\\",
-    \\"minimum\\": 0,
-    \\"type\\": \\"number\\",
-    \\"inclusive\\": false,
-    \\"exact\\": false,
-    \\"message\\": \\"Number must be greater than 0\\",
-    \\"path\\": [
-      \\"slot\\"
+    "code": "too_small",
+    "minimum": 0,
+    "type": "number",
+    "inclusive": false,
+    "exact": false,
+    "message": "Number must be greater than 0",
+    "path": [
+      "slot"
     ]
   }
 ]"
