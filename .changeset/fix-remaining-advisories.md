@@ -15,6 +15,7 @@ Resolve the remaining dependency advisories.
 
 - Upgrade Next.js, Zod, ECharts, Turborepo, T3 env, Prisma, and Prisma instrumentation
 - Align Prisma Client and `@prisma/instrumentation` on 6.19.3
+- Move Prisma CLI configuration to `prisma.config.ts` so Prisma 6 resolves the existing migrations directory
 - Override Prisma's `deepmerge-ts` dependency with a patched version
 - Handle Prisma 6 `Uint8Array` byte fields
 - Patch `trpc-openapi` for Zod 4 schema introspection and OpenAPI generation

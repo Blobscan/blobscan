@@ -25,10 +25,6 @@
     "test": "pnpm with-env:test vitest",
     "test:ui": "pnpm with-env:test vitest --ui"
   },
-  "prisma": {
-    "schema": "./prisma/schema/",
-    "seed": "tsx prisma/seed/main.ts"
-  },
   "dependencies": {
     "@blobscan/dayjs": "workspace:^0.1.0",
     "@blobscan/logger": "workspace:^0.1.4",
