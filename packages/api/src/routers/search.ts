@@ -1,10 +1,10 @@
 import type { Prisma } from "@blobscan/db";
 import {
-  AddressModel,
-  BlobModel,
-  BlobsOnTransactionsModel,
-  BlockModel,
-  TransactionModel,
+  AddressSchema,
+  BlobSchema,
+  BlobsOnTransactionsSchema,
+  BlockSchema,
+  TransactionSchema,
 } from "@blobscan/db/prisma/zod";
 import {
   addressSchema,
@@ -21,20 +21,20 @@ import { publicProcedure } from "../procedures";
 
 const reorgFieldSchema = z.object({ reorg: z.boolean().optional() });
 const fromFieldSchema = z.object({
-  from: AddressModel.pick({ rollup: true }),
+  from: AddressSchema.pick({ rollup: true }),
 });
 
-export const addressSearchResultSchema = AddressModel.pick({
+export const addressSearchResultSchema = AddressSchema.pick({
   address: true,
   rollup: true,
 });
 
-export const blobSearchResultSchema = BlobModel.pick({
+export const blobSearchResultSchema = BlobSchema.pick({
   versionedHash: true,
   commitment: true,
   proof: true,
 }).extend({
-  transactions: BlobsOnTransactionsModel.pick({
+  transactions: BlobsOnTransactionsSchema.pick({
     blockTimestamp: true,
   })
     .extend({
@@ -43,14 +43,14 @@ export const blobSearchResultSchema = BlobModel.pick({
     .array(),
 });
 
-export const blockSearchResultSchema = BlockModel.pick({
+export const blockSearchResultSchema = BlockSchema.pick({
   hash: true,
   number: true,
   slot: true,
   timestamp: true,
 }).merge(reorgFieldSchema);
 
-export const transactionSearchResultSchema = TransactionModel.pick({
+export const transactionSearchResultSchema = TransactionSchema.pick({
   hash: true,
   blockTimestamp: true,
 })

@@ -1,4 +1,4 @@
-import { BlobStoragesStateModel } from "@blobscan/db/prisma/zod";
+import { BlobStoragesStateSchema } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
@@ -6,11 +6,11 @@ import { normalize } from "../../utils";
 
 export const inputSchema = z.void();
 
-BlobStoragesStateModel.omit({
+BlobStoragesStateSchema.omit({
   id: true,
   updatedAt: true,
 });
-export const outputSchema = BlobStoragesStateModel.omit({
+export const outputSchema = BlobStoragesStateSchema.omit({
   id: true,
   updatedAt: true,
 }).transform(normalize);

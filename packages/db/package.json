@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
-    "db:generate": "pnpm with-env prisma generate && tsx ./prisma/patch-zod.ts",
+    "db:generate": "pnpm with-env prisma generate",
     "db:migrate": "pnpm with-env prisma migrate dev",
     "db:seed": "pnpm with-env prisma db seed",
     "db:reset": "pnpm with-env prisma migrate reset",
@@ -34,7 +34,8 @@
     "@prisma/generator-helper": "^6.19.3",
     "decimal.js": "^10.6.0",
     "prisma": "^6.19.3",
-    "zod-prisma": "^0.5.4"
+    "zod": "4.6.7",
+    "zod-prisma-types": "^3.3.11"
   },
   "devDependencies": {
     "@blobscan/chains": "workspace:^0.5.0",

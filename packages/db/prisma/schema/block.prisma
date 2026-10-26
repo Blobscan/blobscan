@@ -1,19 +1,20 @@
+/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../zod-utils';"])
 model Block {
   hash                  String   @id
-  /// @zod.nonnegative()
+  /// @zod.number.int().nonnegative()
   number                Int
   timestamp             DateTime @unique
-  /// @zod.nonnegative()
+  /// @zod.number.int().nonnegative()
   slot                  Int      @unique
-  /// @zod.nonnegative()
+  /// @zod.number.int().nonnegative()
   epoch                 Int?
-  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
   blobGasUsed           Decimal  @map("blob_gas_used") @db.Decimal(100, 0)
-  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
   excessBlobGas         Decimal  @map("excess_blob_gas") @db.Decimal(100, 0)
-  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
   blobGasPrice          Decimal  @map("blob_gas_price") @db.Decimal(100, 0)
-  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")

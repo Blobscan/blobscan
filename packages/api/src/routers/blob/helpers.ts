@@ -4,7 +4,6 @@ import type {
   ExtendedBlobDataStorageReferenceSelect,
   Prisma,
 } from "@blobscan/db";
-import { EthUsdPriceModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import type {
@@ -200,7 +199,7 @@ export const responseBlobSchema = baseBlobSchema.extend({
             blobGasUsdPrice: true,
           })
           .optional(),
-        ethUsdPrice: EthUsdPriceModel.shape.price.optional(),
+        ethUsdPrice: z.number().optional(),
       })
   ),
 });

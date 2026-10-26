@@ -14,10 +14,14 @@ generator enum {
 }
 
 generator zod {
-  provider              = "zod-prisma"
-  output                = "../zod"
-  imports               = "./zod-utils"
-  prismaJsonNullability = false
+  provider                  = "zod-prisma-types"
+  output                    = "../zod"
+  useMultipleFiles          = false
+  createInputTypes          = false
+  createModelTypes          = true
+  createRelationValuesTypes = false
+  coerceDate                = false
+  writeNullishInModelTypes  = true
 }
 
 datasource db {

@@ -4,7 +4,6 @@ import type {
   ExtendedBlockSelect,
   Prisma,
 } from "@blobscan/db";
-import { EthUsdPriceModel } from "@blobscan/db/prisma/zod";
 import type { BlockIdField } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
@@ -104,7 +103,7 @@ export function createBlockSelect(expands: Expands, filters?: Filters) {
 }
 
 export const responseBlockSchema = baseBlockSchema.extend({
-  ethUsdPrice: EthUsdPriceModel.shape.price.optional(),
+  ethUsdPrice: z.number().optional(),
   transactions: z.array(
     baseTransactionSchema
       .omit({
