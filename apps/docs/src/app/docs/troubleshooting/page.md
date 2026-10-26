@@ -18,13 +18,13 @@ The first time you run the docker container, it will automatically apply any pen
 You can do it manually too:
 
 ```shell
-pnpm prisma migrate deploy --schema packages/db/prisma
+pnpm -F @blobscan/db with-env prisma migrate deploy
 ```
 
 ### How can I reset the database and wipe all the data?
 
 ```shell
-pnpm prisma migrate reset --schema packages/db/prisma
+pnpm -F @blobscan/db with-env prisma migrate reset
 ```
 
 ## Docker

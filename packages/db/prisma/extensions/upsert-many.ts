@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Prisma } from "../client/client";
 import type {
   Address,
   Blob,
   BlobDataStorageReference,
   BlobsOnTransactions,
-  PrismaPromise,
   Transaction,
-} from "@prisma/client";
-import { Prisma } from "@prisma/client";
-
+} from "../client/client";
 import type { WithoutTimestampFields } from "../types";
 import { KZG_PROOF_PLACEHOLDER } from "../zod-utils";
 import type { ZeroOpResult } from "./helpers";
@@ -33,7 +31,7 @@ export const upsertManyExtension = Prisma.defineExtension((prisma) =>
           if (!addresses.length) {
             return (
               Prisma.getExtensionContext(this) as any
-            ).zero() as PrismaPromise<ZeroOpResult>;
+            ).zero() as Prisma.PrismaPromise<ZeroOpResult>;
           }
 
           const formattedValues = addresses
@@ -78,7 +76,7 @@ export const upsertManyExtension = Prisma.defineExtension((prisma) =>
           if (!blobs.length) {
             return (
               Prisma.getExtensionContext(this) as any
-            ).zero() as PrismaPromise<ZeroOpResult>;
+            ).zero() as Prisma.PrismaPromise<ZeroOpResult>;
           }
 
           const formattedValues = blobs
@@ -137,7 +135,7 @@ export const upsertManyExtension = Prisma.defineExtension((prisma) =>
           if (!blobsOnTransactions.length) {
             return (
               Prisma.getExtensionContext(this) as any
-            ).zero() as PrismaPromise<ZeroOpResult>;
+            ).zero() as Prisma.PrismaPromise<ZeroOpResult>;
           }
 
           const sqlValues = blobsOnTransactions
@@ -187,7 +185,7 @@ export const upsertManyExtension = Prisma.defineExtension((prisma) =>
           if (!refs.length) {
             return (
               Prisma.getExtensionContext(this) as any
-            ).zero() as PrismaPromise<ZeroOpResult>;
+            ).zero() as Prisma.PrismaPromise<ZeroOpResult>;
           }
 
           const formattedValues = refs.map(
@@ -216,7 +214,7 @@ export const upsertManyExtension = Prisma.defineExtension((prisma) =>
           if (!transactions.length) {
             return (
               Prisma.getExtensionContext(this) as any
-            ).zero() as PrismaPromise<ZeroOpResult>;
+            ).zero() as Prisma.PrismaPromise<ZeroOpResult>;
           }
 
           const formattedValues = transactions
@@ -287,7 +285,7 @@ export const upsertManyExtension = Prisma.defineExtension((prisma) =>
           if (!txForks.length) {
             return (
               Prisma.getExtensionContext(this) as any
-            ).zero() as PrismaPromise<ZeroOpResult>;
+            ).zero() as Prisma.PrismaPromise<ZeroOpResult>;
           }
 
           const formattedValues = txForks

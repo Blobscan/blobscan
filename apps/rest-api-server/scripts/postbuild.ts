@@ -1,24 +1,6 @@
-import { $, path, glob } from "zx";
+import { $, path } from "zx";
 
 async function main() {
-  const prismaClientDir = path.join(
-    __dirname,
-    "..",
-    "..",
-    "..",
-    "node_modules",
-    ".prisma",
-    "client"
-  );
-  const prismaFiles = await glob([
-    path.join(prismaClientDir, "libquery_engine-*"),
-    path.join(prismaClientDir, "schema.prisma"),
-  ]);
-
-  await $`cp ${prismaFiles} dist`;
-
-  console.log("postbuild: Prisma engines and schema copied to `dist` directory");
-
   const swaggerUiDist = path.join(
     __dirname,
     "..",
@@ -33,7 +15,7 @@ async function main() {
     "swagger-ui-bundle.js",
     "swagger-ui-standalone-preset.js",
     "favicon-16x16.png",
-    "favicon-32x32.png"
+    "favicon-32x32.png",
   ];
 
   for (const file of files) {

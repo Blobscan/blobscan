@@ -1,8 +1,7 @@
-import type { Address, Blob, BlobData, Block, Prisma } from "@prisma/client";
 import ora from "ora";
 
-
 import { getPrisma } from "..";
+import type { Address, Blob, BlobData, Block, Prisma } from "../client/client";
 import type { Rollup } from "../enums";
 import type { WithoutTimestampFields } from "../types";
 import { DataGenerator } from "./DataGenerator";
@@ -159,7 +158,6 @@ async function main() {
         }),
       ]);
 
-       
       const { transactions: _, ...block } = fullBlocks[fullBlocks.length - 1]!;
       lastBlock = block;
 

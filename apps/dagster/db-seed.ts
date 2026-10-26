@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { createPrismaClient } from "@blobscan/db";
 
 import DB_FIXTURES from "./tests/db-fixtures.json";
 
@@ -6,7 +6,7 @@ if (!process.env.DATABASE_URL) {
   throw new Error("No DATABASE_URL defined");
 }
 
-const prisma = new PrismaClient({
+const prisma = createPrismaClient({
   datasourceUrl: process.env.DATABASE_URL,
   log: [],
 });

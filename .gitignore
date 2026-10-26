@@ -13,6 +13,7 @@ coverage
 **/prisma/db.sqlite-journal
 
 # Prisma generated files
+packages/db/prisma/client
 packages/db/prisma/enums
 packages/db/prisma/zod
 

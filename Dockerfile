@@ -81,7 +81,9 @@ COPY --from=web-builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_m
 ARG PRISMA_CLI_MODULES
 RUN --mount=type=bind,from=web-builder,source=/app/node_modules,target=/builder_modules \
     cd /builder_modules && cp -r ${PRISMA_CLI_MODULES} /app/node_modules/ && chown -R nextjs:nodejs /app/node_modules
-COPY --from=web-builder --chown=nextjs:nodejs /prepare/api/full/packages/db/prisma/migrations ./migrations
+COPY --from=web-builder --chown=nextjs:nodejs /prepare/api/full/packages/db/prisma.config.ts ./prisma.config.ts
+COPY --from=web-builder --chown=nextjs:nodejs /prepare/api/full/packages/db/prisma/schema ./prisma/schema
+COPY --from=web-builder --chown=nextjs:nodejs /prepare/api/full/packages/db/prisma/migrations ./prisma/migrations
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
@@ -128,7 +130,9 @@ ARG PRISMA_CLI_MODULES
 RUN --mount=type=bind,from=api-builder,source=/app/node_modules,target=/builder_modules \
     cd /builder_modules && cp -r ${PRISMA_CLI_MODULES} /app/node_modules/
 COPY --from=api-builder /app/apps/rest-api-server/dist ./
-COPY --from=api-builder /prepare/api/full/packages/db/prisma/migrations ./migrations
+COPY --from=api-builder /prepare/api/full/packages/db/prisma.config.ts ./prisma.config.ts
+COPY --from=api-builder /prepare/api/full/packages/db/prisma/schema ./prisma/schema
+COPY --from=api-builder /prepare/api/full/packages/db/prisma/migrations ./prisma/migrations
 
 EXPOSE 3001
 ENV PORT=3001

@@ -1,4 +1,4 @@
-/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../zod-utils';"])
+/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../../zod-utils';"])
 model BlockchainSyncState {
   id                       Int     @id @default(autoincrement())
   /// @zod.number.int().nonnegative()

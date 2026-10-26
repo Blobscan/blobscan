@@ -1,5 +1,5 @@
-import type { BlobscanPrismaClient } from "@blobscan/db";
-import { PrismaClient } from "@blobscan/db";
+import type { BlobscanPrismaClient, PrismaClient } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
 import type { BlobStorageConfig } from "../BlobStorage";
@@ -17,7 +17,7 @@ export class PostgresStorage extends BlobStorage {
   protected constructor({ chainId, prisma }: PostgresStorageConfig) {
     super(BlobStorageName.POSTGRES, chainId);
 
-    this.client = prisma ?? new PrismaClient();
+    this.client = prisma ?? getPrisma();
   }
 
   protected _healthCheck(): Promise<void> {

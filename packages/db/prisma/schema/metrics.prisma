@@ -8,7 +8,7 @@
 // `prisma db push` does not create them as generated columns. Use
 // `prisma migrate` to get the correct schema.
 
-/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../zod-utils';"])
+/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../../zod-utils';"])
 model AllTimeMetrics {
   id       Int       @id @default(autoincrement())
   category Category?
@@ -82,7 +82,7 @@ model AllTimeMetrics {
   @@map("all_time_metrics")
 }
 
-/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../zod-utils';"])
+/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../../zod-utils';"])
 model HourlyMetrics {
   id          Int       @id @default(autoincrement())
   periodStart DateTime  @map("period_start")
@@ -151,7 +151,7 @@ model HourlyMetrics {
   @@map("hourly_metrics")
 }
 
-/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../zod-utils';"])
+/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../../zod-utils';"])
 model DailyMetrics {
   id          Int       @id @default(autoincrement())
   periodStart DateTime  @map("period_start") @db.Date
@@ -224,7 +224,7 @@ model DailyMetrics {
   @@map("daily_metrics")
 }
 
-/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../zod-utils';"])
+/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../../zod-utils';"])
 model WeeklyMetrics {
   id          Int       @id @default(autoincrement())
   periodStart DateTime  @map("period_start") @db.Date
@@ -296,7 +296,7 @@ model WeeklyMetrics {
   @@map("weekly_metrics")
 }
 
-/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../zod-utils';"])
+/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../../zod-utils';"])
 model MonthlyMetrics {
   id          Int       @id @default(autoincrement())
   periodStart DateTime  @map("period_start") @db.Date
@@ -369,7 +369,7 @@ model MonthlyMetrics {
   @@map("monthly_metrics")
 }
 
-/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../zod-utils';"])
+/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../../zod-utils';"])
 model YearlyMetrics {
   id          Int       @id @default(autoincrement())
   periodStart DateTime  @map("period_start") @db.Date

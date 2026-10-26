@@ -1,17 +1,39 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 import { logger } from "@blobscan/logger";
 
+import type { Prisma } from "./client/client";
+import { PrismaClient } from "./client/client";
 import type { ExtensionConfig as CustomFieldsExtensionConfig } from "./extensions";
 import {
   upsertManyExtension,
   createComputedFieldsExtension,
   helpersExtension,
+  metricsExtension,
 } from "./extensions";
 import { ethUsdPriceExtension } from "./extensions/eth-usd-price";
 
+export type CreatePrismaClientParams = {
+  datasourceUrl?: string;
+  log?: Prisma.PrismaClientOptions["log"];
+};
+
+export function createPrismaClient({
+  datasourceUrl = process.env.DATABASE_URL,
+  log,
+}: CreatePrismaClientParams = {}): PrismaClient<Prisma.LogLevel> {
+  if (!datasourceUrl) {
+    throw new Error("DATABASE_URL is not set");
+  }
+
+  const adapter = new PrismaPg({ connectionString: datasourceUrl });
+
+  return new PrismaClient({ adapter, log }) as PrismaClient<Prisma.LogLevel>;
+}
+
 export type GetPrismaParams = {
   customFieldExtension: CustomFieldsExtensionConfig;
+  datasourceUrl?: string;
 };
 
 export function getPrisma(params?: GetPrismaParams) {
@@ -22,7 +44,8 @@ export function getPrisma(params?: GetPrismaParams) {
   let prisma_ = globalForPrisma.prisma;
 
   if (!prisma_) {
-    const p = new PrismaClient({
+    const p = createPrismaClient({
+      datasourceUrl: params?.datasourceUrl,
       log:
         process.env.NODE_ENV === "development"
           ? [
@@ -60,6 +83,7 @@ export function getPrisma(params?: GetPrismaParams) {
   );
 
   return prisma_
+    .$extends(metricsExtension)
     .$extends(helpersExtension)
     .$extends(customFieldsExtension)
     .$extends(ethUsdPriceExtension)

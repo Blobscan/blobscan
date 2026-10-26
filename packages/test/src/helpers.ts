@@ -1,4 +1,4 @@
-import type { Category, Rollup } from "@prisma/client";
+import type { Category, Rollup } from "@blobscan/db";
 
 type CategorRollupElement = {
   category?: Category | null;

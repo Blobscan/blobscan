@@ -1,7 +1,6 @@
-import { Prisma } from "@prisma/client";
-
 import { z } from "@blobscan/zod";
 
+import { Prisma } from "./client/client";
 import {
   BlobStorage as DBBlobStorageEnum,
   Rollup as DBRollupEnum,

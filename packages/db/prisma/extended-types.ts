@@ -1,6 +1,5 @@
-import type { Prisma } from "@prisma/client";
-
 import type { BlobscanPrismaClient } from ".";
+import type { Prisma } from "./client/client";
 
 export type ExtendedTransactionSelect = NonNullable<
   Prisma.Args<BlobscanPrismaClient["transaction"], "findFirstOrThrow">["select"]

@@ -1,13 +1,12 @@
+import type { DatePeriodLike } from "@blobscan/dayjs";
+import dayjs, { MIN_DATE, toDailyDatePeriod } from "@blobscan/dayjs";
 import type {
   PrismaClient,
   BlobData,
   BlobDataStorageReference,
   Category,
   Rollup,
-} from "@prisma/client";
-
-import type { DatePeriodLike } from "@blobscan/dayjs";
-import dayjs, { MIN_DATE, toDailyDatePeriod } from "@blobscan/dayjs";
+} from "@blobscan/db";
 
 import POSTGRES_DATA from "./postgres/data.json";
 

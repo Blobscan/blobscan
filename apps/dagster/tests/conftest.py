@@ -46,7 +46,7 @@ def postgres():
         result = subprocess.run(
             ["pnpm", "exec", "prisma", "migrate", "deploy"],
             cwd=_DB_PKG_ROOT,
-            env={**os.environ, "DATABASE_URL": url},
+            env={**os.environ, "DATABASE_URL": url, "DIRECT_URL": url},
             capture_output=True,
             text=True,
             check=False,

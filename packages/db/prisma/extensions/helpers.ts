@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../client/client";
 
 export type ZeroOpResult = { count: number }[];
 
