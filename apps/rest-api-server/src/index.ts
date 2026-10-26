@@ -46,8 +46,8 @@ async function main() {
   app.use(morganMiddleware);
   app.use(matomoMiddleware);
 
-  app.get("/health", healthHandler);
-  app.get("/ready", readyHandler);
+  app.get("/healthz", healthHandler);
+  app.get("/readyz", readyHandler);
   app.get("/metrics", metricsHandler);
 
   await setUpOpenApiTRPC(app);

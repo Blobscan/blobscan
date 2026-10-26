@@ -18,7 +18,7 @@ services:
           "CMD",
           "node",
           "-e",
-          "fetch('http://localhost:3001/ready').then((res) => process.exit(res.ok ? 0 : 1)).catch(() => process.exit(1))",
+          "fetch('http://localhost:3001/readyz').then((res) => process.exit(res.ok ? 0 : 1)).catch(() => process.exit(1))",
         ]
       interval: 30s
       timeout: 10s

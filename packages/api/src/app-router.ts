@@ -5,7 +5,6 @@ import { createBlobRouter } from "./routers/blob";
 import { blockRouter } from "./routers/block";
 import { blockchainSyncStateRouter } from "./routers/blockchain-sync-state";
 import { ethPriceRouter } from "./routers/eth-price";
-import { healthcheck } from "./routers/healthcheck";
 import { indexerRouter } from "./routers/indexer";
 import { loggingRouter } from "./routers/logging";
 import { search } from "./routers/search";
@@ -20,7 +19,6 @@ export type AppRouterConfig = {
 
 export function createAppRouter(config?: AppRouterConfig) {
   return t.router({
-    healthcheck,
     search,
     blob: createBlobRouter(config?.blobRouter),
     block: blockRouter,
