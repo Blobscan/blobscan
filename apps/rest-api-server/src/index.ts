@@ -12,7 +12,12 @@ import { logger } from "@blobscan/logger";
 
 import { printBanner } from "./banner";
 import { prisma } from "./clients/prisma";
-import { errorHandler, metricsHandler } from "./handlers";
+import {
+  errorHandler,
+  healthHandler,
+  metricsHandler,
+  readyHandler,
+} from "./handlers";
 import {
   bodyParserMiddleware,
   corsMiddleware,
@@ -41,6 +46,8 @@ async function main() {
   app.use(morganMiddleware);
   app.use(matomoMiddleware);
 
+  app.get("/health", healthHandler);
+  app.get("/ready", readyHandler);
   app.get("/metrics", metricsHandler);
 
   await setUpOpenApiTRPC(app);

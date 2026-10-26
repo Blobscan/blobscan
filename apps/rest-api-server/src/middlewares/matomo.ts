@@ -12,7 +12,9 @@ type RequestMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 const TRACKING_EXCLUSIONS: { methods?: RequestMethod[]; path: string }[] = [
   { methods: ["PUT", "POST"], path: "indexer" },
   { methods: ["PUT", "POST"], path: "blockchain-sync-state" },
+  { path: "health" },
   { path: "healthcheck" },
+  { path: "ready" },
   { path: "metrics" },
   { path: "logging" },
 ];
