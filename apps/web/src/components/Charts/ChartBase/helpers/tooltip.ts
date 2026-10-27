@@ -5,7 +5,7 @@ import { calculatePercentage, getNeighbouringElements } from "~/utils";
 import type { Numerish } from "~/utils";
 import { aggregateValues } from "../../../TimeseriesCharts/helpers";
 import type { Axes, Axis, StandardEncoding } from "../types";
-import { getCurrentPeriodLabel, isCurrentPeriodSeries } from "./currentPeriod";
+import { getCurrentPeriodLabel, isCurrentPeriodSeries } from "./current-period";
 import { formatAxisValue, formatSeriesName } from "./formatters";
 
 export function isStandardEncoding(value: unknown): value is StandardEncoding {

@@ -1,5 +1,5 @@
 export * from "./axis";
-export * from "./currentPeriod";
+export * from "./current-period";
 export * from "./dataset";
 export * from "./formatters";
 export * from "./toolbox";

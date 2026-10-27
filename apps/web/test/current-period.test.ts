@@ -9,7 +9,7 @@ import {
   getMetricColumn,
   getSeriesMetricValue,
   isCurrentPeriodSeries,
-} from "~/components/Charts/ChartBase/helpers/currentPeriod";
+} from "~/components/Charts/ChartBase/helpers/current-period";
 
 const timestamps = [
   new Date("2024-03-18T00:00:00Z"),
