@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1155.0",
+    "@blobscan/db": "workspace:^0.31.0",
     "@blobscan/errors": "workspace:^0.0.2",
     "@blobscan/logger": "workspace:^0.1.4",
     "@blobscan/open-telemetry": "workspace:^0.0.10",
@@ -23,12 +24,6 @@
     "@ethersphere/bee-js": "13.2.0",
     "@google-cloud/storage": "^8.4.0",
     "multiformats": "^14.0.0"
-  },
-  "devDependencies": {
-    "@blobscan/db": "workspace:^0.31.0"
-  },
-  "peerDependencies": {
-    "@blobscan/db": "workspace:^0.31.0"
   },
   "eslintConfig": {
     "root": true,
