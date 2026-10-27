@@ -8,6 +8,7 @@ import {
   getMainSeriesIndex,
   getMetricColumn,
   getSeriesMetricValue,
+  hasCurrentPeriodValue,
   isCurrentPeriodSeries,
 } from "~/components/Charts/ChartBase/helpers/current-period";
 
@@ -41,6 +42,118 @@ describe("addCurrentPeriodColumns", () => {
     const otherTimestamp = new Date("2024-03-21T00:00:00Z");
 
     expect(addCurrentPeriodColumns(dataset, otherTimestamp)).toEqual(dataset);
+  });
+});
+
+describe("addCurrentPeriodColumns (metric columns)", () => {
+  const twoMetricsDataset = {
+    id: "global",
+    source: {
+      timestamp: timestamps,
+      totalBlobs: [10, 20, 3],
+      totalBlocks: [7, 7, 2],
+    },
+  };
+
+  it("should add columns only for the given metric columns", () => {
+    const { source } = addCurrentPeriodColumns(
+      twoMetricsDataset,
+      currentPeriodTimestamp,
+      ["totalBlobs"]
+    ) as { source: Record<string, unknown[]> };
+
+    expect(Object.keys(source).sort()).toEqual(
+      [
+        "timestamp",
+        "totalBlobs",
+        "totalBlobs__closed",
+        "totalBlobs__closed-bar",
+        "totalBlobs__current",
+        "totalBlobs__tail",
+        "totalBlocks",
+      ].sort()
+    );
+  });
+
+  it("should ignore a metric column that the dataset does not have", () => {
+    const { source } = addCurrentPeriodColumns(
+      twoMetricsDataset,
+      currentPeriodTimestamp,
+      ["totalTransactions"]
+    ) as { source: Record<string, unknown[]> };
+
+    expect(Object.keys(source).sort()).toEqual(
+      ["timestamp", "totalBlobs", "totalBlocks"].sort()
+    );
+  });
+});
+
+describe("hasCurrentPeriodValue", () => {
+  const datasets = [
+    {
+      id: "rollup-base",
+      source: {
+        timestamp: timestamps,
+        totalBlobs: [10, 20, 3],
+        totalBlocks: [7, 7, 0],
+        totalTransactions: [5, 5, null],
+      },
+    },
+  ];
+  const seriesOf = (type: string, metric: string) => ({
+    type,
+    datasetIndex: 0,
+    encode: { x: "timestamp", y: metric },
+  });
+
+  it("should be true for a series with a value", () => {
+    expect(
+      hasCurrentPeriodValue(
+        seriesOf("bar", "totalBlobs"),
+        datasets,
+        currentPeriodTimestamp
+      )
+    ).toBe(true);
+  });
+
+  it("should be false for a series with no value", () => {
+    expect(
+      hasCurrentPeriodValue(
+        seriesOf("line", "totalTransactions"),
+        datasets,
+        currentPeriodTimestamp
+      )
+    ).toBe(false);
+  });
+
+  it("should be false for a bar with a zero, which has no height", () => {
+    expect(
+      hasCurrentPeriodValue(
+        seriesOf("bar", "totalBlocks"),
+        datasets,
+        currentPeriodTimestamp
+      )
+    ).toBe(false);
+  });
+
+  it("should be true for a line with a zero, which has a point", () => {
+    expect(
+      hasCurrentPeriodValue(
+        seriesOf("line", "totalBlocks"),
+        datasets,
+        currentPeriodTimestamp
+      )
+    ).toBe(true);
+  });
+
+  it("should be false when the dataset does not include the current period", () => {
+    expect(
+      hasCurrentPeriodValue(
+        seriesOf("bar", "totalBlobs"),
+        datasets,
+        new Date("2024-03-21T00:00:00Z")
+      )
+    ).toBe(false);
   });
 });
 

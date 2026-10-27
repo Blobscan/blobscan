@@ -26,6 +26,7 @@ import {
   getDimensionColor,
   getMainSeriesIndex,
   getSeriesMetricValue,
+  hasCurrentPeriodValue,
   isCurrentPeriodSeries,
 } from "./helpers";
 import type { ChartDataset, ChartSeries } from "./helpers";
@@ -164,19 +165,36 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       return dataset;
     }
 
+    // Add the current period columns only for the metrics that the series
+    // draw. The datasets can have many more metric columns.
+    const metricColumns = [
+      ...new Set(
+        (series as ChartSeries[] | undefined)?.flatMap((s) =>
+          s.encode?.y ? [s.encode.y] : []
+        )
+      ),
+    ];
+
     return Array.isArray(dataset)
-      ? dataset.map((d) => addCurrentPeriodColumns(d, currentPeriodTimestamp))
-      : addCurrentPeriodColumns(dataset, currentPeriodTimestamp);
-  }, [dataset, currentPeriodTimestamp]);
+      ? dataset.map((d) =>
+          addCurrentPeriodColumns(d, currentPeriodTimestamp, metricColumns)
+        )
+      : addCurrentPeriodColumns(dataset, currentPeriodTimestamp, metricColumns);
+  }, [dataset, currentPeriodTimestamp, series]);
   // The current period series go after all the other series, so the series
   // indexes that the tooltip uses do not change.
   const chartSeries = useMemo(() => {
-    if (!series || !currentPeriodTimestamp) {
+    if (!series || !dataset || !currentPeriodTimestamp) {
       return series;
     }
 
+    const datasets = Array.isArray(dataset) ? dataset : [dataset];
+    // A series with no value for the current period (for example, a rollup
+    // with no blobs) needs no current period series. It keeps its column.
     const seriesGroups = series.map((s, seriesIdx) =>
-      createCurrentPeriodSeries(s as ChartSeries, { seriesIdx })
+      hasCurrentPeriodValue(s as ChartSeries, datasets, currentPeriodTimestamp)
+        ? createCurrentPeriodSeries(s as ChartSeries, { seriesIdx })
+        : [s]
     );
 
     return [
@@ -185,7 +203,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         ([, ...currentPeriodSeries]) => currentPeriodSeries
       ),
     ];
-  }, [series, currentPeriodTimestamp]);
+  }, [series, dataset, currentPeriodTimestamp]);
   const chartSeriesRef = useRef(chartSeries);
   const chartDatasetRef = useRef(chartDataset);
 

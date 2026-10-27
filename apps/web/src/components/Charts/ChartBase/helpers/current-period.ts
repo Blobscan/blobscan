@@ -140,15 +140,20 @@ export function getCurrentPeriodTimestamp(
 }
 
 /**
- * Adds these columns for each metric column of the dataset:
+ * Adds these columns for each metric column of the dataset that the chart
+ * draws (`metricColumns`, or all the metric columns when it is not given):
  * - closed: the metric values with no value for the current period.
  * - closed bar: the metric values with a zero for the current period.
  * - current: only the value of the current period.
  * - tail: only the values of the last closed period and the current period.
+ *
+ * A dataset can have many metric columns that the chart does not draw, so
+ * give `metricColumns` to add fewer columns.
  */
 export function addCurrentPeriodColumns(
   { currentPeriodTimestamp: _, ...dataset }: ChartDataset,
-  currentPeriodTimestamp: Date
+  currentPeriodTimestamp: Date,
+  metricColumns?: string[]
 ): EChartOption.Dataset {
   const { source } = dataset;
   const currentIdx = findCurrentPeriodIdx(dataset, currentPeriodTimestamp);
@@ -158,9 +163,13 @@ export function addCurrentPeriodColumns(
   }
 
   const newSource: Record<string, unknown[]> = { ...source };
+  const columns =
+    metricColumns ?? Object.keys(source).filter((c) => c !== "timestamp");
 
-  for (const [column, values] of Object.entries(source)) {
-    if (column === "timestamp") {
+  for (const column of columns) {
+    const values = source[column];
+
+    if (!values) {
       continue;
     }
 
@@ -201,6 +210,32 @@ export function getSeriesMetricValue(
   }
 
   return dataset.source[getMetricColumn(column)]?.[dataIndex];
+}
+
+/**
+ * Returns true when a series has a value to draw for the current period. A
+ * bar with a zero has no height, so it has no value to draw. A line with a
+ * zero has a point to draw.
+ */
+export function hasCurrentPeriodValue(
+  series: ChartSeries,
+  datasets: EChartOption.Dataset[],
+  currentPeriodTimestamp: Date
+) {
+  const dataset = datasets[series.datasetIndex ?? 0];
+  const currentIdx = dataset
+    ? findCurrentPeriodIdx(dataset, currentPeriodTimestamp)
+    : -1;
+  const value =
+    currentIdx === -1
+      ? undefined
+      : getSeriesMetricValue(series, datasets, currentIdx);
+
+  if (value === null || value === undefined || Number.isNaN(Number(value))) {
+    return false;
+  }
+
+  return series.type !== "bar" || Number(value) !== 0;
 }
 
 /**
