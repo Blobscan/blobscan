@@ -6,6 +6,8 @@ import type { CategoriesParam, RollupsParam } from "~/schemas/filters";
 import { toCommaSeparatedParam } from "~/schemas/utils";
 import type { TimeseriesMetric } from "~/types";
 
+const CURRENT_PERIOD_REFETCH_INTERVAL_MS = 5 * 60 * 1000;
+
 export function useTimeseriesQuery(params: {
   metrics: [TimeseriesMetric, ...TimeseriesMetric[]];
   timeFrame?: TimeFrame;
@@ -22,8 +24,12 @@ export function useTimeseriesQuery(params: {
       rollups: rollups ? toCommaSeparatedParam(rollups) : undefined,
       timeFrame,
       sort: "asc",
+      includeCurrentPeriod: "true",
     },
     {
+      // The current period changes about every 10 minutes. The refetch stops
+      // while the tab is not visible.
+      refetchInterval: CURRENT_PERIOD_REFETCH_INTERVAL_MS,
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       refetchOnReconnect: false,

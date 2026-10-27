@@ -1,4 +1,4 @@
-import { LineChart, BarChart } from "echarts/charts";
+import { BarChart, LineChart, ScatterChart } from "echarts/charts";
 import {
   TitleComponent,
   TooltipComponent,
@@ -22,6 +22,7 @@ echarts.use([
   GridComponent,
   LegendComponent,
   LineChart,
+  ScatterChart,
   TitleComponent,
   ToolboxComponent,
   TooltipComponent,

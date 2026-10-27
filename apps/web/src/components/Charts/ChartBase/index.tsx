@@ -14,14 +14,22 @@ import type { Size, TimeseriesDimension } from "~/types";
 import { Legend } from "./Legend";
 import type { LegendItemData, LegendProps } from "./Legend";
 import {
+  addCurrentPeriodColumns,
   createXAxisOptions,
   createBaseToolboxOptions,
   createBaseTooltipOptions,
+  createCurrentPeriodSeries,
   createYAxisOptions,
   DEFAULT_SERIES_COLOR,
   createBaseSeriesOptions,
+  getCurrentPeriodTimestamp,
   getDimensionColor,
+  getMainSeriesIndex,
+  getSeriesMetricValue,
+  hasCurrentPeriodValue,
+  isCurrentPeriodSeries,
 } from "./helpers";
+import type { ChartDataset, ChartSeries } from "./helpers";
 import type { SkeletonChartOptions } from "./helpers/skeleton";
 import { createChartSkeletonOptions } from "./helpers/skeleton";
 import type { Axes } from "./types";
@@ -34,7 +42,11 @@ export interface SkeletonOptions {
 export interface ChartBaseProps {
   title: ReactNode;
   headerControls?: ReactNode;
-  dataset?: EChartOption.Dataset | EChartOption.Dataset[];
+  /**
+   * When a dataset includes the current period, which is not complete, the
+   * chart draws its point as in progress.
+   */
+  dataset?: ChartDataset | ChartDataset[];
   series?: EChartOption.Series[];
   axes: Axes;
   compact?: boolean;
@@ -142,6 +154,73 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         ?.sort((a, b) => String(a.name).localeCompare(String(b.name))),
     [seriesProp, themeMode]
   );
+  const currentPeriodTimestamp = useMemo(
+    () =>
+      dataset &&
+      getCurrentPeriodTimestamp(Array.isArray(dataset) ? dataset : [dataset]),
+    [dataset]
+  );
+  const chartDataset = useMemo(() => {
+    if (!dataset || !currentPeriodTimestamp) {
+      return dataset;
+    }
+
+    // Add the current period columns only for the metrics that the series
+    // draw. The datasets can have many more metric columns.
+    const metricColumns = [
+      ...new Set(
+        (series as ChartSeries[] | undefined)?.flatMap((s) =>
+          s.encode?.y ? [s.encode.y] : []
+        )
+      ),
+    ];
+
+    return Array.isArray(dataset)
+      ? dataset.map((d) =>
+          addCurrentPeriodColumns(d, currentPeriodTimestamp, metricColumns)
+        )
+      : addCurrentPeriodColumns(dataset, currentPeriodTimestamp, metricColumns);
+  }, [dataset, currentPeriodTimestamp, series]);
+  // The current period series go after all the other series, so the series
+  // indexes that the tooltip uses do not change.
+  const chartSeries = useMemo(() => {
+    if (!series || !dataset || !currentPeriodTimestamp) {
+      return series;
+    }
+
+    const datasets = Array.isArray(dataset) ? dataset : [dataset];
+    // A series with no value for the current period (for example, a rollup
+    // with no blobs) needs no current period series. It keeps its column.
+    const seriesGroups = series.map((s, seriesIdx) =>
+      hasCurrentPeriodValue(s as ChartSeries, datasets, currentPeriodTimestamp)
+        ? createCurrentPeriodSeries(s as ChartSeries, { seriesIdx })
+        : [s]
+    );
+
+    return [
+      ...seriesGroups.map(([s]) => s),
+      ...seriesGroups.flatMap(
+        ([, ...currentPeriodSeries]) => currentPeriodSeries
+      ),
+    ];
+  }, [series, dataset, currentPeriodTimestamp]);
+  const chartSeriesRef = useRef(chartSeries);
+  const chartDatasetRef = useRef(chartDataset);
+
+  chartSeriesRef.current = chartSeries;
+  chartDatasetRef.current = chartDataset;
+
+  const getSeriesValue = useCallback(
+    (seriesIndex: number, dataIndex: number) =>
+      currentPeriodTimestamp
+        ? getSeriesMetricValue(
+            chartSeriesRef.current?.[seriesIndex] as ChartSeries | undefined,
+            chartDatasetRef.current,
+            dataIndex
+          )
+        : undefined,
+    [currentPeriodTimestamp]
+  );
   const baseOptions = useMemo(
     () =>
       ({
@@ -166,13 +245,22 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           axes,
           displayTotal: tooltipOpts?.displayTotal,
           themeMode,
+          currentPeriodTimestamp,
+          getSeriesValue,
         }),
         toolbox: !compact ? createBaseToolboxOptions({ themeMode }) : undefined,
         dataZoom: !compact
           ? [{ type: "inside" }, { type: "slider", start: 0, end: 100 }]
           : undefined,
       } satisfies EChartOption),
-    [compact, axes, tooltipOpts, themeMode]
+    [
+      compact,
+      axes,
+      tooltipOpts,
+      themeMode,
+      currentPeriodTimestamp,
+      getSeriesValue,
+    ]
   );
 
   const idleTimerRef = useRef<number | null>(null);
@@ -230,6 +318,11 @@ export const ChartBase: FC<ChartBaseProps> = function ({
 
     if (!chart) return;
 
+    const hasCurrentPeriodSeries = () =>
+      !!(chartSeriesRef.current as ChartSeries[] | undefined)?.some((s) =>
+        isCurrentPeriodSeries(s.id)
+      );
+
     const onMouseover = ({
       componentType,
       seriesName,
@@ -237,7 +330,26 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     }: ECElementEvent) => {
       if (componentType !== "series") return;
       setSelectedLegendItem(seriesName);
-      hoveredSeriesRef.current = { seriesIndex, seriesName };
+      hoveredSeriesRef.current = {
+        seriesIndex: getMainSeriesIndex(
+          (chartSeriesRef.current as ChartSeries[] | undefined) ?? [],
+          seriesIndex
+        ),
+        seriesName,
+      };
+
+      // A series and its current period series are separate ECharts series,
+      // and a hover highlights only the series under the mouse. Highlight all
+      // the series with the name, as a hover on the legend does.
+      if (hasCurrentPeriodSeries()) {
+        chart.dispatchAction({ type: "highlight", seriesName });
+      }
+    };
+
+    const onMouseout = ({ componentType, seriesName }: ECElementEvent) => {
+      if (componentType !== "series" || !hasCurrentPeriodSeries()) return;
+
+      chart.dispatchAction({ type: "downplay", seriesName });
     };
 
     const onGlobalout = () => {
@@ -248,10 +360,12 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     };
 
     chart.on("mouseover", onMouseover);
+    chart.on("mouseout", onMouseout);
     chart.on("globalout", onGlobalout);
 
     return () => {
       chart.off("mouseover", onMouseover);
+      chart.off("mouseout", onMouseout);
       chart.off("globalout", onGlobalout);
     };
   }, []);
@@ -354,21 +468,21 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   useEffect(() => {
     const chart = chartInstanceRef.current?.getEchartsInstance();
 
-    if (!chart || !series || !dataset) return;
+    if (!chart || !chartSeries || !chartDataset) return;
 
     chart.setOption(
       {
         ...baseOptions,
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        series,
-        dataset,
+        series: chartSeries,
+        dataset: chartDataset,
       },
       {
         notMerge: true,
       }
     );
-  }, [baseOptions, dataset, series]);
+  }, [baseOptions, chartDataset, chartSeries]);
 
   useEffect(() => {
     const chart = chartInstanceRef.current?.getEchartsInstance();
