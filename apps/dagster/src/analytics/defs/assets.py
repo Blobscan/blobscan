@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 import dagster as dg
 
 from analytics.defs.helpers import (
@@ -53,42 +51,15 @@ _ignore_missing = dg.TimeWindowPartitionMapping(
     allow_nonexistent_upstream_partitions=True,
 )
 
-# .without() requires an exact match with an existing operand in eager().
-# eager() contains in_latest_time_window() (no args), so we:
-#   1. remove it via .without()
-#   2. re-add a negated version with the correct lookback_delta
-# With end_offset=1, "latest time window" shifts one period forward — lookback_delta
-# must span two periods to reach back through the shift and cover the current period.
-_eager_no_time_window = dg.AutomationCondition.eager().without(
+# Materialize every partition, the current (in-progress) one too, when its
+# upstream partitions are updated. The live schedule refreshes the current
+# hourly partition every 10 minutes, so the current partition of each rollup
+# level follows in a cascade: hourly -> daily -> weekly/monthly -> yearly.
+#
+# eager() only targets the latest partition, so in_latest_time_window() is
+# removed. .without() requires an exact match with an operand of eager().
+rollup_condition = dg.AutomationCondition.eager().without(
     dg.AutomationCondition.in_latest_time_window(),
-)
-
-daily_completed_only = (
-    _eager_no_time_window
-    & ~dg.AutomationCondition.in_latest_time_window(lookback_delta=timedelta(days=1))
-)
-weekly_completed_only = (
-    _eager_no_time_window
-    & ~dg.AutomationCondition.in_latest_time_window(lookback_delta=timedelta(weeks=1))
-)
-monthly_completed_only = (
-    _eager_no_time_window
-    & ~dg.AutomationCondition.in_latest_time_window(lookback_delta=timedelta(days=32))
-)
-yearly_completed_only = (
-    _eager_no_time_window
-    & ~dg.AutomationCondition.in_latest_time_window(lookback_delta=timedelta(days=366))
-)
-
-# Recompute whenever something upstream was newly materialized. The all-time
-# SQL reads the stored metric tables directly, so it doesn't wait for every
-# upstream partition to exist: a single missing (or not-yet-run current)
-# partition would otherwise block all-time metrics indefinitely. Right after a
-# period rolls over, totals may briefly lag until the next level is
-# materialized, and catch up on the following run.
-all_time_condition = (
-    dg.AutomationCondition.any_deps_match(dg.AutomationCondition.newly_updated())
-    & ~dg.AutomationCondition.in_progress()
 )
 
 
@@ -128,7 +99,7 @@ _yearly_sql = build_aggregate_sql("monthly_metrics", "yearly_metrics", "year")
 @dg.asset(
     deps=[dg.AssetDep(hourly_metrics, partition_mapping=_ignore_missing)],
     partitions_def=daily_partitions,
-    automation_condition=daily_completed_only,
+    automation_condition=rollup_condition,
     backfill_policy=dg.BackfillPolicy.multi_run(30),
     pool="metrics/daily_metrics",
 )
@@ -154,7 +125,7 @@ def daily_metrics(
 @dg.asset(
     deps=[dg.AssetDep(daily_metrics, partition_mapping=_ignore_missing)],
     partitions_def=weekly_partitions,
-    automation_condition=weekly_completed_only,
+    automation_condition=rollup_condition,
     backfill_policy=dg.BackfillPolicy.multi_run(30),
     pool="metrics/weekly_metrics",
 )
@@ -179,7 +150,7 @@ def weekly_metrics(
 @dg.asset(
     deps=[dg.AssetDep(daily_metrics, partition_mapping=_ignore_missing)],
     partitions_def=monthly_partitions,
-    automation_condition=monthly_completed_only,
+    automation_condition=rollup_condition,
     backfill_policy=dg.BackfillPolicy.multi_run(12),
     pool="metrics/monthly_metrics",
 )
@@ -204,7 +175,7 @@ def monthly_metrics(
 @dg.asset(
     deps=[dg.AssetDep(monthly_metrics, partition_mapping=_ignore_missing)],
     partitions_def=yearly_partitions,
-    automation_condition=yearly_completed_only,
+    automation_condition=rollup_condition,
     pool="metrics/yearly_metrics",
 )
 def yearly_metrics(
@@ -233,7 +204,6 @@ def yearly_metrics(
         monthly_metrics,
         yearly_metrics,
     ],
-    automation_condition=all_time_condition,
     pool="metrics/all_time_metrics",
 )
 def all_time_metrics(postgres: PostgresResource) -> dg.MaterializeResult:

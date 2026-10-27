@@ -1,39 +1,21 @@
-"""Unit tests for the hourly catch-up schedule.
+"""Unit tests for the metrics schedules.
 
-The schedule fires at :05 past each hour and re-aggregates the last
+The hourly catch-up schedule fires at :05 past each hour and re-aggregates the last
 CATCH_UP_HOURS completed hours to capture data that arrived after the live
 schedule's last tick before the hour rolled over, and late-recorded reorgs.
 """
 
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import dagster as dg
-import pytest
 
-from analytics.defs.assets import (
-    daily_partitions,
-    hourly_partitions,
-    monthly_partitions,
-    weekly_partitions,
-    yearly_partitions,
-)
+from analytics.defs.assets import hourly_partitions
 from analytics.defs.schedules import (
     CATCH_UP_HOURS,
+    all_time_metrics_schedule,
     hourly_catch_up_schedule,
-    live_daily_schedule,
     live_hourly_schedule,
-    live_monthly_schedule,
-    live_weekly_schedule,
-    live_yearly_schedule,
 )
-
-LIVE_SCHEDULES = [
-    (live_hourly_schedule, hourly_partitions),
-    (live_daily_schedule, daily_partitions),
-    (live_weekly_schedule, weekly_partitions),
-    (live_monthly_schedule, monthly_partitions),
-    (live_yearly_schedule, yearly_partitions),
-]
 
 # Every 7 hours over ~5 weeks (every weekday at varying hours, plus the
 # Mar → Apr boundary), and the edges of a year boundary. Must start after
@@ -53,34 +35,20 @@ def _run_live(schedule: dg.ScheduleDefinition, at: datetime) -> dg.RunRequest:
     return schedule(context)
 
 
-class TestLiveSchedules:
-    @pytest.mark.parametrize(("schedule", "partitions_def"), LIVE_SCHEDULES)
-    def test_requested_partition_exists_and_contains_tick_time(
-        self,
-        schedule: dg.ScheduleDefinition,
-        partitions_def: dg.TimeWindowPartitionsDefinition,
-    ):
+class TestLiveHourlySchedule:
+    def test_requested_partition_exists_and_contains_tick_time(self):
         # Checks against the partition definitions rather than hard-coded keys,
         # so a mismatch between schedule and partitions can't be locked in.
         for at in _SAMPLE_TIMES:
-            key = _run_live(schedule, at).partition_key
+            key = _run_live(live_hourly_schedule, at).partition_key
             with dg.partition_loading_context(effective_dt=at):
-                assert partitions_def.has_partition_key(key), (at, key)
-            window = partitions_def.time_window_for_partition_key(key)
+                assert hourly_partitions.has_partition_key(key), (at, key)
+            window = hourly_partitions.time_window_for_partition_key(key)
             assert window.start <= at < window.end, (at, key)
-
-    def test_weekly_partition_starts_on_monday(self):
-        for at in _SAMPLE_TIMES:
-            key = _run_live(live_weekly_schedule, at).partition_key
-            assert date.fromisoformat(key).weekday() == 0, (at, key)
 
     def test_hourly_key_format(self):
         at = datetime(2024, 3, 15, 14, 37, 12, tzinfo=UTC)
         assert _run_live(live_hourly_schedule, at).partition_key == "2024-03-15T14:00"
-
-    def test_weekly_key_on_sunday_is_previous_monday(self):
-        at = datetime(2024, 3, 17, 8, 0, tzinfo=UTC)
-        assert _run_live(live_weekly_schedule, at).partition_key == "2024-03-11"
 
 
 class TestHourlyCatchUpSchedule:
@@ -136,3 +104,16 @@ class TestHourlyCatchUpSchedule:
         run_keys = [r.run_key for r in requests]
         assert all(run_keys)
         assert len(set(run_keys)) == len(run_keys)
+
+
+class TestAllTimeMetricsSchedule:
+    def test_runs_every_10_minutes_after_the_cascade(self):
+        assert all_time_metrics_schedule.cron_schedule == "5-59/10 * * * *"
+
+    def test_is_running_by_default(self):
+        # all_time_metrics had no schedule to enable before, so it must not
+        # stop after a deploy.
+        assert (
+            all_time_metrics_schedule.default_status
+            == dg.DefaultScheduleStatus.RUNNING
+        )
