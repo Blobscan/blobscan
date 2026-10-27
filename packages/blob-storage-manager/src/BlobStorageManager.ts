@@ -1,6 +1,6 @@
 import type { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { logger } from "@blobscan/logger";
-import { api, SemanticAttributes } from "@blobscan/open-telemetry";
+import { api, ATTR_CODE_FUNCTION_NAME } from "@blobscan/open-telemetry";
 
 import type { BlobStorage, GetSignedUrlOpts } from "./BlobStorage";
 import { BlobStorageManagerError } from "./errors";
@@ -142,7 +142,7 @@ export class BlobStorageManager {
       "blob_storage_manager",
       {
         attributes: {
-          [SemanticAttributes.CODE_FUNCTION]: "storeBlob",
+          [ATTR_CODE_FUNCTION_NAME]: "storeBlob",
         },
       },
       async (span) => {
@@ -153,7 +153,7 @@ export class BlobStorageManager {
               {
                 attributes: {
                   storage: storage.name,
-                  [SemanticAttributes.CODE_FUNCTION]: "storeBlob",
+                  [ATTR_CODE_FUNCTION_NAME]: "storeBlob",
                 },
               },
               async (storageSpan) => {
@@ -218,7 +218,7 @@ export class BlobStorageManager {
       "blob_storage_manager",
       {
         attributes: {
-          [SemanticAttributes.CODE_FUNCTION]: "getBlob",
+          [ATTR_CODE_FUNCTION_NAME]: "getBlob",
         },
       },
       async (span) => {

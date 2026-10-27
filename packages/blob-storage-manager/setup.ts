@@ -10,59 +10,65 @@ vi.mock("@ethersphere/bee-js", async (importOriginal) => {
   // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   const original = await importOriginal<typeof import("@ethersphere/bee-js")>();
   return {
-    Bee: vi.fn().mockImplementation((endpoint) => {
+    Bee: vi.fn().mockImplementation(function (endpoint: string) {
       return {
         url: endpoint,
-        checkConnection: vi.fn().mockImplementation(() => {
-          return {
-            status: "ok",
-          };
-        }),
-        downloadFile: vi.fn().mockImplementation((reference) => {
-          const batch = blobBatches["mock-batch-id"];
-
-          if (!batch) {
-            throw new Error("Batch not found");
-          }
-
-          const file = batch.find((b) => b.reference === reference);
-
-          if (file) {
+        connectivity: {
+          checkConnection: vi.fn().mockImplementation(() => {
             return {
-              data: {
-                contentType: "application/octant-stream",
+              status: "ok",
+            };
+          }),
+        },
+        file: {
+          download: vi.fn().mockImplementation((reference) => {
+            const batch = blobBatches["mock-batch-id"];
+
+            if (!batch) {
+              throw new Error("Batch not found");
+            }
+
+            const file = batch.find((b) => b.reference === reference);
+
+            if (file) {
+              return {
+                data: {
+                  contentType: "application/octant-stream",
+                  toHex() {
+                    return "12bc45f2a2";
+                  },
+                },
+              };
+            }
+
+            throw new Error("File not found");
+          }),
+          upload: vi.fn().mockImplementation((batchId, blobData) => {
+            const batch = blobBatches[batchId];
+            if (batch) {
+              batch.push({ data: blobData, reference: SWARM_REFERENCE });
+            }
+
+            return {
+              reference: {
                 toHex() {
-                  return "12bc45f2a2";
+                  return SWARM_REFERENCE;
                 },
               },
             };
-          }
+          }),
+        },
+        pin: {
+          remove: vi.fn().mockImplementation((_) => {
+            const batch = blobBatches["mock-batch-id"];
 
-          throw new Error("File not found");
-        }),
-        uploadFile: vi.fn().mockImplementation((batchId, blobData) => {
-          const batch = blobBatches[batchId];
-          if (batch) {
-            batch.push({ data: blobData, reference: SWARM_REFERENCE });
-          }
+            if (!batch) {
+              throw new Error("Batch not found");
+            }
 
-          return {
-            reference: {
-              toHex() {
-                return SWARM_REFERENCE;
-              },
-            },
-          };
-        }),
-        unpin: vi.fn().mockImplementation((_) => {
-          const batch = blobBatches["mock-batch-id"];
-
-          if (!batch) {
-            throw new Error("Batch not found");
-          }
-
-          blobBatches["mock-batch-id"] = [];
-        }),
+            blobBatches["mock-batch-id"] = [];
+          }),
+        },
       };
     }),
     BeeResponseError: original.BeeResponseError,

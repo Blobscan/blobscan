@@ -2,6 +2,7 @@
   "extends": "@blobscan/tsconfig/base.production.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "moduleResolution": "bundler",
     "paths": {
       "~/*": ["./src/*"]
     },

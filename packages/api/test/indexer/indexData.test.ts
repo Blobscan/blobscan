@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 import {
   afterAll,
   beforeAll,
@@ -383,14 +383,13 @@ describe("indexData", () => {
       describe("when indexing blob data", () => {
         let ctxWithBlobPropagator: TRPCContext;
         let callerWithBlobPropagator: IndexerCaller;
-        let blobPropagatorSpy: SpyInstance<
-          [
+        let blobPropagatorSpy: MockInstance<
+          (
             blobs: {
               versionedHash: string;
               data: string;
             }[]
-          ],
-          Promise<void>
+          ) => Promise<void>
         >;
 
         beforeAll(async () => {
@@ -402,7 +401,6 @@ describe("indexData", () => {
           callerWithBlobPropagator = createIndexerCaller(ctxWithBlobPropagator);
 
           blobPropagatorSpy = vi.spyOn(
-             
             ctxWithBlobPropagator.blobPropagator!,
             "propagateBlobs"
           );

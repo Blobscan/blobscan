@@ -4,6 +4,7 @@ export const sharedProjectConfig: UserWorkspaceConfig = {
   test: {
     include: ["test/**/*.test.ts"],
     setupFiles: ["@blobscan/test/src/setup.ts"],
-    threads: false,
+    fileParallelism: false,
+    maxWorkers: 1,
   },
 };

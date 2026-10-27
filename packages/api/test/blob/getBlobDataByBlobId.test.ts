@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import fs from "fs";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import type { BlobDataStorageReference } from "@blobscan/db";
 import type { BlobStorage } from "@blobscan/db/prisma/enums";
@@ -32,9 +32,6 @@ describe("getBlobDataByBlobId", () => {
   const expectedBlobData = `0x${unprefixedBlobData}`;
 
   beforeEach(async () => {
-    vi.resetModules();
-    vi.unmock("@blobscan/test");
-
     blobDataRouter = createBlobRouter({
       blobDataProcedure: { enabled: true, protected: true },
     });
@@ -232,18 +229,6 @@ describe("getBlobDataByBlobId", () => {
   });
 
   it("should fail when calling procedure without auth", async () => {
-    vi.mock("@blobscan/test", async (original) => {
-      const mod = (await original()) as { env: Record<string, unknown> };
-      return {
-        ...mod,
-        env: {
-          ...mod.env,
-          BLOB_DATA_API_KEY: "key_secret",
-          BLOB_DATA_API_ENABLED: true,
-        },
-      };
-    });
-
     const ctx = await createTestContext();
     const unauthorizedBlobDataCaller = blobDataRouter.createCaller(ctx);
 

@@ -37,9 +37,14 @@ export function testValidError<T extends Error>(
   opts: {
     checkMessage?: boolean;
     checkCause?: boolean;
+    timeout?: number;
   } = {}
 ) {
-  it(name, async () => {
-    await assertError(failingOperation, ErrorClass, opts);
-  });
+  it(
+    name,
+    async () => {
+      await assertError(failingOperation, ErrorClass, opts);
+    },
+    opts.timeout
+  );
 }

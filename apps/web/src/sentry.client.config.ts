@@ -25,10 +25,12 @@ const initSentry = async () => {
       dsn: dns,
       environment,
       // Adds request headers and IP for users
-      sendDefaultPii: true,
+      dataCollection: {
+        userInfo: true,
+        httpHeaders: { request: true, response: true },
+      },
       // Adjust based on your traffic volume
       tracesSampleRate: process.env.NODE_ENV === "development" ? 1.0 : 0.1,
-      enableLogs: true,
     });
   } catch (error) {
     console.error("Error during Sentry initialization", error);

@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@blobscan/db": "workspace:*",
-    "axios": "^1.7.2",
+    "axios": "^1.20.0",
     "csv-writer": "^1.6.0",
     "rlp": "^3.0.0"
   },

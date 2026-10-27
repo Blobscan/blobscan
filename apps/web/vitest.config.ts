@@ -1,10 +1,11 @@
-import { defineProject } from "vitest/config";
 import path from "path";
+import { defineProject } from "vitest/config";
 
 export default defineProject({
   test: {
     include: ["test/**/*.test.ts"],
-    threads: false,
+    fileParallelism: false,
+    maxWorkers: 1,
   },
   resolve: {
     alias: {

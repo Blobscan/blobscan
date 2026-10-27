@@ -1,5 +1,4 @@
 import "../styles/globals.css";
-import "@upstash/feedback/index.css";
 import type { AppProps as NextAppProps } from "next/app";
 import { ThemeProvider, useTheme } from "next-themes";
 

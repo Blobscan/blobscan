@@ -31,7 +31,11 @@ export function createEnv<
 
 export const presetEnvOptions = {
   runtimeEnv: process.env,
-  skipValidation: !!process.env.CI || !!process.env.SKIP_ENV_VALIDATION,
+  // CI builds run without a full environment, but tests must validate and
+  // coerce the values from .env.test just like local runs do.
+  skipValidation:
+    !!process.env.SKIP_ENV_VALIDATION ||
+    (!!process.env.CI && process.env.NODE_ENV !== "test"),
 };
 
 export function maskSensitiveData(sensitiveData: string | undefined) {
