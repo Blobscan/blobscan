@@ -26,9 +26,10 @@ describe("getBlobDataByBlobId", () => {
 
   const versionedHash =
     "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734";
-  const unprefixedBlobData = fixtures.blobDatas
-    .find((d) => d.id === versionedHash)
-    ?.data.toString("hex");
+  const blobData = fixtures.blobDatas.find((d) => d.id === versionedHash);
+  const unprefixedBlobData = blobData
+    ? Buffer.from(blobData.data).toString("hex")
+    : undefined;
   const expectedBlobData = `0x${unprefixedBlobData}`;
 
   beforeEach(async () => {

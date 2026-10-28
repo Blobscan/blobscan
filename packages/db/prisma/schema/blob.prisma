@@ -4,7 +4,7 @@ model Blob {
   proof            String
   usageSize        Int      @default(0) @map("usage_size")
   size             Int
-  /// @zod.nonnegative()
+  /// @zod.number.int().nonnegative()
   firstBlockNumber Int?     @map("first_block_number")
   insertedAt       DateTime @default(now()) @map("inserted_at")
   updatedAt        DateTime @default(now()) @map("updated_at")
@@ -39,13 +39,13 @@ model BlobDataStorageReference {
 model BlobsOnTransactions {
   blobHash       String   @map("blob_hash")
   blockHash      String   @map("block_hash")
-  /// @zod.nonnegative()
+  /// @zod.number.int().nonnegative()
   blockNumber    Int      @map("block_number")
   blockTimestamp DateTime @map("block_timestamp")
   txHash         String   @map("tx_hash")
-  /// @zod.nonnegative()
+  /// @zod.number.int().nonnegative()
   txIndex        Int      @map("tx_index")
-  /// @zod.nonnegative()
+  /// @zod.number.int().nonnegative()
   index          Int
 
   blob        Blob        @relation(fields: [blobHash], references: [versionedHash])

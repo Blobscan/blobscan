@@ -9,15 +9,14 @@ exports[`indexData > when authorized > should fail when no blob propagator is de
 exports[`indexData > when authorized > should fail when receiving an empty array of blobs 1`] = `
 "[
   {
+    "origin": "array",
     "code": "too_small",
     "minimum": 1,
-    "type": "array",
     "inclusive": true,
-    "exact": false,
-    "message": "Array must contain at least 1 element(s)",
     "path": [
       "blobs"
-    ]
+    ],
+    "message": "Too small: expected array to have >=1 items"
   }
 ]"
 `;
@@ -25,15 +24,14 @@ exports[`indexData > when authorized > should fail when receiving an empty array
 exports[`indexData > when authorized > should fail when receiving an empty array of transactions 1`] = `
 "[
   {
+    "origin": "array",
     "code": "too_small",
     "minimum": 1,
-    "type": "array",
     "inclusive": true,
-    "exact": false,
-    "message": "Array must contain at least 1 element(s)",
     "path": [
       "transactions"
-    ]
+    ],
+    "message": "Too small: expected array to have >=1 items"
   }
 ]"
 `;

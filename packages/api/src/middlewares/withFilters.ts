@@ -1,5 +1,5 @@
 import type { Prisma } from "@blobscan/db";
-import { AddressModel, BlockModel } from "@blobscan/db/prisma/zod";
+import { AddressSchema, BlockSchema } from "@blobscan/db/prisma/zod";
 import {
   dbCategoryCoercionSchema,
   dbRollupCoercionSchema,
@@ -50,13 +50,13 @@ const sortSchema = z.enum(["asc", "desc"]);
 const typeSchema = z.enum(["reorged", "canonical"]);
 
 export const withBlockRangeFilterSchema = z.object({
-  startBlock: BlockModel.shape.number.optional(),
-  endBlock: BlockModel.shape.number.optional(),
+  startBlock: BlockSchema.shape.number.optional(),
+  endBlock: BlockSchema.shape.number.optional(),
 });
 
 export const withSlotRangeFilterSchema = z.object({
-  startSlot: BlockModel.shape.slot.optional(),
-  endSlot: BlockModel.shape.slot.optional(),
+  startSlot: BlockSchema.shape.slot.optional(),
+  endSlot: BlockSchema.shape.slot.optional(),
 });
 
 export const withEpochRangeFilterSchema = z.object({
@@ -85,9 +85,9 @@ export const withDateRangeFilterSchema = z.object({
 
 export const withAddressFilterSchema = z.object({
   from: commaSeparatedValuesSchema.transform((values) =>
-    values?.map((v) => AddressModel.shape.address.parse(v))
+    values?.map((v) => AddressSchema.shape.address.parse(v))
   ),
-  to: AddressModel.shape.address.optional(),
+  to: AddressSchema.shape.address.optional(),
 });
 
 export const withSortFilterSchema = z.object({

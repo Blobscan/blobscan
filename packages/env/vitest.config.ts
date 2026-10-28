@@ -1,5 +1,7 @@
 import { defineProject } from "vitest/config";
 
-import { sharedProjectConfig } from "../../vitest.shared";
-
-export default defineProject(sharedProjectConfig);
+export default defineProject({
+  test: {
+    include: ["test/**/*.test.ts"],
+  },
+});

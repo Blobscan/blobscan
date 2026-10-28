@@ -1,5 +1,3 @@
-import { createServerSideHelpers as _createServerSideHelepers } from "@trpc/react-query/server";
-
 import { createAppRouter, createTRPCContext } from "@blobscan/api";
 import { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import { getChain } from "@blobscan/chains";

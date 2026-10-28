@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import React from "react";
-import type { EChartOption } from "echarts";
+import type { BarSeriesOption, LineSeriesOption } from "echarts";
 
 import type { Prettify, TimeseriesMetric } from "~/types";
 import { Card } from "../Cards/Card";
@@ -9,9 +9,12 @@ import { ChartBase } from "./ChartBase";
 import type { Axis, ChartBaseProps } from "./ChartBase";
 
 type Timeseries = Pick<
-  EChartOption.SeriesBar | EChartOption.SeriesLine,
-  "type" | "name" | "id" | "stack"
-> & { metric: TimeseriesMetric };
+  BarSeriesOption | LineSeriesOption,
+  "name" | "id" | "stack"
+> & {
+  type: "bar" | "line";
+  metric: TimeseriesMetric;
+};
 
 export type TimeseriesChartProps = Prettify<
   Pick<

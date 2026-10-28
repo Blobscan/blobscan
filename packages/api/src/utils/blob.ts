@@ -12,8 +12,8 @@ export function hexToBytes(hex: string) {
   return Buffer.from(hex.slice(2), "hex");
 }
 
-export function bytesToHex(bytes: ArrayBuffer | Buffer) {
-  const buffer = bytes instanceof ArrayBuffer ? Buffer.from(bytes) : bytes;
+export function bytesToHex(bytes: ArrayBuffer | Uint8Array) {
+  const bytesView = bytes instanceof ArrayBuffer ? new Uint8Array(bytes) : bytes;
 
-  return `0x${buffer.toString("hex")}`;
+  return `0x${Buffer.from(bytesView).toString("hex")}`;
 }

@@ -1,26 +1,35 @@
-import type { EnvOptions, Simplify } from "@t3-oss/env-core";
+import type {
+  CreateEnv,
+  DefaultCombinedSchema,
+  EnvOptions,
+  StandardSchemaDictionary,
+  StandardSchemaV1,
+} from "@t3-oss/env-core";
 import { createEnv as createEnv_ } from "@t3-oss/env-core";
-import type { z, ZodObject, ZodType } from "zod";
 
 export function createEnv<
-  TPrefix extends string = "",
-  TServer extends Record<string, ZodType> = NonNullable<unknown>,
-  TClient extends Record<string, ZodType> = NonNullable<unknown>,
-  TShared extends Record<string, ZodType> = NonNullable<unknown>
+  TPrefix extends string | undefined = "",
+  TServer extends StandardSchemaDictionary = NonNullable<unknown>,
+  TClient extends StandardSchemaDictionary = NonNullable<unknown>,
+  TShared extends StandardSchemaDictionary = NonNullable<unknown>,
+  const TExtends extends Array<Record<string, unknown>> = [],
+  TFinalSchema extends StandardSchemaV1<
+    Record<string, unknown>,
+    Record<string, unknown>
+  > = DefaultCombinedSchema<TServer, TClient, TShared>
 >({
   envOptions,
   display,
 }: {
-  envOptions: EnvOptions<TPrefix, TServer, TClient, TShared>;
-  display?(
-    env: Readonly<
-      Simplify<
-        z.infer<ZodObject<TServer>> &
-          z.infer<ZodObject<TClient>> &
-          z.infer<ZodObject<TShared>>
-      >
-    >
-  ): void;
+  envOptions: EnvOptions<
+    TPrefix,
+    TServer,
+    TClient,
+    TShared,
+    TExtends,
+    TFinalSchema
+  >;
+  display?(env: Readonly<CreateEnv<TFinalSchema, TExtends>>): void;
 }) {
   const env_ = createEnv_(envOptions);
   return {

@@ -54,8 +54,8 @@
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.2.8",
     "tsx": "^4.23.15",
-    "turbo": "^1.10.7",
-    "typescript": "5.5.3",
+    "turbo": "^2.11.10",
+    "typescript": "5.9.3",
     "vite": "6.4.4",
     "vitest": "^5.0.5",
     "vitest-mock-extended": "^5.1.1"
@@ -65,9 +65,11 @@
   },
   "pnpm": {
     "overrides": {
-      "typescript": "5.5.3",
-      "zod": "3.23.8",
-      "zod-to-json-schema": "3.21.4",
+      "typescript": "5.9.3",
+      "zod": "4.6.7",
+      "@prisma/config>deepmerge-ts": "8.0.2",
+      "@prisma/instrumentation>@opentelemetry/instrumentation": "0.220.0",
+      "@opentelemetry/core@>=2.0.0 <2.8.0": "2.9.0",
       "cross-spawn@<6.0.6": "6.0.6",
       "cross-spawn@>=7.0.0 <7.0.5": "7.0.5",
       "minimatch@<3.1.4": "3.1.4",
@@ -88,11 +90,11 @@
       "path-to-regexp@<0.1.13": "0.1.13",
       "node-forge@<1.4.0": "1.4.0",
       "proxy-addr@<2.0.8": "2.0.8",
-      "serialize-javascript@<7.0.5": "7.0.5",
+      "serialize-javascript@<7.1.3": "7.1.4",
       "flatted@<=3.4.1": "3.4.2",
       "lodash@<=4.17.23": "4.18.0",
       "@babel/plugin-transform-modules-systemjs@<=7.29.3": "7.29.4",
-      "fast-uri@<3.1.8": "3.1.8",
+      "fast-uri@<3.1.9": "3.1.9",
       "browserslist@<=4.28.6": "4.28.7",
       "postcss@<=8.5.22": "8.5.23",
       "nanoid@<3.3.18": "3.3.18",
@@ -111,7 +113,7 @@
       "qs@<6.16.0": "6.16.0",
       "baseline-browser-mapping@<2.11.0": "2.11.0",
       "@babel/core@<=7.29.0": "7.29.6",
-      "postcss-selector-parser@>=6.0.0 <6.1.3": "6.1.3",
+      "postcss-selector-parser@<7.1.6": "7.1.7",
       "@sentry/webpack-plugin>uuid": "11.1.1",
       "bullmq>uuid": "11.1.1"
     }

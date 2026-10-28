@@ -27,7 +27,7 @@ function toUrlQuery<T extends Record<string, unknown>>(
   return query;
 }
 
-export function useUrlState<T extends z.AnyZodObject>(
+export function useUrlState<T extends z.ZodObject>(
   schema: T
 ): {
   state: z.infer<T> | null;

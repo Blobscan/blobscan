@@ -1,4 +1,4 @@
-import { BlockchainSyncStateModel } from "@blobscan/db/prisma/zod";
+import { BlockchainSyncStateSchema } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
@@ -7,7 +7,7 @@ import { BASE_PATH } from "./common";
 
 export const inputSchema = z.void();
 
-export const outputSchema = BlockchainSyncStateModel.omit({
+export const outputSchema = BlockchainSyncStateSchema.omit({
   id: true,
 }).transform(normalize);
 

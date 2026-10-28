@@ -14,7 +14,6 @@ const getBaseUrl = () => {
 export const api = createTRPCNext<AppRouter>({
   config() {
     return {
-      transformer: superjson,
       links: [
         loggerLink({
           enabled: (opts) =>
@@ -23,6 +22,7 @@ export const api = createTRPCNext<AppRouter>({
         }),
         httpLink({
           url: `${getBaseUrl()}/api/trpc`,
+          transformer: superjson,
         }),
         // TODO: support batching link via a conditional link so when a flag is provided it uses the batching link
         // httpBatchLink({
@@ -32,4 +32,5 @@ export const api = createTRPCNext<AppRouter>({
     };
   },
   ssr: false,
+  transformer: superjson,
 });

@@ -1,6 +1,5 @@
-import { z } from "@blobscan/zod";
-
 import { Category, Rollup } from "@blobscan/db/prisma/enums";
+import { z } from "@blobscan/zod";
 
 export const blockNumberSchema = z.coerce.number();
 
@@ -50,13 +49,9 @@ export const categorySchema = z.nativeEnum(LOWERCASE_DB_CATEGORY_ENUM);
 
 export const rollupSchema = z.nativeEnum(LOWERCASE_ROLLUP_ENUM);
 
-export function createCommaSeparatedParam<TSchema extends z.ZodTypeAny>(
+export function createCommaSeparatedParam<TSchema extends z.ZodType>(
   valueSchema: TSchema
-): z.ZodEffects<
-  typeof multiValueFieldSchema,
-  z.infer<TSchema>[] | undefined,
-  z.input<typeof multiValueFieldSchema>
-> {
+) {
   return multiValueFieldSchema.transform((values, ctx) => {
     if (!values) return undefined;
 

@@ -3,15 +3,14 @@
 exports[`getBySlot > should fail when trying to get a block with a negative slot 1`] = `
 "[
   {
+    "origin": "number",
     "code": "too_small",
     "minimum": 0,
-    "type": "number",
     "inclusive": false,
-    "exact": false,
-    "message": "Number must be greater than 0",
     "path": [
       "slot"
-    ]
+    ],
+    "message": "Too small: expected number to be >0"
   }
 ]"
 `;
@@ -19,15 +18,14 @@ exports[`getBySlot > should fail when trying to get a block with a negative slot
 exports[`getBySlot > should fail when trying to get a block with a negative slot 2`] = `
 [ZodError: [
   {
+    "origin": "number",
     "code": "too_small",
     "minimum": 0,
-    "type": "number",
     "inclusive": false,
-    "exact": false,
-    "message": "Number must be greater than 0",
     "path": [
       "slot"
-    ]
+    ],
+    "message": "Too small: expected number to be >0"
   }
 ]]
 `;

@@ -4,7 +4,6 @@ import type {
   ExtendedTransactionSelect,
   Prisma,
 } from "@blobscan/db";
-import { EthUsdPriceModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import type {
@@ -118,7 +117,7 @@ export const responseTransactionSchema = baseTransactionSchema.extend({
       blobGasPrice: true,
     }),
   blobs: z.array(baseBlobSchema.partial().required({ versionedHash: true })),
-  ethUsdPrice: EthUsdPriceModel.shape.price.optional(),
+  ethUsdPrice: z.number().optional(),
 });
 
 export type ResponseTransaction = z.input<typeof responseTransactionSchema>;

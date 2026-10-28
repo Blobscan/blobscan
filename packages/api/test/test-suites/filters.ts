@@ -48,12 +48,12 @@ function filterBlock(
   const endDateFilter = endDate ? dayjs(b.timestamp).isBefore(endDate) : true;
 
   // Epoch filter takes precedence over slot filter (mirrors middleware else-if logic)
+  const startEpoch_ = startEpoch as number | undefined;
+  const endEpoch_ = endEpoch as number | undefined;
   const effectiveStartSlot =
-    startEpoch !== undefined ? startEpoch * SLOTS_PER_EPOCH : startSlot;
+    startEpoch_ !== undefined ? startEpoch_ * SLOTS_PER_EPOCH : startSlot;
   const effectiveEndSlot =
-    endEpoch !== undefined
-      ? (endEpoch + 1) * SLOTS_PER_EPOCH - 1
-      : endSlot;
+    endEpoch_ !== undefined ? (endEpoch_ + 1) * SLOTS_PER_EPOCH - 1 : endSlot;
 
   const slotRangeFilter =
     effectiveStartSlot && effectiveEndSlot

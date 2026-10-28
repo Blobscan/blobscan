@@ -1,4 +1,4 @@
-import type { EChartOption } from "echarts";
+import type { DatasetComponentOption } from "echarts";
 
 // The current period is not complete. Separate series draw its point: a
 // dotted segment and a hollow point for a line, a dashed and lighter bar for a
@@ -31,7 +31,7 @@ export type ChartSeries = {
  * A dataset that can include the current period. `currentPeriodTimestamp` is
  * the start of the current period when the dataset includes it.
  */
-export type ChartDataset = EChartOption.Dataset & {
+export type ChartDataset = DatasetComponentOption & {
   currentPeriodTimestamp?: Date;
 };
 
@@ -112,7 +112,7 @@ function toTime(value: unknown) {
 }
 
 function findCurrentPeriodIdx(
-  { source }: EChartOption.Dataset,
+  { source }: DatasetComponentOption,
   currentPeriodTimestamp: Date
 ) {
   if (!isColumnSource(source)) {
@@ -154,7 +154,7 @@ export function addCurrentPeriodColumns(
   { currentPeriodTimestamp: _, ...dataset }: ChartDataset,
   currentPeriodTimestamp: Date,
   metricColumns?: string[]
-): EChartOption.Dataset {
+): DatasetComponentOption {
   const { source } = dataset;
   const currentIdx = findCurrentPeriodIdx(dataset, currentPeriodTimestamp);
 
@@ -187,7 +187,10 @@ export function addCurrentPeriodColumns(
     );
   }
 
-  return { ...dataset, source: newSource };
+  return {
+    ...dataset,
+    source: newSource as DatasetComponentOption["source"],
+  };
 }
 
 /**
@@ -197,7 +200,7 @@ export function addCurrentPeriodColumns(
  */
 export function getSeriesMetricValue(
   series: ChartSeries | undefined,
-  datasets: EChartOption.Dataset | EChartOption.Dataset[] | undefined,
+  datasets: DatasetComponentOption | DatasetComponentOption[] | undefined,
   dataIndex: number
 ) {
   const column = series?.encode?.y;
@@ -219,7 +222,7 @@ export function getSeriesMetricValue(
  */
 export function hasCurrentPeriodValue(
   series: ChartSeries,
-  datasets: EChartOption.Dataset[],
+  datasets: DatasetComponentOption[],
   currentPeriodTimestamp: Date
 ) {
   const dataset = datasets[series.datasetIndex ?? 0];

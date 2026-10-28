@@ -1,4 +1,4 @@
-import { AllTimeMetricsModel } from "@blobscan/db/prisma/zod";
+import { AllTimeMetricsSchema } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
@@ -6,7 +6,7 @@ import { normalize } from "../../utils";
 import { dimensionSchema, getDimension } from "../../zod-schemas";
 import { buildStatsPath } from "./helpers";
 
-const metricsSchema = AllTimeMetricsModel.omit({
+const metricsSchema = AllTimeMetricsSchema.omit({
   id: true,
   category: true,
   rollup: true,
@@ -19,7 +19,7 @@ const outputSchema = z
       .object({
         dimension: dimensionSchema,
         metrics: metricsSchema,
-        updatedAt: AllTimeMetricsModel.shape.updatedAt,
+        updatedAt: AllTimeMetricsSchema.shape.updatedAt,
       })
       .array(),
   })

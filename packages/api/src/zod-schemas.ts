@@ -4,13 +4,13 @@ import {
   transactionAllComputedFieldsSchema,
 } from "@blobscan/db/prisma/extensions";
 import {
-  AddressModel,
-  BlobDataStorageReferenceModel,
-  BlobModel,
-  BlobsOnTransactionsModel,
-  BlockModel,
-  DailyMetricsModel,
-  TransactionModel,
+  AddressSchema,
+  BlobDataStorageReferenceSchema,
+  BlobSchema,
+  BlobsOnTransactionsSchema,
+  BlockSchema,
+  DailyMetricsSchema,
+  TransactionSchema,
 } from "@blobscan/db/prisma/zod";
 import {
   blobStorageSchema,
@@ -66,7 +66,7 @@ export function getDimension(
   };
 }
 
-export const timeseriesMetricsSchema = DailyMetricsModel.omit({
+export const timeseriesMetricsSchema = DailyMetricsSchema.omit({
   id: true,
   periodStart: true,
   category: true,
@@ -163,9 +163,9 @@ export const blobIdSchema = z
   .superRefine((val, ctx) => {
     if (!hexSchema.safeParse(val).success) {
       ctx.addIssue({
-        code: z.ZodIssueCode.invalid_string,
+        code: z.ZodIssueCode.invalid_format,
+        format: "regex",
         message: "Invalid input: must be a valid hex string",
-        validation: "regex",
         fatal: true,
       });
 
@@ -185,9 +185,9 @@ export const blobIdSchema = z
 
     if (val.length === 66 && !val.startsWith("0x01")) {
       ctx.addIssue({
-        code: z.ZodIssueCode.invalid_string,
+        code: z.ZodIssueCode.invalid_format,
+        format: "regex",
         message: 'Invalid versioned hash: must start with "0x01"',
-        validation: "regex",
         fatal: true,
       });
 
@@ -198,7 +198,7 @@ export const blobIdSchema = z
     "Blob identifier. It can be the blob's versioned hash or kzg commitment."
   );
 
-export const prismaBlockSchema = BlockModel.omit({
+export const prismaBlockSchema = BlockSchema.omit({
   insertedAt: true,
   updatedAt: true,
 });
@@ -207,13 +207,13 @@ export const baseBlockSchema = prismaBlockSchema.merge(
   blockAllComputedFieldsSchema
 );
 
-export const prismaBlobSchema = BlobModel.omit({
+export const prismaBlobSchema = BlobSchema.omit({
   firstBlockNumber: true,
   insertedAt: true,
   updatedAt: true,
 }).extend({
   dataStorageReferences: z.array(
-    BlobDataStorageReferenceModel.pick({
+    BlobDataStorageReferenceSchema.pick({
       blobStorage: true,
       dataReference: true,
     })
@@ -229,11 +229,11 @@ export const baseBlobSchema = prismaBlobSchema.extend({
   ),
 });
 
-export const prismaTransactionSchema = TransactionModel.omit({
+export const prismaTransactionSchema = TransactionSchema.omit({
   insertedAt: true,
   updatedAt: true,
 }).extend({
-  from: AddressModel.pick({
+  from: AddressSchema.pick({
     address: true,
     rollup: true,
   }).extend({ category: dbCategorySchema }),
@@ -241,10 +241,10 @@ export const prismaTransactionSchema = TransactionModel.omit({
 
 export type PrismaTransaction = z.infer<typeof prismaTransactionSchema>;
 
-export const prismaTransactionBlob = BlobsOnTransactionsModel.extend({
+export const prismaTransactionBlob = BlobsOnTransactionsSchema.extend({
   blob: prismaBlobSchema,
 });
-export const prismaBlobOnTransactionSchema = BlobsOnTransactionsModel;
+export const prismaBlobOnTransactionSchema = BlobsOnTransactionsSchema;
 
 export const baseTransactionSchema = prismaTransactionSchema
   .omit({
@@ -256,9 +256,9 @@ export const baseTransactionSchema = prismaTransactionSchema
   .extend({
     blobGasPrice: prismaBlockSchema.shape.blobGasPrice,
     category: dbCategorySchema,
-    rollup: AddressModel.shape.rollup,
-    from: AddressModel.shape.address,
-    to: AddressModel.shape.address,
+    rollup: AddressSchema.shape.rollup,
+    from: AddressSchema.shape.address,
+    to: AddressSchema.shape.address,
     decodedFields: optimismDecodedFieldsSchema.nullable(),
   });
 

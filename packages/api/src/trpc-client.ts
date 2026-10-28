@@ -1,5 +1,5 @@
 import { initTRPC } from "@trpc/server";
-import type { OpenApiMeta } from "trpc-openapi";
+import type { OpenApiMeta } from "trpc-to-openapi";
 import { ZodError } from "zod";
 
 import type { TRPCContext } from "./context";

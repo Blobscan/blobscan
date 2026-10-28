@@ -1,5 +1,8 @@
 import type { MutableRefObject } from "react";
-import type { EChartOption } from "echarts";
+import type {
+  DefaultLabelFormatterCallbackParams,
+  TooltipComponentOption,
+} from "echarts";
 
 import { calculatePercentage, getNeighbouringElements } from "~/utils";
 import type { Numerish } from "~/utils";
@@ -28,10 +31,18 @@ export type SeriesValueGetter = (
   dataIndex: number
 ) => unknown;
 
+function toNumerish(value: unknown): Numerish | undefined {
+  return typeof value === "number" ||
+    typeof value === "string" ||
+    typeof value === "bigint"
+    ? value
+    : undefined;
+}
+
 function getValue(
-  param: EChartOption.Tooltip.Format,
+  param: DefaultLabelFormatterCallbackParams,
   getSeriesValue?: SeriesValueGetter
-) {
+): Numerish | undefined {
   const encode = param.encode;
 
   if (
@@ -42,23 +53,23 @@ function getValue(
     const value = getSeriesValue(param.seriesIndex, param.dataIndex);
 
     if (value !== undefined) {
-      return value;
+      return toNumerish(value);
     }
   }
 
   if (isStandardEncoding(encode)) {
     const dataIndex = encode.y[0];
 
-    if (dataIndex !== undefined) {
-      return param.data[dataIndex];
+    if (dataIndex !== undefined && param.data != null) {
+      return toNumerish((param.data as unknown as Array<unknown>)[dataIndex]);
     }
   }
 
   if (Array.isArray(param.value)) {
-    return param.value[1];
+    return toNumerish(param.value[1]);
   }
 
-  return param.value;
+  return toNumerish(param.value);
 }
 
 function buildSeriesHtmlElement({
@@ -114,7 +125,7 @@ function buildSeriesHtmlElement({
 }
 
 function isCurrentPeriod(
-  param: EChartOption.Tooltip.Format | undefined,
+  param: DefaultLabelFormatterCallbackParams | undefined,
   currentPeriodTimestamp?: Date
 ) {
   if (!param || !currentPeriodTimestamp) {
@@ -150,8 +161,8 @@ function createTooltipFormater({
 }) {
   return (
     allParamOrParams:
-      | EChartOption.Tooltip.Format
-      | EChartOption.Tooltip.Format[]
+      | DefaultLabelFormatterCallbackParams
+      | DefaultLabelFormatterCallbackParams[]
   ) => {
     const seriesIndex = currentSeriesRef.current?.seriesIndex;
     // Remove the current period series. They show the same values as the
@@ -196,7 +207,13 @@ function createTooltipFormater({
         : Array.isArray(value)
         ? value[0]
         : value;
-      dateHTMLElement = date ? formatAxisValue(date, axes.x) : "-";
+      dateHTMLElement =
+        date &&
+        (typeof date === "string" ||
+          typeof date === "number" ||
+          date instanceof Date)
+          ? formatAxisValue(date, axes.x)
+          : "-";
 
       if (isCurrentPeriod(paramOrParams[0], currentPeriodTimestamp)) {
         periodLabelHTMLElement = getCurrentPeriodLabel("day");
@@ -222,7 +239,7 @@ function createTooltipFormater({
             value: getValue(p, getSeriesValue),
             total: dailyTotal,
             axis: axes.y,
-            markerColor: color,
+            markerColor: typeof color === "string" ? color : undefined,
             themeMode,
             isSelected,
           })
@@ -266,7 +283,7 @@ function createTooltipFormater({
           name: formattedName,
           value: (value as number | string) ?? 0,
           axis: axes.y,
-          markerColor: color,
+          markerColor: typeof color === "string" ? color : undefined,
           isSelected: true,
           themeMode,
         })
@@ -330,7 +347,7 @@ export function createBaseTooltipOptions({
    * value when it returns undefined.
    */
   getSeriesValue?: SeriesValueGetter;
-}): EChartOption.Tooltip {
+}): TooltipComponentOption {
   return {
     trigger: "axis",
     confine: true,

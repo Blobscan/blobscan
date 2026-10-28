@@ -4,9 +4,13 @@ import swaggerUi from "swagger-ui-express";
 import {
   createOpenApiExpressMiddleware,
   generateOpenApiDocument,
-} from "trpc-openapi";
+} from "trpc-to-openapi";
 
-import { createAppRouter, createTRPCContext } from "@blobscan/api";
+import {
+  createAppRouter,
+  createTRPCContext,
+  openApiOverride,
+} from "@blobscan/api";
 import { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import { env } from "@blobscan/env";
 import { logger } from "@blobscan/logger";
@@ -34,6 +38,10 @@ export async function setUpOpenApiTRPC(app: Express): Promise<void> {
     baseUrl: `${env.BLOBSCAN_API_BASE_URL}`,
     docsUrl: "https://docs.blobscan.com/",
     tags: ["blobs", "transactions", "blocks", "stats", "indexer", "system"],
+    openApiVersion: "3.0.3",
+    options: {
+      override: openApiOverride,
+    },
   });
   const blobPropagator = await getBlobPropagator();
   const blobStorages = await createBlobStorages();

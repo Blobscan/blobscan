@@ -23,7 +23,7 @@
     "@opentelemetry/sdk-node": "0.220.0",
     "@opentelemetry/semantic-conventions": "^1.43.0",
     "@opentelemetry/winston-transport": "0.30.0",
-    "@prisma/instrumentation": "^5.1.1",
+    "@prisma/instrumentation": "^6.19.3",
     "prom-client": "^14.2.0"
   },
   "eslintConfig": {

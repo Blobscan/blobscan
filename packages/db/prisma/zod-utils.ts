@@ -19,7 +19,7 @@ const latestLabelSchema = z.literal("latest");
 const oldestLabelSchema = z.literal("oldest");
 
 // We use zod's string schema and then parse the value by applying block hash or block number
-// schemas as `trpc-opeanpi` doesn't support union types yet.
+// schemas as `trpc-to-openapi` doesn't support union types yet.
 export const parsedBlockIdSchema = z
   .string()
   .transform<BlockIdField>((value, ctx) => {

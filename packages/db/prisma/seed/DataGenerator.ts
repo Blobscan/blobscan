@@ -264,10 +264,10 @@ export class DataGenerator {
     });
   }
 
-  generateBlobData(bytesSize: number): Buffer {
+  generateBlobData(bytesSize: number): Uint8Array<ArrayBuffer> {
     const hex = faker.string.hexadecimal({ length: bytesSize * 2 });
 
-    return Buffer.from(hex.slice(2), "hex");
+    return Uint8Array.from(Buffer.from(hex.slice(2), "hex"));
   }
 
   generateDBFullBlocks({

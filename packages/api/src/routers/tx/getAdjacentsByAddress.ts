@@ -1,5 +1,5 @@
 import type { BlobscanPrismaClient } from "@blobscan/db";
-import { BlockModel, TransactionModel } from "@blobscan/db/prisma/zod";
+import { BlockSchema, TransactionSchema } from "@blobscan/db/prisma/zod";
 import { addressSchema } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
@@ -7,15 +7,15 @@ import { publicProcedure } from "../../procedures";
 
 const inputSchema = z.object({
   senderAddress: addressSchema,
-  blockTimestamp: BlockModel.shape.timestamp,
+  blockTimestamp: BlockSchema.shape.timestamp,
   txIndex: z.number().nonnegative(),
 });
 
 type Input = z.output<typeof inputSchema>;
 
 const outputSchema = z.object({
-  prevTxHash: TransactionModel.shape.hash.optional(),
-  nextTxHash: TransactionModel.shape.hash.optional(),
+  prevTxHash: TransactionSchema.shape.hash.optional(),
+  nextTxHash: TransactionSchema.shape.hash.optional(),
 });
 
 function fetchAdjacentTransaction(

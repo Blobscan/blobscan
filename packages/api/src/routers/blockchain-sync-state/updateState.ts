@@ -1,13 +1,13 @@
 import { TRPCError } from "@trpc/server";
 
-import { BlockchainSyncStateModel } from "@blobscan/db/prisma/zod";
+import { BlockchainSyncStateSchema } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { createAuthedProcedure } from "../../procedures";
 import { isNullish } from "../../utils";
 import { BASE_PATH } from "./common";
 
-export const inputSchema = BlockchainSyncStateModel.omit({
+export const inputSchema = BlockchainSyncStateSchema.omit({
   id: true,
 }).partial();
 
