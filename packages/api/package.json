@@ -37,9 +37,6 @@
     "@blobscan/blob-propagator": "workspace:^4.1.0",
     "@types/jsonwebtoken": "^9.0.2"
   },
-  "peerDependencies": {
-    "@blobscan/blob-propagator": "workspace:^4.1.0"
-  },
   "eslintConfig": {
     "root": true,
     "extends": [

@@ -8,6 +8,7 @@ import { calculatePercentage, getNeighbouringElements } from "~/utils";
 import type { Numerish } from "~/utils";
 import { aggregateValues } from "../../../TimeseriesCharts/helpers";
 import type { Axes, Axis, StandardEncoding } from "../types";
+import { getCurrentPeriodLabel, isCurrentPeriodSeries } from "./current-period";
 import { formatAxisValue, formatSeriesName } from "./formatters";
 
 export function isStandardEncoding(value: unknown): value is StandardEncoding {
@@ -25,6 +26,11 @@ export function isStandardEncoding(value: unknown): value is StandardEncoding {
   );
 }
 
+export type SeriesValueGetter = (
+  seriesIndex: number,
+  dataIndex: number
+) => unknown;
+
 function toNumerish(value: unknown): Numerish | undefined {
   return typeof value === "number" ||
     typeof value === "string" ||
@@ -34,9 +40,22 @@ function toNumerish(value: unknown): Numerish | undefined {
 }
 
 function getValue(
-  param: DefaultLabelFormatterCallbackParams
+  param: DefaultLabelFormatterCallbackParams,
+  getSeriesValue?: SeriesValueGetter
 ): Numerish | undefined {
   const encode = param.encode;
+
+  if (
+    getSeriesValue &&
+    param.seriesIndex !== undefined &&
+    param.dataIndex !== undefined
+  ) {
+    const value = getSeriesValue(param.seriesIndex, param.dataIndex);
+
+    if (value !== undefined) {
+      return toNumerish(value);
+    }
+  }
 
   if (isStandardEncoding(encode)) {
     const dataIndex = encode.y[0];
@@ -105,11 +124,30 @@ function buildSeriesHtmlElement({
     </div>`;
 }
 
+function isCurrentPeriod(
+  param: DefaultLabelFormatterCallbackParams | undefined,
+  currentPeriodTimestamp?: Date
+) {
+  if (!param || !currentPeriodTimestamp) {
+    return false;
+  }
+
+  const { axisValue } = param as { axisValue?: unknown };
+
+  return (
+    axisValue !== undefined &&
+    new Date(axisValue as number | string).getTime() ===
+      currentPeriodTimestamp.getTime()
+  );
+}
+
 function createTooltipFormater({
   currentSeriesRef,
   axes,
   themeMode,
   displayTotal,
+  currentPeriodTimestamp,
+  getSeriesValue,
 }: {
   currentSeriesRef: MutableRefObject<{
     seriesIndex?: number;
@@ -118,15 +156,25 @@ function createTooltipFormater({
   axes: Axes;
   themeMode: "light" | "dark";
   displayTotal?: boolean;
+  currentPeriodTimestamp?: Date;
+  getSeriesValue?: SeriesValueGetter;
 }) {
   return (
-    paramOrParams:
+    allParamOrParams:
       | DefaultLabelFormatterCallbackParams
       | DefaultLabelFormatterCallbackParams[]
   ) => {
     const seriesIndex = currentSeriesRef.current?.seriesIndex;
+    // Remove the current period series. They show the same values as the
+    // series that they belong to.
+    const paramOrParams = Array.isArray(allParamOrParams)
+      ? allParamOrParams.filter(
+          (p) => !isCurrentPeriodSeries((p as { seriesId?: string }).seriesId)
+        )
+      : allParamOrParams;
 
     let dateHTMLElement: string | undefined;
+    let periodLabelHTMLElement: string | undefined;
     const seriesHTMLElements: string[] = [];
     const totalSeriesHTMLElements: string[] = [];
 
@@ -137,7 +185,7 @@ function createTooltipFormater({
 
       const dailyTotal = displayTotal
         ? aggregateValues(
-            paramOrParams.map((p) => getValue(p)) as number[],
+            paramOrParams.map((p) => getValue(p, getSeriesValue)) as number[],
             axes.y.type
           )
         : undefined;
@@ -167,6 +215,10 @@ function createTooltipFormater({
           ? formatAxisValue(date, axes.x)
           : "-";
 
+      if (isCurrentPeriod(paramOrParams[0], currentPeriodTimestamp)) {
+        periodLabelHTMLElement = getCurrentPeriodLabel("day");
+      }
+
       filteredParams.map((p) => {
         const { seriesName, value, color } = p;
         const currentSeriesName = seriesName?.toLowerCase();
@@ -184,7 +236,7 @@ function createTooltipFormater({
         seriesHTMLElements.push(
           buildSeriesHtmlElement({
             name: formattedName,
-            value: getValue(p),
+            value: getValue(p, getSeriesValue),
             total: dailyTotal,
             axis: axes.y,
             markerColor: typeof color === "string" ? color : undefined,
@@ -197,7 +249,7 @@ function createTooltipFormater({
       if (displayTotal) {
         if (rollupSeries.length) {
           const rollupTotal = aggregateValues(
-            rollupSeries.map((p) => getValue(p)) as number[],
+            rollupSeries.map((p) => getValue(p, getSeriesValue)) as number[],
             axes.y.type
           );
 
@@ -247,6 +299,13 @@ function createTooltipFormater({
             }; font-weight: bold;">
             ${dateHTMLElement}
             </div>
+            ${
+              periodLabelHTMLElement
+                ? `<div style="color: ${
+                    themeMode === "dark" ? "#A3A3A3" : "#525252"
+                  }; font-size: 0.70rem;">${periodLabelHTMLElement}</div>`
+                : ""
+            }
             <div style="display: flex; flex-direction: column; gap: 2px; width: 100%;">
               ${seriesHTMLElements.reverse().join("\n")}
             </div>
@@ -272,6 +331,8 @@ export function createBaseTooltipOptions({
   displayTotal,
   axes,
   themeMode,
+  currentPeriodTimestamp,
+  getSeriesValue,
 }: {
   currentSeriesRef: MutableRefObject<{
     seriesIndex?: number;
@@ -280,6 +341,12 @@ export function createBaseTooltipOptions({
   axes: Axes;
   displayTotal?: boolean;
   themeMode: "light" | "dark";
+  currentPeriodTimestamp?: Date;
+  /**
+   * Returns the tooltip value of a data point. The tooltip uses the encoded
+   * value when it returns undefined.
+   */
+  getSeriesValue?: SeriesValueGetter;
 }): TooltipComponentOption {
   return {
     trigger: "axis",
@@ -292,6 +359,8 @@ export function createBaseTooltipOptions({
       axes,
       themeMode,
       displayTotal,
+      currentPeriodTimestamp,
+      getSeriesValue,
     }),
   };
 }
