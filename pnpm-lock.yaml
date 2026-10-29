@@ -665,8 +665,6 @@ importers:
 
   packages/chains: {}
 
-  packages/dates: {}
-
   packages/dayjs:
     dependencies:
       dayjs:
