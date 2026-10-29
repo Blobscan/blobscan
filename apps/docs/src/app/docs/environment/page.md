@@ -78,18 +78,27 @@ nextjs:
 | `IPFS_STORAGE_IPLD_URL`                               | blobscan-ipld service write API base URL (`POST /blob`), used to store blobs; distinct from the read gateway | If `PRIMARY_BLOB_STORAGE=ipfs`  | (empty)                                      |
 | `IPFS_STORAGE_API_KEY`                                 | Bearer token sent to gated IPFS gateways (e.g. Filebase, Infura)                                    | No                                    | (empty)                                      |
 | `IPFS_API_KEY`                                         | Bearer token authenticating inbound blobscan-ipld requests to the IPFS references endpoint          | No                                    | (empty)                                      |
-| `ETH_PRICE_SYNCER_ENABLED`                             | Enable the ETH price syncer job                                                                    | No                                    | `false`                                      |
-| `ETH_PRICE_SYNCER_CRON_PATTERN`                        | Cron pattern for the job that periodically stores ETH price in database                            | No                                    | `* * * * *` (every minute)                   |
-| `ETH_PRICE_SYNCER_CHAIN_ID`                            | ID of the chain where price feed contract is deployed on (default is Polygon)                      | No                                    | `137`                                        |
-| `ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL`                  | RPC endpoint for the chain specified in ETH_PRICE_SYNCER_CHAIN_ID (e.g., Polygon RPC)              | Yes                                   | (empty)                                      |
-| `ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS` | Contract address for the Chainlink ETH/USD price feed on the specified chain                       | No                                    | `0xF9680D99D6C9589e2a93a78A04A279e509205945` |
-| `ETH_PRICE_SYNCER_TIME_TOLERANCE`                      | Maximum allowed age (in seconds) of the fetched price before it's considered stale                 | No                                    |                                              |
 | `BLOB_PROPAGATOR_COMPLETED_JOBS_AGE`                   | Remove completed jobs after the specified number of seconds (default: 1 day)                       | No                                    | `86400`                                      |
 | `BLOB_PROPAGATOR_FAILED_JOBS_AGE`                      | Remove completed jobs after the specified number of seconds (default: 7 days)                      | No                                    | `604800`                                     |
 | `BLOB_RECONCILER_BATCH_SIZE`                           | Maximum number of blobs to process during each run                                                 | No                                    | 200                                          |
 | `BLOB_RECONCILER_CRON_PATTERN`                         | Cron pattern for the blob reconciler worker                                                        | No                                    | `0 * * * *` (every 1 hour)                   |
 | `BLOB_RECONCILER_ENABLED`                              | Enables or disables the blob reconciler job                                                        | No                                    | `false`                                      |
 | `VITEST_MAINNET_FORK_URL`                              | Mainnet JSON-RPC URL used for starting a local Anvil instance to run tests against                 | No                                    | `https://eth.llamarpc.com`                   |
+
+## Blobscan jobs
+
+The jobs process uses the same `DATABASE_URL` as the API. In earlier releases, the ETH price variables used the `ETH_PRICE_SYNCER_` prefix. The jobs process still reads the old names, but they are deprecated.
+
+| Variable                                            | Description                                                                         | Required                        | Default value                                |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------- | -------------------------------------------- |
+| `DATABASE_URL`                                      | PostgreSQL database URI                                                             | Yes                             | (empty)                                      |
+| `SENTRY_DSN_JOBS`                                   | Sentry DSN                                                                          | No                              | (empty)                                      |
+| `ETH_PRICE_JOB_ENABLED`                             | Enable the ETH price job                                                            | No                              | `false`                                      |
+| `ETH_PRICE_JOB_CRON_PATTERN`                        | Cron pattern for the job that stores the ETH price in the database                  | No                              | `* * * * *` (every minute)                   |
+| `ETH_PRICE_JOB_CHAIN_ID`                            | ID of the chain where the price feed contract is deployed (default is Polygon)      | No                              | `137`                                        |
+| `ETH_PRICE_JOB_CHAIN_JSON_RPC_URL`                  | RPC endpoint for the chain in `ETH_PRICE_JOB_CHAIN_ID` (for example, a Polygon RPC) | If `ETH_PRICE_JOB_ENABLED=true` | (empty)                                      |
+| `ETH_PRICE_JOB_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS` | Contract address of the Chainlink ETH/USD price feed on the chain                   | No                              | `0xF9680D99D6C9589e2a93a78A04A279e509205945` |
+| `ETH_PRICE_JOB_TIME_TOLERANCE`                      | Maximum age (in seconds) of the price before the job skips it                       | No                              | (empty)                                      |
 
 ## Blobscan indexer
 
@@ -113,4 +122,5 @@ These variables are used in the docker compose files we provide.
 | `EXTERNAL_API_PORT` | Blobscan API will be exposed on this port     | Yes      | (empty)       |
 | `EXTERNAL_WEB_PORT` | Blobscan website will be exposed on this port | Yes      | (empty)       |
 | `BLOBSCAN_TAG`      | Blobscan docker image tag                     | Yes      | (empty)       |
+| `BLOBSCAN_JOBS_TAG` | Blobscan jobs docker image tag                | Yes      | (empty)       |
 | `INDEXER_TAG`       | Blobscan-indexer docker image tag             | Yes      | (empty)       |

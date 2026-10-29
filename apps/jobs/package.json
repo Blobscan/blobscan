@@ -1,0 +1,41 @@
+{
+  "name": "@blobscan/jobs",
+  "description": "Blobscan's background jobs",
+  "private": true,
+  "version": "0.7.0",
+  "scripts": {
+    "build": "ncc build src/index.ts --target es2020 --minify",
+    "postbuild": "tsx ./scripts/postbuild.ts",
+    "clean": "git clean -xdf node_modules",
+    "dev": "pnpm with-env tsx watch ./src/index.ts",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "start": "pnpm with-env node dist/index.js",
+    "test": "pnpm with-env:test vitest",
+    "test:ui": "pnpm with-env:test vitest --ui",
+    "type-check": "tsc --noEmit",
+    "with-env": "dotenv -e ../../.env --",
+    "with-env:test": "dotenv -e ../../.env.test --"
+  },
+  "dependencies": {
+    "@blobscan/dayjs": "workspace:^0.1.0",
+    "@blobscan/db": "workspace:^0.31.0",
+    "@blobscan/env": "workspace:^0.5.0",
+    "@blobscan/errors": "workspace:^0.0.2",
+    "@blobscan/logger": "workspace:^0.1.5",
+    "@blobscan/price-feed": "workspace:^0.1.0",
+    "@sentry/node": "^11.8.0",
+    "croner": "^10.0.1",
+    "viem": "^2.17.4"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.45.0",
+    "zx": "^8.1.4"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
+  }
+}

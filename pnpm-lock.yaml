@@ -231,6 +231,43 @@ importers:
         specifier: ^0.2.8
         version: 0.2.8(@ianvs/prettier-plugin-sort-imports@3.7.2(prettier@2.8.8))(prettier@2.8.8)
 
+  apps/jobs:
+    dependencies:
+      '@blobscan/dayjs':
+        specifier: workspace:^0.1.0
+        version: link:../../packages/dayjs
+      '@blobscan/db':
+        specifier: workspace:^0.31.0
+        version: link:../../packages/db
+      '@blobscan/env':
+        specifier: workspace:^0.5.0
+        version: link:../../packages/env
+      '@blobscan/errors':
+        specifier: workspace:^0.0.2
+        version: link:../../packages/errors
+      '@blobscan/logger':
+        specifier: workspace:^0.1.5
+        version: link:../../packages/logger
+      '@blobscan/price-feed':
+        specifier: workspace:^0.1.0
+        version: link:../../packages/price-feed
+      '@sentry/node':
+        specifier: ^11.8.0
+        version: 11.9.0(rollup@4.59.0)(webpack@5.105.2)
+      croner:
+        specifier: ^10.0.1
+        version: 10.0.1
+      viem:
+        specifier: ^2.17.4
+        version: 2.46.1(typescript@5.9.3)(zod@4.6.7)
+    devDependencies:
+      '@vercel/ncc':
+        specifier: ^0.45.0
+        version: 0.45.0
+      zx:
+        specifier: ^8.1.4
+        version: 8.8.5
+
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
@@ -260,15 +297,9 @@ importers:
       '@blobscan/open-telemetry':
         specifier: workspace:^0.0.10
         version: link:../../packages/open-telemetry
-      '@blobscan/price-feed':
-        specifier: workspace:^0.1.0
-        version: link:../../packages/price-feed
       '@blobscan/rollups':
         specifier: workspace:^4.1.0
         version: link:../../packages/rollups
-      '@blobscan/syncers':
-        specifier: workspace:^0.7.0
-        version: link:../../packages/syncers
       '@blobscan/zod':
         specifier: workspace:^0.1.0
         version: link:../../packages/zod
@@ -299,9 +330,6 @@ importers:
       trpc-to-openapi:
         specifier: ^3.3.3
         version: 3.3.3(@trpc/server@11.19.0(typescript@5.9.3))(zod-openapi@5.4.6(zod@4.6.7))(zod@4.6.7)
-      viem:
-        specifier: ^2.17.4
-        version: 2.46.1(typescript@5.9.3)(zod@4.6.7)
       zod-openapi:
         specifier: ^5.4.6
         version: 5.4.6(zod@4.6.7)
@@ -816,30 +844,6 @@ importers:
       '@blobscan/db':
         specifier: workspace:^0.31.0
         version: link:../db
-
-  packages/syncers:
-    dependencies:
-      '@blobscan/dayjs':
-        specifier: workspace:^0.1.0
-        version: link:../dayjs
-      '@blobscan/db':
-        specifier: workspace:^0.31.0
-        version: link:../db
-      '@blobscan/errors':
-        specifier: workspace:^0.0.2
-        version: link:../errors
-      '@blobscan/logger':
-        specifier: workspace:^0.1.4
-        version: link:../logger
-      '@blobscan/price-feed':
-        specifier: workspace:^0.1.0
-        version: link:../price-feed
-      bullmq:
-        specifier: ^4.13.2
-        version: 4.18.3
-      ioredis:
-        specifier: ^5.3.2
-        version: 5.9.3
 
   packages/test:
     devDependencies:
@@ -4682,6 +4686,10 @@ packages:
     resolution: {integrity: sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==}
     engines: {node: '>=12.0.0'}
     deprecated: v4 is no longer maintained, upgrade to v5
+
+  croner@10.0.1:
+    resolution: {integrity: sha512-ixNtAJndqh173VQ4KodSdJEI6nuioBWI0V1ITNKhZZsO0pEMoDxz539T4FTTbSZ/xIOSuDnzxLVRqBVSvPNE2g==}
+    engines: {node: '>=18.0'}
 
   cross-spawn@7.0.5:
     resolution: {integrity: sha512-ZVJrKKYunU38/76t0RMOulHOnUcbU9GbpWKAOZ0mhjr7CX6FVrH+4FrAapSOekrgFQ3f/8gwMEuIft0aKq6Hug==}
@@ -10297,7 +10305,7 @@ snapshots:
 
   '@scure/bip32@1.7.0':
     dependencies:
-      '@noble/curves': 1.9.1
+      '@noble/curves': 1.9.7
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
 
@@ -10328,7 +10336,7 @@ snapshots:
       '@sentry/core': 11.9.0
       dotenv: 17.4.2
       glob: 13.0.6
-      magic-string: 0.30.21
+      magic-string: 1.4.3
       oxc-parser: 0.152.0
       sentry: 0.45.0
       supports-color: 8.1.1
@@ -10341,7 +10349,7 @@ snapshots:
       '@sentry/core': 11.9.0
       dotenv: 17.4.2
       glob: 13.0.6
-      magic-string: 0.30.21
+      magic-string: 1.4.3
       oxc-parser: 0.152.0
       sentry: 0.45.0
       supports-color: 8.1.1
@@ -11746,6 +11754,8 @@ snapshots:
   cron-parser@4.9.0:
     dependencies:
       luxon: 3.7.2
+
+  croner@10.0.1: {}
 
   cross-spawn@7.0.5:
     dependencies:

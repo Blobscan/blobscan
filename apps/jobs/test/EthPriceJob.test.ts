@@ -1,56 +1,43 @@
- 
-
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import dayjs from "@blobscan/dayjs";
 import { getPrisma } from "@blobscan/db";
+import { env } from "@blobscan/env";
 import { PriceFeed } from "@blobscan/price-feed";
 import { fixtures, getViemClient } from "@blobscan/test";
 
-import { env } from "../../env";
-import { ETHPriceSyncer } from "../src";
-import type { ETHPriceSyncerConfig } from "../src/syncers/ETHPriceSyncer";
+import { EthPriceJob } from "../src/jobs";
+import type { EthPriceJobConfig } from "../src/jobs";
 
 const prisma = getPrisma();
 
-class EthPriceUpdaterMock extends ETHPriceSyncer {
-  constructor({
-    ethUsdPriceFeed,
-  }: Pick<ETHPriceSyncerConfig, "ethUsdPriceFeed">) {
+class EthPriceJobMock extends EthPriceJob {
+  constructor({ ethUsdPriceFeed }: Pick<EthPriceJobConfig, "ethUsdPriceFeed">) {
     super({
       prisma,
-      cronPattern: env.ETH_PRICE_SYNCER_CRON_PATTERN,
-      redisUriOrConnection: env.REDIS_URI,
+      cronPattern: env.ETH_PRICE_JOB_CRON_PATTERN,
       ethUsdPriceFeed,
     });
   }
 
-  getWorker() {
-    return this.worker;
-  }
-
-  getWorkerProcessor() {
-    return this.syncerFn;
-  }
-
-  getQueue() {
-    return this.queue;
+  getJobFn() {
+    return this.jobFn;
   }
 }
 
-describe("EthPriceSyncer", () => {
-  let ethPriceUpdater: EthPriceUpdaterMock;
+describe("EthPriceJob", () => {
+  let ethPriceJob: EthPriceJobMock;
 
   beforeEach(async () => {
     const ethUsdPriceFeed = await PriceFeed.create({
       client: getViemClient(),
       dataFeedContractAddress:
-        env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS! as `0x${string}`,
+        env.ETH_PRICE_JOB_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS! as `0x${string}`,
     });
-    ethPriceUpdater = new EthPriceUpdaterMock({ ethUsdPriceFeed });
+    ethPriceJob = new EthPriceJobMock({ ethUsdPriceFeed });
 
     return async () => {
-      await ethPriceUpdater.close();
+      await ethPriceJob.stop();
     };
   });
 
@@ -59,9 +46,9 @@ describe("EthPriceSyncer", () => {
   });
 
   it("should sync eth price for current timestamp", async () => {
-    const workerProcessor = ethPriceUpdater.getWorkerProcessor();
+    const jobFn = ethPriceJob.getJobFn();
 
-    await workerProcessor();
+    await jobFn();
 
     const expectedTimestamp = dayjs().utc().startOf("minute");
 
@@ -79,18 +66,17 @@ describe("EthPriceSyncer", () => {
       const ethUsdPriceFeed = await PriceFeed.create({
         client: getViemClient(),
         dataFeedContractAddress:
-          env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS! as `0x${string}`,
+          env.ETH_PRICE_JOB_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS! as `0x${string}`,
         timeTolerance,
       });
 
-      const ethPriceUpdaterWithTimeTolerance = new EthPriceUpdaterMock({
+      const ethPriceJobWithTimeTolerance = new EthPriceJobMock({
         ethUsdPriceFeed,
       });
 
-      const workerProcessor =
-        ethPriceUpdaterWithTimeTolerance.getWorkerProcessor();
+      const jobFn = ethPriceJobWithTimeTolerance.getJobFn();
 
-      await workerProcessor();
+      await jobFn();
 
       const latestPrice = await prisma.ethUsdPrice.findFirst({
         orderBy: {
@@ -111,16 +97,15 @@ describe("EthPriceSyncer", () => {
       const ethUsdPriceFeed = await PriceFeed.create({
         client: getViemClient(),
         dataFeedContractAddress:
-          env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS! as `0x${string}`,
+          env.ETH_PRICE_JOB_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS! as `0x${string}`,
         timeTolerance,
       });
-      const ethPriceUpdaterWithTimeTolerance = new EthPriceUpdaterMock({
+      const ethPriceJobWithTimeTolerance = new EthPriceJobMock({
         ethUsdPriceFeed,
       });
 
-      const workerProcessor =
-        ethPriceUpdaterWithTimeTolerance.getWorkerProcessor();
-      await workerProcessor();
+      const jobFn = ethPriceJobWithTimeTolerance.getJobFn();
+      await jobFn();
 
       const ethPrices = await prisma.ethUsdPrice.findMany();
 

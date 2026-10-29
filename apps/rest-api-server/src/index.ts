@@ -21,15 +21,12 @@ import {
 } from "./middlewares";
 import { setUpOpenApiTRPC } from "./openapi-trpc";
 import { getBlobPropagator } from "./services/blob-propagator";
-import { setUpSyncers } from "./services/syncers";
 
 collectDefaultMetrics();
 
 printBanner();
 
 async function main() {
-  const closeSyncers = await setUpSyncers();
-
   const app = express();
 
   if (env.TRUSTED_PROXIES) {
@@ -58,9 +55,6 @@ async function main() {
       .$disconnect()
       .finally(async () => {
         (await getBlobPropagator()).close();
-      })
-      .finally(async () => {
-        await closeSyncers();
       })
       .finally(() => {
         server.close(() => {

@@ -13,7 +13,7 @@ env:
 
 jobs:
   release_docker:
-    name: Build docker images (API, Web)
+    name: Build docker images (API, Web, Jobs)
     services:
       postgres:
         image: postgres:17
@@ -105,6 +105,31 @@ jobs:
           labels: ${{ steps.meta_web.outputs.labels }}
           build-args: |
             NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
+            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+            GIT_COMMIT=${{ env.GIT_COMMIT }}
+            DATABASE_URL=${{ env.DATABASE_URL }}
+            DIRECT_URL=${{ env.DIRECT_URL }}
+
+      - name: Extract metadata (tags, labels) for Docker (Jobs)
+        id: meta_jobs
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            blossomlabs/blobscan-jobs
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+
+      - name: Build and push (jobs)
+        uses: docker/build-push-action@v6.5.0
+        with:
+          context: .
+          push: true
+          target: jobs
+          tags: ${{ steps.meta_jobs.outputs.tags }}
+          labels: ${{ steps.meta_jobs.outputs.labels }}
+          build-args: |
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
             DATABASE_URL=${{ env.DATABASE_URL }}

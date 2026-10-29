@@ -23,6 +23,15 @@ services:
     env_file:
       - ".env"
 
+  jobs:
+    image: blossomlabs/blobscan-jobs:${BLOBSCAN_JOBS_TAG}
+    restart: always
+    env_file:
+      - ".env"
+    depends_on:
+      api:
+        condition: service_healthy
+
   indexer:
     image: blossomlabs/blobscan-indexer:master
     network_mode: host

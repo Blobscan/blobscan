@@ -1,0 +1,5 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`BaseJob > when starting a job > should throw a valid error when the cron pattern is invalid 1`] = `"Job "test-job" failed: An error occurred when starting the job"`;
+
+exports[`BaseJob > when starting a job > should throw a valid error when the cron pattern is invalid 2`] = `[TypeError: CronPattern: invalid configuration format ('invalid'), exactly five, six, or seven space separated parts are required.]`;
