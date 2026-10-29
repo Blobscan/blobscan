@@ -50,6 +50,7 @@
     "@vitest/ui": "^5.0.5",
     "dotenv": "^16.4.7",
     "dotenv-cli": "^7.2.1",
+    "esbuild": "^0.28.2",
     "msw": "^2.3.1",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.2.8",
