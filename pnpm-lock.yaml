@@ -112,6 +112,9 @@ importers:
       dotenv-cli:
         specifier: ^7.2.1
         version: 7.4.4
+      esbuild:
+        specifier: ^0.28.2
+        version: 0.28.2
       msw:
         specifier: ^2.3.1
         version: 2.12.10(@types/node@24.19.2)(typescript@5.9.3)
@@ -174,7 +177,7 @@ importers:
         version: 0.5.19(tailwindcss@3.4.19(tsx@4.23.15)(yaml@2.9.1))
       autoprefixer:
         specifier: ^10.4.14
-        version: 10.4.24(postcss@8.5.23)
+        version: 10.4.24(postcss@8.5.31)
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
@@ -277,7 +280,7 @@ importers:
         version: 0.68.0(@opentelemetry/api@1.9.1)
       '@sentry/node':
         specifier: ^11.8.0
-        version: 11.9.0(rollup@4.59.0)(webpack@5.105.2)
+        version: 11.9.0(rollup@4.59.0)(webpack@5.105.2(esbuild@0.28.2))
       body-parser:
         specifier: ^1.20.9
         version: 1.20.9
@@ -318,9 +321,6 @@ importers:
       '@types/swagger-ui-express':
         specifier: ^4.1.3
         version: 4.1.8
-      '@vercel/ncc':
-        specifier: ^0.45.0
-        version: 0.45.0
       zx:
         specifier: ^8.1.4
         version: 8.8.5
@@ -389,7 +389,7 @@ importers:
         version: 9.7.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@sentry/nextjs':
         specifier: ^11.8.0
-        version: 11.9.0(next@16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))(webpack@5.105.2)
+        version: 11.9.0(next@16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))(webpack@5.105.2(esbuild@0.28.2))
       '@t3-oss/env-nextjs':
         specifier: ^0.13.11
         version: 0.13.11(typescript@5.9.3)(zod@4.6.7)
@@ -4060,10 +4060,6 @@ packages:
     resolution: {integrity: sha512-lrW200hZdbfRtztbygyaq/6jP6AKE8qQN2KvPcJ+x7wiD038YtnYtZ82IMNJ69GJibV7bwL3y9FgK+5w/pYt6g==}
     cpu: [x64]
     os: [win32]
-
-  '@vercel/ncc@0.45.0':
-    resolution: {integrity: sha512-8zPi1yO2mHpoKTD+e+Bf0ZT3e+sWHSOyGapm9s7b5R0gxJi3CiFTqmeQiMEyu6ejrz2s09M8JkEoUaTWjBJPQQ==}
-    hasBin: true
 
   '@vitest/coverage-v8@5.0.5':
     resolution: {integrity: sha512-4KpkGdIrSqBihx/JyP/e+S+IKB98etg1XDQiLAxksLfcShnwi1VReGeOT9NI43hLHbknosKp/1CCLn9Zgcs8mg==}
@@ -10321,7 +10317,7 @@ snapshots:
       '@sentry/replay': 11.9.0
       '@sentry/replay-canvas': 11.9.0
 
-  '@sentry/bundler-plugins@11.9.0(rollup@4.59.0)(webpack@5.105.2)':
+  '@sentry/bundler-plugins@11.9.0(rollup@4.59.0)(webpack@5.105.2(esbuild@0.28.2))':
     dependencies:
       '@sentry/core': 11.9.0
       dotenv: 17.4.2
@@ -10332,9 +10328,9 @@ snapshots:
       supports-color: 8.1.1
     optionalDependencies:
       rollup: 4.59.0
-      webpack: 5.105.2
+      webpack: 5.105.2(esbuild@0.28.2)
 
-  '@sentry/bundler-plugins@11.9.0(rollup@4.65.0)(webpack@5.105.2)':
+  '@sentry/bundler-plugins@11.9.0(rollup@4.65.0)(webpack@5.105.2(esbuild@0.28.2))':
     dependencies:
       '@sentry/core': 11.9.0
       dotenv: 17.4.2
@@ -10345,7 +10341,7 @@ snapshots:
       supports-color: 8.1.1
     optionalDependencies:
       rollup: 4.65.0
-      webpack: 5.105.2
+      webpack: 5.105.2(esbuild@0.28.2)
 
   '@sentry/cloudflare@11.9.0(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))':
     dependencies:
@@ -10368,16 +10364,16 @@ snapshots:
     dependencies:
       '@sentry/core': 11.9.0
 
-  '@sentry/nextjs@11.9.0(next@16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))(webpack@5.105.2)':
+  '@sentry/nextjs@11.9.0(next@16.4.3(@babel/core@7.29.6)(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))(webpack@5.105.2(esbuild@0.28.2))':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@rollup/plugin-commonjs': 28.0.1(rollup@4.65.0)
       '@sentry/browser-utils': 11.9.0
-      '@sentry/bundler-plugins': 11.9.0(rollup@4.65.0)(webpack@5.105.2)
+      '@sentry/bundler-plugins': 11.9.0(rollup@4.65.0)(webpack@5.105.2(esbuild@0.28.2))
       '@sentry/cloudflare': 11.9.0(vite@6.4.4(@types/node@24.19.2)(jiti@2.7.0)(terser@5.46.0)(tsx@4.23.15)(yaml@2.9.1))
       '@sentry/conventions': 0.27.0
       '@sentry/core': 11.9.0
-      '@sentry/node': 11.9.0(rollup@4.65.0)(webpack@5.105.2)
+      '@sentry/node': 11.9.0(rollup@4.65.0)(webpack@5.105.2(esbuild@0.28.2))
       '@sentry/opentelemetry': 11.9.0(@opentelemetry/api@1.9.1)
       '@sentry/react': 11.9.0(react@18.2.0)
       '@sentry/server-runtime-injection': 11.9.0
@@ -10394,10 +10390,10 @@ snapshots:
       - webpack
       - wrangler
 
-  '@sentry/node@11.9.0(rollup@4.59.0)(webpack@5.105.2)':
+  '@sentry/node@11.9.0(rollup@4.59.0)(webpack@5.105.2(esbuild@0.28.2))':
     dependencies:
       '@opentelemetry/api': 1.9.1
-      '@sentry/bundler-plugins': 11.9.0(rollup@4.59.0)(webpack@5.105.2)
+      '@sentry/bundler-plugins': 11.9.0(rollup@4.59.0)(webpack@5.105.2(esbuild@0.28.2))
       '@sentry/conventions': 0.27.0
       '@sentry/core': 11.9.0
       '@sentry/opentelemetry': 11.9.0(@opentelemetry/api@1.9.1)
@@ -10407,10 +10403,10 @@ snapshots:
       - rollup
       - webpack
 
-  '@sentry/node@11.9.0(rollup@4.65.0)(webpack@5.105.2)':
+  '@sentry/node@11.9.0(rollup@4.65.0)(webpack@5.105.2(esbuild@0.28.2))':
     dependencies:
       '@opentelemetry/api': 1.9.1
-      '@sentry/bundler-plugins': 11.9.0(rollup@4.65.0)(webpack@5.105.2)
+      '@sentry/bundler-plugins': 11.9.0(rollup@4.65.0)(webpack@5.105.2(esbuild@0.28.2))
       '@sentry/conventions': 0.27.0
       '@sentry/core': 11.9.0
       '@sentry/opentelemetry': 11.9.0(@opentelemetry/api@1.9.1)
@@ -11031,8 +11027,6 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
 
-  '@vercel/ncc@0.45.0': {}
-
   '@vitest/coverage-v8@5.0.5(vitest@5.0.5)':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
@@ -11368,15 +11362,6 @@ snapshots:
   async@3.2.6: {}
 
   asynckit@0.4.0: {}
-
-  autoprefixer@10.4.24(postcss@8.5.23):
-    dependencies:
-      browserslist: 4.28.7
-      caniuse-lite: 1.0.30001770
-      fraction.js: 5.3.4
-      picocolors: 1.1.1
-      postcss: 8.5.23
-      postcss-value-parser: 4.2.0
 
   autoprefixer@10.4.24(postcss@8.5.31):
     dependencies:
@@ -14652,14 +14637,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  terser-webpack-plugin@5.3.16(webpack@5.105.2):
+  terser-webpack-plugin@5.3.16(esbuild@0.28.2)(webpack@5.105.2(esbuild@0.28.2)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       serialize-javascript: 7.1.4
       terser: 5.46.0
-      webpack: 5.105.2
+      webpack: 5.105.2(esbuild@0.28.2)
+    optionalDependencies:
+      esbuild: 0.28.2
     optional: true
 
   terser@5.46.0:
@@ -15000,7 +14987,7 @@ snapshots:
   webpack-sources@3.3.4:
     optional: true
 
-  webpack@5.105.2:
+  webpack@5.105.2(esbuild@0.28.2):
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.9
@@ -15024,7 +15011,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.0
-      terser-webpack-plugin: 5.3.16(webpack@5.105.2)
+      terser-webpack-plugin: 5.3.16(esbuild@0.28.2)(webpack@5.105.2(esbuild@0.28.2))
       watchpack: 2.5.1
       webpack-sources: 3.3.4
     transitivePeerDependencies:

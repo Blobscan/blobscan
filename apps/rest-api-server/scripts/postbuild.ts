@@ -1,11 +1,23 @@
 import { $, path, glob } from "zx";
 
 async function main() {
-  const prismaFiles = await glob(path.join("dist", "client", "*"));
+  const prismaClientDir = path.join(
+    __dirname,
+    "..",
+    "..",
+    "..",
+    "node_modules",
+    ".prisma",
+    "client"
+  );
+  const prismaFiles = await glob([
+    path.join(prismaClientDir, "libquery_engine-*"),
+    path.join(prismaClientDir, "schema.prisma"),
+  ]);
 
-  await $`mv ${prismaFiles} dist`;
+  await $`cp ${prismaFiles} dist`;
 
-  console.log("postbuild: Prisma client files moved to `dist` directory");
+  console.log("postbuild: Prisma engines and schema copied to `dist` directory");
 
   const swaggerUiDist = path.join(
     __dirname,
