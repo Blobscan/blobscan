@@ -1,4 +1,0 @@
-{
-  "extends": "@blobscan/tsconfig/base.production.json",
-  "include": ["index.ts", "test/**/*.ts"]
-}
