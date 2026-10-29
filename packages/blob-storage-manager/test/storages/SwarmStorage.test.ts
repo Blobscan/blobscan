@@ -1,12 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getPrisma } from "@blobscan/db";
-import { env, fixtures, testValidError } from "@blobscan/test";
+import { env, testValidError } from "@blobscan/test";
 
 import { BlobStorageError } from "../../src";
 import { SwarmStorage } from "../../src/storages/SwarmStorage";
 import type { SwarmStorageConfig } from "../../src/storages/SwarmStorage";
-import { NEW_BLOB_DATA, NEW_BLOB_HASH, SWARM_REFERENCE } from "../fixtures";
+import {
+  NEW_BLOB_DATA,
+  NEW_BLOB_HASH,
+  SWARM_BATCH_ID,
+  SWARM_REFERENCE,
+} from "../fixtures";
 
 class SwarmStorageMock extends SwarmStorage {
   constructor(config: SwarmStorageConfig) {
@@ -23,14 +27,13 @@ class SwarmStorageMock extends SwarmStorage {
 }
 
 describe("SwarmStorage", () => {
-  const prisma = getPrisma();
   let storage: SwarmStorageMock;
   const beeEndpoint = "bee-endpoint";
 
   beforeEach(async () => {
     storage = new SwarmStorageMock({
       chainId: env.CHAIN_ID,
-      batchId: "mock-batch-id",
+      batchId: SWARM_BATCH_ID,
       beeEndpoint: beeEndpoint,
     });
   });
@@ -39,7 +42,7 @@ describe("SwarmStorage", () => {
     const storage_ = await SwarmStorage.create({
       chainId: env.CHAIN_ID,
       beeEndpoint: beeEndpoint,
-      prisma,
+      batchId: SWARM_BATCH_ID,
     });
 
     expect(storage_, "Storage should exist").toBeDefined();
@@ -48,9 +51,7 @@ describe("SwarmStorage", () => {
     expect(storage_._beeClient.url, "Bee client endpoint mismatch").toBe(
       beeEndpoint
     );
-    expect(storage_.batchId, "Batch ID mismatch").toBe(
-      fixtures.blobStoragesState[0]?.swarmDataId
-    );
+    expect(storage_.batchId, "Batch ID mismatch").toBe(SWARM_BATCH_ID);
   });
 
   it("should return 'OK' if storage is healthy", async () => {
@@ -83,7 +84,7 @@ describe("SwarmStorage", () => {
   );
 
   it("should get a blob given its reference", async () => {
-    await storage._beeClient.file.upload("mock-batch-id", NEW_BLOB_DATA);
+    await storage._beeClient.file.upload(SWARM_BATCH_ID, NEW_BLOB_DATA);
 
     const blob = await storage.getBlob(SWARM_REFERENCE);
 

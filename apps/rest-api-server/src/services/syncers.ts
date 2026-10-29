@@ -3,40 +3,15 @@ import { createPublicClient, http } from "viem";
 import * as chains from "viem/chains";
 
 import { env } from "@blobscan/env";
-import { logger } from "@blobscan/logger";
 import { PriceFeed } from "@blobscan/price-feed";
 import type { BaseSyncer } from "@blobscan/syncers";
-import {
-  ETHPriceSyncer,
-  SwarmStampSyncer,
-  createRedisConnection,
-} from "@blobscan/syncers";
+import { ETHPriceSyncer, createRedisConnection } from "@blobscan/syncers";
 
 import { prisma } from "../clients/prisma";
 
 export async function setUpSyncers() {
   const connection = createRedisConnection(env.REDIS_URI);
   const syncers: BaseSyncer[] = [];
-
-  if (env.SWARM_STORAGE_ENABLED) {
-    if (!env.SWARM_BATCH_ID) {
-      logger.error(`Can't initialize Swarm stamp job: no batch ID provided`);
-    } else if (!env.BEE_ENDPOINT) {
-      logger.error(
-        "Can't initialize Swarm stamp job: no Bee endpoint provided"
-      );
-    } else {
-      syncers.push(
-        new SwarmStampSyncer({
-          cronPattern: env.SWARM_STAMP_CRON_PATTERN,
-          prisma,
-          redisUriOrConnection: connection,
-          batchId: env.SWARM_BATCH_ID,
-          beeEndpoint: env.BEE_ENDPOINT,
-        })
-      );
-    }
-  }
 
   if (env.ETH_PRICE_SYNCER_ENABLED && env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL) {
     const chain = Object.values(chains).find(

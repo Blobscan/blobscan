@@ -8,8 +8,6 @@ type StateQuery = {
   lastFinalizedBlock: number;
   lastLowerSyncedSlot: number;
   lastUpperSyncedSlot: number;
-  swarmDataId?: number;
-  swarmDataTTL?: number;
 }[];
 
 type BlocksQuery = {
@@ -29,10 +27,8 @@ export const getAppState = publicProcedure.query(
         st.last_aggregated_block AS "lastAggregatedBlock",
         st.last_finalized_block AS "lastFinalizedBlock",
         st.last_lower_synced_slot AS "lastLowerSyncedSlot",
-        st.last_upper_synced_slot AS "lastUpperSyncedSlot",
-        bs.swarm_data_id AS "swarmDataId",
-        bs.swarm_data_ttl AS "swarmDataTTL"
-      FROM blockchain_sync_state st LEFT JOIN blob_storages_state bs ON st.id = bs.id
+        st.last_upper_synced_slot AS "lastUpperSyncedSlot"
+      FROM blockchain_sync_state st
       WHERE st.id = 1;
     `,
       prisma.$queryRaw<BlocksQuery>`

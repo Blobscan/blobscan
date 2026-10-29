@@ -6,7 +6,6 @@ import {
   WeaveVMStorage,
 } from "@blobscan/blob-storage-manager";
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
-import { getPrisma } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import type { Environment } from "@blobscan/test";
 import { env } from "@blobscan/test";
@@ -62,10 +61,16 @@ export async function createStorageFromEnv(
         );
       }
 
+      if (!env.SWARM_BATCH_ID) {
+        throw new Error(
+          "Missing required env variable for SwarmStorage: SWARM_BATCH_ID"
+        );
+      }
+
       return SwarmStorage.create({
         chainId,
         beeEndpoint: env.BEE_ENDPOINT,
-        prisma: getPrisma(),
+        batchId: env.SWARM_BATCH_ID,
       });
     }
     case BlobStorageName.WEAVEVM: {

@@ -2,7 +2,6 @@ import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 import type { BlobRouterConfig } from "./routers/blob";
 import { createBlobRouter } from "./routers/blob";
-import { blobStoragesStateRouter } from "./routers/blob-storages-state";
 import { blockRouter } from "./routers/block";
 import { blockchainSyncStateRouter } from "./routers/blockchain-sync-state";
 import { ethPriceRouter } from "./routers/eth-price";
@@ -24,7 +23,6 @@ export function createAppRouter(config?: AppRouterConfig) {
     healthcheck,
     search,
     blob: createBlobRouter(config?.blobRouter),
-    blobStoragesState: blobStoragesStateRouter,
     block: blockRouter,
     loggingRouter,
     syncState: blockchainSyncStateRouter,

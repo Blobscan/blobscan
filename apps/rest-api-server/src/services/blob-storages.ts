@@ -13,8 +13,6 @@ import { env } from "@blobscan/env";
 import type { Environment } from "@blobscan/env";
 import { logger } from "@blobscan/logger";
 
-import { prisma } from "../clients/prisma";
-
 export function isBlobStorageEnabled(storageName: BlobStorageName) {
   const storageEnabledKey =
     `${storageName}_STORAGE_ENABLED` as keyof Environment;
@@ -75,10 +73,16 @@ export async function createStorageFromEnv(
         );
       }
 
+      if (!env.SWARM_BATCH_ID) {
+        throw new Error(
+          "Missing required env variable for SwarmStorage: SWARM_BATCH_ID"
+        );
+      }
+
       return SwarmStorage.create({
         chainId,
         beeEndpoint: env.BEE_ENDPOINT,
-        prisma,
+        batchId: env.SWARM_BATCH_ID,
       });
     }
     case BlobStorageName.SWARMYCLOUD: {
