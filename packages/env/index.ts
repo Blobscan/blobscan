@@ -217,8 +217,10 @@ export const env = createEnv({
       // Swarm storage
       SWARM_STORAGE_ENABLED: booleanSchema.default(false),
       SWARM_DEFERRED_UPLOAD: booleanSchema.default(true),
-      SWARM_STAMP_CRON_PATTERN: z.string().default("*/15 * * * *"),
-      SWARM_BATCH_ID: z.string().optional(),
+      SWARM_BATCH_ID: z
+        .string()
+        .optional()
+        .superRefine(requireIfEnvEnabled("SWARM_STORAGE_ENABLED")),
       BEE_ENDPOINT: z
         .string()
         .url()

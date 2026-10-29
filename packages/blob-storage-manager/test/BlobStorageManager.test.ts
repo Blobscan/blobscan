@@ -2,7 +2,6 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 import type { DeepMockProxy } from "vitest-mock-extended";
 import { mockDeep } from "vitest-mock-extended";
 
-import { getPrisma } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { env, testValidError } from "@blobscan/test";
 
@@ -10,7 +9,7 @@ import type { BlobStorage } from "../src/BlobStorage";
 import { BlobStorageManager } from "../src/BlobStorageManager";
 import { BlobStorageError, BlobStorageManagerError } from "../src/errors";
 import { GoogleStorage, PostgresStorage, SwarmStorage } from "../src/storages";
-import { NEW_BLOB_DATA, NEW_BLOB_HASH } from "./fixtures";
+import { NEW_BLOB_DATA, NEW_BLOB_HASH, SWARM_BATCH_ID } from "./fixtures";
 
 if (!env.BEE_ENDPOINT) {
   throw new Error("BEE_ENDPOINT test env var is not set");
@@ -19,7 +18,6 @@ if (!env.BEE_ENDPOINT) {
 const BEE_ENDPOINT = env.BEE_ENDPOINT;
 
 describe("BlobStorageManager", () => {
-  const prisma = getPrisma();
   let blobStorageManager: BlobStorageManager;
   let postgresStorage: PostgresStorage;
   let googleStorage: GoogleStorage;
@@ -58,7 +56,7 @@ describe("BlobStorageManager", () => {
     swarmStorage = await SwarmStorage.create({
       chainId: env.CHAIN_ID,
       beeEndpoint: BEE_ENDPOINT,
-      prisma,
+      batchId: SWARM_BATCH_ID,
     });
 
     blobStorageManager = new BlobStorageManager([

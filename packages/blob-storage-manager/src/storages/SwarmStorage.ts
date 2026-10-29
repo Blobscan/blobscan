@@ -1,7 +1,6 @@
 import { Bee, BeeResponseError } from "@ethersphere/bee-js";
 import axios from "axios";
 
-import type { BlobscanPrismaClient } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
 import type { BlobStorageConfig } from "../BlobStorage";
@@ -17,29 +16,6 @@ export interface SwarmStorageOpts {
   chunkstormEnabled?: boolean;
   chunkstormUrl?: string;
   deferredUpload?: boolean;
-}
-
-async function getBatchId(prisma: BlobscanPrismaClient) {
-  try {
-    const state = await prisma.blobStoragesState.findUnique({
-      select: {
-        swarmDataId: true,
-      },
-      where: { id: 1 },
-    });
-
-    const batchId = state?.swarmDataId;
-
-    if (!batchId) {
-      throw new Error("No batch id found");
-    }
-
-    return batchId;
-  } catch (err) {
-    throw new Error("Failed to get swarm batch id from the database", {
-      cause: err,
-    });
-  }
 }
 
 export class SwarmStorage extends BlobStorage {
@@ -165,13 +141,9 @@ export class SwarmStorage extends BlobStorage {
     )}/${hash.slice(6, 8)}/${hash.slice(2)}.bin`;
   }
 
-  static async create({
-    prisma,
-    ...config
-  }: Omit<SwarmStorageConfig, "batchId"> & { prisma: BlobscanPrismaClient }) {
+  static async create(config: SwarmStorageConfig) {
     try {
-      const batchId = await getBatchId(prisma);
-      const storage = new SwarmStorage({ ...config, batchId });
+      const storage = new SwarmStorage(config);
 
       await storage.healthCheck();
 

@@ -339,9 +339,6 @@ importers:
       '@blobscan/chains':
         specifier: workspace:^0.5.0
         version: link:../../packages/chains
-      '@blobscan/dates':
-        specifier: workspace:*
-        version: link:../../packages/dates
       '@blobscan/dayjs':
         specifier: workspace:^0.1.1
         version: link:../../packages/dayjs
@@ -822,9 +819,6 @@ importers:
 
   packages/syncers:
     dependencies:
-      '@blobscan/dates':
-        specifier: workspace:*
-        version: link:../dates
       '@blobscan/dayjs':
         specifier: workspace:^0.1.0
         version: link:../dayjs
@@ -840,12 +834,6 @@ importers:
       '@blobscan/price-feed':
         specifier: workspace:^0.1.0
         version: link:../price-feed
-      '@blobscan/zod':
-        specifier: workspace:^0.1.0
-        version: link:../zod
-      axios:
-        specifier: ^1.20.0
-        version: 1.20.0
       bullmq:
         specifier: ^4.13.2
         version: 4.18.3

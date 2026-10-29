@@ -8,7 +8,6 @@ nextjs:
 
 Blobscan requires [BullMQ](https://bullmq.io/) to run the following tasks in the background:
 
-- `SwarmStampSyncer` - updates TTL for Ethereum Swarm batches.
 - `ETHPriceSyncer` - gets the ETH price in USD and stores it.
 
 For more information, check out the [@blobscan/syncers](https://github.com/Blobscan/blobscan/tree/main/packages/syncers/src/syncers) package.

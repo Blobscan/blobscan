@@ -19,7 +19,6 @@
     "@blobscan/blob-decoder": "workspace:^0.2.2",
     "@blobscan/blob-storage-manager": "workspace:^4.1.0",
     "@blobscan/chains": "workspace:^0.5.0",
-    "@blobscan/dates": "workspace:*",
     "@blobscan/dayjs": "workspace:^0.1.1",
     "@blobscan/db": "workspace:^0.31.0",
     "@blobscan/env": "workspace:^0.5.0",

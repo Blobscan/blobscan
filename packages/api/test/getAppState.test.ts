@@ -21,13 +21,11 @@ describe("getAppState", () => {
 
     const expectedState = {
       ...fixtures.blockchainSyncState[0],
-      ...fixtures.blobStoragesState[0],
     };
 
     delete expectedState?.id;
     delete expectedState?.lastUpperSyncedBlockRoot;
     delete expectedState?.lastUpperSyncedBlockSlot;
-    delete expectedState?.updatedAt;
 
     expect(syncState).toMatchObject(expectedState);
   });
