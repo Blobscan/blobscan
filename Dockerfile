@@ -1,12 +1,3 @@
-# Runtime dependencies of the Prisma CLI that runs `migrate deploy` at start. Since Prisma 6.19
-# its `@prisma/config` loads `c12`, `effect`, `empathic`... at start, and the images copy only
-# `prisma` and `@prisma`, so the container died with "Cannot find module 'effect'" (staging,
-# 2026-10-29). This is the whole closure of `prisma@6.19.3` (`npm i prisma@6.19.3` in an empty
-# directory); with `node-linker=hoisted` each one is at the top of node_modules. Update the
-# list when `prisma` changes: `cp` fails the build if one is missing, and a new one fails at
-# start, so run the image (`docker run ... api`) after a Prisma bump.
-ARG PRISMA_CLI_MODULES="c12 chokidar citty confbox consola deepmerge-ts defu destr dotenv effect empathic exsolve fast-check giget jiti node-fetch-native nypm ohash pathe perfect-debounce pkg-types pure-rand rc9 readdirp tinyexec @standard-schema"
-
 # Track the latest Node.js 24 LTS patch release so security fixes are picked up
 # automatically. The keep-alive premature-close regression introduced in 24.17.0
 # (https://github.com/nodejs/node/issues/63989) was fixed in 24.18.0.
@@ -65,38 +56,6 @@ COPY --from=deps /prepare/web/full .
 COPY --from=deps /prepare/turbo.json .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} DIRECT_URL=${DIRECT_URL} pnpm build --filter=@blobscan/web
 
-# stage: web
-FROM base AS web
-WORKDIR /app
-
-ENV HOSTNAME=0.0.0.0
-ENV PORT=3000
-ENV NODE_ENV=production
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-COPY --from=web-builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
-COPY --from=web-builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
-ARG PRISMA_CLI_MODULES
-RUN --mount=type=bind,from=web-builder,source=/app/node_modules,target=/builder_modules \
-    cd /builder_modules && cp -r ${PRISMA_CLI_MODULES} /app/node_modules/ && chown -R nextjs:nodejs /app/node_modules
-COPY --from=web-builder --chown=nextjs:nodejs /prepare/api/full/packages/db/prisma.config.ts ./prisma.config.ts
-COPY --from=web-builder --chown=nextjs:nodejs /prepare/api/full/packages/db/prisma/schema ./prisma/schema
-COPY --from=web-builder --chown=nextjs:nodejs /prepare/api/full/packages/db/prisma/migrations ./prisma/migrations
-COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
-
-RUN mkdir -p /app/apps/web/.next/cache && chown -R nextjs:nodejs /app/apps/web/.next
-
-USER nextjs
-
-EXPOSE 3000
-
-ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["web"]
-
 # stage: api-builder
 FROM deps AS api-builder
 
@@ -118,17 +77,54 @@ COPY --from=deps /prepare/api/full .
 COPY --from=deps /prepare/turbo.json .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} DIRECT_URL=${DIRECT_URL} pnpm build --filter=@blobscan/rest-api-server
 
+# stage: prisma-cli
+# The web and api images run `prisma migrate deploy` at start but copy only part of the builder's
+# node_modules. This stage works out which modules the CLI needs (see the script), so a Prisma
+# upgrade needs no list to update: the build fails here if the CLI cannot run.
+FROM base AS prisma-cli
+WORKDIR /prisma-cli
+
+ADD scripts/prisma-cli-closure.mjs /
+COPY --from=api-builder /prepare/api/full/packages/db/prisma.config.ts ./prisma.config.ts
+COPY --from=api-builder /prepare/api/full/packages/db/prisma/schema ./prisma/schema
+RUN --mount=type=bind,from=api-builder,source=/app/node_modules,target=/builder_modules \
+    node /prisma-cli-closure.mjs /builder_modules /prisma-cli
+
+# stage: web
+FROM base AS web
+WORKDIR /app
+
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+ENV NODE_ENV=production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=prisma-cli --chown=nextjs:nodejs /prisma-cli/node_modules ./node_modules
+COPY --from=web-builder --chown=nextjs:nodejs /prepare/api/full/packages/db/prisma.config.ts ./prisma.config.ts
+COPY --from=web-builder --chown=nextjs:nodejs /prepare/api/full/packages/db/prisma/schema ./prisma/schema
+COPY --from=web-builder --chown=nextjs:nodejs /prepare/api/full/packages/db/prisma/migrations ./prisma/migrations
+COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+
+RUN mkdir -p /app/apps/web/.next/cache && chown -R nextjs:nodejs /app/apps/web/.next
+
+USER nextjs
+
+EXPOSE 3000
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["web"]
+
 # stage: api
 FROM base AS api
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY --from=api-builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=api-builder /app/node_modules/@prisma ./node_modules/@prisma
-ARG PRISMA_CLI_MODULES
-RUN --mount=type=bind,from=api-builder,source=/app/node_modules,target=/builder_modules \
-    cd /builder_modules && cp -r ${PRISMA_CLI_MODULES} /app/node_modules/
+COPY --from=prisma-cli /prisma-cli/node_modules ./node_modules
 COPY --from=api-builder /app/apps/rest-api-server/dist ./
 COPY --from=api-builder /prepare/api/full/packages/db/prisma.config.ts ./prisma.config.ts
 COPY --from=api-builder /prepare/api/full/packages/db/prisma/schema ./prisma/schema
