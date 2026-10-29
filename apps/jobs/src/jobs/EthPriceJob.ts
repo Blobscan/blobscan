@@ -2,10 +2,10 @@ import dayjs, { normalizeDate } from "@blobscan/dayjs";
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import type { PriceFeed } from "@blobscan/price-feed";
 
-import { BaseSyncer } from "../BaseSyncer";
-import type { CommonSyncerConfig } from "../BaseSyncer";
+import { BaseJob } from "./BaseJob";
+import type { CommonJobConfig } from "./BaseJob";
 
-export interface ETHPriceSyncerConfig extends CommonSyncerConfig {
+export interface EthPriceJobConfig extends CommonJobConfig {
   prisma: BlobscanPrismaClient;
   ethUsdPriceFeed: PriceFeed;
 }
@@ -25,12 +25,12 @@ function determineGranularity(cronPattern: string): Granularity {
   }
 }
 
-export class ETHPriceSyncer extends BaseSyncer {
-  constructor(config: ETHPriceSyncerConfig) {
+export class EthPriceJob extends BaseJob {
+  constructor(config: EthPriceJobConfig) {
     super({
       ...config,
       name: "eth-price",
-      syncerFn: async () => {
+      jobFn: async () => {
         const now = normalizeDate(dayjs());
         const granularity = determineGranularity(config.cronPattern);
 
@@ -67,7 +67,7 @@ export class ETHPriceSyncer extends BaseSyncer {
         });
 
         this.logger.debug(
-          `ETH price synced: $${price} at ${targetDateTime.toISOString()} recorded (retrieved from round ${roundId})`
+          `ETH price stored: $${price} at ${targetDateTime.toISOString()} recorded (retrieved from round ${roundId})`
         );
       },
     });

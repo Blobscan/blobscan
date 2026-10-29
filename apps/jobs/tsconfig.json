@@ -1,0 +1,7 @@
+{
+  "extends": "@blobscan/tsconfig/base.production.json",
+  "compilerOptions": {
+    "module": "esnext"
+  },
+  "include": ["src", "scripts", "test", "vitest.config.ts"]
+}

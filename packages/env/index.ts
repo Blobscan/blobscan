@@ -77,6 +77,50 @@ function requireIfPrimaryStorage(storageName: string) {
   };
 }
 
+// Old env variable names that are still read as fallbacks for the new names.
+// Remove them in a future release.
+const DEPRECATED_ENV_VARS = {
+  ETH_PRICE_SYNCER_ENABLED: "ETH_PRICE_JOB_ENABLED",
+  ETH_PRICE_SYNCER_CRON_PATTERN: "ETH_PRICE_JOB_CRON_PATTERN",
+  ETH_PRICE_SYNCER_CHAIN_ID: "ETH_PRICE_JOB_CHAIN_ID",
+  ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL: "ETH_PRICE_JOB_CHAIN_JSON_RPC_URL",
+  ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS:
+    "ETH_PRICE_JOB_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS",
+  ETH_PRICE_SYNCER_TIME_TOLERANCE: "ETH_PRICE_JOB_TIME_TOLERANCE",
+} as const;
+
+export type DeprecatedEnvVar = {
+  oldName: keyof typeof DEPRECATED_ENV_VARS;
+  newName: (typeof DEPRECATED_ENV_VARS)[keyof typeof DEPRECATED_ENV_VARS];
+};
+
+function applyDeprecatedEnvVars(): DeprecatedEnvVar[] {
+  const inUse: DeprecatedEnvVar[] = [];
+
+  for (const [oldName, newName] of Object.entries(DEPRECATED_ENV_VARS) as [
+    DeprecatedEnvVar["oldName"],
+    DeprecatedEnvVar["newName"]
+  ][]) {
+    if (process.env[oldName] === undefined) {
+      continue;
+    }
+
+    inUse.push({ oldName, newName });
+
+    if (process.env[newName] === undefined) {
+      process.env[newName] = process.env[oldName];
+    }
+  }
+
+  return inUse;
+}
+
+/**
+ * The deprecated env variables that are set. The new names take their values
+ * when they are not set.
+ */
+export const deprecatedEnvVarsInUse = applyDeprecatedEnvVars();
+
 export const env = createEnv({
   envOptions: {
     server: {
@@ -111,6 +155,7 @@ export const env = createEnv({
 
       // Sentry
       SENTRY_DSN_API: z.string().optional(),
+      SENTRY_DSN_JOBS: z.string().optional(),
 
       // Blob Propagator
       BLOB_PROPAGATOR_COMPLETED_JOBS_AGE: z.coerce
@@ -166,14 +211,14 @@ export const env = createEnv({
 
       // ETH Price is retrieved every second from the Chainlink: ETH/USD oracle
       // in the Polygon network.
-      ETH_PRICE_SYNCER_ENABLED: booleanSchema.default(false),
-      ETH_PRICE_SYNCER_CRON_PATTERN: z.string().default("* * * * *"),
-      ETH_PRICE_SYNCER_CHAIN_ID: z.coerce.number().default(137),
-      ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL: z.string().url().optional(),
-      ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS: z
+      ETH_PRICE_JOB_ENABLED: booleanSchema.default(false),
+      ETH_PRICE_JOB_CRON_PATTERN: z.string().default("* * * * *"),
+      ETH_PRICE_JOB_CHAIN_ID: z.coerce.number().default(137),
+      ETH_PRICE_JOB_CHAIN_JSON_RPC_URL: z.string().url().optional(),
+      ETH_PRICE_JOB_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS: z
         .string()
         .default("0xF9680D99D6C9589e2a93a78A04A279e509205945"),
-      ETH_PRICE_SYNCER_TIME_TOLERANCE: z.coerce.number().positive().optional(),
+      ETH_PRICE_JOB_TIME_TOLERANCE: z.coerce.number().positive().optional(),
 
       /*
        * =====================

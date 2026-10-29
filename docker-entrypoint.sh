@@ -20,11 +20,14 @@ _main() {
 	elif [ "$1" = 'api' ]; then
 		apply_prisma_migrations --schema schema.prisma
 		node /app/index.js
+	elif [ "$1" = 'jobs' ]; then
+		# The API applies the migrations
+		node /app/index.js
 	elif [ "$1" = '--help' ]; then
 		echo "## Blobscan ##"
 		echo ""
 		echo "Usage:"
-		echo "$0 [web|api]"
+		echo "$0 [web|api|jobs]"
 	else
 		echo "Invalid command: $1"
 		exit 1

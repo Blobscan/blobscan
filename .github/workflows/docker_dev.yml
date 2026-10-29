@@ -17,7 +17,7 @@ env:
 jobs:
   release_docker:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    name: Build docker images (API, Web)
+    name: Build docker images (API, Web, Jobs)
     services:
       postgres:
         image: postgres:17
@@ -87,6 +87,20 @@ jobs:
             blossomlabs/blobscan-web:development
           build-args: |
             NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
+            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+            GIT_COMMIT=${{ env.GIT_COMMIT }}
+            DATABASE_URL=${{ env.DATABASE_URL }}
+            DIRECT_URL=${{ env.DIRECT_URL }}
+
+      - name: Build and push (jobs)
+        uses: docker/build-push-action@v6.5.0
+        with:
+          context: .
+          push: true
+          target: jobs
+          tags: |
+            blossomlabs/blobscan-jobs:development
+          build-args: |
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
             DATABASE_URL=${{ env.DATABASE_URL }}
