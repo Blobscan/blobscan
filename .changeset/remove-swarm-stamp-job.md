@@ -1,7 +1,7 @@
 ---
 "@blobscan/api": minor
 "@blobscan/blob-storage-manager": minor
-"@blobscan/docs": minor
+"@blobscan/docs": patch
 "@blobscan/env": minor
 "@blobscan/rest-api-server": minor
 "@blobscan/syncers": minor
