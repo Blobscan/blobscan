@@ -62,6 +62,60 @@ jobs:
           echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
           echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$(git describe --tags)" >> $GITHUB_ENV
 
+      - name: Build (smoke, api)
+        uses: docker/build-push-action@v6.5.0
+        with:
+          context: .
+          push: false
+          load: true
+          target: api
+          tags: blobscan-api:smoke
+          build-args: |
+            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
+            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+            GIT_COMMIT=${{ env.GIT_COMMIT }}
+            DATABASE_URL=${{ env.DATABASE_URL }}
+            DIRECT_URL=${{ env.DIRECT_URL }}
+
+      - name: Create an empty database (api)
+        run: |
+          docker run --rm --network host -e PGPASSWORD=s3cr3t postgres:17-alpine \
+            psql -h 127.0.0.1 -U blobscan -d blobscan_dev -c 'CREATE DATABASE blobscan_smoke_api'
+
+      - name: Smoke test (api)
+        uses: ./tooling/github/docker-smoke
+        with:
+          target: api
+          image: blobscan-api:smoke
+          database-url: postgresql://blobscan:s3cr3t@127.0.0.1:5432/blobscan_smoke_api
+
+      - name: Build (smoke, web)
+        uses: docker/build-push-action@v6.5.0
+        with:
+          context: .
+          push: false
+          load: true
+          target: web
+          tags: blobscan-web:smoke
+          build-args: |
+            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
+            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+            GIT_COMMIT=${{ env.GIT_COMMIT }}
+            DATABASE_URL=${{ env.DATABASE_URL }}
+            DIRECT_URL=${{ env.DIRECT_URL }}
+
+      - name: Create an empty database (web)
+        run: |
+          docker run --rm --network host -e PGPASSWORD=s3cr3t postgres:17-alpine \
+            psql -h 127.0.0.1 -U blobscan -d blobscan_dev -c 'CREATE DATABASE blobscan_smoke_web'
+
+      - name: Smoke test (web)
+        uses: ./tooling/github/docker-smoke
+        with:
+          target: web
+          image: blobscan-web:smoke
+          database-url: postgresql://blobscan:s3cr3t@127.0.0.1:5432/blobscan_smoke_web
+
       - name: Build and push (api)
         uses: docker/build-push-action@v6.5.0
         with:

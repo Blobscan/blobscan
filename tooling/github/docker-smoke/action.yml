@@ -1,0 +1,52 @@
+name: "Docker smoke"
+description: >-
+  Start a built web or api image against an empty Postgres database, let the entrypoint apply the
+  migrations and require HTTP 200. A module the image lacks (2026-10-29 `Cannot find module
+  'effect'`) or a bundle that crashes at boot (same day, `__webpack_modules__[w].call is not a
+  function`) fails here instead of reaching staging through Keel.
+inputs:
+  target:
+    description: "api or web"
+    required: true
+  image:
+    description: "Image to start; it must be loaded in the local Docker daemon"
+    required: true
+  database-url:
+    description: "Connection string of an EMPTY database reachable from the host network"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: "Start the ${{ inputs.target }} image"
+      shell: bash
+      env:
+        TARGET: ${{ inputs.target }}
+        IMAGE: ${{ inputs.image }}
+        DATABASE_URL: ${{ inputs.database-url }}
+      run: |
+        if [ "$TARGET" = api ]; then port=3001; path=/healthcheck; else port=3000; path=/; fi
+        name="smoke-$TARGET"
+
+        docker run -d --name "$name" --network host \
+          -e DATABASE_URL="$DATABASE_URL" -e DIRECT_URL="$DATABASE_URL" \
+          -e CHAIN_ID=1 -e NETWORK_NAME=mainnet -e SECRET_KEY=smoke \
+          -e BLOBSCAN_API_BASE_URL=http://127.0.0.1:3001 -e POSTGRES_STORAGE_ENABLED=true \
+          -e ETH_PRICE_SYNCER_ENABLED=false -e METRICS_ENABLED=false -e TRACES_ENABLED=false \
+          -e NEXT_PUBLIC_NETWORK_NAME=mainnet -e NEXT_PUBLIC_BEACON_BASE_URL=http://127.0.0.1 \
+          -e NEXT_PUBLIC_EXPLORER_BASE_URL=http://127.0.0.1 \
+          "$IMAGE" "$TARGET"
+
+        for _ in $(seq 1 60); do
+          code=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$port$path" || true)
+          if [ "$code" = 200 ]; then
+            docker rm -f "$name" >/dev/null
+            exit 0
+          fi
+          [ "$(docker inspect -f '{{.State.Running}}' "$name")" = true ] || break
+          sleep 5
+        done
+
+        docker logs "$name" 2>&1 | cut -c1-300 | tail -60
+        echo "::error::The $TARGET image did not answer 200 on $path"
+        docker rm -f "$name" >/dev/null
+        exit 1
