@@ -1,0 +1,69 @@
+name: Docker smoke
+
+# Starts the web and api images the way the entrypoint does, without a database, and checks that
+# `prisma migrate deploy` gets as far as connecting. A missing module (the images copy only part
+# of node_modules; 2026-10-29 `Cannot find module 'effect'` took staging down) fails here, before
+# Docker dev publishes the image and Keel rolls it out.
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - Dockerfile
+      - docker-entrypoint.sh
+      - .npmrc
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - packages/db/**
+      - .github/workflows/docker_smoke.yml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: Start the ${{ matrix.target }} image
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [api, web]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build
+        uses: docker/build-push-action@v6.5.0
+        with:
+          context: .
+          target: ${{ matrix.target }}
+          load: true
+          push: false
+          tags: blobscan-${{ matrix.target }}:smoke
+          cache-from: type=gha,scope=smoke-${{ matrix.target }}
+          cache-to: type=gha,mode=max,scope=smoke-${{ matrix.target }}
+
+      - name: Start without a database
+        run: |
+          # Nothing listens on 127.0.0.1:1, so a healthy image fails only on the connection.
+          out=$(timeout 120 docker run --rm \
+            -e DATABASE_URL=postgresql://nobody:nobody@127.0.0.1:1/blobscan \
+            -e DIRECT_URL=postgresql://nobody:nobody@127.0.0.1:1/blobscan \
+            blobscan-${{ matrix.target }}:smoke ${{ matrix.target }} 2>&1 || true)
+          echo "$out"
+
+          if echo "$out" | grep -qE "MODULE_NOT_FOUND|Cannot find (module|package)"; then
+            echo "::error::The ${{ matrix.target }} image is missing a module that the Prisma CLI needs at start"
+            exit 1
+          fi
+
+          if ! echo "$out" | grep -q "Can't reach database server"; then
+            echo "::error::The ${{ matrix.target }} image did not get as far as connecting to the database"
+            exit 1
+          fi
