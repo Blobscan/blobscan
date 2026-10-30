@@ -41,6 +41,7 @@ WORKDIR /prepare
 
 RUN turbo prune @blobscan/web --docker --out-dir /prepare/web
 RUN turbo prune @blobscan/rest-api-server --docker --out-dir /prepare/api
+# TODO: add clis here?
 
 # stage: web-builder
 FROM deps AS web-builder
@@ -60,10 +61,11 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch -r
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 COPY --from=deps /prepare/web/full .
+COPY --from=deps /prepare/clis ./clis
 
 # Copy original which includes pipelines
 COPY --from=deps /prepare/turbo.json .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} DIRECT_URL=${DIRECT_URL} pnpm build --filter=@blobscan/web
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} DIRECT_URL=${DIRECT_URL} pnpm build --filter=@blobscan/web --filter="./clis/*"
 
 # stage: web
 FROM base AS web
@@ -85,6 +87,7 @@ COPY --from=web-builder --chown=nextjs:nodejs /prepare/api/full/packages/db/pris
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+COPY --from=web-builder --chown=nextjs:nodejs /app/clis ./clis
 
 RUN mkdir -p /app/apps/web/.next/cache && chown -R nextjs:nodejs /app/apps/web/.next
 
@@ -111,10 +114,10 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch -r
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 COPY --from=deps /prepare/api/full .
+COPY --from=deps /prepare/clis ./clis
 
-# Copy original which includes pipelines
 COPY --from=deps /prepare/turbo.json .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} DIRECT_URL=${DIRECT_URL} pnpm build --filter=@blobscan/rest-api-server
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} DIRECT_URL=${DIRECT_URL} pnpm build --filter=@blobscan/rest-api-server --filter="./clis/*"
 
 # stage: api
 FROM base AS api
@@ -129,6 +132,7 @@ RUN --mount=type=bind,from=api-builder,source=/app/node_modules,target=/builder_
     cd /builder_modules && cp -r ${PRISMA_CLI_MODULES} /app/node_modules/
 COPY --from=api-builder /app/apps/rest-api-server/dist ./
 COPY --from=api-builder /prepare/api/full/packages/db/prisma/migrations ./migrations
+COPY --from=api-builder /app/clis ./clis
 
 EXPOSE 3001
 ENV PORT=3001
