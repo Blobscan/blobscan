@@ -50,10 +50,37 @@ export const healthHandler: RequestHandler = function (_req, res) {
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 export const readyHandler: RequestHandler = async function (_req, res) {
-  const [database, redisCheck] = await Promise.allSettled([
+  try {
+    await respondReadiness(res);
+  } catch (err) {
+    logger.error(`Readiness check crashed: ${(err as Error).message}`);
+
+    if (!res.headersSent) {
+      res.status(503).json({ status: "unavailable" });
+    }
+  }
+};
+
+// Concurrent probes share one in-flight check so a degraded DB doesn't pile up
+// probe queries and starve the connection pool.
+let inFlightChecks: Promise<PromiseSettledResult<void>[]> | null = null;
+
+function runChecks() {
+  inFlightChecks ??= Promise.allSettled([
     withTimeout(checkDatabase(), READINESS_TIMEOUT_MS),
     withTimeout(checkRedis(), READINESS_TIMEOUT_MS),
-  ]);
+  ]).finally(() => {
+    inFlightChecks = null;
+  });
+
+  return inFlightChecks;
+}
+
+async function respondReadiness(res: Parameters<RequestHandler>[1]) {
+  const [database, redisCheck] = (await runChecks()) as [
+    PromiseSettledResult<void>,
+    PromiseSettledResult<void>
+  ];
 
   const checks: ReadinessResponse["checks"] = {
     database: database.status === "fulfilled" ? "ok" : "error",
@@ -74,4 +101,4 @@ export const readyHandler: RequestHandler = async function (_req, res) {
   };
 
   res.status(isReady ? 200 : 503).json(response);
-};
+}

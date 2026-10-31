@@ -42,14 +42,14 @@ export const metricsExtension = Prisma.defineExtension((prisma) =>
       $allModels: {
         async $allOperations({ model, operation, args, query }) {
           const labels = { model, action: operation };
-          const endTimer = queryDurationHistogram.startTimer(labels);
+          const start = performance.now();
 
           queryCounter.inc(labels);
 
           try {
             return await query(args);
           } finally {
-            endTimer();
+            queryDurationHistogram.observe(labels, performance.now() - start);
           }
         },
       },

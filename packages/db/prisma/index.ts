@@ -13,6 +13,34 @@ import {
 } from "./extensions";
 import { ethUsdPriceExtension } from "./extensions/eth-usd-price";
 
+/**
+ * Prisma 7's pg adapter takes a plain pg connection string, so the Prisma-specific
+ * `schema`, `connection_limit` and `pool_timeout` URL params are translated here.
+ */
+function parseDatasourceUrl(datasourceUrl: string) {
+  const url = new URL(datasourceUrl);
+  const { searchParams } = url;
+  const schema = searchParams.get("schema") ?? undefined;
+  const connectionLimit = Number(searchParams.get("connection_limit"));
+  const poolTimeout = Number(searchParams.get("pool_timeout"));
+
+  searchParams.delete("schema");
+  searchParams.delete("connection_limit");
+  searchParams.delete("pool_timeout");
+
+  return {
+    config: {
+      connectionString: url.toString(),
+      ...(connectionLimit > 0 ? { max: connectionLimit } : {}),
+      // pool_timeout is expressed in seconds
+      ...(poolTimeout > 0
+        ? { connectionTimeoutMillis: poolTimeout * 1000 }
+        : {}),
+    },
+    schema,
+  };
+}
+
 export type CreatePrismaClientParams = {
   datasourceUrl?: string;
   log?: Prisma.PrismaClientOptions["log"];
@@ -26,7 +54,8 @@ export function createPrismaClient({
     throw new Error("DATABASE_URL is not set");
   }
 
-  const adapter = new PrismaPg({ connectionString: datasourceUrl });
+  const { config, schema } = parseDatasourceUrl(datasourceUrl);
+  const adapter = new PrismaPg(config, { schema });
 
   return new PrismaClient({ adapter, log }) as PrismaClient<Prisma.LogLevel>;
 }
