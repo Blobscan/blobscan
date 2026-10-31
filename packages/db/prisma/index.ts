@@ -1,4 +1,5 @@
 import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
 import { logger } from "@blobscan/logger";
 
@@ -10,6 +11,7 @@ import {
   createComputedFieldsExtension,
   helpersExtension,
   metricsExtension,
+  observePool,
 } from "./extensions";
 import { ethUsdPriceExtension } from "./extensions/eth-usd-price";
 
@@ -41,6 +43,11 @@ function parseDatasourceUrl(datasourceUrl: string) {
   };
 }
 
+// Match the pool defaults Prisma's engine used before v7: 17 connections
+// (num_cpus * 2 + 1 on the usual 8 vCPU hosts) and a 10s wait for a free one.
+const DEFAULT_POOL_MAX = 17;
+const DEFAULT_POOL_TIMEOUT_MS = 10_000;
+
 export type CreatePrismaClientParams = {
   datasourceUrl?: string;
   log?: Prisma.PrismaClientOptions["log"];
@@ -55,7 +62,10 @@ export function createPrismaClient({
   }
 
   const { config, schema } = parseDatasourceUrl(datasourceUrl);
-  const adapter = new PrismaPg(config, { schema });
+  const pool = new Pool(config);
+  const adapter = new PrismaPg(pool, { schema, disposeExternalPool: true });
+
+  observePool(pool);
 
   return new PrismaClient({ adapter, log }) as PrismaClient<Prisma.LogLevel>;
 }

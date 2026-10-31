@@ -697,6 +697,9 @@ importers:
       decimal.js:
         specifier: ^10.6.0
         version: 10.6.0
+      pg:
+        specifier: ^8.23.1
+        version: 8.23.1
       prisma:
         specifier: ^7.10.1
         version: 7.10.1(@types/node@24.19.2)(@types/react-dom@18.3.7(@types/react@18.3.28))(@types/react@18.3.28)(magicast@0.5.5)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.9.3)
@@ -716,6 +719,9 @@ importers:
       '@faker-js/faker':
         specifier: ^10.6.0
         version: 10.6.0
+      '@types/pg':
+        specifier: ^8.23.1
+        version: 8.23.1
       js-sha256:
         specifier: ^0.9.0
         version: 0.9.0
