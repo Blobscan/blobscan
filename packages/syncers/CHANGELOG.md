@@ -1,5 +1,29 @@
 # @blobscan/syncers
 
+## 0.8.0
+
+### Minor Changes
+
+- [#1037](https://github.com/Blobscan/blobscan/pull/1037) [`18bd945`](https://github.com/Blobscan/blobscan/commit/18bd945b22118573de2288c53bd4d08ea4f51376) Thanks [@PJColombo](https://github.com/PJColombo)! - Remove the Swarm stamp job.
+
+  - `SwarmStorage` reads the batch ID from `SWARM_BATCH_ID`. It does not read it from the database.
+  - `SWARM_BATCH_ID` is required when `SWARM_STORAGE_ENABLED=true`.
+  - Remove the `SWARM_STAMP_CRON_PATTERN` env variable.
+  - Remove the `blobStoragesState.getState` procedure and the Swarm fields from the app state.
+  - Remove the Swarm blob data expiry indicator from the web app.
+
+### Patch Changes
+
+- [#1034](https://github.com/Blobscan/blobscan/pull/1034) [`eb91310`](https://github.com/Blobscan/blobscan/commit/eb9131019e73fd48376630b5afab9eed6898b43a) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Update dependencies to remediate security advisories.
+
+  - Upgrade Sentry, OpenTelemetry, Vitest, Next.js, bee-js and storage clients
+  - Upgrade `@vercel/ncc` so the REST API bundle supports the new OpenTelemetry packages
+  - Adapt the docs Markdoc loader to Next.js 16.3's SWC bundle layers
+  - Remove the unused `@upstash/feedback` dependency
+
+- Updated dependencies [[`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc), [`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc), [`eb91310`](https://github.com/Blobscan/blobscan/commit/eb9131019e73fd48376630b5afab9eed6898b43a)]:
+  - @blobscan/db@0.31.1
+
 ## 0.7.0
 
 ### Minor Changes

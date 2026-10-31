@@ -1,5 +1,19 @@
 # @blobscan/optimism-decoder
 
+## 0.1.27
+
+### Patch Changes
+
+- [#1034](https://github.com/Blobscan/blobscan/pull/1034) [`eb91310`](https://github.com/Blobscan/blobscan/commit/eb9131019e73fd48376630b5afab9eed6898b43a) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Update dependencies to remediate security advisories.
+
+  - Upgrade Sentry, OpenTelemetry, Vitest, Next.js, bee-js and storage clients
+  - Upgrade `@vercel/ncc` so the REST API bundle supports the new OpenTelemetry packages
+  - Adapt the docs Markdoc loader to Next.js 16.3's SWC bundle layers
+  - Remove the unused `@upstash/feedback` dependency
+
+- Updated dependencies [[`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc), [`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc), [`eb91310`](https://github.com/Blobscan/blobscan/commit/eb9131019e73fd48376630b5afab9eed6898b43a)]:
+  - @blobscan/db@0.31.1
+
 ## 0.1.26
 
 ### Patch Changes
