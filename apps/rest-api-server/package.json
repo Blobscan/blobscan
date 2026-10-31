@@ -3,7 +3,7 @@
   "version": "0.17.0",
   "private": true,
   "scripts": {
-    "build": "rm -rf dist && esbuild src/index.ts --bundle --platform=node --target=node24 --format=cjs --minify --conditions=require --define:import.meta.url=__importMetaUrl \"--banner:js=const __importMetaUrl=require('node:url').pathToFileURL(__filename).href;\" --outfile=dist/index.js --log-level=warning",
+    "build": "rm -rf dist && esbuild src/index.ts --bundle --platform=node --target=node24 --format=cjs --minify --sourcemap --conditions=require --define:import.meta.url=__importMetaUrl \"--banner:js=const __importMetaUrl=require('node:url').pathToFileURL(__filename).href;\" --outfile=dist/index.js --log-level=warning",
     "postbuild": "tsx ./scripts/postbuild.ts",
     "clean": "git clean -xdf node_modules",
     "dev": "pnpm with-env tsx watch --require ./scripts/init-bucket.ts ./src/index.ts",
