@@ -1,4 +1,10 @@
 import { faker } from "@faker-js/faker";
+import { sha256 } from "js-sha256";
+
+import { getChain } from "@blobscan/chains";
+import dayjs from "@blobscan/dayjs";
+
+import { Category, Prisma } from "../client/client";
 import type {
   Address,
   Blob,
@@ -6,13 +12,7 @@ import type {
   Block,
   Transaction,
   TransactionFork,
-} from "@prisma/client";
-import { Category, Prisma } from "@prisma/client";
-import { sha256 } from "js-sha256";
-
-import { getChain } from "@blobscan/chains";
-import dayjs from "@blobscan/dayjs";
-
+} from "../client/client";
 import type { Rollup } from "../enums";
 import { BlobStorage } from "../enums";
 import type { SeedParams } from "./params";

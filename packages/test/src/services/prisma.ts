@@ -1,10 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+import { createPrismaClient } from "@blobscan/db";
 
-let prisma: PrismaClient | undefined;
+let prisma: ReturnType<typeof createPrismaClient> | undefined;
 
 export const getPrisma = () => {
   if (!prisma) {
-    prisma = new PrismaClient({
+    prisma = createPrismaClient({
       log: [],
     });
   }

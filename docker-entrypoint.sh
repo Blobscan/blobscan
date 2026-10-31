@@ -2,7 +2,7 @@
 set -e
 
 apply_prisma_migrations() {
-	./node_modules/prisma/build/index.js migrate deploy $@
+	./node_modules/prisma/build/index.js migrate deploy
 }
 
 # check to see if this file is being run or sourced from another script
@@ -15,10 +15,10 @@ _is_sourced() {
 
 _main() {
 	if [ "$1" = 'web' ]; then
-		apply_prisma_migrations --schema node_modules/.prisma/client/schema.prisma
+		apply_prisma_migrations
 		node /app/apps/web/server.js
 	elif [ "$1" = 'api' ]; then
-		apply_prisma_migrations --schema schema.prisma
+		apply_prisma_migrations
 		node /app/index.js
 	elif [ "$1" = '--help' ]; then
 		echo "## Blobscan ##"

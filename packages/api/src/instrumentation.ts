@@ -4,16 +4,10 @@ import type {
 } from "@trpc/server/adapters/node-http";
 import { Gauge } from "prom-client";
 
-import type { BlobscanPrismaClient, MetricsClient } from "@blobscan/db";
+import type { BlobscanPrismaClient } from "@blobscan/db";
 import { api, promRegister } from "@blobscan/open-telemetry";
 
 const scopeName = "blobscan_api";
-
-function hasMetricsClient(
-  p: BlobscanPrismaClient
-): p is BlobscanPrismaClient & { $metrics: MetricsClient } {
-  return p !== null && "$metrics" in p;
-}
 
 export const tracer = api.trace.getTracer(scopeName);
 export const meter = api.metrics.getMeter(scopeName);
@@ -72,17 +66,10 @@ export function createMetricsHandler(prisma: BlobscanPrismaClient) {
       console.error("Failed to update latest block metrics:", error);
     }
 
-    const prismaMetricsClient = hasMetricsClient(prisma)
-      ? prisma.$metrics
-      : undefined;
-
-    const [appMetrics, prismaMetrics] = await Promise.all([
-      promRegister.metrics(),
-      Promise.resolve(prismaMetricsClient?.prometheus() ?? ""),
-    ]);
+    const metrics = await promRegister.metrics();
 
     res.setHeader("Content-Type", promRegister.contentType);
 
-    res.end(appMetrics + prismaMetrics);
+    res.end(metrics);
   };
 }

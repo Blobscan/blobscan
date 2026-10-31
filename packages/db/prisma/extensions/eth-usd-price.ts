@@ -1,6 +1,5 @@
-import type { EthUsdPrice } from "@prisma/client";
-import { Prisma } from "@prisma/client";
-
+import { Prisma } from "../client/client";
+import type { EthUsdPrice } from "../client/client";
 import { curryPrismaExtensionFnSpan } from "../instrumentation";
 import type { BlockId, BlockIdField } from "../zod-utils";
 import {

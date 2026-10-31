@@ -1,8 +1,7 @@
-import type { Block, EthUsdPrice } from "@prisma/client";
-import { Prisma } from "@prisma/client";
-
 import { z } from "@blobscan/zod";
 
+import { Prisma } from "../client/client";
+import type { Block, EthUsdPrice } from "../client/client";
 import { Category } from "../enums";
 import { decimalSchema } from "../zod-utils";
 

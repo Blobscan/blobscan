@@ -1,9 +1,9 @@
-import { Prisma, PrismaClient } from "@prisma/client";
 import { beforeEach, describe, expect, it, test } from "vitest";
 
 import { env } from "@blobscan/test";
 
-import { getPrisma } from "../../prisma";
+import { createPrismaClient, getPrisma } from "../../prisma";
+import { Prisma } from "../../prisma/client";
 import type { BlobStorage } from "../../prisma/enums";
 import { createComputedFieldsExtension } from "../../prisma/extensions";
 
@@ -66,7 +66,7 @@ describe("Computed Fields Extension", () => {
   });
 
   describe("Blob Data Storage Reference Model", () => {
-    const prismaWithoutParams = new PrismaClient().$extends(
+    const prismaWithoutParams = createPrismaClient().$extends(
       createComputedFieldsExtension()
     );
 

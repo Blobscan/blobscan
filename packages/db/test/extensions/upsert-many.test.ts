@@ -1,17 +1,16 @@
+import { describe, it, expect, beforeEach } from "vitest";
+
+import { fixtures, omitDBTimestampFields } from "@blobscan/test";
+
+import { getPrisma } from "../../prisma";
+import { Prisma, BlobStorage } from "../../prisma/client";
 import type {
   Address as AddressEntity,
   Blob,
   BlobDataStorageReference,
   BlobsOnTransactions,
   Transaction,
-} from "@prisma/client";
-import { Prisma } from "@prisma/client";
-import { BlobStorage } from "@prisma/client";
-import { describe, it, expect, beforeEach } from "vitest";
-
-import { fixtures, omitDBTimestampFields } from "@blobscan/test";
-
-import { getPrisma } from "../../prisma";
+} from "../../prisma/client";
 import type { WithoutTimestampFields } from "../../prisma/types";
 import { KZG_PROOF_PLACEHOLDER } from "../../prisma/zod-utils";
 
@@ -134,7 +133,7 @@ describe("Upsert Many Extension", () => {
                 versionedHash: blobHash,
               },
             })
-             
+
             .then((b) => omitDBTimestampFields(b!));
         });
 
@@ -281,7 +280,9 @@ describe("Upsert Many Extension", () => {
               data: { proof: PLACEHOLDER_PROOF },
             });
 
-            await prisma.blob.upsertMany([{ ...oldBlob, proof: oldBlob.proof }]);
+            await prisma.blob.upsertMany([
+              { ...oldBlob, proof: oldBlob.proof },
+            ]);
 
             expect(await findProof()).toBe(oldBlob.proof);
           });
@@ -466,11 +467,13 @@ describe("Upsert Many Extension", () => {
           {
             blobHash: newBlob.versionedHash,
             blobStorage: BlobStorage.POSTGRES,
-            dataReference: "newReference",          },
+            dataReference: "newReference",
+          },
           {
             blobHash: newBlob.versionedHash,
             blobStorage: BlobStorage.SWARM,
-            dataReference: "newReference",          },
+            dataReference: "newReference",
+          },
         ];
 
         await prisma.blob.create({
@@ -483,7 +486,8 @@ describe("Upsert Many Extension", () => {
           select: {
             blobHash: true,
             blobStorage: true,
-            dataReference: true,          },
+            dataReference: true,
+          },
           where: {
             blobHash: newBlob.versionedHash,
           },
@@ -500,19 +504,23 @@ describe("Upsert Many Extension", () => {
           {
             blobHash: "blobHash001",
             blobStorage: BlobStorage.GOOGLE,
-            dataReference: "updatedReference",          },
+            dataReference: "updatedReference",
+          },
           {
             blobHash: "blobHash001",
             blobStorage: BlobStorage.SWARM,
-            dataReference: "updatedReference",          },
+            dataReference: "updatedReference",
+          },
           {
             blobHash: "blobHash001",
             blobStorage: BlobStorage.IPFS,
-            dataReference: "updatedReference",          },
+            dataReference: "updatedReference",
+          },
           {
             blobHash: "blobHash002",
             blobStorage: BlobStorage.GOOGLE,
-            dataReference: "updatedReference",          },
+            dataReference: "updatedReference",
+          },
         ];
 
         await prisma.blobDataStorageReference.upsertMany(input);
@@ -524,7 +532,8 @@ describe("Upsert Many Extension", () => {
           select: {
             blobHash: true,
             blobStorage: true,
-            dataReference: true,          },
+            dataReference: true,
+          },
           where: {
             blobHash: {
               in: updatedBlobVersionedHashes,
@@ -554,7 +563,8 @@ describe("Upsert Many Extension", () => {
           {
             blobHash: "nonExistentBlobHash",
             blobStorage: BlobStorage.GOOGLE,
-            dataReference: "reference",          },
+            dataReference: "reference",
+          },
         ];
 
         await expect(
@@ -571,7 +581,6 @@ describe("Upsert Many Extension", () => {
         insertedAt: _,
         updatedAt: __,
         ...existingRawTx
-         
       } = fixtures.txs[0]!;
       const existingTx: WithoutTimestampFields<Transaction> = {
         ...existingRawTx,

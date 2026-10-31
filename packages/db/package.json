@@ -6,6 +6,8 @@
   "types": "./index.ts",
   "files": [
     "./prisma/zod-utils.ts",
+    "./prisma/client.ts",
+    "./prisma/client",
     "./prisma/zod",
     "./prisma/enums"
   ],
@@ -16,9 +18,10 @@
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
     "db:generate": "pnpm with-env prisma generate",
-    "db:migrate": "pnpm with-env prisma migrate dev",
+    "db:migrate": "pnpm with-env prisma migrate dev && pnpm db:generate",
+    "db:migrate:deploy": "pnpm with-env prisma migrate deploy",
     "db:seed": "pnpm with-env prisma db seed",
-    "db:reset": "pnpm with-env prisma migrate reset",
+    "db:reset": "pnpm with-env prisma migrate reset --force && pnpm db:generate && pnpm db:seed",
     "dev": "pnpm with-env prisma studio --port 5556",
     "with-env": "dotenv -e ../../.env --",
     "with-env:test": "dotenv -e ../../.env.test --",
@@ -30,10 +33,12 @@
     "@blobscan/logger": "workspace:^0.1.4",
     "@blobscan/open-telemetry": "workspace:^0.0.10",
     "@blobscan/zod": "workspace:^0.1.0",
-    "@prisma/client": "^6.19.3",
-    "@prisma/generator-helper": "^6.19.3",
+    "@prisma/adapter-pg": "^7.10.1",
+    "@prisma/client": "^7.10.1",
+    "@prisma/generator-helper": "^7.10.1",
     "decimal.js": "^10.6.0",
-    "prisma": "^6.19.3",
+    "prisma": "^7.10.1",
+    "prom-client": "^14.2.0",
     "zod": "4.6.7",
     "zod-prisma-types": "^3.3.11"
   },
@@ -47,7 +52,8 @@
   "eslintConfig": {
     "root": true,
     "ignorePatterns": [
-      "prisma/zod/*.ts",
+      "prisma/client/**",
+      "prisma/zod/**",
       "prisma/enums/*.ts"
     ],
     "extends": [

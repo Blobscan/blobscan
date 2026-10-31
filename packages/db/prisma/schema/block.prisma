@@ -1,4 +1,4 @@
-/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../zod-utils';"])
+/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../../zod-utils';"])
 model Block {
   hash                  String   @id
   /// @zod.number.int().nonnegative()

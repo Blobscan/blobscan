@@ -1,4 +1,4 @@
-/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../zod-utils';"])
+/// @zod.import(["import { blockHashSchema, decodedFieldsSchema, nonNegativeDecimalSchema } from '../../zod-utils';"])
 model Transaction {
   hash                  String   @id
   fromId                String   @map("from_id")
