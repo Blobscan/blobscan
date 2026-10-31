@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/dagster",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "private": true,
   "devDependencies": {
     "@prisma/client": "^6.19.3"
