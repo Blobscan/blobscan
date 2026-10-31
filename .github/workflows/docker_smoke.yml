@@ -1,9 +1,7 @@
 name: Docker smoke
 
-# Starts the web and api images the way the entrypoint does, without a database, and checks that
-# `prisma migrate deploy` gets as far as connecting. A missing module (the images copy only part
-# of node_modules; 2026-10-29 `Cannot find module 'effect'` took staging down) fails here, before
-# Docker dev publishes the image and Keel rolls it out.
+# Builds the web and api images and starts them against a real Postgres (see
+# tooling/github/docker-smoke). Docker dev runs the same check before it publishes `:development`.
 
 on:
   pull_request:
@@ -17,6 +15,9 @@ on:
       - pnpm-lock.yaml
       - pnpm-workspace.yaml
       - packages/db/**
+      - apps/rest-api-server/**
+      - apps/web/**
+      - tooling/github/docker-smoke/**
       - .github/workflows/docker_smoke.yml
 
 concurrency:
@@ -27,6 +28,17 @@ jobs:
   smoke:
     name: Start the ${{ matrix.target }} image
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: blobscan
+          POSTGRES_DB: blobscan
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s
+          --health-retries 10
     strategy:
       fail-fast: false
       matrix:
@@ -49,21 +61,9 @@ jobs:
           cache-from: type=gha,scope=smoke-${{ matrix.target }}
           cache-to: type=gha,mode=max,scope=smoke-${{ matrix.target }}
 
-      - name: Start without a database
-        run: |
-          # Nothing listens on 127.0.0.1:1, so a healthy image fails only on the connection.
-          out=$(timeout 120 docker run --rm \
-            -e DATABASE_URL=postgresql://nobody:nobody@127.0.0.1:1/blobscan \
-            -e DIRECT_URL=postgresql://nobody:nobody@127.0.0.1:1/blobscan \
-            blobscan-${{ matrix.target }}:smoke ${{ matrix.target }} 2>&1 || true)
-          echo "$out"
-
-          if echo "$out" | grep -qE "MODULE_NOT_FOUND|Cannot find (module|package)"; then
-            echo "::error::The ${{ matrix.target }} image is missing a module that the Prisma CLI needs at start"
-            exit 1
-          fi
-
-          if ! echo "$out" | grep -q "Can't reach database server"; then
-            echo "::error::The ${{ matrix.target }} image did not get as far as connecting to the database"
-            exit 1
-          fi
+      - name: Smoke test
+        uses: ./tooling/github/docker-smoke
+        with:
+          target: ${{ matrix.target }}
+          image: blobscan-${{ matrix.target }}:smoke
+          database-url: postgresql://postgres:blobscan@127.0.0.1:5432/blobscan
