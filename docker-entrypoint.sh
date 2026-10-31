@@ -19,7 +19,7 @@ _main() {
 		node /app/apps/web/server.js
 	elif [ "$1" = 'api' ]; then
 		apply_prisma_migrations --schema schema.prisma
-		node /app/index.js
+		node --enable-source-maps /app/index.js
 	elif [ "$1" = '--help' ]; then
 		echo "## Blobscan ##"
 		echo ""
