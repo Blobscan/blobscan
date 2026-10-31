@@ -22,7 +22,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             22,
           ],
           "avgBlobMaxFee": [
-            21845333.33333333,
+            21845333.333333332,
           ],
           "avgBlobUsageSize": [
             780,
@@ -115,7 +115,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             20,
           ],
           "avgBlobMaxFee": [
-            21845333.33333333,
+            21845333.333333332,
             26214400,
           ],
           "avgBlobUsageSize": [
@@ -232,7 +232,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             22,
           ],
           "avgBlobMaxFee": [
-            21845333.33333333,
+            21845333.333333332,
             26214400,
             13107200,
           ],
@@ -373,7 +373,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             22,
           ],
           "avgBlobMaxFee": [
-            21845333.33333333,
+            21845333.333333332,
             26214400,
             13107200,
             39321600,
@@ -534,7 +534,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             22,
           ],
           "avgBlobMaxFee": [
-            21845333.33333333,
+            21845333.333333332,
             26214400,
             13107200,
             39321600,
@@ -699,7 +699,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             22,
           ],
           "avgBlobMaxFee": [
-            21845333.33333333,
+            21845333.333333332,
             26214400,
             13107200,
             39321600,
@@ -869,7 +869,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             100000,
             100000,
             100000,
-            121666.6666666667,
+            121666.66666666667,
           ],
           "avgBlobBaseFee": [
             4805973.333333333,
@@ -888,12 +888,12 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             22,
           ],
           "avgBlobMaxFee": [
-            21845333.33333333,
+            21845333.333333332,
             26214400,
             13107200,
             39321600,
             39321600,
-            28398933.33333333,
+            28398933.333333332,
           ],
           "avgBlobUsageSize": [
             780,
