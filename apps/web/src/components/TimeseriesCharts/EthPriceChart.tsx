@@ -4,6 +4,8 @@ import { createTimeseriesChart } from "../Charts/TimeseriesChartBase";
 const MAX_COLOR = { light: "#d55e00", dark: "#e69f00" };
 const AVG_COLOR = { light: "#0072b2", dark: "#56b4e9" };
 const MIN_COLOR = { light: "#009e73", dark: "#1fc79a" };
+// The areas overlap. A low opacity keeps all the lines visible.
+const AREA_OPACITY = 0.15;
 
 export const EthPriceChart = createTimeseriesChart({
   baseProps: {
@@ -20,21 +22,21 @@ export const EthPriceChart = createTimeseriesChart({
         type: "line",
         metric: "maxEthPrice",
         color: MAX_COLOR,
-        area: false,
+        areaOpacity: AREA_OPACITY,
       },
       {
         name: "Avg. ETH Price",
         type: "line",
         metric: "avgEthPrice",
         color: AVG_COLOR,
-        area: false,
+        areaOpacity: AREA_OPACITY,
       },
       {
         name: "Min. ETH Price",
         type: "line",
         metric: "minEthPrice",
         color: MIN_COLOR,
-        area: false,
+        areaOpacity: AREA_OPACITY,
       },
     ],
     skeletonOpts: {

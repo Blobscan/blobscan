@@ -21,9 +21,10 @@ type Timeseries = Pick<
    */
   color?: { light: string; dark: string };
   /**
-   * Fill the area under the line. True by default.
+   * The opacity of the area under the series, from 0 to 1. Use a low value
+   * when the areas of the series overlap.
    */
-  area?: boolean;
+  areaOpacity?: number;
 };
 
 export type TimeseriesChartProps = Prettify<
@@ -49,19 +50,21 @@ export type TimeseriesChartComponent = FC<TimeseriesChartProps> & {
 };
 
 function getSeriesStyle(
-  { color, area }: Pick<Timeseries, "color" | "area">,
+  { color, areaOpacity }: Pick<Timeseries, "color" | "areaOpacity">,
   themeMode: "light" | "dark"
 ) {
   const resolvedColor = color?.[themeMode];
 
   return {
-    ...(resolvedColor
+    ...(resolvedColor ? { itemStyle: { color: resolvedColor } } : {}),
+    ...(resolvedColor || areaOpacity !== undefined
       ? {
-          itemStyle: { color: resolvedColor },
-          areaStyle: { color: resolvedColor },
+          areaStyle: {
+            ...(resolvedColor ? { color: resolvedColor } : {}),
+            ...(areaOpacity !== undefined ? { opacity: areaOpacity } : {}),
+          },
         }
       : {}),
-    ...(area === false ? { areaStyle: undefined } : {}),
   };
 }
 
@@ -71,10 +74,10 @@ function getSeries(
   themeMode: "light" | "dark"
 ) {
   if (Array.isArray(dataset)) {
-    return seriesProp.flatMap(({ color, area, ...series }) =>
+    return seriesProp.flatMap(({ color, areaOpacity, ...series }) =>
       dataset.map((d, i) => ({
         ...series,
-        ...getSeriesStyle({ color, area }, themeMode),
+        ...getSeriesStyle({ color, areaOpacity }, themeMode),
         datasetIndex: i,
         datasetId: d.id,
         id: d.id,
@@ -83,9 +86,9 @@ function getSeries(
     );
   }
 
-  return seriesProp.map(({ color, area, ...series }) => ({
+  return seriesProp.map(({ color, areaOpacity, ...series }) => ({
     ...series,
-    ...getSeriesStyle({ color, area }, themeMode),
+    ...getSeriesStyle({ color, areaOpacity }, themeMode),
     encode: { x: "timestamp", y: series.metric },
   }));
 }
