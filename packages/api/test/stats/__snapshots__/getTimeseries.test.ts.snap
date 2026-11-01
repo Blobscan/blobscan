@@ -75,7 +75,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           "totalEthPrice": [
             null,
           ],
-          "totalEthPriceSamples": [
+          "totalEthPriceCount": [
             null,
           ],
           "totalMaxBlobGasFee": [
@@ -201,7 +201,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
             null,
           ],
-          "totalEthPriceSamples": [
+          "totalEthPriceCount": [
             null,
             null,
           ],
@@ -356,7 +356,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
             null,
           ],
-          "totalEthPriceSamples": [
+          "totalEthPriceCount": [
             null,
             null,
             null,
@@ -540,7 +540,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
             null,
           ],
-          "totalEthPriceSamples": [
+          "totalEthPriceCount": [
             null,
             null,
             null,
@@ -731,7 +731,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
             null,
           ],
-          "totalEthPriceSamples": [
+          "totalEthPriceCount": [
             null,
             null,
             null,
@@ -944,7 +944,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
             null,
           ],
-          "totalEthPriceSamples": [
+          "totalEthPriceCount": [
             null,
             null,
             null,
@@ -1186,7 +1186,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
             null,
           ],
-          "totalEthPriceSamples": [
+          "totalEthPriceCount": [
             null,
             null,
             null,
@@ -1281,7 +1281,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           "totalBlobs": [],
           "totalBlocks": [],
           "totalEthPrice": [],
-          "totalEthPriceSamples": [],
+          "totalEthPriceCount": [],
           "totalMaxBlobGasFee": [],
           "totalTransactions": [],
           "totalUniqueBlobs": [],

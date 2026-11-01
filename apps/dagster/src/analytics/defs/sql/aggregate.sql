@@ -7,7 +7,7 @@ INSERT INTO {{target_table}} (
   total_blob_gas_price,
   total_blocks,
   total_eth_price,
-  total_eth_price_samples,
+  total_eth_price_count,
   max_eth_price,
   min_eth_price,
 
@@ -36,7 +36,7 @@ SELECT
   SUM(total_blob_gas_price) AS total_blob_gas_price,
   SUM(total_blocks) AS total_blocks,
   SUM(total_eth_price) AS total_eth_price,
-  SUM(total_eth_price_samples) AS total_eth_price_samples,
+  SUM(total_eth_price_count) AS total_eth_price_count,
   MAX(max_eth_price) AS max_eth_price,
   MIN(min_eth_price) AS min_eth_price,
 
@@ -63,7 +63,7 @@ ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blob_gas_price = EXCLUDED.total_blob_gas_price,
   total_blocks = EXCLUDED.total_blocks,
   total_eth_price = EXCLUDED.total_eth_price,
-  total_eth_price_samples = EXCLUDED.total_eth_price_samples,
+  total_eth_price_count = EXCLUDED.total_eth_price_count,
   max_eth_price = EXCLUDED.max_eth_price,
   min_eth_price = EXCLUDED.min_eth_price,
 

@@ -31,15 +31,15 @@ model AllTimeMetrics {
   // Counters
 
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee     Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice    Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks          Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
   /// @zod.number.nonnegative()
-  totalEthPrice        Float?   @map("total_eth_price")
+  totalEthPrice      Float?   @map("total_eth_price")
   /// @zod.number.int().nonnegative()
-  totalEthPriceSamples Int?     @map("total_eth_price_samples")
+  totalEthPriceCount Int?     @map("total_eth_price_count")
 
   // Extremes
 
@@ -117,15 +117,15 @@ model HourlyMetrics {
   // Counters
 
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee     Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice    Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks          Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
   /// @zod.number.nonnegative()
-  totalEthPrice        Float?   @map("total_eth_price")
+  totalEthPrice      Float?   @map("total_eth_price")
   /// @zod.number.int().nonnegative()
-  totalEthPriceSamples Int?     @map("total_eth_price_samples")
+  totalEthPriceCount Int?     @map("total_eth_price_count")
 
   // Extremes
 
@@ -199,15 +199,15 @@ model DailyMetrics {
   // Counters
 
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee     Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice    Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks          Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
   /// @zod.number.nonnegative()
-  totalEthPrice        Float?   @map("total_eth_price")
+  totalEthPrice      Float?   @map("total_eth_price")
   /// @zod.number.int().nonnegative()
-  totalEthPriceSamples Int?     @map("total_eth_price_samples")
+  totalEthPriceCount Int?     @map("total_eth_price_count")
 
   // Extremes
 
@@ -284,15 +284,15 @@ model WeeklyMetrics {
 
   // Counters
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee     Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice    Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks          Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
   /// @zod.number.nonnegative()
-  totalEthPrice        Float?   @map("total_eth_price")
+  totalEthPrice      Float?   @map("total_eth_price")
   /// @zod.number.int().nonnegative()
-  totalEthPriceSamples Int?     @map("total_eth_price_samples")
+  totalEthPriceCount Int?     @map("total_eth_price_count")
 
   // Extremes
 
@@ -370,15 +370,15 @@ model MonthlyMetrics {
   // Counters
 
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee     Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice    Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks          Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
   /// @zod.number.nonnegative()
-  totalEthPrice        Float?   @map("total_eth_price")
+  totalEthPrice      Float?   @map("total_eth_price")
   /// @zod.number.int().nonnegative()
-  totalEthPriceSamples Int?     @map("total_eth_price_samples")
+  totalEthPriceCount Int?     @map("total_eth_price_count")
 
   // Extremes
 
@@ -456,15 +456,15 @@ model YearlyMetrics {
   // Counters
 
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee     Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice    Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks          Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
   /// @zod.number.nonnegative()
-  totalEthPrice        Float?   @map("total_eth_price")
+  totalEthPrice      Float?   @map("total_eth_price")
   /// @zod.number.int().nonnegative()
-  totalEthPriceSamples Int?     @map("total_eth_price_samples")
+  totalEthPriceCount Int?     @map("total_eth_price_count")
 
   // Extremes
 

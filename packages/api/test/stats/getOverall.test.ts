@@ -57,7 +57,7 @@ describe("getOverall", () => {
             "totalBlobs": 15,
             "totalBlocks": null,
             "totalEthPrice": null,
-            "totalEthPriceSamples": null,
+            "totalEthPriceCount": null,
             "totalMaxBlobGasFee": 910n,
             "totalTransactions": 9,
             "totalUniqueBlobs": 4,
@@ -93,7 +93,7 @@ describe("getOverall", () => {
             "totalBlobs": 14,
             "totalBlocks": null,
             "totalEthPrice": null,
-            "totalEthPriceSamples": null,
+            "totalEthPriceCount": null,
             "totalMaxBlobGasFee": 720n,
             "totalTransactions": 7,
             "totalUniqueBlobs": 7,
@@ -129,7 +129,7 @@ describe("getOverall", () => {
             "totalBlobs": 1,
             "totalBlocks": null,
             "totalEthPrice": null,
-            "totalEthPriceSamples": null,
+            "totalEthPriceCount": null,
             "totalMaxBlobGasFee": 100n,
             "totalTransactions": 1,
             "totalUniqueBlobs": 0,
@@ -165,7 +165,7 @@ describe("getOverall", () => {
             "totalBlobs": 4,
             "totalBlocks": null,
             "totalEthPrice": null,
-            "totalEthPriceSamples": null,
+            "totalEthPriceCount": null,
             "totalMaxBlobGasFee": 200n,
             "totalTransactions": 2,
             "totalUniqueBlobs": 4,
@@ -201,7 +201,7 @@ describe("getOverall", () => {
             "totalBlobs": 9,
             "totalBlocks": null,
             "totalEthPrice": null,
-            "totalEthPriceSamples": null,
+            "totalEthPriceCount": null,
             "totalMaxBlobGasFee": 420n,
             "totalTransactions": 4,
             "totalUniqueBlobs": 3,
@@ -236,7 +236,7 @@ describe("getOverall", () => {
             "totalBlobs": 29,
             "totalBlocks": 8,
             "totalEthPrice": null,
-            "totalEthPriceSamples": null,
+            "totalEthPriceCount": null,
             "totalMaxBlobGasFee": 1630n,
             "totalTransactions": 16,
             "totalUniqueBlobs": 9,
@@ -270,7 +270,7 @@ describe("getOverall", () => {
       avgEthPrice: 1725.25,
       maxEthPrice: 1800.5,
       minEthPrice: 1650.25,
-      totalEthPriceSamples: 3,
+      totalEthPriceCount: 3,
     });
 
     for (const { metrics } of otherStats) {
@@ -278,7 +278,7 @@ describe("getOverall", () => {
         avgEthPrice: null,
         maxEthPrice: null,
         minEthPrice: null,
-        totalEthPriceSamples: null,
+        totalEthPriceCount: null,
       });
     }
   });

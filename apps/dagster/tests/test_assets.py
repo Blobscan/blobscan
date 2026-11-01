@@ -619,7 +619,7 @@ class _EthPriceMetricsMixin:
             "max_eth_price",
             "min_eth_price",
             "total_eth_price",
-            "total_eth_price_samples",
+            "total_eth_price_count",
         ]
         for (cat, rollup), row in self._result(postgres).items():
             if (cat, rollup) != (None, None):
@@ -641,9 +641,9 @@ class _EthPriceMetricsMixin:
         expected = float(sum(self._prices))
         assert self._global_row(postgres)["total_eth_price"] == pytest.approx(expected)
 
-    def test_total_eth_price_samples(self, postgres):
+    def test_total_eth_price_count(self, postgres):
         expected = len(self._prices)
-        assert self._global_row(postgres)["total_eth_price_samples"] == expected
+        assert self._global_row(postgres)["total_eth_price_count"] == expected
 
     def test_avg_eth_price(self, postgres):
         expected = float(sum(self._prices) / len(self._prices))

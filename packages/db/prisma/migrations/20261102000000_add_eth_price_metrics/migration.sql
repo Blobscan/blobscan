@@ -16,49 +16,49 @@ SET LOCAL lock_timeout = '10s';
 -- all_time_metrics
 ALTER TABLE "all_time_metrics"
     ADD COLUMN "total_eth_price" DOUBLE PRECISION,
-    ADD COLUMN "total_eth_price_samples" INTEGER,
+    ADD COLUMN "total_eth_price_count" INTEGER,
     ADD COLUMN "max_eth_price" DOUBLE PRECISION,
     ADD COLUMN "min_eth_price" DOUBLE PRECISION,
-    ADD COLUMN "avg_eth_price" DOUBLE PRECISION GENERATED ALWAYS AS ("total_eth_price" / NULLIF("total_eth_price_samples", 0)) STORED;
+    ADD COLUMN "avg_eth_price" DOUBLE PRECISION GENERATED ALWAYS AS ("total_eth_price" / NULLIF("total_eth_price_count", 0)) STORED;
 
 -- hourly_metrics
 ALTER TABLE "hourly_metrics"
     ADD COLUMN "total_eth_price" DOUBLE PRECISION,
-    ADD COLUMN "total_eth_price_samples" INTEGER,
+    ADD COLUMN "total_eth_price_count" INTEGER,
     ADD COLUMN "max_eth_price" DOUBLE PRECISION,
     ADD COLUMN "min_eth_price" DOUBLE PRECISION,
-    ADD COLUMN "avg_eth_price" DOUBLE PRECISION GENERATED ALWAYS AS ("total_eth_price" / NULLIF("total_eth_price_samples", 0)) STORED;
+    ADD COLUMN "avg_eth_price" DOUBLE PRECISION GENERATED ALWAYS AS ("total_eth_price" / NULLIF("total_eth_price_count", 0)) STORED;
 
 -- daily_metrics
 ALTER TABLE "daily_metrics"
     ADD COLUMN "total_eth_price" DOUBLE PRECISION,
-    ADD COLUMN "total_eth_price_samples" INTEGER,
+    ADD COLUMN "total_eth_price_count" INTEGER,
     ADD COLUMN "max_eth_price" DOUBLE PRECISION,
     ADD COLUMN "min_eth_price" DOUBLE PRECISION,
-    ADD COLUMN "avg_eth_price" DOUBLE PRECISION GENERATED ALWAYS AS ("total_eth_price" / NULLIF("total_eth_price_samples", 0)) STORED;
+    ADD COLUMN "avg_eth_price" DOUBLE PRECISION GENERATED ALWAYS AS ("total_eth_price" / NULLIF("total_eth_price_count", 0)) STORED;
 
 -- weekly_metrics
 ALTER TABLE "weekly_metrics"
     ADD COLUMN "total_eth_price" DOUBLE PRECISION,
-    ADD COLUMN "total_eth_price_samples" INTEGER,
+    ADD COLUMN "total_eth_price_count" INTEGER,
     ADD COLUMN "max_eth_price" DOUBLE PRECISION,
     ADD COLUMN "min_eth_price" DOUBLE PRECISION,
-    ADD COLUMN "avg_eth_price" DOUBLE PRECISION GENERATED ALWAYS AS ("total_eth_price" / NULLIF("total_eth_price_samples", 0)) STORED;
+    ADD COLUMN "avg_eth_price" DOUBLE PRECISION GENERATED ALWAYS AS ("total_eth_price" / NULLIF("total_eth_price_count", 0)) STORED;
 
 -- monthly_metrics
 ALTER TABLE "monthly_metrics"
     ADD COLUMN "total_eth_price" DOUBLE PRECISION,
-    ADD COLUMN "total_eth_price_samples" INTEGER,
+    ADD COLUMN "total_eth_price_count" INTEGER,
     ADD COLUMN "max_eth_price" DOUBLE PRECISION,
     ADD COLUMN "min_eth_price" DOUBLE PRECISION,
-    ADD COLUMN "avg_eth_price" DOUBLE PRECISION GENERATED ALWAYS AS ("total_eth_price" / NULLIF("total_eth_price_samples", 0)) STORED;
+    ADD COLUMN "avg_eth_price" DOUBLE PRECISION GENERATED ALWAYS AS ("total_eth_price" / NULLIF("total_eth_price_count", 0)) STORED;
 
 -- yearly_metrics
 ALTER TABLE "yearly_metrics"
     ADD COLUMN "total_eth_price" DOUBLE PRECISION,
-    ADD COLUMN "total_eth_price_samples" INTEGER,
+    ADD COLUMN "total_eth_price_count" INTEGER,
     ADD COLUMN "max_eth_price" DOUBLE PRECISION,
     ADD COLUMN "min_eth_price" DOUBLE PRECISION,
-    ADD COLUMN "avg_eth_price" DOUBLE PRECISION GENERATED ALWAYS AS ("total_eth_price" / NULLIF("total_eth_price_samples", 0)) STORED;
+    ADD COLUMN "avg_eth_price" DOUBLE PRECISION GENERATED ALWAYS AS ("total_eth_price" / NULLIF("total_eth_price_count", 0)) STORED;
 
 COMMIT;
