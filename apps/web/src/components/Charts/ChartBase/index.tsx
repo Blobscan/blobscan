@@ -28,6 +28,7 @@ import {
   getSeriesMetricValue,
   hasCurrentPeriodValue,
   isCurrentPeriodSeries,
+  isRangeSeries,
 } from "./helpers";
 import type { ChartDataset, ChartSeries } from "./helpers";
 import type { SkeletonChartOptions } from "./helpers/skeleton";
@@ -201,7 +202,10 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     const datasets = Array.isArray(dataset) ? dataset : [dataset];
     // A series with no value for the current period (for example, a rollup
     // with no blobs) needs no current period series. It keeps its column.
+    // A range band covers the current period too. It has no current period
+    // series.
     const seriesGroups = series.map((s, seriesIdx) =>
+      !isRangeSeries(s) &&
       hasCurrentPeriodValue(s as ChartSeries, datasets, currentPeriodTimestamp)
         ? createCurrentPeriodSeries(s as ChartSeries, { seriesIdx })
         : [s]
@@ -483,6 +487,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     }
 
     const items = series
+      .filter((s) => !isRangeSeries(s))
       .map(
         ({ name, itemStyle }): LegendItemData => ({
           name: name?.toString() ?? "",

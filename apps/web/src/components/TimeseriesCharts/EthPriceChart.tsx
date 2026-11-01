@@ -1,11 +1,13 @@
 import { createTimeseriesChart } from "../Charts/TimeseriesChartBase";
 
-// Okabe-Ito colors. They stay distinct for color-blind viewers.
-const MAX_COLOR = { light: "#d55e00", dark: "#e69f00" };
-const AVG_COLOR = { light: "#0072b2", dark: "#56b4e9" };
-const MIN_COLOR = { light: "#009e73", dark: "#1fc79a" };
-// The areas overlap. A low opacity keeps all the lines visible.
-const AREA_OPACITY = 0.15;
+// Shades of the primary color (see @blobscan/tailwind-config). The average is
+// the main line. The maximum and the minimum are lighter, and a band fills the
+// range between them.
+const AVG_COLOR = { light: "#5D25D4", dark: "#AE8CF5" };
+const MAX_MIN_COLOR = { light: "#9A71F2", dark: "#C8AEFA" };
+const RANGE_COLOR = { light: "#9A71F2", dark: "#AE8CF5" };
+const RANGE_OPACITY = 0.15;
+const MAX_MIN_LINE_STYLE = { type: "dashed", width: 1.5 } as const;
 
 export const EthPriceChart = createTimeseriesChart({
   baseProps: {
@@ -16,27 +18,36 @@ export const EthPriceChart = createTimeseriesChart({
       unitType: "fiat",
       unit: "USD",
     },
+    range: {
+      lower: "minEthPrice",
+      upper: "maxEthPrice",
+      color: RANGE_COLOR,
+      opacity: RANGE_OPACITY,
+    },
     timeseries: [
       {
         name: "Max. ETH Price",
         type: "line",
         metric: "maxEthPrice",
-        color: MAX_COLOR,
-        areaOpacity: AREA_OPACITY,
+        color: MAX_MIN_COLOR,
+        areaOpacity: 0,
+        lineStyle: MAX_MIN_LINE_STYLE,
       },
       {
         name: "Avg. ETH Price",
         type: "line",
         metric: "avgEthPrice",
         color: AVG_COLOR,
-        areaOpacity: AREA_OPACITY,
+        areaOpacity: 0,
+        lineStyle: { width: 3 },
       },
       {
         name: "Min. ETH Price",
         type: "line",
         metric: "minEthPrice",
-        color: MIN_COLOR,
-        areaOpacity: AREA_OPACITY,
+        color: MAX_MIN_COLOR,
+        areaOpacity: 0,
+        lineStyle: MAX_MIN_LINE_STYLE,
       },
     ],
     skeletonOpts: {
