@@ -16,11 +16,27 @@ WITH base AS (
     (tx.blob_gas_used * b.blob_gas_price)                    AS blob_base_fee,
     (tx.blob_gas_used * tx.max_fee_per_blob_gas)             AS blob_max_fee,
     (tx.blob_as_calldata_gas_used * b.blob_gas_price)        AS blob_as_calldata_fee,
-    (tx.blob_as_calldata_gas_used * tx.max_fee_per_blob_gas) AS blob_as_calldata_max_fee
+    (tx.blob_as_calldata_gas_used * tx.max_fee_per_blob_gas) AS blob_as_calldata_max_fee,
+    -- The fees are in wei. 1e-18 changes them to ETH. A NUMERIC multiplication
+    -- is exact, so the very small fees (1 wei per blob gas) are not lost.
+    (tx.blob_gas_used * b.blob_gas_price * p.price * 1e-18)             AS blob_base_fee_usd,
+    (tx.blob_as_calldata_gas_used * b.blob_gas_price * p.price * 1e-18) AS blob_as_calldata_fee_usd,
+    (tx.blob_gas_used * tx.max_fee_per_blob_gas * p.price * 1e-18)      AS blob_max_fee_usd
   FROM transaction tx
     JOIN block b ON b.hash = tx.block_hash
     JOIN address f ON f.address = tx.from_id
     JOIN address t ON t.address = tx.to_id
+    -- Use the most recent ETH/USD price at or before the block time. The price
+    -- syncer can write one price each minute, hour or day, and it can skip a
+    -- run. Thus, an exact match on the timestamp can find no price. When there
+    -- is no price, the USD fees of the transaction are NULL.
+    LEFT JOIN LATERAL (
+      SELECT eup.price
+      FROM eth_usd_price eup
+      WHERE eup.timestamp <= tx.block_timestamp
+      ORDER BY eup.timestamp DESC
+      LIMIT 1
+    ) p ON TRUE
   WHERE tx.block_timestamp >= :from AND tx.block_timestamp < :to
     AND NOT EXISTS (
       SELECT 1 FROM transaction_fork tx_f
@@ -60,7 +76,10 @@ INSERT INTO hourly_metrics (
   total_blob_max_fee,
   total_blob_as_calldata_fee,
   total_blob_as_calldata_max_fee,
-  total_max_blob_gas_fee
+  total_max_blob_gas_fee,
+  total_blob_base_fee_usd,
+  total_blob_as_calldata_fee_usd,
+  total_blob_max_fee_usd
 )
 SELECT
   base.period_start,
@@ -94,7 +113,11 @@ SELECT
   COALESCE(SUM(blob_max_fee)::DECIMAL, 0) AS total_blob_max_fee,
   COALESCE(SUM(blob_as_calldata_fee)::DECIMAL, 0) AS total_blob_as_calldata_fee,
   COALESCE(SUM(blob_as_calldata_max_fee)::DECIMAL, 0) AS total_blob_as_calldata_max_fee,
-  COALESCE(SUM(max_fee_per_blob_gas)::DECIMAL, 0) AS total_max_blob_gas_fee
+  COALESCE(SUM(max_fee_per_blob_gas)::DECIMAL, 0) AS total_max_blob_gas_fee,
+  -- No COALESCE: the USD fees stay NULL when no transaction has a price.
+  SUM(blob_base_fee_usd) AS total_blob_base_fee_usd,
+  SUM(blob_as_calldata_fee_usd) AS total_blob_as_calldata_fee_usd,
+  SUM(blob_max_fee_usd) AS total_blob_max_fee_usd
 FROM base JOIN block_metric ON base.period_start = block_metric.period_start
 GROUP BY GROUPING SETS (
   (base.period_start, category),
@@ -118,4 +141,7 @@ ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blob_max_fee = EXCLUDED.total_blob_max_fee,
   total_blob_as_calldata_fee = EXCLUDED.total_blob_as_calldata_fee,
   total_blob_as_calldata_max_fee = EXCLUDED.total_blob_as_calldata_max_fee,
-  total_max_blob_gas_fee = EXCLUDED.total_max_blob_gas_fee
+  total_max_blob_gas_fee = EXCLUDED.total_max_blob_gas_fee,
+  total_blob_base_fee_usd = EXCLUDED.total_blob_base_fee_usd,
+  total_blob_as_calldata_fee_usd = EXCLUDED.total_blob_as_calldata_fee_usd,
+  total_blob_max_fee_usd = EXCLUDED.total_blob_max_fee_usd

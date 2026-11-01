@@ -26,11 +26,21 @@ WITH base AS (
     (tx.blob_gas_used * b.blob_gas_price)                    AS blob_base_fee,
     (tx.blob_gas_used * tx.max_fee_per_blob_gas)             AS blob_max_fee,
     (tx.blob_as_calldata_gas_used * b.blob_gas_price)        AS blob_as_calldata_fee,
-    (tx.blob_as_calldata_gas_used * tx.max_fee_per_blob_gas) AS blob_as_calldata_max_fee
+    (tx.blob_as_calldata_gas_used * tx.max_fee_per_blob_gas) AS blob_as_calldata_max_fee,
+    (tx.blob_gas_used * b.blob_gas_price * p.price * 1e-18)             AS blob_base_fee_usd,
+    (tx.blob_as_calldata_gas_used * b.blob_gas_price * p.price * 1e-18) AS blob_as_calldata_fee_usd,
+    (tx.blob_gas_used * tx.max_fee_per_blob_gas * p.price * 1e-18)      AS blob_max_fee_usd
   FROM transaction tx
     JOIN block b ON b.hash = tx.block_hash
     JOIN address f ON f.address = tx.from_id
     JOIN address t ON t.address = tx.to_id
+    LEFT JOIN LATERAL (
+      SELECT eup.price
+      FROM eth_usd_price eup
+      WHERE eup.timestamp <= tx.block_timestamp
+      ORDER BY eup.timestamp DESC
+      LIMIT 1
+    ) p ON TRUE
   WHERE tx.block_timestamp < $1::timestamp
     AND NOT EXISTS (
       SELECT 1 FROM transaction_fork tx_f
@@ -63,7 +73,10 @@ INSERT INTO daily_metrics (
   total_blob_max_fee,
   total_blob_as_calldata_fee,
   total_blob_as_calldata_max_fee,
-  total_max_blob_gas_fee
+  total_max_blob_gas_fee,
+  total_blob_base_fee_usd,
+  total_blob_as_calldata_fee_usd,
+  total_blob_max_fee_usd
 )
 SELECT
   base.period_start,
@@ -84,7 +97,10 @@ SELECT
   COALESCE(SUM(blob_max_fee)::DECIMAL, 0),
   COALESCE(SUM(blob_as_calldata_fee)::DECIMAL, 0),
   COALESCE(SUM(blob_as_calldata_max_fee)::DECIMAL, 0),
-  COALESCE(SUM(max_fee_per_blob_gas)::DECIMAL, 0)
+  COALESCE(SUM(max_fee_per_blob_gas)::DECIMAL, 0),
+  SUM(blob_base_fee_usd),
+  SUM(blob_as_calldata_fee_usd),
+  SUM(blob_max_fee_usd)
 FROM base JOIN block_metric ON base.period_start = block_metric.period_start
 GROUP BY GROUPING SETS (
   (base.period_start, category),
@@ -165,7 +181,10 @@ INSERT INTO all_time_metrics (
   total_unique_blobs,
   total_unique_receivers,
   total_unique_senders,
-  total_max_blob_gas_fee
+  total_max_blob_gas_fee,
+  total_blob_base_fee_usd,
+  total_blob_as_calldata_fee_usd,
+  total_blob_max_fee_usd
 )
 SELECT
   category,
@@ -185,7 +204,10 @@ SELECT
   SUM(total_unique_blobs),
   SUM(total_unique_receivers),
   SUM(total_unique_senders),
-  SUM(total_max_blob_gas_fee)
+  SUM(total_max_blob_gas_fee),
+  SUM(total_blob_base_fee_usd),
+  SUM(total_blob_as_calldata_fee_usd),
+  SUM(total_blob_max_fee_usd)
 FROM daily_metrics
 GROUP BY category, rollup
 `;

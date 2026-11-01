@@ -20,6 +20,7 @@ async function main() {
     prisma.transaction.deleteMany(),
     prisma.address.deleteMany(),
     prisma.block.deleteMany(),
+    prisma.ethUsdPrice.deleteMany(),
 
     prisma.block.createMany({
       data: DB_FIXTURES.blocks,
@@ -32,6 +33,9 @@ async function main() {
     }),
     prisma.transactionFork.createMany({
       data: DB_FIXTURES.transactionForks,
+    }),
+    prisma.ethUsdPrice.createMany({
+      data: DB_FIXTURES.ethUsdPrices,
     }),
   ]);
 }
