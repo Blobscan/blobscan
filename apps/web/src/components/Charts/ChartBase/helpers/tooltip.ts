@@ -185,7 +185,7 @@ function createTooltipFormater({
 
       const dailyTotal = displayTotal
         ? aggregateValues(
-            paramOrParams.map((p) => getValue(p, getSeriesValue)) as number[],
+            paramOrParams.map((p) => getValue(p, getSeriesValue)),
             axes.y.type
           )
         : undefined;
@@ -249,7 +249,7 @@ function createTooltipFormater({
       if (displayTotal) {
         if (rollupSeries.length) {
           const rollupTotal = aggregateValues(
-            rollupSeries.map((p) => getValue(p, getSeriesValue)) as number[],
+            rollupSeries.map((p) => getValue(p, getSeriesValue)),
             axes.y.type
           );
 
