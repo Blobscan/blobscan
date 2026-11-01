@@ -1,6 +1,7 @@
 import type { FC } from "react";
 import React from "react";
 import type { BarSeriesOption, LineSeriesOption } from "echarts";
+import { useTheme } from "next-themes";
 
 import type { Prettify, TimeseriesMetric } from "~/types";
 import { Card } from "../Cards/Card";
@@ -14,6 +15,15 @@ type Timeseries = Pick<
 > & {
   type: "bar" | "line";
   metric: TimeseriesMetric;
+  /**
+   * The color of the series. Without it, the series gets the color of its
+   * dimension (see getDimensionColor).
+   */
+  color?: { light: string; dark: string };
+  /**
+   * Fill the area under the line. True by default.
+   */
+  area?: boolean;
 };
 
 export type TimeseriesChartProps = Prettify<
@@ -38,14 +48,33 @@ export type TimeseriesChartComponent = FC<TimeseriesChartProps> & {
   requiredMetrics: [TimeseriesMetric, ...TimeseriesMetric[]];
 };
 
+function getSeriesStyle(
+  { color, area }: Pick<Timeseries, "color" | "area">,
+  themeMode: "light" | "dark"
+) {
+  const resolvedColor = color?.[themeMode];
+
+  return {
+    ...(resolvedColor
+      ? {
+          itemStyle: { color: resolvedColor },
+          areaStyle: { color: resolvedColor },
+        }
+      : {}),
+    ...(area === false ? { areaStyle: undefined } : {}),
+  };
+}
+
 function getSeries(
   dataset: TimeseriesDataset | TimeseriesDataset[],
-  seriesProp: [Timeseries, ...Timeseries[]]
+  seriesProp: [Timeseries, ...Timeseries[]],
+  themeMode: "light" | "dark"
 ) {
   if (Array.isArray(dataset)) {
-    return seriesProp.flatMap((series) =>
+    return seriesProp.flatMap(({ color, area, ...series }) =>
       dataset.map((d, i) => ({
         ...series,
+        ...getSeriesStyle({ color, area }, themeMode),
         datasetIndex: i,
         datasetId: d.id,
         id: d.id,
@@ -54,8 +83,9 @@ function getSeries(
     );
   }
 
-  return seriesProp.map((series) => ({
+  return seriesProp.map(({ color, area, ...series }) => ({
     ...series,
+    ...getSeriesStyle({ color, area }, themeMode),
     encode: { x: "timestamp", y: series.metric },
   }));
 }
@@ -66,8 +96,11 @@ export const TimeseriesChartBase: FC<TimeseriesChartBaseProps> = ({
   timeseries,
   ...restProps
 }) => {
+  const { resolvedTheme } = useTheme();
   const series =
-    dataset && timeseries ? getSeries(dataset, timeseries) : undefined;
+    dataset && timeseries
+      ? getSeries(dataset, timeseries, resolvedTheme as "light" | "dark")
+      : undefined;
 
   return (
     <Card compact>

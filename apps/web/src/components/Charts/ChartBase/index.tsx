@@ -56,6 +56,12 @@ export interface ChartBaseProps {
   tooltipOpts?: {
     displayTotal?: boolean;
   };
+  /**
+   * A hover on a series highlights all the series, not only the hovered one.
+   * Use it when the series show related values of one metric, for example a
+   * maximum, an average and a minimum.
+   */
+  highlightAllSeries?: boolean;
 }
 
 function ChartHeader({
@@ -98,6 +104,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   compact,
   isLoading,
   size = "md",
+  highlightAllSeries,
 }) {
   const { resolvedTheme } = useTheme();
   const themeMode = resolvedTheme as "light" | "dark";
@@ -148,11 +155,14 @@ export const ChartBase: FC<ChartBaseProps> = function ({
               ...baseSeriesOptions.itemStyle,
               color: color ?? baseSeriesOptions.itemStyle.color,
             },
+            // Do not fade the other series on hover. All the series are
+            // highlighted together (see the mouseover handler).
+            ...(highlightAllSeries ? { emphasis: { focus: "none" } } : {}),
             ...restSeries,
           };
         })
         ?.sort((a, b) => String(a.name).localeCompare(String(b.name))),
-    [seriesProp, themeMode]
+    [seriesProp, themeMode, highlightAllSeries]
   );
   const currentPeriodTimestamp = useMemo(
     () =>
@@ -206,9 +216,11 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   }, [series, dataset, currentPeriodTimestamp]);
   const chartSeriesRef = useRef(chartSeries);
   const chartDatasetRef = useRef(chartDataset);
+  const highlightAllSeriesRef = useRef(highlightAllSeries);
 
   chartSeriesRef.current = chartSeries;
   chartDatasetRef.current = chartDataset;
+  highlightAllSeriesRef.current = highlightAllSeries;
 
   const getSeriesValue = useCallback(
     (seriesIndex: number, dataIndex: number) =>
@@ -323,13 +335,21 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         isCurrentPeriodSeries(s.id)
       );
 
+    const getAllSeriesIndexes = () =>
+      ((chartSeriesRef.current as ChartSeries[] | undefined) ?? []).map(
+        (_, i) => i
+      );
+
     const onMouseover = ({
       componentType,
       seriesName,
       seriesIndex,
     }: ECElementEvent) => {
       if (componentType !== "series") return;
-      setSelectedLegendItem(seriesName);
+      // When all the series are highlighted, the legend does not select one.
+      setSelectedLegendItem(
+        highlightAllSeriesRef.current ? undefined : seriesName
+      );
       hoveredSeriesRef.current = {
         seriesIndex: getMainSeriesIndex(
           (chartSeriesRef.current as ChartSeries[] | undefined) ?? [],
@@ -337,6 +357,15 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         ),
         seriesName,
       };
+
+      if (highlightAllSeriesRef.current) {
+        chart.dispatchAction({
+          type: "highlight",
+          seriesIndex: getAllSeriesIndexes(),
+        });
+
+        return;
+      }
 
       // A series and its current period series are separate ECharts series,
       // and a hover highlights only the series under the mouse. Highlight all
@@ -347,7 +376,18 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     };
 
     const onMouseout = ({ componentType, seriesName }: ECElementEvent) => {
-      if (componentType !== "series" || !hasCurrentPeriodSeries()) return;
+      if (componentType !== "series") return;
+
+      if (highlightAllSeriesRef.current) {
+        chart.dispatchAction({
+          type: "downplay",
+          seriesIndex: getAllSeriesIndexes(),
+        });
+
+        return;
+      }
+
+      if (!hasCurrentPeriodSeries()) return;
 
       chart.dispatchAction({ type: "downplay", seriesName });
     };
