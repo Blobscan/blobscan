@@ -6,17 +6,22 @@ import type {
   Rollup,
   Prettify,
 } from "~/types";
+import type { Numerish } from "~/utils";
 import type { Axis } from "../Charts/ChartBase";
 
+/**
+ * Aggregates the values of the series at one timestamp. A missing value
+ * counts as zero. For example, a rollup has no value before its first day.
+ */
 export function aggregateValues(
-  values: number[] | string[],
+  values: (Numerish | null | undefined)[],
   type: Axis["type"]
 ): number {
   if (!values.length) {
     return 0;
   }
 
-  const normalizedValues = values.map((v) => Number(v));
+  const normalizedValues = values.map((v) => Number(v ?? 0));
 
   switch (type) {
     case "count": {
