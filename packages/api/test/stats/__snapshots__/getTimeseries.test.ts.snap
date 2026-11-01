@@ -27,8 +27,17 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           "avgBlobUsageSize": [
             780,
           ],
+          "avgEthPrice": [
+            null,
+          ],
           "avgMaxBlobGasFee": [
             100,
+          ],
+          "maxEthPrice": [
+            null,
+          ],
+          "minEthPrice": [
+            null,
           ],
           "totalBlobAsCalldataFee": [
             66000n,
@@ -62,6 +71,12 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           ],
           "totalBlocks": [
             3,
+          ],
+          "totalEthPrice": [
+            null,
+          ],
+          "totalEthPriceSamples": [
+            null,
           ],
           "totalMaxBlobGasFee": [
             300n,
@@ -122,9 +137,21 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             780,
             1000,
           ],
+          "avgEthPrice": [
+            null,
+            null,
+          ],
           "avgMaxBlobGasFee": [
             100,
             100,
+          ],
+          "maxEthPrice": [
+            null,
+            null,
+          ],
+          "minEthPrice": [
+            null,
+            null,
           ],
           "totalBlobAsCalldataFee": [
             66000n,
@@ -169,6 +196,14 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           "totalBlocks": [
             3,
             1,
+          ],
+          "totalEthPrice": [
+            null,
+            null,
+          ],
+          "totalEthPriceSamples": [
+            null,
+            null,
           ],
           "totalMaxBlobGasFee": [
             300n,
@@ -241,10 +276,25 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             1000,
             469.6,
           ],
+          "avgEthPrice": [
+            null,
+            null,
+            null,
+          ],
           "avgMaxBlobGasFee": [
             100,
             100,
             100,
+          ],
+          "maxEthPrice": [
+            null,
+            null,
+            null,
+          ],
+          "minEthPrice": [
+            null,
+            null,
+            null,
           ],
           "totalBlobAsCalldataFee": [
             66000n,
@@ -300,6 +350,16 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             3,
             1,
             1,
+          ],
+          "totalEthPrice": [
+            null,
+            null,
+            null,
+          ],
+          "totalEthPriceSamples": [
+            null,
+            null,
+            null,
           ],
           "totalMaxBlobGasFee": [
             300n,
@@ -384,11 +444,29 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             469.6,
             1000,
           ],
+          "avgEthPrice": [
+            null,
+            null,
+            null,
+            null,
+          ],
           "avgMaxBlobGasFee": [
             100,
             100,
             100,
             100,
+          ],
+          "maxEthPrice": [
+            null,
+            null,
+            null,
+            null,
+          ],
+          "minEthPrice": [
+            null,
+            null,
+            null,
+            null,
           ],
           "totalBlobAsCalldataFee": [
             66000n,
@@ -455,6 +533,18 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             1,
             1,
             1,
+          ],
+          "totalEthPrice": [
+            null,
+            null,
+            null,
+            null,
+          ],
+          "totalEthPriceSamples": [
+            null,
+            null,
+            null,
+            null,
           ],
           "totalMaxBlobGasFee": [
             300n,
@@ -545,11 +635,29 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             469.6,
             1000,
           ],
+          "avgEthPrice": [
+            null,
+            null,
+            null,
+            null,
+          ],
           "avgMaxBlobGasFee": [
             100,
             100,
             100,
             100,
+          ],
+          "maxEthPrice": [
+            null,
+            null,
+            null,
+            null,
+          ],
+          "minEthPrice": [
+            null,
+            null,
+            null,
+            null,
           ],
           "totalBlobAsCalldataFee": [
             66000n,
@@ -616,6 +724,18 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             1,
             1,
             1,
+          ],
+          "totalEthPrice": [
+            null,
+            null,
+            null,
+            null,
+          ],
+          "totalEthPriceSamples": [
+            null,
+            null,
+            null,
+            null,
           ],
           "totalMaxBlobGasFee": [
             300n,
@@ -712,12 +832,33 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             1000,
             0,
           ],
+          "avgEthPrice": [
+            null,
+            null,
+            null,
+            null,
+            null,
+          ],
           "avgMaxBlobGasFee": [
             100,
             100,
             100,
             100,
             100,
+          ],
+          "maxEthPrice": [
+            null,
+            null,
+            null,
+            null,
+            null,
+          ],
+          "minEthPrice": [
+            null,
+            null,
+            null,
+            null,
+            null,
           ],
           "totalBlobAsCalldataFee": [
             66000n,
@@ -795,6 +936,20 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             1,
             1,
             1,
+          ],
+          "totalEthPrice": [
+            null,
+            null,
+            null,
+            null,
+            null,
+          ],
+          "totalEthPriceSamples": [
+            null,
+            null,
+            null,
+            null,
+            null,
           ],
           "totalMaxBlobGasFee": [
             300n,
@@ -903,6 +1058,14 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             0,
             854,
           ],
+          "avgEthPrice": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+          ],
           "avgMaxBlobGasFee": [
             100,
             100,
@@ -910,6 +1073,22 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             100,
             100,
             110,
+          ],
+          "maxEthPrice": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+          ],
+          "minEthPrice": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
           ],
           "totalBlobAsCalldataFee": [
             66000n,
@@ -999,6 +1178,22 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             1,
             1,
           ],
+          "totalEthPrice": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+          ],
+          "totalEthPriceSamples": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+          ],
           "totalMaxBlobGasFee": [
             300n,
             200n,
@@ -1070,7 +1265,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           "avgBlobGasPrice": [],
           "avgBlobMaxFee": [],
           "avgBlobUsageSize": [],
+          "avgEthPrice": [],
           "avgMaxBlobGasFee": [],
+          "maxEthPrice": [],
+          "minEthPrice": [],
           "totalBlobAsCalldataFee": [],
           "totalBlobAsCalldataGasUsed": [],
           "totalBlobAsCalldataMaxFee": [],
@@ -1082,6 +1280,8 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           "totalBlobUsageSize": [],
           "totalBlobs": [],
           "totalBlocks": [],
+          "totalEthPrice": [],
+          "totalEthPriceSamples": [],
           "totalMaxBlobGasFee": [],
           "totalTransactions": [],
           "totalUniqueBlobs": [],

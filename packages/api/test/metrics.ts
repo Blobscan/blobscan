@@ -146,6 +146,34 @@ ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blob_usage_size = EXCLUDED.total_blob_usage_size
 `;
 
+const AGGREGATE_ETH_PRICE_DAILY_METRICS_SQL = `
+INSERT INTO daily_metrics (
+  period_start,
+  category,
+  rollup,
+  total_eth_price,
+  total_eth_price_samples,
+  max_eth_price,
+  min_eth_price
+)
+SELECT
+  DATE_TRUNC('day', p.timestamp),
+  NULL::category,
+  NULL::rollup,
+  SUM(p.price)::DOUBLE PRECISION,
+  COUNT(*)::INT,
+  MAX(p.price)::DOUBLE PRECISION,
+  MIN(p.price)::DOUBLE PRECISION
+FROM eth_usd_price p
+WHERE p.timestamp < $1::timestamp
+GROUP BY DATE_TRUNC('day', p.timestamp)
+ON CONFLICT (period_start, category, rollup) DO UPDATE SET
+  total_eth_price = EXCLUDED.total_eth_price,
+  total_eth_price_samples = EXCLUDED.total_eth_price_samples,
+  max_eth_price = EXCLUDED.max_eth_price,
+  min_eth_price = EXCLUDED.min_eth_price
+`;
+
 const AGGREGATE_ALL_TIME_METRICS_SQL = `
 INSERT INTO all_time_metrics (
   category,
@@ -153,6 +181,10 @@ INSERT INTO all_time_metrics (
   total_blob_base_fee,
   total_blob_gas_price,
   total_blocks,
+  total_eth_price,
+  total_eth_price_samples,
+  max_eth_price,
+  min_eth_price,
   total_blob_as_calldata_fee,
   total_blob_as_calldata_gas_used,
   total_blob_as_calldata_max_fee,
@@ -173,6 +205,10 @@ SELECT
   SUM(total_blob_base_fee),
   SUM(total_blob_gas_price),
   SUM(total_blocks),
+  SUM(total_eth_price),
+  SUM(total_eth_price_samples),
+  MAX(max_eth_price),
+  MIN(min_eth_price),
   SUM(total_blob_as_calldata_fee),
   SUM(total_blob_as_calldata_gas_used),
   SUM(total_blob_as_calldata_max_fee),
@@ -203,6 +239,7 @@ export async function aggregateMetrics(
     prisma.allTimeMetrics.deleteMany(),
     prisma.$executeRawUnsafe(AGGREGATE_TX_DAILY_METRICS_SQL, to),
     prisma.$executeRawUnsafe(AGGREGATE_BLOB_DAILY_METRICS_SQL, to),
+    prisma.$executeRawUnsafe(AGGREGATE_ETH_PRICE_DAILY_METRICS_SQL, to),
     prisma.$executeRawUnsafe(AGGREGATE_ALL_TIME_METRICS_SQL),
   ]);
 }

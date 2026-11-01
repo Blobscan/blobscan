@@ -27,6 +27,7 @@ import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { SubHeader } from "~/components/SubHeader";
 import { AvgBlobBaseFeeChart } from "~/components/TimeseriesCharts/AvgBlobBaseFeeChart";
 import { AvgBlobGasPriceChart } from "~/components/TimeseriesCharts/AvgBlobGasPriceChart";
+import { EthPriceChart } from "~/components/TimeseriesCharts/EthPriceChart";
 import { TotalBlobBaseFeesChart } from "~/components/TimeseriesCharts/TotalBlobBaseFeesChart";
 import { TotalBlobGasComparisonChart } from "~/components/TimeseriesCharts/TotalBlobGasComparisonChart";
 import { TotalBlobGasUsedChart } from "~/components/TimeseriesCharts/TotalBlobGasUsedChart";
@@ -116,6 +117,9 @@ const Stats: NextPage = function () {
       "totalUniqueSenders",
       "totalBlobAsCalldataGasUsed",
       "totalBlobGasUsed",
+      "maxEthPrice",
+      "avgEthPrice",
+      "minEthPrice",
     ],
     timeFrame: "15d",
   });
@@ -458,6 +462,21 @@ const Stats: NextPage = function () {
             key="total-unique-addresses"
             dataset={globalChartDatasets}
             headerControls={buildViewLink("total-unique-addresses")}
+            isLoading={globalDatasetsLoading}
+            skeletonOpts={SKELETON_OPTS}
+            compact
+          />,
+        ],
+      },
+      {
+        id: "price",
+        title: "ETH Price Charts",
+        metrics: [],
+        charts: [
+          <EthPriceChart
+            key="eth-price"
+            dataset={globalChartDatasets}
+            headerControls={buildViewLink("eth-price")}
             isLoading={globalDatasetsLoading}
             skeletonOpts={SKELETON_OPTS}
             compact

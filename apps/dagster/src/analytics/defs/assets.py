@@ -3,6 +3,7 @@ import dagster as dg
 from analytics.defs.helpers import (
     AGGREGATE_ALL_TIME_SQL,
     AGGREGATE_BLOB_HOURLY_SQL,
+    AGGREGATE_ETH_PRICE_HOURLY_SQL,
     AGGREGATE_TX_HOURLY_SQL,
     build_aggregate_sql,
     execute_full_refresh,
@@ -71,10 +72,18 @@ rollup_condition = dg.AutomationCondition.eager().without(
 def hourly_metrics(
     context: dg.AssetExecutionContext, postgres: PostgresResource,
 ) -> dg.MaterializeResult:
-    (tx_rowcount, tx_query_ms), (blob_rowcount, blob_query_ms) = execute_sqls_window(
+    (
+        (tx_rowcount, tx_query_ms),
+        (blob_rowcount, blob_query_ms),
+        (eth_price_rowcount, eth_price_query_ms),
+    ) = execute_sqls_window(
         context=context,
         postgres=postgres,
-        sqls=[AGGREGATE_TX_HOURLY_SQL, AGGREGATE_BLOB_HOURLY_SQL],
+        sqls=[
+            AGGREGATE_TX_HOURLY_SQL,
+            AGGREGATE_BLOB_HOURLY_SQL,
+            AGGREGATE_ETH_PRICE_HOURLY_SQL,
+        ],
         table="hourly_metrics",
     )
 
@@ -85,7 +94,11 @@ def hourly_metrics(
             "blob_rows_affected": dg.MetadataValue.int(blob_rowcount),
             "blob_query_ms": dg.MetadataValue.int(blob_query_ms),
             "tx_query_ms": dg.MetadataValue.int(tx_query_ms),
-            "query_ms": dg.MetadataValue.int(tx_query_ms + blob_query_ms),
+            "eth_price_rows_affected": dg.MetadataValue.int(eth_price_rowcount),
+            "eth_price_query_ms": dg.MetadataValue.int(eth_price_query_ms),
+            "query_ms": dg.MetadataValue.int(
+                tx_query_ms + blob_query_ms + eth_price_query_ms,
+            ),
         },
     )
 

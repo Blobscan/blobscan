@@ -4,13 +4,15 @@ import type { ByteUnit } from "~/utils";
 
 export type AxisType = "count" | "average" | "time";
 
-export type AxisUnitType = "ether" | "byte";
+export type AxisUnitType = "ether" | "byte" | "fiat";
+
+export type FiatUnit = "USD";
 
 interface AxisBase {
   type: AxisType;
   unitType?: AxisUnitType;
-  unit?: EtherUnit | ByteUnit;
-  displayUnit?: EtherUnit | ByteUnit;
+  unit?: EtherUnit | ByteUnit | FiatUnit;
+  displayUnit?: EtherUnit | ByteUnit | FiatUnit;
 }
 export interface TimeAxis extends AxisBase {
   type: "time";
@@ -40,7 +42,14 @@ export interface BytesAxis extends AxisBase {
   displayUnit?: ByteUnit;
 }
 
-export type Axis = TimeAxis | UnitlessAxis | EtherAxis | BytesAxis;
+export interface FiatAxis extends AxisBase {
+  type: Exclude<AxisType, "time">;
+  unitType: "fiat";
+  unit: FiatUnit;
+  displayUnit?: never;
+}
+
+export type Axis = TimeAxis | UnitlessAxis | EtherAxis | BytesAxis | FiatAxis;
 
 export type Axes = {
   x: Axis;
