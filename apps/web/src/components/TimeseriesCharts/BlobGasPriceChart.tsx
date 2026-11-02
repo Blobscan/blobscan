@@ -1,4 +1,4 @@
-import { createTimeseriesChart } from "../Charts/TimeseriesChartBase";
+import { createTimeseriesChart } from "./factories";
 
 // The same shades of the primary color as the ETH price chart. The average is
 // the main line. The maximum and the minimum have a very different intensity,

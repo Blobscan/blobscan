@@ -4,9 +4,9 @@ import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { useUrlState } from "~/hooks/useUrlState";
 import { categoriesParamSchema, rollupsSchema } from "~/schemas/filters";
-import type { TimeseriesChartComponent } from "./Charts/TimeseriesChartBase";
 import { TimeseriesControlBar } from "./ControlBars/TimeseriesControlBar";
 import { Header } from "./Header";
+import type { TimeseriesChartComponent } from "./TimeseriesCharts/factories";
 
 export type TimeseriesChartPageProps = {
   chart: TimeseriesChartComponent;

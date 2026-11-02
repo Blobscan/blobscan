@@ -1,4 +1,4 @@
-import { createTimeseriesChart } from "../Charts/TimeseriesChartBase";
+import { createTimeseriesChart } from "./factories";
 
 // Shades of the primary color (see @blobscan/tailwind-config). The average is
 // the main line. The maximum and the minimum have a very different intensity,
