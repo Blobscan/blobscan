@@ -26,17 +26,11 @@ WITH base AS (
     JOIN block b ON b.hash = tx.block_hash
     JOIN address f ON f.address = tx.from_id
     JOIN address t ON t.address = tx.to_id
-    -- Use the most recent ETH/USD price at or before the block time. The price
-    -- syncer can write one price each minute, hour or day, and it can skip a
-    -- run. Thus, an exact match on the timestamp can find no price. When there
-    -- is no price, the USD fees of the transaction are NULL.
-    LEFT JOIN LATERAL (
-      SELECT eup.price
-      FROM eth_usd_price eup
-      WHERE eup.timestamp <= tx.block_timestamp
-      ORDER BY eup.timestamp DESC
-      LIMIT 1
-    ) p ON TRUE
+    -- Use only the ETH/USD price of the minute of the block, as the API does
+    -- for the USD fees of a transaction. When that minute has no price, the
+    -- USD fees of the transaction are NULL. An older price is not used, so a
+    -- stopped price syncer gives NULL values and not old prices.
+    LEFT JOIN eth_usd_price p ON p.timestamp = DATE_TRUNC('minute', tx.block_timestamp)
   WHERE tx.block_timestamp >= :from AND tx.block_timestamp < :to
     AND NOT EXISTS (
       SELECT 1 FROM transaction_fork tx_f
@@ -115,6 +109,8 @@ SELECT
   COALESCE(SUM(blob_as_calldata_max_fee)::DECIMAL, 0) AS total_blob_as_calldata_max_fee,
   COALESCE(SUM(max_fee_per_blob_gas)::DECIMAL, 0) AS total_max_blob_gas_fee,
   -- No COALESCE: the USD fees stay NULL when no transaction has a price.
+  -- SUM skips the transactions without a price, so the total is partial when
+  -- some minutes have no price.
   SUM(blob_base_fee_usd) AS total_blob_base_fee_usd,
   SUM(blob_as_calldata_fee_usd) AS total_blob_as_calldata_fee_usd,
   SUM(blob_max_fee_usd) AS total_blob_max_fee_usd

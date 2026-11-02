@@ -34,13 +34,7 @@ WITH base AS (
     JOIN block b ON b.hash = tx.block_hash
     JOIN address f ON f.address = tx.from_id
     JOIN address t ON t.address = tx.to_id
-    LEFT JOIN LATERAL (
-      SELECT eup.price
-      FROM eth_usd_price eup
-      WHERE eup.timestamp <= tx.block_timestamp
-      ORDER BY eup.timestamp DESC
-      LIMIT 1
-    ) p ON TRUE
+    LEFT JOIN eth_usd_price p ON p.timestamp = DATE_TRUNC('minute', tx.block_timestamp)
   WHERE tx.block_timestamp < $1::timestamp
     AND NOT EXISTS (
       SELECT 1 FROM transaction_fork tx_f

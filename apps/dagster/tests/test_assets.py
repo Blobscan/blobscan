@@ -63,23 +63,18 @@ DIFFERENT_PERIOD_START = datetime(2024, 6, 1, 0, 0, 0, tzinfo=UTC)
 
 _FIXTURES = json.loads((Path(__file__).parent / "db-fixtures.json").read_text())
 
-_ETH_USD_PRICES = sorted(
-    (datetime.fromisoformat(p["timestamp"]), Decimal(p["price"]))
+_ETH_USD_PRICES = {
+    datetime.fromisoformat(p["timestamp"]): Decimal(p["price"])
     for p in _FIXTURES["ethUsdPrices"]
-)
+}
 
 # The USD columns are DOUBLE PRECISION, so each stored sum is rounded.
 _USD_REL_TOLERANCE = 1e-12
 
 
 def _eth_usd_price_at(ts: datetime) -> Decimal | None:
-    """Return the most recent fixture ETH/USD price at or before ``ts``."""
-    price = None
-    for price_ts, value in _ETH_USD_PRICES:
-        if price_ts > ts:
-            break
-        price = value
-    return price
+    """Return the fixture ETH/USD price of the minute of ``ts``, if any."""
+    return _ETH_USD_PRICES.get(ts.replace(second=0, microsecond=0))
 
 
 def _wei_to_usd(wei: int, price: Decimal | None) -> Decimal | None:
@@ -834,7 +829,7 @@ class TestAllTimeTxMetricsCalculation(_AllTimeTxMetricsMixin):
 # USD fee tests
 # ---------------------------------------------------------------------------
 
-# The fixtures have no ETH/USD price before 2024-06-01.
+# The fixtures have no ETH/USD price for the minute of this transaction.
 _NO_PRICE_PARTITION_KEY = "2024-01-01T00:00"
 _NO_PRICE_PERIOD_START = datetime(2024, 1, 1, 0, 0, 0, tzinfo=UTC)
 _USD_COLUMNS = (
