@@ -31,7 +31,9 @@ INSERT INTO {{target_table}} (
   total_blob_base_fee_usd,
   total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd,
-  total_usd_priced_transactions
+  total_usd_priced_transactions,
+
+  updated_at
 )
 SELECT
   DATE_TRUNC('{{trunc}}', period_start) AS period_start,
@@ -67,7 +69,9 @@ SELECT
   SUM(total_blob_base_fee_usd) AS total_blob_base_fee_usd,
   SUM(total_blob_as_calldata_fee_usd) AS total_blob_as_calldata_fee_usd,
   SUM(total_blob_max_fee_usd) AS total_blob_max_fee_usd,
-  SUM(total_usd_priced_transactions) AS total_usd_priced_transactions
+  SUM(total_usd_priced_transactions) AS total_usd_priced_transactions,
+
+  now()
 FROM {{source_table}}
 WHERE period_start >= :from AND period_start < :to
 GROUP BY DATE_TRUNC('{{trunc}}', period_start), category, rollup
@@ -98,4 +102,6 @@ ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blob_base_fee_usd = EXCLUDED.total_blob_base_fee_usd,
   total_blob_as_calldata_fee_usd = EXCLUDED.total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd = EXCLUDED.total_blob_max_fee_usd,
-  total_usd_priced_transactions = EXCLUDED.total_usd_priced_transactions
+  total_usd_priced_transactions = EXCLUDED.total_usd_priced_transactions,
+
+  updated_at = now()

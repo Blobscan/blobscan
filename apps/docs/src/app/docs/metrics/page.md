@@ -36,3 +36,10 @@ The following metrics are provided by Blobscan:
 - **Daily transactions**: Number of transactions containing blobs per day
 - **Daily unique receivers**: Number of unique addresses that have received blobs per day
 - **Daily unique senders**: Number of unique addresses that have sent blobs per day
+
+## Current period
+
+The daily metrics include the current day, which is not complete yet. Its values are partial, and Blobscan updates them about every 10 minutes.
+
+- In the charts, the current day has a dotted line or a lighter bar. Its tooltip shows **Live** and the time of the last update.
+- In the API, set `includeCurrentPeriod=true` on the timeseries endpoint. The response gives `currentPeriod.timestamp`, the start of the current day, and `currentPeriod.updatedAt`, the time of the last update of its values. All times are in UTC.

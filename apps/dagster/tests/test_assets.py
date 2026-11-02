@@ -1129,3 +1129,51 @@ class TestReorgReaggregation:
         before = self.all_time_before[key]["total_transactions"]
         after = _query_all_time_metrics(postgres)[key]["total_transactions"]
         assert after == before - 1
+
+
+# The asset, partition key, period start and seed functions of each period.
+_UPDATED_AT_CASES = {
+    "hourly": (hourly_metrics, HOURLY_PARTITION_KEY, HOURLY_PERIOD_START, []),
+    "daily": (daily_metrics, DAILY_PARTITION_KEY, DAILY_PERIOD_START, [_seed_hourly]),
+    "weekly": (
+        weekly_metrics,
+        WEEKLY_PARTITION_KEY,
+        WEEKLY_PERIOD_START,
+        [_seed_hourly, _seed_daily],
+    ),
+    "monthly": (
+        monthly_metrics,
+        MONTHLY_PARTITION_KEY,
+        MONTHLY_PERIOD_START,
+        [_seed_hourly, _seed_daily],
+    ),
+    "yearly": (
+        yearly_metrics,
+        YEARLY_PARTITION_KEY,
+        YEARLY_PERIOD_START,
+        [_seed_hourly, _seed_daily, _seed_monthly],
+    ),
+}
+
+
+@pytest.mark.integration
+@pytest.mark.usefixtures("clean_metrics")
+class TestUpdatedAt:
+    """A new aggregation of a period sets the update time of its rows."""
+
+    @pytest.mark.parametrize("period", list(_UPDATED_AT_CASES))
+    def test_reaggregation_updates_updated_at(self, postgres, period):
+        asset, partition_key, period_start, seeds = _UPDATED_AT_CASES[period]
+        table = f"{period}_metrics"
+        for seed in seeds:
+            seed(postgres)
+        _run_asset(postgres, partition_key, asset)
+        before = _query_metrics_table(postgres, table, period_start)
+
+        _run_asset(postgres, partition_key, asset)
+        after = _query_metrics_table(postgres, table, period_start)
+
+        assert before
+        assert after.keys() == before.keys()
+        for key, row in after.items():
+            assert row["updated_at"] > before[key]["updated_at"]

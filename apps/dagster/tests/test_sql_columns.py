@@ -14,7 +14,7 @@ from sqlalchemy import text
 from analytics.defs.helpers import SQL_DIR
 from analytics.defs.resources.postgres import PostgresResource
 
-# The database writes the id. aggregate_all_time.sql writes updated_at with
+# The database writes the id. All the aggregate SQL files write updated_at with
 # now(), so it stays in the expected columns.
 _NOT_WRITTEN_COLUMNS = {"id"}
 # The ON CONFLICT target columns. all_time_metrics has no period_start.

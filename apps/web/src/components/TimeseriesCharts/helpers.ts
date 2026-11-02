@@ -51,10 +51,10 @@ export type TimeseriesDataset<T extends TimeseriesData = TimeseriesData> =
   Prettify<{
     id: DatasetId;
     /**
-     * The start of the current period when the data includes it. The current
-     * period is not complete, so its values are partial.
+     * The current period when the data includes it. The current period is not
+     * complete, so its values are partial.
      */
-    currentPeriodTimestamp?: Date;
+    currentPeriod?: T["currentPeriod"];
     source: {
       timestamp: Date[];
     } & {
@@ -126,7 +126,7 @@ export function transformToDatasets<T extends TimeseriesData>({
       id: (dimension.type === "global"
         ? "global"
         : `${dimension.type}-${dimension.name}`) as DatasetId,
-      currentPeriodTimestamp: currentPeriod?.timestamp,
+      currentPeriod,
       source: {
         timestamp: timestamps,
         ...paddedMetrics,

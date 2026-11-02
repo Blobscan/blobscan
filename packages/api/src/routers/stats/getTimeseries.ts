@@ -23,6 +23,9 @@ import {
 import { buildStatsPath } from "./helpers";
 
 const METRIC_NAMES = Object.keys(timeseriesMetricsSchema.shape);
+// timeseriesMetricsSchema omits the fields of a row that are not metrics, for
+// example periodStart and updatedAt.
+const METRIC_NAME_SET = new Set(METRIC_NAMES);
 
 const inputSchema = withStatFiltersSchema.merge(withSortFilterSchema).merge(
   z.object({
@@ -63,7 +66,7 @@ export const outputSchema = z
         })
         .optional()
         .describe(
-          "The current period, when `includeCurrentPeriod` is set and the period has data. Its values are partial."
+          "The current period, when `includeCurrentPeriod` is set and the period has data. Its values are partial. `updatedAt` is the time of the last update of its values."
         ),
     }),
   })
@@ -75,8 +78,6 @@ type MetricsRow = Record<string, unknown> & {
   category: Category | null;
   rollup: Rollup | null;
 };
-
-const NON_METRIC_FIELDS = ["periodStart", "category", "rollup", "id"];
 
 // The current period cache is short because Dagster updates the current
 // period every 10 minutes.
@@ -165,8 +166,8 @@ function getSeriesInfo({
 }
 
 function getMetricEntries(row: Record<string, unknown>) {
-  return Object.entries(row).filter(
-    ([field]) => !NON_METRIC_FIELDS.includes(field)
+  return Object.entries(row).filter(([field]) =>
+    METRIC_NAME_SET.has(field)
   ) as [keyof MetricsSeriesSchema, unknown][];
 }
 
@@ -336,7 +337,9 @@ const getCurrentPeriodRows = cacheTRPCQuery(
     input: ClosedPeriodsInput & { periodStart: Date };
   }): Promise<MetricsRow[]> =>
     prisma.dailyMetrics.findMany({
-      select: statFilters.select,
+      // The update time of the current period is not a metric, so the metrics
+      // filter does not select it.
+      select: statFilters.select && { ...statFilters.select, updatedAt: true },
       where: {
         ...statFilters.where,
         periodStart,
@@ -436,7 +439,17 @@ function addCurrentPeriod(
     timestamps.unshift(timestamp);
   }
 
-  output.data.currentPeriod = { timestamp };
+  // Dagster updates the rows of a period together, but each row has its own
+  // update time. The latest one is the time of the last update.
+  const updatedAt = rows.reduce<Date | undefined>(
+    (latest, { updatedAt }) =>
+      updatedAt instanceof Date && (!latest || updatedAt > latest)
+        ? updatedAt
+        : latest,
+    undefined
+  );
+
+  output.data.currentPeriod = { timestamp, updatedAt };
 
   return output;
 }

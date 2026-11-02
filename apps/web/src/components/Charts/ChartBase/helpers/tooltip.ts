@@ -4,11 +4,14 @@ import type {
   TooltipComponentOption,
 } from "echarts";
 
+import dayjs from "@blobscan/dayjs";
+
 import { calculatePercentage, getNeighbouringElements } from "~/utils";
 import type { Numerish } from "~/utils";
 import { aggregateValues } from "../../../TimeseriesCharts/helpers";
 import type { Axes, Axis, StandardEncoding } from "../types";
-import { getCurrentPeriodLabel, isCurrentPeriodSeries } from "./current-period";
+import { isCurrentPeriodSeries } from "./current-period";
+import type { CurrentPeriod } from "./current-period";
 import { formatAxisValue, formatSeriesName } from "./formatters";
 
 export function isStandardEncoding(value: unknown): value is StandardEncoding {
@@ -72,7 +75,7 @@ function getValue(
   return toNumerish(param.value);
 }
 
-function buildSeriesHtmlElement({
+function buildSeriesHTMLElement({
   name,
   value,
   axis,
@@ -132,13 +135,43 @@ function isCurrentPeriod(
     return false;
   }
 
-  const { axisValue } = param as { axisValue?: unknown };
+  // An axis tooltip gives the x value in axisValue. An item tooltip gives it in
+  // name.
+  const { axisValue, name } = param as { axisValue?: unknown; name?: string };
+  const xValue = axisValue ?? (name || undefined);
 
   return (
-    axisValue !== undefined &&
-    new Date(axisValue as number | string).getTime() ===
+    xValue !== undefined &&
+    new Date(xValue as number | string).getTime() ===
       currentPeriodTimestamp.getTime()
   );
+}
+
+// The tooltip HTML is not React, so the pulse animation has its own keyframes.
+// The pulse moves only when the user does not stop animations.
+const LIVE_PULSE_STYLE = `<style>
+  @keyframes live-pulse {
+    75%, 100% { transform: scale(2); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .live-pulse { animation: live-pulse 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
+  }
+</style>`;
+
+// A red pulse and "Live" next to the date of the current period. The values of
+// the current period are not complete, and the backend updates them during the
+// period.
+function buildLiveIndicatorHTMLElement(themeMode: "light" | "dark") {
+  const color = themeMode === "dark" ? "#F87171" : "#DC2626";
+
+  return `${LIVE_PULSE_STYLE}
+  <span style="display: inline-flex; align-items: center; gap: 6px; color: ${color}; font-size: 0.70rem; font-weight: 500;">
+    <span style="position: relative; display: inline-flex; width: 8px; height: 8px;">
+      <span class="live-pulse" style="position: absolute; display: inline-flex; width: 100%; height: 100%; border-radius: 9999px; opacity: 0.75; background-color: ${color};"></span>
+      <span style="position: relative; display: inline-flex; width: 8px; height: 8px; border-radius: 9999px; background-color: ${color};"></span>
+    </span>
+    Live
+  </span>`;
 }
 
 function createTooltipFormater({
@@ -146,7 +179,7 @@ function createTooltipFormater({
   axes,
   themeMode,
   displayTotal,
-  currentPeriodTimestamp,
+  currentPeriod,
   getSeriesValue,
 }: {
   currentSeriesRef: MutableRefObject<{
@@ -156,7 +189,7 @@ function createTooltipFormater({
   axes: Axes;
   themeMode: "light" | "dark";
   displayTotal?: boolean;
-  currentPeriodTimestamp?: Date;
+  currentPeriod?: CurrentPeriod;
   getSeriesValue?: SeriesValueGetter;
 }) {
   return (
@@ -174,7 +207,6 @@ function createTooltipFormater({
       : allParamOrParams;
 
     let dateHTMLElement: string | undefined;
-    let periodLabelHTMLElement: string | undefined;
     const seriesHTMLElements: string[] = [];
     const totalSeriesHTMLElements: string[] = [];
 
@@ -215,10 +247,6 @@ function createTooltipFormater({
           ? formatAxisValue(date, axes.x)
           : "-";
 
-      if (isCurrentPeriod(paramOrParams[0], currentPeriodTimestamp)) {
-        periodLabelHTMLElement = getCurrentPeriodLabel("day");
-      }
-
       filteredParams.map((p) => {
         const { seriesName, value, color } = p;
         const currentSeriesName = seriesName?.toLowerCase();
@@ -234,7 +262,7 @@ function createTooltipFormater({
         const formattedName = formatSeriesName(seriesName);
 
         seriesHTMLElements.push(
-          buildSeriesHtmlElement({
+          buildSeriesHTMLElement({
             name: formattedName,
             value: getValue(p, getSeriesValue),
             total: dailyTotal,
@@ -254,7 +282,7 @@ function createTooltipFormater({
           );
 
           totalSeriesHTMLElements.push(
-            buildSeriesHtmlElement({
+            buildSeriesHTMLElement({
               name: "Rollup",
               value: rollupTotal,
               axis: axes.y,
@@ -265,7 +293,7 @@ function createTooltipFormater({
         }
 
         totalSeriesHTMLElements.push(
-          buildSeriesHtmlElement({
+          buildSeriesHTMLElement({
             name: "Total",
             value: dailyTotal,
             axis: axes.y,
@@ -279,7 +307,7 @@ function createTooltipFormater({
       const formattedName = formatSeriesName(seriesName);
 
       seriesHTMLElements.push(
-        buildSeriesHtmlElement({
+        buildSeriesHTMLElement({
           name: formattedName,
           value: (value as number | string) ?? 0,
           axis: axes.y,
@@ -292,18 +320,41 @@ function createTooltipFormater({
       dateHTMLElement = name ? formatAxisValue(name, axes.x).toString() : "-";
     }
 
+    const isCurrentPeriodHovered = isCurrentPeriod(
+      Array.isArray(paramOrParams) ? paramOrParams[0] : paramOrParams,
+      currentPeriod?.timestamp
+    );
+    let currentPeriodLabel: string | undefined;
+
+    if (isCurrentPeriodHovered) {
+      // Get the relative time on each hover, so it does not stay at the time
+      // of the render.
+      currentPeriodLabel = currentPeriod?.updatedAt
+        ? `Times in UTC · Updated ${dayjs(currentPeriod.updatedAt).fromNow()}`
+        : "Times in UTC";
+    }
+
+    const dateHeaderHTMLElement = `<div style="color: ${
+      themeMode === "dark" ? "#FFFFFF" : "#171717"
+    }; font-weight: bold;">
+            ${dateHTMLElement}
+            </div>`;
+
     return `
           <div style="display: flex; flex-direction: column; gap: 2px;">
-            <div style="color: ${
-              themeMode === "dark" ? "#FFFFFF" : "#171717"
-            }; font-weight: bold;">
-            ${dateHTMLElement}
-            </div>
             ${
-              periodLabelHTMLElement
+              isCurrentPeriodHovered
+                ? `<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+              ${dateHeaderHTMLElement}
+              ${buildLiveIndicatorHTMLElement(themeMode)}
+            </div>`
+                : dateHeaderHTMLElement
+            }
+            ${
+              currentPeriodLabel
                 ? `<div style="color: ${
                     themeMode === "dark" ? "#A3A3A3" : "#525252"
-                  }; font-size: 0.70rem;">${periodLabelHTMLElement}</div>`
+                  }; font-size: 0.70rem;">${currentPeriodLabel}</div>`
                 : ""
             }
             <div style="display: flex; flex-direction: column; gap: 2px; width: 100%;">
@@ -331,7 +382,7 @@ export function createBaseTooltipOptions({
   displayTotal,
   axes,
   themeMode,
-  currentPeriodTimestamp,
+  currentPeriod,
   getSeriesValue,
 }: {
   currentSeriesRef: MutableRefObject<{
@@ -341,7 +392,7 @@ export function createBaseTooltipOptions({
   axes: Axes;
   displayTotal?: boolean;
   themeMode: "light" | "dark";
-  currentPeriodTimestamp?: Date;
+  currentPeriod?: CurrentPeriod;
   /**
    * Returns the tooltip value of a data point. The tooltip uses the encoded
    * value when it returns undefined.
@@ -359,7 +410,7 @@ export function createBaseTooltipOptions({
       axes,
       themeMode,
       displayTotal,
-      currentPeriodTimestamp,
+      currentPeriod,
       getSeriesValue,
     }),
   };

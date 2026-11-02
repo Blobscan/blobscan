@@ -26,7 +26,9 @@ INSERT INTO hourly_metrics (
   total_blobs,
   total_unique_blobs,
   total_blob_size,
-  total_blob_usage_size
+  total_blob_usage_size,
+
+  updated_at
 )
 SELECT
   period_start,
@@ -40,7 +42,9 @@ SELECT
     END
   ) AS total_unique_blobs,
   COALESCE(SUM(size), 0) AS total_blob_size,
-  COALESCE(SUM(usage_size), 0) AS total_blob_usage_size
+  COALESCE(SUM(usage_size), 0) AS total_blob_usage_size,
+
+  now()
 FROM base
 GROUP BY GROUPING SETS (
   (period_start, category),
@@ -55,4 +59,6 @@ ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blobs = EXCLUDED.total_blobs,
   total_unique_blobs = EXCLUDED.total_unique_blobs,
   total_blob_size = EXCLUDED.total_blob_size,
-  total_blob_usage_size = EXCLUDED.total_blob_usage_size
+  total_blob_usage_size = EXCLUDED.total_blob_usage_size,
+
+  updated_at = now()
