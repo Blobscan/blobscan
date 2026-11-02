@@ -7,6 +7,10 @@
       "enabled": false
     }
   ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 5am on monday"]
+  },
   "updateInternalDeps": true,
   "rangeStrategy": "bump"
 }
