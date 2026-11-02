@@ -471,7 +471,35 @@ const Stats: NextPage = function () {
       {
         id: "price",
         title: "ETH Price Charts",
-        metrics: [],
+        metrics: [
+          {
+            name: "Max. ETH Price",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.maxEthPrice,
+                type: "fiat",
+              },
+            },
+          },
+          {
+            name: "Avg. ETH Price",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.avgEthPrice,
+                type: "fiat",
+              },
+            },
+          },
+          {
+            name: "Min. ETH Price",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.minEthPrice,
+                type: "fiat",
+              },
+            },
+          },
+        ],
         charts: [
           <EthPriceChart
             key="eth-price"
