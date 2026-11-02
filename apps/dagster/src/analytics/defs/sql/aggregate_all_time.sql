@@ -35,7 +35,8 @@ unioned AS (
     y.total_max_blob_gas_fee,
     y.total_blob_base_fee_usd,
     y.total_blob_as_calldata_fee_usd,
-    y.total_blob_max_fee_usd
+    y.total_blob_max_fee_usd,
+    y.total_usd_priced_transactions
   FROM yearly_metrics y
   CROSS JOIN cutoffs c
   WHERE y.period_start < c.cur_year
@@ -68,7 +69,8 @@ unioned AS (
     m.total_max_blob_gas_fee,
     m.total_blob_base_fee_usd,
     m.total_blob_as_calldata_fee_usd,
-    m.total_blob_max_fee_usd
+    m.total_blob_max_fee_usd,
+    m.total_usd_priced_transactions
   FROM monthly_metrics m
   CROSS JOIN cutoffs c
   WHERE m.period_start >= c.cur_year
@@ -102,7 +104,8 @@ unioned AS (
     d.total_max_blob_gas_fee,
     d.total_blob_base_fee_usd,
     d.total_blob_as_calldata_fee_usd,
-    d.total_blob_max_fee_usd
+    d.total_blob_max_fee_usd,
+    d.total_usd_priced_transactions
   FROM daily_metrics d
   CROSS JOIN cutoffs c
   WHERE d.period_start >= c.cur_month
@@ -136,7 +139,8 @@ unioned AS (
     h.total_max_blob_gas_fee,
     h.total_blob_base_fee_usd,
     h.total_blob_as_calldata_fee_usd,
-    h.total_blob_max_fee_usd
+    h.total_blob_max_fee_usd,
+    h.total_usd_priced_transactions
   FROM hourly_metrics h
   CROSS JOIN cutoffs c
   WHERE h.period_start >= c.cur_day
@@ -171,7 +175,8 @@ aggregated AS (
     SUM(u.total_max_blob_gas_fee)           AS total_max_blob_gas_fee,
     SUM(u.total_blob_base_fee_usd)          AS total_blob_base_fee_usd,
     SUM(u.total_blob_as_calldata_fee_usd)   AS total_blob_as_calldata_fee_usd,
-    SUM(u.total_blob_max_fee_usd)           AS total_blob_max_fee_usd
+    SUM(u.total_blob_max_fee_usd)           AS total_blob_max_fee_usd,
+    SUM(u.total_usd_priced_transactions)    AS total_usd_priced_transactions
   FROM unioned u
   GROUP BY u.category, u.rollup
 )
@@ -204,6 +209,7 @@ INSERT INTO all_time_metrics (
   total_blob_base_fee_usd,
   total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd,
+  total_usd_priced_transactions,
   updated_at
 )
 SELECT
@@ -231,6 +237,7 @@ SELECT
   total_blob_base_fee_usd,
   total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd,
+  total_usd_priced_transactions,
   now()
 FROM aggregated
 ON CONFLICT (category, rollup)
@@ -259,5 +266,6 @@ DO UPDATE SET
   total_blob_base_fee_usd = EXCLUDED.total_blob_base_fee_usd,
   total_blob_as_calldata_fee_usd = EXCLUDED.total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd = EXCLUDED.total_blob_max_fee_usd,
+  total_usd_priced_transactions = EXCLUDED.total_usd_priced_transactions,
 
   updated_at = now();

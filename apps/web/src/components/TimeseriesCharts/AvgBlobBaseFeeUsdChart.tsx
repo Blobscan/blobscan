@@ -24,6 +24,6 @@ export const AvgBlobBaseFeeUsdChart = createTimeseriesChart({
       },
     },
   },
-  requiredMetrics: ["totalBlobBaseFeeUsd", "totalTransactions"],
+  requiredMetrics: ["totalBlobBaseFeeUsd", "totalUsdPricedTransactions"],
   componentName: "AvgBlobBaseFeeUsdChart",
 });

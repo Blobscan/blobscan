@@ -70,7 +70,8 @@ INSERT INTO daily_metrics (
   total_max_blob_gas_fee,
   total_blob_base_fee_usd,
   total_blob_as_calldata_fee_usd,
-  total_blob_max_fee_usd
+  total_blob_max_fee_usd,
+  total_usd_priced_transactions
 )
 SELECT
   base.period_start,
@@ -94,7 +95,8 @@ SELECT
   COALESCE(SUM(max_fee_per_blob_gas)::DECIMAL, 0),
   SUM(blob_base_fee_usd),
   SUM(blob_as_calldata_fee_usd),
-  SUM(blob_max_fee_usd)
+  SUM(blob_max_fee_usd),
+  COUNT(blob_base_fee_usd)::INT
 FROM base JOIN block_metric ON base.period_start = block_metric.period_start
 GROUP BY GROUPING SETS (
   (base.period_start, category),
@@ -210,7 +212,8 @@ INSERT INTO all_time_metrics (
   total_max_blob_gas_fee,
   total_blob_base_fee_usd,
   total_blob_as_calldata_fee_usd,
-  total_blob_max_fee_usd
+  total_blob_max_fee_usd,
+  total_usd_priced_transactions
 )
 SELECT
   category,
@@ -237,7 +240,8 @@ SELECT
   SUM(total_max_blob_gas_fee),
   SUM(total_blob_base_fee_usd),
   SUM(total_blob_as_calldata_fee_usd),
-  SUM(total_blob_max_fee_usd)
+  SUM(total_blob_max_fee_usd),
+  SUM(total_usd_priced_transactions)
 FROM daily_metrics
 GROUP BY category, rollup
 `;

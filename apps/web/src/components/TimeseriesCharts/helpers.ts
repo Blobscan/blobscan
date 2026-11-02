@@ -142,11 +142,12 @@ export function transformToDatasets<T extends TimeseriesData>({
  * metrics of its dataset: the numerator divided by the denominator.
  */
 export const DERIVED_METRICS = {
-  // The database has no USD averages. This is the same calculation as the
-  // generated avg_blob_base_fee column.
+  // The database has no USD averages. The divisor is the count of the
+  // transactions that have a USD fee, not totalTransactions: a transaction
+  // with no ETH/USD price is not in totalBlobBaseFeeUsd.
   avgBlobBaseFeeUsd: {
     numerator: "totalBlobBaseFeeUsd",
-    denominator: "totalTransactions",
+    denominator: "totalUsdPricedTransactions",
   },
 } as const satisfies Record<
   string,

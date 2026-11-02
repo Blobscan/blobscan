@@ -73,7 +73,8 @@ INSERT INTO hourly_metrics (
   total_max_blob_gas_fee,
   total_blob_base_fee_usd,
   total_blob_as_calldata_fee_usd,
-  total_blob_max_fee_usd
+  total_blob_max_fee_usd,
+  total_usd_priced_transactions
 )
 SELECT
   base.period_start,
@@ -113,7 +114,10 @@ SELECT
   -- some minutes have no price.
   SUM(blob_base_fee_usd) AS total_blob_base_fee_usd,
   SUM(blob_as_calldata_fee_usd) AS total_blob_as_calldata_fee_usd,
-  SUM(blob_max_fee_usd) AS total_blob_max_fee_usd
+  SUM(blob_max_fee_usd) AS total_blob_max_fee_usd,
+  -- The divisor of a USD average. total_transactions also counts the
+  -- transactions without a price, and these are not in the USD totals.
+  COUNT(blob_base_fee_usd)::INT AS total_usd_priced_transactions
 FROM base JOIN block_metric ON base.period_start = block_metric.period_start
 GROUP BY GROUPING SETS (
   (base.period_start, category),
@@ -140,4 +144,5 @@ ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_max_blob_gas_fee = EXCLUDED.total_max_blob_gas_fee,
   total_blob_base_fee_usd = EXCLUDED.total_blob_base_fee_usd,
   total_blob_as_calldata_fee_usd = EXCLUDED.total_blob_as_calldata_fee_usd,
-  total_blob_max_fee_usd = EXCLUDED.total_blob_max_fee_usd
+  total_blob_max_fee_usd = EXCLUDED.total_blob_max_fee_usd,
+  total_usd_priced_transactions = EXCLUDED.total_usd_priced_transactions

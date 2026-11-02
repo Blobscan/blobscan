@@ -66,6 +66,7 @@ describe("getOverall", () => {
             "totalUniqueBlobs": 4,
             "totalUniqueReceivers": 2,
             "totalUniqueSenders": 4,
+            "totalUsdPricedTransactions": 0,
           },
         },
         {
@@ -105,6 +106,7 @@ describe("getOverall", () => {
             "totalUniqueBlobs": 7,
             "totalUniqueReceivers": 2,
             "totalUniqueSenders": 3,
+            "totalUsdPricedTransactions": 0,
           },
         },
         {
@@ -144,6 +146,7 @@ describe("getOverall", () => {
             "totalUniqueBlobs": 0,
             "totalUniqueReceivers": 0,
             "totalUniqueSenders": 1,
+            "totalUsdPricedTransactions": 0,
           },
         },
         {
@@ -183,6 +186,7 @@ describe("getOverall", () => {
             "totalUniqueBlobs": 4,
             "totalUniqueReceivers": 1,
             "totalUniqueSenders": 1,
+            "totalUsdPricedTransactions": 0,
           },
         },
         {
@@ -222,6 +226,7 @@ describe("getOverall", () => {
             "totalUniqueBlobs": 3,
             "totalUniqueReceivers": 1,
             "totalUniqueSenders": 1,
+            "totalUsdPricedTransactions": 0,
           },
         },
         {
@@ -260,6 +265,7 @@ describe("getOverall", () => {
             "totalUniqueBlobs": 9,
             "totalUniqueReceivers": 4,
             "totalUniqueSenders": 7,
+            "totalUsdPricedTransactions": 0,
           },
         },
       ]

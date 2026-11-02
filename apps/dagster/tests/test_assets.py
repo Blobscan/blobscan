@@ -639,6 +639,17 @@ class _TxMetricsMixin:
             ]
             _assert_usd_equal(row[column], _sum_usd([tx[tx_field] for tx in txs]))
 
+    def test_total_usd_priced_transactions(self, postgres):
+        result = self._result(postgres)
+        for (cat, rollup), row in result.items():
+            expected = sum(
+                1 for tx in self._txs
+                if (cat is None or tx["category"] == cat)
+                and (rollup is None or (tx["rollup"] or "").lower() == rollup)
+                and tx["blob_base_fee_usd"] is not None
+            )
+            assert row["total_usd_priced_transactions"] == expected
+
 
 class _EthPriceMetricsMixin:
     """Mixin providing ETH price metric test cases.
@@ -1024,6 +1035,7 @@ class TestUsdFeesWithoutPrice:
             assert row["total_blob_base_fee"] > 0
             for column in _USD_COLUMNS:
                 assert row[column] is None
+            assert row["total_usd_priced_transactions"] == 0
 
 
 # ---------------------------------------------------------------------------

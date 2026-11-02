@@ -95,15 +95,19 @@ model AllTimeMetrics {
   // USD counters. Each transaction fee is converted at the ETH/USD price of
   // the minute of its block, and then added. A transaction with no price for
   // its minute is not included. NULL when no transaction has a price.
-  // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
-  // and a USD value has a fractional part.
+  // The fees are Float, not Decimal: the API changes a Decimal value to a
+  // BigInt, and a USD value has a fractional part.
+  // totalUsdPricedTransactions is the count of the transactions that have a
+  // USD fee. Use it, not totalTransactions, to divide a USD total.
 
   /// @zod.number.nonnegative()
-  totalBlobBaseFeeUsd       Float? @map("total_blob_base_fee_usd")
+  totalBlobBaseFeeUsd        Float? @map("total_blob_base_fee_usd")
   /// @zod.number.nonnegative()
-  totalBlobAsCalldataFeeUsd Float? @map("total_blob_as_calldata_fee_usd")
+  totalBlobAsCalldataFeeUsd  Float? @map("total_blob_as_calldata_fee_usd")
   /// @zod.number.nonnegative()
-  totalBlobMaxFeeUsd        Float? @map("total_blob_max_fee_usd")
+  totalBlobMaxFeeUsd         Float? @map("total_blob_max_fee_usd")
+  /// @zod.number.int().nonnegative()
+  totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
   @@unique([category, rollup])
   @@map("all_time_metrics")
@@ -190,15 +194,19 @@ model HourlyMetrics {
   // USD counters. Each transaction fee is converted at the ETH/USD price of
   // the minute of its block, and then added. A transaction with no price for
   // its minute is not included. NULL when no transaction has a price.
-  // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
-  // and a USD value has a fractional part.
+  // The fees are Float, not Decimal: the API changes a Decimal value to a
+  // BigInt, and a USD value has a fractional part.
+  // totalUsdPricedTransactions is the count of the transactions that have a
+  // USD fee. Use it, not totalTransactions, to divide a USD total.
 
   /// @zod.number.nonnegative()
-  totalBlobBaseFeeUsd       Float? @map("total_blob_base_fee_usd")
+  totalBlobBaseFeeUsd        Float? @map("total_blob_base_fee_usd")
   /// @zod.number.nonnegative()
-  totalBlobAsCalldataFeeUsd Float? @map("total_blob_as_calldata_fee_usd")
+  totalBlobAsCalldataFeeUsd  Float? @map("total_blob_as_calldata_fee_usd")
   /// @zod.number.nonnegative()
-  totalBlobMaxFeeUsd        Float? @map("total_blob_max_fee_usd")
+  totalBlobMaxFeeUsd         Float? @map("total_blob_max_fee_usd")
+  /// @zod.number.int().nonnegative()
+  totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
   @@unique([periodStart, category, rollup])
   @@map("hourly_metrics")
@@ -289,15 +297,19 @@ model DailyMetrics {
   // USD counters. Each transaction fee is converted at the ETH/USD price of
   // the minute of its block, and then added. A transaction with no price for
   // its minute is not included. NULL when no transaction has a price.
-  // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
-  // and a USD value has a fractional part.
+  // The fees are Float, not Decimal: the API changes a Decimal value to a
+  // BigInt, and a USD value has a fractional part.
+  // totalUsdPricedTransactions is the count of the transactions that have a
+  // USD fee. Use it, not totalTransactions, to divide a USD total.
 
   /// @zod.number.nonnegative()
-  totalBlobBaseFeeUsd       Float? @map("total_blob_base_fee_usd")
+  totalBlobBaseFeeUsd        Float? @map("total_blob_base_fee_usd")
   /// @zod.number.nonnegative()
-  totalBlobAsCalldataFeeUsd Float? @map("total_blob_as_calldata_fee_usd")
+  totalBlobAsCalldataFeeUsd  Float? @map("total_blob_as_calldata_fee_usd")
   /// @zod.number.nonnegative()
-  totalBlobMaxFeeUsd        Float? @map("total_blob_max_fee_usd")
+  totalBlobMaxFeeUsd         Float? @map("total_blob_max_fee_usd")
+  /// @zod.number.int().nonnegative()
+  totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
   @@unique([periodStart, category, rollup])
   @@map("daily_metrics")
@@ -387,15 +399,19 @@ model WeeklyMetrics {
   // USD counters. Each transaction fee is converted at the ETH/USD price of
   // the minute of its block, and then added. A transaction with no price for
   // its minute is not included. NULL when no transaction has a price.
-  // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
-  // and a USD value has a fractional part.
+  // The fees are Float, not Decimal: the API changes a Decimal value to a
+  // BigInt, and a USD value has a fractional part.
+  // totalUsdPricedTransactions is the count of the transactions that have a
+  // USD fee. Use it, not totalTransactions, to divide a USD total.
 
   /// @zod.number.nonnegative()
-  totalBlobBaseFeeUsd       Float? @map("total_blob_base_fee_usd")
+  totalBlobBaseFeeUsd        Float? @map("total_blob_base_fee_usd")
   /// @zod.number.nonnegative()
-  totalBlobAsCalldataFeeUsd Float? @map("total_blob_as_calldata_fee_usd")
+  totalBlobAsCalldataFeeUsd  Float? @map("total_blob_as_calldata_fee_usd")
   /// @zod.number.nonnegative()
-  totalBlobMaxFeeUsd        Float? @map("total_blob_max_fee_usd")
+  totalBlobMaxFeeUsd         Float? @map("total_blob_max_fee_usd")
+  /// @zod.number.int().nonnegative()
+  totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
   @@unique([periodStart, category, rollup])
   @@map("weekly_metrics")
@@ -486,15 +502,19 @@ model MonthlyMetrics {
   // USD counters. Each transaction fee is converted at the ETH/USD price of
   // the minute of its block, and then added. A transaction with no price for
   // its minute is not included. NULL when no transaction has a price.
-  // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
-  // and a USD value has a fractional part.
+  // The fees are Float, not Decimal: the API changes a Decimal value to a
+  // BigInt, and a USD value has a fractional part.
+  // totalUsdPricedTransactions is the count of the transactions that have a
+  // USD fee. Use it, not totalTransactions, to divide a USD total.
 
   /// @zod.number.nonnegative()
-  totalBlobBaseFeeUsd       Float? @map("total_blob_base_fee_usd")
+  totalBlobBaseFeeUsd        Float? @map("total_blob_base_fee_usd")
   /// @zod.number.nonnegative()
-  totalBlobAsCalldataFeeUsd Float? @map("total_blob_as_calldata_fee_usd")
+  totalBlobAsCalldataFeeUsd  Float? @map("total_blob_as_calldata_fee_usd")
   /// @zod.number.nonnegative()
-  totalBlobMaxFeeUsd        Float? @map("total_blob_max_fee_usd")
+  totalBlobMaxFeeUsd         Float? @map("total_blob_max_fee_usd")
+  /// @zod.number.int().nonnegative()
+  totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
   @@unique([periodStart, category, rollup])
   @@map("monthly_metrics")
@@ -584,15 +604,19 @@ model YearlyMetrics {
   // USD counters. Each transaction fee is converted at the ETH/USD price of
   // the minute of its block, and then added. A transaction with no price for
   // its minute is not included. NULL when no transaction has a price.
-  // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
-  // and a USD value has a fractional part.
+  // The fees are Float, not Decimal: the API changes a Decimal value to a
+  // BigInt, and a USD value has a fractional part.
+  // totalUsdPricedTransactions is the count of the transactions that have a
+  // USD fee. Use it, not totalTransactions, to divide a USD total.
 
   /// @zod.number.nonnegative()
-  totalBlobBaseFeeUsd       Float? @map("total_blob_base_fee_usd")
+  totalBlobBaseFeeUsd        Float? @map("total_blob_base_fee_usd")
   /// @zod.number.nonnegative()
-  totalBlobAsCalldataFeeUsd Float? @map("total_blob_as_calldata_fee_usd")
+  totalBlobAsCalldataFeeUsd  Float? @map("total_blob_as_calldata_fee_usd")
   /// @zod.number.nonnegative()
-  totalBlobMaxFeeUsd        Float? @map("total_blob_max_fee_usd")
+  totalBlobMaxFeeUsd         Float? @map("total_blob_max_fee_usd")
+  /// @zod.number.int().nonnegative()
+  totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
   @@unique([periodStart, category, rollup])
   @@map("yearly_metrics")

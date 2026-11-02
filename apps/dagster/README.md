@@ -77,7 +77,9 @@ rolls it up into `daily_metrics`, `weekly_metrics`, `monthly_metrics`,
 - The `*_usd` fee columns use the `eth_usd_price` row of the minute of each
   transaction's block, as the API does. A transaction with no price for its
   minute adds nothing, so the total is partial when minutes are missing, and
-  `NULL` when no transaction in the group has a price. The price syncer must
+  `NULL` when no transaction in the group has a price.
+  `total_usd_priced_transactions` counts the transactions that have a price.
+  Divide a USD total by it, not by `total_transactions`. The price syncer must
   write one price each minute. Backfill `eth_usd_price` before you backfill
   the metrics.
 
