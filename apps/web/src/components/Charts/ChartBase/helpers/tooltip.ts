@@ -134,11 +134,14 @@ function isCurrentPeriod(
     return false;
   }
 
-  const { axisValue } = param as { axisValue?: unknown };
+  // An axis tooltip gives the x value in axisValue. An item tooltip gives it in
+  // name.
+  const { axisValue, name } = param as { axisValue?: unknown; name?: string };
+  const xValue = axisValue ?? (name || undefined);
 
   return (
-    axisValue !== undefined &&
-    new Date(axisValue as number | string).getTime() ===
+    xValue !== undefined &&
+    new Date(xValue as number | string).getTime() ===
       currentPeriodTimestamp.getTime()
   );
 }
@@ -193,8 +196,6 @@ function createTooltipFormater({
       : allParamOrParams;
 
     let dateHTMLElement: string | undefined;
-    let isCurrentPeriodHovered = false;
-    let updatedAtHTMLElement: string | undefined;
     const seriesHTMLElements: string[] = [];
     const totalSeriesHTMLElements: string[] = [];
 
@@ -234,18 +235,6 @@ function createTooltipFormater({
           date instanceof Date)
           ? formatAxisValue(date, axes.x)
           : "-";
-
-      if (isCurrentPeriod(paramOrParams[0], currentPeriodTimestamp)) {
-        isCurrentPeriodHovered = true;
-
-        // Get the relative time on each hover, so it does not stay at the
-        // time of the render.
-        if (currentPeriodUpdatedAt) {
-          updatedAtHTMLElement = `Updated ${dayjs(
-            currentPeriodUpdatedAt
-          ).fromNow()}`;
-        }
-      }
 
       filteredParams.map((p) => {
         const { seriesName, value, color } = p;
@@ -320,6 +309,20 @@ function createTooltipFormater({
       dateHTMLElement = name ? formatAxisValue(name, axes.x).toString() : "-";
     }
 
+    const isCurrentPeriodHovered = isCurrentPeriod(
+      Array.isArray(paramOrParams) ? paramOrParams[0] : paramOrParams,
+      currentPeriodTimestamp
+    );
+    let currentPeriodLabel: string | undefined;
+
+    if (isCurrentPeriodHovered) {
+      // Get the relative time on each hover, so it does not stay at the time
+      // of the render.
+      currentPeriodLabel = currentPeriodUpdatedAt
+        ? `Times in UTC · Updated ${dayjs(currentPeriodUpdatedAt).fromNow()}`
+        : "Times in UTC";
+    }
+
     return `
           <div style="display: flex; flex-direction: column; gap: 2px;">
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
@@ -335,10 +338,10 @@ function createTooltipFormater({
               }
             </div>
             ${
-              updatedAtHTMLElement
+              currentPeriodLabel
                 ? `<div style="color: ${
                     themeMode === "dark" ? "#A3A3A3" : "#525252"
-                  }; font-size: 0.70rem;">${updatedAtHTMLElement}</div>`
+                  }; font-size: 0.70rem;">${currentPeriodLabel}</div>`
                 : ""
             }
             <div style="display: flex; flex-direction: column; gap: 2px; width: 100%;">
