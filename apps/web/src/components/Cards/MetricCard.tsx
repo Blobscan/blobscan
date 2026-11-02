@@ -77,7 +77,7 @@ function parseMetricValue(
       break;
     case "ethereum":
       formattedValue = prettyFormatWei(value, {
-        numberFormatOpts: { notation: "standard" },
+        numberFormatOpts: { notation: "standard", ...numberFormatOpts },
       });
       break;
     case "fiat":
