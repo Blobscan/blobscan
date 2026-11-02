@@ -1,0 +1,3 @@
+# Accepted vulnerabilities for the trivy scans (.github/workflows/trivy.yml and docker_dev.yml).
+# One CVE id per line, always with a comment saying why and when to revisit:
+# CVE-0000-00000  # not reachable: <reason> (revisit YYYY-MM-DD)
