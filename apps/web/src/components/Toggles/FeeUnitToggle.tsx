@@ -75,7 +75,7 @@ export const FeeUnitToggle: FC<FeeUnitToggleProps> = ({
       type="button"
       onClick={handleClick}
       aria-label={`Show values in ${labels[getOtherUnit(selected)]}`}
-      className="-mx-1 inline-flex items-center gap-1 rounded-full px-1 py-0.5 text-xs text-icon-light transition-colors hover:text-iconHighlight-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-light dark:text-icon-dark dark:hover:text-iconHighlight-dark dark:focus-visible:ring-accent-dark"
+      className="-mx-1 inline-flex items-center gap-1 rounded-full px-1 py-0.5 text-sm text-icon-light transition-colors hover:text-iconHighlight-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-light dark:text-icon-dark dark:hover:text-iconHighlight-dark dark:focus-visible:ring-accent-dark"
     >
       {/* Both labels are in one grid cell, so the pill has the width of the
       longest one. The current label is in place, and the other one waits

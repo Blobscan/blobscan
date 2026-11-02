@@ -14,8 +14,7 @@ import { FEE_UNITS, FeeUnitToggle } from "./Toggles";
 export type TimeseriesChartPageProps = {
   chart: TimeseriesChartComponent;
   /**
-   * The same chart in USD. With it, the chart title shows an ETH/USD toggle
-   * in place of its unit.
+   * The same chart in USD. With it, the chart header shows an ETH/USD toggle.
    */
   usdChart?: TimeseriesChartComponent;
   description: ReactNode;
@@ -72,7 +71,7 @@ export const TimeseriesChartPage = function ({
           dataset={chartDatasets}
           isLoading={isLoading}
           size="2xl"
-          unitControl={
+          headerControls={
             usdChart ? (
               <FeeUnitToggle
                 unit={unit}

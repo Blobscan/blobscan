@@ -8,10 +8,7 @@ import type {
 import { FeeUnitToggle } from "../Toggles";
 import type { FeeUnit } from "../Toggles";
 
-type FeeUnitChartProps = Omit<
-  TimeseriesChartProps,
-  "headerControls" | "unitControl"
-> & {
+type FeeUnitChartProps = Omit<TimeseriesChartProps, "headerControls"> & {
   ethChart: TimeseriesChartComponent;
   usdChart: TimeseriesChartComponent;
   defaultUnit?: FeeUnit;
@@ -19,8 +16,8 @@ type FeeUnitChartProps = Omit<
 };
 
 /**
- * Shows a fee chart in ETH or in USD. The chart title has an ETH/USD toggle
- * in place of its unit.
+ * Shows a fee chart in ETH or in USD. The chart header has an ETH/USD toggle
+ * before the other header controls.
  */
 export function FeeUnitChart({
   ethChart: EthChart,
@@ -35,16 +32,18 @@ export function FeeUnitChart({
   return (
     <Chart
       {...chartProps}
-      headerControls={headerControls?.(unit)}
-      unitControl={
-        <FeeUnitToggle
-          unit={unit}
-          labels={{
-            eth: EthChart.yUnit ?? "ETH",
-            usd: UsdChart.yUnit ?? "USD",
-          }}
-          onChange={setUnit}
-        />
+      headerControls={
+        <div className="flex items-center gap-3">
+          <FeeUnitToggle
+            unit={unit}
+            labels={{
+              eth: EthChart.yUnit ?? "ETH",
+              usd: UsdChart.yUnit ?? "USD",
+            }}
+            onChange={setUnit}
+          />
+          {headerControls?.(unit)}
+        </div>
       }
     />
   );

@@ -58,12 +58,7 @@ type Range = RangeBounds & {
 export type TimeseriesChartProps = Prettify<
   Pick<
     ChartBaseProps,
-    | "headerControls"
-    | "unitControl"
-    | "compact"
-    | "size"
-    | "skeletonOpts"
-    | "isLoading"
+    "headerControls" | "compact" | "size" | "skeletonOpts" | "isLoading"
   > & {
     dataset?: TimeseriesDataset | TimeseriesDataset[];
   }
