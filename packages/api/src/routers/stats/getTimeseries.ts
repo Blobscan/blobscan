@@ -23,6 +23,9 @@ import {
 import { buildStatsPath } from "./helpers";
 
 const METRIC_NAMES = Object.keys(timeseriesMetricsSchema.shape);
+// timeseriesMetricsSchema omits the fields of a row that are not metrics, for
+// example periodStart and updatedAt.
+const METRIC_NAME_SET = new Set(METRIC_NAMES);
 
 const inputSchema = withStatFiltersSchema.merge(withSortFilterSchema).merge(
   z.object({
@@ -75,14 +78,6 @@ type MetricsRow = Record<string, unknown> & {
   category: Category | null;
   rollup: Rollup | null;
 };
-
-const NON_METRIC_FIELDS = [
-  "periodStart",
-  "category",
-  "rollup",
-  "id",
-  "updatedAt",
-];
 
 // The current period cache is short because Dagster updates the current
 // period every 10 minutes.
@@ -171,8 +166,8 @@ function getSeriesInfo({
 }
 
 function getMetricEntries(row: Record<string, unknown>) {
-  return Object.entries(row).filter(
-    ([field]) => !NON_METRIC_FIELDS.includes(field)
+  return Object.entries(row).filter(([field]) =>
+    METRIC_NAME_SET.has(field)
   ) as [keyof MetricsSeriesSchema, unknown][];
 }
 
