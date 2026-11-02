@@ -334,20 +334,22 @@ function createTooltipFormater({
         : "Times in UTC";
     }
 
+    const dateHeaderHTMLElement = `<div style="color: ${
+      themeMode === "dark" ? "#FFFFFF" : "#171717"
+    }; font-weight: bold;">
+            ${dateHTMLElement}
+            </div>`;
+
     return `
           <div style="display: flex; flex-direction: column; gap: 2px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
-              <div style="color: ${
-                themeMode === "dark" ? "#FFFFFF" : "#171717"
-              }; font-weight: bold;">
-              ${dateHTMLElement}
-              </div>
-              ${
-                isCurrentPeriodHovered
-                  ? buildLiveIndicatorHTMLElement(themeMode)
-                  : ""
-              }
-            </div>
+            ${
+              isCurrentPeriodHovered
+                ? `<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+              ${dateHeaderHTMLElement}
+              ${buildLiveIndicatorHTMLElement(themeMode)}
+            </div>`
+                : dateHeaderHTMLElement
+            }
             ${
               currentPeriodLabel
                 ? `<div style="color: ${

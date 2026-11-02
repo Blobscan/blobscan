@@ -104,6 +104,7 @@ describe("tooltip formatter", () => {
     ]) {
       expect(html).not.toContain("Live");
       expect(html).not.toContain("Times in UTC");
+      expect(html).not.toContain("justify-content: space-between; align-items");
     }
   });
 });
