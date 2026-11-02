@@ -1,5 +1,53 @@
 # @blobscan/db
 
+## 0.32.0
+
+### Minor Changes
+
+- [#1050](https://github.com/Blobscan/blobscan/pull/1050) [`ae21d79`](https://github.com/Blobscan/blobscan/commit/ae21d79f10a2e4a82d78767f49d2797e9470f120) Thanks [@PJColombo](https://github.com/PJColombo)! - Added the `maxBlobGasPrice` and `minBlobGasPrice` metrics. Dagster calculates them from the blob gas price of the blocks in each period, and the stats endpoints return them in the global dimension. The Avg. Blob Gas Price chart is now the Blob Gas Price chart: it shows the maximum, the average and the minimum, with a band between the maximum and the minimum. Its full-view page moves from `/stat/avg-blob-gas-price` to `/stat/blob-gas-price`, and the old URL redirects to the new one.
+
+  After the deploy, run a backfill of the `hourly_metrics` partitions to calculate these metrics for the old periods. The daily, weekly, monthly and yearly metrics update automatically after the hourly backfill.
+
+- [#1048](https://github.com/Blobscan/blobscan/pull/1048) [`0cb02ec`](https://github.com/Blobscan/blobscan/commit/0cb02ec3290ec5794d19aefc3341a1d55102793e) Thanks [@PJColombo](https://github.com/PJColombo)! - Added the `maxEthPrice`, `minEthPrice` and `avgEthPrice` metrics. Dagster calculates them from the ETH/USD prices for each period, and the stats endpoints return them in the global dimension. The stats page shows them in a new ETH Price chart.
+
+  After the deploy, run a backfill of the `hourly_metrics` partitions to calculate these metrics for the old periods. The daily, weekly, monthly and yearly metrics update automatically after the hourly backfill. Do the same after you load ETH prices that are more than 3 hours old (for example, after an ETH price syncer outage): the hourly catch-up schedule only calculates the last 3 hours again.
+
+- [#1049](https://github.com/Blobscan/blobscan/pull/1049) [`bc7c3a1`](https://github.com/Blobscan/blobscan/commit/bc7c3a1c29a29a8e0b77e615fbc2e4e2fcdfbd78) Thanks [@PJColombo](https://github.com/PJColombo)! - Add the USD fee metrics `totalBlobBaseFeeUsd`, `totalBlobAsCalldataFeeUsd` and `totalBlobMaxFeeUsd` to the metrics tables and to the stats endpoints. Also add `totalUsdPricedTransactions`, the count of the transactions that have a USD fee. Dagster converts the fee of each transaction at the ETH/USD price of the minute of its block, as the API does for a transaction, and then adds the results. A transaction with no price for its minute is not included, and a metric is `null` when no transaction in its group has a price.
+
+  The calldata fee metrics (`totalBlobAsCalldataFee`, `avgBlobAsCalldataFee` and `totalBlobAsCalldataFeeUsd`) now use the gas price of the transaction, not the blob gas price, as the API does for a transaction. The old values are too low.
+
+  The stats page shows the Total Blob Fees and Total Tx Fees Saved cards in USD. The Total Blob Base Fees and Avg. Blob Base Fee charts start in USD, and each chart has a toggle next to its Full View link that switches it to ETH. Their detail pages have the same toggle, and the URL keeps the unit (`?unit=usd`). The USD average is the total USD fee divided by `totalUsdPricedTransactions`, so a transaction with no price does not make the average too low. Formatted ETH amounts now show the unit as "Ether", not "ether".
+
+  The new columns are empty after the migration. The price syncer must write one price each minute (`ETH_PRICE_SYNCER_CRON_PATTERN="* * * * *"`). Backfill `eth_usd_price` back to Dencun first, and then backfill the metrics partitions.
+
+## 0.31.1
+
+### Patch Changes
+
+- [#1035](https://github.com/Blobscan/blobscan/pull/1035) [`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Resolve the remaining dependency advisories.
+
+  - Upgrade Next.js, Zod, ECharts, Turborepo, T3 env, Prisma, and Prisma instrumentation
+  - Align Prisma Client and `@prisma/instrumentation` on 6.19.3
+  - Move Prisma CLI configuration to `prisma.config.ts` so Prisma 6 resolves the existing migrations directory
+  - Override Prisma's `deepmerge-ts` dependency with the fixed `8.0.2` release
+  - Handle Prisma 6 `Uint8Array` byte fields
+  - Replace the unmaintained `zod-prisma` generator with `zod-prisma-types` for native Zod 4 support and update API imports to the generated `*Schema` names
+  - Migrate chart typings, env defaults, and generated error snapshots
+  - Add regression coverage for env validation in Vitest/CI runs
+
+- [#1035](https://github.com/Blobscan/blobscan/pull/1035) [`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Migrated the API to tRPC 11 and replaced `trpc-openapi` with `trpc-to-openapi`. Updated the web client to tRPC 11 and React Query 5, removed the temporary `trpc-openapi` patch, and aligned binary/seed data with the TypeScript 5.9 buffer types.
+
+- [#1034](https://github.com/Blobscan/blobscan/pull/1034) [`eb91310`](https://github.com/Blobscan/blobscan/commit/eb9131019e73fd48376630b5afab9eed6898b43a) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Update dependencies to remediate security advisories.
+
+  - Upgrade Sentry, OpenTelemetry, Vitest, Next.js, bee-js and storage clients
+  - Upgrade `@vercel/ncc` so the REST API bundle supports the new OpenTelemetry packages
+  - Adapt the docs Markdoc loader to Next.js 16.3's SWC bundle layers
+  - Remove the unused `@upstash/feedback` dependency
+
+- Updated dependencies [[`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc), [`eb91310`](https://github.com/Blobscan/blobscan/commit/eb9131019e73fd48376630b5afab9eed6898b43a)]:
+  - @blobscan/open-telemetry@0.0.11
+  - @blobscan/zod@0.1.1
+
 ## 0.31.0
 
 ### Minor Changes

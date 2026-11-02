@@ -10,6 +10,7 @@ Run with: pytest -m integration
 
 import json
 from datetime import UTC, datetime, timedelta
+from decimal import Decimal
 from pathlib import Path
 
 import dagster as dg
@@ -62,6 +63,36 @@ DIFFERENT_PERIOD_START = datetime(2024, 6, 1, 0, 0, 0, tzinfo=UTC)
 
 _FIXTURES = json.loads((Path(__file__).parent / "db-fixtures.json").read_text())
 
+_ETH_USD_PRICES = {
+    datetime.fromisoformat(p["timestamp"]): Decimal(p["price"])
+    for p in _FIXTURES["ethUsdPrices"]
+}
+
+# The USD columns are DOUBLE PRECISION, so each stored sum is rounded.
+_USD_REL_TOLERANCE = 1e-12
+
+
+def _eth_usd_price_at(ts: datetime) -> Decimal | None:
+    """Return the fixture ETH/USD price of the minute of ``ts``, if any."""
+    return _ETH_USD_PRICES.get(ts.replace(second=0, microsecond=0))
+
+
+def _wei_to_usd(wei: int, price: Decimal | None) -> Decimal | None:
+    return None if price is None else wei * price * Decimal("1e-18")
+
+
+def _sum_usd(values: list[Decimal | None]) -> Decimal | None:
+    """Add like SQL SUM: skip NULLs, and give NULL when all are NULL."""
+    present = [v for v in values if v is not None]
+    return sum(present) if present else None
+
+
+def _assert_usd_equal(actual: float | None, expected: Decimal | None):
+    if expected is None:
+        assert actual is None
+    else:
+        assert actual == pytest.approx(float(expected), rel=_USD_REL_TOLERANCE)
+
 
 def get_enriched_txs(
     start: datetime | None = None,
@@ -90,6 +121,7 @@ def get_enriched_txs(
         block = block_by_hash[tx["blockHash"]]
         blob_gas_price = block["blobGasPrice"]
         rollup = addr_rollup.get(tx["fromId"])
+        eth_usd_price = _eth_usd_price_at(ts)
 
         result.append({
             **tx,
@@ -99,9 +131,18 @@ def get_enriched_txs(
             "blockNumber": block["number"],
             "blob_base_fee": tx["blobGasUsed"] * blob_gas_price,
             "blob_max_fee": tx["blobGasUsed"] * tx["maxFeePerBlobGas"],
-            "blob_as_calldata_fee": tx["blobAsCalldataGasUsed"] * blob_gas_price,
+            "blob_as_calldata_fee": tx["blobAsCalldataGasUsed"] * tx["gasPrice"],
             "blob_as_calldata_max_fee": (
                 tx["blobAsCalldataGasUsed"] * tx["maxFeePerBlobGas"]
+            ),
+            "blob_base_fee_usd": _wei_to_usd(
+                tx["blobGasUsed"] * blob_gas_price, eth_usd_price,
+            ),
+            "blob_as_calldata_fee_usd": _wei_to_usd(
+                tx["blobAsCalldataGasUsed"] * tx["gasPrice"], eth_usd_price,
+            ),
+            "blob_max_fee_usd": _wei_to_usd(
+                tx["blobGasUsed"] * tx["maxFeePerBlobGas"], eth_usd_price,
             ),
         })
 
@@ -121,6 +162,22 @@ def get_enriched_blocks(
         if end is not None and ts >= end:
             continue
         result.append(block)
+    return result
+
+
+def get_eth_prices(
+    start: datetime | None = None,
+    end: datetime | None = None,
+) -> list[Decimal]:
+    """Return the fixture ETH prices whose timestamp falls in [start, end)."""
+    result = []
+    for price in _FIXTURES["ethUsdPrices"]:
+        ts = datetime.fromisoformat(price["timestamp"])
+        if start is not None and ts < start:
+            continue
+        if end is not None and ts >= end:
+            continue
+        result.append(Decimal(price["price"]))
     return result
 
 
@@ -170,6 +227,12 @@ _YEARLY_BLOCKS = get_enriched_blocks(YEARLY_PERIOD_START, YEARLY_PERIOD_END)
 _ALL_TXS = get_enriched_txs()
 _ALL_BLOBS = get_enriched_blobs(_ALL_TXS)
 _ALL_BLOCKS = get_enriched_blocks()
+_HOUR_ETH_PRICES = get_eth_prices(HOURLY_PERIOD_START, HOURLY_PERIOD_END)
+_DAILY_ETH_PRICES = get_eth_prices(DAILY_PERIOD_START, DAILY_PERIOD_END)
+_WEEKLY_ETH_PRICES = get_eth_prices(WEEKLY_PERIOD_START, WEEKLY_PERIOD_END)
+_MONTHLY_ETH_PRICES = get_eth_prices(MONTHLY_PERIOD_START, MONTHLY_PERIOD_END)
+_YEARLY_ETH_PRICES = get_eth_prices(YEARLY_PERIOD_START, YEARLY_PERIOD_END)
+_ALL_ETH_PRICES = get_eth_prices()
 
 _ADDR_MAP = {a["address"]: a for a in _FIXTURES["addresses"]}
 
@@ -445,6 +508,8 @@ class _TxMetricsMixin:
     def test_global_only_metrics_are_null_for_non_global_rows(self, postgres):
         global_only_fields = [
             "avg_blob_gas_price",
+            "max_blob_gas_price",
+            "min_blob_gas_price",
             "total_blob_gas_price",
             "total_blocks",
         ]
@@ -471,6 +536,14 @@ class _TxMetricsMixin:
     def test_total_blob_gas_price(self, postgres):
         expected = sum(b["blobGasPrice"] for b in self._blocks)
         assert self._result(postgres)[(None, None)]["total_blob_gas_price"] == expected
+
+    def test_max_blob_gas_price(self, postgres):
+        expected = max(b["blobGasPrice"] for b in self._blocks)
+        assert self._result(postgres)[(None, None)]["max_blob_gas_price"] == expected
+
+    def test_min_blob_gas_price(self, postgres):
+        expected = min(b["blobGasPrice"] for b in self._blocks)
+        assert self._result(postgres)[(None, None)]["min_blob_gas_price"] == expected
 
     def test_avg_blob_base_fee(self, postgres):
         expected = sum(tx["blob_base_fee"] for tx in self._txs) / len(self._txs)
@@ -558,6 +631,103 @@ class _TxMetricsMixin:
             self._result(postgres)[(None, None)]["total_max_blob_gas_fee"] == expected
         )
 
+    @pytest.mark.parametrize(
+        ("column", "tx_field"),
+        [
+            ("total_blob_base_fee_usd", "blob_base_fee_usd"),
+            ("total_blob_as_calldata_fee_usd", "blob_as_calldata_fee_usd"),
+            ("total_blob_max_fee_usd", "blob_max_fee_usd"),
+        ],
+    )
+    def test_total_fees_usd(self, postgres, column, tx_field):
+        result = self._result(postgres)
+        for (cat, rollup), row in result.items():
+            txs = [
+                tx for tx in self._txs
+                if (cat is None or tx["category"] == cat)
+                and (rollup is None or (tx["rollup"] or "").lower() == rollup)
+            ]
+            _assert_usd_equal(row[column], _sum_usd([tx[tx_field] for tx in txs]))
+
+    def test_total_usd_priced_transactions(self, postgres):
+        result = self._result(postgres)
+        for (cat, rollup), row in result.items():
+            expected = sum(
+                1 for tx in self._txs
+                if (cat is None or tx["category"] == cat)
+                and (rollup is None or (tx["rollup"] or "").lower() == rollup)
+                and tx["blob_base_fee_usd"] is not None
+            )
+            assert row["total_usd_priced_transactions"] == expected
+
+
+class _EthPriceMetricsMixin:
+    """Mixin providing ETH price metric test cases.
+
+    Subclasses must define:
+        _table        (str)           — metrics table to query
+        _period_start (datetime)      — period_start value to assert against
+        _prices       (list[Decimal]) — fixture ETH prices in the window
+        _seed_metrics(self, postgres) — runs all prerequisite + target assets
+    """
+
+    _prices: list[Decimal]
+    _table: str
+    _period_start: datetime
+
+    def _seed_metrics(self, postgres):
+        raise NotImplementedError
+
+    @pytest.fixture(scope="class", autouse=True)
+    def setup_metrics(self, postgres, clean_metrics):  # noqa: ARG002
+        """Seed metrics once for the entire test class."""
+        self._seed_metrics(postgres)
+
+    def _result(self, postgres):
+        return _query_metrics_table(postgres, self._table, self._period_start)
+
+    def _global_row(self, postgres):
+        return self._result(postgres)[(None, None)]
+
+    def test_window_has_eth_prices(self):
+        assert self._prices, "the fixture data must have ETH prices in the window"
+
+    def test_eth_price_metrics_are_null_for_non_global_rows(self, postgres):
+        eth_price_fields = [
+            "avg_eth_price",
+            "max_eth_price",
+            "min_eth_price",
+            "total_eth_price",
+            "total_eth_price_count",
+        ]
+        for (cat, rollup), row in self._result(postgres).items():
+            if (cat, rollup) != (None, None):
+                for field in eth_price_fields:
+                    assert row[field] is None, (
+                        f"{field} should be NULL for "
+                        f"(category={cat!r}, rollup={rollup!r})"
+                    )
+
+    def test_max_eth_price(self, postgres):
+        expected = float(max(self._prices))
+        assert self._global_row(postgres)["max_eth_price"] == pytest.approx(expected)
+
+    def test_min_eth_price(self, postgres):
+        expected = float(min(self._prices))
+        assert self._global_row(postgres)["min_eth_price"] == pytest.approx(expected)
+
+    def test_total_eth_price(self, postgres):
+        expected = float(sum(self._prices))
+        assert self._global_row(postgres)["total_eth_price"] == pytest.approx(expected)
+
+    def test_total_eth_price_count(self, postgres):
+        expected = len(self._prices)
+        assert self._global_row(postgres)["total_eth_price_count"] == expected
+
+    def test_avg_eth_price(self, postgres):
+        expected = float(sum(self._prices) / len(self._prices))
+        assert self._global_row(postgres)["avg_eth_price"] == pytest.approx(expected)
+
 
 class _AllTimeBlobMetricsMixin(_BlobMetricsMixin):
     def _result(self, postgres):
@@ -573,6 +743,11 @@ class _AllTimeTxMetricsMixin(_TxMetricsMixin):
 
     def test_no_metrics_created_for_other_periods(self, postgres):
         pass  # all_time_metrics has no period dimension
+
+
+class _AllTimeEthPriceMetricsMixin(_EthPriceMetricsMixin):
+    def _result(self, postgres):
+        return _query_all_time_metrics(postgres)
 
 
 # ---------------------------------------------------------------------------
@@ -603,6 +778,16 @@ class TestHourlyTxMetricsCalculation(_TxMetricsMixin):
         _run_asset(postgres, HOURLY_PARTITION_KEY, hourly_metrics)
 
 
+@pytest.mark.integration
+class TestHourlyEthPriceMetricsCalculation(_EthPriceMetricsMixin):
+    _table = "hourly_metrics"
+    _period_start = HOURLY_PERIOD_START
+    _prices = _HOUR_ETH_PRICES
+
+    def _seed_metrics(self, postgres):
+        _run_asset(postgres, HOURLY_PARTITION_KEY, hourly_metrics)
+
+
 # ---------------------------------------------------------------------------
 # Daily metric tests
 # ---------------------------------------------------------------------------
@@ -627,6 +812,17 @@ class TestDailyTxMetricsCalculation(_TxMetricsMixin):
     _period_start = DAILY_PERIOD_START
     _txs = _DAILY_TXS
     _blocks = _DAILY_BLOCKS
+
+    def _seed_metrics(self, postgres):
+        _seed_hourly(postgres)
+        _run_asset(postgres, DAILY_PARTITION_KEY, daily_metrics)
+
+
+@pytest.mark.integration
+class TestDailyEthPriceMetricsCalculation(_EthPriceMetricsMixin):
+    _table = "daily_metrics"
+    _period_start = DAILY_PERIOD_START
+    _prices = _DAILY_ETH_PRICES
 
     def _seed_metrics(self, postgres):
         _seed_hourly(postgres)
@@ -665,6 +861,18 @@ class TestWeeklyTxMetricsCalculation(_TxMetricsMixin):
         _run_asset(postgres, WEEKLY_PARTITION_KEY, weekly_metrics)
 
 
+@pytest.mark.integration
+class TestWeeklyEthPriceMetricsCalculation(_EthPriceMetricsMixin):
+    _table = "weekly_metrics"
+    _period_start = WEEKLY_PERIOD_START
+    _prices = _WEEKLY_ETH_PRICES
+
+    def _seed_metrics(self, postgres):
+        _seed_hourly(postgres)
+        _seed_daily(postgres)
+        _run_asset(postgres, WEEKLY_PARTITION_KEY, weekly_metrics)
+
+
 # ---------------------------------------------------------------------------
 # Monthly metric tests
 # ---------------------------------------------------------------------------
@@ -690,6 +898,18 @@ class TestMonthlyTxMetricsCalculation(_TxMetricsMixin):
     _period_start = MONTHLY_PERIOD_START
     _txs = _MONTHLY_TXS
     _blocks = _MONTHLY_BLOCKS
+
+    def _seed_metrics(self, postgres):
+        _seed_hourly(postgres)
+        _seed_daily(postgres)
+        _run_asset(postgres, MONTHLY_PARTITION_KEY, monthly_metrics)
+
+
+@pytest.mark.integration
+class TestMonthlyEthPriceMetricsCalculation(_EthPriceMetricsMixin):
+    _table = "monthly_metrics"
+    _period_start = MONTHLY_PERIOD_START
+    _prices = _MONTHLY_ETH_PRICES
 
     def _seed_metrics(self, postgres):
         _seed_hourly(postgres)
@@ -731,6 +951,19 @@ class TestYearlyTxMetricsCalculation(_TxMetricsMixin):
         _run_asset(postgres, YEARLY_PARTITION_KEY, yearly_metrics)
 
 
+@pytest.mark.integration
+class TestYearlyEthPriceMetricsCalculation(_EthPriceMetricsMixin):
+    _table = "yearly_metrics"
+    _period_start = YEARLY_PERIOD_START
+    _prices = _YEARLY_ETH_PRICES
+
+    def _seed_metrics(self, postgres):
+        _seed_hourly(postgres)
+        _seed_daily(postgres)
+        _seed_monthly(postgres)
+        _run_asset(postgres, YEARLY_PARTITION_KEY, yearly_metrics)
+
+
 # ---------------------------------------------------------------------------
 # All-time metric tests
 # ---------------------------------------------------------------------------
@@ -764,6 +997,55 @@ class TestAllTimeTxMetricsCalculation(_AllTimeTxMetricsMixin):
         _seed_monthly(postgres)
         _seed_yearly(postgres)
         all_time_metrics(postgres=postgres)
+
+
+@pytest.mark.integration
+class TestAllTimeEthPriceMetricsCalculation(_AllTimeEthPriceMetricsMixin):
+    _table = "all_time_metrics"
+    _prices = _ALL_ETH_PRICES
+
+    def _seed_metrics(self, postgres):
+        _seed_hourly(postgres)
+        _seed_daily(postgres)
+        _seed_monthly(postgres)
+        _seed_yearly(postgres)
+        all_time_metrics(postgres=postgres)
+
+
+# ---------------------------------------------------------------------------
+# USD fee tests
+# ---------------------------------------------------------------------------
+
+# The transaction of this hour is at 23:59:59. The fixtures have an ETH/USD
+# price at 23:30, in the same hour, but no price for 23:59. Thus, its USD fees
+# are NULL.
+_NO_PRICE_PARTITION_KEY = "2024-12-31T23:00"
+_NO_PRICE_PERIOD_START = datetime(2024, 12, 31, 23, 0, 0, tzinfo=UTC)
+_USD_COLUMNS = (
+    "total_blob_base_fee_usd",
+    "total_blob_as_calldata_fee_usd",
+    "total_blob_max_fee_usd",
+)
+
+
+@pytest.mark.integration
+class TestUsdFeesWithoutPrice:
+    """The USD fees are NULL, not 0, when no ETH/USD price is available."""
+
+    @pytest.fixture(scope="class", autouse=True)
+    def setup_metrics(self, postgres, clean_metrics):  # noqa: ARG002
+        _run_asset(postgres, _NO_PRICE_PARTITION_KEY, hourly_metrics)
+
+    def test_usd_fees_are_null(self, postgres):
+        result = _query_metrics_table(
+            postgres, "hourly_metrics", _NO_PRICE_PERIOD_START,
+        )
+        assert result
+        for row in result.values():
+            assert row["total_blob_base_fee"] > 0
+            for column in _USD_COLUMNS:
+                assert row[column] is None
+            assert row["total_usd_priced_transactions"] == 0
 
 
 # ---------------------------------------------------------------------------

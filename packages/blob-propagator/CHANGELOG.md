@@ -1,22 +1,40 @@
 # @blobscan/blob-propagator
 
-## 4.1.0
+## 0.11.2
+
+### Patch Changes
+
+- Updated dependencies [[`ae21d79`](https://github.com/Blobscan/blobscan/commit/ae21d79f10a2e4a82d78767f49d2797e9470f120), [`0cb02ec`](https://github.com/Blobscan/blobscan/commit/0cb02ec3290ec5794d19aefc3341a1d55102793e), [`bc7c3a1`](https://github.com/Blobscan/blobscan/commit/bc7c3a1c29a29a8e0b77e615fbc2e4e2fcdfbd78)]:
+  - @blobscan/db@0.32.0
+  - @blobscan/blob-storage-manager@0.15.1
+
+## 0.11.1
+
+### Patch Changes
+
+- Updated dependencies [[`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc), [`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc), [`18bd945`](https://github.com/Blobscan/blobscan/commit/18bd945b22118573de2288c53bd4d08ea4f51376), [`eb91310`](https://github.com/Blobscan/blobscan/commit/eb9131019e73fd48376630b5afab9eed6898b43a)]:
+  - @blobscan/blob-storage-manager@0.15.0
+  - @blobscan/db@0.31.1
+  - @blobscan/open-telemetry@0.0.11
+  - @blobscan/zod@0.1.1
+
+## 0.11.0
 
 ### Patch Changes
 
 - Updated dependencies [[`b9e38b8`](https://github.com/Blobscan/blobscan/commit/b9e38b8b90cf354ea306f543f7d8f0679a802415)]:
   - @blobscan/db@0.31.0
-  - @blobscan/blob-storage-manager@4.1.0
+  - @blobscan/blob-storage-manager@0.14.0
 
-## 4.0.0
+## 0.10.0
 
 ### Patch Changes
 
 - Updated dependencies [[`501fc9b`](https://github.com/Blobscan/blobscan/commit/501fc9b820a3390d086cbbfea272faeae007c1e5), [`d5db628`](https://github.com/Blobscan/blobscan/commit/d5db6280a013b4c6b12b7db5f743215487fcadba), [`332f0b9`](https://github.com/Blobscan/blobscan/commit/332f0b9edd8d4195223e24317101b01d479b7f85)]:
   - @blobscan/db@0.30.0
-  - @blobscan/blob-storage-manager@4.0.0
+  - @blobscan/blob-storage-manager@0.13.0
 
-## 3.0.0
+## 0.9.0
 
 ### Minor Changes
 
@@ -48,23 +66,23 @@
 ### Patch Changes
 
 - Updated dependencies [[`74b33ba`](https://github.com/Blobscan/blobscan/commit/74b33ba464a10b31127a1f395ff67ee585e2e70a)]:
-  - @blobscan/blob-storage-manager@3.0.0
+  - @blobscan/blob-storage-manager@0.12.0
   - @blobscan/db@0.29.0
 
-## 2.0.0
+## 0.8.0
 
 ### Patch Changes
 
 - Updated dependencies [[`2f38f03`](https://github.com/Blobscan/blobscan/commit/2f38f0347a86c330338f9f5cd00100dd09445901)]:
   - @blobscan/db@0.28.0
-  - @blobscan/blob-storage-manager@2.0.0
+  - @blobscan/blob-storage-manager@0.11.0
 
-## 1.0.0
+## 0.7.0
 
 ### Patch Changes
 
 - Updated dependencies [[`8c1375d`](https://github.com/Blobscan/blobscan/commit/8c1375d7230cf4ca47ef4b37237c21d748d84264), [`4541f90`](https://github.com/Blobscan/blobscan/commit/4541f904031ffbcdde29c6cded0aa173efc65251)]:
-  - @blobscan/blob-storage-manager@1.0.0
+  - @blobscan/blob-storage-manager@0.10.0
   - @blobscan/db@0.27.0
 
 ## 0.6.6

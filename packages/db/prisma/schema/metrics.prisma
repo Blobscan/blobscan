@@ -1,6 +1,7 @@
 // The avg* fields are Postgres stored generated columns. Each one is the total
 // divided by the count of the same row. The
-// 20261016000000_generate_metrics_averages migration defines them.
+// 20261016000000_generate_metrics_averages and
+// 20261102000000_add_eth_price_metrics migrations define them.
 // Prisma does not support generated columns. @default(dbgenerated()) makes the
 // fields optional in create inputs and stops `migrate` from changing them.
 // The Prisma Client types still accept these fields in create and update
@@ -24,15 +25,32 @@ model AllTimeMetrics {
   avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.number.nonnegative()
   avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
+  /// @zod.number.nonnegative()
+  avgEthPrice     Float? @default(dbgenerated()) @map("avg_eth_price")
 
   // Counters
 
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee  Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks       Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
+  /// @zod.number.nonnegative()
+  totalEthPrice      Float?   @map("total_eth_price")
+  /// @zod.number.int().nonnegative()
+  totalEthPriceCount Int?     @map("total_eth_price_count")
+
+  // Extremes
+
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  maxBlobGasPrice Decimal? @map("max_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  maxEthPrice     Float?   @map("max_eth_price")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  minBlobGasPrice Decimal? @map("min_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  minEthPrice     Float?   @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -78,6 +96,23 @@ model AllTimeMetrics {
   /// @zod.custom.use(nonNegativeDecimalSchema)
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
 
+  // USD counters. Each transaction fee is converted at the ETH/USD price of
+  // the minute of its block, and then added. A transaction with no price for
+  // its minute is not included. NULL when no transaction has a price.
+  // The fees are Float, not Decimal: the API changes a Decimal value to a
+  // BigInt, and a USD value has a fractional part.
+  // totalUsdPricedTransactions is the count of the transactions that have a
+  // USD fee. Use it, not totalTransactions, to divide a USD total.
+
+  /// @zod.number.nonnegative()
+  totalBlobBaseFeeUsd        Float? @map("total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobAsCalldataFeeUsd  Float? @map("total_blob_as_calldata_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobMaxFeeUsd         Float? @map("total_blob_max_fee_usd")
+  /// @zod.number.int().nonnegative()
+  totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
+
   @@unique([category, rollup])
   @@map("all_time_metrics")
 }
@@ -97,15 +132,32 @@ model HourlyMetrics {
   avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.number.nonnegative()
   avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
+  /// @zod.number.nonnegative()
+  avgEthPrice     Float? @default(dbgenerated()) @map("avg_eth_price")
 
   // Counters
 
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee  Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks       Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
+  /// @zod.number.nonnegative()
+  totalEthPrice      Float?   @map("total_eth_price")
+  /// @zod.number.int().nonnegative()
+  totalEthPriceCount Int?     @map("total_eth_price_count")
+
+  // Extremes
+
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  maxBlobGasPrice Decimal? @map("max_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  maxEthPrice     Float?   @map("max_eth_price")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  minBlobGasPrice Decimal? @map("min_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  minEthPrice     Float?   @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -146,6 +198,23 @@ model HourlyMetrics {
   totalUniqueSenders         Int?     @map("total_unique_senders")
   /// @zod.custom.use(nonNegativeDecimalSchema)
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
+
+  // USD counters. Each transaction fee is converted at the ETH/USD price of
+  // the minute of its block, and then added. A transaction with no price for
+  // its minute is not included. NULL when no transaction has a price.
+  // The fees are Float, not Decimal: the API changes a Decimal value to a
+  // BigInt, and a USD value has a fractional part.
+  // totalUsdPricedTransactions is the count of the transactions that have a
+  // USD fee. Use it, not totalTransactions, to divide a USD total.
+
+  /// @zod.number.nonnegative()
+  totalBlobBaseFeeUsd        Float? @map("total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobAsCalldataFeeUsd  Float? @map("total_blob_as_calldata_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobMaxFeeUsd         Float? @map("total_blob_max_fee_usd")
+  /// @zod.number.int().nonnegative()
+  totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
   @@unique([periodStart, category, rollup])
   @@map("hourly_metrics")
@@ -166,15 +235,32 @@ model DailyMetrics {
   avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.number.nonnegative()
   avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
+  /// @zod.number.nonnegative()
+  avgEthPrice     Float? @default(dbgenerated()) @map("avg_eth_price")
 
   // Counters
 
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee  Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks       Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
+  /// @zod.number.nonnegative()
+  totalEthPrice      Float?   @map("total_eth_price")
+  /// @zod.number.int().nonnegative()
+  totalEthPriceCount Int?     @map("total_eth_price_count")
+
+  // Extremes
+
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  maxBlobGasPrice Decimal? @map("max_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  maxEthPrice     Float?   @map("max_eth_price")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  minBlobGasPrice Decimal? @map("min_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  minEthPrice     Float?   @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -219,6 +305,23 @@ model DailyMetrics {
   totalUniqueSenders         Int?     @map("total_unique_senders")
   /// @zod.custom.use(nonNegativeDecimalSchema)
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
+
+  // USD counters. Each transaction fee is converted at the ETH/USD price of
+  // the minute of its block, and then added. A transaction with no price for
+  // its minute is not included. NULL when no transaction has a price.
+  // The fees are Float, not Decimal: the API changes a Decimal value to a
+  // BigInt, and a USD value has a fractional part.
+  // totalUsdPricedTransactions is the count of the transactions that have a
+  // USD fee. Use it, not totalTransactions, to divide a USD total.
+
+  /// @zod.number.nonnegative()
+  totalBlobBaseFeeUsd        Float? @map("total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobAsCalldataFeeUsd  Float? @map("total_blob_as_calldata_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobMaxFeeUsd         Float? @map("total_blob_max_fee_usd")
+  /// @zod.number.int().nonnegative()
+  totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
   @@unique([periodStart, category, rollup])
   @@map("daily_metrics")
@@ -239,14 +342,31 @@ model WeeklyMetrics {
   avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.number.nonnegative()
   avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
+  /// @zod.number.nonnegative()
+  avgEthPrice     Float? @default(dbgenerated()) @map("avg_eth_price")
 
   // Counters
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee  Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks       Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
+  /// @zod.number.nonnegative()
+  totalEthPrice      Float?   @map("total_eth_price")
+  /// @zod.number.int().nonnegative()
+  totalEthPriceCount Int?     @map("total_eth_price_count")
+
+  // Extremes
+
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  maxBlobGasPrice Decimal? @map("max_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  maxEthPrice     Float?   @map("max_eth_price")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  minBlobGasPrice Decimal? @map("min_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  minEthPrice     Float?   @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -291,6 +411,23 @@ model WeeklyMetrics {
   totalUniqueSenders         Int?     @map("total_unique_senders")
   /// @zod.custom.use(nonNegativeDecimalSchema)
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
+
+  // USD counters. Each transaction fee is converted at the ETH/USD price of
+  // the minute of its block, and then added. A transaction with no price for
+  // its minute is not included. NULL when no transaction has a price.
+  // The fees are Float, not Decimal: the API changes a Decimal value to a
+  // BigInt, and a USD value has a fractional part.
+  // totalUsdPricedTransactions is the count of the transactions that have a
+  // USD fee. Use it, not totalTransactions, to divide a USD total.
+
+  /// @zod.number.nonnegative()
+  totalBlobBaseFeeUsd        Float? @map("total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobAsCalldataFeeUsd  Float? @map("total_blob_as_calldata_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobMaxFeeUsd         Float? @map("total_blob_max_fee_usd")
+  /// @zod.number.int().nonnegative()
+  totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
   @@unique([periodStart, category, rollup])
   @@map("weekly_metrics")
@@ -311,15 +448,32 @@ model MonthlyMetrics {
   avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.number.nonnegative()
   avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
+  /// @zod.number.nonnegative()
+  avgEthPrice     Float? @default(dbgenerated()) @map("avg_eth_price")
 
   // Counters
 
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee  Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks       Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
+  /// @zod.number.nonnegative()
+  totalEthPrice      Float?   @map("total_eth_price")
+  /// @zod.number.int().nonnegative()
+  totalEthPriceCount Int?     @map("total_eth_price_count")
+
+  // Extremes
+
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  maxBlobGasPrice Decimal? @map("max_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  maxEthPrice     Float?   @map("max_eth_price")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  minBlobGasPrice Decimal? @map("min_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  minEthPrice     Float?   @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -364,6 +518,23 @@ model MonthlyMetrics {
   totalUniqueSenders         Int?     @map("total_unique_senders")
   /// @zod.custom.use(nonNegativeDecimalSchema)
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
+
+  // USD counters. Each transaction fee is converted at the ETH/USD price of
+  // the minute of its block, and then added. A transaction with no price for
+  // its minute is not included. NULL when no transaction has a price.
+  // The fees are Float, not Decimal: the API changes a Decimal value to a
+  // BigInt, and a USD value has a fractional part.
+  // totalUsdPricedTransactions is the count of the transactions that have a
+  // USD fee. Use it, not totalTransactions, to divide a USD total.
+
+  /// @zod.number.nonnegative()
+  totalBlobBaseFeeUsd        Float? @map("total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobAsCalldataFeeUsd  Float? @map("total_blob_as_calldata_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobMaxFeeUsd         Float? @map("total_blob_max_fee_usd")
+  /// @zod.number.int().nonnegative()
+  totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
   @@unique([periodStart, category, rollup])
   @@map("monthly_metrics")
@@ -384,15 +555,32 @@ model YearlyMetrics {
   avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.number.nonnegative()
   avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
+  /// @zod.number.nonnegative()
+  avgEthPrice     Float? @default(dbgenerated()) @map("avg_eth_price")
 
   // Counters
 
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee  Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks       Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
+  /// @zod.number.nonnegative()
+  totalEthPrice      Float?   @map("total_eth_price")
+  /// @zod.number.int().nonnegative()
+  totalEthPriceCount Int?     @map("total_eth_price_count")
+
+  // Extremes
+
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  maxBlobGasPrice Decimal? @map("max_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  maxEthPrice     Float?   @map("max_eth_price")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  minBlobGasPrice Decimal? @map("min_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  minEthPrice     Float?   @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -436,6 +624,23 @@ model YearlyMetrics {
   totalUniqueSenders         Int?     @map("total_unique_senders")
   /// @zod.custom.use(nonNegativeDecimalSchema)
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
+
+  // USD counters. Each transaction fee is converted at the ETH/USD price of
+  // the minute of its block, and then added. A transaction with no price for
+  // its minute is not included. NULL when no transaction has a price.
+  // The fees are Float, not Decimal: the API changes a Decimal value to a
+  // BigInt, and a USD value has a fractional part.
+  // totalUsdPricedTransactions is the count of the transactions that have a
+  // USD fee. Use it, not totalTransactions, to divide a USD total.
+
+  /// @zod.number.nonnegative()
+  totalBlobBaseFeeUsd        Float? @map("total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobAsCalldataFeeUsd  Float? @map("total_blob_as_calldata_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobMaxFeeUsd         Float? @map("total_blob_max_fee_usd")
+  /// @zod.number.int().nonnegative()
+  totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
   @@unique([periodStart, category, rollup])
   @@map("yearly_metrics")

@@ -10,7 +10,7 @@ import { useTheme } from "next-themes";
 
 import { EmptyState } from "~/components/EmptyState";
 import echarts from "~/echarts";
-import type { Size, TimeseriesDimension } from "~/types";
+import type { Size, ThemeMode, TimeseriesDimension } from "~/types";
 import { Legend } from "./Legend";
 import type { LegendItemData, LegendProps } from "./Legend";
 import {
@@ -100,7 +100,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   size = "md",
 }) {
   const { resolvedTheme } = useTheme();
-  const themeMode = resolvedTheme as "light" | "dark";
+  const themeMode = resolvedTheme as ThemeMode;
   const chartInstanceRef = useRef<EChartsReactCore | null>(null);
   const hoveredSeriesRef = useRef<{
     seriesIndex?: number;

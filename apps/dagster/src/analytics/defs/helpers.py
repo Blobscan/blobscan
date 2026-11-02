@@ -52,6 +52,9 @@ def build_aggregate_sql(source: str, target: str, trunc: str):
 
 AGGREGATE_TX_HOURLY_SQL = text((SQL_DIR / "aggregate_tx_hourly.sql").read_text())
 AGGREGATE_BLOB_HOURLY_SQL = text((SQL_DIR / "aggregate_blob_hourly.sql").read_text())
+AGGREGATE_ETH_PRICE_HOURLY_SQL = text(
+    (SQL_DIR / "aggregate_eth_price_hourly.sql").read_text(),
+)
 AGGREGATE_ALL_TIME_SQL = text((SQL_DIR / "aggregate_all_time.sql").read_text())
 
 

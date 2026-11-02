@@ -15,7 +15,12 @@ import {
 } from "~/utils";
 import { Card } from "./Card";
 
-export type MetricType = "standard" | "bytes" | "ethereum" | "percentage";
+export type MetricType =
+  | "standard"
+  | "bytes"
+  | "ethereum"
+  | "fiat"
+  | "percentage";
 
 type Metric = {
   value?: bigint | number;
@@ -72,8 +77,15 @@ function parseMetricValue(
       break;
     case "ethereum":
       formattedValue = prettyFormatWei(value, {
-        numberFormatOpts: { notation: "standard" },
+        numberFormatOpts: { notation: "standard", ...numberFormatOpts },
       });
+      break;
+    case "fiat":
+      formattedValue = `${formatNumber(value, mode, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+        ...numberFormatOpts,
+      })} USD`;
       break;
     case "percentage":
       formattedValue = `${formatNumber(value, mode, {

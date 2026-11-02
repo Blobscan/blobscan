@@ -1,4 +1,5 @@
-import { createTimeseriesChart } from "../Charts/TimeseriesChartBase";
+import { GLOBAL_MAIN_SERIES_COLOR } from "./colors";
+import { createTimeseriesChart } from "./factories";
 
 export const TotalBlocksChart = createTimeseriesChart({
   baseProps: {
@@ -9,6 +10,7 @@ export const TotalBlocksChart = createTimeseriesChart({
         name: "Total Blocks",
         type: "bar",
         metric: "totalBlocks",
+        color: GLOBAL_MAIN_SERIES_COLOR,
         stack: "total",
       },
     ],

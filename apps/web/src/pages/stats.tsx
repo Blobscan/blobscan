@@ -26,8 +26,12 @@ import {
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { SubHeader } from "~/components/SubHeader";
 import { AvgBlobBaseFeeChart } from "~/components/TimeseriesCharts/AvgBlobBaseFeeChart";
-import { AvgBlobGasPriceChart } from "~/components/TimeseriesCharts/AvgBlobGasPriceChart";
+import { AvgBlobBaseFeeUsdChart } from "~/components/TimeseriesCharts/AvgBlobBaseFeeUsdChart";
+import { BlobGasPriceChart } from "~/components/TimeseriesCharts/BlobGasPriceChart";
+import { EthPriceChart } from "~/components/TimeseriesCharts/EthPriceChart";
+import { FeeUnitChart } from "~/components/TimeseriesCharts/FeeUnitChart";
 import { TotalBlobBaseFeesChart } from "~/components/TimeseriesCharts/TotalBlobBaseFeesChart";
+import { TotalBlobBaseFeesUsdChart } from "~/components/TimeseriesCharts/TotalBlobBaseFeesUsdChart";
 import { TotalBlobGasComparisonChart } from "~/components/TimeseriesCharts/TotalBlobGasComparisonChart";
 import { TotalBlobGasUsedChart } from "~/components/TimeseriesCharts/TotalBlobGasUsedChart";
 import { TotalBlobSizeChart } from "~/components/TimeseriesCharts/TotalBlobSizeChart";
@@ -36,6 +40,7 @@ import { TotalBlobsChart } from "~/components/TimeseriesCharts/TotalBlobsChart";
 import { TotalBlocksChart } from "~/components/TimeseriesCharts/TotalBlocksChart";
 import { TotalTransactionsChart } from "~/components/TimeseriesCharts/TotalTransactionsChart";
 import { TotalUniqueAddressesChart } from "~/components/TimeseriesCharts/TotalUniqueAddressesChart";
+import type { FeeUnit } from "~/components/Toggles";
 import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
@@ -46,9 +51,13 @@ import { routes } from "~/routes";
 import { categoriesParamSchema, rollupsSchema } from "~/schemas/filters";
 import { calculatePercentage } from "~/utils";
 
-function buildViewLink(metricName: string) {
+function buildViewLink(metricName: string, unit?: FeeUnit) {
   return (
-    <Link href={routes.stat(metricName)}>
+    <Link
+      href={`${routes.stat(metricName)}${
+        unit && unit !== "eth" ? `?unit=${unit}` : ""
+      }`}
+    >
       <span className="text-sm">Full View</span>
     </Link>
   );
@@ -93,6 +102,7 @@ const Stats: NextPage = function () {
       "totalBlobUsageSize",
       "totalBlobGasUsed",
       "totalBlobBaseFee",
+      "totalBlobBaseFeeUsd",
       "totalTransactions",
       "totalUniqueReceivers",
       "totalUniqueSenders",
@@ -108,14 +118,21 @@ const Stats: NextPage = function () {
     error: globalChartsError,
   } = useTimeseriesQuery({
     metrics: [
+      "maxBlobGasPrice",
       "avgBlobGasPrice",
+      "minBlobGasPrice",
       "avgBlobBaseFee",
       "avgBlobMaxFee",
+      "totalBlobBaseFeeUsd",
+      "totalTransactions",
       "totalBlocks",
       "totalUniqueReceivers",
       "totalUniqueSenders",
       "totalBlobAsCalldataGasUsed",
       "totalBlobGasUsed",
+      "maxEthPrice",
+      "avgEthPrice",
+      "minEthPrice",
     ],
     timeFrame: "15d",
   });
@@ -278,7 +295,6 @@ const Stats: NextPage = function () {
             metric: {
               primary: {
                 value: aggregatedMetrics?.totalBlobGasUsed,
-                type: "ethereum",
               },
             },
           },
@@ -309,10 +325,34 @@ const Stats: NextPage = function () {
             // }
           },
           {
+            name: "Max. Blob Gas Price",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.maxBlobGasPrice,
+                type: "ethereum",
+                numberFormatOpts: {
+                  maximumFractionDigits: 9,
+                },
+              },
+            },
+          },
+          {
             name: "Avg. Blob Gas Price",
             metric: {
               primary: {
                 value: aggregatedMetrics?.avgBlobGasPrice,
+                type: "ethereum",
+                numberFormatOpts: {
+                  maximumFractionDigits: 9,
+                },
+              },
+            },
+          },
+          {
+            name: "Min. Blob Gas Price",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.minBlobGasPrice,
                 type: "ethereum",
                 numberFormatOpts: {
                   maximumFractionDigits: 9,
@@ -330,10 +370,10 @@ const Stats: NextPage = function () {
             skeletonOpts={SKELETON_OPTS}
             compact
           />,
-          <AvgBlobGasPriceChart
-            key="avg-blob-gas-price"
+          <BlobGasPriceChart
+            key="blob-gas-price"
             dataset={globalChartDatasets}
-            headerControls={buildViewLink("avg-blob-gas-price")}
+            headerControls={buildViewLink("blob-gas-price")}
             isLoading={globalDatasetsLoading}
             skeletonOpts={SKELETON_OPTS}
             compact
@@ -356,8 +396,8 @@ const Stats: NextPage = function () {
             name: "Total Blob Fees",
             metric: {
               primary: {
-                value: aggregatedMetrics?.totalBlobBaseFee,
-                type: "ethereum",
+                value: aggregatedMetrics?.totalBlobBaseFeeUsd,
+                type: "fiat",
               },
             },
           },
@@ -366,12 +406,12 @@ const Stats: NextPage = function () {
             metric: {
               primary: {
                 value:
-                  aggregatedMetrics?.totalBlobAsCalldataFee !== undefined &&
-                  aggregatedMetrics.totalBlobBaseFee !== undefined
-                    ? aggregatedMetrics.totalBlobAsCalldataFee -
-                      aggregatedMetrics.totalBlobBaseFee
+                  aggregatedMetrics?.totalBlobAsCalldataFeeUsd !== undefined &&
+                  aggregatedMetrics.totalBlobBaseFeeUsd !== undefined
+                    ? aggregatedMetrics.totalBlobAsCalldataFeeUsd -
+                      aggregatedMetrics.totalBlobBaseFeeUsd
                     : undefined,
-                type: "ethereum",
+                type: "fiat",
               },
             },
             // secondaryMetric={
@@ -398,18 +438,26 @@ const Stats: NextPage = function () {
           },
         ],
         charts: [
-          <TotalBlobBaseFeesChart
+          <FeeUnitChart
             key="total-blob-base-fees"
+            ethChart={TotalBlobBaseFeesChart}
+            usdChart={TotalBlobBaseFeesUsdChart}
+            defaultUnit="usd"
             dataset={selectedCategorizedChartDatasets}
-            headerControls={buildViewLink("total-blob-base-fees")}
+            headerControls={(unit) =>
+              buildViewLink("total-blob-base-fees", unit)
+            }
             isLoading={categorizedDatasetsLoading}
             skeletonOpts={SKELETON_OPTS}
             compact
           />,
-          <AvgBlobBaseFeeChart
+          <FeeUnitChart
             key="avg-blob-base-fee"
+            ethChart={AvgBlobBaseFeeChart}
+            usdChart={AvgBlobBaseFeeUsdChart}
+            defaultUnit="usd"
             dataset={globalChartDatasets}
-            headerControls={buildViewLink("avg-blob-base-fee")}
+            headerControls={(unit) => buildViewLink("avg-blob-base-fee", unit)}
             isLoading={globalDatasetsLoading}
             skeletonOpts={SKELETON_OPTS}
             compact
@@ -458,6 +506,49 @@ const Stats: NextPage = function () {
             key="total-unique-addresses"
             dataset={globalChartDatasets}
             headerControls={buildViewLink("total-unique-addresses")}
+            isLoading={globalDatasetsLoading}
+            skeletonOpts={SKELETON_OPTS}
+            compact
+          />,
+        ],
+      },
+      {
+        id: "price",
+        title: "ETH Price Charts",
+        metrics: [
+          {
+            name: "Max. ETH Price",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.maxEthPrice,
+                type: "fiat",
+              },
+            },
+          },
+          {
+            name: "Avg. ETH Price",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.avgEthPrice,
+                type: "fiat",
+              },
+            },
+          },
+          {
+            name: "Min. ETH Price",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.minEthPrice,
+                type: "fiat",
+              },
+            },
+          },
+        ],
+        charts: [
+          <EthPriceChart
+            key="eth-price"
+            dataset={globalChartDatasets}
+            headerControls={buildViewLink("eth-price")}
             isLoading={globalDatasetsLoading}
             skeletonOpts={SKELETON_OPTS}
             compact

@@ -1,5 +1,70 @@
 # @blobscan/rest-api-server
 
+## 0.18.1
+
+### Patch Changes
+
+- Updated dependencies [[`ae21d79`](https://github.com/Blobscan/blobscan/commit/ae21d79f10a2e4a82d78767f49d2797e9470f120), [`0cb02ec`](https://github.com/Blobscan/blobscan/commit/0cb02ec3290ec5794d19aefc3341a1d55102793e), [`bc7c3a1`](https://github.com/Blobscan/blobscan/commit/bc7c3a1c29a29a8e0b77e615fbc2e4e2fcdfbd78)]:
+  - @blobscan/api@0.41.0
+  - @blobscan/db@0.32.0
+  - @blobscan/blob-propagator@0.11.2
+  - @blobscan/blob-storage-manager@0.15.1
+  - @blobscan/rollups@0.9.1
+  - @blobscan/syncers@0.8.1
+
+## 0.18.0
+
+### Minor Changes
+
+- [#1037](https://github.com/Blobscan/blobscan/pull/1037) [`18bd945`](https://github.com/Blobscan/blobscan/commit/18bd945b22118573de2288c53bd4d08ea4f51376) Thanks [@PJColombo](https://github.com/PJColombo)! - Remove the Swarm stamp job.
+
+  - `SwarmStorage` reads the batch ID from `SWARM_BATCH_ID`. It does not read it from the database.
+  - `SWARM_BATCH_ID` is required when `SWARM_STORAGE_ENABLED=true`.
+  - Remove the `SWARM_STAMP_CRON_PATTERN` env variable.
+  - Remove the `blobStoragesState.getState` procedure and the Swarm fields from the app state.
+  - Remove the Swarm blob data expiry indicator from the web app.
+
+- [#1043](https://github.com/Blobscan/blobscan/pull/1043) [`18fcbaa`](https://github.com/Blobscan/blobscan/commit/18fcbaa15f134143cb39cefa102a96b12d188795) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add `/healthz` and `/readyz` endpoints for liveness and readiness probes. Readiness checks Postgres and Redis and returns `503` when either dependency is unavailable.
+
+  `/healthcheck` keeps working but is deprecated: use `/healthz` for liveness checks that must not depend on Postgres or Redis, and `/readyz` when a check should include both dependencies.
+
+### Patch Changes
+
+- [#1040](https://github.com/Blobscan/blobscan/pull/1040) [`db86816`](https://github.com/Blobscan/blobscan/commit/db86816e3da1c329e3c37236078c0faa2cc4ad5f) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fix the `web` and `api` images crashing at start with `Cannot find module 'effect'`: copy the runtime dependencies of the Prisma 6.19 CLI that runs `migrate deploy`
+
+- [#1035](https://github.com/Blobscan/blobscan/pull/1035) [`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Resolve the remaining dependency advisories.
+
+  - Upgrade Next.js, Zod, ECharts, Turborepo, T3 env, Prisma, and Prisma instrumentation
+  - Align Prisma Client and `@prisma/instrumentation` on 6.19.3
+  - Move Prisma CLI configuration to `prisma.config.ts` so Prisma 6 resolves the existing migrations directory
+  - Override Prisma's `deepmerge-ts` dependency with the fixed `8.0.2` release
+  - Handle Prisma 6 `Uint8Array` byte fields
+  - Replace the unmaintained `zod-prisma` generator with `zod-prisma-types` for native Zod 4 support and update API imports to the generated `*Schema` names
+  - Migrate chart typings, env defaults, and generated error snapshots
+  - Add regression coverage for env validation in Vitest/CI runs
+
+- [#1035](https://github.com/Blobscan/blobscan/pull/1035) [`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Migrated the API to tRPC 11 and replaced `trpc-openapi` with `trpc-to-openapi`. Updated the web client to tRPC 11 and React Query 5, removed the temporary `trpc-openapi` patch, and aligned binary/seed data with the TypeScript 5.9 buffer types.
+
+- [#1041](https://github.com/Blobscan/blobscan/pull/1041) [`2d5dabf`](https://github.com/Blobscan/blobscan/commit/2d5dabf8fd955f154c8b2a88918281fc3fbd07f7) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Replace `@vercel/ncc` with esbuild for the REST API production bundle. The ncc bundle of the tRPC 11 migration crashed at boot with `__webpack_modules__[w].call is not a function`.
+
+- [#1034](https://github.com/Blobscan/blobscan/pull/1034) [`eb91310`](https://github.com/Blobscan/blobscan/commit/eb9131019e73fd48376630b5afab9eed6898b43a) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Update dependencies to remediate security advisories.
+
+  - Upgrade Sentry, OpenTelemetry, Vitest, Next.js, bee-js and storage clients
+  - Upgrade `@vercel/ncc` so the REST API bundle supports the new OpenTelemetry packages
+  - Adapt the docs Markdoc loader to Next.js 16.3's SWC bundle layers
+  - Remove the unused `@upstash/feedback` dependency
+
+- [#1031](https://github.com/Blobscan/blobscan/pull/1031) [`7473c2d`](https://github.com/Blobscan/blobscan/commit/7473c2dd8f643a1f9fca60906c661994aa3dc19e) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Upgrade the runtime to Node.js 24 LTS, tracking the latest 24.x patch release so Node.js security fixes are picked up automatically.
+- Updated dependencies [[`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc), [`d3b4a09`](https://github.com/Blobscan/blobscan/commit/d3b4a0936cc14d896bf8b50d4c567603c85e43ac), [`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc), [`18bd945`](https://github.com/Blobscan/blobscan/commit/18bd945b22118573de2288c53bd4d08ea4f51376), [`18fcbaa`](https://github.com/Blobscan/blobscan/commit/18fcbaa15f134143cb39cefa102a96b12d188795), [`eb91310`](https://github.com/Blobscan/blobscan/commit/eb9131019e73fd48376630b5afab9eed6898b43a)]:
+  - @blobscan/api@0.40.0
+  - @blobscan/blob-storage-manager@0.15.0
+  - @blobscan/db@0.31.1
+  - @blobscan/env@0.6.0
+  - @blobscan/open-telemetry@0.0.11
+  - @blobscan/zod@0.1.1
+  - @blobscan/syncers@0.8.0
+  - @blobscan/blob-propagator@0.11.1
+
 ## 0.17.0
 
 ### Minor Changes
@@ -9,13 +74,13 @@
 ### Patch Changes
 
 - Updated dependencies [[`b9e38b8`](https://github.com/Blobscan/blobscan/commit/b9e38b8b90cf354ea306f543f7d8f0679a802415)]:
-  - @blobscan/api@4.1.0
+  - @blobscan/api@0.39.0
   - @blobscan/db@0.31.0
   - @blobscan/syncers@0.7.0
   - @blobscan/env@0.5.0
-  - @blobscan/blob-propagator@4.1.0
-  - @blobscan/blob-storage-manager@4.1.0
-  - @blobscan/rollups@4.1.0
+  - @blobscan/blob-propagator@0.11.0
+  - @blobscan/blob-storage-manager@0.14.0
+  - @blobscan/rollups@0.9.0
 
 ## 0.16.5
 
@@ -23,10 +88,10 @@
 
 - Updated dependencies [[`501fc9b`](https://github.com/Blobscan/blobscan/commit/501fc9b820a3390d086cbbfea272faeae007c1e5), [`d5db628`](https://github.com/Blobscan/blobscan/commit/d5db6280a013b4c6b12b7db5f743215487fcadba), [`332f0b9`](https://github.com/Blobscan/blobscan/commit/332f0b9edd8d4195223e24317101b01d479b7f85)]:
   - @blobscan/db@0.30.0
-  - @blobscan/api@4.0.0
-  - @blobscan/blob-propagator@4.0.0
-  - @blobscan/blob-storage-manager@4.0.0
-  - @blobscan/rollups@4.0.0
+  - @blobscan/api@0.38.0
+  - @blobscan/blob-propagator@0.10.0
+  - @blobscan/blob-storage-manager@0.13.0
+  - @blobscan/rollups@0.8.0
   - @blobscan/syncers@0.6.8
 
 ## 0.16.4
@@ -36,7 +101,7 @@
 - [`7aabab6`](https://github.com/Blobscan/blobscan/commit/7aabab66121ef2f95888598f58a6d9cf69241df5) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add optional `IPFS_STORAGE_INTERNAL_GATEWAY_URL` so IPFS-backed blob reads can use an internal gateway address separate from the public `IPFS_STORAGE_GATEWAY_URL` used to build user-facing blob links. Without this, deployments where the public gateway URL points back at the service's own public domain caused every IPFS-backed blob read to round-trip out to the internet and back to fetch its own data.
 
 - Updated dependencies [[`7aabab6`](https://github.com/Blobscan/blobscan/commit/7aabab66121ef2f95888598f58a6d9cf69241df5)]:
-  - @blobscan/blob-storage-manager@3.0.1
+  - @blobscan/blob-storage-manager@0.12.1
   - @blobscan/env@0.4.1
 
 ## 0.16.3
@@ -59,7 +124,7 @@
 
 - Updated dependencies [[`68d6570`](https://github.com/Blobscan/blobscan/commit/68d6570999479564e9a8acded06b431812eb1ae3), [`f9accce`](https://github.com/Blobscan/blobscan/commit/f9acccec34b8c34e2cea93989f626eab96b0ca1a), [`b954d1e`](https://github.com/Blobscan/blobscan/commit/b954d1ec7f899da8b09f53959c38e7f170e58b10)]:
   - @blobscan/db@0.29.1
-  - @blobscan/api@3.0.1
+  - @blobscan/api@0.37.1
 
 ## 0.16.0
 
@@ -93,12 +158,12 @@
 ### Patch Changes
 
 - Updated dependencies [[`74b33ba`](https://github.com/Blobscan/blobscan/commit/74b33ba464a10b31127a1f395ff67ee585e2e70a)]:
-  - @blobscan/blob-storage-manager@3.0.0
-  - @blobscan/blob-propagator@3.0.0
-  - @blobscan/api@3.0.0
+  - @blobscan/blob-storage-manager@0.12.0
+  - @blobscan/blob-propagator@0.9.0
+  - @blobscan/api@0.37.0
   - @blobscan/db@0.29.0
   - @blobscan/env@0.4.0
-  - @blobscan/rollups@3.0.0
+  - @blobscan/rollups@0.7.0
   - @blobscan/syncers@0.6.7
 
 ## 0.15.0
@@ -120,10 +185,10 @@
 - Updated dependencies [[`2f38f03`](https://github.com/Blobscan/blobscan/commit/2f38f0347a86c330338f9f5cd00100dd09445901)]:
   - @blobscan/chains@0.5.0
   - @blobscan/db@0.28.0
-  - @blobscan/api@2.0.0
-  - @blobscan/blob-propagator@2.0.0
-  - @blobscan/blob-storage-manager@2.0.0
-  - @blobscan/rollups@2.0.0
+  - @blobscan/api@0.36.0
+  - @blobscan/blob-propagator@0.8.0
+  - @blobscan/blob-storage-manager@0.11.0
+  - @blobscan/rollups@0.6.0
   - @blobscan/syncers@0.6.6
 
 ## 0.14.0
@@ -151,11 +216,11 @@
   and REST API server.
 
 - Updated dependencies [[`8c1375d`](https://github.com/Blobscan/blobscan/commit/8c1375d7230cf4ca47ef4b37237c21d748d84264), [`4541f90`](https://github.com/Blobscan/blobscan/commit/4541f904031ffbcdde29c6cded0aa173efc65251)]:
-  - @blobscan/blob-storage-manager@1.0.0
-  - @blobscan/api@1.0.0
+  - @blobscan/blob-storage-manager@0.10.0
+  - @blobscan/api@0.35.0
   - @blobscan/db@0.27.0
-  - @blobscan/blob-propagator@1.0.0
-  - @blobscan/rollups@1.0.0
+  - @blobscan/blob-propagator@0.7.0
+  - @blobscan/rollups@0.5.0
   - @blobscan/syncers@0.6.5
 
 ## 0.13.0

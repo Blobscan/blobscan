@@ -1,5 +1,37 @@
 # @blobscan/docs
 
+## 0.3.2
+
+### Patch Changes
+
+- [#1035](https://github.com/Blobscan/blobscan/pull/1035) [`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Resolve the remaining dependency advisories.
+
+  - Upgrade Next.js, Zod, ECharts, Turborepo, T3 env, Prisma, and Prisma instrumentation
+  - Align Prisma Client and `@prisma/instrumentation` on 6.19.3
+  - Move Prisma CLI configuration to `prisma.config.ts` so Prisma 6 resolves the existing migrations directory
+  - Override Prisma's `deepmerge-ts` dependency with the fixed `8.0.2` release
+  - Handle Prisma 6 `Uint8Array` byte fields
+  - Replace the unmaintained `zod-prisma` generator with `zod-prisma-types` for native Zod 4 support and update API imports to the generated `*Schema` names
+  - Migrate chart typings, env defaults, and generated error snapshots
+  - Add regression coverage for env validation in Vitest/CI runs
+
+- [#1037](https://github.com/Blobscan/blobscan/pull/1037) [`18bd945`](https://github.com/Blobscan/blobscan/commit/18bd945b22118573de2288c53bd4d08ea4f51376) Thanks [@PJColombo](https://github.com/PJColombo)! - Remove the Swarm stamp job.
+
+  - `SwarmStorage` reads the batch ID from `SWARM_BATCH_ID`. It does not read it from the database.
+  - `SWARM_BATCH_ID` is required when `SWARM_STORAGE_ENABLED=true`.
+  - Remove the `SWARM_STAMP_CRON_PATTERN` env variable.
+  - Remove the `blobStoragesState.getState` procedure and the Swarm fields from the app state.
+  - Remove the Swarm blob data expiry indicator from the web app.
+
+- [#1034](https://github.com/Blobscan/blobscan/pull/1034) [`eb91310`](https://github.com/Blobscan/blobscan/commit/eb9131019e73fd48376630b5afab9eed6898b43a) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Update dependencies to remediate security advisories.
+
+  - Upgrade Sentry, OpenTelemetry, Vitest, Next.js, bee-js and storage clients
+  - Upgrade `@vercel/ncc` so the REST API bundle supports the new OpenTelemetry packages
+  - Adapt the docs Markdoc loader to Next.js 16.3's SWC bundle layers
+  - Remove the unused `@upstash/feedback` dependency
+
+- [#1031](https://github.com/Blobscan/blobscan/pull/1031) [`7473c2d`](https://github.com/Blobscan/blobscan/commit/7473c2dd8f643a1f9fca60906c661994aa3dc19e) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Upgrade the runtime to Node.js 24 LTS, tracking the latest 24.x patch release so Node.js security fixes are picked up automatically.
+
 ## 0.3.1
 
 ### Patch Changes

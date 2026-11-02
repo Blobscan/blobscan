@@ -1,20 +1,48 @@
 import type { FC } from "react";
-import React from "react";
+import { useMemo } from "react";
 import type { BarSeriesOption, LineSeriesOption } from "echarts";
+import { useTheme } from "next-themes";
 
-import type { Prettify, TimeseriesMetric } from "~/types";
+import type { Prettify, ThemeMode } from "~/types";
 import { Card } from "../Cards/Card";
-import type { TimeseriesDataset } from "../TimeseriesCharts/helpers";
+import {
+  addDerivedColumns,
+  isDerivedMetric,
+} from "../TimeseriesCharts/helpers";
+import type {
+  ChartMetric,
+  TimeseriesDataset,
+} from "../TimeseriesCharts/helpers";
 import { ChartBase } from "./ChartBase";
 import type { Axis, ChartBaseProps } from "./ChartBase";
 
 type Timeseries = Pick<
   BarSeriesOption | LineSeriesOption,
-  "name" | "id" | "stack"
+  "name" | "id" | "stack" | "z"
 > & {
   type: "bar" | "line";
-  metric: TimeseriesMetric;
+  /**
+   * A metric of the dataset, or a derived metric that the chart calculates
+   * from the dataset (see DERIVED_METRICS).
+   */
+  metric: ChartMetric;
+  /**
+   * The color of the series. Without it, the series gets the color of its
+   * dimension (see getDimensionColor).
+   */
+  color?: ThemeColor;
+  /**
+   * Fill the area under the series. The default is true. Set it to false
+   * when the areas of the series cover each other.
+   */
+  showArea?: boolean;
+  lineStyle?: Pick<
+    NonNullable<LineSeriesOption["lineStyle"]>,
+    "type" | "width"
+  >;
 };
+
+type ThemeColor = Record<ThemeMode, string>;
 
 export type TimeseriesChartProps = Prettify<
   Pick<
@@ -33,19 +61,38 @@ export type TimeseriesChartBaseProps = Prettify<
   }
 >;
 
-export type TimeseriesChartComponent = FC<TimeseriesChartProps> & {
-  displayName?: string;
-  requiredMetrics: [TimeseriesMetric, ...TimeseriesMetric[]];
-};
+function getSeriesStyle(
+  { color, showArea = true }: Pick<Timeseries, "color" | "showArea">,
+  themeMode: ThemeMode
+) {
+  const resolvedColor = color?.[themeMode];
+
+  if (!showArea) {
+    return {
+      ...(resolvedColor ? { itemStyle: { color: resolvedColor } } : {}),
+      // Remove the area that ChartBase gives to all the series.
+      areaStyle: undefined,
+    };
+  }
+
+  return resolvedColor
+    ? {
+        itemStyle: { color: resolvedColor },
+        areaStyle: { color: resolvedColor },
+      }
+    : {};
+}
 
 function getSeries(
   dataset: TimeseriesDataset | TimeseriesDataset[],
-  seriesProp: [Timeseries, ...Timeseries[]]
+  seriesProp: [Timeseries, ...Timeseries[]],
+  themeMode: ThemeMode
 ) {
   if (Array.isArray(dataset)) {
-    return seriesProp.flatMap((series) =>
+    return seriesProp.flatMap(({ color, showArea, ...series }) =>
       dataset.map((d, i) => ({
         ...series,
+        ...getSeriesStyle({ color, showArea }, themeMode),
         datasetIndex: i,
         datasetId: d.id,
         id: d.id,
@@ -54,20 +101,44 @@ function getSeries(
     );
   }
 
-  return seriesProp.map((series) => ({
+  return seriesProp.map(({ color, showArea, ...series }) => ({
     ...series,
+    ...getSeriesStyle({ color, showArea }, themeMode),
     encode: { x: "timestamp", y: series.metric },
   }));
 }
 
 export const TimeseriesChartBase: FC<TimeseriesChartBaseProps> = ({
-  dataset,
+  dataset: datasetProp,
   yAxis,
   timeseries,
   ...restProps
 }) => {
-  const series =
-    dataset && timeseries ? getSeries(dataset, timeseries) : undefined;
+  const { resolvedTheme } = useTheme();
+  const themeMode = resolvedTheme as ThemeMode;
+  const dataset = useMemo(() => {
+    const derivedMetrics = (timeseries ?? [])
+      .map(({ metric }) => metric)
+      .filter(isDerivedMetric);
+
+    if (!datasetProp || !derivedMetrics.length) {
+      return datasetProp;
+    }
+
+    const transform = (d: TimeseriesDataset) =>
+      addDerivedColumns(d, derivedMetrics);
+
+    return Array.isArray(datasetProp)
+      ? datasetProp.map(transform)
+      : transform(datasetProp);
+  }, [datasetProp, timeseries]);
+  const series = useMemo(() => {
+    if (!dataset || !timeseries) {
+      return undefined;
+    }
+
+    return getSeries(dataset, timeseries, themeMode);
+  }, [dataset, timeseries, themeMode]);
 
   return (
     <Card compact>
@@ -85,41 +156,3 @@ export const TimeseriesChartBase: FC<TimeseriesChartBaseProps> = ({
     </Card>
   );
 };
-
-export function createTimeseriesChart({
-  baseProps: { skeletonOpts: baseSkeletonOpts = {}, ...restBaseProps },
-  requiredMetrics,
-  componentName,
-}: {
-  baseProps: TimeseriesChartBaseProps;
-  requiredMetrics: [TimeseriesMetric, ...TimeseriesMetric[]];
-  componentName: string;
-}): TimeseriesChartComponent {
-  const Chart = function ({
-    skeletonOpts = {},
-    ...restProps
-  }: TimeseriesChartProps) {
-    return (
-      <TimeseriesChartBase
-        skeletonOpts={{
-          ...baseSkeletonOpts,
-          ...skeletonOpts,
-          chart: {
-            ...(baseSkeletonOpts?.chart ?? {}),
-            ...(skeletonOpts?.chart ?? {}),
-          },
-          legend: {
-            ...(baseSkeletonOpts?.legend ?? {}),
-            ...(skeletonOpts?.legend ?? {}),
-          },
-        }}
-        {...restBaseProps}
-        {...restProps}
-      />
-    );
-  };
-
-  Chart.displayName = componentName;
-
-  return Object.assign(React.memo(Chart), { requiredMetrics });
-}

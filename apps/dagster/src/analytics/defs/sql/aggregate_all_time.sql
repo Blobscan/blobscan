@@ -16,6 +16,12 @@ unioned AS (
     y.total_blob_base_fee,
     y.total_blob_gas_price,
     y.total_blocks,
+    y.max_blob_gas_price,
+    y.min_blob_gas_price,
+    y.total_eth_price,
+    y.total_eth_price_count,
+    y.max_eth_price,
+    y.min_eth_price,
     y.total_blob_as_calldata_fee,
     y.total_blob_as_calldata_gas_used,
     y.total_blob_as_calldata_max_fee,
@@ -28,7 +34,11 @@ unioned AS (
     y.total_unique_blobs,
     y.total_unique_receivers,
     y.total_unique_senders,
-    y.total_max_blob_gas_fee
+    y.total_max_blob_gas_fee,
+    y.total_blob_base_fee_usd,
+    y.total_blob_as_calldata_fee_usd,
+    y.total_blob_max_fee_usd,
+    y.total_usd_priced_transactions
   FROM yearly_metrics y
   CROSS JOIN cutoffs c
   WHERE y.period_start < c.cur_year
@@ -42,6 +52,12 @@ unioned AS (
     m.total_blob_base_fee,
     m.total_blob_gas_price,
     m.total_blocks,
+    m.max_blob_gas_price,
+    m.min_blob_gas_price,
+    m.total_eth_price,
+    m.total_eth_price_count,
+    m.max_eth_price,
+    m.min_eth_price,
     m.total_blob_as_calldata_fee,
     m.total_blob_as_calldata_gas_used,
     m.total_blob_as_calldata_max_fee,
@@ -54,7 +70,11 @@ unioned AS (
     m.total_unique_blobs,
     m.total_unique_receivers,
     m.total_unique_senders,
-    m.total_max_blob_gas_fee
+    m.total_max_blob_gas_fee,
+    m.total_blob_base_fee_usd,
+    m.total_blob_as_calldata_fee_usd,
+    m.total_blob_max_fee_usd,
+    m.total_usd_priced_transactions
   FROM monthly_metrics m
   CROSS JOIN cutoffs c
   WHERE m.period_start >= c.cur_year
@@ -69,6 +89,12 @@ unioned AS (
     d.total_blob_base_fee,
     d.total_blob_gas_price,
     d.total_blocks,
+    d.max_blob_gas_price,
+    d.min_blob_gas_price,
+    d.total_eth_price,
+    d.total_eth_price_count,
+    d.max_eth_price,
+    d.min_eth_price,
     d.total_blob_as_calldata_fee,
     d.total_blob_as_calldata_gas_used,
     d.total_blob_as_calldata_max_fee,
@@ -81,7 +107,11 @@ unioned AS (
     d.total_unique_blobs,
     d.total_unique_receivers,
     d.total_unique_senders,
-    d.total_max_blob_gas_fee
+    d.total_max_blob_gas_fee,
+    d.total_blob_base_fee_usd,
+    d.total_blob_as_calldata_fee_usd,
+    d.total_blob_max_fee_usd,
+    d.total_usd_priced_transactions
   FROM daily_metrics d
   CROSS JOIN cutoffs c
   WHERE d.period_start >= c.cur_month
@@ -96,6 +126,12 @@ unioned AS (
     h.total_blob_base_fee,
     h.total_blob_gas_price,
     h.total_blocks,
+    h.max_blob_gas_price,
+    h.min_blob_gas_price,
+    h.total_eth_price,
+    h.total_eth_price_count,
+    h.max_eth_price,
+    h.min_eth_price,
     h.total_blob_as_calldata_fee,
     h.total_blob_as_calldata_gas_used,
     h.total_blob_as_calldata_max_fee,
@@ -108,7 +144,11 @@ unioned AS (
     h.total_unique_blobs,
     h.total_unique_receivers,
     h.total_unique_senders,
-    h.total_max_blob_gas_fee
+    h.total_max_blob_gas_fee,
+    h.total_blob_base_fee_usd,
+    h.total_blob_as_calldata_fee_usd,
+    h.total_blob_max_fee_usd,
+    h.total_usd_priced_transactions
   FROM hourly_metrics h
   CROSS JOIN cutoffs c
   WHERE h.period_start >= c.cur_day
@@ -123,6 +163,12 @@ aggregated AS (
     SUM(u.total_blob_base_fee)              AS total_blob_base_fee,
     SUM(u.total_blob_gas_price)             AS total_blob_gas_price,
     SUM(u.total_blocks)                     AS total_blocks,
+    MAX(u.max_blob_gas_price)               AS max_blob_gas_price,
+    MIN(u.min_blob_gas_price)               AS min_blob_gas_price,
+    SUM(u.total_eth_price)                  AS total_eth_price,
+    SUM(u.total_eth_price_count)          AS total_eth_price_count,
+    MAX(u.max_eth_price)                    AS max_eth_price,
+    MIN(u.min_eth_price)                    AS min_eth_price,
 
     SUM(u.total_blob_as_calldata_fee)       AS total_blob_as_calldata_fee,
     SUM(u.total_blob_as_calldata_gas_used)  AS total_blob_as_calldata_gas_used,
@@ -136,7 +182,11 @@ aggregated AS (
     SUM(u.total_unique_blobs)               AS total_unique_blobs,
     SUM(u.total_unique_receivers)           AS total_unique_receivers,
     SUM(u.total_unique_senders)             AS total_unique_senders,
-    SUM(u.total_max_blob_gas_fee)           AS total_max_blob_gas_fee
+    SUM(u.total_max_blob_gas_fee)           AS total_max_blob_gas_fee,
+    SUM(u.total_blob_base_fee_usd)          AS total_blob_base_fee_usd,
+    SUM(u.total_blob_as_calldata_fee_usd)   AS total_blob_as_calldata_fee_usd,
+    SUM(u.total_blob_max_fee_usd)           AS total_blob_max_fee_usd,
+    SUM(u.total_usd_priced_transactions)    AS total_usd_priced_transactions
   FROM unioned u
   GROUP BY u.category, u.rollup
 )
@@ -148,6 +198,12 @@ INSERT INTO all_time_metrics (
   total_blob_base_fee,
   total_blob_gas_price,
   total_blocks,
+  max_blob_gas_price,
+  min_blob_gas_price,
+  total_eth_price,
+  total_eth_price_count,
+  max_eth_price,
+  min_eth_price,
 
   total_blob_as_calldata_fee,
   total_blob_as_calldata_gas_used,
@@ -162,6 +218,10 @@ INSERT INTO all_time_metrics (
   total_unique_receivers,
   total_unique_senders,
   total_max_blob_gas_fee,
+  total_blob_base_fee_usd,
+  total_blob_as_calldata_fee_usd,
+  total_blob_max_fee_usd,
+  total_usd_priced_transactions,
   updated_at
 )
 SELECT
@@ -169,6 +229,12 @@ SELECT
   total_blob_base_fee,
   total_blob_gas_price,
   total_blocks,
+  max_blob_gas_price,
+  min_blob_gas_price,
+  total_eth_price,
+  total_eth_price_count,
+  max_eth_price,
+  min_eth_price,
 
   total_blob_as_calldata_fee,
   total_blob_as_calldata_gas_used,
@@ -182,6 +248,10 @@ SELECT
   total_unique_receivers,
   total_unique_senders,
   total_max_blob_gas_fee,
+  total_blob_base_fee_usd,
+  total_blob_as_calldata_fee_usd,
+  total_blob_max_fee_usd,
+  total_usd_priced_transactions,
   now()
 FROM aggregated
 ON CONFLICT (category, rollup)
@@ -189,6 +259,12 @@ DO UPDATE SET
   total_blob_base_fee = EXCLUDED.total_blob_base_fee,
   total_blob_gas_price = EXCLUDED.total_blob_gas_price,
   total_blocks = EXCLUDED.total_blocks,
+  max_blob_gas_price = EXCLUDED.max_blob_gas_price,
+  min_blob_gas_price = EXCLUDED.min_blob_gas_price,
+  total_eth_price = EXCLUDED.total_eth_price,
+  total_eth_price_count = EXCLUDED.total_eth_price_count,
+  max_eth_price = EXCLUDED.max_eth_price,
+  min_eth_price = EXCLUDED.min_eth_price,
 
   total_blob_as_calldata_fee = EXCLUDED.total_blob_as_calldata_fee,
   total_blob_as_calldata_gas_used = EXCLUDED.total_blob_as_calldata_gas_used,
@@ -203,5 +279,9 @@ DO UPDATE SET
   total_unique_receivers = EXCLUDED.total_unique_receivers,
   total_unique_senders = EXCLUDED.total_unique_senders,
   total_max_blob_gas_fee = EXCLUDED.total_max_blob_gas_fee,
+  total_blob_base_fee_usd = EXCLUDED.total_blob_base_fee_usd,
+  total_blob_as_calldata_fee_usd = EXCLUDED.total_blob_as_calldata_fee_usd,
+  total_blob_max_fee_usd = EXCLUDED.total_blob_max_fee_usd,
+  total_usd_priced_transactions = EXCLUDED.total_usd_priced_transactions,
 
   updated_at = now();

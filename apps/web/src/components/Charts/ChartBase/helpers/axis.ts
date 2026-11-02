@@ -48,6 +48,7 @@ export function createYAxisOptions(
     },
     splitLine: { show: false },
     axisLine: { show: !compact },
+    scale: metricInfo.scale ?? false,
     ...(opts || {}),
   } as YAxisComponentOption;
 }

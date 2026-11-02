@@ -20,6 +20,7 @@ export type ChartSeries = {
   type?: string;
   stack?: string;
   smooth?: boolean | number;
+  z?: number;
   datasetIndex?: number;
   encode?: { x?: string; y?: string };
   itemStyle?: { color?: unknown; [style: string]: unknown };
@@ -314,6 +315,9 @@ export function createCurrentPeriodSeries(
       symbol: "none",
       lineStyle: { color, type: "dotted", width: 2 },
       itemStyle: { color },
+      // Keep the drawing order of the series in the current period. Do not
+      // set an undefined z, because it replaces the default z of ECharts.
+      ...(series.z !== undefined ? { z: series.z } : {}),
       // The area of the series stops at the last closed period. A lighter
       // area under the segment keeps the area of the chart continuous.
       areaStyle: series.areaStyle

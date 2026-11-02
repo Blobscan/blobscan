@@ -1,5 +1,85 @@
 # @blobscan/web
 
+## 0.57.0
+
+### Minor Changes
+
+- [#1050](https://github.com/Blobscan/blobscan/pull/1050) [`ae21d79`](https://github.com/Blobscan/blobscan/commit/ae21d79f10a2e4a82d78767f49d2797e9470f120) Thanks [@PJColombo](https://github.com/PJColombo)! - Added the `maxBlobGasPrice` and `minBlobGasPrice` metrics. Dagster calculates them from the blob gas price of the blocks in each period, and the stats endpoints return them in the global dimension. The Avg. Blob Gas Price chart is now the Blob Gas Price chart: it shows the maximum, the average and the minimum, with a band between the maximum and the minimum. Its full-view page moves from `/stat/avg-blob-gas-price` to `/stat/blob-gas-price`, and the old URL redirects to the new one.
+
+  After the deploy, run a backfill of the `hourly_metrics` partitions to calculate these metrics for the old periods. The daily, weekly, monthly and yearly metrics update automatically after the hourly backfill.
+
+- [#1048](https://github.com/Blobscan/blobscan/pull/1048) [`0cb02ec`](https://github.com/Blobscan/blobscan/commit/0cb02ec3290ec5794d19aefc3341a1d55102793e) Thanks [@PJColombo](https://github.com/PJColombo)! - Added the `maxEthPrice`, `minEthPrice` and `avgEthPrice` metrics. Dagster calculates them from the ETH/USD prices for each period, and the stats endpoints return them in the global dimension. The stats page shows them in a new ETH Price chart.
+
+  After the deploy, run a backfill of the `hourly_metrics` partitions to calculate these metrics for the old periods. The daily, weekly, monthly and yearly metrics update automatically after the hourly backfill. Do the same after you load ETH prices that are more than 3 hours old (for example, after an ETH price syncer outage): the hourly catch-up schedule only calculates the last 3 hours again.
+
+- [#1051](https://github.com/Blobscan/blobscan/pull/1051) [`b18c1b1`](https://github.com/Blobscan/blobscan/commit/b18c1b126375ec9d4fb7666ae5a9c11cebd1f9c2) Thanks [@PJColombo](https://github.com/PJColombo)! - The charts that show only global values (Total Blocks, Blob Gas Price, Avg. Blob Base Fee, Total Blob Gas Expenditure Comparison, Total Unique Addresses and ETH Price) now use shades of the primary color. The main series uses the accent color of the theme. The ETH Price and Blob Gas Price charts now have the same hover behavior as the other charts: the hovered series stays and the other series fade. The average has an area. The maximum and the minimum are lines with no area, and they are drawn above the area of the average. The band between the maximum and the minimum is removed.
+
+- [#1049](https://github.com/Blobscan/blobscan/pull/1049) [`bc7c3a1`](https://github.com/Blobscan/blobscan/commit/bc7c3a1c29a29a8e0b77e615fbc2e4e2fcdfbd78) Thanks [@PJColombo](https://github.com/PJColombo)! - Add the USD fee metrics `totalBlobBaseFeeUsd`, `totalBlobAsCalldataFeeUsd` and `totalBlobMaxFeeUsd` to the metrics tables and to the stats endpoints. Also add `totalUsdPricedTransactions`, the count of the transactions that have a USD fee. Dagster converts the fee of each transaction at the ETH/USD price of the minute of its block, as the API does for a transaction, and then adds the results. A transaction with no price for its minute is not included, and a metric is `null` when no transaction in its group has a price.
+
+  The calldata fee metrics (`totalBlobAsCalldataFee`, `avgBlobAsCalldataFee` and `totalBlobAsCalldataFeeUsd`) now use the gas price of the transaction, not the blob gas price, as the API does for a transaction. The old values are too low.
+
+  The stats page shows the Total Blob Fees and Total Tx Fees Saved cards in USD. The Total Blob Base Fees and Avg. Blob Base Fee charts start in USD, and each chart has a toggle next to its Full View link that switches it to ETH. Their detail pages have the same toggle, and the URL keeps the unit (`?unit=usd`). The USD average is the total USD fee divided by `totalUsdPricedTransactions`, so a transaction with no price does not make the average too low. Formatted ETH amounts now show the unit as "Ether", not "ether".
+
+  The new columns are empty after the migration. The price syncer must write one price each minute (`ETH_PRICE_SYNCER_CRON_PATTERN="* * * * *"`). Backfill `eth_usd_price` back to Dencun first, and then backfill the metrics partitions.
+
+### Patch Changes
+
+- [#1046](https://github.com/Blobscan/blobscan/pull/1046) [`f70db34`](https://github.com/Blobscan/blobscan/commit/f70db34239f5d3fcc477ba2c83ba3b46b7bf9f55) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed the rollup chart tooltips, which showed "-" for the Total and Rollup values when a series had no value for the day
+- Updated dependencies [[`ae21d79`](https://github.com/Blobscan/blobscan/commit/ae21d79f10a2e4a82d78767f49d2797e9470f120), [`0cb02ec`](https://github.com/Blobscan/blobscan/commit/0cb02ec3290ec5794d19aefc3341a1d55102793e), [`bc7c3a1`](https://github.com/Blobscan/blobscan/commit/bc7c3a1c29a29a8e0b77e615fbc2e4e2fcdfbd78)]:
+  - @blobscan/api@0.41.0
+  - @blobscan/db@0.32.0
+  - @blobscan/eth-format@0.1.1
+  - @blobscan/blob-storage-manager@0.15.1
+  - @blobscan/rollups@0.9.1
+
+## 0.56.0
+
+### Minor Changes
+
+- [#1033](https://github.com/Blobscan/blobscan/pull/1033) [`d3b4a09`](https://github.com/Blobscan/blobscan/commit/d3b4a0936cc14d896bf8b50d4c567603c85e43ac) Thanks [@PJColombo](https://github.com/PJColombo)! - Added the current period to the time series charts. `stats.getTimeseries` (`GET /stats/timeseries`) has a new optional `includeCurrentPeriod` input. When it is `true`, the response includes the current day, which is not complete, and gives its timestamp in `data.currentPeriod`. A line chart shows the current day as a dotted segment with a hollow point. A bar chart shows it as a dashed, lighter bar. The charts refresh it every 5 minutes. Dagster now updates the current daily, weekly, monthly and yearly metrics after each hourly update. A new schedule, which is running by default, updates `all_time_metrics` every 10 minutes
+
+- [#1037](https://github.com/Blobscan/blobscan/pull/1037) [`18bd945`](https://github.com/Blobscan/blobscan/commit/18bd945b22118573de2288c53bd4d08ea4f51376) Thanks [@PJColombo](https://github.com/PJColombo)! - Remove the Swarm stamp job.
+
+  - `SwarmStorage` reads the batch ID from `SWARM_BATCH_ID`. It does not read it from the database.
+  - `SWARM_BATCH_ID` is required when `SWARM_STORAGE_ENABLED=true`.
+  - Remove the `SWARM_STAMP_CRON_PATTERN` env variable.
+  - Remove the `blobStoragesState.getState` procedure and the Swarm fields from the app state.
+  - Remove the Swarm blob data expiry indicator from the web app.
+
+### Patch Changes
+
+- [#1040](https://github.com/Blobscan/blobscan/pull/1040) [`db86816`](https://github.com/Blobscan/blobscan/commit/db86816e3da1c329e3c37236078c0faa2cc4ad5f) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fix the `web` and `api` images crashing at start with `Cannot find module 'effect'`: copy the runtime dependencies of the Prisma 6.19 CLI that runs `migrate deploy`
+
+- [#1035](https://github.com/Blobscan/blobscan/pull/1035) [`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Resolve the remaining dependency advisories.
+
+  - Upgrade Next.js, Zod, ECharts, Turborepo, T3 env, Prisma, and Prisma instrumentation
+  - Align Prisma Client and `@prisma/instrumentation` on 6.19.3
+  - Move Prisma CLI configuration to `prisma.config.ts` so Prisma 6 resolves the existing migrations directory
+  - Override Prisma's `deepmerge-ts` dependency with the fixed `8.0.2` release
+  - Handle Prisma 6 `Uint8Array` byte fields
+  - Replace the unmaintained `zod-prisma` generator with `zod-prisma-types` for native Zod 4 support and update API imports to the generated `*Schema` names
+  - Migrate chart typings, env defaults, and generated error snapshots
+  - Add regression coverage for env validation in Vitest/CI runs
+
+- [#1035](https://github.com/Blobscan/blobscan/pull/1035) [`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Migrated the API to tRPC 11 and replaced `trpc-openapi` with `trpc-to-openapi`. Updated the web client to tRPC 11 and React Query 5, removed the temporary `trpc-openapi` patch, and aligned binary/seed data with the TypeScript 5.9 buffer types.
+
+- [#1034](https://github.com/Blobscan/blobscan/pull/1034) [`eb91310`](https://github.com/Blobscan/blobscan/commit/eb9131019e73fd48376630b5afab9eed6898b43a) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Update dependencies to remediate security advisories.
+
+  - Upgrade Sentry, OpenTelemetry, Vitest, Next.js, bee-js and storage clients
+  - Upgrade `@vercel/ncc` so the REST API bundle supports the new OpenTelemetry packages
+  - Adapt the docs Markdoc loader to Next.js 16.3's SWC bundle layers
+  - Remove the unused `@upstash/feedback` dependency
+
+- [#1031](https://github.com/Blobscan/blobscan/pull/1031) [`7473c2d`](https://github.com/Blobscan/blobscan/commit/7473c2dd8f643a1f9fca60906c661994aa3dc19e) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Upgrade the runtime to Node.js 24 LTS, tracking the latest 24.x patch release so Node.js security fixes are picked up automatically.
+- Updated dependencies [[`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc), [`d3b4a09`](https://github.com/Blobscan/blobscan/commit/d3b4a0936cc14d896bf8b50d4c567603c85e43ac), [`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc), [`18bd945`](https://github.com/Blobscan/blobscan/commit/18bd945b22118573de2288c53bd4d08ea4f51376), [`18fcbaa`](https://github.com/Blobscan/blobscan/commit/18fcbaa15f134143cb39cefa102a96b12d188795), [`eb91310`](https://github.com/Blobscan/blobscan/commit/eb9131019e73fd48376630b5afab9eed6898b43a)]:
+  - @blobscan/api@0.40.0
+  - @blobscan/blob-storage-manager@0.15.0
+  - @blobscan/db@0.31.1
+  - @blobscan/env@0.6.0
+  - @blobscan/open-telemetry@0.0.11
+  - @blobscan/zod@0.1.1
+  - @blobscan/blob-decoder@0.2.3
+
 ## 0.55.0
 
 ### Minor Changes
@@ -9,11 +89,11 @@
 ### Patch Changes
 
 - Updated dependencies [[`b9e38b8`](https://github.com/Blobscan/blobscan/commit/b9e38b8b90cf354ea306f543f7d8f0679a802415)]:
-  - @blobscan/api@4.1.0
+  - @blobscan/api@0.39.0
   - @blobscan/db@0.31.0
   - @blobscan/env@0.5.0
-  - @blobscan/blob-storage-manager@4.1.0
-  - @blobscan/rollups@4.1.0
+  - @blobscan/blob-storage-manager@0.14.0
+  - @blobscan/rollups@0.9.0
 
 ## 0.54.2
 
@@ -26,9 +106,9 @@
 
 - Updated dependencies [[`501fc9b`](https://github.com/Blobscan/blobscan/commit/501fc9b820a3390d086cbbfea272faeae007c1e5), [`d5db628`](https://github.com/Blobscan/blobscan/commit/d5db6280a013b4c6b12b7db5f743215487fcadba), [`332f0b9`](https://github.com/Blobscan/blobscan/commit/332f0b9edd8d4195223e24317101b01d479b7f85)]:
   - @blobscan/db@0.30.0
-  - @blobscan/api@4.0.0
-  - @blobscan/blob-storage-manager@4.0.0
-  - @blobscan/rollups@4.0.0
+  - @blobscan/api@0.38.0
+  - @blobscan/blob-storage-manager@0.13.0
+  - @blobscan/rollups@0.8.0
 
 ## 0.54.1
 
@@ -37,7 +117,7 @@
 - [`7aabab6`](https://github.com/Blobscan/blobscan/commit/7aabab66121ef2f95888598f58a6d9cf69241df5) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add optional `IPFS_STORAGE_INTERNAL_GATEWAY_URL` so IPFS-backed blob reads can use an internal gateway address separate from the public `IPFS_STORAGE_GATEWAY_URL` used to build user-facing blob links. Without this, deployments where the public gateway URL points back at the service's own public domain caused every IPFS-backed blob read to round-trip out to the internet and back to fetch its own data.
 
 - Updated dependencies [[`7aabab6`](https://github.com/Blobscan/blobscan/commit/7aabab66121ef2f95888598f58a6d9cf69241df5)]:
-  - @blobscan/blob-storage-manager@3.0.1
+  - @blobscan/blob-storage-manager@0.12.1
   - @blobscan/env@0.4.1
 
 ## 0.54.0
@@ -74,11 +154,11 @@
 ### Patch Changes
 
 - Updated dependencies [[`74b33ba`](https://github.com/Blobscan/blobscan/commit/74b33ba464a10b31127a1f395ff67ee585e2e70a)]:
-  - @blobscan/blob-storage-manager@3.0.0
-  - @blobscan/api@3.0.0
+  - @blobscan/blob-storage-manager@0.12.0
+  - @blobscan/api@0.37.0
   - @blobscan/db@0.29.0
   - @blobscan/env@0.4.0
-  - @blobscan/rollups@3.0.0
+  - @blobscan/rollups@0.7.0
 
 ## 0.53.0
 
@@ -99,9 +179,9 @@
 - Updated dependencies [[`2f38f03`](https://github.com/Blobscan/blobscan/commit/2f38f0347a86c330338f9f5cd00100dd09445901)]:
   - @blobscan/chains@0.5.0
   - @blobscan/db@0.28.0
-  - @blobscan/api@2.0.0
-  - @blobscan/blob-storage-manager@2.0.0
-  - @blobscan/rollups@2.0.0
+  - @blobscan/api@0.36.0
+  - @blobscan/blob-storage-manager@0.11.0
+  - @blobscan/rollups@0.6.0
 
 ## 0.52.0
 
@@ -128,10 +208,10 @@
   and REST API server.
 
 - Updated dependencies [[`8c1375d`](https://github.com/Blobscan/blobscan/commit/8c1375d7230cf4ca47ef4b37237c21d748d84264), [`4541f90`](https://github.com/Blobscan/blobscan/commit/4541f904031ffbcdde29c6cded0aa173efc65251)]:
-  - @blobscan/blob-storage-manager@1.0.0
-  - @blobscan/api@1.0.0
+  - @blobscan/blob-storage-manager@0.10.0
+  - @blobscan/api@0.35.0
   - @blobscan/db@0.27.0
-  - @blobscan/rollups@1.0.0
+  - @blobscan/rollups@0.5.0
 
 ## 0.51.3
 

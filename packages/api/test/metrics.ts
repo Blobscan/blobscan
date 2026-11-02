@@ -25,12 +25,16 @@ WITH base AS (
     tx.max_fee_per_blob_gas,
     (tx.blob_gas_used * b.blob_gas_price)                    AS blob_base_fee,
     (tx.blob_gas_used * tx.max_fee_per_blob_gas)             AS blob_max_fee,
-    (tx.blob_as_calldata_gas_used * b.blob_gas_price)        AS blob_as_calldata_fee,
-    (tx.blob_as_calldata_gas_used * tx.max_fee_per_blob_gas) AS blob_as_calldata_max_fee
+    (tx.blob_as_calldata_gas_used * tx.gas_price)            AS blob_as_calldata_fee,
+    (tx.blob_as_calldata_gas_used * tx.max_fee_per_blob_gas) AS blob_as_calldata_max_fee,
+    (tx.blob_gas_used * b.blob_gas_price * p.price * 1e-18)             AS blob_base_fee_usd,
+    (tx.blob_as_calldata_gas_used * tx.gas_price * p.price * 1e-18)     AS blob_as_calldata_fee_usd,
+    (tx.blob_gas_used * tx.max_fee_per_blob_gas * p.price * 1e-18)      AS blob_max_fee_usd
   FROM transaction tx
     JOIN block b ON b.hash = tx.block_hash
     JOIN address f ON f.address = tx.from_id
     JOIN address t ON t.address = tx.to_id
+    LEFT JOIN eth_usd_price p ON p.timestamp = DATE_TRUNC('minute', tx.block_timestamp)
   WHERE tx.block_timestamp < $1::timestamp
     AND NOT EXISTS (
       SELECT 1 FROM transaction_fork tx_f
@@ -41,7 +45,9 @@ block_metric AS (
   SELECT
     period_start,
     SUM(blob_gas_price)::DECIMAL AS total_blob_gas_price,
-    COUNT(*)::INT AS total_blocks
+    COUNT(*)::INT AS total_blocks,
+    MAX(blob_gas_price)::DECIMAL AS max_blob_gas_price,
+    MIN(blob_gas_price)::DECIMAL AS min_blob_gas_price
   FROM (
     SELECT DISTINCT ON (block_number) period_start, block_number, blob_gas_price
     FROM base
@@ -54,6 +60,8 @@ INSERT INTO daily_metrics (
   rollup,
   total_blob_gas_price,
   total_blocks,
+  max_blob_gas_price,
+  min_blob_gas_price,
   total_transactions,
   total_unique_receivers,
   total_unique_senders,
@@ -63,7 +71,11 @@ INSERT INTO daily_metrics (
   total_blob_max_fee,
   total_blob_as_calldata_fee,
   total_blob_as_calldata_max_fee,
-  total_max_blob_gas_fee
+  total_max_blob_gas_fee,
+  total_blob_base_fee_usd,
+  total_blob_as_calldata_fee_usd,
+  total_blob_max_fee_usd,
+  total_usd_priced_transactions
 )
 SELECT
   base.period_start,
@@ -75,6 +87,12 @@ SELECT
   CASE WHEN GROUPING(category) = 1 AND GROUPING(rollup) = 1
     THEN COALESCE(ANY_VALUE(total_blocks), 0)
   END,
+  CASE WHEN GROUPING(category) = 1 AND GROUPING(rollup) = 1
+    THEN ANY_VALUE(max_blob_gas_price)
+  END,
+  CASE WHEN GROUPING(category) = 1 AND GROUPING(rollup) = 1
+    THEN ANY_VALUE(min_blob_gas_price)
+  END,
   COUNT(hash)::INT,
   COUNT(DISTINCT CASE WHEN to_first_block_number = block_number THEN to_id END)::INT,
   COUNT(DISTINCT CASE WHEN from_first_block_number = block_number THEN from_id END)::INT,
@@ -84,7 +102,11 @@ SELECT
   COALESCE(SUM(blob_max_fee)::DECIMAL, 0),
   COALESCE(SUM(blob_as_calldata_fee)::DECIMAL, 0),
   COALESCE(SUM(blob_as_calldata_max_fee)::DECIMAL, 0),
-  COALESCE(SUM(max_fee_per_blob_gas)::DECIMAL, 0)
+  COALESCE(SUM(max_fee_per_blob_gas)::DECIMAL, 0),
+  SUM(blob_base_fee_usd),
+  SUM(blob_as_calldata_fee_usd),
+  SUM(blob_max_fee_usd),
+  COUNT(blob_base_fee_usd)::INT
 FROM base JOIN block_metric ON base.period_start = block_metric.period_start
 GROUP BY GROUPING SETS (
   (base.period_start, category),
@@ -146,6 +168,34 @@ ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blob_usage_size = EXCLUDED.total_blob_usage_size
 `;
 
+const AGGREGATE_ETH_PRICE_DAILY_METRICS_SQL = `
+INSERT INTO daily_metrics (
+  period_start,
+  category,
+  rollup,
+  total_eth_price,
+  total_eth_price_count,
+  max_eth_price,
+  min_eth_price
+)
+SELECT
+  DATE_TRUNC('day', p.timestamp),
+  NULL::category,
+  NULL::rollup,
+  SUM(p.price)::DOUBLE PRECISION,
+  COUNT(*)::INT,
+  MAX(p.price)::DOUBLE PRECISION,
+  MIN(p.price)::DOUBLE PRECISION
+FROM eth_usd_price p
+WHERE p.timestamp < $1::timestamp
+GROUP BY DATE_TRUNC('day', p.timestamp)
+ON CONFLICT (period_start, category, rollup) DO UPDATE SET
+  total_eth_price = EXCLUDED.total_eth_price,
+  total_eth_price_count = EXCLUDED.total_eth_price_count,
+  max_eth_price = EXCLUDED.max_eth_price,
+  min_eth_price = EXCLUDED.min_eth_price
+`;
+
 const AGGREGATE_ALL_TIME_METRICS_SQL = `
 INSERT INTO all_time_metrics (
   category,
@@ -153,6 +203,12 @@ INSERT INTO all_time_metrics (
   total_blob_base_fee,
   total_blob_gas_price,
   total_blocks,
+  max_blob_gas_price,
+  min_blob_gas_price,
+  total_eth_price,
+  total_eth_price_count,
+  max_eth_price,
+  min_eth_price,
   total_blob_as_calldata_fee,
   total_blob_as_calldata_gas_used,
   total_blob_as_calldata_max_fee,
@@ -165,7 +221,11 @@ INSERT INTO all_time_metrics (
   total_unique_blobs,
   total_unique_receivers,
   total_unique_senders,
-  total_max_blob_gas_fee
+  total_max_blob_gas_fee,
+  total_blob_base_fee_usd,
+  total_blob_as_calldata_fee_usd,
+  total_blob_max_fee_usd,
+  total_usd_priced_transactions
 )
 SELECT
   category,
@@ -173,6 +233,12 @@ SELECT
   SUM(total_blob_base_fee),
   SUM(total_blob_gas_price),
   SUM(total_blocks),
+  MAX(max_blob_gas_price),
+  MIN(min_blob_gas_price),
+  SUM(total_eth_price),
+  SUM(total_eth_price_count),
+  MAX(max_eth_price),
+  MIN(min_eth_price),
   SUM(total_blob_as_calldata_fee),
   SUM(total_blob_as_calldata_gas_used),
   SUM(total_blob_as_calldata_max_fee),
@@ -185,7 +251,11 @@ SELECT
   SUM(total_unique_blobs),
   SUM(total_unique_receivers),
   SUM(total_unique_senders),
-  SUM(total_max_blob_gas_fee)
+  SUM(total_max_blob_gas_fee),
+  SUM(total_blob_base_fee_usd),
+  SUM(total_blob_as_calldata_fee_usd),
+  SUM(total_blob_max_fee_usd),
+  SUM(total_usd_priced_transactions)
 FROM daily_metrics
 GROUP BY category, rollup
 `;
@@ -203,6 +273,7 @@ export async function aggregateMetrics(
     prisma.allTimeMetrics.deleteMany(),
     prisma.$executeRawUnsafe(AGGREGATE_TX_DAILY_METRICS_SQL, to),
     prisma.$executeRawUnsafe(AGGREGATE_BLOB_DAILY_METRICS_SQL, to),
+    prisma.$executeRawUnsafe(AGGREGATE_ETH_PRICE_DAILY_METRICS_SQL, to),
     prisma.$executeRawUnsafe(AGGREGATE_ALL_TIME_METRICS_SQL),
   ]);
 }
