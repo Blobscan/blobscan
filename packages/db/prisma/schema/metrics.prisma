@@ -124,6 +124,8 @@ model HourlyMetrics {
   category    Category?
   rollup      Rollup?
 
+  updatedAt DateTime @default(now()) @map("updated_at")
+
   // ------------- GLOBAL-ONLY METRICS -------------
 
   // Averages
@@ -226,6 +228,8 @@ model DailyMetrics {
   periodStart DateTime  @map("period_start") @db.Date
   category    Category?
   rollup      Rollup?
+
+  updatedAt DateTime @default(now()) @map("updated_at")
 
   // ------------- GLOBAL-ONLY METRICS -------------
 
@@ -334,6 +338,8 @@ model WeeklyMetrics {
   category    Category?
   rollup      Rollup?
 
+  updatedAt DateTime @default(now()) @map("updated_at")
+
   // ------------- GLOBAL-ONLY METRICS -------------
 
   // Averages
@@ -439,6 +445,8 @@ model MonthlyMetrics {
   periodStart DateTime  @map("period_start") @db.Date
   category    Category?
   rollup      Rollup?
+
+  updatedAt DateTime @default(now()) @map("updated_at")
 
   // ------------- GLOBAL-ONLY METRICS -------------
 
@@ -546,6 +554,8 @@ model YearlyMetrics {
   periodStart DateTime  @map("period_start") @db.Date
   category    Category?
   rollup      Rollup?
+
+  updatedAt DateTime @default(now()) @map("updated_at")
 
   // ------------- GLOBAL-ONLY METRICS -------------
 

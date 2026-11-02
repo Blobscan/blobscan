@@ -78,7 +78,9 @@ INSERT INTO hourly_metrics (
   total_blob_base_fee_usd,
   total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd,
-  total_usd_priced_transactions
+  total_usd_priced_transactions,
+
+  updated_at
 )
 SELECT
   base.period_start,
@@ -127,7 +129,9 @@ SELECT
   SUM(blob_max_fee_usd) AS total_blob_max_fee_usd,
   -- The divisor of a USD average. total_transactions also counts the
   -- transactions without a price, and these are not in the USD totals.
-  COUNT(blob_base_fee_usd)::INT AS total_usd_priced_transactions
+  COUNT(blob_base_fee_usd)::INT AS total_usd_priced_transactions,
+
+  now()
 FROM base JOIN block_metric ON base.period_start = block_metric.period_start
 GROUP BY GROUPING SETS (
   (base.period_start, category),
@@ -157,4 +161,6 @@ ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blob_base_fee_usd = EXCLUDED.total_blob_base_fee_usd,
   total_blob_as_calldata_fee_usd = EXCLUDED.total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd = EXCLUDED.total_blob_max_fee_usd,
-  total_usd_priced_transactions = EXCLUDED.total_usd_priced_transactions
+  total_usd_priced_transactions = EXCLUDED.total_usd_priced_transactions,
+
+  updated_at = now()
