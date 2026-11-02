@@ -79,7 +79,8 @@ model AllTimeMetrics {
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
 
   // USD counters. Each transaction fee is converted at the ETH/USD price of
-  // its block time, and then added. NULL when no ETH/USD price is available.
+  // the minute of its block, and then added. A transaction with no price for
+  // its minute is not included. NULL when no transaction has a price.
   // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
   // and a USD value has a fractional part.
 
@@ -160,7 +161,8 @@ model HourlyMetrics {
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
 
   // USD counters. Each transaction fee is converted at the ETH/USD price of
-  // its block time, and then added. NULL when no ETH/USD price is available.
+  // the minute of its block, and then added. A transaction with no price for
+  // its minute is not included. NULL when no transaction has a price.
   // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
   // and a USD value has a fractional part.
 
@@ -245,7 +247,8 @@ model DailyMetrics {
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
 
   // USD counters. Each transaction fee is converted at the ETH/USD price of
-  // its block time, and then added. NULL when no ETH/USD price is available.
+  // the minute of its block, and then added. A transaction with no price for
+  // its minute is not included. NULL when no transaction has a price.
   // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
   // and a USD value has a fractional part.
 
@@ -329,7 +332,8 @@ model WeeklyMetrics {
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
 
   // USD counters. Each transaction fee is converted at the ETH/USD price of
-  // its block time, and then added. NULL when no ETH/USD price is available.
+  // the minute of its block, and then added. A transaction with no price for
+  // its minute is not included. NULL when no transaction has a price.
   // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
   // and a USD value has a fractional part.
 
@@ -414,7 +418,8 @@ model MonthlyMetrics {
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
 
   // USD counters. Each transaction fee is converted at the ETH/USD price of
-  // its block time, and then added. NULL when no ETH/USD price is available.
+  // the minute of its block, and then added. A transaction with no price for
+  // its minute is not included. NULL when no transaction has a price.
   // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
   // and a USD value has a fractional part.
 
@@ -498,7 +503,8 @@ model YearlyMetrics {
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
 
   // USD counters. Each transaction fee is converted at the ETH/USD price of
-  // its block time, and then added. NULL when no ETH/USD price is available.
+  // the minute of its block, and then added. A transaction with no price for
+  // its minute is not included. NULL when no transaction has a price.
   // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
   // and a USD value has a fractional part.
 
