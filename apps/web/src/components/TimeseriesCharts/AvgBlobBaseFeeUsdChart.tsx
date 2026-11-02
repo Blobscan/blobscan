@@ -1,5 +1,5 @@
 import { createTimeseriesChart } from "../Charts/TimeseriesChartBase";
-import { PRIMARY_SERIES_COLOR } from "./colors";
+import { GLOBAL_MAIN_SERIES_COLOR } from "./colors";
 
 export const AvgBlobBaseFeeUsdChart = createTimeseriesChart({
   baseProps: {
@@ -14,7 +14,7 @@ export const AvgBlobBaseFeeUsdChart = createTimeseriesChart({
         name: "Avg. Blob Base Fee",
         type: "line",
         metric: "avgBlobBaseFeeUsd",
-        color: PRIMARY_SERIES_COLOR,
+        color: GLOBAL_MAIN_SERIES_COLOR,
       },
     ],
     skeletonOpts: {

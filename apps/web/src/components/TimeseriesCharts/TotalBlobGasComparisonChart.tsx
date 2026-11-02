@@ -1,5 +1,8 @@
 import { createTimeseriesChart } from "../Charts/TimeseriesChartBase";
-import { PRIMARY_SERIES_COLOR, SECONDARY_SERIES_COLOR } from "./colors";
+import {
+  GLOBAL_MAIN_SERIES_COLOR,
+  GLOBAL_SECONDARY_SERIES_COLOR,
+} from "./colors";
 
 export const TotalBlobGasComparisonChart = createTimeseriesChart({
   baseProps: {
@@ -15,13 +18,16 @@ export const TotalBlobGasComparisonChart = createTimeseriesChart({
         type: "line",
         name: "Total Blob Gas Used as Calldata",
         metric: "totalBlobAsCalldataGasUsed",
-        color: SECONDARY_SERIES_COLOR,
+        color: GLOBAL_SECONDARY_SERIES_COLOR,
       },
       {
         type: "line",
         name: "Total Blob Gas Used",
         metric: "totalBlobGasUsed",
-        color: PRIMARY_SERIES_COLOR,
+        color: GLOBAL_MAIN_SERIES_COLOR,
+        // The calldata values are larger, so the calldata area covers this
+        // series. Draw the main series above it.
+        z: 3,
       },
     ],
     skeletonOpts: {

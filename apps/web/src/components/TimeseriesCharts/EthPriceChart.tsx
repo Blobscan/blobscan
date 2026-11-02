@@ -1,11 +1,20 @@
 import { createTimeseriesChart } from "../Charts/TimeseriesChartBase";
-import { PRIMARY_SERIES_COLOR, SECONDARY_SERIES_COLOR } from "./colors";
+import {
+  GLOBAL_MAIN_SERIES_COLOR,
+  GLOBAL_SECONDARY_SERIES_COLOR,
+} from "./colors";
 
 // The average is the main line. The maximum and the minimum have a very
-// different intensity and no area.
-const AVG_COLOR = PRIMARY_SERIES_COLOR;
-const MAX_MIN_COLOR = SECONDARY_SERIES_COLOR;
-const MAX_MIN_LINE_STYLE = { width: 2 } as const;
+// different intensity and no area. They are drawn above the area of the
+// average, because the area fills the chart up to the average line and
+// covers the minimum.
+const MAX_MIN_SERIES_STYLE = {
+  type: "line",
+  color: GLOBAL_SECONDARY_SERIES_COLOR,
+  showArea: false,
+  lineStyle: { width: 2 },
+  z: 3,
+} as const;
 
 export const EthPriceChart = createTimeseriesChart({
   baseProps: {
@@ -19,29 +28,21 @@ export const EthPriceChart = createTimeseriesChart({
     },
     timeseries: [
       {
+        ...MAX_MIN_SERIES_STYLE,
         name: "Max. ETH Price",
-        type: "line",
         metric: "maxEthPrice",
-        color: MAX_MIN_COLOR,
-        showArea: false,
-        lineStyle: MAX_MIN_LINE_STYLE,
       },
       {
         name: "Avg. ETH Price",
         type: "line",
         metric: "avgEthPrice",
-        color: AVG_COLOR,
+        color: GLOBAL_MAIN_SERIES_COLOR,
         lineStyle: { width: 3 },
-        // Draw the average above the maximum and the minimum.
-        z: 3,
       },
       {
+        ...MAX_MIN_SERIES_STYLE,
         name: "Min. ETH Price",
-        type: "line",
         metric: "minEthPrice",
-        color: MAX_MIN_COLOR,
-        showArea: false,
-        lineStyle: MAX_MIN_LINE_STYLE,
       },
     ],
     skeletonOpts: {
