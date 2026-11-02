@@ -71,6 +71,7 @@ export const timeseriesMetricsSchema = DailyMetricsSchema.omit({
   periodStart: true,
   category: true,
   rollup: true,
+  updatedAt: true,
 });
 
 export const toLogLevelSchema = z.string().transform((value, ctx) => {

@@ -63,7 +63,7 @@ export const outputSchema = z
         })
         .optional()
         .describe(
-          "The current period, when `includeCurrentPeriod` is set and the period has data. Its values are partial."
+          "The current period, when `includeCurrentPeriod` is set and the period has data. Its values are partial. `updatedAt` is the time of the last update of its values."
         ),
     }),
   })
@@ -76,7 +76,13 @@ type MetricsRow = Record<string, unknown> & {
   rollup: Rollup | null;
 };
 
-const NON_METRIC_FIELDS = ["periodStart", "category", "rollup", "id"];
+const NON_METRIC_FIELDS = [
+  "periodStart",
+  "category",
+  "rollup",
+  "id",
+  "updatedAt",
+];
 
 // The current period cache is short because Dagster updates the current
 // period every 10 minutes.
@@ -336,7 +342,9 @@ const getCurrentPeriodRows = cacheTRPCQuery(
     input: ClosedPeriodsInput & { periodStart: Date };
   }): Promise<MetricsRow[]> =>
     prisma.dailyMetrics.findMany({
-      select: statFilters.select,
+      // The update time of the current period is not a metric, so the metrics
+      // filter does not select it.
+      select: statFilters.select && { ...statFilters.select, updatedAt: true },
       where: {
         ...statFilters.where,
         periodStart,
@@ -436,7 +444,17 @@ function addCurrentPeriod(
     timestamps.unshift(timestamp);
   }
 
-  output.data.currentPeriod = { timestamp };
+  // Dagster updates the rows of a period together, but each row has its own
+  // update time. The latest one is the time of the last update.
+  const updatedAt = rows.reduce<Date | undefined>(
+    (latest, { updatedAt }) =>
+      updatedAt instanceof Date && (!latest || updatedAt > latest)
+        ? updatedAt
+        : latest,
+    undefined
+  );
+
+  output.data.currentPeriod = { timestamp, updatedAt };
 
   return output;
 }

@@ -109,7 +109,9 @@ describe("getTimeseriesStats", () => {
     });
 
     it("should add the current period as the last timestamp for an ascending sort", async () => {
-      await insertCurrentPeriodRow({ totalBlobs: 7 });
+      const updatedAt = currentPeriodStart.add(10, "minute").toDate();
+
+      await insertCurrentPeriodRow({ totalBlobs: 7, updatedAt });
 
       const closed = await uncachedCaller.getTimeseries({
         ...input,
@@ -123,6 +125,7 @@ describe("getTimeseriesStats", () => {
 
       expect(result.data.currentPeriod).toEqual({
         timestamp: currentPeriodStart.toDate(),
+        updatedAt,
       });
       expect(result.data.timestamps).toEqual([
         ...closed.data.timestamps,
@@ -155,6 +158,44 @@ describe("getTimeseriesStats", () => {
       expect(result.data.series[0]?.metrics.totalBlobs).toEqual([
         7,
         ...(closed.data.series[0]?.metrics.totalBlobs ?? []),
+      ]);
+    });
+
+    it("should give the latest update time of the current period rows", async () => {
+      const latestUpdatedAt = currentPeriodStart.add(20, "minute").toDate();
+
+      await insertCurrentPeriodRow({
+        rollup: "BASE",
+        totalBlobs: 7,
+        updatedAt: currentPeriodStart.add(10, "minute").toDate(),
+      });
+      await insertCurrentPeriodRow({
+        rollup: "OPTIMISM",
+        totalBlobs: 3,
+        updatedAt: latestUpdatedAt,
+      });
+
+      const result = await uncachedCaller.getTimeseries({
+        ...input,
+        rollups: "all",
+        includeCurrentPeriod: "true",
+      });
+
+      expect(result.data.currentPeriod?.updatedAt).toEqual(latestUpdatedAt);
+    });
+
+    it("should not add the update time to the metrics", async () => {
+      await insertCurrentPeriodRow({ totalBlobs: 7 });
+
+      const result = await uncachedCaller.getTimeseries({
+        ...input,
+        metrics: "totalBlobs",
+        includeCurrentPeriod: "true",
+      });
+
+      expect(result.data.currentPeriod?.updatedAt).toBeInstanceOf(Date);
+      expect(Object.keys(result.data.series[0]?.metrics ?? {})).toEqual([
+        "totalBlobs",
       ]);
     });
 
