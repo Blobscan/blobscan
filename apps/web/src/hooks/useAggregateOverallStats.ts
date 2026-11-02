@@ -51,20 +51,30 @@ const BIGINT_TOTALS = [
 // Metrics that only the global row has. They do not change with the selected
 // rollups, so the aggregation copies them from the global row.
 const GLOBAL_ONLY_METRICS = [
+  "avgBlobGasPrice",
+  "maxBlobGasPrice",
+  "minBlobGasPrice",
   "avgEthPrice",
   "maxEthPrice",
   "minEthPrice",
-  "totalBlocks",
-] as const satisfies readonly NumberMetricName[];
-
-const GLOBAL_ONLY_BIGINT_METRICS = [
   "totalBlobGasPrice",
-] as const satisfies readonly BigIntMetricName[];
+  "totalBlocks",
+] as const satisfies readonly (keyof AggregatedMetrics)[];
 
 export function toAggregatedMetrics(metrics: Metrics): AggregatedMetrics {
   return Object.fromEntries(
     Object.entries(metrics).map(([name, value]) => [name, value ?? undefined])
   ) as AggregatedMetrics;
+}
+
+// A generic key lets TypeScript match the value type to the target type. A
+// loop over a union of keys cannot do that.
+function copyMetric<K extends keyof AggregatedMetrics>(
+  target: AggregatedMetrics,
+  source: AggregatedMetrics,
+  name: K
+) {
+  target[name] = source[name];
 }
 
 // Returns undefined when no row has a value (e.g. global-only metrics on
@@ -126,16 +136,16 @@ export function useAggregateOverallStats(
       aggregations[name] = sumBigInts(selectedMetrics.map((m) => m[name]));
     }
 
-    for (const name of GLOBAL_ONLY_METRICS) {
-      aggregations[name] = globalMetrics?.[name] ?? undefined;
-    }
+    const globalAggregations = globalMetrics
+      ? toAggregatedMetrics(globalMetrics)
+      : {};
 
-    for (const name of GLOBAL_ONLY_BIGINT_METRICS) {
-      aggregations[name] = globalMetrics?.[name] ?? undefined;
+    for (const name of GLOBAL_ONLY_METRICS) {
+      copyMetric(aggregations, globalAggregations, name);
     }
 
     // Same denominators as the generated average columns in the database
-    const { totalTransactions, totalBlocks, totalBlobs } = aggregations;
+    const { totalTransactions, totalBlobs } = aggregations;
 
     aggregations.avgBlobBaseFee = avg(
       aggregations.totalBlobBaseFee,
@@ -156,10 +166,6 @@ export function useAggregateOverallStats(
     aggregations.avgMaxBlobGasFee = avg(
       aggregations.totalMaxBlobGasFee,
       totalTransactions
-    );
-    aggregations.avgBlobGasPrice = avg(
-      aggregations.totalBlobGasPrice,
-      totalBlocks
     );
     aggregations.avgBlobUsageSize = avg(
       aggregations.totalBlobUsageSize,

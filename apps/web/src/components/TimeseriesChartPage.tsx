@@ -6,10 +6,10 @@ import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import { useUrlState } from "~/hooks/useUrlState";
 import { categoriesParamSchema, rollupsSchema } from "~/schemas/filters";
-import type { TimeseriesChartComponent } from "./Charts/TimeseriesChartBase";
 import { TimeseriesControlBar } from "./ControlBars/TimeseriesControlBar";
 import { Header } from "./Header";
 import { getFeeUnitLabels } from "./TimeseriesCharts/FeeUnitChart";
+import type { TimeseriesChartComponent } from "./TimeseriesCharts/factories";
 import { FEE_UNITS, FeeUnitToggle } from "./Toggles";
 
 export type TimeseriesChartPageProps = {

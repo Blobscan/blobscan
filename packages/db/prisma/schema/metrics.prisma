@@ -43,10 +43,14 @@ model AllTimeMetrics {
 
   // Extremes
 
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  maxBlobGasPrice Decimal? @map("max_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.nonnegative()
-  maxEthPrice Float? @map("max_eth_price")
+  maxEthPrice     Float?   @map("max_eth_price")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  minBlobGasPrice Decimal? @map("min_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.nonnegative()
-  minEthPrice Float? @map("min_eth_price")
+  minEthPrice     Float?   @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -146,10 +150,14 @@ model HourlyMetrics {
 
   // Extremes
 
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  maxBlobGasPrice Decimal? @map("max_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.nonnegative()
-  maxEthPrice Float? @map("max_eth_price")
+  maxEthPrice     Float?   @map("max_eth_price")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  minBlobGasPrice Decimal? @map("min_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.nonnegative()
-  minEthPrice Float? @map("min_eth_price")
+  minEthPrice     Float?   @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -245,10 +253,14 @@ model DailyMetrics {
 
   // Extremes
 
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  maxBlobGasPrice Decimal? @map("max_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.nonnegative()
-  maxEthPrice Float? @map("max_eth_price")
+  maxEthPrice     Float?   @map("max_eth_price")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  minBlobGasPrice Decimal? @map("min_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.nonnegative()
-  minEthPrice Float? @map("min_eth_price")
+  minEthPrice     Float?   @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -347,10 +359,14 @@ model WeeklyMetrics {
 
   // Extremes
 
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  maxBlobGasPrice Decimal? @map("max_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.nonnegative()
-  maxEthPrice Float? @map("max_eth_price")
+  maxEthPrice     Float?   @map("max_eth_price")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  minBlobGasPrice Decimal? @map("min_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.nonnegative()
-  minEthPrice Float? @map("min_eth_price")
+  minEthPrice     Float?   @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -450,10 +466,14 @@ model MonthlyMetrics {
 
   // Extremes
 
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  maxBlobGasPrice Decimal? @map("max_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.nonnegative()
-  maxEthPrice Float? @map("max_eth_price")
+  maxEthPrice     Float?   @map("max_eth_price")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  minBlobGasPrice Decimal? @map("min_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.nonnegative()
-  minEthPrice Float? @map("min_eth_price")
+  minEthPrice     Float?   @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -553,10 +573,14 @@ model YearlyMetrics {
 
   // Extremes
 
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  maxBlobGasPrice Decimal? @map("max_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.nonnegative()
-  maxEthPrice Float? @map("max_eth_price")
+  maxEthPrice     Float?   @map("max_eth_price")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  minBlobGasPrice Decimal? @map("min_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.nonnegative()
-  minEthPrice Float? @map("min_eth_price")
+  minEthPrice     Float?   @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 

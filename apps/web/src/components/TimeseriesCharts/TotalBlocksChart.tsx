@@ -1,4 +1,4 @@
-import { createTimeseriesChart } from "../Charts/TimeseriesChartBase";
+import { createTimeseriesChart } from "./factories";
 
 export const TotalBlocksChart = createTimeseriesChart({
   baseProps: {

@@ -55,6 +55,28 @@ describe("getTimeseriesStats", () => {
     ttlProvided: "daily",
   });
 
+  // In the fixtures, all the blocks of a day have the same blob gas price.
+  // Thus the max. and the min. are equal, and the snapshots cannot show a mix-up.
+  it("should return the max. and the min. blob gas price in their own fields", async () => {
+    const uncachedCaller = createStatsCaller(await createTestContext());
+
+    await ctx.prisma.dailyMetrics.updateMany({
+      where: { category: null, rollup: null },
+      data: { maxBlobGasPrice: 30, minBlobGasPrice: 10 },
+    });
+
+    const result = await uncachedCaller.getTimeseries(input);
+    const globalSeries = result.data.series.find(
+      (s) => s.dimension.type === "global"
+    );
+    const { maxBlobGasPrice = [], minBlobGasPrice = [] } =
+      globalSeries?.metrics ?? {};
+
+    expect(maxBlobGasPrice.length).toBeGreaterThan(0);
+    expect(new Set(maxBlobGasPrice)).toEqual(new Set([BigInt(30)]));
+    expect(new Set(minBlobGasPrice)).toEqual(new Set([BigInt(10)]));
+  });
+
   describe("when including the current period", () => {
     // The system date of the fixtures is the start of the current period
     const currentPeriodStart = dayjs.utc(fixtures.systemDate).startOf("day");

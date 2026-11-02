@@ -1,9 +1,9 @@
 import type { FC } from "react";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import type { BarSeriesOption, LineSeriesOption } from "echarts";
 import { useTheme } from "next-themes";
 
-import type { Prettify, ThemeMode, TimeseriesMetric } from "~/types";
+import type { Prettify, ThemeMode } from "~/types";
 import { Card } from "../Cards/Card";
 import {
   addDerivedColumns,
@@ -72,15 +72,6 @@ export type TimeseriesChartBaseProps = Prettify<
     yAxis: Axis;
   }
 >;
-
-export type TimeseriesChartComponent = FC<TimeseriesChartProps> & {
-  displayName?: string;
-  requiredMetrics: [TimeseriesMetric, ...TimeseriesMetric[]];
-  /**
-   * The unit that the chart shows its values in (e.g. "Gwei" or "USD").
-   */
-  yUnit?: string;
-};
 
 function getSeriesStyle(
   { color, showArea = true }: Pick<Timeseries, "color" | "showArea">,
@@ -263,46 +254,3 @@ export const TimeseriesChartBase: FC<TimeseriesChartBaseProps> = ({
     </Card>
   );
 };
-
-export function createTimeseriesChart({
-  baseProps: { skeletonOpts: baseSkeletonOpts = {}, ...restBaseProps },
-  requiredMetrics,
-  componentName,
-}: {
-  baseProps: TimeseriesChartBaseProps;
-  requiredMetrics: [TimeseriesMetric, ...TimeseriesMetric[]];
-  componentName: string;
-}): TimeseriesChartComponent {
-  const Chart = function ({
-    skeletonOpts = {},
-    ...restProps
-  }: TimeseriesChartProps) {
-    return (
-      <TimeseriesChartBase
-        skeletonOpts={{
-          ...baseSkeletonOpts,
-          ...skeletonOpts,
-          chart: {
-            ...(baseSkeletonOpts?.chart ?? {}),
-            ...(skeletonOpts?.chart ?? {}),
-          },
-          legend: {
-            ...(baseSkeletonOpts?.legend ?? {}),
-            ...(skeletonOpts?.legend ?? {}),
-          },
-        }}
-        {...restBaseProps}
-        {...restProps}
-      />
-    );
-  };
-
-  Chart.displayName = componentName;
-
-  const { displayUnit, unit } = restBaseProps.yAxis;
-
-  return Object.assign(React.memo(Chart), {
-    requiredMetrics,
-    yUnit: displayUnit ?? unit,
-  });
-}
