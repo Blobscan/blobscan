@@ -1,13 +1,13 @@
 import { createTimeseriesChart } from "../Charts/TimeseriesChartBase";
 
 // Shades of the primary color (see @blobscan/tailwind-config). The average is
-// the main line. The maximum and the minimum are lighter, and a band fills the
-// range between them.
-const AVG_COLOR = { light: "#5D25D4", dark: "#AE8CF5" };
-const MAX_MIN_COLOR = { light: "#9A71F2", dark: "#C8AEFA" };
-const RANGE_COLOR = { light: "#9A71F2", dark: "#AE8CF5" };
-const RANGE_OPACITY = 0.15;
-const MAX_MIN_LINE_STYLE = { type: "dashed", width: 1.5 } as const;
+// the main line. The maximum and the minimum have a very different intensity,
+// and a band fills the range between them.
+const AVG_COLOR = { light: "#5D25D4", dark: "#C8AEFA" };
+const MAX_MIN_COLOR = { light: "#C8AEFA", dark: "#5D25D4" };
+const RANGE_COLOR = { light: "#AE8CF5", dark: "#5D25D4" };
+const RANGE_OPACITY = 0.2;
+const MAX_MIN_LINE_STYLE = { type: "dashed", width: 2 } as const;
 
 export const EthPriceChart = createTimeseriesChart({
   baseProps: {
