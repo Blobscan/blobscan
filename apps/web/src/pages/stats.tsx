@@ -26,9 +26,11 @@ import {
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { SubHeader } from "~/components/SubHeader";
 import { AvgBlobBaseFeeChart } from "~/components/TimeseriesCharts/AvgBlobBaseFeeChart";
+import { AvgBlobBaseFeeUsdChart } from "~/components/TimeseriesCharts/AvgBlobBaseFeeUsdChart";
 import { AvgBlobGasPriceChart } from "~/components/TimeseriesCharts/AvgBlobGasPriceChart";
 import { EthPriceChart } from "~/components/TimeseriesCharts/EthPriceChart";
 import { TotalBlobBaseFeesChart } from "~/components/TimeseriesCharts/TotalBlobBaseFeesChart";
+import { TotalBlobBaseFeesUsdChart } from "~/components/TimeseriesCharts/TotalBlobBaseFeesUsdChart";
 import { TotalBlobGasComparisonChart } from "~/components/TimeseriesCharts/TotalBlobGasComparisonChart";
 import { TotalBlobGasUsedChart } from "~/components/TimeseriesCharts/TotalBlobGasUsedChart";
 import { TotalBlobSizeChart } from "~/components/TimeseriesCharts/TotalBlobSizeChart";
@@ -37,6 +39,8 @@ import { TotalBlobsChart } from "~/components/TimeseriesCharts/TotalBlobsChart";
 import { TotalBlocksChart } from "~/components/TimeseriesCharts/TotalBlocksChart";
 import { TotalTransactionsChart } from "~/components/TimeseriesCharts/TotalTransactionsChart";
 import { TotalUniqueAddressesChart } from "~/components/TimeseriesCharts/TotalUniqueAddressesChart";
+import { FEE_UNITS, FeeUnitToggle } from "~/components/Toggles";
+import type { FeeUnit } from "~/components/Toggles";
 import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
@@ -63,6 +67,7 @@ const SKELETON_OPTS: ChartBaseProps["skeletonOpts"] = {
 
 const statsSectionSchema = z.object({
   section: z.enum(SECTION_NAMES).default("all"),
+  unit: z.enum(FEE_UNITS).default("eth"),
 });
 
 const controlQueryParamsSchema = statsSectionSchema
@@ -76,6 +81,7 @@ const Stats: NextPage = function () {
     state?.categories?.length && state?.rollups?.length
       ? { categories: state.categories, rollups: state.rollups }
       : { categories: ["other" as const], rollups: ["all" as const] };
+  const feeUnit: FeeUnit = state?.unit ?? "eth";
 
   const [selectedSection, setSelectedSection] =
     useState<SectionOption>(DEFAULT_SECTION);
@@ -94,6 +100,7 @@ const Stats: NextPage = function () {
       "totalBlobUsageSize",
       "totalBlobGasUsed",
       "totalBlobBaseFee",
+      "totalBlobBaseFeeUsd",
       "totalTransactions",
       "totalUniqueReceivers",
       "totalUniqueSenders",
@@ -112,6 +119,8 @@ const Stats: NextPage = function () {
       "avgBlobGasPrice",
       "avgBlobBaseFee",
       "avgBlobMaxFee",
+      "totalBlobBaseFeeUsd",
+      "totalTransactions",
       "totalBlocks",
       "totalUniqueReceivers",
       "totalUniqueSenders",
@@ -359,24 +368,43 @@ const Stats: NextPage = function () {
           {
             name: "Total Blob Fees",
             metric: {
-              primary: {
-                value: aggregatedMetrics?.totalBlobBaseFee,
-                type: "ethereum",
-              },
+              primary:
+                feeUnit === "usd"
+                  ? {
+                      value: aggregatedMetrics?.totalBlobBaseFeeUsd,
+                      type: "fiat",
+                    }
+                  : {
+                      value: aggregatedMetrics?.totalBlobBaseFee,
+                      type: "ethereum",
+                    },
             },
           },
           {
             name: "Total Tx Fees Saved",
             metric: {
-              primary: {
-                value:
-                  aggregatedMetrics?.totalBlobAsCalldataFee !== undefined &&
-                  aggregatedMetrics.totalBlobBaseFee !== undefined
-                    ? aggregatedMetrics.totalBlobAsCalldataFee -
-                      aggregatedMetrics.totalBlobBaseFee
-                    : undefined,
-                type: "ethereum",
-              },
+              primary:
+                feeUnit === "usd"
+                  ? {
+                      value:
+                        aggregatedMetrics?.totalBlobAsCalldataFeeUsd !==
+                          undefined &&
+                        aggregatedMetrics.totalBlobBaseFeeUsd !== undefined
+                          ? aggregatedMetrics.totalBlobAsCalldataFeeUsd -
+                            aggregatedMetrics.totalBlobBaseFeeUsd
+                          : undefined,
+                      type: "fiat",
+                    }
+                  : {
+                      value:
+                        aggregatedMetrics?.totalBlobAsCalldataFee !==
+                          undefined &&
+                        aggregatedMetrics.totalBlobBaseFee !== undefined
+                          ? aggregatedMetrics.totalBlobAsCalldataFee -
+                            aggregatedMetrics.totalBlobBaseFee
+                          : undefined,
+                      type: "ethereum",
+                    },
             },
             // secondaryMetric={
             //   overallStats
@@ -401,24 +429,44 @@ const Stats: NextPage = function () {
             },
           },
         ],
-        charts: [
-          <TotalBlobBaseFeesChart
-            key="total-blob-base-fees"
-            dataset={selectedCategorizedChartDatasets}
-            headerControls={buildViewLink("total-blob-base-fees")}
-            isLoading={categorizedDatasetsLoading}
-            skeletonOpts={SKELETON_OPTS}
-            compact
-          />,
-          <AvgBlobBaseFeeChart
-            key="avg-blob-base-fee"
-            dataset={globalChartDatasets}
-            headerControls={buildViewLink("avg-blob-base-fee")}
-            isLoading={globalDatasetsLoading}
-            skeletonOpts={SKELETON_OPTS}
-            compact
-          />,
-        ],
+        charts:
+          feeUnit === "usd"
+            ? [
+                <TotalBlobBaseFeesUsdChart
+                  key="total-blob-base-fees-usd"
+                  dataset={selectedCategorizedChartDatasets}
+                  headerControls={buildViewLink("total-blob-base-fees-usd")}
+                  isLoading={categorizedDatasetsLoading}
+                  skeletonOpts={SKELETON_OPTS}
+                  compact
+                />,
+                <AvgBlobBaseFeeUsdChart
+                  key="avg-blob-base-fee-usd"
+                  dataset={globalChartDatasets}
+                  headerControls={buildViewLink("avg-blob-base-fee-usd")}
+                  isLoading={globalDatasetsLoading}
+                  skeletonOpts={SKELETON_OPTS}
+                  compact
+                />,
+              ]
+            : [
+                <TotalBlobBaseFeesChart
+                  key="total-blob-base-fees"
+                  dataset={selectedCategorizedChartDatasets}
+                  headerControls={buildViewLink("total-blob-base-fees")}
+                  isLoading={categorizedDatasetsLoading}
+                  skeletonOpts={SKELETON_OPTS}
+                  compact
+                />,
+                <AvgBlobBaseFeeChart
+                  key="avg-blob-base-fee"
+                  dataset={globalChartDatasets}
+                  headerControls={buildViewLink("avg-blob-base-fee")}
+                  isLoading={globalDatasetsLoading}
+                  skeletonOpts={SKELETON_OPTS}
+                  compact
+                />,
+              ],
       },
       {
         id: "transaction",
@@ -515,6 +563,7 @@ const Stats: NextPage = function () {
     [
       aggregatedMetrics,
       blobSize,
+      feeUnit,
       selectedCategorizedChartDatasets,
       globalChartDatasets,
       categorizedDatasetsLoading,
@@ -536,6 +585,13 @@ const Stats: NextPage = function () {
       updateState({
         section: option !== DEFAULT_SECTION ? option.value : undefined,
       });
+    },
+    [updateState]
+  );
+
+  const handleFeeUnitChange = useCallback(
+    (unit: FeeUnit) => {
+      updateState({ unit: unit !== "eth" ? unit : undefined });
     },
     [updateState]
   );
@@ -572,6 +628,7 @@ const Stats: NextPage = function () {
                 onChange={(newRollups) => setSelectedRollups(newRollups ?? [])}
               />
             </div>
+            <FeeUnitToggle unit={feeUnit} onChange={handleFeeUnitChange} />
           </div>
         </Card>
         <div className="flex flex-col gap-8">

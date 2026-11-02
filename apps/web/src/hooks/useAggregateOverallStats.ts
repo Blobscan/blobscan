@@ -32,6 +32,9 @@ const NUMBER_TOTALS = [
   "totalUniqueBlobs",
   "totalUniqueReceivers",
   "totalUniqueSenders",
+  "totalBlobAsCalldataFeeUsd",
+  "totalBlobBaseFeeUsd",
+  "totalBlobMaxFeeUsd",
 ] as const satisfies readonly NumberMetricName[];
 
 const BIGINT_TOTALS = [
