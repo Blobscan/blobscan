@@ -31,7 +31,9 @@ block_metric AS (
   SELECT
     period_start,
     SUM(blob_gas_price)::DECIMAL AS total_blob_gas_price,
-    COUNT(*)::INT            AS total_blocks
+    COUNT(*)::INT            AS total_blocks,
+    MAX(blob_gas_price)::DECIMAL AS max_blob_gas_price,
+    MIN(blob_gas_price)::DECIMAL AS min_blob_gas_price
   FROM (
     SELECT DISTINCT ON (block_number)
       period_start,
@@ -49,6 +51,8 @@ INSERT INTO hourly_metrics (
   -- ------------- GLOBAL-ONLY METRICS -------------
   total_blob_gas_price,
   total_blocks,
+  max_blob_gas_price,
+  min_blob_gas_price,
 
   -- ------------- DIMENSIONAL METRICS -------------
   total_transactions,
@@ -75,6 +79,12 @@ SELECT
   CASE WHEN GROUPING(category) = 1 AND GROUPING(rollup) = 1
     THEN COALESCE(ANY_VALUE(total_blocks), 0)
   END AS total_blocks,
+  CASE WHEN GROUPING(category) = 1 AND GROUPING(rollup) = 1
+    THEN ANY_VALUE(max_blob_gas_price)
+  END AS max_blob_gas_price,
+  CASE WHEN GROUPING(category) = 1 AND GROUPING(rollup) = 1
+    THEN ANY_VALUE(min_blob_gas_price)
+  END AS min_blob_gas_price,
 
   -- ------------- DIMENSIONAL METRICS -------------
   COUNT(hash)::INT AS total_transactions,
@@ -108,6 +118,8 @@ HAVING NOT (
 ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blob_gas_price = EXCLUDED.total_blob_gas_price,
   total_blocks = EXCLUDED.total_blocks,
+  max_blob_gas_price = EXCLUDED.max_blob_gas_price,
+  min_blob_gas_price = EXCLUDED.min_blob_gas_price,
 
   total_transactions = EXCLUDED.total_transactions,
   total_unique_receivers = EXCLUDED.total_unique_receivers,

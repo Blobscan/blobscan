@@ -49,11 +49,16 @@ const BIGINT_TOTALS = [
 
 // Metrics that only the global row has. They do not change with the selected
 // rollups, so the aggregation copies them from the global row.
-const GLOBAL_ONLY_METRICS = [
+const GLOBAL_ONLY_NUMBERS = [
   "avgEthPrice",
   "maxEthPrice",
   "minEthPrice",
 ] as const satisfies readonly NumberMetricName[];
+
+const GLOBAL_ONLY_BIGINTS = [
+  "maxBlobGasPrice",
+  "minBlobGasPrice",
+] as const satisfies readonly BigIntMetricName[];
 
 export function toAggregatedMetrics(metrics: Metrics): AggregatedMetrics {
   return Object.fromEntries(
@@ -120,7 +125,11 @@ export function useAggregateOverallStats(
       aggregations[name] = sumBigInts(selectedMetrics.map((m) => m[name]));
     }
 
-    for (const name of GLOBAL_ONLY_METRICS) {
+    for (const name of GLOBAL_ONLY_NUMBERS) {
+      aggregations[name] = globalMetrics?.[name] ?? undefined;
+    }
+
+    for (const name of GLOBAL_ONLY_BIGINTS) {
       aggregations[name] = globalMetrics?.[name] ?? undefined;
     }
 

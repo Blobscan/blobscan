@@ -33,8 +33,14 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           "avgMaxBlobGasFee": [
             100,
           ],
+          "maxBlobGasPrice": [
+            22n,
+          ],
           "maxEthPrice": [
             null,
+          ],
+          "minBlobGasPrice": [
+            22n,
           ],
           "minEthPrice": [
             null,
@@ -145,9 +151,17 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             100,
             100,
           ],
+          "maxBlobGasPrice": [
+            22n,
+            20n,
+          ],
           "maxEthPrice": [
             null,
             null,
+          ],
+          "minBlobGasPrice": [
+            22n,
+            20n,
           ],
           "minEthPrice": [
             null,
@@ -286,10 +300,20 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             100,
             100,
           ],
+          "maxBlobGasPrice": [
+            22n,
+            20n,
+            22n,
+          ],
           "maxEthPrice": [
             null,
             null,
             null,
+          ],
+          "minBlobGasPrice": [
+            22n,
+            20n,
+            22n,
           ],
           "minEthPrice": [
             null,
@@ -456,11 +480,23 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             100,
             100,
           ],
+          "maxBlobGasPrice": [
+            22n,
+            20n,
+            22n,
+            22n,
+          ],
           "maxEthPrice": [
             null,
             null,
             null,
             null,
+          ],
+          "minBlobGasPrice": [
+            22n,
+            20n,
+            22n,
+            22n,
           ],
           "minEthPrice": [
             null,
@@ -647,11 +683,23 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             100,
             100,
           ],
+          "maxBlobGasPrice": [
+            22n,
+            20n,
+            22n,
+            22n,
+          ],
           "maxEthPrice": [
             null,
             null,
             null,
             null,
+          ],
+          "minBlobGasPrice": [
+            22n,
+            20n,
+            22n,
+            22n,
           ],
           "minEthPrice": [
             null,
@@ -846,12 +894,26 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             100,
             100,
           ],
+          "maxBlobGasPrice": [
+            22n,
+            20n,
+            22n,
+            22n,
+            22n,
+          ],
           "maxEthPrice": [
             null,
             null,
             null,
             null,
             null,
+          ],
+          "minBlobGasPrice": [
+            22n,
+            20n,
+            22n,
+            22n,
+            22n,
           ],
           "minEthPrice": [
             null,
@@ -1074,6 +1136,14 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             100,
             110,
           ],
+          "maxBlobGasPrice": [
+            22n,
+            20n,
+            22n,
+            22n,
+            22n,
+            22n,
+          ],
           "maxEthPrice": [
             null,
             null,
@@ -1081,6 +1151,14 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
             null,
             null,
+          ],
+          "minBlobGasPrice": [
+            22n,
+            20n,
+            22n,
+            22n,
+            22n,
+            22n,
           ],
           "minEthPrice": [
             null,
@@ -1267,7 +1345,9 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           "avgBlobUsageSize": [],
           "avgEthPrice": [],
           "avgMaxBlobGasFee": [],
+          "maxBlobGasPrice": [],
           "maxEthPrice": [],
+          "minBlobGasPrice": [],
           "minEthPrice": [],
           "totalBlobAsCalldataFee": [],
           "totalBlobAsCalldataGasUsed": [],

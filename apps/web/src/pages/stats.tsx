@@ -26,7 +26,7 @@ import {
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { SubHeader } from "~/components/SubHeader";
 import { AvgBlobBaseFeeChart } from "~/components/TimeseriesCharts/AvgBlobBaseFeeChart";
-import { AvgBlobGasPriceChart } from "~/components/TimeseriesCharts/AvgBlobGasPriceChart";
+import { BlobGasPriceChart } from "~/components/TimeseriesCharts/BlobGasPriceChart";
 import { EthPriceChart } from "~/components/TimeseriesCharts/EthPriceChart";
 import { TotalBlobBaseFeesChart } from "~/components/TimeseriesCharts/TotalBlobBaseFeesChart";
 import { TotalBlobGasComparisonChart } from "~/components/TimeseriesCharts/TotalBlobGasComparisonChart";
@@ -109,7 +109,9 @@ const Stats: NextPage = function () {
     error: globalChartsError,
   } = useTimeseriesQuery({
     metrics: [
+      "maxBlobGasPrice",
       "avgBlobGasPrice",
+      "minBlobGasPrice",
       "avgBlobBaseFee",
       "avgBlobMaxFee",
       "totalBlocks",
@@ -313,10 +315,34 @@ const Stats: NextPage = function () {
             // }
           },
           {
+            name: "Max. Blob Gas Price",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.maxBlobGasPrice,
+                type: "ethereum",
+                numberFormatOpts: {
+                  maximumFractionDigits: 9,
+                },
+              },
+            },
+          },
+          {
             name: "Avg. Blob Gas Price",
             metric: {
               primary: {
                 value: aggregatedMetrics?.avgBlobGasPrice,
+                type: "ethereum",
+                numberFormatOpts: {
+                  maximumFractionDigits: 9,
+                },
+              },
+            },
+          },
+          {
+            name: "Min. Blob Gas Price",
+            metric: {
+              primary: {
+                value: aggregatedMetrics?.minBlobGasPrice,
                 type: "ethereum",
                 numberFormatOpts: {
                   maximumFractionDigits: 9,
@@ -334,10 +360,10 @@ const Stats: NextPage = function () {
             skeletonOpts={SKELETON_OPTS}
             compact
           />,
-          <AvgBlobGasPriceChart
-            key="avg-blob-gas-price"
+          <BlobGasPriceChart
+            key="blob-gas-price"
             dataset={globalChartDatasets}
-            headerControls={buildViewLink("avg-blob-gas-price")}
+            headerControls={buildViewLink("blob-gas-price")}
             isLoading={globalDatasetsLoading}
             skeletonOpts={SKELETON_OPTS}
             compact

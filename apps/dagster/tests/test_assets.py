@@ -468,6 +468,8 @@ class _TxMetricsMixin:
     def test_global_only_metrics_are_null_for_non_global_rows(self, postgres):
         global_only_fields = [
             "avg_blob_gas_price",
+            "max_blob_gas_price",
+            "min_blob_gas_price",
             "total_blob_gas_price",
             "total_blocks",
         ]
@@ -494,6 +496,14 @@ class _TxMetricsMixin:
     def test_total_blob_gas_price(self, postgres):
         expected = sum(b["blobGasPrice"] for b in self._blocks)
         assert self._result(postgres)[(None, None)]["total_blob_gas_price"] == expected
+
+    def test_max_blob_gas_price(self, postgres):
+        expected = max(b["blobGasPrice"] for b in self._blocks)
+        assert self._result(postgres)[(None, None)]["max_blob_gas_price"] == expected
+
+    def test_min_blob_gas_price(self, postgres):
+        expected = min(b["blobGasPrice"] for b in self._blocks)
+        assert self._result(postgres)[(None, None)]["min_blob_gas_price"] == expected
 
     def test_avg_blob_base_fee(self, postgres):
         expected = sum(tx["blob_base_fee"] for tx in self._txs) / len(self._txs)

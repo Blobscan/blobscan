@@ -22,6 +22,16 @@ const bundleAnalyzer = withBundleAnalyzer({
 const config: NextConfig = {
   reactStrictMode: true,
   output: process.env.NEXT_BUILD_OUTPUT as NextConfig["output"],
+  async redirects() {
+    return [
+      // The chart also shows the maximum and the minimum now
+      {
+        source: "/stat/avg-blob-gas-price",
+        destination: "/stat/blob-gas-price",
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     /**
      * Redirect Grafana's metrics scrape requests from /metrics to the Next.js

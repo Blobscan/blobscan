@@ -6,6 +6,8 @@ INSERT INTO {{target_table}} (
   -- ------------- GLOBAL-ONLY METRICS -------------
   total_blob_gas_price,
   total_blocks,
+  max_blob_gas_price,
+  min_blob_gas_price,
   total_eth_price,
   total_eth_price_count,
   max_eth_price,
@@ -35,6 +37,8 @@ SELECT
   -- ------------- GLOBAL-ONLY METRICS -------------
   SUM(total_blob_gas_price) AS total_blob_gas_price,
   SUM(total_blocks) AS total_blocks,
+  MAX(max_blob_gas_price) AS max_blob_gas_price,
+  MIN(min_blob_gas_price) AS min_blob_gas_price,
   SUM(total_eth_price) AS total_eth_price,
   SUM(total_eth_price_count) AS total_eth_price_count,
   MAX(max_eth_price) AS max_eth_price,
@@ -62,6 +66,8 @@ GROUP BY DATE_TRUNC('{{trunc}}', period_start), category, rollup
 ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blob_gas_price = EXCLUDED.total_blob_gas_price,
   total_blocks = EXCLUDED.total_blocks,
+  max_blob_gas_price = EXCLUDED.max_blob_gas_price,
+  min_blob_gas_price = EXCLUDED.min_blob_gas_price,
   total_eth_price = EXCLUDED.total_eth_price,
   total_eth_price_count = EXCLUDED.total_eth_price_count,
   max_eth_price = EXCLUDED.max_eth_price,
