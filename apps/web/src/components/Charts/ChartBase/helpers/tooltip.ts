@@ -4,11 +4,13 @@ import type {
   TooltipComponentOption,
 } from "echarts";
 
+import dayjs from "@blobscan/dayjs";
+
 import { calculatePercentage, getNeighbouringElements } from "~/utils";
 import type { Numerish } from "~/utils";
 import { aggregateValues } from "../../../TimeseriesCharts/helpers";
 import type { Axes, Axis, StandardEncoding } from "../types";
-import { getCurrentPeriodLabel, isCurrentPeriodSeries } from "./current-period";
+import { isCurrentPeriodSeries } from "./current-period";
 import { formatAxisValue, formatSeriesName } from "./formatters";
 import { isRangeSeriesId } from "./range";
 
@@ -142,12 +144,28 @@ function isCurrentPeriod(
   );
 }
 
+// A red pulse and "Live" next to the date of the current period. The values of
+// the current period are not complete, and Dagster updates them during the
+// period. The pulse does not move when the user turns off animations.
+function buildLiveIndicatorHtmlElement(themeMode: "light" | "dark") {
+  const color = themeMode === "dark" ? "#F87171" : "#DC2626";
+
+  return `<span style="display: inline-flex; align-items: center; gap: 6px; color: ${color}; font-size: 0.70rem; font-weight: 500;">
+    <span class="relative inline-flex h-2 w-2">
+      <span class="absolute inline-flex h-full w-full rounded-full opacity-75 motion-safe:animate-ping" style="background-color: ${color};"></span>
+      <span class="relative inline-flex h-2 w-2 rounded-full" style="background-color: ${color};"></span>
+    </span>
+    Live
+  </span>`;
+}
+
 function createTooltipFormater({
   currentSeriesRef,
   axes,
   themeMode,
   displayTotal,
   currentPeriodTimestamp,
+  currentPeriodUpdatedAt,
   getSeriesValue,
 }: {
   currentSeriesRef: MutableRefObject<{
@@ -158,6 +176,7 @@ function createTooltipFormater({
   themeMode: "light" | "dark";
   displayTotal?: boolean;
   currentPeriodTimestamp?: Date;
+  currentPeriodUpdatedAt?: Date;
   getSeriesValue?: SeriesValueGetter;
 }) {
   return (
@@ -178,7 +197,8 @@ function createTooltipFormater({
       : allParamOrParams;
 
     let dateHTMLElement: string | undefined;
-    let periodLabelHTMLElement: string | undefined;
+    let isCurrentPeriodHovered = false;
+    let updatedAtHTMLElement: string | undefined;
     const seriesHTMLElements: string[] = [];
     const totalSeriesHTMLElements: string[] = [];
 
@@ -220,7 +240,15 @@ function createTooltipFormater({
           : "-";
 
       if (isCurrentPeriod(paramOrParams[0], currentPeriodTimestamp)) {
-        periodLabelHTMLElement = getCurrentPeriodLabel("day");
+        isCurrentPeriodHovered = true;
+
+        // Get the relative time on each hover, so it does not stay at the
+        // time of the render.
+        if (currentPeriodUpdatedAt) {
+          updatedAtHTMLElement = `Updated ${dayjs(
+            currentPeriodUpdatedAt
+          ).fromNow()}`;
+        }
       }
 
       filteredParams.map((p) => {
@@ -298,16 +326,23 @@ function createTooltipFormater({
 
     return `
           <div style="display: flex; flex-direction: column; gap: 2px;">
-            <div style="color: ${
-              themeMode === "dark" ? "#FFFFFF" : "#171717"
-            }; font-weight: bold;">
-            ${dateHTMLElement}
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+              <div style="color: ${
+                themeMode === "dark" ? "#FFFFFF" : "#171717"
+              }; font-weight: bold;">
+              ${dateHTMLElement}
+              </div>
+              ${
+                isCurrentPeriodHovered
+                  ? buildLiveIndicatorHtmlElement(themeMode)
+                  : ""
+              }
             </div>
             ${
-              periodLabelHTMLElement
+              updatedAtHTMLElement
                 ? `<div style="color: ${
                     themeMode === "dark" ? "#A3A3A3" : "#525252"
-                  }; font-size: 0.70rem;">${periodLabelHTMLElement}</div>`
+                  }; font-size: 0.70rem;">${updatedAtHTMLElement}</div>`
                 : ""
             }
             <div style="display: flex; flex-direction: column; gap: 2px; width: 100%;">
@@ -336,6 +371,7 @@ export function createBaseTooltipOptions({
   axes,
   themeMode,
   currentPeriodTimestamp,
+  currentPeriodUpdatedAt,
   getSeriesValue,
 }: {
   currentSeriesRef: MutableRefObject<{
@@ -346,6 +382,7 @@ export function createBaseTooltipOptions({
   displayTotal?: boolean;
   themeMode: "light" | "dark";
   currentPeriodTimestamp?: Date;
+  currentPeriodUpdatedAt?: Date;
   /**
    * Returns the tooltip value of a data point. The tooltip uses the encoded
    * value when it returns undefined.
@@ -364,6 +401,7 @@ export function createBaseTooltipOptions({
       themeMode,
       displayTotal,
       currentPeriodTimestamp,
+      currentPeriodUpdatedAt,
       getSeriesValue,
     }),
   };

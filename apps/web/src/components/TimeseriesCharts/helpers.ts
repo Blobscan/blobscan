@@ -55,6 +55,10 @@ export type TimeseriesDataset<T extends TimeseriesData = TimeseriesData> =
      * period is not complete, so its values are partial.
      */
     currentPeriodTimestamp?: Date;
+    /**
+     * The time of the last update of the current period values.
+     */
+    currentPeriodUpdatedAt?: Date;
     source: {
       timestamp: Date[];
     } & {
@@ -127,6 +131,7 @@ export function transformToDatasets<T extends TimeseriesData>({
         ? "global"
         : `${dimension.type}-${dimension.name}`) as DatasetId,
       currentPeriodTimestamp: currentPeriod?.timestamp,
+      currentPeriodUpdatedAt: currentPeriod?.updatedAt,
       source: {
         timestamp: timestamps,
         ...paddedMetrics,
