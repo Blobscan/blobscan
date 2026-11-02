@@ -1,5 +1,37 @@
 # @blobscan/web
 
+## 0.57.0
+
+### Minor Changes
+
+- [#1050](https://github.com/Blobscan/blobscan/pull/1050) [`ae21d79`](https://github.com/Blobscan/blobscan/commit/ae21d79f10a2e4a82d78767f49d2797e9470f120) Thanks [@PJColombo](https://github.com/PJColombo)! - Added the `maxBlobGasPrice` and `minBlobGasPrice` metrics. Dagster calculates them from the blob gas price of the blocks in each period, and the stats endpoints return them in the global dimension. The Avg. Blob Gas Price chart is now the Blob Gas Price chart: it shows the maximum, the average and the minimum, with a band between the maximum and the minimum. Its full-view page moves from `/stat/avg-blob-gas-price` to `/stat/blob-gas-price`, and the old URL redirects to the new one.
+
+  After the deploy, run a backfill of the `hourly_metrics` partitions to calculate these metrics for the old periods. The daily, weekly, monthly and yearly metrics update automatically after the hourly backfill.
+
+- [#1048](https://github.com/Blobscan/blobscan/pull/1048) [`0cb02ec`](https://github.com/Blobscan/blobscan/commit/0cb02ec3290ec5794d19aefc3341a1d55102793e) Thanks [@PJColombo](https://github.com/PJColombo)! - Added the `maxEthPrice`, `minEthPrice` and `avgEthPrice` metrics. Dagster calculates them from the ETH/USD prices for each period, and the stats endpoints return them in the global dimension. The stats page shows them in a new ETH Price chart.
+
+  After the deploy, run a backfill of the `hourly_metrics` partitions to calculate these metrics for the old periods. The daily, weekly, monthly and yearly metrics update automatically after the hourly backfill. Do the same after you load ETH prices that are more than 3 hours old (for example, after an ETH price syncer outage): the hourly catch-up schedule only calculates the last 3 hours again.
+
+- [#1051](https://github.com/Blobscan/blobscan/pull/1051) [`b18c1b1`](https://github.com/Blobscan/blobscan/commit/b18c1b126375ec9d4fb7666ae5a9c11cebd1f9c2) Thanks [@PJColombo](https://github.com/PJColombo)! - The charts that show only global values (Total Blocks, Blob Gas Price, Avg. Blob Base Fee, Total Blob Gas Expenditure Comparison, Total Unique Addresses and ETH Price) now use shades of the primary color. The main series uses the accent color of the theme. The ETH Price and Blob Gas Price charts now have the same hover behavior as the other charts: the hovered series stays and the other series fade. The average has an area. The maximum and the minimum are lines with no area, and they are drawn above the area of the average. The band between the maximum and the minimum is removed.
+
+- [#1049](https://github.com/Blobscan/blobscan/pull/1049) [`bc7c3a1`](https://github.com/Blobscan/blobscan/commit/bc7c3a1c29a29a8e0b77e615fbc2e4e2fcdfbd78) Thanks [@PJColombo](https://github.com/PJColombo)! - Add the USD fee metrics `totalBlobBaseFeeUsd`, `totalBlobAsCalldataFeeUsd` and `totalBlobMaxFeeUsd` to the metrics tables and to the stats endpoints. Also add `totalUsdPricedTransactions`, the count of the transactions that have a USD fee. Dagster converts the fee of each transaction at the ETH/USD price of the minute of its block, as the API does for a transaction, and then adds the results. A transaction with no price for its minute is not included, and a metric is `null` when no transaction in its group has a price.
+
+  The calldata fee metrics (`totalBlobAsCalldataFee`, `avgBlobAsCalldataFee` and `totalBlobAsCalldataFeeUsd`) now use the gas price of the transaction, not the blob gas price, as the API does for a transaction. The old values are too low.
+
+  The stats page shows the Total Blob Fees and Total Tx Fees Saved cards in USD. The Total Blob Base Fees and Avg. Blob Base Fee charts start in USD, and each chart has a toggle next to its Full View link that switches it to ETH. Their detail pages have the same toggle, and the URL keeps the unit (`?unit=usd`). The USD average is the total USD fee divided by `totalUsdPricedTransactions`, so a transaction with no price does not make the average too low. Formatted ETH amounts now show the unit as "Ether", not "ether".
+
+  The new columns are empty after the migration. The price syncer must write one price each minute (`ETH_PRICE_SYNCER_CRON_PATTERN="* * * * *"`). Backfill `eth_usd_price` back to Dencun first, and then backfill the metrics partitions.
+
+### Patch Changes
+
+- [#1046](https://github.com/Blobscan/blobscan/pull/1046) [`f70db34`](https://github.com/Blobscan/blobscan/commit/f70db34239f5d3fcc477ba2c83ba3b46b7bf9f55) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed the rollup chart tooltips, which showed "-" for the Total and Rollup values when a series had no value for the day
+- Updated dependencies [[`ae21d79`](https://github.com/Blobscan/blobscan/commit/ae21d79f10a2e4a82d78767f49d2797e9470f120), [`0cb02ec`](https://github.com/Blobscan/blobscan/commit/0cb02ec3290ec5794d19aefc3341a1d55102793e), [`bc7c3a1`](https://github.com/Blobscan/blobscan/commit/bc7c3a1c29a29a8e0b77e615fbc2e4e2fcdfbd78)]:
+  - @blobscan/api@0.41.0
+  - @blobscan/db@0.32.0
+  - @blobscan/eth-format@0.1.1
+  - @blobscan/blob-storage-manager@0.15.1
+  - @blobscan/rollups@0.9.1
+
 ## 0.56.0
 
 ### Minor Changes
