@@ -15,12 +15,10 @@ import type {
 } from "../TimeseriesCharts/helpers";
 import { ChartBase } from "./ChartBase";
 import type { Axis, ChartBaseProps } from "./ChartBase";
-import { getRangeSeriesId, getRangeSeriesName } from "./ChartBase/helpers";
-import type { RangeBounds, RangeSeriesPart } from "./ChartBase/helpers";
 
 type Timeseries = Pick<
   BarSeriesOption | LineSeriesOption,
-  "name" | "id" | "stack"
+  "name" | "id" | "stack" | "z"
 > & {
   type: "bar" | "line";
   /**
@@ -46,15 +44,6 @@ type Timeseries = Pick<
 
 type ThemeColor = Record<ThemeMode, string>;
 
-/**
- * A band between two metrics, for example the minimum and the maximum of a
- * value. It is drawn below the series.
- */
-type Range = RangeBounds & {
-  color: ThemeColor;
-  opacity: number;
-};
-
 export type TimeseriesChartProps = Prettify<
   Pick<
     ChartBaseProps,
@@ -68,7 +57,6 @@ export type TimeseriesChartBaseProps = Prettify<
   Omit<ChartBaseProps, "axes" | "series" | "dataset"> & {
     dataset?: TimeseriesDataset | TimeseriesDataset[];
     timeseries?: [Timeseries, ...Timeseries[]];
-    range?: Range;
     yAxis: Axis;
   }
 >;
@@ -93,79 +81,6 @@ function getSeriesStyle(
         areaStyle: { color: resolvedColor },
       }
     : {};
-}
-
-function getRangeColumn({ lower, upper }: RangeBounds) {
-  return `${upper}-${lower}`;
-}
-
-/**
- * Adds the range column to the dataset: the upper value minus the lower value.
- */
-function addRangeColumn(dataset: TimeseriesDataset, range: Range) {
-  const source = dataset.source as Record<string, unknown[] | undefined>;
-  const lowerValues = source[range.lower] ?? [];
-  const upperValues = source[range.upper] ?? [];
-
-  return {
-    ...dataset,
-    source: {
-      ...dataset.source,
-      [getRangeColumn(range)]: lowerValues.map((lower, i) => {
-        const upper = upperValues[i];
-
-        return lower === null ||
-          lower === undefined ||
-          upper === null ||
-          upper === undefined
-          ? null
-          : Number(upper) - Number(lower);
-      }),
-    },
-  } as TimeseriesDataset;
-}
-
-/**
- * Returns the two stacked series that draw the range band: a hidden series
- * at the lower value, and a series with the range column that fills the area
- * above it.
- */
-function getRangeSeries(
-  range: Range,
-  datasetIndex: number,
-  themeMode: ThemeMode
-) {
-  const color = range.color[themeMode];
-  const name = getRangeSeriesName(range, datasetIndex);
-  const getPartOptions = (part: RangeSeriesPart) => ({
-    id: getRangeSeriesId(range, datasetIndex, part),
-    name,
-    type: "line" as const,
-    datasetIndex,
-    stack: name,
-    symbol: "none",
-    silent: true,
-    z: 1,
-    lineStyle: { opacity: 0 },
-    emphasis: { disabled: true },
-    tooltip: { show: false },
-  });
-
-  // The first series of a stack is its base. ChartBase keeps the range
-  // series in this order.
-  return [
-    {
-      ...getPartOptions("base"),
-      areaStyle: undefined,
-      encode: { x: "timestamp", y: range.lower },
-    },
-    {
-      ...getPartOptions("band"),
-      itemStyle: { color },
-      areaStyle: { color, opacity: range.opacity },
-      encode: { x: "timestamp", y: getRangeColumn(range) },
-    },
-  ];
 }
 
 function getSeries(
@@ -197,7 +112,6 @@ export const TimeseriesChartBase: FC<TimeseriesChartBaseProps> = ({
   dataset: datasetProp,
   yAxis,
   timeseries,
-  range,
   ...restProps
 }) => {
   const { resolvedTheme } = useTheme();
@@ -207,36 +121,24 @@ export const TimeseriesChartBase: FC<TimeseriesChartBaseProps> = ({
       .map(({ metric }) => metric)
       .filter(isDerivedMetric);
 
-    if (!datasetProp || (!range && !derivedMetrics.length)) {
+    if (!datasetProp || !derivedMetrics.length) {
       return datasetProp;
     }
 
-    const transform = (d: TimeseriesDataset) => {
-      const withDerived = derivedMetrics.length
-        ? addDerivedColumns(d, derivedMetrics)
-        : d;
-
-      return range ? addRangeColumn(withDerived, range) : withDerived;
-    };
+    const transform = (d: TimeseriesDataset) =>
+      addDerivedColumns(d, derivedMetrics);
 
     return Array.isArray(datasetProp)
       ? datasetProp.map(transform)
       : transform(datasetProp);
-  }, [datasetProp, range, timeseries]);
+  }, [datasetProp, timeseries]);
   const series = useMemo(() => {
     if (!dataset || !timeseries) {
       return undefined;
     }
 
-    const datasetCount = Array.isArray(dataset) ? dataset.length : 1;
-    const rangeSeries = range
-      ? Array.from({ length: datasetCount }, (_, i) =>
-          getRangeSeries(range, i, themeMode)
-        ).flat()
-      : [];
-
-    return [...rangeSeries, ...getSeries(dataset, timeseries, themeMode)];
-  }, [dataset, timeseries, range, themeMode]);
+    return getSeries(dataset, timeseries, themeMode);
+  }, [dataset, timeseries, themeMode]);
 
   return (
     <Card compact>

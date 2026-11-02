@@ -12,6 +12,10 @@ import type {
   TimeseriesChartBaseProps,
   TimeseriesChartProps,
 } from "../Charts/TimeseriesChartBase";
+import {
+  GLOBAL_MAIN_SERIES_COLOR,
+  GLOBAL_SECONDARY_SERIES_COLOR,
+} from "./colors";
 
 export type TimeseriesChartComponent = FC<TimeseriesChartProps> & {
   displayName?: string;
@@ -65,18 +69,21 @@ export function createTimeseriesChart({
   });
 }
 
-// Shades of the primary color (see @blobscan/tailwind-config). The average is
-// the main line. The maximum and the minimum have a very different intensity,
-// and a band fills the range between them.
-const AVG_COLOR = { light: "#5D25D4", dark: "#C8AEFA" };
-const MAX_MIN_COLOR = { light: "#C8AEFA", dark: "#5D25D4" };
-const RANGE_COLOR = { light: "#AE8CF5", dark: "#5D25D4" };
-const RANGE_OPACITY = 0.2;
-const MAX_MIN_LINE_STYLE = { type: "dashed", width: 2 } as const;
+// The average is the main line. The maximum and the minimum have a very
+// different intensity and no area. They are drawn above the area of the
+// average, because the area fills the chart up to the average line and covers
+// the minimum.
+const MAX_MIN_SERIES_STYLE = {
+  type: "line",
+  color: GLOBAL_SECONDARY_SERIES_COLOR,
+  showArea: false,
+  lineStyle: { width: 2 },
+  z: 3,
+} as const;
 
 /**
  * Makes a chart that shows the maximum, the average and the minimum of a
- * value, with a band between the maximum and the minimum.
+ * value.
  */
 export function createMaxAvgMinChart({
   title,
@@ -99,38 +106,24 @@ export function createMaxAvgMinChart({
   return createTimeseriesChart({
     baseProps: {
       title,
-      highlightAllSeries: true,
       yAxis,
-      range: {
-        lower: min,
-        upper: max,
-        color: RANGE_COLOR,
-        opacity: RANGE_OPACITY,
-      },
       timeseries: [
         {
+          ...MAX_MIN_SERIES_STYLE,
           name: `Max. ${label}`,
-          type: "line",
           metric: max,
-          color: MAX_MIN_COLOR,
-          showArea: false,
-          lineStyle: MAX_MIN_LINE_STYLE,
         },
         {
           name: `Avg. ${label}`,
           type: "line",
           metric: avg,
-          color: AVG_COLOR,
-          showArea: false,
+          color: GLOBAL_MAIN_SERIES_COLOR,
           lineStyle: { width: 3 },
         },
         {
+          ...MAX_MIN_SERIES_STYLE,
           name: `Min. ${label}`,
-          type: "line",
           metric: min,
-          color: MAX_MIN_COLOR,
-          showArea: false,
-          lineStyle: MAX_MIN_LINE_STYLE,
         },
       ],
       skeletonOpts: {

@@ -10,7 +10,6 @@ import { aggregateValues } from "../../../TimeseriesCharts/helpers";
 import type { Axes, Axis, StandardEncoding } from "../types";
 import { getCurrentPeriodLabel, isCurrentPeriodSeries } from "./current-period";
 import { formatAxisValue, formatSeriesName } from "./formatters";
-import { isRangeSeriesId } from "./range";
 
 export function isStandardEncoding(value: unknown): value is StandardEncoding {
   if (typeof value !== "object" || value === null) {
@@ -167,14 +166,11 @@ function createTooltipFormater({
   ) => {
     const seriesIndex = currentSeriesRef.current?.seriesIndex;
     // Remove the current period series. They show the same values as the
-    // series that they belong to. Also remove the range series: a range band
-    // is not a value of its own.
+    // series that they belong to.
     const paramOrParams = Array.isArray(allParamOrParams)
-      ? allParamOrParams.filter((p) => {
-          const { seriesId } = p as { seriesId?: string };
-
-          return !isCurrentPeriodSeries(seriesId) && !isRangeSeriesId(seriesId);
-        })
+      ? allParamOrParams.filter(
+          (p) => !isCurrentPeriodSeries((p as { seriesId?: string }).seriesId)
+        )
       : allParamOrParams;
 
     let dateHTMLElement: string | undefined;
