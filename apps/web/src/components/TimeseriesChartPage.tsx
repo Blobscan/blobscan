@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { z } from "@blobscan/zod";
 
 import { SeoMetaTags } from "~/components/SeoMetaTags";
+import { useIsTestnet } from "~/hooks/useIsTestnet";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import { useUrlState } from "~/hooks/useUrlState";
 import { categoriesParamSchema, rollupsSchema } from "~/schemas/filters";
@@ -16,6 +17,7 @@ export type TimeseriesChartPageProps = {
   chart: TimeseriesChartComponent;
   /**
    * The same chart in USD. With it, the chart header shows an ETH/USD toggle.
+   * Networks with no ETH price (e.g. testnets) do not use it.
    */
   usdChart?: TimeseriesChartComponent;
   description: ReactNode;
@@ -30,12 +32,14 @@ const controlQueryParamsSchema = categoriesParamSchema
 
 export const TimeseriesChartPage = function ({
   chart: ethChart,
-  usdChart,
+  usdChart: usdChartProp,
   title,
   description,
   isCategorizedTimeseries,
 }: TimeseriesChartPageProps) {
   const { state, isReady, updateState } = useUrlState(controlQueryParamsSchema);
+  const isTestnet = useIsTestnet();
+  const usdChart = isTestnet === false ? usdChartProp : undefined;
   const queryParamsExists = Boolean(
     state?.categories?.length || state?.rollups?.length
   );
@@ -54,7 +58,7 @@ export const TimeseriesChartPage = function ({
     rollups: isCategorizedTimeseries ? rollups : undefined,
   });
 
-  if (!isReady) {
+  if (!isReady || (usdChartProp && isTestnet === undefined)) {
     return null;
   }
 

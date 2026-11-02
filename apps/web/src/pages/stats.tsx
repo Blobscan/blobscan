@@ -44,6 +44,7 @@ import type { FeeUnit } from "~/components/Toggles";
 import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
+import { useIsTestnet } from "~/hooks/useIsTestnet";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import { useUrlState } from "~/hooks/useUrlState";
 import ErrorPage from "~/pages/_error";
@@ -79,6 +80,7 @@ const controlQueryParamsSchema = statsSectionSchema
 
 const Stats: NextPage = function () {
   const chain = useChain();
+  const isTestnet = useIsTestnet();
   const { state, updateState } = useUrlState(controlQueryParamsSchema);
   const { categories, rollups } =
     state?.categories?.length && state?.rollups?.length
@@ -395,24 +397,48 @@ const Stats: NextPage = function () {
           {
             name: "Total Blob Fees",
             metric: {
-              primary: {
-                value: aggregatedMetrics?.totalBlobBaseFeeUsd,
-                type: "fiat",
-              },
+              // On networks with no ETH price (e.g. testnets), USD amounts
+              // mean nothing, so the card shows the amount in ETH.
+              primary:
+                isTestnet === false
+                  ? {
+                      value: aggregatedMetrics?.totalBlobBaseFeeUsd,
+                      type: "fiat",
+                    }
+                  : {
+                      value: isTestnet
+                        ? aggregatedMetrics?.totalBlobBaseFee
+                        : undefined,
+                      type: "ethereum",
+                    },
             },
           },
           {
             name: "Total Tx Fees Saved",
             metric: {
-              primary: {
-                value:
-                  aggregatedMetrics?.totalBlobAsCalldataFeeUsd !== undefined &&
-                  aggregatedMetrics.totalBlobBaseFeeUsd !== undefined
-                    ? aggregatedMetrics.totalBlobAsCalldataFeeUsd -
-                      aggregatedMetrics.totalBlobBaseFeeUsd
-                    : undefined,
-                type: "fiat",
-              },
+              primary:
+                isTestnet === false
+                  ? {
+                      value:
+                        aggregatedMetrics?.totalBlobAsCalldataFeeUsd !==
+                          undefined &&
+                        aggregatedMetrics.totalBlobBaseFeeUsd !== undefined
+                          ? aggregatedMetrics.totalBlobAsCalldataFeeUsd -
+                            aggregatedMetrics.totalBlobBaseFeeUsd
+                          : undefined,
+                      type: "fiat",
+                    }
+                  : {
+                      value:
+                        isTestnet &&
+                        aggregatedMetrics?.totalBlobAsCalldataFee !==
+                          undefined &&
+                        aggregatedMetrics.totalBlobBaseFee !== undefined
+                          ? aggregatedMetrics.totalBlobAsCalldataFee -
+                            aggregatedMetrics.totalBlobBaseFee
+                          : undefined,
+                      type: "ethereum",
+                    },
             },
             // secondaryMetric={
             //   overallStats
@@ -559,6 +585,7 @@ const Stats: NextPage = function () {
     [
       aggregatedMetrics,
       blobSize,
+      isTestnet,
       selectedCategorizedChartDatasets,
       globalChartDatasets,
       categorizedDatasetsLoading,
