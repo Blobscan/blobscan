@@ -20,7 +20,7 @@ WITH base AS (
     -- The fees are in wei. 1e-18 changes them to ETH. A NUMERIC multiplication
     -- is exact, so the very small fees (1 wei per blob gas) are not lost.
     (tx.blob_gas_used * b.blob_gas_price * p.price * 1e-18)             AS blob_base_fee_usd,
-    (tx.blob_as_calldata_gas_used * tx.gas_price * p.price * 1e-18)      AS blob_as_calldata_fee_usd,
+    (tx.blob_as_calldata_gas_used * tx.gas_price * p.price * 1e-18)     AS blob_as_calldata_fee_usd,
     (tx.blob_gas_used * tx.max_fee_per_blob_gas * p.price * 1e-18)      AS blob_max_fee_usd
   FROM transaction tx
     JOIN block b ON b.hash = tx.block_hash
