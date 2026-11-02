@@ -1,6 +1,9 @@
 -- The ETH price metrics are global-only metrics. Thus, only the global row
 -- (no category and no rollup) gets them. The row can already exist, because
 -- the transaction aggregation creates it.
+--
+-- The hourly catch-up schedule calculates the last 3 hours again. For ETH
+-- prices that are loaded later than that, backfill the hourly partitions.
 INSERT INTO hourly_metrics (
   period_start,
   category,
