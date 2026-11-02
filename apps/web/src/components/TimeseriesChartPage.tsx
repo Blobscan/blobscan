@@ -9,6 +9,7 @@ import { categoriesParamSchema, rollupsSchema } from "~/schemas/filters";
 import type { TimeseriesChartComponent } from "./Charts/TimeseriesChartBase";
 import { TimeseriesControlBar } from "./ControlBars/TimeseriesControlBar";
 import { Header } from "./Header";
+import { getFeeUnitLabels } from "./TimeseriesCharts/FeeUnitChart";
 import { FEE_UNITS, FeeUnitToggle } from "./Toggles";
 
 export type TimeseriesChartPageProps = {
@@ -75,10 +76,7 @@ export const TimeseriesChartPage = function ({
             usdChart ? (
               <FeeUnitToggle
                 unit={unit}
-                labels={{
-                  eth: ethChart.yUnit ?? "ETH",
-                  usd: usdChart.yUnit ?? "USD",
-                }}
+                labels={getFeeUnitLabels(ethChart, usdChart)}
                 onChange={(u) =>
                   updateState({ unit: u !== "eth" ? u : undefined })
                 }

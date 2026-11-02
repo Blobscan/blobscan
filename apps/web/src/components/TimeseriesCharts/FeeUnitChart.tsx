@@ -11,9 +11,23 @@ import type { FeeUnit } from "../Toggles";
 type FeeUnitChartProps = Omit<TimeseriesChartProps, "headerControls"> & {
   ethChart: TimeseriesChartComponent;
   usdChart: TimeseriesChartComponent;
-  defaultUnit?: FeeUnit;
+  defaultUnit: FeeUnit;
   headerControls?: (unit: FeeUnit) => ReactNode;
 };
+
+/**
+ * The text of each unit in the ETH/USD toggle: the y-axis unit of the chart of
+ * that unit (e.g. "Gwei").
+ */
+export function getFeeUnitLabels(
+  ethChart: TimeseriesChartComponent,
+  usdChart: TimeseriesChartComponent
+): Record<FeeUnit, string> {
+  return {
+    eth: ethChart.yUnit ?? "ETH",
+    usd: usdChart.yUnit ?? "USD",
+  };
+}
 
 /**
  * Shows a fee chart in ETH or in USD. The chart header has an ETH/USD toggle
@@ -22,7 +36,7 @@ type FeeUnitChartProps = Omit<TimeseriesChartProps, "headerControls"> & {
 export function FeeUnitChart({
   ethChart: EthChart,
   usdChart: UsdChart,
-  defaultUnit = "eth",
+  defaultUnit,
   headerControls,
   ...chartProps
 }: FeeUnitChartProps) {
@@ -36,10 +50,7 @@ export function FeeUnitChart({
         <div className="flex items-center gap-3">
           <FeeUnitToggle
             unit={unit}
-            labels={{
-              eth: EthChart.yUnit ?? "ETH",
-              usd: UsdChart.yUnit ?? "USD",
-            }}
+            labels={getFeeUnitLabels(EthChart, UsdChart)}
             onChange={setUnit}
           />
           {headerControls?.(unit)}

@@ -7,11 +7,6 @@ export const FEE_UNITS = ["eth", "usd"] as const;
 
 export type FeeUnit = (typeof FEE_UNITS)[number];
 
-const DEFAULT_LABELS: Record<FeeUnit, string> = {
-  eth: "ETH",
-  usd: "USD",
-};
-
 // Keep it the same as the duration-300 classes below.
 const SLIDE_DURATION_MS = 300;
 
@@ -21,7 +16,7 @@ type FeeUnitToggleProps = {
   /**
    * The text of each unit, for example the unit of a chart axis ("Gwei").
    */
-  labels?: Record<FeeUnit, string>;
+  labels: Record<FeeUnit, string>;
 };
 
 function prefersReducedMotion() {
@@ -38,7 +33,7 @@ function getOtherUnit(unit: FeeUnit): FeeUnit {
 export const FeeUnitToggle: FC<FeeUnitToggleProps> = ({
   unit,
   onChange,
-  labels = DEFAULT_LABELS,
+  labels,
 }) => {
   // The parent can mount a new toggle when the unit changes (e.g. a new
   // chart). Thus, the labels move first, and onChange runs after the slide.
@@ -89,10 +84,8 @@ export const FeeUnitToggle: FC<FeeUnitToggleProps> = ({
               "col-start-1 row-start-1 text-center transition-all duration-300 ease-[cubic-bezier(0.4,1.4,0.6,1)] motion-reduce:transition-none",
               {
                 "translate-y-0 opacity-100": u === selected,
-                "-translate-y-full opacity-0":
-                  u !== selected && u === FEE_UNITS[0],
-                "translate-y-full opacity-0":
-                  u !== selected && u === FEE_UNITS[1],
+                "-translate-y-full opacity-0": u !== selected && u === "eth",
+                "translate-y-full opacity-0": u !== selected && u === "usd",
               }
             )}
           >
@@ -104,7 +97,7 @@ export const FeeUnitToggle: FC<FeeUnitToggleProps> = ({
         aria-hidden
         className={classNames(
           "h-3 w-3 transition-transform duration-300 motion-reduce:transition-none",
-          { "rotate-180": selected === FEE_UNITS[1] }
+          { "rotate-180": selected === "usd" }
         )}
       />
     </button>
