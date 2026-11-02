@@ -3,12 +3,13 @@ import React, { useMemo } from "react";
 import type { BarSeriesOption, LineSeriesOption } from "echarts";
 import { useTheme } from "next-themes";
 
-import type { Prettify, TimeseriesMetric } from "~/types";
+import type { Prettify, ThemeMode, TimeseriesMetric } from "~/types";
 import { Card } from "../Cards/Card";
 import type { TimeseriesDataset } from "../TimeseriesCharts/helpers";
 import { ChartBase } from "./ChartBase";
 import type { Axis, ChartBaseProps } from "./ChartBase";
-import { RANGE_SERIES_FLAG } from "./ChartBase/helpers";
+import { getRangeSeriesId, getRangeSeriesName } from "./ChartBase/helpers";
+import type { RangeBounds, RangeSeriesPart } from "./ChartBase/helpers";
 
 type Timeseries = Pick<
   BarSeriesOption | LineSeriesOption,
@@ -22,25 +23,23 @@ type Timeseries = Pick<
    */
   color?: ThemeColor;
   /**
-   * The opacity of the area under the series, from 0 to 1. Use a low value
-   * when the areas of the series overlap.
+   * Fill the area under the series. The default is true. Set it to false
+   * when the areas of the series cover each other.
    */
-  areaOpacity?: number;
+  showArea?: boolean;
   lineStyle?: Pick<
     NonNullable<LineSeriesOption["lineStyle"]>,
     "type" | "width"
   >;
 };
 
-type ThemeColor = { light: string; dark: string };
+type ThemeColor = Record<ThemeMode, string>;
 
 /**
  * A band between two metrics, for example the minimum and the maximum of a
  * value. It is drawn below the series.
  */
-type Range = {
-  lower: TimeseriesMetric;
-  upper: TimeseriesMetric;
+type Range = RangeBounds & {
   color: ThemeColor;
   opacity: number;
 };
@@ -69,25 +68,28 @@ export type TimeseriesChartComponent = FC<TimeseriesChartProps> & {
 };
 
 function getSeriesStyle(
-  { color, areaOpacity }: Pick<Timeseries, "color" | "areaOpacity">,
-  themeMode: "light" | "dark"
+  { color, showArea = true }: Pick<Timeseries, "color" | "showArea">,
+  themeMode: ThemeMode
 ) {
   const resolvedColor = color?.[themeMode];
 
-  return {
-    ...(resolvedColor ? { itemStyle: { color: resolvedColor } } : {}),
-    ...(resolvedColor || areaOpacity !== undefined
-      ? {
-          areaStyle: {
-            ...(resolvedColor ? { color: resolvedColor } : {}),
-            ...(areaOpacity !== undefined ? { opacity: areaOpacity } : {}),
-          },
-        }
-      : {}),
-  };
+  if (!showArea) {
+    return {
+      ...(resolvedColor ? { itemStyle: { color: resolvedColor } } : {}),
+      // Remove the area that ChartBase gives to all the series.
+      areaStyle: undefined,
+    };
+  }
+
+  return resolvedColor
+    ? {
+        itemStyle: { color: resolvedColor },
+        areaStyle: { color: resolvedColor },
+      }
+    : {};
 }
 
-function getRangeColumn({ lower, upper }: Range) {
+function getRangeColumn({ lower, upper }: RangeBounds) {
   return `${upper}-${lower}`;
 }
 
@@ -125,34 +127,34 @@ function addRangeColumn(dataset: TimeseriesDataset, range: Range) {
 function getRangeSeries(
   range: Range,
   datasetIndex: number,
-  themeMode: "light" | "dark"
+  themeMode: ThemeMode
 ) {
   const color = range.color[themeMode];
-  const base = {
-    [RANGE_SERIES_FLAG]: true,
+  const name = getRangeSeriesName(range, datasetIndex);
+  const getPartOptions = (part: RangeSeriesPart) => ({
+    id: getRangeSeriesId(range, datasetIndex, part),
+    name,
     type: "line" as const,
     datasetIndex,
-    stack: `range-${datasetIndex}`,
+    stack: name,
     symbol: "none",
     silent: true,
     z: 1,
     lineStyle: { opacity: 0 },
     emphasis: { disabled: true },
     tooltip: { show: false },
-  };
+  });
 
-  // ChartBase sorts the series by name, and the first series of a stack is
-  // its base. These names keep the hidden series first.
+  // The first series of a stack is its base. ChartBase keeps the range
+  // series in this order.
   return [
     {
-      ...base,
-      name: `range-${datasetIndex}-1-base`,
+      ...getPartOptions("base"),
       areaStyle: undefined,
       encode: { x: "timestamp", y: range.lower },
     },
     {
-      ...base,
-      name: `range-${datasetIndex}-2-band`,
+      ...getPartOptions("band"),
       itemStyle: { color },
       areaStyle: { color, opacity: range.opacity },
       encode: { x: "timestamp", y: getRangeColumn(range) },
@@ -163,13 +165,13 @@ function getRangeSeries(
 function getSeries(
   dataset: TimeseriesDataset | TimeseriesDataset[],
   seriesProp: [Timeseries, ...Timeseries[]],
-  themeMode: "light" | "dark"
+  themeMode: ThemeMode
 ) {
   if (Array.isArray(dataset)) {
-    return seriesProp.flatMap(({ color, areaOpacity, ...series }) =>
+    return seriesProp.flatMap(({ color, showArea, ...series }) =>
       dataset.map((d, i) => ({
         ...series,
-        ...getSeriesStyle({ color, areaOpacity }, themeMode),
+        ...getSeriesStyle({ color, showArea }, themeMode),
         datasetIndex: i,
         datasetId: d.id,
         id: d.id,
@@ -178,9 +180,9 @@ function getSeries(
     );
   }
 
-  return seriesProp.map(({ color, areaOpacity, ...series }) => ({
+  return seriesProp.map(({ color, showArea, ...series }) => ({
     ...series,
-    ...getSeriesStyle({ color, areaOpacity }, themeMode),
+    ...getSeriesStyle({ color, showArea }, themeMode),
     encode: { x: "timestamp", y: series.metric },
   }));
 }
@@ -193,7 +195,7 @@ export const TimeseriesChartBase: FC<TimeseriesChartBaseProps> = ({
   ...restProps
 }) => {
   const { resolvedTheme } = useTheme();
-  const themeMode = resolvedTheme as "light" | "dark";
+  const themeMode = resolvedTheme as ThemeMode;
   const dataset = useMemo(() => {
     if (!datasetProp || !range) {
       return datasetProp;

@@ -30,7 +30,7 @@ export const EthPriceChart = createTimeseriesChart({
         type: "line",
         metric: "maxEthPrice",
         color: MAX_MIN_COLOR,
-        areaOpacity: 0,
+        showArea: false,
         lineStyle: MAX_MIN_LINE_STYLE,
       },
       {
@@ -38,7 +38,7 @@ export const EthPriceChart = createTimeseriesChart({
         type: "line",
         metric: "avgEthPrice",
         color: AVG_COLOR,
-        areaOpacity: 0,
+        showArea: false,
         lineStyle: { width: 3 },
       },
       {
@@ -46,7 +46,7 @@ export const EthPriceChart = createTimeseriesChart({
         type: "line",
         metric: "minEthPrice",
         color: MAX_MIN_COLOR,
-        areaOpacity: 0,
+        showArea: false,
         lineStyle: MAX_MIN_LINE_STYLE,
       },
     ],

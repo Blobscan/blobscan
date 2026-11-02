@@ -14,12 +14,6 @@ const TAIL_COLUMN_SUFFIX = "__tail";
 
 export const CURRENT_PERIOD_SERIES_ID_SUFFIX = "__current-period";
 
-// ECharts draws an area with this opacity when the series does not set one.
-const DEFAULT_AREA_OPACITY = 0.7;
-// The area under the current period segment is lighter than the area of the
-// series. With the default opacity, it is 0.25, as before.
-const CURRENT_PERIOD_AREA_OPACITY_RATIO = 0.25 / DEFAULT_AREA_OPACITY;
-
 export type ChartSeries = {
   id?: string;
   name?: string;
@@ -323,13 +317,7 @@ export function createCurrentPeriodSeries(
       // The area of the series stops at the last closed period. A lighter
       // area under the segment keeps the area of the chart continuous.
       areaStyle: series.areaStyle
-        ? {
-            ...series.areaStyle,
-            opacity:
-              (typeof series.areaStyle.opacity === "number"
-                ? series.areaStyle.opacity
-                : DEFAULT_AREA_OPACITY) * CURRENT_PERIOD_AREA_OPACITY_RATIO,
-          }
+        ? { ...series.areaStyle, opacity: 0.25 }
         : undefined,
     },
     {

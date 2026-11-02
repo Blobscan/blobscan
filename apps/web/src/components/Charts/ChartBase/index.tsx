@@ -10,7 +10,7 @@ import { useTheme } from "next-themes";
 
 import { EmptyState } from "~/components/EmptyState";
 import echarts from "~/echarts";
-import type { Size, TimeseriesDimension } from "~/types";
+import type { Size, ThemeMode, TimeseriesDimension } from "~/types";
 import { Legend } from "./Legend";
 import type { LegendItemData, LegendProps } from "./Legend";
 import {
@@ -25,10 +25,12 @@ import {
   getCurrentPeriodTimestamp,
   getDimensionColor,
   getMainSeriesIndex,
+  getRangeSeriesBounds,
   getSeriesMetricValue,
   hasCurrentPeriodValue,
   isCurrentPeriodSeries,
   isRangeSeries,
+  isRangeSeriesId,
 } from "./helpers";
 import type { ChartDataset, ChartSeries } from "./helpers";
 import type { SkeletonChartOptions } from "./helpers/skeleton";
@@ -108,7 +110,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   highlightAllSeries,
 }) {
   const { resolvedTheme } = useTheme();
-  const themeMode = resolvedTheme as "light" | "dark";
+  const themeMode = resolvedTheme as ThemeMode;
   const chartInstanceRef = useRef<EChartsReactCore | null>(null);
   const hoveredSeriesRef = useRef<{
     seriesIndex?: number;
@@ -160,9 +162,19 @@ export const ChartBase: FC<ChartBaseProps> = function ({
             // highlighted together (see the mouseover handler).
             ...(highlightAllSeries ? { emphasis: { focus: "none" } } : {}),
             ...restSeries,
+            // The ID of a range series identifies it and holds its metrics.
+            ...(isRangeSeriesId(id) ? { id } : {}),
           };
         })
-        ?.sort((a, b) => String(a.name).localeCompare(String(b.name))),
+        // The range series go first, in their order: the first series of a
+        // stack is its base. The other series are sorted by name.
+        ?.sort(
+          (a, b) =>
+            Number(isRangeSeries(b)) - Number(isRangeSeries(a)) ||
+            (isRangeSeries(a)
+              ? 0
+              : String(a.name).localeCompare(String(b.name)))
+        ),
     [seriesProp, themeMode, highlightAllSeries]
   );
   const currentPeriodTimestamp = useMemo(
@@ -339,10 +351,13 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         isCurrentPeriodSeries(s.id)
       );
 
-    const getAllSeriesIndexes = () =>
-      ((chartSeriesRef.current as ChartSeries[] | undefined) ?? []).map(
-        (_, i) => i
-      );
+    const setAllSeriesHighlight = (type: "highlight" | "downplay") =>
+      chart.dispatchAction({
+        type,
+        seriesIndex: (
+          (chartSeriesRef.current as ChartSeries[] | undefined) ?? []
+        ).map((_, i) => i),
+      });
 
     const onMouseover = ({
       componentType,
@@ -363,10 +378,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       };
 
       if (highlightAllSeriesRef.current) {
-        chart.dispatchAction({
-          type: "highlight",
-          seriesIndex: getAllSeriesIndexes(),
-        });
+        setAllSeriesHighlight("highlight");
 
         return;
       }
@@ -383,10 +395,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       if (componentType !== "series") return;
 
       if (highlightAllSeriesRef.current) {
-        chart.dispatchAction({
-          type: "downplay",
-          seriesIndex: getAllSeriesIndexes(),
-        });
+        setAllSeriesHighlight("downplay");
 
         return;
       }
@@ -528,6 +537,41 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       }
     );
   }, [baseOptions, chartDataset, chartSeries]);
+
+  // A range band has no legend item. Hide it when the legend hides one of
+  // its two metrics.
+  useEffect(() => {
+    const chart = chartInstanceRef.current?.getEchartsInstance();
+
+    if (!chart || !chartSeries) return;
+
+    const allSeries = chartSeries as ChartSeries[];
+    const hiddenSeriesNames = new Set(
+      legendItems.filter((item) => item.disabled).map((item) => item.name)
+    );
+    const hiddenMetrics = new Set(
+      allSeries
+        .filter((s) => !isRangeSeries(s) && hiddenSeriesNames.has(s.name ?? ""))
+        .map((s) => s.encode?.y)
+    );
+    const rangeBoundsByName = new Map(
+      allSeries.flatMap((s) =>
+        isRangeSeriesId(s.id) && s.name
+          ? [[s.name, getRangeSeriesBounds(s.id)] as const]
+          : []
+      )
+    );
+
+    rangeBoundsByName.forEach(({ lower, upper }, name) => {
+      chart.dispatchAction({
+        type:
+          hiddenMetrics.has(lower) || hiddenMetrics.has(upper)
+            ? "legendUnSelect"
+            : "legendSelect",
+        name,
+      });
+    });
+  }, [chartSeries, legendItems]);
 
   useEffect(() => {
     const chart = chartInstanceRef.current?.getEchartsInstance();
