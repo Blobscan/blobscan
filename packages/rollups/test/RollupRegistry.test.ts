@@ -50,6 +50,12 @@ describe("RollupRegistry", () => {
       ).toEqual("MODE");
     });
 
+    it("should match blob posters case-insensitively", () => {
+      expect(
+        rollupRegistry.getRollup("0x18df96b5f89bd1452554382d88017c424704ae04")
+      ).toEqual("NAL");
+    });
+
     it("should return no rollup for a blob poster that does not exist", () => {
       expect(rollupRegistry.getRollup("0x12321312321321321321")).toEqual(null);
     });
