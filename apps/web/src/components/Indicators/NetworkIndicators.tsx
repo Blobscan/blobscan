@@ -8,6 +8,7 @@ import dayjs from "@blobscan/dayjs";
 import { convertWei, prettyFormatWei } from "@blobscan/eth-format";
 
 import { useChain } from "~/hooks/useChain";
+import { useIsTestnet } from "~/hooks/useIsTestnet";
 import BlobIcon from "~/icons/blob.svg";
 import EthereumIcon from "~/icons/ethereum.svg";
 import GasIcon from "~/icons/gas.svg";
@@ -27,6 +28,7 @@ export function NetworkIndicators() {
   const { env } = useEnv();
   const { appState } = useAppState();
   const chain = useChain();
+  const isTestnet = useIsTestnet();
 
   const blocks = appState?.blocks;
   const latestSlot = blocks?.latest?.slot;
@@ -79,10 +81,7 @@ export function NetworkIndicators() {
     });
   }
 
-  if (
-    env?.PUBLIC_NETWORK_NAME === "mainnet" ||
-    env?.PUBLIC_NETWORK_NAME === "gnosis"
-  ) {
+  if (isTestnet === false) {
     indicators.push({
       icon: <Icon src={EthereumIcon} />,
       name: "ETH Price",
@@ -152,9 +151,10 @@ export function NetworkIndicators() {
           ) : undefined}
         </div>
       ),
-      secondaryValue: latestBlobGasUsdPrice !== undefined && (
-        <FiatDisplay amount={latestBlobGasUsdPrice} />
-      ),
+      secondaryValue: isTestnet === false &&
+        latestBlobGasUsdPrice !== undefined && (
+          <FiatDisplay amount={latestBlobGasUsdPrice} />
+        ),
     },
     {
       name: "Blob Price",
@@ -169,7 +169,7 @@ export function NetworkIndicators() {
           })}
         </span>
       ),
-      secondaryValue: blobUsdPrice !== undefined && (
+      secondaryValue: isTestnet === false && blobUsdPrice !== undefined && (
         <FiatDisplay amount={blobUsdPrice} />
       ),
     }
