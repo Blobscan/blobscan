@@ -2,6 +2,13 @@ const ETH_UNITS = { wei: 0, Gwei: 9, ether: 18 };
 
 export type EthAmount = string | number | bigint;
 export type EtherUnit = keyof typeof ETH_UNITS;
+
+// The text that the formatted values show for each unit.
+const ETH_UNIT_LABELS: Record<EtherUnit, string> = {
+  wei: "wei",
+  Gwei: "Gwei",
+  ether: "Ether",
+};
 export type FormatOptions = Partial<{
   hideUnit: boolean;
   toUnit: EtherUnit;
@@ -29,7 +36,7 @@ export function formatWei(wei: EthAmount, opts?: FormatOptions): string {
     return formatted;
   }
 
-  return `${formatted} ${toUnit}`;
+  return `${formatted} ${ETH_UNIT_LABELS[toUnit]}`;
 }
 
 /**
@@ -51,7 +58,7 @@ export function prettyFormatWei(wei: EthAmount, opts?: FormatOptions) {
     return formatted;
   }
 
-  return `${formatted} ${toUnit}`;
+  return `${formatted} ${ETH_UNIT_LABELS[toUnit]}`;
 }
 
 /**

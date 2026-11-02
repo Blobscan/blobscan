@@ -74,6 +74,17 @@ export function formatFiatValue(
   { unit }: FiatAxis,
   compact?: boolean
 ) {
+  const number = Number(value);
+
+  // A blob fee can be much less than one cent. Show its first significant
+  // digits, not 0.00.
+  if (number !== 0 && Math.abs(number) < 1) {
+    return formatFiat(value.toString(), {
+      currency: unit,
+      maximumSignificantDigits: 3,
+    });
+  }
+
   return formatFiat(value.toString(), {
     currency: unit,
     notation: compact ? "compact" : "standard",

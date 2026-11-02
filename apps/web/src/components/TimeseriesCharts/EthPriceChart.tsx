@@ -17,6 +17,8 @@ export const EthPriceChart = createTimeseriesChart({
       type: "average",
       unitType: "fiat",
       unit: "USD",
+      // A price does not start at zero. Fit the axis to the values.
+      scale: true,
     },
     range: {
       lower: "minEthPrice",

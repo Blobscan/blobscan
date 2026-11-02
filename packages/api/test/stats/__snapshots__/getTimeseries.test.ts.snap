@@ -10,7 +10,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
         },
         "metrics": {
           "avgBlobAsCalldataFee": [
-            22000,
+            10000,
           ],
           "avgBlobAsCalldataMaxFee": [
             100000,
@@ -40,7 +40,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
           ],
           "totalBlobAsCalldataFee": [
-            66000n,
+            30000n,
+          ],
+          "totalBlobAsCalldataFeeUsd": [
+            null,
           ],
           "totalBlobAsCalldataGasUsed": [
             3000n,
@@ -51,6 +54,9 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           "totalBlobBaseFee": [
             14417920n,
           ],
+          "totalBlobBaseFeeUsd": [
+            null,
+          ],
           "totalBlobGasPrice": [
             66n,
           ],
@@ -59,6 +65,9 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           ],
           "totalBlobMaxFee": [
             65536000n,
+          ],
+          "totalBlobMaxFeeUsd": [
+            null,
           ],
           "totalBlobSize": [
             6900n,
@@ -93,6 +102,9 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           "totalUniqueSenders": [
             0,
           ],
+          "totalUsdPricedTransactions": [
+            0,
+          ],
         },
         "startTimestampIdx": 0,
       },
@@ -114,8 +126,8 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
         },
         "metrics": {
           "avgBlobAsCalldataFee": [
-            22000,
-            20000,
+            10000,
+            10000,
           ],
           "avgBlobAsCalldataMaxFee": [
             100000,
@@ -154,8 +166,12 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
           ],
           "totalBlobAsCalldataFee": [
-            66000n,
-            40000n,
+            30000n,
+            20000n,
+          ],
+          "totalBlobAsCalldataFeeUsd": [
+            null,
+            null,
           ],
           "totalBlobAsCalldataGasUsed": [
             3000n,
@@ -169,6 +185,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             14417920n,
             10485760n,
           ],
+          "totalBlobBaseFeeUsd": [
+            null,
+            null,
+          ],
           "totalBlobGasPrice": [
             66n,
             20n,
@@ -180,6 +200,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           "totalBlobMaxFee": [
             65536000n,
             52428800n,
+          ],
+          "totalBlobMaxFeeUsd": [
+            null,
+            null,
           ],
           "totalBlobSize": [
             6900n,
@@ -222,6 +246,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             0,
           ],
           "totalUniqueSenders": [
+            0,
+            0,
+          ],
+          "totalUsdPricedTransactions": [
             0,
             0,
           ],
@@ -247,9 +275,9 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
         },
         "metrics": {
           "avgBlobAsCalldataFee": [
-            22000,
-            20000,
-            22000,
+            10000,
+            10000,
+            10000,
           ],
           "avgBlobAsCalldataMaxFee": [
             100000,
@@ -297,9 +325,14 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
           ],
           "totalBlobAsCalldataFee": [
-            66000n,
-            40000n,
-            110000n,
+            30000n,
+            20000n,
+            50000n,
+          ],
+          "totalBlobAsCalldataFeeUsd": [
+            null,
+            null,
+            null,
           ],
           "totalBlobAsCalldataGasUsed": [
             3000n,
@@ -316,6 +349,11 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             10485760n,
             14417920n,
           ],
+          "totalBlobBaseFeeUsd": [
+            null,
+            null,
+            null,
+          ],
           "totalBlobGasPrice": [
             66n,
             20n,
@@ -330,6 +368,11 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             65536000n,
             52428800n,
             65536000n,
+          ],
+          "totalBlobMaxFeeUsd": [
+            null,
+            null,
+            null,
           ],
           "totalBlobSize": [
             6900n,
@@ -386,6 +429,11 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             0,
             2,
           ],
+          "totalUsdPricedTransactions": [
+            0,
+            0,
+            0,
+          ],
         },
         "startTimestampIdx": 0,
       },
@@ -409,10 +457,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
         },
         "metrics": {
           "avgBlobAsCalldataFee": [
-            22000,
-            20000,
-            22000,
-            22000,
+            10000,
+            10000,
+            10000,
+            10000,
           ],
           "avgBlobAsCalldataMaxFee": [
             100000,
@@ -469,10 +517,16 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
           ],
           "totalBlobAsCalldataFee": [
-            66000n,
-            40000n,
-            110000n,
-            44000n,
+            30000n,
+            20000n,
+            50000n,
+            20000n,
+          ],
+          "totalBlobAsCalldataFeeUsd": [
+            null,
+            null,
+            null,
+            null,
           ],
           "totalBlobAsCalldataGasUsed": [
             3000n,
@@ -492,6 +546,12 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             14417920n,
             17301504n,
           ],
+          "totalBlobBaseFeeUsd": [
+            null,
+            null,
+            null,
+            null,
+          ],
           "totalBlobGasPrice": [
             66n,
             20n,
@@ -509,6 +569,12 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             52428800n,
             65536000n,
             78643200n,
+          ],
+          "totalBlobMaxFeeUsd": [
+            null,
+            null,
+            null,
+            null,
           ],
           "totalBlobSize": [
             6900n,
@@ -575,6 +641,12 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             0,
             2,
             1,
+          ],
+          "totalUsdPricedTransactions": [
+            0,
+            0,
+            0,
+            0,
           ],
         },
         "startTimestampIdx": 0,
@@ -600,10 +672,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
         },
         "metrics": {
           "avgBlobAsCalldataFee": [
-            22000,
-            20000,
-            22000,
-            22000,
+            10000,
+            10000,
+            10000,
+            10000,
           ],
           "avgBlobAsCalldataMaxFee": [
             100000,
@@ -660,10 +732,16 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
           ],
           "totalBlobAsCalldataFee": [
-            66000n,
-            40000n,
-            110000n,
-            44000n,
+            30000n,
+            20000n,
+            50000n,
+            20000n,
+          ],
+          "totalBlobAsCalldataFeeUsd": [
+            null,
+            null,
+            null,
+            null,
           ],
           "totalBlobAsCalldataGasUsed": [
             3000n,
@@ -683,6 +761,12 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             14417920n,
             17301504n,
           ],
+          "totalBlobBaseFeeUsd": [
+            null,
+            null,
+            null,
+            null,
+          ],
           "totalBlobGasPrice": [
             66n,
             20n,
@@ -700,6 +784,12 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             52428800n,
             65536000n,
             78643200n,
+          ],
+          "totalBlobMaxFeeUsd": [
+            null,
+            null,
+            null,
+            null,
           ],
           "totalBlobSize": [
             6900n,
@@ -767,6 +857,12 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             2,
             1,
           ],
+          "totalUsdPricedTransactions": [
+            0,
+            0,
+            0,
+            0,
+          ],
         },
         "startTimestampIdx": 0,
       },
@@ -791,11 +887,11 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
         },
         "metrics": {
           "avgBlobAsCalldataFee": [
-            22000,
-            20000,
-            22000,
-            22000,
-            22000,
+            10000,
+            10000,
+            10000,
+            10000,
+            10000,
           ],
           "avgBlobAsCalldataMaxFee": [
             100000,
@@ -861,11 +957,18 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
           ],
           "totalBlobAsCalldataFee": [
-            66000n,
-            40000n,
-            110000n,
-            44000n,
-            22000n,
+            30000n,
+            20000n,
+            50000n,
+            20000n,
+            10000n,
+          ],
+          "totalBlobAsCalldataFeeUsd": [
+            null,
+            null,
+            null,
+            null,
+            null,
           ],
           "totalBlobAsCalldataGasUsed": [
             3000n,
@@ -888,6 +991,13 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             17301504n,
             8650752n,
           ],
+          "totalBlobBaseFeeUsd": [
+            null,
+            null,
+            null,
+            null,
+            null,
+          ],
           "totalBlobGasPrice": [
             66n,
             20n,
@@ -908,6 +1018,13 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             65536000n,
             78643200n,
             39321600n,
+          ],
+          "totalBlobMaxFeeUsd": [
+            null,
+            null,
+            null,
+            null,
+            null,
           ],
           "totalBlobSize": [
             6900n,
@@ -986,6 +1103,13 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             1,
             1,
           ],
+          "totalUsdPricedTransactions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+          ],
         },
         "startTimestampIdx": 0,
       },
@@ -1011,12 +1135,12 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
         },
         "metrics": {
           "avgBlobAsCalldataFee": [
-            22000,
-            20000,
-            22000,
-            22000,
-            22000,
-            24200,
+            10000,
+            10000,
+            10000,
+            10000,
+            10000,
+            12166.66666666667,
           ],
           "avgBlobAsCalldataMaxFee": [
             100000,
@@ -1091,12 +1215,20 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
           ],
           "totalBlobAsCalldataFee": [
-            66000n,
-            40000n,
-            110000n,
-            44000n,
-            22000n,
-            72600n,
+            30000n,
+            20000n,
+            50000n,
+            20000n,
+            10000n,
+            36500n,
+          ],
+          "totalBlobAsCalldataFeeUsd": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
           ],
           "totalBlobAsCalldataGasUsed": [
             3000n,
@@ -1122,6 +1254,14 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             8650752n,
             17301504n,
           ],
+          "totalBlobBaseFeeUsd": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+          ],
           "totalBlobGasPrice": [
             66n,
             20n,
@@ -1145,6 +1285,14 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             78643200n,
             39321600n,
             85196800n,
+          ],
+          "totalBlobMaxFeeUsd": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
           ],
           "totalBlobSize": [
             6900n,
@@ -1234,6 +1382,14 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             1,
             3,
           ],
+          "totalUsdPricedTransactions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+          ],
         },
         "startTimestampIdx": 0,
       },
@@ -1270,12 +1426,15 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           "maxEthPrice": [],
           "minEthPrice": [],
           "totalBlobAsCalldataFee": [],
+          "totalBlobAsCalldataFeeUsd": [],
           "totalBlobAsCalldataGasUsed": [],
           "totalBlobAsCalldataMaxFee": [],
           "totalBlobBaseFee": [],
+          "totalBlobBaseFeeUsd": [],
           "totalBlobGasPrice": [],
           "totalBlobGasUsed": [],
           "totalBlobMaxFee": [],
+          "totalBlobMaxFeeUsd": [],
           "totalBlobSize": [],
           "totalBlobUsageSize": [],
           "totalBlobs": [],
@@ -1287,6 +1446,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           "totalUniqueBlobs": [],
           "totalUniqueReceivers": [],
           "totalUniqueSenders": [],
+          "totalUsdPricedTransactions": [],
         },
       },
     ],
