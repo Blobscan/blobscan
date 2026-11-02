@@ -24,7 +24,8 @@ const config: NextConfig = {
   output: process.env.NEXT_BUILD_OUTPUT as NextConfig["output"],
   async redirects() {
     return [
-      // The chart also shows the maximum and the minimum now
+      // The old URL of the blob gas price chart. Keep it for old links and
+      // bookmarks.
       {
         source: "/stat/avg-blob-gas-price",
         destination: "/stat/blob-gas-price",
