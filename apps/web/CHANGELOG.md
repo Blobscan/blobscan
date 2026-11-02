@@ -1,5 +1,22 @@
 # @blobscan/web
 
+## 0.57.0
+
+### Minor Changes
+
+- [#1048](https://github.com/Blobscan/blobscan/pull/1048) [`0cb02ec`](https://github.com/Blobscan/blobscan/commit/0cb02ec3290ec5794d19aefc3341a1d55102793e) Thanks [@PJColombo](https://github.com/PJColombo)! - Added the `maxEthPrice`, `minEthPrice` and `avgEthPrice` metrics. Dagster calculates them from the ETH/USD prices for each period, and the stats endpoints return them in the global dimension. The stats page shows them in a new ETH Price chart.
+
+  After the deploy, run a backfill of the `hourly_metrics` partitions to calculate these metrics for the old periods. The daily, weekly, monthly and yearly metrics update automatically after the hourly backfill. Do the same after you load ETH prices that are more than 3 hours old (for example, after an ETH price syncer outage): the hourly catch-up schedule only calculates the last 3 hours again.
+
+### Patch Changes
+
+- [#1046](https://github.com/Blobscan/blobscan/pull/1046) [`f70db34`](https://github.com/Blobscan/blobscan/commit/f70db34239f5d3fcc477ba2c83ba3b46b7bf9f55) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed the rollup chart tooltips, which showed "-" for the Total and Rollup values when a series had no value for the day
+- Updated dependencies [[`0cb02ec`](https://github.com/Blobscan/blobscan/commit/0cb02ec3290ec5794d19aefc3341a1d55102793e)]:
+  - @blobscan/api@4.3.0
+  - @blobscan/db@0.32.0
+  - @blobscan/blob-storage-manager@4.2.1
+  - @blobscan/rollups@4.1.1
+
 ## 0.56.0
 
 ### Minor Changes
