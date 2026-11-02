@@ -46,6 +46,11 @@ export interface ChartBaseProps {
   title: ReactNode;
   headerControls?: ReactNode;
   /**
+   * A control that the title shows in place of the unit text, for example a
+   * unit toggle.
+   */
+  unitControl?: ReactNode;
+  /**
    * When a dataset includes the current period, which is not complete, the
    * chart draws its point as in progress.
    */
@@ -70,19 +75,30 @@ export interface ChartBaseProps {
 function ChartHeader({
   title,
   dataUnit,
+  unitControl,
   controls,
   isLoading,
 }: {
   title: ReactNode;
   dataUnit?: string;
+  unitControl?: ReactNode;
   controls?: ReactNode;
   isLoading?: boolean;
 }) {
   return (
     <div className="flex w-full justify-between p-1">
       {title && (
-        <div className="flex-start -mb-2 flex font-semibold">
-          {`${title}${dataUnit ? ` (${dataUnit})` : ""}`}
+        // The unit control has smaller text than the title. Align the
+        // baselines, so both texts sit on one line.
+        <div className="flex-start -mb-2 flex items-baseline gap-2 font-semibold">
+          {unitControl ? (
+            <>
+              {title}
+              {unitControl}
+            </>
+          ) : (
+            `${title}${dataUnit ? ` (${dataUnit})` : ""}`
+          )}
         </div>
       )}
       {!isLoading && controls}
@@ -99,6 +115,7 @@ function DataZoomSkeleton() {
 export const ChartBase: FC<ChartBaseProps> = function ({
   title,
   headerControls,
+  unitControl,
   dataset,
   axes,
   skeletonOpts,
@@ -588,6 +605,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       <ChartHeader
         title={title}
         dataUnit={yUnit}
+        unitControl={unitControl}
         controls={shouldRenderChart ? headerControls : undefined}
         isLoading={isLoading}
       />

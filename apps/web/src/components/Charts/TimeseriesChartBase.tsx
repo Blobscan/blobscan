@@ -58,7 +58,12 @@ type Range = RangeBounds & {
 export type TimeseriesChartProps = Prettify<
   Pick<
     ChartBaseProps,
-    "headerControls" | "compact" | "size" | "skeletonOpts" | "isLoading"
+    | "headerControls"
+    | "unitControl"
+    | "compact"
+    | "size"
+    | "skeletonOpts"
+    | "isLoading"
   > & {
     dataset?: TimeseriesDataset | TimeseriesDataset[];
   }
@@ -76,6 +81,10 @@ export type TimeseriesChartBaseProps = Prettify<
 export type TimeseriesChartComponent = FC<TimeseriesChartProps> & {
   displayName?: string;
   requiredMetrics: [TimeseriesMetric, ...TimeseriesMetric[]];
+  /**
+   * The unit that the chart shows its values in (e.g. "Gwei" or "USD").
+   */
+  yUnit?: string;
 };
 
 function getSeriesStyle(
@@ -295,5 +304,10 @@ export function createTimeseriesChart({
 
   Chart.displayName = componentName;
 
-  return Object.assign(React.memo(Chart), { requiredMetrics });
+  const { displayUnit, unit } = restBaseProps.yAxis;
+
+  return Object.assign(React.memo(Chart), {
+    requiredMetrics,
+    yUnit: displayUnit ?? unit,
+  });
 }

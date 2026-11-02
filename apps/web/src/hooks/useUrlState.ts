@@ -59,7 +59,9 @@ export function useUrlState<T extends z.ZodObject>(
         ? schema.parse(router.query)
         : {};
 
-      const nextState = { ...currentState, ...updates };
+      // Keep the query params that this schema does not know. Other
+      // components of the page can own them (e.g. the fee unit of a chart).
+      const nextState = { ...router.query, ...currentState, ...updates };
 
       const query = toUrlQuery(nextState);
 

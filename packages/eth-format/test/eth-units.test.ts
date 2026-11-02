@@ -245,158 +245,158 @@ test("can format negative gwei", () => {
 
 test("can format ether", () => {
   expect(formatWei(BigInt("1"), { toUnit: "ether" })).toBe(
-    "0.000000000000000001 ether"
+    "0.000000000000000001 Ether"
   );
   expect(formatWei(BigInt("2"), { toUnit: "ether" })).toBe(
-    "0.000000000000000002 ether"
+    "0.000000000000000002 Ether"
   );
   expect(formatWei(BigInt("123"), { toUnit: "ether" })).toBe(
-    "0.000000000000000123 ether"
+    "0.000000000000000123 Ether"
   );
   expect(formatWei(BigInt("1234"), { toUnit: "ether" })).toBe(
-    "0.000000000000001234 ether"
+    "0.000000000000001234 Ether"
   );
   expect(formatWei(BigInt("12345"), { toUnit: "ether" })).toBe(
-    "0.000000000000012345 ether"
+    "0.000000000000012345 Ether"
   );
   expect(formatWei(BigInt("123456"), { toUnit: "ether" })).toBe(
-    "0.000000000000123456 ether"
+    "0.000000000000123456 Ether"
   );
   expect(formatWei(BigInt("1234567"), { toUnit: "ether" })).toBe(
-    "0.000000000001234567 ether"
+    "0.000000000001234567 Ether"
   );
   expect(formatWei(BigInt("12345678"), { toUnit: "ether" })).toBe(
-    "0.000000000012345678 ether"
+    "0.000000000012345678 Ether"
   );
   expect(formatWei(BigInt("123456789"), { toUnit: "ether" })).toBe(
-    "0.000000000123456789 ether"
+    "0.000000000123456789 Ether"
   );
   expect(formatWei(BigInt("1234567890"), { toUnit: "ether" })).toBe(
-    "0.00000000123456789 ether"
+    "0.00000000123456789 Ether"
   );
   expect(formatWei(BigInt("12345678901"), { toUnit: "ether" })).toBe(
-    "0.000000012345678901 ether"
+    "0.000000012345678901 Ether"
   );
   expect(formatWei(BigInt("123456789012"), { toUnit: "ether" })).toBe(
-    "0.000000123456789012 ether"
+    "0.000000123456789012 Ether"
   );
   expect(formatWei(BigInt("1234567890123"), { toUnit: "ether" })).toBe(
-    "0.000001234567890123 ether"
+    "0.000001234567890123 Ether"
   );
   expect(formatWei(BigInt("12345678901234"), { toUnit: "ether" })).toBe(
-    "0.000012345678901234 ether"
+    "0.000012345678901234 Ether"
   );
   expect(formatWei(BigInt("123456789012345"), { toUnit: "ether" })).toBe(
-    "0.000123456789012345 ether"
+    "0.000123456789012345 Ether"
   );
   expect(formatWei(BigInt("1234567890123456"), { toUnit: "ether" })).toBe(
-    "0.001234567890123456 ether"
+    "0.001234567890123456 Ether"
   );
   expect(formatWei(BigInt("12345678901234567"), { toUnit: "ether" })).toBe(
-    "0.012345678901234567 ether"
+    "0.012345678901234567 Ether"
   );
   expect(formatWei(BigInt("123456789012345678"), { toUnit: "ether" })).toBe(
-    "0.123456789012345678 ether"
+    "0.123456789012345678 Ether"
   );
   expect(formatWei(BigInt("1234567890123456789"), { toUnit: "ether" })).toBe(
-    "1.234567890123456789 ether"
+    "1.234567890123456789 Ether"
   );
   expect(formatWei(BigInt("12345678901234567890"), { toUnit: "ether" })).toBe(
-    "12.34567890123456789 ether"
+    "12.34567890123456789 Ether"
   );
   expect(formatWei(BigInt("123456789012345678901"), { toUnit: "ether" })).toBe(
-    "123.456789012345678901 ether"
+    "123.456789012345678901 Ether"
   );
   expect(formatWei(BigInt("1234567890123456789012"), { toUnit: "ether" })).toBe(
-    "1,234.567890123456789012 ether"
+    "1,234.567890123456789012 Ether"
   );
   expect(
     formatWei(BigInt("12345678901234567890123"), { toUnit: "ether" })
-  ).toBe("12,345.678901234567890123 ether");
+  ).toBe("12,345.678901234567890123 Ether");
   expect(
     formatWei(BigInt("123456789012345678901234"), { toUnit: "ether" })
-  ).toBe("123,456.789012345678901234 ether");
+  ).toBe("123,456.789012345678901234 Ether");
   expect(
     formatWei(BigInt("1234567890123456789012345"), { toUnit: "ether" })
-  ).toBe("1,234,567.890123456789012345 ether");
+  ).toBe("1,234,567.890123456789012345 Ether");
   expect(
     formatWei(BigInt("12345678901234567890123456"), { toUnit: "ether" })
-  ).toBe("12,345,678.901234567890123456 ether");
+  ).toBe("12,345,678.901234567890123456 Ether");
   expect(
     formatWei(BigInt("123456789012345678901234567"), { toUnit: "ether" })
-  ).toBe("123,456,789.012345678901234567 ether");
+  ).toBe("123,456,789.012345678901234567 Ether");
   expect(
     formatWei(BigInt("1234567890123456789012345678"), { toUnit: "ether" })
-  ).toBe("1,234,567,890.123456789012345678 ether");
+  ).toBe("1,234,567,890.123456789012345678 Ether");
 });
 
 test("can format negative ether", () => {
   expect(formatWei(BigInt("-1"), { toUnit: "ether" })).toBe(
-    "-0.000000000000000001 ether"
+    "-0.000000000000000001 Ether"
   );
   expect(formatWei(BigInt("-2"), { toUnit: "ether" })).toBe(
-    "-0.000000000000000002 ether"
+    "-0.000000000000000002 Ether"
   );
   expect(formatWei(BigInt("-123"), { toUnit: "ether" })).toBe(
-    "-0.000000000000000123 ether"
+    "-0.000000000000000123 Ether"
   );
   expect(formatWei(BigInt("-1234"), { toUnit: "ether" })).toBe(
-    "-0.000000000000001234 ether"
+    "-0.000000000000001234 Ether"
   );
   expect(formatWei(BigInt("-12345"), { toUnit: "ether" })).toBe(
-    "-0.000000000000012345 ether"
+    "-0.000000000000012345 Ether"
   );
   expect(formatWei(BigInt("-123456"), { toUnit: "ether" })).toBe(
-    "-0.000000000000123456 ether"
+    "-0.000000000000123456 Ether"
   );
   expect(formatWei(BigInt("-1234567"), { toUnit: "ether" })).toBe(
-    "-0.000000000001234567 ether"
+    "-0.000000000001234567 Ether"
   );
   expect(formatWei(BigInt("-12345678"), { toUnit: "ether" })).toBe(
-    "-0.000000000012345678 ether"
+    "-0.000000000012345678 Ether"
   );
   expect(formatWei(BigInt("-123456789"), { toUnit: "ether" })).toBe(
-    "-0.000000000123456789 ether"
+    "-0.000000000123456789 Ether"
   );
   expect(formatWei(BigInt("-1234567890"), { toUnit: "ether" })).toBe(
-    "-0.00000000123456789 ether"
+    "-0.00000000123456789 Ether"
   );
   expect(formatWei(BigInt("-12345678901"), { toUnit: "ether" })).toBe(
-    "-0.000000012345678901 ether"
+    "-0.000000012345678901 Ether"
   );
   expect(formatWei(BigInt("-123456789012"), { toUnit: "ether" })).toBe(
-    "-0.000000123456789012 ether"
+    "-0.000000123456789012 Ether"
   );
   expect(formatWei(BigInt("-1234567890123"), { toUnit: "ether" })).toBe(
-    "-0.000001234567890123 ether"
+    "-0.000001234567890123 Ether"
   );
   expect(formatWei(BigInt("-12345678901234"), { toUnit: "ether" })).toBe(
-    "-0.000012345678901234 ether"
+    "-0.000012345678901234 Ether"
   );
   expect(formatWei(BigInt("-123456789012345"), { toUnit: "ether" })).toBe(
-    "-0.000123456789012345 ether"
+    "-0.000123456789012345 Ether"
   );
   expect(formatWei(BigInt("-1234567890123456"), { toUnit: "ether" })).toBe(
-    "-0.001234567890123456 ether"
+    "-0.001234567890123456 Ether"
   );
   expect(formatWei(BigInt("-12345678901234567"), { toUnit: "ether" })).toBe(
-    "-0.012345678901234567 ether"
+    "-0.012345678901234567 Ether"
   );
   expect(formatWei(BigInt("-123456789012345678"), { toUnit: "ether" })).toBe(
-    "-0.123456789012345678 ether"
+    "-0.123456789012345678 Ether"
   );
   expect(formatWei(BigInt("-1234567890123456789"), { toUnit: "ether" })).toBe(
-    "-1.234567890123456789 ether"
+    "-1.234567890123456789 Ether"
   );
   expect(formatWei(BigInt("-12345678901234567890"), { toUnit: "ether" })).toBe(
-    "-12.34567890123456789 ether"
+    "-12.34567890123456789 Ether"
   );
   expect(formatWei(BigInt("-123456789012345678901"), { toUnit: "ether" })).toBe(
-    "-123.456789012345678901 ether"
+    "-123.456789012345678901 Ether"
   );
   expect(
     formatWei(BigInt("-1234567890123456789012"), { toUnit: "ether" })
-  ).toBe("-1,234.567890123456789012 ether");
+  ).toBe("-1,234.567890123456789012 Ether");
 });
 
 test("can format wei and hide unit", () => {
