@@ -1,5 +1,12 @@
 # @blobscan/syncers
 
+## 0.8.1
+
+### Patch Changes
+
+- Updated dependencies [[`0cb02ec`](https://github.com/Blobscan/blobscan/commit/0cb02ec3290ec5794d19aefc3341a1d55102793e)]:
+  - @blobscan/db@0.32.0
+
 ## 0.8.0
 
 ### Minor Changes
