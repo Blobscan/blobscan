@@ -1119,3 +1119,21 @@ class TestReorgReaggregation:
         before = self.all_time_before[key]["total_transactions"]
         after = _query_all_time_metrics(postgres)[key]["total_transactions"]
         assert after == before - 1
+
+
+@pytest.mark.integration
+@pytest.mark.usefixtures("clean_metrics")
+class TestUpdatedAt:
+    """A new aggregation of a period sets the update time of its rows."""
+
+    def test_reaggregation_updates_updated_at(self, postgres):
+        _seed_hourly(postgres)
+        _run_asset(postgres, DAILY_PARTITION_KEY, daily_metrics)
+        before = _query_metrics_table(postgres, "daily_metrics", DAILY_PERIOD_START)
+
+        _run_asset(postgres, DAILY_PARTITION_KEY, daily_metrics)
+        after = _query_metrics_table(postgres, "daily_metrics", DAILY_PERIOD_START)
+
+        assert after.keys() == before.keys()
+        for key, row in after.items():
+            assert row["updated_at"] > before[key]["updated_at"]

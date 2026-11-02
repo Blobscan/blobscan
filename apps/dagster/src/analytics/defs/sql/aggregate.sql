@@ -92,4 +92,6 @@ ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blob_base_fee_usd = EXCLUDED.total_blob_base_fee_usd,
   total_blob_as_calldata_fee_usd = EXCLUDED.total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd = EXCLUDED.total_blob_max_fee_usd,
-  total_usd_priced_transactions = EXCLUDED.total_usd_priced_transactions
+  total_usd_priced_transactions = EXCLUDED.total_usd_priced_transactions,
+
+  updated_at = now()
