@@ -1,5 +1,5 @@
-import { createTimeseriesChart } from "../Charts/TimeseriesChartBase";
 import { GLOBAL_MAIN_SERIES_COLOR } from "./colors";
+import { createTimeseriesChart } from "./factories";
 
 export const AvgBlobBaseFeeUsdChart = createTimeseriesChart({
   baseProps: {

@@ -1,12 +1,10 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 
-import type {
-  TimeseriesChartComponent,
-  TimeseriesChartProps,
-} from "../Charts/TimeseriesChartBase";
+import type { TimeseriesChartProps } from "../Charts/TimeseriesChartBase";
 import { FeeUnitToggle } from "../Toggles";
 import type { FeeUnit } from "../Toggles";
+import type { TimeseriesChartComponent } from "./factories";
 
 type FeeUnitChartProps = Omit<TimeseriesChartProps, "headerControls"> & {
   ethChart: TimeseriesChartComponent;

@@ -45,7 +45,9 @@ block_metric AS (
   SELECT
     period_start,
     SUM(blob_gas_price)::DECIMAL AS total_blob_gas_price,
-    COUNT(*)::INT AS total_blocks
+    COUNT(*)::INT AS total_blocks,
+    MAX(blob_gas_price)::DECIMAL AS max_blob_gas_price,
+    MIN(blob_gas_price)::DECIMAL AS min_blob_gas_price
   FROM (
     SELECT DISTINCT ON (block_number) period_start, block_number, blob_gas_price
     FROM base
@@ -58,6 +60,8 @@ INSERT INTO daily_metrics (
   rollup,
   total_blob_gas_price,
   total_blocks,
+  max_blob_gas_price,
+  min_blob_gas_price,
   total_transactions,
   total_unique_receivers,
   total_unique_senders,
@@ -82,6 +86,12 @@ SELECT
   END,
   CASE WHEN GROUPING(category) = 1 AND GROUPING(rollup) = 1
     THEN COALESCE(ANY_VALUE(total_blocks), 0)
+  END,
+  CASE WHEN GROUPING(category) = 1 AND GROUPING(rollup) = 1
+    THEN ANY_VALUE(max_blob_gas_price)
+  END,
+  CASE WHEN GROUPING(category) = 1 AND GROUPING(rollup) = 1
+    THEN ANY_VALUE(min_blob_gas_price)
   END,
   COUNT(hash)::INT,
   COUNT(DISTINCT CASE WHEN to_first_block_number = block_number THEN to_id END)::INT,
@@ -193,6 +203,8 @@ INSERT INTO all_time_metrics (
   total_blob_base_fee,
   total_blob_gas_price,
   total_blocks,
+  max_blob_gas_price,
+  min_blob_gas_price,
   total_eth_price,
   total_eth_price_count,
   max_eth_price,
@@ -221,6 +233,8 @@ SELECT
   SUM(total_blob_base_fee),
   SUM(total_blob_gas_price),
   SUM(total_blocks),
+  MAX(max_blob_gas_price),
+  MIN(min_blob_gas_price),
   SUM(total_eth_price),
   SUM(total_eth_price_count),
   MAX(max_eth_price),

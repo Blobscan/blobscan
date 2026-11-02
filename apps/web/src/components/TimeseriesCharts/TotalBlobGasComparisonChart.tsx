@@ -1,8 +1,8 @@
-import { createTimeseriesChart } from "../Charts/TimeseriesChartBase";
 import {
   GLOBAL_MAIN_SERIES_COLOR,
   GLOBAL_SECONDARY_SERIES_COLOR,
 } from "./colors";
+import { createTimeseriesChart } from "./factories";
 
 export const TotalBlobGasComparisonChart = createTimeseriesChart({
   baseProps: {

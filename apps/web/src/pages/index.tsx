@@ -15,7 +15,7 @@ import { EmptyState } from "~/components/EmptyState";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
-import { AvgBlobGasPriceChart } from "~/components/TimeseriesCharts/AvgBlobGasPriceChart";
+import { BlobGasPriceChart } from "~/components/TimeseriesCharts/BlobGasPriceChart";
 import { TotalBlobsChart } from "~/components/TimeseriesCharts/TotalBlobsChart";
 import { api } from "~/api-client";
 import { toAggregatedMetrics } from "~/hooks/useAggregateOverallStats";
@@ -67,7 +67,7 @@ const Home: NextPage = () => {
     isLoading: globalChartLoading,
     error: globalChartDataError,
   } = useTimeseriesQuery({
-    metrics: ["avgBlobGasPrice"],
+    metrics: ["maxBlobGasPrice", "avgBlobGasPrice", "minBlobGasPrice"],
     timeFrame: "30d",
   });
   const {
@@ -135,7 +135,7 @@ const Home: NextPage = () => {
       <div className="flex w-full flex-col gap-8 sm:gap-10">
         <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
-            <AvgBlobGasPriceChart
+            <BlobGasPriceChart
               dataset={globalChartDataset}
               isLoading={globalChartLoading}
               size="sm"
