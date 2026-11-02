@@ -237,13 +237,13 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^4.2.0
+        specifier: workspace:^0.40.0
         version: link:../../packages/api
       '@blobscan/blob-propagator':
-        specifier: workspace:^4.1.1
+        specifier: workspace:^0.11.1
         version: link:../../packages/blob-propagator
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^4.2.0
+        specifier: workspace:^0.15.0
         version: link:../../packages/blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.5.0
@@ -267,7 +267,7 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../../packages/price-feed
       '@blobscan/rollups':
-        specifier: workspace:^4.1.0
+        specifier: workspace:^0.9.0
         version: link:../../packages/rollups
       '@blobscan/syncers':
         specifier: workspace:^0.8.0
@@ -328,13 +328,13 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^4.2.0
+        specifier: workspace:^0.40.0
         version: link:../../packages/api
       '@blobscan/blob-decoder':
         specifier: workspace:^0.2.3
         version: link:../../packages/blob-decoder
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^4.2.0
+        specifier: workspace:^0.15.0
         version: link:../../packages/blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.5.0
@@ -358,7 +358,7 @@ importers:
         specifier: workspace:^0.0.11
         version: link:../../packages/open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^4.1.0
+        specifier: workspace:^0.9.0
         version: link:../../packages/rollups
       '@blobscan/zod':
         specifier: workspace:^0.1.1
@@ -485,7 +485,7 @@ importers:
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^4.1.1
+        specifier: workspace:^0.11.1
         version: link:../../packages/blob-propagator
       '@blobscan/dayjs':
         specifier: workspace:^0.1.0
@@ -512,7 +512,7 @@ importers:
   packages/api:
     dependencies:
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^4.2.0
+        specifier: workspace:^0.15.0
         version: link:../blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.5.0
@@ -533,7 +533,7 @@ importers:
         specifier: workspace:^0.0.11
         version: link:../open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^4.1.0
+        specifier: workspace:^0.9.0
         version: link:../rollups
       '@blobscan/zod':
         specifier: workspace:^0.1.1
@@ -564,7 +564,7 @@ importers:
         version: 5.4.6(zod@4.6.7)
     devDependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^4.1.1
+        specifier: workspace:^0.11.1
         version: link:../blob-propagator
       '@types/jsonwebtoken':
         specifier: ^9.0.2
@@ -609,7 +609,7 @@ importers:
   packages/blob-propagator:
     dependencies:
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^4.2.0
+        specifier: workspace:^0.15.0
         version: link:../blob-storage-manager
       '@blobscan/db':
         specifier: workspace:^0.31.1

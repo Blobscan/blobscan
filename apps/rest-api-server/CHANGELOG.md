@@ -44,14 +44,14 @@
 
 - [#1031](https://github.com/Blobscan/blobscan/pull/1031) [`7473c2d`](https://github.com/Blobscan/blobscan/commit/7473c2dd8f643a1f9fca60906c661994aa3dc19e) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Upgrade the runtime to Node.js 24 LTS, tracking the latest 24.x patch release so Node.js security fixes are picked up automatically.
 - Updated dependencies [[`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc), [`d3b4a09`](https://github.com/Blobscan/blobscan/commit/d3b4a0936cc14d896bf8b50d4c567603c85e43ac), [`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc), [`18bd945`](https://github.com/Blobscan/blobscan/commit/18bd945b22118573de2288c53bd4d08ea4f51376), [`18fcbaa`](https://github.com/Blobscan/blobscan/commit/18fcbaa15f134143cb39cefa102a96b12d188795), [`eb91310`](https://github.com/Blobscan/blobscan/commit/eb9131019e73fd48376630b5afab9eed6898b43a)]:
-  - @blobscan/api@4.2.0
-  - @blobscan/blob-storage-manager@4.2.0
+  - @blobscan/api@0.40.0
+  - @blobscan/blob-storage-manager@0.15.0
   - @blobscan/db@0.31.1
   - @blobscan/env@0.6.0
   - @blobscan/open-telemetry@0.0.11
   - @blobscan/zod@0.1.1
   - @blobscan/syncers@0.8.0
-  - @blobscan/blob-propagator@4.1.1
+  - @blobscan/blob-propagator@0.11.1
 
 ## 0.17.0
 
@@ -62,13 +62,13 @@
 ### Patch Changes
 
 - Updated dependencies [[`b9e38b8`](https://github.com/Blobscan/blobscan/commit/b9e38b8b90cf354ea306f543f7d8f0679a802415)]:
-  - @blobscan/api@4.1.0
+  - @blobscan/api@0.39.0
   - @blobscan/db@0.31.0
   - @blobscan/syncers@0.7.0
   - @blobscan/env@0.5.0
-  - @blobscan/blob-propagator@4.1.0
-  - @blobscan/blob-storage-manager@4.1.0
-  - @blobscan/rollups@4.1.0
+  - @blobscan/blob-propagator@0.11.0
+  - @blobscan/blob-storage-manager@0.14.0
+  - @blobscan/rollups@0.9.0
 
 ## 0.16.5
 
@@ -76,10 +76,10 @@
 
 - Updated dependencies [[`501fc9b`](https://github.com/Blobscan/blobscan/commit/501fc9b820a3390d086cbbfea272faeae007c1e5), [`d5db628`](https://github.com/Blobscan/blobscan/commit/d5db6280a013b4c6b12b7db5f743215487fcadba), [`332f0b9`](https://github.com/Blobscan/blobscan/commit/332f0b9edd8d4195223e24317101b01d479b7f85)]:
   - @blobscan/db@0.30.0
-  - @blobscan/api@4.0.0
-  - @blobscan/blob-propagator@4.0.0
-  - @blobscan/blob-storage-manager@4.0.0
-  - @blobscan/rollups@4.0.0
+  - @blobscan/api@0.38.0
+  - @blobscan/blob-propagator@0.10.0
+  - @blobscan/blob-storage-manager@0.13.0
+  - @blobscan/rollups@0.8.0
   - @blobscan/syncers@0.6.8
 
 ## 0.16.4
@@ -89,7 +89,7 @@
 - [`7aabab6`](https://github.com/Blobscan/blobscan/commit/7aabab66121ef2f95888598f58a6d9cf69241df5) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add optional `IPFS_STORAGE_INTERNAL_GATEWAY_URL` so IPFS-backed blob reads can use an internal gateway address separate from the public `IPFS_STORAGE_GATEWAY_URL` used to build user-facing blob links. Without this, deployments where the public gateway URL points back at the service's own public domain caused every IPFS-backed blob read to round-trip out to the internet and back to fetch its own data.
 
 - Updated dependencies [[`7aabab6`](https://github.com/Blobscan/blobscan/commit/7aabab66121ef2f95888598f58a6d9cf69241df5)]:
-  - @blobscan/blob-storage-manager@3.0.1
+  - @blobscan/blob-storage-manager@0.12.1
   - @blobscan/env@0.4.1
 
 ## 0.16.3
@@ -112,7 +112,7 @@
 
 - Updated dependencies [[`68d6570`](https://github.com/Blobscan/blobscan/commit/68d6570999479564e9a8acded06b431812eb1ae3), [`f9accce`](https://github.com/Blobscan/blobscan/commit/f9acccec34b8c34e2cea93989f626eab96b0ca1a), [`b954d1e`](https://github.com/Blobscan/blobscan/commit/b954d1ec7f899da8b09f53959c38e7f170e58b10)]:
   - @blobscan/db@0.29.1
-  - @blobscan/api@3.0.1
+  - @blobscan/api@0.37.1
 
 ## 0.16.0
 
@@ -146,12 +146,12 @@
 ### Patch Changes
 
 - Updated dependencies [[`74b33ba`](https://github.com/Blobscan/blobscan/commit/74b33ba464a10b31127a1f395ff67ee585e2e70a)]:
-  - @blobscan/blob-storage-manager@3.0.0
-  - @blobscan/blob-propagator@3.0.0
-  - @blobscan/api@3.0.0
+  - @blobscan/blob-storage-manager@0.12.0
+  - @blobscan/blob-propagator@0.9.0
+  - @blobscan/api@0.37.0
   - @blobscan/db@0.29.0
   - @blobscan/env@0.4.0
-  - @blobscan/rollups@3.0.0
+  - @blobscan/rollups@0.7.0
   - @blobscan/syncers@0.6.7
 
 ## 0.15.0
@@ -173,10 +173,10 @@
 - Updated dependencies [[`2f38f03`](https://github.com/Blobscan/blobscan/commit/2f38f0347a86c330338f9f5cd00100dd09445901)]:
   - @blobscan/chains@0.5.0
   - @blobscan/db@0.28.0
-  - @blobscan/api@2.0.0
-  - @blobscan/blob-propagator@2.0.0
-  - @blobscan/blob-storage-manager@2.0.0
-  - @blobscan/rollups@2.0.0
+  - @blobscan/api@0.36.0
+  - @blobscan/blob-propagator@0.8.0
+  - @blobscan/blob-storage-manager@0.11.0
+  - @blobscan/rollups@0.6.0
   - @blobscan/syncers@0.6.6
 
 ## 0.14.0
@@ -204,11 +204,11 @@
   and REST API server.
 
 - Updated dependencies [[`8c1375d`](https://github.com/Blobscan/blobscan/commit/8c1375d7230cf4ca47ef4b37237c21d748d84264), [`4541f90`](https://github.com/Blobscan/blobscan/commit/4541f904031ffbcdde29c6cded0aa173efc65251)]:
-  - @blobscan/blob-storage-manager@1.0.0
-  - @blobscan/api@1.0.0
+  - @blobscan/blob-storage-manager@0.10.0
+  - @blobscan/api@0.35.0
   - @blobscan/db@0.27.0
-  - @blobscan/blob-propagator@1.0.0
-  - @blobscan/rollups@1.0.0
+  - @blobscan/blob-propagator@0.7.0
+  - @blobscan/rollups@0.5.0
   - @blobscan/syncers@0.6.5
 
 ## 0.13.0

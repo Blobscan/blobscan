@@ -8,7 +8,7 @@
   - @blobscan/db@0.31.1
   - @blobscan/env@0.6.0
   - @blobscan/zod@0.1.1
-  - @blobscan/blob-propagator@4.1.1
+  - @blobscan/blob-propagator@0.11.1
 
 ## 0.2.23
 
@@ -17,7 +17,7 @@
 - Updated dependencies [[`b9e38b8`](https://github.com/Blobscan/blobscan/commit/b9e38b8b90cf354ea306f543f7d8f0679a802415)]:
   - @blobscan/db@0.31.0
   - @blobscan/env@0.5.0
-  - @blobscan/blob-propagator@4.1.0
+  - @blobscan/blob-propagator@0.11.0
 
 ## 0.2.22
 
@@ -25,7 +25,7 @@
 
 - Updated dependencies [[`501fc9b`](https://github.com/Blobscan/blobscan/commit/501fc9b820a3390d086cbbfea272faeae007c1e5), [`d5db628`](https://github.com/Blobscan/blobscan/commit/d5db6280a013b4c6b12b7db5f743215487fcadba), [`332f0b9`](https://github.com/Blobscan/blobscan/commit/332f0b9edd8d4195223e24317101b01d479b7f85)]:
   - @blobscan/db@0.30.0
-  - @blobscan/blob-propagator@4.0.0
+  - @blobscan/blob-propagator@0.10.0
 
 ## 0.2.21
 
@@ -38,7 +38,7 @@
 ### Patch Changes
 
 - Updated dependencies [[`74b33ba`](https://github.com/Blobscan/blobscan/commit/74b33ba464a10b31127a1f395ff67ee585e2e70a)]:
-  - @blobscan/blob-propagator@3.0.0
+  - @blobscan/blob-propagator@0.9.0
   - @blobscan/db@0.29.0
   - @blobscan/env@0.4.0
 
@@ -48,7 +48,7 @@
 
 - Updated dependencies [[`2f38f03`](https://github.com/Blobscan/blobscan/commit/2f38f0347a86c330338f9f5cd00100dd09445901)]:
   - @blobscan/db@0.28.0
-  - @blobscan/blob-propagator@2.0.0
+  - @blobscan/blob-propagator@0.8.0
 
 ## 0.2.18
 
@@ -56,7 +56,7 @@
 
 - Updated dependencies [[`8c1375d`](https://github.com/Blobscan/blobscan/commit/8c1375d7230cf4ca47ef4b37237c21d748d84264), [`4541f90`](https://github.com/Blobscan/blobscan/commit/4541f904031ffbcdde29c6cded0aa173efc65251)]:
   - @blobscan/db@0.27.0
-  - @blobscan/blob-propagator@1.0.0
+  - @blobscan/blob-propagator@0.7.0
 
 ## 0.2.17
 

@@ -1,6 +1,6 @@
 # @blobscan/api
 
-## 4.2.0
+## 0.40.0
 
 ### Minor Changes
 
@@ -34,13 +34,13 @@
   - Add regression coverage for env validation in Vitest/CI runs
 
 - Updated dependencies [[`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc), [`1a3b53a`](https://github.com/Blobscan/blobscan/commit/1a3b53a63c9feaa66acc7799e7a2b2f3d435d0dc), [`18bd945`](https://github.com/Blobscan/blobscan/commit/18bd945b22118573de2288c53bd4d08ea4f51376), [`eb91310`](https://github.com/Blobscan/blobscan/commit/eb9131019e73fd48376630b5afab9eed6898b43a)]:
-  - @blobscan/blob-storage-manager@4.2.0
+  - @blobscan/blob-storage-manager@0.15.0
   - @blobscan/db@0.31.1
   - @blobscan/env@0.6.0
   - @blobscan/open-telemetry@0.0.11
   - @blobscan/zod@0.1.1
 
-## 4.1.0
+## 0.39.0
 
 ### Minor Changes
 
@@ -51,11 +51,11 @@
 - Updated dependencies [[`b9e38b8`](https://github.com/Blobscan/blobscan/commit/b9e38b8b90cf354ea306f543f7d8f0679a802415)]:
   - @blobscan/db@0.31.0
   - @blobscan/env@0.5.0
-  - @blobscan/blob-propagator@4.1.0
-  - @blobscan/blob-storage-manager@4.1.0
-  - @blobscan/rollups@4.1.0
+  - @blobscan/blob-propagator@0.11.0
+  - @blobscan/blob-storage-manager@0.14.0
+  - @blobscan/rollups@0.9.0
 
-## 4.0.0
+## 0.38.0
 
 ### Patch Changes
 
@@ -63,11 +63,11 @@
 
 - Updated dependencies [[`501fc9b`](https://github.com/Blobscan/blobscan/commit/501fc9b820a3390d086cbbfea272faeae007c1e5), [`d5db628`](https://github.com/Blobscan/blobscan/commit/d5db6280a013b4c6b12b7db5f743215487fcadba), [`332f0b9`](https://github.com/Blobscan/blobscan/commit/332f0b9edd8d4195223e24317101b01d479b7f85)]:
   - @blobscan/db@0.30.0
-  - @blobscan/blob-propagator@4.0.0
-  - @blobscan/blob-storage-manager@4.0.0
-  - @blobscan/rollups@4.0.0
+  - @blobscan/blob-propagator@0.10.0
+  - @blobscan/blob-storage-manager@0.13.0
+  - @blobscan/rollups@0.8.0
 
-## 3.0.1
+## 0.37.1
 
 ### Patch Changes
 
@@ -76,7 +76,7 @@
 - Updated dependencies [[`68d6570`](https://github.com/Blobscan/blobscan/commit/68d6570999479564e9a8acded06b431812eb1ae3), [`f9accce`](https://github.com/Blobscan/blobscan/commit/f9acccec34b8c34e2cea93989f626eab96b0ca1a)]:
   - @blobscan/db@0.29.1
 
-## 3.0.0
+## 0.37.0
 
 ### Minor Changes
 
@@ -108,13 +108,13 @@
 ### Patch Changes
 
 - Updated dependencies [[`74b33ba`](https://github.com/Blobscan/blobscan/commit/74b33ba464a10b31127a1f395ff67ee585e2e70a)]:
-  - @blobscan/blob-storage-manager@3.0.0
-  - @blobscan/blob-propagator@3.0.0
+  - @blobscan/blob-storage-manager@0.12.0
+  - @blobscan/blob-propagator@0.9.0
   - @blobscan/db@0.29.0
   - @blobscan/env@0.4.0
-  - @blobscan/rollups@3.0.0
+  - @blobscan/rollups@0.7.0
 
-## 2.0.0
+## 0.36.0
 
 ### Minor Changes
 
@@ -133,11 +133,11 @@
 - Updated dependencies [[`2f38f03`](https://github.com/Blobscan/blobscan/commit/2f38f0347a86c330338f9f5cd00100dd09445901)]:
   - @blobscan/chains@0.5.0
   - @blobscan/db@0.28.0
-  - @blobscan/blob-propagator@2.0.0
-  - @blobscan/blob-storage-manager@2.0.0
-  - @blobscan/rollups@2.0.0
+  - @blobscan/blob-propagator@0.8.0
+  - @blobscan/blob-storage-manager@0.11.0
+  - @blobscan/rollups@0.6.0
 
-## 1.0.0
+## 0.35.0
 
 ### Minor Changes
 
@@ -154,10 +154,10 @@
 ### Patch Changes
 
 - Updated dependencies [[`8c1375d`](https://github.com/Blobscan/blobscan/commit/8c1375d7230cf4ca47ef4b37237c21d748d84264), [`4541f90`](https://github.com/Blobscan/blobscan/commit/4541f904031ffbcdde29c6cded0aa173efc65251)]:
-  - @blobscan/blob-storage-manager@1.0.0
+  - @blobscan/blob-storage-manager@0.10.0
   - @blobscan/db@0.27.0
-  - @blobscan/blob-propagator@1.0.0
-  - @blobscan/rollups@1.0.0
+  - @blobscan/blob-propagator@0.7.0
+  - @blobscan/rollups@0.5.0
 
 ## 0.34.0
 
