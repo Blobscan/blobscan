@@ -10,6 +10,7 @@ Run with: pytest -m integration
 
 import json
 from datetime import UTC, datetime, timedelta
+from decimal import Decimal
 from pathlib import Path
 
 import dagster as dg
@@ -124,6 +125,22 @@ def get_enriched_blocks(
     return result
 
 
+def get_eth_prices(
+    start: datetime | None = None,
+    end: datetime | None = None,
+) -> list[Decimal]:
+    """Return the fixture ETH prices whose timestamp falls in [start, end)."""
+    result = []
+    for price in _FIXTURES["ethUsdPrices"]:
+        ts = datetime.fromisoformat(price["timestamp"])
+        if start is not None and ts < start:
+            continue
+        if end is not None and ts >= end:
+            continue
+        result.append(Decimal(price["price"]))
+    return result
+
+
 def get_enriched_blobs(txs_in_window: list[dict]) -> list[dict]:
     """Return fixture blob-tx pairs for the given transactions.
 
@@ -170,6 +187,12 @@ _YEARLY_BLOCKS = get_enriched_blocks(YEARLY_PERIOD_START, YEARLY_PERIOD_END)
 _ALL_TXS = get_enriched_txs()
 _ALL_BLOBS = get_enriched_blobs(_ALL_TXS)
 _ALL_BLOCKS = get_enriched_blocks()
+_HOUR_ETH_PRICES = get_eth_prices(HOURLY_PERIOD_START, HOURLY_PERIOD_END)
+_DAILY_ETH_PRICES = get_eth_prices(DAILY_PERIOD_START, DAILY_PERIOD_END)
+_WEEKLY_ETH_PRICES = get_eth_prices(WEEKLY_PERIOD_START, WEEKLY_PERIOD_END)
+_MONTHLY_ETH_PRICES = get_eth_prices(MONTHLY_PERIOD_START, MONTHLY_PERIOD_END)
+_YEARLY_ETH_PRICES = get_eth_prices(YEARLY_PERIOD_START, YEARLY_PERIOD_END)
+_ALL_ETH_PRICES = get_eth_prices()
 
 _ADDR_MAP = {a["address"]: a for a in _FIXTURES["addresses"]}
 
@@ -559,6 +582,74 @@ class _TxMetricsMixin:
         )
 
 
+class _EthPriceMetricsMixin:
+    """Mixin providing ETH price metric test cases.
+
+    Subclasses must define:
+        _table        (str)           — metrics table to query
+        _period_start (datetime)      — period_start value to assert against
+        _prices       (list[Decimal]) — fixture ETH prices in the window
+        _seed_metrics(self, postgres) — runs all prerequisite + target assets
+    """
+
+    _prices: list[Decimal]
+    _table: str
+    _period_start: datetime
+
+    def _seed_metrics(self, postgres):
+        raise NotImplementedError
+
+    @pytest.fixture(scope="class", autouse=True)
+    def setup_metrics(self, postgres, clean_metrics):  # noqa: ARG002
+        """Seed metrics once for the entire test class."""
+        self._seed_metrics(postgres)
+
+    def _result(self, postgres):
+        return _query_metrics_table(postgres, self._table, self._period_start)
+
+    def _global_row(self, postgres):
+        return self._result(postgres)[(None, None)]
+
+    def test_window_has_eth_prices(self):
+        assert self._prices, "the fixture data must have ETH prices in the window"
+
+    def test_eth_price_metrics_are_null_for_non_global_rows(self, postgres):
+        eth_price_fields = [
+            "avg_eth_price",
+            "max_eth_price",
+            "min_eth_price",
+            "total_eth_price",
+            "total_eth_price_count",
+        ]
+        for (cat, rollup), row in self._result(postgres).items():
+            if (cat, rollup) != (None, None):
+                for field in eth_price_fields:
+                    assert row[field] is None, (
+                        f"{field} should be NULL for "
+                        f"(category={cat!r}, rollup={rollup!r})"
+                    )
+
+    def test_max_eth_price(self, postgres):
+        expected = float(max(self._prices))
+        assert self._global_row(postgres)["max_eth_price"] == pytest.approx(expected)
+
+    def test_min_eth_price(self, postgres):
+        expected = float(min(self._prices))
+        assert self._global_row(postgres)["min_eth_price"] == pytest.approx(expected)
+
+    def test_total_eth_price(self, postgres):
+        expected = float(sum(self._prices))
+        assert self._global_row(postgres)["total_eth_price"] == pytest.approx(expected)
+
+    def test_total_eth_price_count(self, postgres):
+        expected = len(self._prices)
+        assert self._global_row(postgres)["total_eth_price_count"] == expected
+
+    def test_avg_eth_price(self, postgres):
+        expected = float(sum(self._prices) / len(self._prices))
+        assert self._global_row(postgres)["avg_eth_price"] == pytest.approx(expected)
+
+
 class _AllTimeBlobMetricsMixin(_BlobMetricsMixin):
     def _result(self, postgres):
         return _query_all_time_metrics(postgres)
@@ -573,6 +664,11 @@ class _AllTimeTxMetricsMixin(_TxMetricsMixin):
 
     def test_no_metrics_created_for_other_periods(self, postgres):
         pass  # all_time_metrics has no period dimension
+
+
+class _AllTimeEthPriceMetricsMixin(_EthPriceMetricsMixin):
+    def _result(self, postgres):
+        return _query_all_time_metrics(postgres)
 
 
 # ---------------------------------------------------------------------------
@@ -603,6 +699,16 @@ class TestHourlyTxMetricsCalculation(_TxMetricsMixin):
         _run_asset(postgres, HOURLY_PARTITION_KEY, hourly_metrics)
 
 
+@pytest.mark.integration
+class TestHourlyEthPriceMetricsCalculation(_EthPriceMetricsMixin):
+    _table = "hourly_metrics"
+    _period_start = HOURLY_PERIOD_START
+    _prices = _HOUR_ETH_PRICES
+
+    def _seed_metrics(self, postgres):
+        _run_asset(postgres, HOURLY_PARTITION_KEY, hourly_metrics)
+
+
 # ---------------------------------------------------------------------------
 # Daily metric tests
 # ---------------------------------------------------------------------------
@@ -627,6 +733,17 @@ class TestDailyTxMetricsCalculation(_TxMetricsMixin):
     _period_start = DAILY_PERIOD_START
     _txs = _DAILY_TXS
     _blocks = _DAILY_BLOCKS
+
+    def _seed_metrics(self, postgres):
+        _seed_hourly(postgres)
+        _run_asset(postgres, DAILY_PARTITION_KEY, daily_metrics)
+
+
+@pytest.mark.integration
+class TestDailyEthPriceMetricsCalculation(_EthPriceMetricsMixin):
+    _table = "daily_metrics"
+    _period_start = DAILY_PERIOD_START
+    _prices = _DAILY_ETH_PRICES
 
     def _seed_metrics(self, postgres):
         _seed_hourly(postgres)
@@ -665,6 +782,18 @@ class TestWeeklyTxMetricsCalculation(_TxMetricsMixin):
         _run_asset(postgres, WEEKLY_PARTITION_KEY, weekly_metrics)
 
 
+@pytest.mark.integration
+class TestWeeklyEthPriceMetricsCalculation(_EthPriceMetricsMixin):
+    _table = "weekly_metrics"
+    _period_start = WEEKLY_PERIOD_START
+    _prices = _WEEKLY_ETH_PRICES
+
+    def _seed_metrics(self, postgres):
+        _seed_hourly(postgres)
+        _seed_daily(postgres)
+        _run_asset(postgres, WEEKLY_PARTITION_KEY, weekly_metrics)
+
+
 # ---------------------------------------------------------------------------
 # Monthly metric tests
 # ---------------------------------------------------------------------------
@@ -690,6 +819,18 @@ class TestMonthlyTxMetricsCalculation(_TxMetricsMixin):
     _period_start = MONTHLY_PERIOD_START
     _txs = _MONTHLY_TXS
     _blocks = _MONTHLY_BLOCKS
+
+    def _seed_metrics(self, postgres):
+        _seed_hourly(postgres)
+        _seed_daily(postgres)
+        _run_asset(postgres, MONTHLY_PARTITION_KEY, monthly_metrics)
+
+
+@pytest.mark.integration
+class TestMonthlyEthPriceMetricsCalculation(_EthPriceMetricsMixin):
+    _table = "monthly_metrics"
+    _period_start = MONTHLY_PERIOD_START
+    _prices = _MONTHLY_ETH_PRICES
 
     def _seed_metrics(self, postgres):
         _seed_hourly(postgres)
@@ -731,6 +872,19 @@ class TestYearlyTxMetricsCalculation(_TxMetricsMixin):
         _run_asset(postgres, YEARLY_PARTITION_KEY, yearly_metrics)
 
 
+@pytest.mark.integration
+class TestYearlyEthPriceMetricsCalculation(_EthPriceMetricsMixin):
+    _table = "yearly_metrics"
+    _period_start = YEARLY_PERIOD_START
+    _prices = _YEARLY_ETH_PRICES
+
+    def _seed_metrics(self, postgres):
+        _seed_hourly(postgres)
+        _seed_daily(postgres)
+        _seed_monthly(postgres)
+        _run_asset(postgres, YEARLY_PARTITION_KEY, yearly_metrics)
+
+
 # ---------------------------------------------------------------------------
 # All-time metric tests
 # ---------------------------------------------------------------------------
@@ -757,6 +911,19 @@ class TestAllTimeTxMetricsCalculation(_AllTimeTxMetricsMixin):
     _txs = _ALL_TXS
     _blobs = _ALL_BLOBS
     _blocks = _ALL_BLOCKS
+
+    def _seed_metrics(self, postgres):
+        _seed_hourly(postgres)
+        _seed_daily(postgres)
+        _seed_monthly(postgres)
+        _seed_yearly(postgres)
+        all_time_metrics(postgres=postgres)
+
+
+@pytest.mark.integration
+class TestAllTimeEthPriceMetricsCalculation(_AllTimeEthPriceMetricsMixin):
+    _table = "all_time_metrics"
+    _prices = _ALL_ETH_PRICES
 
     def _seed_metrics(self, postgres):
         _seed_hourly(postgres)

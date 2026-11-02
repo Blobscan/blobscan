@@ -1,6 +1,7 @@
 // The avg* fields are Postgres stored generated columns. Each one is the total
 // divided by the count of the same row. The
-// 20261016000000_generate_metrics_averages migration defines them.
+// 20261016000000_generate_metrics_averages and
+// 20261102000000_add_eth_price_metrics migrations define them.
 // Prisma does not support generated columns. @default(dbgenerated()) makes the
 // fields optional in create inputs and stops `migrate` from changing them.
 // The Prisma Client types still accept these fields in create and update
@@ -24,15 +25,28 @@ model AllTimeMetrics {
   avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.number.nonnegative()
   avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
+  /// @zod.number.nonnegative()
+  avgEthPrice     Float? @default(dbgenerated()) @map("avg_eth_price")
 
   // Counters
 
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee  Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks       Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
+  /// @zod.number.nonnegative()
+  totalEthPrice      Float?   @map("total_eth_price")
+  /// @zod.number.int().nonnegative()
+  totalEthPriceCount Int?     @map("total_eth_price_count")
+
+  // Extremes
+
+  /// @zod.number.nonnegative()
+  maxEthPrice Float? @map("max_eth_price")
+  /// @zod.number.nonnegative()
+  minEthPrice Float? @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -97,15 +111,28 @@ model HourlyMetrics {
   avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.number.nonnegative()
   avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
+  /// @zod.number.nonnegative()
+  avgEthPrice     Float? @default(dbgenerated()) @map("avg_eth_price")
 
   // Counters
 
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee  Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks       Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
+  /// @zod.number.nonnegative()
+  totalEthPrice      Float?   @map("total_eth_price")
+  /// @zod.number.int().nonnegative()
+  totalEthPriceCount Int?     @map("total_eth_price_count")
+
+  // Extremes
+
+  /// @zod.number.nonnegative()
+  maxEthPrice Float? @map("max_eth_price")
+  /// @zod.number.nonnegative()
+  minEthPrice Float? @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -166,15 +193,28 @@ model DailyMetrics {
   avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.number.nonnegative()
   avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
+  /// @zod.number.nonnegative()
+  avgEthPrice     Float? @default(dbgenerated()) @map("avg_eth_price")
 
   // Counters
 
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee  Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks       Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
+  /// @zod.number.nonnegative()
+  totalEthPrice      Float?   @map("total_eth_price")
+  /// @zod.number.int().nonnegative()
+  totalEthPriceCount Int?     @map("total_eth_price_count")
+
+  // Extremes
+
+  /// @zod.number.nonnegative()
+  maxEthPrice Float? @map("max_eth_price")
+  /// @zod.number.nonnegative()
+  minEthPrice Float? @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -239,14 +279,27 @@ model WeeklyMetrics {
   avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.number.nonnegative()
   avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
+  /// @zod.number.nonnegative()
+  avgEthPrice     Float? @default(dbgenerated()) @map("avg_eth_price")
 
   // Counters
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee  Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks       Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
+  /// @zod.number.nonnegative()
+  totalEthPrice      Float?   @map("total_eth_price")
+  /// @zod.number.int().nonnegative()
+  totalEthPriceCount Int?     @map("total_eth_price_count")
+
+  // Extremes
+
+  /// @zod.number.nonnegative()
+  maxEthPrice Float? @map("max_eth_price")
+  /// @zod.number.nonnegative()
+  minEthPrice Float? @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -311,15 +364,28 @@ model MonthlyMetrics {
   avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.number.nonnegative()
   avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
+  /// @zod.number.nonnegative()
+  avgEthPrice     Float? @default(dbgenerated()) @map("avg_eth_price")
 
   // Counters
 
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee  Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks       Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
+  /// @zod.number.nonnegative()
+  totalEthPrice      Float?   @map("total_eth_price")
+  /// @zod.number.int().nonnegative()
+  totalEthPriceCount Int?     @map("total_eth_price_count")
+
+  // Extremes
+
+  /// @zod.number.nonnegative()
+  maxEthPrice Float? @map("max_eth_price")
+  /// @zod.number.nonnegative()
+  minEthPrice Float? @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
@@ -384,15 +450,28 @@ model YearlyMetrics {
   avgBlobBaseFee  Float? @default(dbgenerated()) @map("avg_blob_base_fee")
   /// @zod.number.nonnegative()
   avgBlobGasPrice Float? @default(dbgenerated()) @map("avg_blob_gas_price")
+  /// @zod.number.nonnegative()
+  avgEthPrice     Float? @default(dbgenerated()) @map("avg_eth_price")
 
   // Counters
 
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobBaseFee  Decimal? @map("total_blob_base_fee")
+  totalBlobBaseFee   Decimal? @map("total_blob_base_fee")
   /// @zod.custom.use(nonNegativeDecimalSchema)
-  totalBlobGasPrice Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobGasPrice  Decimal? @map("total_blob_gas_price") @db.Decimal(100, 0)
   /// @zod.number.int().nonnegative()
-  totalBlocks       Int?     @map("total_blocks")
+  totalBlocks        Int?     @map("total_blocks")
+  /// @zod.number.nonnegative()
+  totalEthPrice      Float?   @map("total_eth_price")
+  /// @zod.number.int().nonnegative()
+  totalEthPriceCount Int?     @map("total_eth_price_count")
+
+  // Extremes
+
+  /// @zod.number.nonnegative()
+  maxEthPrice Float? @map("max_eth_price")
+  /// @zod.number.nonnegative()
+  minEthPrice Float? @map("min_eth_price")
 
   // ------------- DIMENSIONAL METRICS -------------
 
