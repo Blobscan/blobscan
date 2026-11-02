@@ -131,7 +131,7 @@ def get_enriched_txs(
             "blockNumber": block["number"],
             "blob_base_fee": tx["blobGasUsed"] * blob_gas_price,
             "blob_max_fee": tx["blobGasUsed"] * tx["maxFeePerBlobGas"],
-            "blob_as_calldata_fee": tx["blobAsCalldataGasUsed"] * blob_gas_price,
+            "blob_as_calldata_fee": tx["blobAsCalldataGasUsed"] * tx["gasPrice"],
             "blob_as_calldata_max_fee": (
                 tx["blobAsCalldataGasUsed"] * tx["maxFeePerBlobGas"]
             ),
@@ -139,7 +139,7 @@ def get_enriched_txs(
                 tx["blobGasUsed"] * blob_gas_price, eth_usd_price,
             ),
             "blob_as_calldata_fee_usd": _wei_to_usd(
-                tx["blobAsCalldataGasUsed"] * blob_gas_price, eth_usd_price,
+                tx["blobAsCalldataGasUsed"] * tx["gasPrice"], eth_usd_price,
             ),
             "blob_max_fee_usd": _wei_to_usd(
                 tx["blobGasUsed"] * tx["maxFeePerBlobGas"], eth_usd_price,

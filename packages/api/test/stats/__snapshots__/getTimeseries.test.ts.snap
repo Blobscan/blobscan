@@ -10,7 +10,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
         },
         "metrics": {
           "avgBlobAsCalldataFee": [
-            22000,
+            10000,
           ],
           "avgBlobAsCalldataMaxFee": [
             100000,
@@ -40,7 +40,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
           ],
           "totalBlobAsCalldataFee": [
-            66000n,
+            30000n,
           ],
           "totalBlobAsCalldataFeeUsd": [
             null,
@@ -123,8 +123,8 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
         },
         "metrics": {
           "avgBlobAsCalldataFee": [
-            22000,
-            20000,
+            10000,
+            10000,
           ],
           "avgBlobAsCalldataMaxFee": [
             100000,
@@ -163,8 +163,8 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
           ],
           "totalBlobAsCalldataFee": [
-            66000n,
-            40000n,
+            30000n,
+            20000n,
           ],
           "totalBlobAsCalldataFeeUsd": [
             null,
@@ -268,9 +268,9 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
         },
         "metrics": {
           "avgBlobAsCalldataFee": [
-            22000,
-            20000,
-            22000,
+            10000,
+            10000,
+            10000,
           ],
           "avgBlobAsCalldataMaxFee": [
             100000,
@@ -318,9 +318,9 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
           ],
           "totalBlobAsCalldataFee": [
-            66000n,
-            40000n,
-            110000n,
+            30000n,
+            20000n,
+            50000n,
           ],
           "totalBlobAsCalldataFeeUsd": [
             null,
@@ -445,10 +445,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
         },
         "metrics": {
           "avgBlobAsCalldataFee": [
-            22000,
-            20000,
-            22000,
-            22000,
+            10000,
+            10000,
+            10000,
+            10000,
           ],
           "avgBlobAsCalldataMaxFee": [
             100000,
@@ -505,10 +505,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
           ],
           "totalBlobAsCalldataFee": [
-            66000n,
-            40000n,
-            110000n,
-            44000n,
+            30000n,
+            20000n,
+            50000n,
+            20000n,
           ],
           "totalBlobAsCalldataFeeUsd": [
             null,
@@ -654,10 +654,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
         },
         "metrics": {
           "avgBlobAsCalldataFee": [
-            22000,
-            20000,
-            22000,
-            22000,
+            10000,
+            10000,
+            10000,
+            10000,
           ],
           "avgBlobAsCalldataMaxFee": [
             100000,
@@ -714,10 +714,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
           ],
           "totalBlobAsCalldataFee": [
-            66000n,
-            40000n,
-            110000n,
-            44000n,
+            30000n,
+            20000n,
+            50000n,
+            20000n,
           ],
           "totalBlobAsCalldataFeeUsd": [
             null,
@@ -863,11 +863,11 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
         },
         "metrics": {
           "avgBlobAsCalldataFee": [
-            22000,
-            20000,
-            22000,
-            22000,
-            22000,
+            10000,
+            10000,
+            10000,
+            10000,
+            10000,
           ],
           "avgBlobAsCalldataMaxFee": [
             100000,
@@ -933,11 +933,11 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
           ],
           "totalBlobAsCalldataFee": [
-            66000n,
-            40000n,
-            110000n,
-            44000n,
-            22000n,
+            30000n,
+            20000n,
+            50000n,
+            20000n,
+            10000n,
           ],
           "totalBlobAsCalldataFeeUsd": [
             null,
@@ -1104,12 +1104,12 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
         },
         "metrics": {
           "avgBlobAsCalldataFee": [
-            22000,
-            20000,
-            22000,
-            22000,
-            22000,
-            24200,
+            10000,
+            10000,
+            10000,
+            10000,
+            10000,
+            12166.66666666667,
           ],
           "avgBlobAsCalldataMaxFee": [
             100000,
@@ -1184,12 +1184,12 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
             null,
           ],
           "totalBlobAsCalldataFee": [
-            66000n,
-            40000n,
-            110000n,
-            44000n,
-            22000n,
-            72600n,
+            30000n,
+            20000n,
+            50000n,
+            20000n,
+            10000n,
+            36500n,
           ],
           "totalBlobAsCalldataFeeUsd": [
             null,
