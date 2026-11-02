@@ -116,6 +116,24 @@ jobs:
           image: blobscan-web:smoke
           database-url: postgresql://blobscan:s3cr3t@127.0.0.1:5432/blobscan_smoke_web
 
+      # Vulnerability gate: scan the image that just passed the smoke test BEFORE it is pushed.
+      # --ignore-unfixed: only report CVEs that have a fix available. Accepted risks go in
+      # .trivyignore.
+      #
+      # TEMPORARY: the gate is not blocking (continue-on-error). Vulns are reported and the
+      # image is still pushed. Restore the gate by removing `continue-on-error`.
+      - name: Trivy scan (api)
+        uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: true
+        with:
+          version: v0.76.1
+          image-ref: blobscan-api:smoke
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          trivyignores: .trivyignore
+          exit-code: "1"
+
       - name: Build and push (api)
         uses: docker/build-push-action@v6.5.0
         with:
@@ -130,6 +148,24 @@ jobs:
             GIT_COMMIT=${{ env.GIT_COMMIT }}
             DATABASE_URL=${{ env.DATABASE_URL }}
             DIRECT_URL=${{ env.DIRECT_URL }}
+
+      # Vulnerability gate: scan the image that just passed the smoke test BEFORE it is pushed.
+      # --ignore-unfixed: only report CVEs that have a fix available. Accepted risks go in
+      # .trivyignore.
+      #
+      # TEMPORARY: the gate is not blocking (continue-on-error). Vulns are reported and the
+      # image is still pushed. Restore the gate by removing `continue-on-error`.
+      - name: Trivy scan (web)
+        uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: true
+        with:
+          version: v0.76.1
+          image-ref: blobscan-web:smoke
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          trivyignores: .trivyignore
+          exit-code: "1"
 
       - name: Build and push (web)
         uses: docker/build-push-action@v6.5.0

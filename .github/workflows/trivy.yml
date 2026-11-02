@@ -1,0 +1,77 @@
+name: Trivy
+
+# - Pull requests / main: scans the lockfiles, so a vulnerable dependency shows up in the PR long
+#   before an image is built. Warning only.
+# - Weekly: scans the images that are actually published. New CVEs appear after an image is
+#   pushed, and docker_dev.yml only checks at build time. A red run notifies the repo watchers.
+#
+# Accepted risks go in .trivyignore (one CVE id per line, with a comment).
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TRIVY_VERSION: v0.76.1
+  TRIVY_SEVERITY: HIGH,CRITICAL
+
+permissions:
+  contents: read
+
+jobs:
+  fs:
+    name: Scan lockfiles
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    # Warning only (orange job): a CVE without a fix path must not red the pipeline. The
+    # blocking-capable gate is the image scan in docker_dev.yml.
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Trivy fs
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          version: ${{ env.TRIVY_VERSION }}
+          scan-type: fs
+          scanners: vuln
+          severity: ${{ env.TRIVY_SEVERITY }}
+          ignore-unfixed: true
+          trivyignores: .trivyignore
+          skip-dirs: node_modules
+          exit-code: "1"
+
+  registry:
+    name: Scan published image (${{ matrix.image }})
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [blobscan-api, blobscan-web, blobscan-dagster]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Trivy image
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          version: ${{ env.TRIVY_VERSION }}
+          image-ref: blossomlabs/${{ matrix.image }}:development
+          scanners: vuln
+          severity: ${{ env.TRIVY_SEVERITY }}
+          ignore-unfixed: true
+          trivyignores: .trivyignore
+          exit-code: "1"
