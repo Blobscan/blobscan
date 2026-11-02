@@ -27,11 +27,13 @@ type BigIntMetricName = {
 
 const NUMBER_TOTALS = [
   "totalBlobs",
-  "totalBlocks",
   "totalTransactions",
   "totalUniqueBlobs",
   "totalUniqueReceivers",
   "totalUniqueSenders",
+  "totalBlobAsCalldataFeeUsd",
+  "totalBlobBaseFeeUsd",
+  "totalBlobMaxFeeUsd",
 ] as const satisfies readonly NumberMetricName[];
 
 const BIGINT_TOTALS = [
@@ -39,7 +41,6 @@ const BIGINT_TOTALS = [
   "totalBlobAsCalldataGasUsed",
   "totalBlobAsCalldataMaxFee",
   "totalBlobBaseFee",
-  "totalBlobGasPrice",
   "totalBlobGasUsed",
   "totalBlobMaxFee",
   "totalBlobSize",
@@ -56,6 +57,8 @@ const GLOBAL_ONLY_METRICS = [
   "avgEthPrice",
   "maxEthPrice",
   "minEthPrice",
+  "totalBlobGasPrice",
+  "totalBlocks",
 ] as const satisfies readonly (keyof AggregatedMetrics)[];
 
 export function toAggregatedMetrics(metrics: Metrics): AggregatedMetrics {

@@ -13,6 +13,11 @@ interface AxisBase {
   unitType?: AxisUnitType;
   unit?: EtherUnit | ByteUnit | FiatUnit;
   displayUnit?: EtherUnit | ByteUnit | FiatUnit;
+  /**
+   * Fit the axis to the values and do not start it at zero. Use it for a
+   * value that is never near zero, for example a price.
+   */
+  scale?: boolean;
 }
 export interface TimeAxis extends AxisBase {
   type: "time";

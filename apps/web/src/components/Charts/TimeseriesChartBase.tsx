@@ -3,9 +3,16 @@ import { useMemo } from "react";
 import type { BarSeriesOption, LineSeriesOption } from "echarts";
 import { useTheme } from "next-themes";
 
-import type { Prettify, ThemeMode, TimeseriesMetric } from "~/types";
+import type { Prettify, ThemeMode } from "~/types";
 import { Card } from "../Cards/Card";
-import type { TimeseriesDataset } from "../TimeseriesCharts/helpers";
+import {
+  addDerivedColumns,
+  isDerivedMetric,
+} from "../TimeseriesCharts/helpers";
+import type {
+  ChartMetric,
+  TimeseriesDataset,
+} from "../TimeseriesCharts/helpers";
 import { ChartBase } from "./ChartBase";
 import type { Axis, ChartBaseProps } from "./ChartBase";
 import { getRangeSeriesId, getRangeSeriesName } from "./ChartBase/helpers";
@@ -16,7 +23,11 @@ type Timeseries = Pick<
   "name" | "id" | "stack"
 > & {
   type: "bar" | "line";
-  metric: TimeseriesMetric;
+  /**
+   * A metric of the dataset, or a derived metric that the chart calculates
+   * from the dataset (see DERIVED_METRICS).
+   */
+  metric: ChartMetric;
   /**
    * The color of the series. Without it, the series gets the color of its
    * dimension (see getDimensionColor).
@@ -192,14 +203,26 @@ export const TimeseriesChartBase: FC<TimeseriesChartBaseProps> = ({
   const { resolvedTheme } = useTheme();
   const themeMode = resolvedTheme as ThemeMode;
   const dataset = useMemo(() => {
-    if (!datasetProp || !range) {
+    const derivedMetrics = (timeseries ?? [])
+      .map(({ metric }) => metric)
+      .filter(isDerivedMetric);
+
+    if (!datasetProp || (!range && !derivedMetrics.length)) {
       return datasetProp;
     }
 
+    const transform = (d: TimeseriesDataset) => {
+      const withDerived = derivedMetrics.length
+        ? addDerivedColumns(d, derivedMetrics)
+        : d;
+
+      return range ? addRangeColumn(withDerived, range) : withDerived;
+    };
+
     return Array.isArray(datasetProp)
-      ? datasetProp.map((d) => addRangeColumn(d, range))
-      : addRangeColumn(datasetProp, range);
-  }, [datasetProp, range]);
+      ? datasetProp.map(transform)
+      : transform(datasetProp);
+  }, [datasetProp, range, timeseries]);
   const series = useMemo(() => {
     if (!dataset || !timeseries) {
       return undefined;

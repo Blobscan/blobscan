@@ -16,6 +16,10 @@ import type {
 export type TimeseriesChartComponent = FC<TimeseriesChartProps> & {
   displayName?: string;
   requiredMetrics: [TimeseriesMetric, ...TimeseriesMetric[]];
+  /**
+   * The unit that the chart shows its values in (e.g. "Gwei" or "USD").
+   */
+  yUnit?: string;
 };
 
 export function createTimeseriesChart({
@@ -53,7 +57,12 @@ export function createTimeseriesChart({
 
   Chart.displayName = componentName;
 
-  return Object.assign(React.memo(Chart), { requiredMetrics });
+  const { displayUnit, unit } = restBaseProps.yAxis;
+
+  return Object.assign(React.memo(Chart), {
+    requiredMetrics,
+    yUnit: displayUnit ?? unit,
+  });
 }
 
 // Shades of the primary color (see @blobscan/tailwind-config). The average is

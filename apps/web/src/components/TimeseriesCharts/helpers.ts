@@ -1,5 +1,6 @@
 import type {
   TimeseriesData,
+  TimeseriesMetric,
   Chartable,
   NullableElements,
   Category,
@@ -134,4 +135,64 @@ export function transformToDatasets<T extends TimeseriesData>({
   });
 
   return datesets;
+}
+
+/**
+ * Metrics that the API does not return. A chart calculates each one from two
+ * metrics of its dataset: the numerator divided by the denominator.
+ */
+export const DERIVED_METRICS = {
+  // The database has no USD averages. The divisor is the count of the
+  // transactions that have a USD fee, not totalTransactions: a transaction
+  // with no ETH/USD price is not in totalBlobBaseFeeUsd.
+  avgBlobBaseFeeUsd: {
+    numerator: "totalBlobBaseFeeUsd",
+    denominator: "totalUsdPricedTransactions",
+  },
+} as const satisfies Record<
+  string,
+  { numerator: TimeseriesMetric; denominator: TimeseriesMetric }
+>;
+
+export type DerivedMetric = keyof typeof DERIVED_METRICS;
+
+export type ChartMetric = TimeseriesMetric | DerivedMetric;
+
+export function isDerivedMetric(metric: ChartMetric): metric is DerivedMetric {
+  return metric in DERIVED_METRICS;
+}
+
+/**
+ * Adds a column to the dataset for each derived metric. A value is null when
+ * the numerator is null or the denominator is null or zero.
+ */
+export function addDerivedColumns(
+  dataset: TimeseriesDataset,
+  metrics: DerivedMetric[]
+) {
+  const source = dataset.source as Record<string, unknown[] | undefined>;
+  const columns = Object.fromEntries(
+    metrics.map((metric) => {
+      const { numerator, denominator } = DERIVED_METRICS[metric];
+      const denominatorValues = source[denominator] ?? [];
+      const values = (source[numerator] ?? []).map((value, i) => {
+        const divisor = denominatorValues[i];
+
+        return value === null ||
+          value === undefined ||
+          divisor === null ||
+          divisor === undefined ||
+          Number(divisor) === 0
+          ? null
+          : Number(value) / Number(divisor);
+      });
+
+      return [metric, values];
+    })
+  );
+
+  return {
+    ...dataset,
+    source: { ...dataset.source, ...columns },
+  } as TimeseriesDataset;
 }
