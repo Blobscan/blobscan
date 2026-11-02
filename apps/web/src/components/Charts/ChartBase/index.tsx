@@ -23,6 +23,7 @@ import {
   DEFAULT_SERIES_COLOR,
   createBaseSeriesOptions,
   getCurrentPeriodTimestamp,
+  getCurrentPeriodUpdatedAt,
   getDimensionColor,
   getMainSeriesIndex,
   getSeriesMetricValue,
@@ -160,6 +161,12 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       getCurrentPeriodTimestamp(Array.isArray(dataset) ? dataset : [dataset]),
     [dataset]
   );
+  const currentPeriodUpdatedAt = useMemo(
+    () =>
+      dataset &&
+      getCurrentPeriodUpdatedAt(Array.isArray(dataset) ? dataset : [dataset]),
+    [dataset]
+  );
   const chartDataset = useMemo(() => {
     if (!dataset || !currentPeriodTimestamp) {
       return dataset;
@@ -246,6 +253,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           displayTotal: tooltipOpts?.displayTotal,
           themeMode,
           currentPeriodTimestamp,
+          currentPeriodUpdatedAt,
           getSeriesValue,
         }),
         toolbox: !compact ? createBaseToolboxOptions({ themeMode }) : undefined,
@@ -259,6 +267,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       tooltipOpts,
       themeMode,
       currentPeriodTimestamp,
+      currentPeriodUpdatedAt,
       getSeriesValue,
     ]
   );

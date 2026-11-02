@@ -31,21 +31,12 @@ export type ChartSeries = {
 /**
  * A dataset that can include the current period. `currentPeriodTimestamp` is
  * the start of the current period when the dataset includes it.
+ * `currentPeriodUpdatedAt` is the time of the last update of its values.
  */
 export type ChartDataset = DatasetComponentOption & {
   currentPeriodTimestamp?: Date;
+  currentPeriodUpdatedAt?: Date;
 };
-
-export type PeriodUnit = "hour" | "day";
-
-const PERIOD_UNIT_LABELS: Record<PeriodUnit, string> = {
-  hour: "This hour",
-  day: "Today",
-};
-
-export function getCurrentPeriodLabel(unit: PeriodUnit) {
-  return `${PERIOD_UNIT_LABELS[unit]} so far · in progress (UTC)`;
-}
 
 export function isCurrentPeriodSeries(seriesId: unknown) {
   return (
@@ -141,6 +132,15 @@ export function getCurrentPeriodTimestamp(
 }
 
 /**
+ * Returns the time of the last update of the current period values.
+ */
+export function getCurrentPeriodUpdatedAt(
+  datasets: ChartDataset[]
+): Date | undefined {
+  return datasets.find((d) => d.currentPeriodUpdatedAt)?.currentPeriodUpdatedAt;
+}
+
+/**
  * Adds these columns for each metric column of the dataset that the chart
  * draws (`metricColumns`, or all the metric columns when it is not given):
  * - closed: the metric values with no value for the current period.
@@ -152,7 +152,11 @@ export function getCurrentPeriodTimestamp(
  * give `metricColumns` to add fewer columns.
  */
 export function addCurrentPeriodColumns(
-  { currentPeriodTimestamp: _, ...dataset }: ChartDataset,
+  {
+    currentPeriodTimestamp: _,
+    currentPeriodUpdatedAt: __,
+    ...dataset
+  }: ChartDataset,
   currentPeriodTimestamp: Date,
   metricColumns?: string[]
 ): DatasetComponentOption {
