@@ -29,13 +29,20 @@ export type ChartSeries = {
 };
 
 /**
- * A dataset that can include the current period. `currentPeriodTimestamp` is
- * the start of the current period when the dataset includes it.
- * `currentPeriodUpdatedAt` is the time of the last update of its values.
+ * The current period. `timestamp` is its start, and `updatedAt` is the time of
+ * the last update of its values.
+ */
+export type CurrentPeriod = {
+  timestamp: Date;
+  updatedAt?: Date;
+};
+
+/**
+ * A dataset that can include the current period. `currentPeriod` is set when
+ * the dataset includes it.
  */
 export type ChartDataset = DatasetComponentOption & {
-  currentPeriodTimestamp?: Date;
-  currentPeriodUpdatedAt?: Date;
+  currentPeriod?: CurrentPeriod;
 };
 
 export function isCurrentPeriodSeries(seriesId: unknown) {
@@ -117,27 +124,20 @@ function findCurrentPeriodIdx(
 }
 
 /**
- * Returns the start of the current period when a dataset includes it.
+ * Returns the current period when a dataset includes it.
  */
-export function getCurrentPeriodTimestamp(
+export function getCurrentPeriod(
   datasets: ChartDataset[]
-): Date | undefined {
+): CurrentPeriod | undefined {
   return datasets
-    .map((d) => d.currentPeriodTimestamp)
+    .map((d) => d.currentPeriod)
     .find(
-      (timestamp) =>
-        timestamp &&
-        datasets.some((d) => findCurrentPeriodIdx(d, timestamp) !== -1)
+      (currentPeriod) =>
+        currentPeriod &&
+        datasets.some(
+          (d) => findCurrentPeriodIdx(d, currentPeriod.timestamp) !== -1
+        )
     );
-}
-
-/**
- * Returns the time of the last update of the current period values.
- */
-export function getCurrentPeriodUpdatedAt(
-  datasets: ChartDataset[]
-): Date | undefined {
-  return datasets.find((d) => d.currentPeriodUpdatedAt)?.currentPeriodUpdatedAt;
 }
 
 /**
@@ -152,11 +152,7 @@ export function getCurrentPeriodUpdatedAt(
  * give `metricColumns` to add fewer columns.
  */
 export function addCurrentPeriodColumns(
-  {
-    currentPeriodTimestamp: _,
-    currentPeriodUpdatedAt: __,
-    ...dataset
-  }: ChartDataset,
+  { currentPeriod: _, ...dataset }: ChartDataset,
   currentPeriodTimestamp: Date,
   metricColumns?: string[]
 ): DatasetComponentOption {

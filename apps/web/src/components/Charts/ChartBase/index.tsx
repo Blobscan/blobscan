@@ -22,8 +22,7 @@ import {
   createYAxisOptions,
   DEFAULT_SERIES_COLOR,
   createBaseSeriesOptions,
-  getCurrentPeriodTimestamp,
-  getCurrentPeriodUpdatedAt,
+  getCurrentPeriod,
   getDimensionColor,
   getMainSeriesIndex,
   getSeriesMetricValue,
@@ -155,18 +154,12 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         ?.sort((a, b) => String(a.name).localeCompare(String(b.name))),
     [seriesProp, themeMode]
   );
-  const currentPeriodTimestamp = useMemo(
+  const currentPeriod = useMemo(
     () =>
-      dataset &&
-      getCurrentPeriodTimestamp(Array.isArray(dataset) ? dataset : [dataset]),
+      dataset && getCurrentPeriod(Array.isArray(dataset) ? dataset : [dataset]),
     [dataset]
   );
-  const currentPeriodUpdatedAt = useMemo(
-    () =>
-      dataset &&
-      getCurrentPeriodUpdatedAt(Array.isArray(dataset) ? dataset : [dataset]),
-    [dataset]
-  );
+  const currentPeriodTimestamp = currentPeriod?.timestamp;
   const chartDataset = useMemo(() => {
     if (!dataset || !currentPeriodTimestamp) {
       return dataset;
@@ -252,8 +245,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           axes,
           displayTotal: tooltipOpts?.displayTotal,
           themeMode,
-          currentPeriodTimestamp,
-          currentPeriodUpdatedAt,
+          currentPeriod,
           getSeriesValue,
         }),
         toolbox: !compact ? createBaseToolboxOptions({ themeMode }) : undefined,
@@ -261,15 +253,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           ? [{ type: "inside" }, { type: "slider", start: 0, end: 100 }]
           : undefined,
       } satisfies EChartsOption),
-    [
-      compact,
-      axes,
-      tooltipOpts,
-      themeMode,
-      currentPeriodTimestamp,
-      currentPeriodUpdatedAt,
-      getSeriesValue,
-    ]
+    [compact, axes, tooltipOpts, themeMode, currentPeriod, getSeriesValue]
   );
 
   const idleTimerRef = useRef<number | null>(null);

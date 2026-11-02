@@ -18,13 +18,12 @@ const axes: Axes = {
   y: { type: "count" },
 };
 
-function getFormatter(currentPeriodUpdatedAt?: Date) {
+function getFormatter(updatedAt?: Date) {
   const { formatter } = createBaseTooltipOptions({
     currentSeriesRef: { current: null },
     axes,
     themeMode: "light",
-    currentPeriodTimestamp: CURRENT_PERIOD,
-    currentPeriodUpdatedAt,
+    currentPeriod: { timestamp: CURRENT_PERIOD, updatedAt },
   });
 
   return formatter as Formatter;
