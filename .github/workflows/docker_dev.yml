@@ -210,6 +210,32 @@ jobs:
 
       # sha-<commit> never moves, so a deployment can pin it and only update
       # when told to. :development moves on every merge to main.
+      - name: Build (scan, dagster)
+        uses: docker/build-push-action@v6.5.0
+        with:
+          context: ./apps/dagster
+          push: false
+          load: true
+          tags: blobscan-dagster:scan
+          cache-from: type=gha,scope=dagster
+          build-args: |
+            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+            GIT_COMMIT=${{ env.GIT_COMMIT }}
+
+      # Vulnerability gate: scan the image BEFORE it is pushed.
+      # TEMPORARY: not blocking (continue-on-error). Restore the gate by removing it.
+      - name: Trivy scan (dagster)
+        uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: true
+        with:
+          version: v0.76.1
+          image-ref: blobscan-dagster:scan
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          trivyignores: .trivyignore
+          exit-code: "1"
+
       - name: Build and push (dagster)
         uses: docker/build-push-action@v6.5.0
         with:

@@ -69,6 +69,35 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
 
+      - name: Build (scan, api)
+        uses: docker/build-push-action@v6.5.0
+        with:
+          context: .
+          push: false
+          load: true
+          target: api
+          tags: blobscan-api:scan
+          build-args: |
+            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
+            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+            GIT_COMMIT=${{ env.GIT_COMMIT }}
+            DATABASE_URL=${{ env.DATABASE_URL }}
+            DIRECT_URL=${{ env.DIRECT_URL }}
+
+      # Vulnerability gate: scan the image BEFORE it is pushed.
+      # TEMPORARY: not blocking (continue-on-error). Restore the gate by removing it.
+      - name: Trivy scan (api)
+        uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: true
+        with:
+          version: v0.76.1
+          image-ref: blobscan-api:scan
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          trivyignores: .trivyignore
+          exit-code: "1"
+
       - name: Build and push (api)
         uses: docker/build-push-action@v6.5.0
         with:
@@ -94,6 +123,35 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
+
+      - name: Build (scan, web)
+        uses: docker/build-push-action@v6.5.0
+        with:
+          context: .
+          push: false
+          load: true
+          target: web
+          tags: blobscan-web:scan
+          build-args: |
+            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
+            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+            GIT_COMMIT=${{ env.GIT_COMMIT }}
+            DATABASE_URL=${{ env.DATABASE_URL }}
+            DIRECT_URL=${{ env.DIRECT_URL }}
+
+      # Vulnerability gate: scan the image BEFORE it is pushed.
+      # TEMPORARY: not blocking (continue-on-error). Restore the gate by removing it.
+      - name: Trivy scan (web)
+        uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: true
+        with:
+          version: v0.76.1
+          image-ref: blobscan-web:scan
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          trivyignores: .trivyignore
+          exit-code: "1"
 
       - name: Build and push (web)
         uses: docker/build-push-action@v6.5.0
@@ -142,6 +200,32 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
+
+      - name: Build (scan, dagster)
+        uses: docker/build-push-action@v6.5.0
+        with:
+          context: ./apps/dagster
+          push: false
+          load: true
+          tags: blobscan-dagster:scan
+          cache-from: type=gha,scope=dagster
+          build-args: |
+            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+            GIT_COMMIT=${{ env.GIT_COMMIT }}
+
+      # Vulnerability gate: scan the image BEFORE it is pushed.
+      # TEMPORARY: not blocking (continue-on-error). Restore the gate by removing it.
+      - name: Trivy scan (dagster)
+        uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: true
+        with:
+          version: v0.76.1
+          image-ref: blobscan-dagster:scan
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          trivyignores: .trivyignore
+          exit-code: "1"
 
       - name: Build and push (dagster)
         uses: docker/build-push-action@v6.5.0
