@@ -27,7 +27,7 @@ export const BlobGasPriceChart = createTimeseriesChart({
     },
     timeseries: [
       {
-        name: "Max. Blob Gas Price",
+        name: "Maximum",
         type: "line",
         metric: "maxBlobGasPrice",
         color: MAX_MIN_COLOR,
@@ -35,7 +35,7 @@ export const BlobGasPriceChart = createTimeseriesChart({
         lineStyle: MAX_MIN_LINE_STYLE,
       },
       {
-        name: "Avg. Blob Gas Price",
+        name: "Average",
         type: "line",
         metric: "avgBlobGasPrice",
         color: AVG_COLOR,
@@ -43,7 +43,7 @@ export const BlobGasPriceChart = createTimeseriesChart({
         lineStyle: { width: 3 },
       },
       {
-        name: "Min. Blob Gas Price",
+        name: "Minimum",
         type: "line",
         metric: "minBlobGasPrice",
         color: MAX_MIN_COLOR,
