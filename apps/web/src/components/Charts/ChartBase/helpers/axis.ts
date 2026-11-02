@@ -48,6 +48,8 @@ export function createYAxisOptions(
     },
     splitLine: { show: false },
     axisLine: { show: !compact },
+    // A price does not start at zero. Fit the axis to the values.
+    scale: metricInfo.unitType === "fiat",
     ...(opts || {}),
   } as YAxisComponentOption;
 }

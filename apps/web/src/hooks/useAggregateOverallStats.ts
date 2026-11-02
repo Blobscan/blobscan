@@ -47,6 +47,14 @@ const BIGINT_TOTALS = [
   "totalMaxBlobGasFee",
 ] as const satisfies readonly BigIntMetricName[];
 
+// Metrics that only the global row has. They do not change with the selected
+// rollups, so the aggregation copies them from the global row.
+const GLOBAL_ONLY_METRICS = [
+  "avgEthPrice",
+  "maxEthPrice",
+  "minEthPrice",
+] as const satisfies readonly NumberMetricName[];
+
 export function toAggregatedMetrics(metrics: Metrics): AggregatedMetrics {
   return Object.fromEntries(
     Object.entries(metrics).map(([name, value]) => [name, value ?? undefined])
@@ -86,11 +94,11 @@ export function useAggregateOverallStats(
       return;
     }
 
-    if (!selectedRollups.length) {
-      const globalMetrics = overallStats.find(
-        (s) => s.dimension.type === "global"
-      )?.metrics;
+    const globalMetrics = overallStats.find(
+      (s) => s.dimension.type === "global"
+    )?.metrics;
 
+    if (!selectedRollups.length) {
       return globalMetrics ? toAggregatedMetrics(globalMetrics) : undefined;
     }
 
@@ -110,6 +118,10 @@ export function useAggregateOverallStats(
 
     for (const name of BIGINT_TOTALS) {
       aggregations[name] = sumBigInts(selectedMetrics.map((m) => m[name]));
+    }
+
+    for (const name of GLOBAL_ONLY_METRICS) {
+      aggregations[name] = globalMetrics?.[name] ?? undefined;
     }
 
     // Same denominators as the generated average columns in the database

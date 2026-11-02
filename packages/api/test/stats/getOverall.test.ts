@@ -41,7 +41,10 @@ describe("getOverall", () => {
             "avgBlobGasPrice": null,
             "avgBlobMaxFee": 21990968.88888889,
             "avgBlobUsageSize": 691.4666666666667,
+            "avgEthPrice": null,
             "avgMaxBlobGasFee": 101.1111111111111,
+            "maxEthPrice": null,
+            "minEthPrice": null,
             "totalBlobAsCalldataFee": 198200n,
             "totalBlobAsCalldataFeeUsd": null,
             "totalBlobAsCalldataGasUsed": 9100n,
@@ -56,6 +59,8 @@ describe("getOverall", () => {
             "totalBlobUsageSize": 10372n,
             "totalBlobs": 15,
             "totalBlocks": null,
+            "totalEthPrice": null,
+            "totalEthPriceCount": null,
             "totalMaxBlobGasFee": 910n,
             "totalTransactions": 9,
             "totalUniqueBlobs": 4,
@@ -75,7 +80,10 @@ describe("getOverall", () => {
             "avgBlobGasPrice": null,
             "avgBlobMaxFee": 26963382.85714286,
             "avgBlobUsageSize": 785.7142857142857,
+            "avgEthPrice": null,
             "avgMaxBlobGasFee": 102.8571428571429,
+            "maxEthPrice": null,
+            "minEthPrice": null,
             "totalBlobAsCalldataFee": 156400n,
             "totalBlobAsCalldataFeeUsd": null,
             "totalBlobAsCalldataGasUsed": 7200n,
@@ -90,6 +98,8 @@ describe("getOverall", () => {
             "totalBlobUsageSize": 11000n,
             "totalBlobs": 14,
             "totalBlocks": null,
+            "totalEthPrice": null,
+            "totalEthPriceCount": null,
             "totalMaxBlobGasFee": 720n,
             "totalTransactions": 7,
             "totalUniqueBlobs": 7,
@@ -109,7 +119,10 @@ describe("getOverall", () => {
             "avgBlobGasPrice": null,
             "avgBlobMaxFee": 13107200,
             "avgBlobUsageSize": 1000,
+            "avgEthPrice": null,
             "avgMaxBlobGasFee": 100,
+            "maxEthPrice": null,
+            "minEthPrice": null,
             "totalBlobAsCalldataFee": 22000n,
             "totalBlobAsCalldataFeeUsd": null,
             "totalBlobAsCalldataGasUsed": 1000n,
@@ -124,6 +137,8 @@ describe("getOverall", () => {
             "totalBlobUsageSize": 1000n,
             "totalBlobs": 1,
             "totalBlocks": null,
+            "totalEthPrice": null,
+            "totalEthPriceCount": null,
             "totalMaxBlobGasFee": 100n,
             "totalTransactions": 1,
             "totalUniqueBlobs": 0,
@@ -143,7 +158,10 @@ describe("getOverall", () => {
             "avgBlobGasPrice": null,
             "avgBlobMaxFee": 26214400,
             "avgBlobUsageSize": 25,
+            "avgEthPrice": null,
             "avgMaxBlobGasFee": 100,
+            "maxEthPrice": null,
+            "minEthPrice": null,
             "totalBlobAsCalldataFee": 44000n,
             "totalBlobAsCalldataFeeUsd": null,
             "totalBlobAsCalldataGasUsed": 2000n,
@@ -158,6 +176,8 @@ describe("getOverall", () => {
             "totalBlobUsageSize": 100n,
             "totalBlobs": 4,
             "totalBlocks": null,
+            "totalEthPrice": null,
+            "totalEthPriceCount": null,
             "totalMaxBlobGasFee": 200n,
             "totalTransactions": 2,
             "totalUniqueBlobs": 4,
@@ -177,7 +197,10 @@ describe("getOverall", () => {
             "avgBlobGasPrice": null,
             "avgBlobMaxFee": 30801920,
             "avgBlobUsageSize": 1100,
+            "avgEthPrice": null,
             "avgMaxBlobGasFee": 105,
+            "maxEthPrice": null,
+            "minEthPrice": null,
             "totalBlobAsCalldataFee": 90400n,
             "totalBlobAsCalldataFeeUsd": null,
             "totalBlobAsCalldataGasUsed": 4200n,
@@ -192,6 +215,8 @@ describe("getOverall", () => {
             "totalBlobUsageSize": 9900n,
             "totalBlobs": 9,
             "totalBlocks": null,
+            "totalEthPrice": null,
+            "totalEthPriceCount": null,
             "totalMaxBlobGasFee": 420n,
             "totalTransactions": 4,
             "totalUniqueBlobs": 3,
@@ -210,7 +235,10 @@ describe("getOverall", () => {
             "avgBlobGasPrice": 21.75,
             "avgBlobMaxFee": 24166400,
             "avgBlobUsageSize": 736.9655172413793,
+            "avgEthPrice": null,
             "avgMaxBlobGasFee": 101.875,
+            "maxEthPrice": null,
+            "minEthPrice": null,
             "totalBlobAsCalldataFee": 354600n,
             "totalBlobAsCalldataFeeUsd": null,
             "totalBlobAsCalldataGasUsed": 16300n,
@@ -225,6 +253,8 @@ describe("getOverall", () => {
             "totalBlobUsageSize": 21372n,
             "totalBlobs": 29,
             "totalBlocks": 8,
+            "totalEthPrice": null,
+            "totalEthPriceCount": null,
             "totalMaxBlobGasFee": 1630n,
             "totalTransactions": 16,
             "totalUniqueBlobs": 9,
@@ -234,5 +264,40 @@ describe("getOverall", () => {
         },
       ]
     `);
+  });
+
+  it("should return the ETH price metrics in the global dimension only", async () => {
+    await ctx.prisma.ethUsdPrice.createMany({
+      data: [
+        { price: 1800.5, timestamp: "2023-08-30T10:00:00Z" },
+        { price: 1650.25, timestamp: "2023-08-31T10:00:00Z" },
+        { price: 1725, timestamp: "2023-08-31T11:00:00Z" },
+      ],
+    });
+    await aggregateMetrics(ctx.prisma);
+
+    const { data } = await caller.getOverall();
+    const globalStats = data.find(
+      ({ dimension }) => dimension.type === "global"
+    );
+    const otherStats = data.filter(
+      ({ dimension }) => dimension.type !== "global"
+    );
+
+    expect(globalStats?.metrics).toMatchObject({
+      avgEthPrice: 1725.25,
+      maxEthPrice: 1800.5,
+      minEthPrice: 1650.25,
+      totalEthPriceCount: 3,
+    });
+
+    for (const { metrics } of otherStats) {
+      expect(metrics).toMatchObject({
+        avgEthPrice: null,
+        maxEthPrice: null,
+        minEthPrice: null,
+        totalEthPriceCount: null,
+      });
+    }
   });
 });

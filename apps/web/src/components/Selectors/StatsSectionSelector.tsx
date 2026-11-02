@@ -8,6 +8,7 @@ export const SECTION_NAMES = [
   "gas",
   "fee",
   "transaction",
+  "price",
 ] as const;
 
 export type SectionName = (typeof SECTION_NAMES)[number];
@@ -21,6 +22,7 @@ export const SECTION_OPTIONS: [SectionOption, ...SectionOption[]] = [
   { label: "Gas", value: "gas" },
   { label: "Fees", value: "fee" },
   { label: "Transactions", value: "transaction" },
+  { label: "ETH Price", value: "price" },
 ] as const;
 
 export const DEFAULT_SECTION = SECTION_OPTIONS[0];

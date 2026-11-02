@@ -3,9 +3,9 @@ import { convertWei } from "@blobscan/eth-format";
 
 import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
 import type { Rollup } from "~/types";
-import { convertBytes, formatNumber, getHumanDate } from "~/utils";
+import { convertBytes, formatFiat, formatNumber, getHumanDate } from "~/utils";
 import type { Numerish } from "~/utils";
-import type { BytesAxis, EtherAxis, Axis } from "../types";
+import type { BytesAxis, EtherAxis, FiatAxis, Axis } from "../types";
 
 export function formatAxisValue(
   value: Numerish | Date,
@@ -26,6 +26,8 @@ export function formatAxisValue(
       return formatEtherValue(value_, axis, compact);
     case "byte":
       return formatBytesValue(value_, axis, compact);
+    case "fiat":
+      return formatFiatValue(value_, axis, compact);
     default:
       return formatUnknownValue(value_, compact);
   }
@@ -64,6 +66,19 @@ export function formatBytesValue(
 
   return formatNumber(convertedValue, compact ? "compact" : "standard", {
     maximumFractionDigits: compact ? 2 : 6,
+  });
+}
+
+export function formatFiatValue(
+  value: Numerish,
+  { unit }: FiatAxis,
+  compact?: boolean
+) {
+  return formatFiat(value.toString(), {
+    currency: unit,
+    notation: compact ? "compact" : "standard",
+    minimumFractionDigits: compact ? 0 : 2,
+    maximumFractionDigits: 2,
   });
 }
 

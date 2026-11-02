@@ -13,6 +13,7 @@ const prisma = new PrismaClient({
 
 async function main() {
   await prisma.$transaction([
+    prisma.ethUsdPrice.deleteMany(),
     prisma.transactionFork.deleteMany(),
     prisma.blobsOnTransactions.deleteMany(),
     prisma.blob.deleteMany(),
@@ -20,7 +21,6 @@ async function main() {
     prisma.transaction.deleteMany(),
     prisma.address.deleteMany(),
     prisma.block.deleteMany(),
-    prisma.ethUsdPrice.deleteMany(),
 
     prisma.block.createMany({
       data: DB_FIXTURES.blocks,
