@@ -74,6 +74,12 @@ rolls it up into `daily_metrics`, `weekly_metrics`, `monthly_metrics`,
   deploying.
 - Every run **replaces** the rows of its time window, so re-running a partition
   or backfilling a range after a SQL change is safe.
+- The `*_usd` fee columns use the `eth_usd_price` row of the minute of each
+  transaction's block, as the API does. A transaction with no price for its
+  minute adds nothing, so the total is partial when minutes are missing, and
+  `NULL` when no transaction in the group has a price. The price syncer must
+  write one price each minute. Backfill `eth_usd_price` before you backfill
+  the metrics.
 
 ### Initial backfill
 

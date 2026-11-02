@@ -78,6 +78,18 @@ model AllTimeMetrics {
   /// @zod.custom.use(nonNegativeDecimalSchema)
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
 
+  // USD counters. Each transaction fee is converted at the ETH/USD price of
+  // its block time, and then added. NULL when no ETH/USD price is available.
+  // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
+  // and a USD value has a fractional part.
+
+  /// @zod.number.nonnegative()
+  totalBlobBaseFeeUsd       Float? @map("total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobAsCalldataFeeUsd Float? @map("total_blob_as_calldata_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobMaxFeeUsd        Float? @map("total_blob_max_fee_usd")
+
   @@unique([category, rollup])
   @@map("all_time_metrics")
 }
@@ -146,6 +158,18 @@ model HourlyMetrics {
   totalUniqueSenders         Int?     @map("total_unique_senders")
   /// @zod.custom.use(nonNegativeDecimalSchema)
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
+
+  // USD counters. Each transaction fee is converted at the ETH/USD price of
+  // its block time, and then added. NULL when no ETH/USD price is available.
+  // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
+  // and a USD value has a fractional part.
+
+  /// @zod.number.nonnegative()
+  totalBlobBaseFeeUsd       Float? @map("total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobAsCalldataFeeUsd Float? @map("total_blob_as_calldata_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobMaxFeeUsd        Float? @map("total_blob_max_fee_usd")
 
   @@unique([periodStart, category, rollup])
   @@map("hourly_metrics")
@@ -220,6 +244,18 @@ model DailyMetrics {
   /// @zod.custom.use(nonNegativeDecimalSchema)
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
 
+  // USD counters. Each transaction fee is converted at the ETH/USD price of
+  // its block time, and then added. NULL when no ETH/USD price is available.
+  // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
+  // and a USD value has a fractional part.
+
+  /// @zod.number.nonnegative()
+  totalBlobBaseFeeUsd       Float? @map("total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobAsCalldataFeeUsd Float? @map("total_blob_as_calldata_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobMaxFeeUsd        Float? @map("total_blob_max_fee_usd")
+
   @@unique([periodStart, category, rollup])
   @@map("daily_metrics")
 }
@@ -291,6 +327,18 @@ model WeeklyMetrics {
   totalUniqueSenders         Int?     @map("total_unique_senders")
   /// @zod.custom.use(nonNegativeDecimalSchema)
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
+
+  // USD counters. Each transaction fee is converted at the ETH/USD price of
+  // its block time, and then added. NULL when no ETH/USD price is available.
+  // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
+  // and a USD value has a fractional part.
+
+  /// @zod.number.nonnegative()
+  totalBlobBaseFeeUsd       Float? @map("total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobAsCalldataFeeUsd Float? @map("total_blob_as_calldata_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobMaxFeeUsd        Float? @map("total_blob_max_fee_usd")
 
   @@unique([periodStart, category, rollup])
   @@map("weekly_metrics")
@@ -365,6 +413,18 @@ model MonthlyMetrics {
   /// @zod.custom.use(nonNegativeDecimalSchema)
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
 
+  // USD counters. Each transaction fee is converted at the ETH/USD price of
+  // its block time, and then added. NULL when no ETH/USD price is available.
+  // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
+  // and a USD value has a fractional part.
+
+  /// @zod.number.nonnegative()
+  totalBlobBaseFeeUsd       Float? @map("total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobAsCalldataFeeUsd Float? @map("total_blob_as_calldata_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobMaxFeeUsd        Float? @map("total_blob_max_fee_usd")
+
   @@unique([periodStart, category, rollup])
   @@map("monthly_metrics")
 }
@@ -436,6 +496,18 @@ model YearlyMetrics {
   totalUniqueSenders         Int?     @map("total_unique_senders")
   /// @zod.custom.use(nonNegativeDecimalSchema)
   totalMaxBlobGasFee         Decimal? @map("total_max_blob_gas_fee") @db.Decimal(100, 0)
+
+  // USD counters. Each transaction fee is converted at the ETH/USD price of
+  // its block time, and then added. NULL when no ETH/USD price is available.
+  // They are Float, not Decimal: the API changes a Decimal value to a BigInt,
+  // and a USD value has a fractional part.
+
+  /// @zod.number.nonnegative()
+  totalBlobBaseFeeUsd       Float? @map("total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobAsCalldataFeeUsd Float? @map("total_blob_as_calldata_fee_usd")
+  /// @zod.number.nonnegative()
+  totalBlobMaxFeeUsd        Float? @map("total_blob_max_fee_usd")
 
   @@unique([periodStart, category, rollup])
   @@map("yearly_metrics")

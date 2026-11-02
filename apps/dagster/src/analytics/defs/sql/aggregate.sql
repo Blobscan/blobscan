@@ -21,7 +21,10 @@ INSERT INTO {{target_table}} (
   total_blobs,
   total_unique_blobs,
   total_blob_size,
-  total_blob_usage_size
+  total_blob_usage_size,
+  total_blob_base_fee_usd,
+  total_blob_as_calldata_fee_usd,
+  total_blob_max_fee_usd
 )
 SELECT
   DATE_TRUNC('{{trunc}}', period_start) AS period_start,
@@ -47,7 +50,10 @@ SELECT
   SUM(total_blobs) AS total_blobs,
   SUM(total_unique_blobs) AS total_unique_blobs,
   SUM(total_blob_size) AS total_blob_size,
-  SUM(total_blob_usage_size) AS total_blob_usage_size
+  SUM(total_blob_usage_size) AS total_blob_usage_size,
+  SUM(total_blob_base_fee_usd) AS total_blob_base_fee_usd,
+  SUM(total_blob_as_calldata_fee_usd) AS total_blob_as_calldata_fee_usd,
+  SUM(total_blob_max_fee_usd) AS total_blob_max_fee_usd
 FROM {{source_table}}
 WHERE period_start >= :from AND period_start < :to
 GROUP BY DATE_TRUNC('{{trunc}}', period_start), category, rollup
@@ -68,4 +74,7 @@ ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blobs = EXCLUDED.total_blobs,
   total_unique_blobs = EXCLUDED.total_unique_blobs,
   total_blob_size = EXCLUDED.total_blob_size,
-  total_blob_usage_size = EXCLUDED.total_blob_usage_size
+  total_blob_usage_size = EXCLUDED.total_blob_usage_size,
+  total_blob_base_fee_usd = EXCLUDED.total_blob_base_fee_usd,
+  total_blob_as_calldata_fee_usd = EXCLUDED.total_blob_as_calldata_fee_usd,
+  total_blob_max_fee_usd = EXCLUDED.total_blob_max_fee_usd
