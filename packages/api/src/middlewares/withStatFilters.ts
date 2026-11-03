@@ -52,7 +52,7 @@ export const withTimeFrameFilterSchema = z.object({
   timeFrame: timeFrameSchema
     .optional()
     .describe(
-      "The time frame of the stats. Without `granularity`, it also sets the length of each period: an hour for `1d` and `7d`, and a day for `15d`, `30d` and `90d`. For `180d`, `365d` and `All` (the default), the period is a day without `categories` and `rollups`, and a week with them. With `categories` or `rollups`, the period is a day for `7d` and a week for `90d`."
+      "The time frame of the stats. Without `granularity`, it also sets the length of each period: an hour for `1d` and `7d`, and a day for `15d`, `30d` and `90d`. For `180d` and `365d`, the period is a day without `categories` and `rollups`, and a week with them. For `All` (the default), the period is a week. With `categories` or `rollups`, the period is a day for `7d` and a week for `90d`."
     ),
 });
 

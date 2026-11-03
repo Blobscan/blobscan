@@ -57,7 +57,9 @@ type TimeFrameGranularities = {
 // timeseries (split by category or rollup) shows as stacked bars, with up to
 // one segment for each rollup in each bar. Thus it allows at most about 200
 // periods. `All` also allows years, because it is the only time frame that
-// can have more than one year.
+// can have more than one year. `All` has no fixed number of days, and its
+// number of days increases each day. Thus its default granularity is a week,
+// also for a line.
 const GLOBAL_GRANULARITIES = {
   "1d": { default: "hour", options: ["hour"] },
   "7d": { default: "hour", options: ["hour", "day"] },
@@ -66,7 +68,7 @@ const GLOBAL_GRANULARITIES = {
   "90d": { default: "day", options: ["day", "week"] },
   "180d": { default: "day", options: ["day", "week", "month"] },
   "365d": { default: "day", options: ["day", "week", "month"] },
-  All: { default: "day", options: ["day", "week", "month", "year"] },
+  All: { default: "week", options: ["day", "week", "month", "year"] },
 } satisfies Record<TimeFrame, TimeFrameGranularities>;
 
 const CATEGORIZED_GRANULARITIES = {

@@ -132,8 +132,8 @@ describe("getTimeseriesStats", () => {
       ["90d", "day", "week"],
       ["180d", "day", "week"],
       ["365d", "day", "week"],
-      ["All", "day", "week"],
-      [undefined, "day", "week"],
+      ["All", "week", "week"],
+      [undefined, "week", "week"],
     ] as const)(
       "should give %s with periods of one %s, or one %s for categories and rollups",
       async (timeFrame, globalGranularity, segmentedGranularity) => {
@@ -286,7 +286,7 @@ describe("getTimeseriesStats", () => {
 
     it("should use the granularity of All when no time frame is given", () => {
       expect(getTimeFrameGranularity(undefined, { isCategorized: false })).toBe(
-        "day"
+        "week"
       );
       expect(getTimeFrameGranularity(undefined, { isCategorized: true })).toBe(
         "week"
