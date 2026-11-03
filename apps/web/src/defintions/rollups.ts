@@ -465,7 +465,6 @@ export const ROLLUP_DEFINITIONS: Record<Rollup, ResourceDefinition> = {
     color: { light: "#1f1f1f", dark: "#e0e0e0" },
     badgeClassname:
       "bg-[#e0e0e0] dark:bg-[#1f1f1f] dark:text-[#e0e0e0] text-[#1f1f1f]",
-    iconSrc: "/rollups/syndicate.png",
   },
   taiko: {
     name: "Taiko",
@@ -504,7 +503,6 @@ export const ROLLUP_DEFINITIONS: Record<Rollup, ResourceDefinition> = {
     color: { light: "#333333", dark: "#e5e5e5" },
     badgeClassname:
       "bg-[#e5e5e5] dark:bg-[#333333] dark:text-[#e5e5e5] text-[#333333]",
-    iconSrc: "/rollups/xlayer.png",
   },
   zeronetwork: {
     name: "Zero Network",
