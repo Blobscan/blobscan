@@ -7,7 +7,9 @@ const TotalUniqueAddresses: NextPage = function () {
   return (
     <TimeseriesChartPage
       chart={TotalUniqueAddressesChart}
-      description="This chart shows the total unique addresses that have received or sent a blob transaction per day."
+      description={(period) =>
+        `This chart shows the total unique addresses that have received or sent a blob transaction per ${period}.`
+      }
       title="Total Unique Addresses"
     />
   );

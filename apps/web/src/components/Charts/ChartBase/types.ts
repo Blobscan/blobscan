@@ -1,5 +1,6 @@
 import type { EtherUnit } from "@blobscan/eth-format";
 
+import type { TimeseriesGranularity } from "~/types";
 import type { ByteUnit } from "~/utils";
 
 export type AxisType = "count" | "average" | "time";
@@ -21,6 +22,10 @@ interface AxisBase {
 }
 export interface TimeAxis extends AxisBase {
   type: "time";
+  /**
+   * The length of each period. It sets the date format. The default is a day.
+   */
+  granularity?: TimeseriesGranularity;
   unitType?: never;
   unit?: never;
   displayUnit?: never;

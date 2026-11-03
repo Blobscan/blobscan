@@ -7,7 +7,9 @@ const EthPrice: NextPage = function () {
   return (
     <TimeseriesChartPage
       chart={EthPriceChart}
-      description="This chart shows the maximum, average and minimum ETH price in USD per day."
+      description={(period) =>
+        `This chart shows the maximum, average and minimum ETH price in USD per ${period}.`
+      }
       title="ETH Price"
     />
   );

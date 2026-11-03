@@ -3,18 +3,25 @@ import { useEffect, useState } from "react";
 
 import { useUrlState } from "~/hooks/useUrlState";
 import { feeUnitParamsSchema } from "~/schemas/feeUnit";
-import { RollupSelector } from "../Selectors";
+import {
+  DEFAULT_CHART_TIME_FRAME,
+  getTimeFrameOption,
+  RollupSelector,
+  TimeFrameSelector,
+} from "../Selectors";
 import { CategorySelector } from "../Selectors/CategorySelector";
 import { FeeUnitToggle } from "../Toggles";
 import type { FeeUnit } from "../Toggles";
 import { ControlBarLayout } from "./ControlBarLayout";
 import { useControlState } from "./useControlState";
 
-export type TimeseriesControlBarProps = {
+type TimeseriesControlBarProps = {
   /**
-   * Show the category and rollup filters.
+   * The chart splits its values by category and rollup, so the bar shows the
+   * category and rollup filters. A chart with only global values does not
+   * use them.
    */
-  showCategoryFilters?: boolean;
+  isCategorizedTimeseries?: boolean;
   /**
    * Show the USD/Ether toggle.
    */
@@ -26,7 +33,7 @@ export type TimeseriesControlBarProps = {
 };
 
 export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
-  showCategoryFilters = true,
+  isCategorizedTimeseries = false,
   showFeeUnitToggle = false,
   etherUnit,
 }) => {
@@ -43,7 +50,10 @@ export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
   }, [feeUnitParams]);
 
   const disableClear =
-    !state.categories && !state.rollups?.length && unit === "eth";
+    !state.categories &&
+    !state.rollups?.length &&
+    state.timeFrame === DEFAULT_CHART_TIME_FRAME &&
+    unit === "eth";
 
   return (
     <ControlBarLayout
@@ -54,24 +64,33 @@ export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
       }}
       disableClear={disableClear}
     >
-      <div className="flex w-full min-w-0 flex-col gap-2 sm:flex-row lg:max-w-2xl lg:justify-start">
-        {showCategoryFilters && (
-          <div className="flex min-w-0 flex-1 flex-row gap-2">
-            <div className="w-28 shrink-0">
-              <CategorySelector
-                selected={state.categories}
-                onChange={actions.setCategory}
-              />
-            </div>
-
-            <div className="min-w-0 flex-1 basis-0">
-              <RollupSelector
-                selected={state.rollups}
-                onChange={actions.setRollups}
-              />
-            </div>
+      <div className="flex w-full min-w-0 flex-col gap-2 sm:flex-row lg:max-w-3xl lg:justify-start">
+        <div className="flex min-w-0 flex-1 flex-row gap-2">
+          <div className="w-20 shrink-0 sm:w-24">
+            <TimeFrameSelector
+              selected={getTimeFrameOption(state.timeFrame)}
+              onChange={(option) => actions.setTimeFrame(option.value)}
+            />
           </div>
-        )}
+
+          {isCategorizedTimeseries && (
+            <>
+              <div className="w-28 shrink-0">
+                <CategorySelector
+                  selected={state.categories}
+                  onChange={actions.setCategory}
+                />
+              </div>
+
+              <div className="min-w-0 flex-1 basis-0">
+                <RollupSelector
+                  selected={state.rollups}
+                  onChange={actions.setRollups}
+                />
+              </div>
+            </>
+          )}
+        </div>
 
         {showFeeUnitToggle && (
           <div className="w-full shrink-0 sm:w-36">

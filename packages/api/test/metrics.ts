@@ -2,15 +2,16 @@ import type { BlobscanPrismaClient } from "@blobscan/db";
 
 // The Dagster pipeline populates the metrics tables in production. These
 // queries follow the same logic as the Dagster aggregation SQL
-// (apps/dagster/src/analytics/defs/sql), but they aggregate by day. Tests use
-// them to fill the metrics tables from the fixtures data.
+// (apps/dagster/src/analytics/defs/sql), but they aggregate the data directly
+// by hour, day or week. Tests use them to fill the metrics tables from the
+// fixtures data. {{trunc}} is the period of the table {{table}}.
 
 const MAX_DATE = "9999-12-31T00:00:00.000Z";
 
-const AGGREGATE_TX_DAILY_METRICS_SQL = `
+const AGGREGATE_TX_METRICS_SQL = `
 WITH base AS (
   SELECT
-    DATE_TRUNC('day', tx.block_timestamp) AS period_start,
+    DATE_TRUNC('{{trunc}}', tx.block_timestamp) AS period_start,
     CASE WHEN f.rollup IS NOT NULL THEN 'rollup'::category ELSE 'other'::category END AS category,
     f.rollup,
     tx.block_number,
@@ -54,7 +55,7 @@ block_metric AS (
   ) deduped_blocks
   GROUP BY period_start
 )
-INSERT INTO daily_metrics (
+INSERT INTO {{table}} (
   period_start,
   category,
   rollup,
@@ -116,10 +117,10 @@ GROUP BY GROUPING SETS (
 HAVING NOT (GROUPING(rollup) = 0 AND rollup IS NULL)
 `;
 
-const AGGREGATE_BLOB_DAILY_METRICS_SQL = `
+const AGGREGATE_BLOB_METRICS_SQL = `
 WITH base AS (
   SELECT
-    DATE_TRUNC('day', bl_tx.block_timestamp) AS period_start,
+    DATE_TRUNC('{{trunc}}', bl_tx.block_timestamp) AS period_start,
     CASE WHEN f.rollup IS NOT NULL THEN 'rollup'::category ELSE 'other'::category END AS category,
     f.rollup,
     bl_tx.blob_hash,
@@ -137,7 +138,7 @@ WITH base AS (
       WHERE tx_f.block_hash = bl_tx.block_hash AND tx_f.hash = bl_tx.tx_hash
     )
 )
-INSERT INTO daily_metrics (
+INSERT INTO {{table}} (
   period_start,
   category,
   rollup,
@@ -168,8 +169,8 @@ ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blob_usage_size = EXCLUDED.total_blob_usage_size
 `;
 
-const AGGREGATE_ETH_PRICE_DAILY_METRICS_SQL = `
-INSERT INTO daily_metrics (
+const AGGREGATE_ETH_PRICE_METRICS_SQL = `
+INSERT INTO {{table}} (
   period_start,
   category,
   rollup,
@@ -179,7 +180,7 @@ INSERT INTO daily_metrics (
   min_eth_price
 )
 SELECT
-  DATE_TRUNC('day', p.timestamp),
+  DATE_TRUNC('{{trunc}}', p.timestamp),
   NULL::category,
   NULL::rollup,
   SUM(p.price)::DOUBLE PRECISION,
@@ -188,7 +189,7 @@ SELECT
   MIN(p.price)::DOUBLE PRECISION
 FROM eth_usd_price p
 WHERE p.timestamp < $1::timestamp
-GROUP BY DATE_TRUNC('day', p.timestamp)
+GROUP BY DATE_TRUNC('{{trunc}}', p.timestamp)
 ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_eth_price = EXCLUDED.total_eth_price,
   total_eth_price_count = EXCLUDED.total_eth_price_count,
@@ -260,20 +261,41 @@ FROM daily_metrics
 GROUP BY category, rollup
 `;
 
+const METRICS_TABLES = [
+  { table: "hourly_metrics", trunc: "hour" },
+  { table: "daily_metrics", trunc: "day" },
+  { table: "weekly_metrics", trunc: "week" },
+] as const;
+
+function buildMetricsSql(
+  sql: string,
+  { table, trunc }: (typeof METRICS_TABLES)[number]
+) {
+  return sql.replaceAll("{{table}}", table).replaceAll("{{trunc}}", trunc);
+}
+
 /**
- * Fills the daily and all-time metrics tables from the data in the database.
- * It only uses the data before `to`.
+ * Fills the hourly, daily, weekly and all-time metrics tables from the data in
+ * the database. It only uses the data before `to`.
  */
 export async function aggregateMetrics(
   prisma: BlobscanPrismaClient,
   { to = MAX_DATE }: { to?: string } = {}
 ) {
   await prisma.$transaction([
+    prisma.hourlyMetrics.deleteMany(),
     prisma.dailyMetrics.deleteMany(),
+    prisma.weeklyMetrics.deleteMany(),
     prisma.allTimeMetrics.deleteMany(),
-    prisma.$executeRawUnsafe(AGGREGATE_TX_DAILY_METRICS_SQL, to),
-    prisma.$executeRawUnsafe(AGGREGATE_BLOB_DAILY_METRICS_SQL, to),
-    prisma.$executeRawUnsafe(AGGREGATE_ETH_PRICE_DAILY_METRICS_SQL, to),
+    ...METRICS_TABLES.flatMap((metricsTable) =>
+      [
+        AGGREGATE_TX_METRICS_SQL,
+        AGGREGATE_BLOB_METRICS_SQL,
+        AGGREGATE_ETH_PRICE_METRICS_SQL,
+      ].map((sql) =>
+        prisma.$executeRawUnsafe(buildMetricsSql(sql, metricsTable), to)
+      )
+    ),
     prisma.$executeRawUnsafe(AGGREGATE_ALL_TIME_METRICS_SQL),
   ]);
 }

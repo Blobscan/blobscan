@@ -1,3 +1,4 @@
+import { timeFrameSchema } from "@blobscan/api/src/time-frames";
 import { z } from "@blobscan/zod";
 
 import {
@@ -24,6 +25,21 @@ export const rollupsSchema = z.object({
 
 export const categoriesParamSchema = z.object({
   categories: categoriesSchema,
+});
+
+// The time frames of the chart pages. See getTimeFrameGranularity in
+// @blobscan/api for the length of their periods.
+export const chartTimeFrameSchema = timeFrameSchema.extract([
+  "1d",
+  "7d",
+  "30d",
+  "90d",
+  "365d",
+  "All",
+]);
+
+export const timeFrameParamSchema = z.object({
+  timeFrame: chartTimeFrameSchema.optional(),
 });
 
 export const dateParamsSchema = z.object({
@@ -58,5 +74,7 @@ export const filterParamsSchema = z
 
 export type CategoriesParam = z.infer<typeof categoriesSchema>;
 export type RollupsParam = z.infer<typeof rollupsFieldSchema>;
+
+export type ChartTimeFrame = z.infer<typeof chartTimeFrameSchema>;
 
 export type FiltersParam = z.infer<typeof filterParamsSchema>;
