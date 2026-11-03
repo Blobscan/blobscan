@@ -1,5 +1,15 @@
 # @blobscan/docs
 
+## 0.3.3
+
+### Patch Changes
+
+- [#1053](https://github.com/Blobscan/blobscan/pull/1053) [`ce102bb`](https://github.com/Blobscan/blobscan/commit/ce102bb755b8578b9bdc1406a13f80063a9bce9f) Thanks [@PJColombo](https://github.com/PJColombo)! - Add the `updated_at` column to the hourly, daily, weekly, monthly and yearly metrics tables. Dagster sets it each time it aggregates a period. The timeseries stats endpoint gives `currentPeriod.updatedAt`, the time of the last update of the current period. The series do not include it as a metric.
+
+  The chart tooltip of the current period shows a red pulse and "Live" next to the date, and the time of the last update below it (for example, "Updated 5 minutes ago"). The metrics docs describe the current period.
+
+  The existing rows get the time of the migration as their update time.
+
 ## 0.3.2
 
 ### Patch Changes
