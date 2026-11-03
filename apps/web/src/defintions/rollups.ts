@@ -13,6 +13,7 @@ export const ROLLUP_DEFINITIONS: Record<Rollup, ResourceDefinition> = {
     color: { light: "#454545", dark: "#d9d9d9" },
     badgeClassname:
       "bg-[#d9d9d9] dark:bg-[#454545] dark:text-[#d9d9d9] text-[#454545]",
+    iconClassname: "rounded-full bg-white",
   },
   aevo: {
     name: "Aevo",
@@ -465,6 +466,7 @@ export const ROLLUP_DEFINITIONS: Record<Rollup, ResourceDefinition> = {
     color: { light: "#4a4a4a", dark: "#e0e0e0" },
     badgeClassname:
       "bg-[#e0e0e0] dark:bg-[#4a4a4a] dark:text-[#e0e0e0] text-[#4a4a4a]",
+    iconClassname: "rounded-full bg-white",
   },
   taiko: {
     name: "Taiko",
