@@ -324,15 +324,12 @@ function createTooltipFormater({
       Array.isArray(paramOrParams) ? paramOrParams[0] : paramOrParams,
       currentPeriod?.timestamp
     );
-    let currentPeriodLabel: string | undefined;
-
-    if (isCurrentPeriodHovered) {
-      // Get the relative time on each hover, so it does not stay at the time
-      // of the render.
-      currentPeriodLabel = currentPeriod?.updatedAt
-        ? `Times in UTC · Updated ${dayjs(currentPeriod.updatedAt).fromNow()}`
-        : "Times in UTC";
-    }
+    // Get the relative time on each hover, so it does not stay at the time of
+    // the render.
+    const currentPeriodLabel =
+      isCurrentPeriodHovered && currentPeriod?.updatedAt
+        ? `Updated ${dayjs(currentPeriod.updatedAt).fromNow()}`
+        : undefined;
 
     const dateHeaderHTMLElement = `<div style="color: ${
       themeMode === "dark" ? "#FFFFFF" : "#171717"
