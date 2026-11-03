@@ -9,14 +9,13 @@ import { useUrlState } from "~/hooks/useUrlState";
 import { categoriesParamSchema, rollupsSchema } from "~/schemas/filters";
 import { TimeseriesControlBar } from "./ControlBars/TimeseriesControlBar";
 import { Header } from "./Header";
-import { getFeeUnitLabels } from "./TimeseriesCharts/FeeUnitChart";
 import type { TimeseriesChartComponent } from "./TimeseriesCharts/factories";
-import { FEE_UNITS, FeeUnitToggle } from "./Toggles";
+import { FEE_UNITS } from "./Toggles";
 
 export type TimeseriesChartPageProps = {
   chart: TimeseriesChartComponent;
   /**
-   * The same chart in USD. With it, the chart header shows an ETH/USD toggle.
+   * The same chart in USD. With it, the control bar shows a USD/Ether selector.
    * Networks with no ETH price (e.g. testnets) do not use it.
    */
   usdChart?: TimeseriesChartComponent;
@@ -37,7 +36,7 @@ export const TimeseriesChartPage = function ({
   description,
   isCategorizedTimeseries,
 }: TimeseriesChartPageProps) {
-  const { state, isReady, updateState } = useUrlState(controlQueryParamsSchema);
+  const { state, isReady } = useUrlState(controlQueryParamsSchema);
   const isTestnet = useIsTestnet();
   const usdChart = isTestnet === false ? usdChartProp : undefined;
   const queryParamsExists = Boolean(
@@ -71,22 +70,16 @@ export const TimeseriesChartPage = function ({
       <div className="flex flex-col gap-8">
         <Header>{title}</Header>
         <div>{description}</div>
-        {isCategorizedTimeseries && <TimeseriesControlBar />}
+        {(isCategorizedTimeseries || usdChart) && (
+          <TimeseriesControlBar
+            showCategoryFilters={Boolean(isCategorizedTimeseries)}
+            feeUnit={usdChart ? { etherUnit: ethChart.yUnit } : undefined}
+          />
+        )}
         <Chart
           dataset={chartDatasets}
           isLoading={isLoading}
           size="2xl"
-          headerControls={
-            usdChart ? (
-              <FeeUnitToggle
-                unit={unit}
-                labels={getFeeUnitLabels(ethChart, usdChart)}
-                onChange={(u) =>
-                  updateState({ unit: u !== "eth" ? u : undefined })
-                }
-              />
-            ) : undefined
-          }
           skeletonOpts={{
             chart: {
               itemCount: allRollupsSelected ? 720 : 180,

@@ -17,6 +17,11 @@ type FeeUnitToggleProps = {
    * The text of each unit, for example the unit of a chart axis ("Gwei").
    */
   labels: Record<FeeUnit, string>;
+  /**
+   * "inline" is a small pill for a chart header. "control" has the style of
+   * the selects of a control bar.
+   */
+  variant?: "inline" | "control";
 };
 
 function prefersReducedMotion() {
@@ -34,6 +39,7 @@ export const FeeUnitToggle: FC<FeeUnitToggleProps> = ({
   unit,
   onChange,
   labels,
+  variant = "inline",
 }) => {
   // The parent can mount a new toggle when the unit changes (e.g. a new
   // chart). Thus, the labels move first, and onChange runs after the slide.
@@ -70,19 +76,32 @@ export const FeeUnitToggle: FC<FeeUnitToggleProps> = ({
       type="button"
       onClick={handleClick}
       aria-label={`Show values in ${labels[getOtherUnit(selected)]}`}
-      className="-mx-1 inline-flex items-center gap-1 rounded-full px-1 py-0.5 text-sm text-icon-light transition-colors hover:text-iconHighlight-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-light dark:text-icon-dark dark:hover:text-iconHighlight-dark dark:focus-visible:ring-accent-dark"
+      className={classNames(
+        "items-center text-sm transition-colors focus-visible:outline-none",
+        {
+          "-mx-1 inline-flex gap-1 rounded-full px-1 py-0.5 text-icon-light hover:text-iconHighlight-light focus-visible:ring-2 focus-visible:ring-accent-light dark:text-icon-dark dark:hover:text-iconHighlight-dark dark:focus-visible:ring-accent-dark":
+            variant === "inline",
+          "flex h-9 w-full justify-between gap-2 rounded-lg border border-transparent bg-controlBackground-light px-2 text-left shadow-md hover:border focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark":
+            variant === "control",
+        }
+      )}
     >
       {/* Both labels are in one grid cell, so the pill has the width of the
       longest one. The current label is in place, and the other one waits
       above (ETH) or below (USD) it. */}
-      <span className="grid overflow-hidden">
+      <span
+        className={classNames("grid overflow-hidden", {
+          "justify-items-start": variant === "control",
+        })}
+      >
         {FEE_UNITS.map((u) => (
           <span
             key={u}
             aria-hidden={u !== selected}
             className={classNames(
-              "col-start-1 row-start-1 text-center transition-all duration-300 ease-[cubic-bezier(0.4,1.4,0.6,1)] motion-reduce:transition-none",
+              "col-start-1 row-start-1 transition-all duration-300 ease-[cubic-bezier(0.4,1.4,0.6,1)] motion-reduce:transition-none",
               {
+                "text-center": variant === "inline",
                 "translate-y-0 opacity-100": u === selected,
                 "-translate-y-full opacity-0": u !== selected && u === "eth",
                 "translate-y-full opacity-0": u !== selected && u === "usd",
@@ -96,8 +115,13 @@ export const FeeUnitToggle: FC<FeeUnitToggleProps> = ({
       <ArrowsRightLeftIcon
         aria-hidden
         className={classNames(
-          "h-3 w-3 transition-transform duration-300 motion-reduce:transition-none",
-          { "rotate-180": selected === "usd" }
+          "transition-transform duration-300 motion-reduce:transition-none",
+          {
+            "h-3 w-3": variant === "inline",
+            "h-4 w-4 shrink-0 text-icon-light hover:text-iconHighlight-light dark:text-icon-dark dark:hover:text-iconHighlight-dark":
+              variant === "control",
+            "rotate-180": selected === "usd",
+          }
         )}
       />
     </button>
