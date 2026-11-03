@@ -16,7 +16,7 @@ export function runTimeFrameTests({
     });
 
     TIME_FRAMES.forEach((timeFrame) => {
-      it(`should get daily stats for ${timeFrame}`, async () => {
+      it(`should get the stats for ${timeFrame}`, async () => {
         const result = await statsFetcher(timeFrame);
 
         expect(result).toMatchSnapshot();

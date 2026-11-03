@@ -4,6 +4,10 @@ import dayjs from "@blobscan/dayjs";
 import { fixtures, redis } from "@blobscan/test";
 
 import type { TRPCContext } from "../../src";
+import {
+  getPeriodStart,
+  getTimeFrameGranularity,
+} from "../../src/middlewares/withStatFilters";
 import { outputSchema } from "../../src/routers/stats/getTimeseries";
 import { superjson } from "../../src/superjson";
 import { createTestContext } from "../helpers";
@@ -16,8 +20,9 @@ import { runTimeFrameTests } from "./helpers";
 describe("getTimeseriesStats", () => {
   let caller: StatsCaller;
   let ctx: TRPCContext;
+  // A time frame with daily periods
   const input: Parameters<typeof caller.getTimeseries>[0] = {
-    timeFrame: "7d",
+    timeFrame: "30d",
     sort: "desc",
   };
   const to = dayjs(fixtures.systemDate).endOf("day").toISOString();
@@ -76,6 +81,187 @@ describe("getTimeseriesStats", () => {
     expect(new Set(maxBlobGasPrice)).toEqual(new Set([BigInt(30)]));
     expect(new Set(minBlobGasPrice)).toEqual(new Set([BigInt(10)]));
   });
+
+  describe("when getting the periods of a time frame", () => {
+    it.each([
+      ["1d", "hour", "hour"],
+      ["7d", "hour", "hour"],
+      ["15d", "day", "day"],
+      ["30d", "day", "day"],
+      ["90d", "day", "day"],
+      ["180d", "day", "week"],
+      ["365d", "day", "week"],
+      ["All", "day", "week"],
+      [undefined, "day", "week"],
+    ] as const)(
+      "should give %s with periods of one %s, or one %s for categories and rollups",
+      async (timeFrame, globalGranularity, segmentedGranularity) => {
+        const globalResult = await caller.getTimeseries({ timeFrame });
+        const categoriesResult = await caller.getTimeseries({
+          timeFrame,
+          categories: "all",
+        });
+        const rollupsResult = await caller.getTimeseries({
+          timeFrame,
+          rollups: "all",
+        });
+
+        expect(globalResult.data.granularity).toBe(globalGranularity);
+        expect(categoriesResult.data.granularity).toBe(segmentedGranularity);
+        expect(rollupsResult.data.granularity).toBe(segmentedGranularity);
+      }
+    );
+
+    it.each([
+      ["1d", 24, "hour"],
+      ["7d", 168, "hour"],
+      ["30d", 30, "day"],
+    ] as const)(
+      "should give only the closed periods of %s",
+      async (timeFrame, maxPeriods, granularity) => {
+        const currentPeriodStart = getPeriodStart(dayjs(), granularity);
+        const { timestamps } = (await caller.getTimeseries({ timeFrame })).data;
+
+        expect(timestamps.length).toBeGreaterThan(0);
+        expect(timestamps.length).toBeLessThanOrEqual(maxPeriods);
+
+        for (const timestamp of timestamps) {
+          expect(timestamp.getTime()).toBeGreaterThanOrEqual(
+            currentPeriodStart.subtract(maxPeriods, granularity).valueOf()
+          );
+          expect(timestamp.getTime()).toBeLessThan(
+            currentPeriodStart.valueOf()
+          );
+        }
+      }
+    );
+
+    it.each([
+      ["1d", "hour"],
+      ["30d", "day"],
+    ] as const)(
+      "should give the start of each period as timestamps for %s",
+      async (timeFrame, granularity) => {
+        const result = await caller.getTimeseries({ timeFrame });
+
+        expect(result.data.timestamps.length).toBeGreaterThan(0);
+
+        for (const timestamp of result.data.timestamps) {
+          expect(getPeriodStart(timestamp, granularity).toDate()).toEqual(
+            timestamp
+          );
+        }
+      }
+    );
+
+    it("should give all the periods of a long time frame with many series", async () => {
+      const currentPeriodStart = getPeriodStart(dayjs(), "week");
+      const result = await caller.getTimeseries({
+        timeFrame: "365d",
+        categories: "all",
+        rollups: "all",
+        sort: "asc",
+      });
+      const weeklyRows = await ctx.prisma.weeklyMetrics.findMany({
+        select: { periodStart: true },
+        distinct: ["periodStart"],
+        where: {
+          periodStart: {
+            gte: currentPeriodStart.subtract(365, "day").toDate(),
+            lt: currentPeriodStart.toDate(),
+          },
+          OR: [{ category: { not: null } }, { rollup: { not: null } }],
+        },
+        orderBy: { periodStart: "asc" },
+      });
+
+      expect(weeklyRows.length).toBeGreaterThan(1);
+      expect(result.data.granularity).toBe("week");
+      expect(result.data.timestamps).toEqual(
+        weeklyRows.map(({ periodStart }) => periodStart)
+      );
+    });
+
+    it("should start a week on Monday", () => {
+      // 2024-03-13 is a Wednesday and 2024-03-17 is a Sunday
+      for (const date of [
+        "2024-03-11T00:00:00Z",
+        "2024-03-13T15:30:00Z",
+        "2024-03-17T23:59:59Z",
+      ]) {
+        expect(getPeriodStart(date, "week").toISOString()).toBe(
+          "2024-03-11T00:00:00.000Z"
+        );
+      }
+    });
+
+    it("should use the granularity of All when no time frame is given", () => {
+      expect(getTimeFrameGranularity(undefined, { isSegmented: false })).toBe(
+        "day"
+      );
+      expect(getTimeFrameGranularity(undefined, { isSegmented: true })).toBe(
+        "week"
+      );
+    });
+  });
+
+  describe.each([
+    {
+      granularity: "hour",
+      timeFrame: "1d",
+      table: "hourlyMetrics",
+      category: undefined,
+    },
+    {
+      granularity: "week",
+      timeFrame: "All",
+      table: "weeklyMetrics",
+      category: "other",
+    },
+  ] as const)(
+    "when including the current period of a $granularity",
+    ({ granularity, timeFrame, table, category }) => {
+      it("should add the current period from its metrics table", async () => {
+        const uncachedCaller = createStatsCaller(await createTestContext());
+        const currentPeriodStart = getPeriodStart(dayjs(), granularity);
+        const updatedAt = currentPeriodStart.add(10, "minute").toDate();
+
+        // The metrics tables have the same columns. The fixtures can have
+        // data in the current period, so its rows are replaced.
+        const metricsTable = ctx.prisma[
+          table
+        ] as unknown as typeof ctx.prisma.dailyMetrics;
+
+        await metricsTable.deleteMany({
+          where: { periodStart: currentPeriodStart.toDate() },
+        });
+        await metricsTable.create({
+          data: {
+            periodStart: currentPeriodStart.toDate(),
+            category: category ? "OTHER" : undefined,
+            totalBlobs: 7,
+            updatedAt,
+          },
+        });
+
+        const result = await uncachedCaller.getTimeseries({
+          timeFrame,
+          categories: category,
+          sort: "asc",
+          includeCurrentPeriod: "true",
+        });
+
+        expect(result.data.currentPeriod).toEqual({
+          timestamp: currentPeriodStart.toDate(),
+          updatedAt,
+        });
+        expect(result.data.timestamps.at(-1)).toEqual(
+          currentPeriodStart.toDate()
+        );
+        expect(result.data.series[0]?.metrics.totalBlobs?.at(-1)).toBe(7);
+      });
+    }
+  );
 
   describe("when including the current period", () => {
     // The system date of the fixtures is the start of the current period

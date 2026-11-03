@@ -1,130 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get daily stats for 1d 1`] = `
+exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get the stats for 1d 1`] = `
 {
   "data": {
-    "series": [
-      {
-        "dimension": {
-          "type": "global",
-        },
-        "metrics": {
-          "avgBlobAsCalldataFee": [
-            10000,
-          ],
-          "avgBlobAsCalldataMaxFee": [
-            100000,
-          ],
-          "avgBlobBaseFee": [
-            4805973.333333333,
-          ],
-          "avgBlobGasPrice": [
-            22,
-          ],
-          "avgBlobMaxFee": [
-            21845333.33333333,
-          ],
-          "avgBlobUsageSize": [
-            780,
-          ],
-          "avgEthPrice": [
-            null,
-          ],
-          "avgMaxBlobGasFee": [
-            100,
-          ],
-          "maxBlobGasPrice": [
-            22n,
-          ],
-          "maxEthPrice": [
-            null,
-          ],
-          "minBlobGasPrice": [
-            22n,
-          ],
-          "minEthPrice": [
-            null,
-          ],
-          "totalBlobAsCalldataFee": [
-            30000n,
-          ],
-          "totalBlobAsCalldataFeeUsd": [
-            null,
-          ],
-          "totalBlobAsCalldataGasUsed": [
-            3000n,
-          ],
-          "totalBlobAsCalldataMaxFee": [
-            300000n,
-          ],
-          "totalBlobBaseFee": [
-            14417920n,
-          ],
-          "totalBlobBaseFeeUsd": [
-            null,
-          ],
-          "totalBlobGasPrice": [
-            66n,
-          ],
-          "totalBlobGasUsed": [
-            655360n,
-          ],
-          "totalBlobMaxFee": [
-            65536000n,
-          ],
-          "totalBlobMaxFeeUsd": [
-            null,
-          ],
-          "totalBlobSize": [
-            6900n,
-          ],
-          "totalBlobUsageSize": [
-            3900n,
-          ],
-          "totalBlobs": [
-            5,
-          ],
-          "totalBlocks": [
-            3,
-          ],
-          "totalEthPrice": [
-            null,
-          ],
-          "totalEthPriceCount": [
-            null,
-          ],
-          "totalMaxBlobGasFee": [
-            300n,
-          ],
-          "totalTransactions": [
-            3,
-          ],
-          "totalUniqueBlobs": [
-            2,
-          ],
-          "totalUniqueReceivers": [
-            0,
-          ],
-          "totalUniqueSenders": [
-            0,
-          ],
-          "totalUsdPricedTransactions": [
-            0,
-          ],
-        },
-        "startTimestampIdx": 0,
-      },
-    ],
-    "timestamps": [
-      2023-08-31T00:00:00.000Z,
-    ],
-  },
-}
-`;
-
-exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get daily stats for 7d 1`] = `
-{
-  "data": {
+    "granularity": "hour",
     "series": [
       {
         "dimension": {
@@ -134,136 +13,170 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
           "avgBlobAsCalldataFee": [
             10000,
             10000,
+            10000,
           ],
           "avgBlobAsCalldataMaxFee": [
             100000,
             100000,
+            100000,
           ],
           "avgBlobBaseFee": [
-            4805973.333333333,
-            5242880,
+            2883584,
+            8650752,
+            2883584,
           ],
           "avgBlobGasPrice": [
             22,
-            20,
+            22,
+            22,
           ],
           "avgBlobMaxFee": [
-            21845333.33333333,
-            26214400,
+            13107200,
+            39321600,
+            13107200,
           ],
           "avgBlobUsageSize": [
-            780,
-            1000,
+            0,
+            1300,
+            0,
           ],
           "avgEthPrice": [
+            null,
             null,
             null,
           ],
           "avgMaxBlobGasFee": [
             100,
             100,
+            100,
           ],
           "maxBlobGasPrice": [
             22n,
-            20n,
+            22n,
+            22n,
           ],
           "maxEthPrice": [
+            null,
             null,
             null,
           ],
           "minBlobGasPrice": [
             22n,
-            20n,
+            22n,
+            22n,
           ],
           "minEthPrice": [
             null,
             null,
+            null,
           ],
           "totalBlobAsCalldataFee": [
-            30000n,
-            20000n,
+            10000n,
+            10000n,
+            10000n,
           ],
           "totalBlobAsCalldataFeeUsd": [
             null,
             null,
+            null,
           ],
           "totalBlobAsCalldataGasUsed": [
-            3000n,
-            2000n,
+            1000n,
+            1000n,
+            1000n,
           ],
           "totalBlobAsCalldataMaxFee": [
-            300000n,
-            200000n,
+            100000n,
+            100000n,
+            100000n,
           ],
           "totalBlobBaseFee": [
-            14417920n,
-            10485760n,
+            2883584n,
+            8650752n,
+            2883584n,
           ],
           "totalBlobBaseFeeUsd": [
             null,
             null,
+            null,
           ],
           "totalBlobGasPrice": [
-            66n,
-            20n,
+            22n,
+            22n,
+            22n,
           ],
           "totalBlobGasUsed": [
-            655360n,
-            524288n,
+            131072n,
+            393216n,
+            131072n,
           ],
           "totalBlobMaxFee": [
-            65536000n,
-            52428800n,
+            13107200n,
+            39321600n,
+            13107200n,
           ],
           "totalBlobMaxFeeUsd": [
             null,
             null,
+            null,
           ],
           "totalBlobSize": [
-            6900n,
-            4000n,
+            1500n,
+            3900n,
+            1500n,
           ],
           "totalBlobUsageSize": [
+            0n,
             3900n,
-            4000n,
+            0n,
           ],
           "totalBlobs": [
-            5,
-            4,
+            1,
+            3,
+            1,
           ],
           "totalBlocks": [
-            3,
+            1,
+            1,
             1,
           ],
           "totalEthPrice": [
             null,
             null,
+            null,
           ],
           "totalEthPriceCount": [
             null,
             null,
+            null,
           ],
           "totalMaxBlobGasFee": [
-            300n,
-            200n,
+            100n,
+            100n,
+            100n,
           ],
           "totalTransactions": [
-            3,
-            2,
+            1,
+            1,
+            1,
           ],
           "totalUniqueBlobs": [
-            2,
+            1,
+            1,
             0,
           ],
           "totalUniqueReceivers": [
+            0,
             0,
             0,
           ],
           "totalUniqueSenders": [
             0,
             0,
+            0,
           ],
           "totalUsdPricedTransactions": [
+            0,
             0,
             0,
           ],
@@ -272,16 +185,246 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
       },
     ],
     "timestamps": [
-      2023-08-31T00:00:00.000Z,
-      2023-08-28T00:00:00.000Z,
+      2023-08-31T16:00:00.000Z,
+      2023-08-31T14:00:00.000Z,
+      2023-08-31T12:00:00.000Z,
     ],
   },
 }
 `;
 
-exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get daily stats for 15d 1`] = `
+exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get the stats for 7d 1`] = `
 {
   "data": {
+    "granularity": "hour",
+    "series": [
+      {
+        "dimension": {
+          "type": "global",
+        },
+        "metrics": {
+          "avgBlobAsCalldataFee": [
+            10000,
+            10000,
+            10000,
+            10000,
+          ],
+          "avgBlobAsCalldataMaxFee": [
+            100000,
+            100000,
+            100000,
+            100000,
+          ],
+          "avgBlobBaseFee": [
+            2883584,
+            8650752,
+            2883584,
+            5242880,
+          ],
+          "avgBlobGasPrice": [
+            22,
+            22,
+            22,
+            20,
+          ],
+          "avgBlobMaxFee": [
+            13107200,
+            39321600,
+            13107200,
+            26214400,
+          ],
+          "avgBlobUsageSize": [
+            0,
+            1300,
+            0,
+            1000,
+          ],
+          "avgEthPrice": [
+            null,
+            null,
+            null,
+            null,
+          ],
+          "avgMaxBlobGasFee": [
+            100,
+            100,
+            100,
+            100,
+          ],
+          "maxBlobGasPrice": [
+            22n,
+            22n,
+            22n,
+            20n,
+          ],
+          "maxEthPrice": [
+            null,
+            null,
+            null,
+            null,
+          ],
+          "minBlobGasPrice": [
+            22n,
+            22n,
+            22n,
+            20n,
+          ],
+          "minEthPrice": [
+            null,
+            null,
+            null,
+            null,
+          ],
+          "totalBlobAsCalldataFee": [
+            10000n,
+            10000n,
+            10000n,
+            20000n,
+          ],
+          "totalBlobAsCalldataFeeUsd": [
+            null,
+            null,
+            null,
+            null,
+          ],
+          "totalBlobAsCalldataGasUsed": [
+            1000n,
+            1000n,
+            1000n,
+            2000n,
+          ],
+          "totalBlobAsCalldataMaxFee": [
+            100000n,
+            100000n,
+            100000n,
+            200000n,
+          ],
+          "totalBlobBaseFee": [
+            2883584n,
+            8650752n,
+            2883584n,
+            10485760n,
+          ],
+          "totalBlobBaseFeeUsd": [
+            null,
+            null,
+            null,
+            null,
+          ],
+          "totalBlobGasPrice": [
+            22n,
+            22n,
+            22n,
+            20n,
+          ],
+          "totalBlobGasUsed": [
+            131072n,
+            393216n,
+            131072n,
+            524288n,
+          ],
+          "totalBlobMaxFee": [
+            13107200n,
+            39321600n,
+            13107200n,
+            52428800n,
+          ],
+          "totalBlobMaxFeeUsd": [
+            null,
+            null,
+            null,
+            null,
+          ],
+          "totalBlobSize": [
+            1500n,
+            3900n,
+            1500n,
+            4000n,
+          ],
+          "totalBlobUsageSize": [
+            0n,
+            3900n,
+            0n,
+            4000n,
+          ],
+          "totalBlobs": [
+            1,
+            3,
+            1,
+            4,
+          ],
+          "totalBlocks": [
+            1,
+            1,
+            1,
+            1,
+          ],
+          "totalEthPrice": [
+            null,
+            null,
+            null,
+            null,
+          ],
+          "totalEthPriceCount": [
+            null,
+            null,
+            null,
+            null,
+          ],
+          "totalMaxBlobGasFee": [
+            100n,
+            100n,
+            100n,
+            200n,
+          ],
+          "totalTransactions": [
+            1,
+            1,
+            1,
+            2,
+          ],
+          "totalUniqueBlobs": [
+            1,
+            1,
+            0,
+            0,
+          ],
+          "totalUniqueReceivers": [
+            0,
+            0,
+            0,
+            0,
+          ],
+          "totalUniqueSenders": [
+            0,
+            0,
+            0,
+            0,
+          ],
+          "totalUsdPricedTransactions": [
+            0,
+            0,
+            0,
+            0,
+          ],
+        },
+        "startTimestampIdx": 0,
+      },
+    ],
+    "timestamps": [
+      2023-08-31T16:00:00.000Z,
+      2023-08-31T14:00:00.000Z,
+      2023-08-31T12:00:00.000Z,
+      2023-08-28T10:00:00.000Z,
+    ],
+  },
+}
+`;
+
+exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get the stats for 15d 1`] = `
+{
+  "data": {
+    "granularity": "day",
     "series": [
       {
         "dimension": {
@@ -471,9 +614,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
 }
 `;
 
-exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get daily stats for 30d 1`] = `
+exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get the stats for 30d 1`] = `
 {
   "data": {
+    "granularity": "day",
     "series": [
       {
         "dimension": {
@@ -698,9 +842,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
 }
 `;
 
-exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get daily stats for 90d 1`] = `
+exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get the stats for 90d 1`] = `
 {
   "data": {
+    "granularity": "day",
     "series": [
       {
         "dimension": {
@@ -925,9 +1070,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
 }
 `;
 
-exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get daily stats for 180d 1`] = `
+exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get the stats for 180d 1`] = `
 {
   "data": {
+    "granularity": "day",
     "series": [
       {
         "dimension": {
@@ -1187,9 +1333,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
 }
 `;
 
-exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get daily stats for 365d 1`] = `
+exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get the stats for 365d 1`] = `
 {
   "data": {
+    "granularity": "day",
     "series": [
       {
         "dimension": {
@@ -1484,9 +1631,10 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
 }
 `;
 
-exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get daily stats for All 1`] = `
+exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get the stats for All 1`] = `
 {
   "data": {
+    "granularity": "day",
     "series": [
       {
         "dimension": {
