@@ -4,11 +4,18 @@ export const MAINNET_REGISTRY: BlobPosterRegistry = {
   ABSTRACT: [
     "0x11805594be0229ef08429d775af0c55f7c4535de",
     "0x4b2d036d2c27192549ad5a2f2d9875e1843833de",
+    "0x6be789605b13edb78749824633b9933d44b582ba",
   ],
+  ADI: ["0xf8ff3e62e94807a5c687f418fe36942dd3a24524"],
   AEVO: ["0x889e21d7ba3d6dd62e75d4980a4ad1349c61599d"],
   ANCIENT8: ["0x6079e9c37b87fe06d0bde2431a0fa309826c9b67"],
   ARBITRUM: ["0xc1b634853cb333d3ad8663715b08f41a3aec47cc"],
   ARENAZ: ["0x2b8733e8c60a928b19bb7db1d79b918e8e09ac8c"],
+  AZTEC: [
+    "0x7342404ef57e0c2fcf936f7afd9fbf68e44a2fbe",
+    "0xba694234a1896694a07fee45ee4080a5ac70d838",
+    "0xfaf2e4087f1b7e9863adb05392522c1f1d12d4b4",
+  ],
   BASE: ["0x5050f69a9786f081509234f1a7f4684b5e5b76c9"],
   BLAST: ["0x415c8893d514f9bc5211d36eeda4183226b84aa7"],
   BOBA: [
@@ -41,14 +48,20 @@ export const MAINNET_REGISTRY: BlobPosterRegistry = {
   HPP: ["0xa6a19208fe9b7eac1c53adad74f1da5054492de6"],
   HYPR: ["0x994c288de8418c8d3c5a4d21a69f35bf9641781c"],
   INFINAEON: ["0xebac13ec21937c6eb2b65eb970dbdaca56c9c8b8"],
-  INK: ["0x500d7ea63cf2e501dadaa5feec1fc19fe2aa72ac"],
+  INK: [
+    "0x500d7ea63cf2e501dadaa5feec1fc19fe2aa72ac",
+    "0x6db6161fc5662450e801398bad62dd9921216b98",
+  ],
   KARAK: ["0x84bdfb21ed7c8b332a42bfd595744a84f3101e4e"],
   KATANA: ["0x1ffda89c755f6d4af069897d77ccabb580fd412a"],
   KINTO: ["0xe27f3f6db6824def1738b2aace2672ac59046a39"],
   KROMA: ["0x41b8cd6791de4d8f9e0eaf7861ac506822adce12"],
   LACHAIN: ["0xdac936134633c309ba831239e5e25cfe5094b229"],
   LAMBDA: ["0xdec273bf31ad79ad00d619c52662f724176a12fb"],
-  LIGHTER: ["0xfbc0dcd6c3518cb529bc1b585db992a7d40005fa"],
+  LIGHTER: [
+    "0xfbc0dcd6c3518cb529bc1b585db992a7d40005fa",
+    "0x191ff0ec830f83916a427d169a234c33e48aa79f",
+  ],
   LINEA: [
     "0xa9268341831efa4937537bc3e9eb36dbece83c7e",
     "0x46d2f319fd42165d4318f099e143dea8124e9e3e",
@@ -95,6 +108,7 @@ export const MAINNET_REGISTRY: BlobPosterRegistry = {
     "0x705623d3985cf88e5a69fc99ca7d089063449902",
     "0x85e967470c0dcf953438c72f79f9ea2b1b6db079",
     "0x4cfaa5f421714eae1645dd3276a89b15c9bcf70c",
+    "0x5df930bfa5daa2919d8f2a954a4f346a3b2cf8c2",
   ],
   PGN: ["0x99526b0e49a95833e734eb556a6abaffab0ee167"],
   PHALA: ["0x9fb23129982c993743eb9bb156af8cc8fa2ac761"],
@@ -107,6 +121,7 @@ export const MAINNET_REGISTRY: BlobPosterRegistry = {
     "0x2986bf308d0684ad77cd32ee1c60429e6573b5af",
     "0xf263a0aa8afeaa7d516b596d49d7ba6c0feb102c",
   ],
+  ROBINHOOD: ["0xdaa526086787d9debe1d7f3ffdb1fe50cf8687f4"],
   SCROLL: [
     "0xcf2898225ed05be911d3709d9417e86e0b4cfc8f",
     "0x054a47b9e2a22af6c0ce55020238c8fecd7d334b",
@@ -125,6 +140,7 @@ export const MAINNET_REGISTRY: BlobPosterRegistry = {
   ],
   SWANCHAIN: ["0xde794bec196832474f2f218135bfd0f7ca7fb038"],
   SYMBIOSIS: ["0xbe7f4edb6257b4d2c77293c380f19ce96a4fa41e"],
+  SYNDICATE: ["0x54dd1659c232dec31386c52507982a4983d9bcb8"],
   TAIKO: [
     "0x000000633b68f5d8d3a86593ebb815b4663bcbe0",
     "0x41f2f55571f9e8e3ba511adc48879bd67626a2b6",
@@ -134,6 +150,7 @@ export const MAINNET_REGISTRY: BlobPosterRegistry = {
     "0x2c89dc1b6eca603adace60a76d3074f3835f6cbe",
     "0xe2da8ac2e550cd141198a117520d4edc8692ab74",
     "0x000cb000e880a92a8f383d69da2142a969b93de7",
+    "0x2267c7246523191b8bf7615b86b3bdee612b7d9e",
   ],
   THEBINARYHOLDINGS: [
     "0x7f9d9c1bce1062e1077845ea39a0303429600a06",
@@ -142,6 +159,10 @@ export const MAINNET_REGISTRY: BlobPosterRegistry = {
   UNICHAIN: ["0x2f60a5184c63ca94f82a27100643dbabe4f3f7fd"],
   WORLD: ["0xdbbe3d8c2d2b22a2611c5a94a9a12c2fcd49eb29"],
   XGA: ["0x90680f0f6d63060fb7a16bdc722a85b992dd5047"],
+  XLAYER: [
+    "0x98245d0adf4595c66f0a9db8e13c44cbff6be459",
+    "0xdfd6c636dcb5a013c2431316c4a0762b84e70a5d",
+  ],
   ZKSYNC: [
     "0x0d3250c3d5facb74ac15834096397a3ef790ec99",
     "0xe1d8d4c8656949764c2c9fa9fab2c15d3f42e6c2",
