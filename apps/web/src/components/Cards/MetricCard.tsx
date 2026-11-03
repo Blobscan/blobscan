@@ -158,6 +158,12 @@ function Metric({
   });
 
   const isValueSet = value !== undefined;
+  // The placeholder must use the same text as the animated value. If it is
+  // wider, it pushes the unit out of the card and the card cuts it.
+  const formatDisplayedValue = (v: number) =>
+    `${formatNumber(v.toFixed(parsedMetric.decimalPart?.length ?? 0))}${
+      parsedMetric.suffix ?? ""
+    }`;
   const valueProps = useSpring({
     value: parsedMetric.numericPart,
     from: { value: 0 },
@@ -171,14 +177,7 @@ function Metric({
           <MetricLayout compact={compact}>
             {isValueSet ? (
               <animated.div>
-                {valueProps.value.to((v) => {
-                  const formattedValue = formatNumber(
-                    v.toFixed(parsedMetric.decimalPart?.length ?? 0)
-                  );
-                  const suffix = parsedMetric.suffix ?? "";
-
-                  return `${formattedValue}${suffix}`;
-                })}
+                {valueProps.value.to(formatDisplayedValue)}
               </animated.div>
             ) : (
               0
@@ -191,7 +190,9 @@ function Metric({
             */}
             <div className="invisible">
               <MetricLayout compact={compact}>
-                {createPlaceholder(parsedMetric.value ?? "")}
+                {createPlaceholder(
+                  formatDisplayedValue(parsedMetric.numericPart)
+                )}
               </MetricLayout>
             </div>
             <div
