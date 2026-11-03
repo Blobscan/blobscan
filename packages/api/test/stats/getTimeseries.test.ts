@@ -1,15 +1,14 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import dayjs from "@blobscan/dayjs";
+import { Rollup } from "@blobscan/db/prisma/enums";
 import { fixtures, redis } from "@blobscan/test";
 
 import type { TRPCContext } from "../../src";
-import {
-  getPeriodStart,
-  getTimeFrameGranularity,
-} from "../../src/middlewares/withStatFilters";
+import { getPeriodStart } from "../../src/middlewares/withStatFilters";
 import { outputSchema } from "../../src/routers/stats/getTimeseries";
 import { superjson } from "../../src/superjson";
+import { getTimeFrameGranularity } from "../../src/time-frames";
 import { createTestContext } from "../helpers";
 import { aggregateMetrics } from "../metrics";
 import { runTRPCQueryCacheTests } from "../test-suites/cache";
@@ -80,6 +79,48 @@ describe("getTimeseriesStats", () => {
     expect(maxBlobGasPrice.length).toBeGreaterThan(0);
     expect(new Set(maxBlobGasPrice)).toEqual(new Set([BigInt(30)]));
     expect(new Set(minBlobGasPrice)).toEqual(new Set([BigInt(10)]));
+  });
+
+  it("should give zeros in the gaps of a series, and null for a metric that the series does not have", async () => {
+    const uncachedCaller = createStatsCaller(await createTestContext());
+    const [rollupA, rollupB] = [Rollup.ARBITRUM, Rollup.BASE];
+    const lastClosedDay = dayjs
+      .utc(fixtures.systemDate)
+      .startOf("day")
+      .subtract(1, "day");
+    const days = [2, 1, 0].map((daysAgo) =>
+      lastClosedDay.subtract(daysAgo, "day").toDate()
+    );
+
+    // Rollup B has no row on the second day, so its series has a gap there.
+    await ctx.prisma.dailyMetrics.deleteMany();
+    await ctx.prisma.dailyMetrics.createMany({
+      data: [
+        ...days.map((periodStart) => ({
+          periodStart,
+          rollup: rollupA,
+          totalBlobs: 1,
+        })),
+        ...[days[0], days[2]].map((periodStart) => ({
+          periodStart: periodStart as Date,
+          rollup: rollupB,
+          totalBlobs: 2,
+        })),
+      ],
+    });
+
+    const result = await uncachedCaller.getTimeseries({
+      ...input,
+      sort: "asc",
+      rollups: "arbitrum,base",
+    });
+    // The series have the order of the requested rollups.
+    const seriesB = result.data.series[1];
+
+    expect(result.data.timestamps).toEqual(days);
+    expect(seriesB?.metrics.totalBlobs).toEqual([2, 0, 2]);
+    // totalBlocks is a global-only metric.
+    expect(seriesB?.metrics.totalBlocks).toEqual([null, null, null]);
   });
 
   describe("when getting the periods of a time frame", () => {
@@ -196,10 +237,10 @@ describe("getTimeseriesStats", () => {
     });
 
     it("should use the granularity of All when no time frame is given", () => {
-      expect(getTimeFrameGranularity(undefined, { isSegmented: false })).toBe(
+      expect(getTimeFrameGranularity(undefined, { isCategorized: false })).toBe(
         "day"
       );
-      expect(getTimeFrameGranularity(undefined, { isSegmented: true })).toBe(
+      expect(getTimeFrameGranularity(undefined, { isCategorized: true })).toBe(
         "week"
       );
     });

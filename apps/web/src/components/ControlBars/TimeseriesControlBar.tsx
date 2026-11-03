@@ -12,14 +12,15 @@ import { useControlState } from "./useControlState";
 
 type TimeseriesControlBarProps = {
   /**
-   * Show the category and rollup filters. A chart with only global values
-   * does not use them.
+   * The chart splits its values by category and rollup, so the bar shows the
+   * category and rollup filters. A chart with only global values does not
+   * use them.
    */
-  showDimensionFilters?: boolean;
+  isCategorizedTimeseries?: boolean;
 };
 
 export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
-  showDimensionFilters = false,
+  isCategorizedTimeseries = false,
 }) => {
   const { state, actions, apply, clear } = useControlState();
 
@@ -44,7 +45,7 @@ export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
           />
         </div>
 
-        {showDimensionFilters && (
+        {isCategorizedTimeseries && (
           <div className="flex min-w-0 flex-1 flex-row gap-2">
             <div className="w-28 shrink-0">
               <CategorySelector

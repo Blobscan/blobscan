@@ -6,16 +6,15 @@ import { booleanSchema, z } from "@blobscan/zod";
 
 import type { TRPCContext } from "../../context";
 import { withSortFilterSchema } from "../../middlewares/withFilters";
-import type {
-  MetricsGranularity,
-  StatsFilters,
-} from "../../middlewares/withStatFilters";
+import type { StatsFilters } from "../../middlewares/withStatFilters";
 import {
   getPeriodStart,
   withStatFiltersSchema,
   withStatFilters,
 } from "../../middlewares/withStatFilters";
 import { publicProcedure } from "../../procedures";
+import type { MetricsGranularity } from "../../time-frames";
+import { metricsGranularitySchema } from "../../time-frames";
 import { normalize, cacheTRPCQuery } from "../../utils";
 import type { CacheTTL } from "../../utils/cache";
 import type { Dimension } from "../../zod-schemas";
@@ -62,11 +61,9 @@ type MetricsSeriesSchema = z.input<typeof metricSeriesSchema>;
 export const outputSchema = z
   .object({
     data: z.object({
-      granularity: z
-        .enum(["hour", "day", "week"])
-        .describe(
-          "The length of each period. Each timestamp is the start of a period."
-        ),
+      granularity: metricsGranularitySchema.describe(
+        "The length of each period. Each timestamp is the start of a period."
+      ),
       timestamps: z.date().array(),
       series: timeseriesSchema.array(),
       currentPeriod: z
@@ -181,7 +178,11 @@ function getMetricEntries(row: Record<string, unknown>) {
   ) as [keyof MetricsSeriesSchema, unknown][];
 }
 
-function getZeroValue(value: unknown) {
+/**
+ * Returns the value of a period with no row: zero, or null for a metric that
+ * the series does not have.
+ */
+function getGapValue(value: unknown) {
   // A metric with no value in a row (for example, a global-only metric in a
   // rollup row) has no value in the gaps either.
   if (value === null || value === undefined) {
@@ -198,32 +199,53 @@ function getZeroValue(value: unknown) {
 
 /**
  * Adds a metric value to the end or to the start of the values of a series.
- * The `gap` periods between the value and the other values get zeros.
+ * The `gap` periods between the value and the other values get the gap
+ * value of the metric (see getGapValue).
  */
 function addMetricValue(
   values: unknown[],
   value: unknown,
   { gap, position }: { gap: number; position: "end" | "start" }
 ) {
-  const zeros = Array<unknown>(Math.max(gap, 0)).fill(getZeroValue(value));
+  const gapValues = Array<unknown>(Math.max(gap, 0)).fill(getGapValue(value));
 
   if (position === "end") {
-    values.push(...zeros, value);
+    values.push(...gapValues, value);
   } else {
-    values.unshift(value, ...zeros);
+    values.unshift(value, ...gapValues);
   }
 }
 
 type TimeseriesContext = TRPCContext & { statFilters: StatsFilters };
 
+type IsSameType<A, B> = [A] extends [B]
+  ? [B] extends [A]
+    ? true
+    : false
+  : false;
+
 /**
  * Returns the metrics table of the granularity. All the metrics tables have
- * the same columns, so the daily table type is used for all of them.
+ * the same columns, so the function gives the type of the daily table for all
+ * of them.
  */
 function getMetricsTable(
   prisma: TRPCContext["prisma"],
   granularity: MetricsGranularity
 ) {
+  // The casts are safe only while the tables have the same columns. When the
+  // columns change, this line fails the type check.
+  const tablesHaveSameColumns: IsSameType<
+    Prisma.HourlyMetricsGetPayload<object>,
+    Prisma.DailyMetricsGetPayload<object>
+  > &
+    IsSameType<
+      Prisma.WeeklyMetricsGetPayload<object>,
+      Prisma.DailyMetricsGetPayload<object>
+    > = true;
+
+  void tablesHaveSameColumns;
+
   switch (granularity) {
     case "hour":
       return prisma.hourlyMetrics as unknown as typeof prisma.dailyMetrics;
@@ -323,9 +345,11 @@ function cacheClosedPeriodsTimeseries(ttl: CacheTTL) {
   });
 }
 
-// A new closed period comes at the end of each period, so the closed periods
-// are cached until then. The weekly periods also use the daily cache. The time
-// frame is in the cache key, so the granularities do not share cache entries.
+// A new closed period comes at the end of each period, so the cache keeps the
+// closed periods until then. The weekly periods use the daily cache, so the
+// API reads them again each day. isLastClosedPeriodMissing uses the week
+// length, so the result is correct. The time frame is in the cache key, so
+// the granularities do not share cache entries.
 const closedPeriodsTimeseriesGetters = {
   hour: cacheClosedPeriodsTimeseries("hourly"),
   day: cacheClosedPeriodsTimeseries("daily"),
@@ -392,7 +416,7 @@ const getCurrentPeriodRows = cacheTRPCQuery(
  * for a descending sort.
  *
  * A series that has data before the current period but no data in it gets
- * zeros, the same as the gaps between closed periods.
+ * gap values, the same as the gaps between closed periods.
  */
 function addCurrentPeriod(
   output: OutputSchema,
@@ -445,9 +469,7 @@ function addCurrentPeriod(
             ([metricName, values]) =>
               [
                 metricName,
-                getZeroValue(
-                  values?.find((v) => v !== null && v !== undefined)
-                ),
+                getGapValue(values?.find((v) => v !== null && v !== undefined)),
               ] as const
           );
 
@@ -456,7 +478,7 @@ function addCurrentPeriod(
 
       // For a descending sort, the current period moves the closed periods
       // one index forward. The periods before the first period of the series
-      // get zeros.
+      // get gap values.
       addMetricValue(values, metricValue, {
         gap: isAscending
           ? currentIdx - (startTimestampIdx + values.length)

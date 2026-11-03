@@ -1,18 +1,14 @@
 import { useCallback, useEffect, useMemo, useReducer } from "react";
 import type { DateType } from "react-tailwindcss-datepicker";
 
-import { z } from "@blobscan/zod";
+import type { z } from "@blobscan/zod";
 
 import { useUrlState } from "~/hooks/useUrlState";
-import { filterParamsSchema } from "~/schemas/filters";
+import { filterParamsSchema, timeFrameParamSchema } from "~/schemas/filters";
 import type { Sort } from "~/schemas/sort";
 import { sortParamsSchema } from "~/schemas/sort";
 import type { Range } from "../RangeRadioGroup";
-import {
-  CHART_TIME_FRAMES,
-  DEFAULT_CHART_TIME_FRAME,
-  ROLLUP_OPTIONS,
-} from "../Selectors";
+import { DEFAULT_CHART_TIME_FRAME, ROLLUP_OPTIONS } from "../Selectors";
 import type { ChartTimeFrame, RollupSelectorOption } from "../Selectors";
 import { CATEGORY_OPTIONS } from "../Selectors/CategorySelector";
 import type { CategorySelectorOption } from "../Selectors/CategorySelector";
@@ -46,7 +42,7 @@ type Action =
 
 export const controlParamsSchema = filterParamsSchema
   .merge(sortParamsSchema)
-  .merge(z.object({ timeFrame: z.enum(CHART_TIME_FRAMES).optional() }));
+  .merge(timeFrameParamSchema);
 
 type ControlParams = z.infer<typeof controlParamsSchema>;
 

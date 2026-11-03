@@ -4,6 +4,12 @@ import type { Prisma } from "@blobscan/db";
 import type { Category, Rollup } from "@blobscan/db/prisma/enums";
 import { z } from "@blobscan/zod";
 
+import type { MetricsGranularity, TimeFrame } from "../time-frames";
+import {
+  getTimeFrameDays,
+  getTimeFrameGranularity,
+  timeFrameSchema,
+} from "../time-frames";
 import { t } from "../trpc-client";
 import {
   commaSeparatedCategoriesSchema,
@@ -11,19 +17,6 @@ import {
   commaSeparatedValuesSchema,
   timeseriesMetricsSchema,
 } from "../zod-schemas";
-
-export const timeFrameSchema = z.enum([
-  "1d",
-  "7d",
-  "15d",
-  "30d",
-  "90d",
-  "180d",
-  "365d",
-  "All",
-]);
-
-export type TimeFrame = z.infer<typeof timeFrameSchema>;
 
 export type PeriodStartStatFilter = {
   periodStart: string | Date | Prisma.DateTimeFilter<"DailyMetrics">;
@@ -97,38 +90,6 @@ export const withStatFiltersSchema = withMetricsFilterSchema
 export type StatFiltersOutputSchema = z.output<typeof withStatFiltersSchema>;
 
 /**
- * The length of one period of a timeseries. Each granularity has its own
- * metrics table.
- */
-export type MetricsGranularity = "hour" | "day" | "week";
-
-/**
- * Returns the granularity that gives a good number of points for the time
- * frame. A short time frame uses hours.
- *
- * A timeseries split by category or rollup is drawn as stacked bars, which
- * need fewer points than a line. It uses weeks for the time frames longer
- * than 90 days. A global timeseries uses days.
- */
-export function getTimeFrameGranularity(
-  timeFrame: TimeFrame | undefined,
-  { isSegmented }: { isSegmented: boolean }
-): MetricsGranularity {
-  switch (timeFrame) {
-    case "1d":
-    case "7d":
-      return "hour";
-    case "180d":
-    case "365d":
-    case "All":
-    case undefined:
-      return isSegmented ? "week" : "day";
-    default:
-      return "day";
-  }
-}
-
-/**
  * Returns the start of the period that contains the date, in UTC. A week
  * starts on Monday, the same as Postgres DATE_TRUNC('week', ...), which
  * Dagster uses to aggregate the weekly metrics.
@@ -175,7 +136,7 @@ function buildPeriodStartWhereClause({
   }
 
   // The periods that start in the time frame, before the current period.
-  const days = parseInt(timeFrame.split("d")[0] ?? "1");
+  const days = getTimeFrameDays(timeFrame);
   const currentPeriodStart = lastClosedPeriodStart.add(1, granularity);
 
   return {
@@ -189,7 +150,7 @@ export const withStatFilters = t.middleware(
     const input = input_ as StatFiltersOutputSchema;
     const { categories, rollups, metrics, timeFrame } = input;
     const granularity = getTimeFrameGranularity(timeFrame, {
-      isSegmented: Boolean(categories || rollups),
+      isCategorized: Boolean(categories || rollups),
     });
     let select: StatsFilters["select"];
     const where: StatsFilters["where"] = {};

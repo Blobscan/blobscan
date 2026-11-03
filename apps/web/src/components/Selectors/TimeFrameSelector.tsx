@@ -1,65 +1,33 @@
-import type { TimeFrame } from "@blobscan/api";
-
-import type { TimeseriesGranularity } from "~/types";
+import { chartTimeFrameSchema } from "~/schemas/filters";
+import type { ChartTimeFrame } from "~/schemas/filters";
 import { Listbox } from "../Selects";
 import type { ListboxProps, SelectOption } from "../Selects";
 
-/**
- * The time frames of the chart pages. See getChartTimeFrameGranularity for
- * the length of their periods.
- */
-export const CHART_TIME_FRAMES = [
-  "1d",
-  "7d",
-  "30d",
-  "90d",
-  "365d",
-  "All",
-] as const satisfies readonly TimeFrame[];
-
-export type ChartTimeFrame = (typeof CHART_TIME_FRAMES)[number];
+export type { ChartTimeFrame } from "~/schemas/filters";
 
 export const DEFAULT_CHART_TIME_FRAME: ChartTimeFrame = "All";
-
-/**
- * Returns the length of the periods that the API gives for the time frame. A
- * chart split by category or rollup uses weeks for 1Y and All, because it
- * draws stacked bars. Keep it the same as getTimeFrameGranularity in
- * @blobscan/api.
- */
-export function getChartTimeFrameGranularity(
-  timeFrame: ChartTimeFrame,
-  { isSegmented }: { isSegmented: boolean }
-): TimeseriesGranularity {
-  switch (timeFrame) {
-    case "1d":
-    case "7d":
-      return "hour";
-    case "365d":
-    case "All":
-      return isSegmented ? "week" : "day";
-    default:
-      return "day";
-  }
-}
 
 export type TimeFrameSelectorOption = SelectOption<ChartTimeFrame>;
 
 // "M" is a month. 1M is the last 30 days and 3M is the last 90 days.
-export const TIME_FRAME_OPTIONS: TimeFrameSelectorOption[] = [
-  { value: "1d", label: "24H" },
-  { value: "7d", label: "7D" },
-  { value: "30d", label: "1M" },
-  { value: "90d", label: "3M" },
-  { value: "365d", label: "1Y" },
-  { value: "All", label: "All" },
-];
+const TIME_FRAME_OPTION_BY_VALUE = {
+  "1d": { value: "1d", label: "24H" },
+  "7d": { value: "7d", label: "7D" },
+  "30d": { value: "30d", label: "1M" },
+  "90d": { value: "90d", label: "3M" },
+  "365d": { value: "365d", label: "1Y" },
+  All: { value: "All", label: "All" },
+} satisfies Record<ChartTimeFrame, TimeFrameSelectorOption>;
 
-export function getTimeFrameOption(timeFrame: ChartTimeFrame) {
-  return (
-    TIME_FRAME_OPTIONS.find((o) => o.value === timeFrame) ??
-    (TIME_FRAME_OPTIONS.at(-1) as TimeFrameSelectorOption)
+export const TIME_FRAME_OPTIONS: TimeFrameSelectorOption[] =
+  chartTimeFrameSchema.options.map(
+    (timeFrame) => TIME_FRAME_OPTION_BY_VALUE[timeFrame]
   );
+
+export function getTimeFrameOption(
+  timeFrame: ChartTimeFrame
+): TimeFrameSelectorOption {
+  return TIME_FRAME_OPTION_BY_VALUE[timeFrame];
 }
 
 export type TimeFrameSelectorProps = Omit<
