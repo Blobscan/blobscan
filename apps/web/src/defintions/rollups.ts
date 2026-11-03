@@ -8,6 +8,12 @@ export const ROLLUP_DEFINITIONS: Record<Rollup, ResourceDefinition> = {
     badgeClassname:
       "dark:bg-[#195b3b] bg-[#7dffc0] dark:text-[#7dffc0] text-[#195b3b]",
   },
+  adi: {
+    name: "ADI Chain",
+    color: { light: "#2b2b2b", dark: "#d9d9d9" },
+    badgeClassname:
+      "bg-[#d9d9d9] dark:bg-[#2b2b2b] dark:text-[#d9d9d9] text-[#2b2b2b]",
+  },
   aevo: {
     name: "Aevo",
     color: { light: "#291f3f", dark: "#d8c9fa" },
@@ -33,6 +39,12 @@ export const ROLLUP_DEFINITIONS: Record<Rollup, ResourceDefinition> = {
     badgeClassname:
       "bg-[#b19aff] dark:bg-[#2c00bb] dark:text-[#b19aff] text-[#2c00bb]",
     iconClassname: "rounded-xl",
+  },
+  aztec: {
+    name: "Aztec",
+    color: { light: "#4a5a00", dark: "#d4ff28" },
+    badgeClassname:
+      "bg-[#d4ff28] dark:bg-[#4a5a00] dark:text-[#d4ff28] text-[#4a5a00]",
   },
   base: {
     name: "Base",
@@ -371,6 +383,12 @@ export const ROLLUP_DEFINITIONS: Record<Rollup, ResourceDefinition> = {
     badgeClassname:
       "bg-[#f2e6e6] dark:bg-[#1c1c1c] dark:text-[#f2e6e6] text-[#1c1c1c]",
   },
+  robinhood: {
+    name: "Robinhood Chain",
+    color: { light: "#006b03", dark: "#9dff9f" },
+    badgeClassname:
+      "bg-[#9dff9f] dark:bg-[#006b03] dark:text-[#9dff9f] text-[#006b03]",
+  },
   scroll: {
     name: "Scroll",
     color: { light: "#d28800", dark: "#ffd689" },
@@ -442,6 +460,13 @@ export const ROLLUP_DEFINITIONS: Record<Rollup, ResourceDefinition> = {
     badgeClassname:
       "bg-[#73c56f] text-[#75FB6E] dark:bg-[#3f853b] dark:text-[#75FB6E]",
   },
+  syndicate: {
+    name: "Syndicate",
+    color: { light: "#1f1f1f", dark: "#e0e0e0" },
+    badgeClassname:
+      "bg-[#e0e0e0] dark:bg-[#1f1f1f] dark:text-[#e0e0e0] text-[#1f1f1f]",
+    iconSrc: "/rollups/syndicate.png",
+  },
   taiko: {
     name: "Taiko",
     color: { light: "#97266d", dark: "#fbb6ce" },
@@ -473,6 +498,13 @@ export const ROLLUP_DEFINITIONS: Record<Rollup, ResourceDefinition> = {
     badgeClassname:
       "bg-[#f5eeee] dark:bg-[#2b2727] dark:text-[#f5eeee] text-[#2b2727]",
     iconClassname: "rounded-xl bg-gray-200 dark:bg-white h-[18px] w-[18px]",
+  },
+  xlayer: {
+    name: "X Layer",
+    color: { light: "#333333", dark: "#e5e5e5" },
+    badgeClassname:
+      "bg-[#e5e5e5] dark:bg-[#333333] dark:text-[#e5e5e5] text-[#333333]",
+    iconSrc: "/rollups/xlayer.png",
   },
   zeronetwork: {
     name: "Zero Network",
