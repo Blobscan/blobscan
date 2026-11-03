@@ -35,10 +35,8 @@ export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
       onClear={clear}
       disableClear={disableClear}
     >
-      {/* On small screens, the time frame has its own row, so the rollup
-      selector keeps a usable width. */}
-      <div className="flex w-full min-w-0 flex-col gap-2 sm:flex-row lg:max-w-2xl lg:justify-start">
-        <div className="w-full shrink-0 sm:w-24">
+      <div className="flex w-full min-w-0 flex-row gap-2 lg:max-w-2xl lg:justify-start">
+        <div className="w-20 shrink-0 sm:w-24">
           <TimeFrameSelector
             selected={getTimeFrameOption(state.timeFrame)}
             onChange={(option) => actions.setTimeFrame(option.value)}
@@ -46,7 +44,7 @@ export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
         </div>
 
         {isCategorizedTimeseries && (
-          <div className="flex min-w-0 flex-1 flex-row gap-2">
+          <>
             <div className="w-28 shrink-0">
               <CategorySelector
                 selected={state.categories}
@@ -60,7 +58,7 @@ export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
                 onChange={actions.setRollups}
               />
             </div>
-          </div>
+          </>
         )}
       </div>
     </ControlBarLayout>
