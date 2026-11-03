@@ -13,7 +13,6 @@ import {
   RollupSelector,
   TimeFrameSelector,
 } from "../Selectors";
-import type { ChartTimeFrame } from "../Selectors";
 import { CategorySelector } from "../Selectors/CategorySelector";
 import { FeeUnitToggle } from "../Toggles";
 import type { FeeUnit } from "../Toggles";
@@ -64,23 +63,19 @@ export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
       ? state.granularity
       : defaultGranularity;
 
-  const handleTimeFrameChange = (timeFrame: ChartTimeFrame) => {
-    const next = getTimeFrameGranularities(timeFrame, {
-      isCategorized: isCategorizedTimeseries,
-    });
-
-    actions.setTimeFrame(timeFrame);
-
-    // Keep the selected granularity when the new time frame allows it.
-    // Otherwise, use the default granularity of the new time frame.
+  // Keep the selected granularity when the time frame allows it. Otherwise,
+  // use the default granularity of the time frame. This also removes a
+  // granularity of the URL that the time frame does not allow, so that the
+  // next apply does not write it back to the URL.
+  useEffect(() => {
     if (
       state.granularity &&
-      (!next.options.includes(state.granularity) ||
-        state.granularity === next.default)
+      (!granularities.includes(state.granularity) ||
+        state.granularity === defaultGranularity)
     ) {
       actions.setGranularity(null);
     }
-  };
+  }, [state.granularity, granularities, defaultGranularity, actions]);
 
   const disableClear =
     !state.categories &&
@@ -106,7 +101,7 @@ export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
             <div className="w-20 shrink-0 sm:w-24">
               <TimeFrameSelector
                 selected={getTimeFrameOption(state.timeFrame)}
-                onChange={(option) => handleTimeFrameChange(option.value)}
+                onChange={(option) => actions.setTimeFrame(option.value)}
               />
             </div>
 
