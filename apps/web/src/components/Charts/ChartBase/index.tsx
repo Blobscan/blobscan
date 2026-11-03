@@ -5,7 +5,6 @@ import cn from "classnames";
 import type { ECElementEvent, EChartsOption, SeriesOption } from "echarts";
 import type { EChartsInstance } from "echarts-for-react";
 import ReactEChartsCore from "echarts-for-react/lib/core";
-import type EChartsReactCore from "echarts-for-react/lib/core";
 import { useTheme } from "next-themes";
 
 import { EmptyState } from "~/components/EmptyState";
@@ -101,7 +100,10 @@ export const ChartBase: FC<ChartBaseProps> = function ({
 }) {
   const { resolvedTheme } = useTheme();
   const themeMode = resolvedTheme as ThemeMode;
-  const chartInstanceRef = useRef<EChartsReactCore | null>(null);
+  // echarts-for-react replaces its first instance when the first render ends.
+  // The effects and the handlers use the final instance, which onChartReady
+  // gives.
+  const [chart, setChart] = useState<EChartsInstance | null>(null);
   const hoveredSeriesRef = useRef<{
     seriesIndex?: number;
     seriesName?: string;
@@ -115,6 +117,13 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     ? !!dataset.length
     : !!dataset;
   const shouldRenderChart = isLoading === true || datasetAvailable;
+
+  // The chart component unmounts and disposes its instance. Clear the instance
+  // during this render, so that no effect uses the disposed instance.
+  if (!shouldRenderChart && chart) {
+    setChart(null);
+  }
+
   const yUnit = axes.y.displayUnit ?? axes.y.unit;
   const chartSkeletonOptions = useMemo(
     () =>
@@ -271,7 +280,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         }, 100);
       };
 
-      chart.off("finished");
       chart.on("finished", onFinished);
 
       return () => {
@@ -287,7 +295,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   );
 
   useEffect(() => {
-    const chart = chartInstanceRef.current?.getEchartsInstance();
     if (!chart) return;
 
     setIsChartInteractive(false);
@@ -296,19 +303,16 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     const cleanup = setUpChartFinishedEventHandler(chart);
 
     return cleanup;
-  }, [dataset, series, isLoading, setUpChartFinishedEventHandler]);
+  }, [chart, dataset, series, isLoading, setUpChartFinishedEventHandler]);
 
   useEffect(() => {
-    const chart = chartInstanceRef.current?.getEchartsInstance();
     if (!chart) return;
 
     chart.dispatchAction({ type: "hideTip" });
     chart.setOption({ tooltip: { show: !isLoading } }, { notMerge: false });
-  }, [dataset, series, isLoading]);
+  }, [chart, dataset, series, isLoading]);
 
   useEffect(() => {
-    const chart = chartInstanceRef.current?.getEchartsInstance();
-
     if (!chart) return;
 
     const hasCurrentPeriodSeries = () =>
@@ -361,46 +365,45 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       chart.off("mouseout", onMouseout);
       chart.off("globalout", onGlobalout);
     };
-  }, []);
+  }, [chart]);
 
   const handleLegendItemHover = useCallback<
     NonNullable<LegendProps["onItemHover"]>
-  >((itemName, direction) => {
-    const chart = chartInstanceRef.current?.getEchartsInstance();
+  >(
+    (itemName, direction) => {
+      if (!chart) {
+        return;
+      }
 
-    if (!chart) {
-      return;
-    }
+      if (direction === "in") {
+        chart.dispatchAction({
+          type: "highlight",
+          seriesName: itemName,
+        });
 
-    if (direction === "in") {
-      chart.dispatchAction({
-        type: "highlight",
-        seriesName: itemName,
-      });
+        setSelectedLegendItem(itemName);
 
-      setSelectedLegendItem(itemName);
+        return;
+      }
 
-      return;
-    }
+      if (direction === "out") {
+        chart.dispatchAction({
+          type: "downplay",
+          seriesName: itemName,
+        });
 
-    if (direction === "out") {
-      chart.dispatchAction({
-        type: "downplay",
-        seriesName: itemName,
-      });
+        setSelectedLegendItem(undefined);
 
-      setSelectedLegendItem(undefined);
-
-      return;
-    }
-  }, []);
+        return;
+      }
+    },
+    [chart]
+  );
 
   const handleLegendItemToggle = useCallback<
     NonNullable<LegendProps["onItemToggle"]>
   >(
     (itemName, disabled) => {
-      const chart = chartInstanceRef.current?.getEchartsInstance();
-
       if (!chart) {
         return;
       }
@@ -427,7 +430,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         )
       );
     },
-    [legendItems]
+    [chart, legendItems]
   );
 
   useEffect(() => {
@@ -459,8 +462,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   }, [compact, series]);
 
   useEffect(() => {
-    const chart = chartInstanceRef.current?.getEchartsInstance();
-
     if (!chart || !chartSeries || !chartDataset) return;
 
     chart.setOption(
@@ -475,17 +476,15 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         notMerge: true,
       }
     );
-  }, [baseOptions, chartDataset, chartSeries]);
+  }, [chart, baseOptions, chartDataset, chartSeries]);
 
   useEffect(() => {
-    const chart = chartInstanceRef.current?.getEchartsInstance();
-
     if (!chart || !isLoading) return;
 
     chart.setOption(chartSkeletonOptions, {
       notMerge: true,
     });
-  }, [chartSkeletonOptions, isLoading]);
+  }, [chart, chartSkeletonOptions, isLoading]);
 
   return (
     <div className="h-full">
@@ -516,8 +515,13 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         {shouldRenderChart ? (
           <ReactEChartsCore
             echarts={echarts}
-            ref={chartInstanceRef}
-            option={baseOptions}
+            // The final instance gets this option before onChartReady. During
+            // a load, give the skeleton, so that the empty axes do not show.
+            option={isLoading ? chartSkeletonOptions : baseOptions}
+            onChartReady={setChart}
+            // In a flex row, the chart must shrink below the canvas width.
+            // Then its container gets smaller and the chart resizes.
+            className="min-w-0"
             style={{ height: "100%", width: "100%" }}
           />
         ) : (
