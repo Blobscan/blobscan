@@ -102,6 +102,9 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   const { resolvedTheme } = useTheme();
   const themeMode = resolvedTheme as ThemeMode;
   const chartInstanceRef = useRef<EChartsReactCore | null>(null);
+  // echarts-for-react replaces its first instance when the first render ends.
+  // The effects use the final instance, which onChartReady gives.
+  const [chart, setChart] = useState<EChartsInstance | null>(null);
   const hoveredSeriesRef = useRef<{
     seriesIndex?: number;
     seriesName?: string;
@@ -271,7 +274,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         }, 100);
       };
 
-      chart.off("finished");
       chart.on("finished", onFinished);
 
       return () => {
@@ -287,7 +289,12 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   );
 
   useEffect(() => {
-    const chart = chartInstanceRef.current?.getEchartsInstance();
+    if (!shouldRenderChart) {
+      setChart(null);
+    }
+  }, [shouldRenderChart]);
+
+  useEffect(() => {
     if (!chart) return;
 
     setIsChartInteractive(false);
@@ -296,19 +303,16 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     const cleanup = setUpChartFinishedEventHandler(chart);
 
     return cleanup;
-  }, [dataset, series, isLoading, setUpChartFinishedEventHandler]);
+  }, [chart, dataset, series, isLoading, setUpChartFinishedEventHandler]);
 
   useEffect(() => {
-    const chart = chartInstanceRef.current?.getEchartsInstance();
     if (!chart) return;
 
     chart.dispatchAction({ type: "hideTip" });
     chart.setOption({ tooltip: { show: !isLoading } }, { notMerge: false });
-  }, [dataset, series, isLoading]);
+  }, [chart, dataset, series, isLoading]);
 
   useEffect(() => {
-    const chart = chartInstanceRef.current?.getEchartsInstance();
-
     if (!chart) return;
 
     const hasCurrentPeriodSeries = () =>
@@ -361,7 +365,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       chart.off("mouseout", onMouseout);
       chart.off("globalout", onGlobalout);
     };
-  }, []);
+  }, [chart]);
 
   const handleLegendItemHover = useCallback<
     NonNullable<LegendProps["onItemHover"]>
@@ -459,8 +463,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   }, [compact, series]);
 
   useEffect(() => {
-    const chart = chartInstanceRef.current?.getEchartsInstance();
-
     if (!chart || !chartSeries || !chartDataset) return;
 
     chart.setOption(
@@ -475,17 +477,15 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         notMerge: true,
       }
     );
-  }, [baseOptions, chartDataset, chartSeries]);
+  }, [chart, baseOptions, chartDataset, chartSeries]);
 
   useEffect(() => {
-    const chart = chartInstanceRef.current?.getEchartsInstance();
-
     if (!chart || !isLoading) return;
 
     chart.setOption(chartSkeletonOptions, {
       notMerge: true,
     });
-  }, [chartSkeletonOptions, isLoading]);
+  }, [chart, chartSkeletonOptions, isLoading]);
 
   return (
     <div className="h-full">
@@ -518,6 +518,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
             echarts={echarts}
             ref={chartInstanceRef}
             option={baseOptions}
+            onChartReady={setChart}
             style={{ height: "100%", width: "100%" }}
           />
         ) : (
