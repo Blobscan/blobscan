@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import type { TimeFrame } from "../../src";
-import { TIME_FRAMES } from "../../src/middlewares/withTimeFrame";
+import { timeFrameSchema } from "../../src/time-frames";
 
 export function runTimeFrameTests({
   statsFiller,
@@ -15,7 +15,7 @@ export function runTimeFrameTests({
       await statsFiller();
     });
 
-    TIME_FRAMES.forEach((timeFrame) => {
+    timeFrameSchema.options.forEach((timeFrame) => {
       it(`should get the stats for ${timeFrame}`, async () => {
         const result = await statsFetcher(timeFrame);
 
