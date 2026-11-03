@@ -124,6 +124,7 @@ const Stats: NextPage = function () {
       "avgBlobGasPrice",
       "minBlobGasPrice",
       "avgBlobBaseFee",
+      "totalUsdPricedTransactions",
       "avgBlobMaxFee",
       "totalBlobBaseFeeUsd",
       "totalTransactions",
