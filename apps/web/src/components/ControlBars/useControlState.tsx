@@ -145,17 +145,13 @@ export function useControlState() {
   const apply = useCallback(() => {
     const { rollups, range, sort, categories } = state;
 
+    // Set the empty filters to undefined. If the key is not set,
+    // updateState keeps the previous value from the URL.
     const newUrlState: ControlParams = {
       sort,
+      categories: categories ? [categories.value] : undefined,
+      rollups: rollups?.length ? rollups.map((r) => r.value) : undefined,
     };
-
-    if (categories) {
-      newUrlState.categories = [categories.value];
-    }
-
-    if (rollups?.length) {
-      newUrlState.rollups = rollups.map((r) => r.value);
-    }
 
     const clearedRange: ControlParams = {
       startBlock: undefined,
