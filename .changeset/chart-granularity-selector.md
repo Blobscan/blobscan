@@ -16,6 +16,6 @@ The timeseries stats endpoint has a new `granularity` parameter. It also reads t
 | `90d` | **day**, week | day, **week** |
 | `180d` | **day**, week, month | day, **week**, month |
 | `365d` | **day**, week, month | **week**, month |
-| `All` (default) | **day**, week, month, year | **week**, month, year |
+| `All` (default) | day, **week**, month, year | **week**, month, year |
 
-This changes the default periods of two time frames with `categories` or `rollups`: `7d` now gives daily periods, and `90d` gives weekly periods. Stacked bars with one segment for each rollup are easier to read with fewer periods.
+This changes the default periods of three time frames. With `categories` or `rollups`, `7d` now gives daily periods, and `90d` gives weekly periods. Stacked bars with one segment for each rollup are easier to read with fewer periods. Without `categories` and `rollups`, `All` now gives weekly periods, because its number of daily periods increases each day.
