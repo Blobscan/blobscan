@@ -2,7 +2,7 @@ import dayjs from "@blobscan/dayjs";
 import { convertWei } from "@blobscan/eth-format";
 
 import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
-import type { Rollup } from "~/types";
+import type { Rollup, TimeseriesGranularity } from "~/types";
 import { convertBytes, formatFiat, formatNumber, getHumanDate } from "~/utils";
 import type { Numerish } from "~/utils";
 import type { BytesAxis, EtherAxis, FiatAxis, Axis } from "../types";
@@ -17,7 +17,7 @@ export function formatAxisValue(
   const isDateValue = value instanceof Date || typeof value === "string";
 
   if (type === "time" && isDateValue) {
-    return formatTimeValue(value as Date | string, compact);
+    return formatTimeValue(value as Date | string, compact, axis.granularity);
   }
 
   const value_ = value as Numerish;
@@ -33,8 +33,23 @@ export function formatAxisValue(
   }
 }
 
-export function formatTimeValue(value: string | Date, compact?: boolean) {
-  return compact ? dayjs(value).format("MMM DD") : getHumanDate(value);
+export function formatTimeValue(
+  value: string | Date,
+  compact?: boolean,
+  granularity: TimeseriesGranularity = "day"
+) {
+  switch (granularity) {
+    case "hour":
+      return compact
+        ? dayjs(value).format("MMM DD HH:mm")
+        : `${getHumanDate(value)}, ${dayjs(value).format("HH:mm")}`;
+    case "week":
+      return compact
+        ? dayjs(value).format("MMM DD")
+        : `Week of ${getHumanDate(value)}`;
+    default:
+      return compact ? dayjs(value).format("MMM DD") : getHumanDate(value);
+  }
 }
 
 export function formatEtherValue(

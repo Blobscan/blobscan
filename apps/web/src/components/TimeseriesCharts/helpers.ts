@@ -6,6 +6,7 @@ import type {
   Category,
   Rollup,
   Prettify,
+  TimeseriesGranularity,
 } from "~/types";
 import type { Numerish } from "~/utils";
 import type { Axis } from "../Charts/ChartBase";
@@ -51,6 +52,10 @@ export type TimeseriesDataset<T extends TimeseriesData = TimeseriesData> =
   Prettify<{
     id: DatasetId;
     /**
+     * The length of each period. Each timestamp is the start of a period.
+     */
+    granularity?: TimeseriesGranularity;
+    /**
      * The current period when the data includes it. The current period is not
      * complete, so its values are partial.
      */
@@ -82,6 +87,7 @@ function padSeries<S extends (string | number | null)[]>(
 export function transformToDatasets<T extends TimeseriesData>({
   series,
   timestamps,
+  granularity,
   currentPeriod,
 }: T): TimeseriesDataset<T>[] {
   const allEmptySeries = series.every((s) => s.startTimestampIdx === undefined);
@@ -126,6 +132,7 @@ export function transformToDatasets<T extends TimeseriesData>({
       id: (dimension.type === "global"
         ? "global"
         : `${dimension.type}-${dimension.name}`) as DatasetId,
+      granularity,
       currentPeriod,
       source: {
         timestamp: timestamps,

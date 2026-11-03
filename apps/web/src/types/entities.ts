@@ -52,6 +52,11 @@ export type BlobWithExpandedTransaction = MakeRequired<
 
 export type TimeseriesData = AppRouterOutputs["stats"]["getTimeseries"]["data"];
 
+/**
+ * The length of each period of a timeseries.
+ */
+export type TimeseriesGranularity = TimeseriesData["granularity"];
+
 export type SingleTimeseries = TimeseriesData["series"][number];
 
 export type TimeseriesMetricsSeries =

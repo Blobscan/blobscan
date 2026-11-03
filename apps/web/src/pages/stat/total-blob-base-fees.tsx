@@ -9,7 +9,9 @@ const TotalBlobBaseFees: NextPage = function () {
     <TimeseriesChartPage
       chart={TotalBlobBaseFeesChart}
       usdChart={TotalBlobBaseFeesUsdChart}
-      description="This chart shows the total amount of blob base fees per day, broken down by rollup and category. In USD, each fee is converted at the ETH price of the minute of its block."
+      description={(period) =>
+        `This chart shows the total amount of blob base fees per ${period}, broken down by rollup and category. In USD, each fee is converted at the ETH price of the minute of its block.`
+      }
       title="Total Blob Base Fees Stats"
       isCategorizedTimeseries
     />

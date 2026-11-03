@@ -7,7 +7,9 @@ const TotalBlobGasUsed: NextPage = function () {
   return (
     <TimeseriesChartPage
       chart={TotalBlobGasUsedChart}
-      description="This chart shows the total amount of blob gas used per day, broken down by rollup and category."
+      description={(period) =>
+        `This chart shows the total amount of blob gas used per ${period}, broken down by rollup and category.`
+      }
       title="Total Blob Gas Used Stats"
       isCategorizedTimeseries
     />

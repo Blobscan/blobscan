@@ -7,7 +7,9 @@ const TotalBlobSize: NextPage = function () {
   return (
     <TimeseriesChartPage
       chart={TotalBlobSizeChart}
-      description="This chart shows the total amount of blob data posted per day, broken down by category and rollup."
+      description={(period) =>
+        `This chart shows the total amount of blob data posted per ${period}, broken down by category and rollup.`
+      }
       title="Total Blob Size Stats"
       isCategorizedTimeseries
     />
