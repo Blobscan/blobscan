@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import {
   getTimeFrameDays,
   getTimeFrameGranularity,
+  isTimeFrameGranularity,
 } from "@blobscan/api/src/time-frames";
 
 import { SeoMetaTags } from "~/components/SeoMetaTags";
@@ -12,6 +13,7 @@ import { useUrlState } from "~/hooks/useUrlState";
 import { feeUnitParamsSchema } from "~/schemas/feeUnit";
 import {
   categoriesParamSchema,
+  granularityParamSchema,
   rollupsSchema,
   timeFrameParamSchema,
 } from "~/schemas/filters";
@@ -51,6 +53,7 @@ const PERIODS_PER_DAY = {
   hour: 24,
   day: 1,
   week: 1 / 7,
+  month: 1 / 30,
 } satisfies Record<TimeseriesGranularity, number>;
 
 /**
@@ -73,6 +76,7 @@ function getSkeletonItemCount(
 const controlQueryParamsSchema = categoriesParamSchema
   .merge(rollupsSchema)
   .merge(timeFrameParamSchema)
+  .merge(granularityParamSchema)
   .merge(feeUnitParamsSchema);
 
 export const TimeseriesChartPage = function ({
@@ -97,10 +101,28 @@ export const TimeseriesChartPage = function ({
   const unit = usdChart ? state?.unit ?? "eth" : "eth";
   const Chart = unit === "usd" && usdChart ? usdChart : ethChart;
   const timeFrame = state?.timeFrame ?? DEFAULT_CHART_TIME_FRAME;
+  const isCategorized = Boolean(isCategorizedTimeseries);
+  const defaultGranularity = getTimeFrameGranularity(timeFrame, {
+    isCategorized,
+  });
+  // Use the default granularity when the time frame does not allow the
+  // granularity of the URL.
+  const selectedGranularity =
+    state?.granularity &&
+    isTimeFrameGranularity(state.granularity, timeFrame, { isCategorized })
+      ? state.granularity
+      : undefined;
+  const granularity = selectedGranularity ?? defaultGranularity;
 
   const { data: chartDatasets, isLoading } = useTimeseriesQuery({
     metrics: Chart.requiredMetrics,
     timeFrame,
+    // The default granularity is not sent, so that the requests with and
+    // without it share the cache.
+    granularity:
+      selectedGranularity !== defaultGranularity
+        ? selectedGranularity
+        : undefined,
     categories: isCategorizedTimeseries ? categories : undefined,
     rollups: isCategorizedTimeseries ? rollups : undefined,
   });
@@ -109,9 +131,6 @@ export const TimeseriesChartPage = function ({
     return null;
   }
 
-  const granularity = getTimeFrameGranularity(timeFrame, {
-    isCategorized: Boolean(isCategorizedTimeseries),
-  });
   const descriptionText = description(granularity);
 
   return (

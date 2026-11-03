@@ -1,4 +1,5 @@
 import type { TimeFrame } from "@blobscan/api";
+import type { MetricsGranularity } from "@blobscan/api/src/time-frames";
 
 import { transformToDatasets } from "~/components/TimeseriesCharts/helpers";
 import { api } from "~/api-client";
@@ -11,10 +12,11 @@ const CURRENT_PERIOD_REFETCH_INTERVAL_MS = 5 * 60 * 1000;
 export function useTimeseriesQuery(params: {
   metrics: [TimeseriesMetric, ...TimeseriesMetric[]];
   timeFrame?: TimeFrame;
+  granularity?: MetricsGranularity;
   categories?: CategoriesParam;
   rollups?: RollupsParam;
 }) {
-  const { metrics, timeFrame, categories, rollups } = params;
+  const { metrics, timeFrame, granularity, categories, rollups } = params;
   const isGlobalTimeseries = !categories?.length && !rollups?.length;
 
   return api.stats.getTimeseries.useQuery(
@@ -23,6 +25,7 @@ export function useTimeseriesQuery(params: {
       categories: categories ? toCommaSeparatedParam(categories) : undefined,
       rollups: rollups ? toCommaSeparatedParam(rollups) : undefined,
       timeFrame,
+      granularity,
       sort: "asc",
       includeCurrentPeriod: "true",
     },
