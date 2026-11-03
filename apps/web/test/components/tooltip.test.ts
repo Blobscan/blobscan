@@ -64,7 +64,7 @@ describe("tooltip formatter", () => {
     ]);
 
     expect(html).toContain("Live");
-    expect(html).toContain("Times in UTC · Updated 5 minutes ago");
+    expect(html).toContain("Updated 5 minutes ago");
   });
 
   it("gets the update time again on each hover", () => {
@@ -82,7 +82,6 @@ describe("tooltip formatter", () => {
     const html = getFormatter()([axisParam(CURRENT_PERIOD)]);
 
     expect(html).toContain("Live");
-    expect(html).toContain("Times in UTC");
     expect(html).not.toContain("Updated");
   });
 
@@ -103,7 +102,7 @@ describe("tooltip formatter", () => {
       formatter(itemParam(CLOSED_PERIOD)),
     ]) {
       expect(html).not.toContain("Live");
-      expect(html).not.toContain("Times in UTC");
+      expect(html).not.toContain("Updated");
       expect(html).not.toContain("justify-content: space-between; align-items");
     }
   });
