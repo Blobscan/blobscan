@@ -169,57 +169,64 @@ export function useControlState(extraParams?: ExtraParams) {
 
   const clear = useCallback(() => dispatch({ type: "CLEAR" }), []);
 
-  const apply = useCallback(() => {
-    const { rollups, range, sort, categories, timeFrame, granularity } = state;
+  // The overrides replace the URL params made from the state. Set a param to
+  // undefined to remove it from the URL.
+  const apply = useCallback(
+    (overrides?: Partial<ControlParams>) => {
+      const { rollups, range, sort, categories, timeFrame, granularity } =
+        state;
 
-    // Set the empty filters to undefined. If the key is not set,
-    // updateState keeps the previous value from the URL.
-    const newUrlState: ControlParams = {
-      sort,
-      categories: categories ? [categories.value] : undefined,
-      rollups: rollups?.length ? rollups.map((r) => r.value) : undefined,
-      timeFrame: timeFrame !== DEFAULT_CHART_TIME_FRAME ? timeFrame : undefined,
-      granularity: granularity ?? undefined,
-    };
+      // Set the empty filters to undefined. If the key is not set,
+      // updateState keeps the previous value from the URL.
+      const newUrlState: ControlParams = {
+        sort,
+        categories: categories ? [categories.value] : undefined,
+        rollups: rollups?.length ? rollups.map((r) => r.value) : undefined,
+        timeFrame:
+          timeFrame !== DEFAULT_CHART_TIME_FRAME ? timeFrame : undefined,
+        granularity: granularity ?? undefined,
+      };
 
-    const clearedRange: ControlParams = {
-      startBlock: undefined,
-      endBlock: undefined,
-      startSlot: undefined,
-      endSlot: undefined,
-      startEpoch: undefined,
-      endEpoch: undefined,
-      startDate: undefined,
-      endDate: undefined,
-    };
+      const clearedRange: ControlParams = {
+        startBlock: undefined,
+        endBlock: undefined,
+        startSlot: undefined,
+        endSlot: undefined,
+        startEpoch: undefined,
+        endEpoch: undefined,
+        startDate: undefined,
+        endDate: undefined,
+      };
 
-    if (range) {
-      const { type, values } = range;
+      if (range) {
+        const { type, values } = range;
 
-      if (type === "block") {
-        clearedRange.startBlock = values.start ?? undefined;
-        clearedRange.endBlock = values.end ?? undefined;
-      } else if (type === "date") {
-        const start = values.start;
-        const end = values.end;
+        if (type === "block") {
+          clearedRange.startBlock = values.start ?? undefined;
+          clearedRange.endBlock = values.end ?? undefined;
+        } else if (type === "date") {
+          const start = values.start;
+          const end = values.end;
 
-        clearedRange.startDate =
-          typeof start === "string" ? new Date(start) : start ?? undefined;
-        clearedRange.endDate =
-          typeof end === "string" ? new Date(end) : end ?? undefined;
-      } else if (type === "slot") {
-        clearedRange.startSlot = values.start ?? undefined;
-        clearedRange.endSlot = values.end ?? undefined;
-      } else if (type === "epoch") {
-        clearedRange.startEpoch = values.start ?? undefined;
-        clearedRange.endEpoch = values.end ?? undefined;
+          clearedRange.startDate =
+            typeof start === "string" ? new Date(start) : start ?? undefined;
+          clearedRange.endDate =
+            typeof end === "string" ? new Date(end) : end ?? undefined;
+        } else if (type === "slot") {
+          clearedRange.startSlot = values.start ?? undefined;
+          clearedRange.endSlot = values.end ?? undefined;
+        } else if (type === "epoch") {
+          clearedRange.startEpoch = values.start ?? undefined;
+          clearedRange.endEpoch = values.end ?? undefined;
+        }
       }
-    }
 
-    Object.assign(newUrlState, clearedRange);
+      Object.assign(newUrlState, clearedRange, overrides);
 
-    updateState({ ...extraParams, ...newUrlState });
-  }, [state, extraParams, updateState]);
+      updateState({ ...extraParams, ...newUrlState });
+    },
+    [state, extraParams, updateState]
+  );
 
   const actions = useMemo(
     () => ({
