@@ -3,7 +3,12 @@ import { convertWei } from "@blobscan/eth-format";
 
 import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
 import type { Rollup, TimeseriesGranularity } from "~/types";
-import { convertBytes, formatFiat, formatNumber, getHumanDate } from "~/utils";
+import {
+  convertBytes,
+  formatFiat,
+  formatNumber,
+  HUMAN_DATE_FORMAT,
+} from "~/utils";
 import type { Numerish } from "~/utils";
 import type { BytesAxis, EtherAxis, FiatAxis, Axis } from "../types";
 
@@ -33,23 +38,26 @@ export function formatAxisValue(
   }
 }
 
+// The periods start at UTC boundaries (a week starts on Monday 00:00 UTC), so
+// the dates show in UTC. In a local timezone, a period can show the date of
+// the day before.
+const TIME_FORMATS: Record<
+  TimeseriesGranularity,
+  { compact: string; full: string }
+> = {
+  hour: { compact: "MMM DD HH:mm", full: `${HUMAN_DATE_FORMAT}, HH:mm [UTC]` },
+  day: { compact: "MMM DD", full: HUMAN_DATE_FORMAT },
+  week: { compact: "MMM DD", full: `[Week of] ${HUMAN_DATE_FORMAT}` },
+};
+
 export function formatTimeValue(
   value: string | Date,
   compact?: boolean,
   granularity: TimeseriesGranularity = "day"
 ) {
-  switch (granularity) {
-    case "hour":
-      return compact
-        ? dayjs(value).format("MMM DD HH:mm")
-        : `${getHumanDate(value)}, ${dayjs(value).format("HH:mm")}`;
-    case "week":
-      return compact
-        ? dayjs(value).format("MMM DD")
-        : `Week of ${getHumanDate(value)}`;
-    default:
-      return compact ? dayjs(value).format("MMM DD") : getHumanDate(value);
-  }
+  const { compact: compactFormat, full } = TIME_FORMATS[granularity];
+
+  return dayjs.utc(value).format(compact ? compactFormat : full);
 }
 
 export function formatEtherValue(
