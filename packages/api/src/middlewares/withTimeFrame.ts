@@ -1,24 +1,11 @@
-import { z } from "zod";
-
 import type { Chain } from "@blobscan/chains";
 import dayjs from "@blobscan/dayjs";
+import { z } from "@blobscan/zod";
 
+import type { TimeFrame } from "../time-frames";
+import { getTimeFrameDays, timeFrameSchema } from "../time-frames";
 import { t } from "../trpc-client";
 
-export const TIME_FRAMES = [
-  "1d",
-  "7d",
-  "15d",
-  "30d",
-  "90d",
-  "180d",
-  "365d",
-  "All",
-] as const;
-
-export const timeFrameSchema = z.enum(TIME_FRAMES);
-
-export type TimeFrame = z.infer<typeof timeFrameSchema>;
 export type TimeInterval = {
   initial: dayjs.Dayjs;
   final: dayjs.Dayjs;
@@ -39,7 +26,7 @@ function getTimeFrameDatePeriod(
     };
   }
 
-  const day = parseInt(timeFrame.split("d")[0] ?? "1d");
+  const day = getTimeFrameDays(timeFrame);
 
   if (day === 1) {
     return {

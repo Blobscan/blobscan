@@ -1,10 +1,15 @@
 import type { Chain } from "@blobscan/chains";
-import type { DayjsDatePeriod } from "@blobscan/dayjs";
 import dayjs from "@blobscan/dayjs";
 import type { Prisma } from "@blobscan/db";
-import { Category, Rollup } from "@blobscan/db/prisma/enums";
+import type { Category, Rollup } from "@blobscan/db/prisma/enums";
 import { z } from "@blobscan/zod";
 
+import type { MetricsGranularity, TimeFrame } from "../time-frames";
+import {
+  getTimeFrameDays,
+  getTimeFrameGranularity,
+  timeFrameSchema,
+} from "../time-frames";
 import { t } from "../trpc-client";
 import {
   commaSeparatedCategoriesSchema,
@@ -13,22 +18,7 @@ import {
   timeseriesMetricsSchema,
 } from "../zod-schemas";
 
-const METRIC_NAMES = Object.keys(timeseriesMetricsSchema.shape);
-
-export const timeFrameSchema = z.enum([
-  "1d",
-  "7d",
-  "15d",
-  "30d",
-  "90d",
-  "180d",
-  "365d",
-  "All",
-]);
-
-export type TimeFrame = z.infer<typeof timeFrameSchema>;
-
-export type DayStatFilter = {
+export type PeriodStartStatFilter = {
   periodStart: string | Date | Prisma.DateTimeFilter<"DailyMetrics">;
 };
 
@@ -39,10 +29,13 @@ export type RollupStatFilter = {
   rollup?: null | { not: null } | { in: Rollup[] };
 };
 
+// All the metrics tables have the same columns, so the filters use the types
+// of the daily table.
 export type StatsFilters = {
+  granularity: MetricsGranularity;
   select?: Prisma.DailyMetricsSelect;
   where: Partial<
-    DayStatFilter &
+    PeriodStartStatFilter &
       CategoryStatFilter &
       RollupStatFilter & { OR: (CategoryStatFilter & RollupStatFilter)[] }
   >;
@@ -51,7 +44,11 @@ export type StatsFilters = {
 const allSchema = z.literal("all");
 
 export const withTimeFrameFilterSchema = z.object({
-  timeFrame: timeFrameSchema.optional(),
+  timeFrame: timeFrameSchema
+    .optional()
+    .describe(
+      "The time frame of the stats. It also sets the length of each period: an hour for `1d` and `7d`, and a day for `15d`, `30d` and `90d`. For `180d`, `365d` and `All` (the default), the period is a day without `categories` and `rollups`, and a week with them."
+    ),
 });
 
 export const withStatCategoriesFilterSchema = z.object({
@@ -92,130 +89,69 @@ export const withStatFiltersSchema = withMetricsFilterSchema
 
 export type StatFiltersOutputSchema = z.output<typeof withStatFiltersSchema>;
 
-function getRecommendedDaysInterval(
-  { from, to }: Required<DayjsDatePeriod>,
-  { categories, rollups, metrics }: StatFiltersOutputSchema
+/**
+ * Returns the start of the period that contains the date, in UTC. A week
+ * starts on Monday, the same as Postgres DATE_TRUNC('week', ...), which
+ * Dagster uses to aggregate the weekly metrics.
+ */
+export function getPeriodStart(
+  date: dayjs.ConfigType,
+  granularity: MetricsGranularity
 ) {
-  const days = to.diff(from, "day");
-  const categoriesCount =
-    categories === "all"
-      ? Object.keys(Category).length
-      : categories?.length ?? 0;
-  const rollupsCount =
-    rollups === "all" ? Object.keys(Rollup).length : rollups?.length ?? 0;
-  const metricsCount = metrics?.length ?? METRIC_NAMES.length;
-  const dimensionCount = categoriesCount * rollupsCount;
+  const utcDate = dayjs(date).utc();
 
-  const totalPotentialPoints = days * dimensionCount * metricsCount;
+  if (granularity === "week") {
+    const startOfDay = utcDate.startOf("day");
 
-  if (totalPotentialPoints < 15_000) {
-    return 1;
+    return startOfDay.subtract((startOfDay.day() + 6) % 7, "day");
   }
 
-  if (totalPotentialPoints < 30_000) {
-    return 3;
-  }
-
-  if (totalPotentialPoints < 60_000) {
-    return 4;
-  }
-
-  return 7;
+  return utcDate.startOf(granularity);
 }
 
-function getSampleDates(
-  { from, to }: Required<DayjsDatePeriod>,
-  daysInterval: number
-) {
-  const dates: string[] = [];
-
-  let current = from.clone();
-
-  while (current.isBefore(to) || current.isSame(to)) {
-    dates.push(current.utc().toISOString());
-
-    current = current.add(daysInterval, "day");
-  }
-
-  return dates;
-}
-
-function buildDayWhereClause({
+function buildPeriodStartWhereClause({
   chain,
-  input,
+  timeFrame,
+  granularity,
 }: {
   chain: Chain;
-  input: StatFiltersOutputSchema;
-}): DayStatFilter["periodStart"] {
-  let days: number;
-  const to = dayjs().utc().subtract(1, "day").startOf("day");
-  const toISO = to.utc().toISOString();
-  const timeFrame = input.timeFrame;
-
-  let from: dayjs.Dayjs;
+  timeFrame?: TimeFrame;
+  granularity: MetricsGranularity;
+}): PeriodStartStatFilter["periodStart"] {
+  // The current period is not complete. getTimeseries adds it when it is
+  // requested.
+  const lastClosedPeriodStart = getPeriodStart(dayjs(), granularity).subtract(
+    1,
+    granularity
+  );
+  const lte = lastClosedPeriodStart.toISOString();
 
   if (!timeFrame || timeFrame === "All") {
     const dencunFork = chain.forks[0];
-    const dencunActivationDate = dayjs(dencunFork.activationDate);
 
-    if (dencunActivationDate.isAfter(to)) {
-      const dencunActivationDateISO = dencunActivationDate.utc().toISOString();
-      return {
-        gt: dencunActivationDateISO,
-        lte: toISO,
-      };
-    }
-
-    from = dencunActivationDate;
-
-    days = from.diff(dencunActivationDate, "day");
-  } else {
-    days = parseInt(timeFrame.split("d")[0] ?? "1");
-    from = to.subtract(days, "day").startOf("day");
-  }
-
-  if (from.isSame(to)) {
     return {
-      gte: toISO,
-      lte: toISO,
+      gte: getPeriodStart(dencunFork.activationDate, granularity).toISOString(),
+      lte,
     };
   }
 
-  const daysInterval = getRecommendedDaysInterval(
-    {
-      from,
-      to,
-    },
-    input
-  );
-  const samplingRequired = daysInterval > 1;
-
-  if (samplingRequired) {
-    const sampleDates = getSampleDates(
-      {
-        from,
-        to,
-      },
-      daysInterval
-    );
-
-    return {
-      in: sampleDates,
-    };
-  }
-
-  const fromISO = from.utc().toISOString();
+  // The periods that start in the time frame, before the current period.
+  const days = getTimeFrameDays(timeFrame);
+  const currentPeriodStart = lastClosedPeriodStart.add(1, granularity);
 
   return {
-    gt: fromISO,
-    lte: toISO,
+    gte: currentPeriodStart.subtract(days, "day").toISOString(),
+    lte,
   };
 }
 
 export const withStatFilters = t.middleware(
   ({ next, input: input_ = {}, ctx: { chain } }) => {
     const input = input_ as StatFiltersOutputSchema;
-    const { categories, rollups, metrics } = input;
+    const { categories, rollups, metrics, timeFrame } = input;
+    const granularity = getTimeFrameGranularity(timeFrame, {
+      isCategorized: Boolean(categories || rollups),
+    });
     let select: StatsFilters["select"];
     const where: StatsFilters["where"] = {};
 
@@ -229,9 +165,10 @@ export const withStatFilters = t.middleware(
       );
     }
 
-    where.periodStart = buildDayWhereClause({
+    where.periodStart = buildPeriodStartWhereClause({
       chain,
-      input,
+      timeFrame,
+      granularity,
     });
 
     const isAllCategoriesEnabled = categories === "all";
@@ -270,6 +207,7 @@ export const withStatFilters = t.middleware(
     return next({
       ctx: {
         statFilters: {
+          granularity,
           select,
           where,
         },

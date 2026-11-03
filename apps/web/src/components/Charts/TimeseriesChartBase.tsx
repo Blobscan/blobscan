@@ -139,20 +139,24 @@ export const TimeseriesChartBase: FC<TimeseriesChartBaseProps> = ({
 
     return getSeries(dataset, timeseries, themeMode);
   }, [dataset, timeseries, themeMode]);
+  // All the datasets of a chart have the same granularity.
+  const granularity = Array.isArray(datasetProp)
+    ? datasetProp[0]?.granularity
+    : datasetProp?.granularity;
+  const axes = useMemo<ChartBaseProps["axes"]>(
+    () => ({
+      x: {
+        type: "time",
+        granularity,
+      },
+      y: yAxis,
+    }),
+    [granularity, yAxis]
+  );
 
   return (
     <Card compact>
-      <ChartBase
-        axes={{
-          x: {
-            type: "time",
-          },
-          y: yAxis,
-        }}
-        dataset={dataset}
-        series={series}
-        {...restProps}
-      />
+      <ChartBase axes={axes} dataset={dataset} series={series} {...restProps} />
     </Card>
   );
 };

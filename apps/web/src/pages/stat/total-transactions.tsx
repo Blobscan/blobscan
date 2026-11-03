@@ -7,7 +7,9 @@ const TotalTransactions: NextPage = function () {
   return (
     <TimeseriesChartPage
       chart={TotalTransactionsChart}
-      description="This chart shows the total number of blob transactions per day, broken down by category and rollup."
+      description={(period) =>
+        `This chart shows the total number of blob transactions per ${period}, broken down by category and rollup.`
+      }
       title="Total Transactions Stats"
       isCategorizedTimeseries
     />

@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useMemo, useReducer } from "react";
 import type { DateType } from "react-tailwindcss-datepicker";
+
 import type { z } from "@blobscan/zod";
 
 import { useUrlState } from "~/hooks/useUrlState";
-import { filterParamsSchema } from "~/schemas/filters";
+import { filterParamsSchema, timeFrameParamSchema } from "~/schemas/filters";
 import type { Sort } from "~/schemas/sort";
 import { sortParamsSchema } from "~/schemas/sort";
 import type { Range } from "../RangeRadioGroup";
-import { ROLLUP_OPTIONS } from "../Selectors";
-import type { RollupSelectorOption } from "../Selectors";
+import { DEFAULT_CHART_TIME_FRAME, ROLLUP_OPTIONS } from "../Selectors";
+import type { ChartTimeFrame, RollupSelectorOption } from "../Selectors";
 import { CATEGORY_OPTIONS } from "../Selectors/CategorySelector";
 import type { CategorySelectorOption } from "../Selectors/CategorySelector";
 
@@ -30,6 +31,7 @@ type ControlState = {
   rollups: RollupSelectorOption[] | null;
   categories: CategorySelectorOption | null;
   range: RangeFilter;
+  timeFrame: ChartTimeFrame;
 
   sort: Sort;
 };
@@ -38,7 +40,9 @@ type Action =
   | { type: "CLEAR" }
   | { type: "UPDATE"; payload: Partial<ControlState> };
 
-export const controlParamsSchema = filterParamsSchema.merge(sortParamsSchema);
+export const controlParamsSchema = filterParamsSchema
+  .merge(sortParamsSchema)
+  .merge(timeFrameParamSchema);
 
 type ControlParams = z.infer<typeof controlParamsSchema>;
 
@@ -52,6 +56,7 @@ const INITIAL_STATE: ControlState = {
       end: null,
     },
   },
+  timeFrame: DEFAULT_CHART_TIME_FRAME,
   sort: "desc",
 };
 
@@ -68,6 +73,7 @@ function toControlState(queryParams: ControlParams): Partial<ControlState> {
     endEpoch,
     rollups,
     sort,
+    timeFrame,
   } = queryParams;
 
   const next: Partial<ControlState> = {};
@@ -84,6 +90,8 @@ function toControlState(queryParams: ControlParams): Partial<ControlState> {
   }
 
   if (sort) next.sort = sort;
+
+  if (timeFrame) next.timeFrame = timeFrame;
 
   if (startDate || endDate) {
     next.range = {
@@ -143,7 +151,7 @@ export function useControlState() {
   const clear = useCallback(() => dispatch({ type: "CLEAR" }), []);
 
   const apply = useCallback(() => {
-    const { rollups, range, sort, categories } = state;
+    const { rollups, range, sort, categories, timeFrame } = state;
 
     // Set the empty filters to undefined. If the key is not set,
     // updateState keeps the previous value from the URL.
@@ -151,6 +159,7 @@ export function useControlState() {
       sort,
       categories: categories ? [categories.value] : undefined,
       rollups: rollups?.length ? rollups.map((r) => r.value) : undefined,
+      timeFrame: timeFrame !== DEFAULT_CHART_TIME_FRAME ? timeFrame : undefined,
     };
 
     const clearedRange: ControlParams = {
@@ -204,6 +213,9 @@ export function useControlState() {
 
       setRange: (range: RangeFilter) =>
         dispatch({ type: "UPDATE", payload: { range } }),
+
+      setTimeFrame: (timeFrame: ChartTimeFrame) =>
+        dispatch({ type: "UPDATE", payload: { timeFrame } }),
     }),
     []
   );

@@ -8,7 +8,9 @@ const TotalBlocks: NextPage = function () {
     <TimeseriesChartPage
       chart={TotalBlocksChart}
       title="Total Blocks Stats"
-      description="This chart shows the total amount of blocks containing blob transactions per day."
+      description={(period) =>
+        `This chart shows the total amount of blocks containing blob transactions per ${period}.`
+      }
     />
   );
 };

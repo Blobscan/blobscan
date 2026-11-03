@@ -7,7 +7,9 @@ const DailyBlobs: NextPage = function () {
   return (
     <TimeseriesChartPage
       chart={TotalBlobsChart}
-      description="This chart shows the total amount of blobs posted per day, broken down by category and rollup."
+      description={(period) =>
+        `This chart shows the total amount of blobs posted per ${period}, broken down by category and rollup.`
+      }
       title="Total Blobs Stats"
       isCategorizedTimeseries
     />

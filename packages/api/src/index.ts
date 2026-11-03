@@ -8,7 +8,7 @@ export type {
 
 export { createMetricsHandler } from "./instrumentation";
 
-export type { TimeFrame } from "./middlewares/withTimeFrame";
+export type { TimeFrame } from "./time-frames";
 
 export { openApiOverride } from "./openapi";
 

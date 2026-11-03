@@ -9,7 +9,9 @@ const AvgBlobBaseFee: NextPage = function () {
     <TimeseriesChartPage
       chart={AvgBlobBaseFeeChart}
       usdChart={AvgBlobBaseFeeUsdChart}
-      description="This chart shows the average blob base fee per day. In USD, each fee is converted at the ETH price of the minute of its block."
+      description={(period) =>
+        `This chart shows the average blob base fee per ${period}. In USD, each fee is converted at the ETH price of the minute of its block.`
+      }
       enableControls={false}
       title="Average Blob Base Fee Stats"
     />

@@ -42,6 +42,8 @@ export function formatDate(
   return date;
 }
 
+export const HUMAN_DATE_FORMAT = "dddd, MMMM, DD YYYY";
+
 export function getHumanDate(date: string | Date) {
-  return dayjs(date).format("dddd, MMMM, DD YYYY");
+  return dayjs(date).format(HUMAN_DATE_FORMAT);
 }
