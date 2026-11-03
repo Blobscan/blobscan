@@ -1,3 +1,5 @@
+import { TRPCError } from "@trpc/server";
+
 import type { Chain } from "@blobscan/chains";
 import dayjs from "@blobscan/dayjs";
 import type { Prisma } from "@blobscan/db";
@@ -7,7 +9,10 @@ import { z } from "@blobscan/zod";
 import type { MetricsGranularity, TimeFrame } from "../time-frames";
 import {
   getTimeFrameDays,
+  getTimeFrameGranularities,
   getTimeFrameGranularity,
+  isTimeFrameGranularity,
+  metricsGranularitySchema,
   timeFrameSchema,
 } from "../time-frames";
 import { t } from "../trpc-client";
@@ -47,7 +52,15 @@ export const withTimeFrameFilterSchema = z.object({
   timeFrame: timeFrameSchema
     .optional()
     .describe(
-      "The time frame of the stats. It also sets the length of each period: an hour for `1d` and `7d`, and a day for `15d`, `30d` and `90d`. For `180d`, `365d` and `All` (the default), the period is a day without `categories` and `rollups`, and a week with them."
+      "The time frame of the stats. Without `granularity`, it also sets the length of each period: an hour for `1d` and `7d`, and a day for `15d`, `30d` and `90d`. For `180d`, `365d` and `All` (the default), the period is a day without `categories` and `rollups`, and a week with them. With `categories` or `rollups`, the period is a day for `7d` and a week for `90d`."
+    ),
+});
+
+export const withGranularityFilterSchema = z.object({
+  granularity: metricsGranularitySchema
+    .optional()
+    .describe(
+      "The length of each period. Each time frame allows only some granularities. Without `categories` and `rollups`: `hour` for `1d`; `hour` and `day` for `7d` and `15d`; `hour`, `day` and `week` for `30d`; `day` and `week` for `90d`; and `day`, `week` and `month` for `180d`, `365d` and `All`. With `categories` or `rollups`: `hour` for `1d`; `hour` and `day` for `7d`; `day` for `15d`; `day` and `week` for `30d` and `90d`; `day`, `week` and `month` for `180d`; and `week` and `month` for `365d` and `All`. The default is the granularity of the time frame."
     ),
 });
 
@@ -85,6 +98,7 @@ export const withMetricsFilterSchema = z
 
 export const withStatFiltersSchema = withMetricsFilterSchema
   .merge(withTimeFrameFilterSchema)
+  .merge(withGranularityFilterSchema)
   .merge(withStatCategoriesFilterSchema.merge(withStatRollupsFilterSchema));
 
 export type StatFiltersOutputSchema = z.output<typeof withStatFiltersSchema>;
@@ -149,9 +163,29 @@ export const withStatFilters = t.middleware(
   ({ next, input: input_ = {}, ctx: { chain } }) => {
     const input = input_ as StatFiltersOutputSchema;
     const { categories, rollups, metrics, timeFrame } = input;
-    const granularity = getTimeFrameGranularity(timeFrame, {
-      isCategorized: Boolean(categories || rollups),
-    });
+    const isCategorized = Boolean(categories || rollups);
+
+    if (
+      input.granularity &&
+      !isTimeFrameGranularity(input.granularity, timeFrame, { isCategorized })
+    ) {
+      const { options } = getTimeFrameGranularities(timeFrame, {
+        isCategorized,
+      });
+
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: `Granularity "${
+          input.granularity
+        }" is not allowed for time frame "${
+          timeFrame ?? "All"
+        }". Allowed granularities: ${options.join(", ")}`,
+      });
+    }
+
+    const granularity =
+      input.granularity ??
+      getTimeFrameGranularity(timeFrame, { isCategorized });
     let select: StatsFilters["select"];
     const where: StatsFilters["where"] = {};
 

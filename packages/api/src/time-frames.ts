@@ -19,7 +19,12 @@ export type TimeFrame = z.infer<typeof timeFrameSchema>;
  * The length of one period of a timeseries. Each granularity has its own
  * metrics table.
  */
-export const metricsGranularitySchema = z.enum(["hour", "day", "week"]);
+export const metricsGranularitySchema = z.enum([
+  "hour",
+  "day",
+  "week",
+  "month",
+]);
 
 export type MetricsGranularity = z.infer<typeof metricsGranularitySchema>;
 
@@ -41,28 +46,73 @@ export function getTimeFrameDays(timeFrame: Exclude<TimeFrame, "All">) {
   return TIME_FRAME_DAYS[timeFrame];
 }
 
+type TimeFrameGranularities = {
+  default: MetricsGranularity;
+  options: readonly MetricsGranularity[];
+};
+
+// A time frame allows the granularities that give a good number of periods:
+// at least about 4, and at most about 1000 for a line. A categorized
+// timeseries (split by category or rollup) shows as stacked bars, with up to
+// one segment for each rollup in each bar. Thus it allows at most about 200
+// periods.
+const GLOBAL_GRANULARITIES = {
+  "1d": { default: "hour", options: ["hour"] },
+  "7d": { default: "hour", options: ["hour", "day"] },
+  "15d": { default: "day", options: ["hour", "day"] },
+  "30d": { default: "day", options: ["hour", "day", "week"] },
+  "90d": { default: "day", options: ["day", "week"] },
+  "180d": { default: "day", options: ["day", "week", "month"] },
+  "365d": { default: "day", options: ["day", "week", "month"] },
+  All: { default: "day", options: ["day", "week", "month"] },
+} satisfies Record<TimeFrame, TimeFrameGranularities>;
+
+const CATEGORIZED_GRANULARITIES = {
+  "1d": { default: "hour", options: ["hour"] },
+  "7d": { default: "day", options: ["hour", "day"] },
+  "15d": { default: "day", options: ["day"] },
+  "30d": { default: "day", options: ["day", "week"] },
+  "90d": { default: "week", options: ["day", "week"] },
+  "180d": { default: "week", options: ["day", "week", "month"] },
+  "365d": { default: "week", options: ["week", "month"] },
+  All: { default: "week", options: ["week", "month"] },
+} satisfies Record<TimeFrame, TimeFrameGranularities>;
+
 /**
- * Returns the granularity that gives a good number of points for the time
- * frame. A short time frame uses hours.
- *
- * A categorized timeseries (split by category or rollup) shows as stacked
- * bars, which need fewer points than a line. It uses weeks for the time
- * frames longer than 90 days. A global timeseries uses days.
+ * Returns the granularities that the time frame allows, from the shortest to
+ * the longest, and the default granularity. No time frame is the same as
+ * `All`.
+ */
+export function getTimeFrameGranularities(
+  timeFrame: TimeFrame | undefined,
+  { isCategorized }: { isCategorized: boolean }
+): TimeFrameGranularities {
+  const granularities = isCategorized
+    ? CATEGORIZED_GRANULARITIES
+    : GLOBAL_GRANULARITIES;
+
+  return granularities[timeFrame ?? "All"];
+}
+
+/**
+ * Returns the default granularity of the time frame.
  */
 export function getTimeFrameGranularity(
   timeFrame: TimeFrame | undefined,
-  { isCategorized }: { isCategorized: boolean }
+  options: { isCategorized: boolean }
 ): MetricsGranularity {
-  switch (timeFrame) {
-    case "1d":
-    case "7d":
-      return "hour";
-    case "180d":
-    case "365d":
-    case "All":
-    case undefined:
-      return isCategorized ? "week" : "day";
-    default:
-      return "day";
-  }
+  return getTimeFrameGranularities(timeFrame, options).default;
+}
+
+/**
+ * Returns true when the time frame allows the granularity.
+ */
+export function isTimeFrameGranularity(
+  granularity: MetricsGranularity,
+  timeFrame: TimeFrame | undefined,
+  options: { isCategorized: boolean }
+) {
+  return getTimeFrameGranularities(timeFrame, options).options.includes(
+    granularity
+  );
 }
