@@ -271,6 +271,8 @@ describe("getTimeseriesStats", () => {
       ["1d", "day", undefined],
       ["90d", "hour", undefined],
       ["90d", "month", undefined],
+      ["365d", "year", undefined],
+      ["365d", "year", "all"],
       ["30d", "hour", "all"],
       ["All", "day", "all"],
     ] as const)(
@@ -305,6 +307,12 @@ describe("getTimeseriesStats", () => {
       table: "weeklyMetrics",
       category: "other",
     },
+    {
+      granularity: "year",
+      timeFrame: "All",
+      table: "yearlyMetrics",
+      category: undefined,
+    },
   ] as const)(
     "when including the current period of a $granularity",
     ({ granularity, timeFrame, table, category }) => {
@@ -333,6 +341,7 @@ describe("getTimeseriesStats", () => {
 
         const result = await uncachedCaller.getTimeseries({
           timeFrame,
+          granularity,
           categories: category,
           sort: "asc",
           includeCurrentPeriod: "true",

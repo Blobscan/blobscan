@@ -10,6 +10,7 @@ const GRANULARITY_OPTION_BY_VALUE = {
   day: { value: "day", label: "Daily" },
   week: { value: "week", label: "Weekly" },
   month: { value: "month", label: "Monthly" },
+  year: { value: "year", label: "Yearly" },
 } satisfies Record<MetricsGranularity, GranularitySelectorOption>;
 
 export function getGranularityOption(

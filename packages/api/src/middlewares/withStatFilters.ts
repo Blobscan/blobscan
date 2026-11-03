@@ -60,7 +60,7 @@ export const withGranularityFilterSchema = z.object({
   granularity: metricsGranularitySchema
     .optional()
     .describe(
-      "The length of each period. Each time frame allows only some granularities. Without `categories` and `rollups`: `hour` for `1d`; `hour` and `day` for `7d` and `15d`; `hour`, `day` and `week` for `30d`; `day` and `week` for `90d`; and `day`, `week` and `month` for `180d`, `365d` and `All`. With `categories` or `rollups`: `hour` for `1d`; `hour` and `day` for `7d`; `day` for `15d`; `day` and `week` for `30d` and `90d`; `day`, `week` and `month` for `180d`; and `week` and `month` for `365d` and `All`. The default is the granularity of the time frame."
+      "The length of each period. Each time frame allows only some granularities. Without `categories` and `rollups`: `hour` for `1d`; `hour` and `day` for `7d` and `15d`; `hour`, `day` and `week` for `30d`; `day` and `week` for `90d`; `day`, `week` and `month` for `180d` and `365d`; and `day`, `week`, `month` and `year` for `All`. With `categories` or `rollups`: `hour` for `1d`; `hour` and `day` for `7d`; `day` for `15d`; `day` and `week` for `30d` and `90d`; `day`, `week` and `month` for `180d`; `week` and `month` for `365d`; and `week`, `month` and `year` for `All`. The default is the granularity of the time frame."
     ),
 });
 

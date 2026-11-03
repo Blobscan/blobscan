@@ -3,7 +3,7 @@ import type { BlobscanPrismaClient } from "@blobscan/db";
 // The Dagster pipeline populates the metrics tables in production. These
 // queries follow the same logic as the Dagster aggregation SQL
 // (apps/dagster/src/analytics/defs/sql), but they aggregate the data directly
-// by hour, day, week or month. Tests use them to fill the metrics tables from the
+// by hour, day, week, month or year. Tests use them to fill the metrics tables from the
 // fixtures data. {{trunc}} is the period of the table {{table}}.
 
 const MAX_DATE = "9999-12-31T00:00:00.000Z";
@@ -266,6 +266,7 @@ const METRICS_TABLES = [
   { table: "daily_metrics", trunc: "day" },
   { table: "weekly_metrics", trunc: "week" },
   { table: "monthly_metrics", trunc: "month" },
+  { table: "yearly_metrics", trunc: "year" },
 ] as const;
 
 function buildMetricsSql(
@@ -276,7 +277,7 @@ function buildMetricsSql(
 }
 
 /**
- * Fills the hourly, daily, weekly, monthly and all-time metrics tables from the data in
+ * Fills the hourly, daily, weekly, monthly, yearly and all-time metrics tables from the data in
  * the database. It only uses the data before `to`.
  */
 export async function aggregateMetrics(
@@ -288,6 +289,7 @@ export async function aggregateMetrics(
     prisma.dailyMetrics.deleteMany(),
     prisma.weeklyMetrics.deleteMany(),
     prisma.monthlyMetrics.deleteMany(),
+    prisma.yearlyMetrics.deleteMany(),
     prisma.allTimeMetrics.deleteMany(),
     ...METRICS_TABLES.flatMap((metricsTable) =>
       [

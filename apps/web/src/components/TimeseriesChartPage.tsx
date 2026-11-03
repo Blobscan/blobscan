@@ -54,6 +54,7 @@ const PERIODS_PER_DAY = {
   day: 1,
   week: 1 / 7,
   month: 1 / 30,
+  year: 1 / 365,
 } satisfies Record<TimeseriesGranularity, number>;
 
 /**

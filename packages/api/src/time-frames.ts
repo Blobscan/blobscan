@@ -24,6 +24,7 @@ export const metricsGranularitySchema = z.enum([
   "day",
   "week",
   "month",
+  "year",
 ]);
 
 export type MetricsGranularity = z.infer<typeof metricsGranularitySchema>;
@@ -55,7 +56,8 @@ type TimeFrameGranularities = {
 // at least about 4, and at most about 1000 for a line. A categorized
 // timeseries (split by category or rollup) shows as stacked bars, with up to
 // one segment for each rollup in each bar. Thus it allows at most about 200
-// periods.
+// periods. `All` also allows years, because it is the only time frame that
+// can have more than one year.
 const GLOBAL_GRANULARITIES = {
   "1d": { default: "hour", options: ["hour"] },
   "7d": { default: "hour", options: ["hour", "day"] },
@@ -64,7 +66,7 @@ const GLOBAL_GRANULARITIES = {
   "90d": { default: "day", options: ["day", "week"] },
   "180d": { default: "day", options: ["day", "week", "month"] },
   "365d": { default: "day", options: ["day", "week", "month"] },
-  All: { default: "day", options: ["day", "week", "month"] },
+  All: { default: "day", options: ["day", "week", "month", "year"] },
 } satisfies Record<TimeFrame, TimeFrameGranularities>;
 
 const CATEGORIZED_GRANULARITIES = {
@@ -75,7 +77,7 @@ const CATEGORIZED_GRANULARITIES = {
   "90d": { default: "week", options: ["day", "week"] },
   "180d": { default: "week", options: ["day", "week", "month"] },
   "365d": { default: "week", options: ["week", "month"] },
-  All: { default: "week", options: ["week", "month"] },
+  All: { default: "week", options: ["week", "month", "year"] },
 } satisfies Record<TimeFrame, TimeFrameGranularities>;
 
 /**
