@@ -10,9 +10,9 @@ export const ROLLUP_DEFINITIONS: Record<Rollup, ResourceDefinition> = {
   },
   adi: {
     name: "ADI Chain",
-    color: { light: "#2b2b2b", dark: "#d9d9d9" },
+    color: { light: "#454545", dark: "#d9d9d9" },
     badgeClassname:
-      "bg-[#d9d9d9] dark:bg-[#2b2b2b] dark:text-[#d9d9d9] text-[#2b2b2b]",
+      "bg-[#d9d9d9] dark:bg-[#454545] dark:text-[#d9d9d9] text-[#454545]",
   },
   aevo: {
     name: "Aevo",
@@ -462,9 +462,9 @@ export const ROLLUP_DEFINITIONS: Record<Rollup, ResourceDefinition> = {
   },
   syndicate: {
     name: "Syndicate",
-    color: { light: "#1f1f1f", dark: "#e0e0e0" },
+    color: { light: "#4a4a4a", dark: "#e0e0e0" },
     badgeClassname:
-      "bg-[#e0e0e0] dark:bg-[#1f1f1f] dark:text-[#e0e0e0] text-[#1f1f1f]",
+      "bg-[#e0e0e0] dark:bg-[#4a4a4a] dark:text-[#e0e0e0] text-[#4a4a4a]",
   },
   taiko: {
     name: "Taiko",
