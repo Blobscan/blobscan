@@ -46,6 +46,12 @@ export const controlParamsSchema = filterParamsSchema
 
 type ControlParams = z.infer<typeof controlParamsSchema>;
 
+/**
+ * The URL params that a control bar keeps itself, not in this hook (e.g. the
+ * fee unit). An undefined value removes the param.
+ */
+type ExtraParams = Record<string, string | undefined>;
+
 const INITIAL_STATE: ControlState = {
   rollups: [],
   categories: null,
@@ -139,7 +145,7 @@ function reducer(prev: ControlState, action: Action): ControlState {
   }
 }
 
-export function useControlState() {
+export function useControlState(extraParams?: ExtraParams) {
   const { state: urlParams, updateState } = useUrlState(controlParamsSchema);
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
@@ -198,8 +204,8 @@ export function useControlState() {
 
     Object.assign(newUrlState, clearedRange);
 
-    updateState(newUrlState);
-  }, [state, updateState]);
+    updateState({ ...extraParams, ...newUrlState });
+  }, [state, extraParams, updateState]);
 
   const actions = useMemo(
     () => ({

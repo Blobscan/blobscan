@@ -4,12 +4,12 @@ import {
   getTimeFrameDays,
   getTimeFrameGranularity,
 } from "@blobscan/api/src/time-frames";
-import { z } from "@blobscan/zod";
 
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { useIsTestnet } from "~/hooks/useIsTestnet";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import { useUrlState } from "~/hooks/useUrlState";
+import { feeUnitParamsSchema } from "~/schemas/feeUnit";
 import {
   categoriesParamSchema,
   rollupsSchema,
@@ -21,14 +21,12 @@ import { TimeseriesControlBar } from "./ControlBars/TimeseriesControlBar";
 import { Header } from "./Header";
 import { DEFAULT_CHART_TIME_FRAME } from "./Selectors";
 import type { ChartTimeFrame } from "./Selectors";
-import { getFeeUnitLabels } from "./TimeseriesCharts/FeeUnitChart";
 import type { TimeseriesChartComponent } from "./TimeseriesCharts/factories";
-import { FEE_UNITS, FeeUnitToggle } from "./Toggles";
 
 export type TimeseriesChartPageProps = {
   chart: TimeseriesChartComponent;
   /**
-   * The same chart in USD. With it, the chart header shows an ETH/USD toggle.
+   * The same chart in USD. With it, the control bar shows a USD/Ether selector.
    * Networks with no ETH price (e.g. testnets) do not use it.
    */
   usdChart?: TimeseriesChartComponent;
@@ -75,11 +73,7 @@ function getSkeletonItemCount(
 const controlQueryParamsSchema = categoriesParamSchema
   .merge(rollupsSchema)
   .merge(timeFrameParamSchema)
-  .merge(
-    z.object({
-      unit: z.enum(FEE_UNITS).optional(),
-    })
-  );
+  .merge(feeUnitParamsSchema);
 
 export const TimeseriesChartPage = function ({
   chart: ethChart,
@@ -88,7 +82,7 @@ export const TimeseriesChartPage = function ({
   description,
   isCategorizedTimeseries,
 }: TimeseriesChartPageProps) {
-  const { state, isReady, updateState } = useUrlState(controlQueryParamsSchema);
+  const { state, isReady } = useUrlState(controlQueryParamsSchema);
   const isTestnet = useIsTestnet();
   const usdChart = isTestnet === false ? usdChartProp : undefined;
   const queryParamsExists = Boolean(
@@ -131,22 +125,13 @@ export const TimeseriesChartPage = function ({
         <div>{descriptionText}</div>
         <TimeseriesControlBar
           isCategorizedTimeseries={isCategorizedTimeseries}
+          showFeeUnitToggle={Boolean(usdChart)}
+          etherUnit={ethChart.yUnit}
         />
         <Chart
           dataset={chartDatasets}
           isLoading={isLoading}
           size="2xl"
-          headerControls={
-            usdChart ? (
-              <FeeUnitToggle
-                unit={unit}
-                labels={getFeeUnitLabels(ethChart, usdChart)}
-                onChange={(u) =>
-                  updateState({ unit: u !== "eth" ? u : undefined })
-                }
-              />
-            ) : undefined
-          }
           skeletonOpts={{
             chart: {
               itemCount: getSkeletonItemCount(timeFrame, granularity),
