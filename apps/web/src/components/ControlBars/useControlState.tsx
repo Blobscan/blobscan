@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useReducer } from "react";
 import type { DateType } from "react-tailwindcss-datepicker";
 
-import { z } from "@blobscan/zod";
+import type { z } from "@blobscan/zod";
 
 import { useUrlState } from "~/hooks/useUrlState";
 import { filterParamsSchema } from "~/schemas/filters";
@@ -12,8 +12,6 @@ import { ROLLUP_OPTIONS } from "../Selectors";
 import type { RollupSelectorOption } from "../Selectors";
 import { CATEGORY_OPTIONS } from "../Selectors/CategorySelector";
 import type { CategorySelectorOption } from "../Selectors/CategorySelector";
-import { FEE_UNITS } from "../Toggles";
-import type { FeeUnit } from "../Toggles";
 
 type RangeValue<T> = {
   end: T | null;
@@ -33,7 +31,6 @@ type ControlState = {
   rollups: RollupSelectorOption[] | null;
   categories: CategorySelectorOption | null;
   range: RangeFilter;
-  unit: FeeUnit;
 
   sort: Sort;
 };
@@ -42,11 +39,15 @@ type Action =
   | { type: "CLEAR" }
   | { type: "UPDATE"; payload: Partial<ControlState> };
 
-export const controlParamsSchema = filterParamsSchema
-  .merge(sortParamsSchema)
-  .merge(z.object({ unit: z.enum(FEE_UNITS).optional() }));
+export const controlParamsSchema = filterParamsSchema.merge(sortParamsSchema);
 
 type ControlParams = z.infer<typeof controlParamsSchema>;
+
+/**
+ * The URL params that a control bar keeps itself, not in this hook (e.g. the
+ * fee unit). An undefined value removes the param.
+ */
+type ExtraParams = Record<string, string | undefined>;
 
 const INITIAL_STATE: ControlState = {
   rollups: [],
@@ -58,7 +59,6 @@ const INITIAL_STATE: ControlState = {
       end: null,
     },
   },
-  unit: "eth",
   sort: "desc",
 };
 
@@ -75,7 +75,6 @@ function toControlState(queryParams: ControlParams): Partial<ControlState> {
     endEpoch,
     rollups,
     sort,
-    unit,
   } = queryParams;
 
   const next: Partial<ControlState> = {};
@@ -92,8 +91,6 @@ function toControlState(queryParams: ControlParams): Partial<ControlState> {
   }
 
   if (sort) next.sort = sort;
-
-  next.unit = unit ?? "eth";
 
   if (startDate || endDate) {
     next.range = {
@@ -141,7 +138,7 @@ function reducer(prev: ControlState, action: Action): ControlState {
   }
 }
 
-export function useControlState() {
+export function useControlState(extraParams?: ExtraParams) {
   const { state: urlParams, updateState } = useUrlState(controlParamsSchema);
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
@@ -153,7 +150,7 @@ export function useControlState() {
   const clear = useCallback(() => dispatch({ type: "CLEAR" }), []);
 
   const apply = useCallback(() => {
-    const { rollups, range, sort, categories, unit } = state;
+    const { rollups, range, sort, categories } = state;
 
     // Set the empty filters to undefined. If the key is not set,
     // updateState keeps the previous value from the URL.
@@ -161,7 +158,6 @@ export function useControlState() {
       sort,
       categories: categories ? [categories.value] : undefined,
       rollups: rollups?.length ? rollups.map((r) => r.value) : undefined,
-      unit: unit !== "eth" ? unit : undefined,
     };
 
     const clearedRange: ControlParams = {
@@ -200,8 +196,8 @@ export function useControlState() {
 
     Object.assign(newUrlState, clearedRange);
 
-    updateState(newUrlState);
-  }, [state, updateState]);
+    updateState({ ...extraParams, ...newUrlState });
+  }, [state, extraParams, updateState]);
 
   const actions = useMemo(
     () => ({
@@ -210,9 +206,6 @@ export function useControlState() {
 
       setCategory: (categories: CategorySelectorOption | null) =>
         dispatch({ type: "UPDATE", payload: { categories } }),
-
-      setUnit: (unit: FeeUnit) =>
-        dispatch({ type: "UPDATE", payload: { unit } }),
 
       setSort: (sort: Sort) => dispatch({ type: "UPDATE", payload: { sort } }),
 

@@ -1,8 +1,12 @@
 import type { FC } from "react";
+import { useEffect, useState } from "react";
 
+import { useUrlState } from "~/hooks/useUrlState";
+import { feeUnitParamsSchema } from "~/schemas/feeUnit";
 import { RollupSelector } from "../Selectors";
 import { CategorySelector } from "../Selectors/CategorySelector";
 import { FeeUnitToggle } from "../Toggles";
+import type { FeeUnit } from "../Toggles";
 import { ControlBarLayout } from "./ControlBarLayout";
 import { useControlState } from "./useControlState";
 
@@ -12,26 +16,42 @@ export type TimeseriesControlBarProps = {
    */
   showCategoryFilters?: boolean;
   /**
-   * Show the USD/Ether toggle. etherUnit is the unit of the Ether values
-   * (e.g. "Gwei").
+   * Show the USD/Ether toggle.
    */
-  feeUnit?: { etherUnit?: string };
+  showFeeUnitToggle?: boolean;
+  /**
+   * The unit of the Ether values in the toggle (e.g. "Gwei").
+   */
+  etherUnit?: string;
 };
 
 export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
   showCategoryFilters = true,
-  feeUnit,
+  showFeeUnitToggle = false,
+  etherUnit,
 }) => {
-  const { state, actions, apply, clear } = useControlState();
+  // Only this bar has the fee unit, thus it is not in useControlState.
+  const { state: feeUnitParams } = useUrlState(feeUnitParamsSchema);
+  const [unit, setUnit] = useState<FeeUnit>("eth");
+  const { state, actions, apply, clear } = useControlState({
+    unit: unit !== "eth" ? unit : undefined,
+  });
+
+  useEffect(() => {
+    if (!feeUnitParams) return;
+    setUnit(feeUnitParams.unit ?? "eth");
+  }, [feeUnitParams]);
 
   const disableClear =
-    !state.categories && !state.rollups?.length && state.unit === "eth";
-  const etherUnit = feeUnit?.etherUnit;
+    !state.categories && !state.rollups?.length && unit === "eth";
 
   return (
     <ControlBarLayout
       onApply={apply}
-      onClear={clear}
+      onClear={() => {
+        clear();
+        setUnit("eth");
+      }}
       disableClear={disableClear}
     >
       <div className="flex w-full min-w-0 flex-col gap-2 sm:flex-row lg:max-w-2xl lg:justify-start">
@@ -53,19 +73,13 @@ export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
           </div>
         )}
 
-        {feeUnit && (
+        {showFeeUnitToggle && (
           <div className="w-full shrink-0 sm:w-36">
             <FeeUnitToggle
               variant="control"
-              unit={state.unit}
-              labels={{
-                eth:
-                  etherUnit && etherUnit !== "ETH"
-                    ? `Ether (${etherUnit})`
-                    : "Ether",
-                usd: "USD",
-              }}
-              onChange={actions.setUnit}
+              unit={unit}
+              etherUnit={etherUnit}
+              onChange={setUnit}
             />
           </div>
         )}

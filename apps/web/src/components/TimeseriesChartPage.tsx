@@ -1,16 +1,14 @@
 import type { ReactNode } from "react";
 
-import { z } from "@blobscan/zod";
-
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { useIsTestnet } from "~/hooks/useIsTestnet";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import { useUrlState } from "~/hooks/useUrlState";
+import { feeUnitParamsSchema } from "~/schemas/feeUnit";
 import { categoriesParamSchema, rollupsSchema } from "~/schemas/filters";
 import { TimeseriesControlBar } from "./ControlBars/TimeseriesControlBar";
 import { Header } from "./Header";
 import type { TimeseriesChartComponent } from "./TimeseriesCharts/factories";
-import { FEE_UNITS } from "./Toggles";
 
 export type TimeseriesChartPageProps = {
   chart: TimeseriesChartComponent;
@@ -27,7 +25,7 @@ export type TimeseriesChartPageProps = {
 
 const controlQueryParamsSchema = categoriesParamSchema
   .merge(rollupsSchema)
-  .merge(z.object({ unit: z.enum(FEE_UNITS).optional() }));
+  .merge(feeUnitParamsSchema);
 
 export const TimeseriesChartPage = function ({
   chart: ethChart,
@@ -73,7 +71,8 @@ export const TimeseriesChartPage = function ({
         {(isCategorizedTimeseries || usdChart) && (
           <TimeseriesControlBar
             showCategoryFilters={Boolean(isCategorizedTimeseries)}
-            feeUnit={usdChart ? { etherUnit: ethChart.yUnit } : undefined}
+            showFeeUnitToggle={Boolean(usdChart)}
+            etherUnit={ethChart.yUnit}
           />
         )}
         <Chart
