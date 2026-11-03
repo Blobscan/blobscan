@@ -1,5 +1,36 @@
 # @blobscan/api
 
+## 0.42.0
+
+### Minor Changes
+
+- [#1062](https://github.com/Blobscan/blobscan/pull/1062) [`e94615f`](https://github.com/Blobscan/blobscan/commit/e94615f794baeea4c6a8bcc4bc62f533d7272764) Thanks [@PJColombo](https://github.com/PJColombo)! - Add a time frame selector to the chart pages: 24H, 7D, 1M, 3M, 1Y and All. It is in the filter bar, and the pages with only global values now show the filter bar too. The chart dates show in UTC, because the periods start at UTC boundaries.
+
+  The timeseries stats endpoint reads the hourly, daily or weekly metrics table for the time frame. The response gives the length of the periods in `granularity`. It does not sample the daily metrics any more. A sampled timeseries showed only one day out of every 3, 4 or 7 days.
+
+  | Time frame                      | Global | With `categories` or `rollups` |
+  | ------------------------------- | ------ | ------------------------------ |
+  | `1d`, `7d`                      | hour   | hour                           |
+  | `15d`, `30d`, `90d`             | day    | day                            |
+  | `180d`, `365d`, `All` (default) | day    | week                           |
+
+  This changes the periods of the existing time frames: `1d` and `7d` now give hourly periods, and `180d`, `365d` and `All` give weekly periods when the request has `categories` or `rollups`.
+
+  A gap in a series now keeps a `null` value for a metric that the series does not have (for example, a global-only metric in a rollup series). Before, the gap got a zero, and the response failed the output validation.
+
+- [#1053](https://github.com/Blobscan/blobscan/pull/1053) [`ce102bb`](https://github.com/Blobscan/blobscan/commit/ce102bb755b8578b9bdc1406a13f80063a9bce9f) Thanks [@PJColombo](https://github.com/PJColombo)! - Add the `updated_at` column to the hourly, daily, weekly, monthly and yearly metrics tables. Dagster sets it each time it aggregates a period. The timeseries stats endpoint gives `currentPeriod.updatedAt`, the time of the last update of the current period. The series do not include it as a metric.
+
+  The chart tooltip of the current period shows a red pulse and "Live" next to the date, and the time of the last update below it (for example, "Updated 5 minutes ago"). The metrics docs describe the current period.
+
+  The existing rows get the time of the migration as their update time.
+
+### Patch Changes
+
+- Updated dependencies [[`ce102bb`](https://github.com/Blobscan/blobscan/commit/ce102bb755b8578b9bdc1406a13f80063a9bce9f)]:
+  - @blobscan/db@0.33.0
+  - @blobscan/blob-storage-manager@0.15.2
+  - @blobscan/rollups@0.9.2
+
 ## 0.41.0
 
 ### Minor Changes

@@ -1,5 +1,22 @@
 # @blobscan/rest-api-server
 
+## 0.18.2
+
+### Patch Changes
+
+- [#1055](https://github.com/Blobscan/blobscan/pull/1055) [`fab34cb`](https://github.com/Blobscan/blobscan/commit/fab34cb54ba58a24cf8f51e1bb5c7b0f6a592103) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fix HIGH/CRITICAL vulnerabilities reported by Trivy.
+
+  - Dagster: upgrade the locked `certifi`, `cryptography`, `filelock`, `fsspec`, `mako`, `oauthlib`, `pyasn1` and `urllib3`
+  - Raise the `follow-redirects` override to 1.16.2
+
+- Updated dependencies [[`e94615f`](https://github.com/Blobscan/blobscan/commit/e94615f794baeea4c6a8bcc4bc62f533d7272764), [`ce102bb`](https://github.com/Blobscan/blobscan/commit/ce102bb755b8578b9bdc1406a13f80063a9bce9f)]:
+  - @blobscan/api@0.42.0
+  - @blobscan/db@0.33.0
+  - @blobscan/blob-propagator@0.11.3
+  - @blobscan/blob-storage-manager@0.15.2
+  - @blobscan/rollups@0.9.2
+  - @blobscan/syncers@0.8.2
+
 ## 0.18.1
 
 ### Patch Changes
