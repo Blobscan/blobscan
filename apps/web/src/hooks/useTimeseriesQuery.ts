@@ -1,5 +1,4 @@
-import type { TimeFrame } from "@blobscan/api";
-import type { MetricsGranularity } from "@blobscan/api/src/time-frames";
+import type { MetricsGranularity, TimeFrame } from "@blobscan/zod";
 
 import { transformToDatasets } from "~/components/TimeseriesCharts/helpers";
 import { api } from "~/api-client";

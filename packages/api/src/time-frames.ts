@@ -1,33 +1,6 @@
-import { z } from "@blobscan/zod";
+import type { MetricsGranularity, TimeFrame } from "@blobscan/zod";
 
-// This module imports only zod, so the web client can import it too.
-
-export const timeFrameSchema = z.enum([
-  "1d",
-  "7d",
-  "15d",
-  "30d",
-  "90d",
-  "180d",
-  "365d",
-  "All",
-]);
-
-export type TimeFrame = z.infer<typeof timeFrameSchema>;
-
-/**
- * The length of one period of a timeseries. Each granularity has its own
- * metrics table.
- */
-export const metricsGranularitySchema = z.enum([
-  "hour",
-  "day",
-  "week",
-  "month",
-  "year",
-]);
-
-export type MetricsGranularity = z.infer<typeof metricsGranularitySchema>;
+// This module imports only types, so the web client can import it too.
 
 const TIME_FRAME_DAYS = {
   "1d": 1,

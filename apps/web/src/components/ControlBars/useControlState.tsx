@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useReducer } from "react";
 import type { DateType } from "react-tailwindcss-datepicker";
 
-import type { MetricsGranularity } from "@blobscan/api/src/time-frames";
-import type { z } from "@blobscan/zod";
+import type { MetricsGranularity, z } from "@blobscan/zod";
 
 import { useUrlState } from "~/hooks/useUrlState";
 import {

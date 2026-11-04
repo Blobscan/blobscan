@@ -1,8 +1,4 @@
-import {
-  metricsGranularitySchema,
-  timeFrameSchema,
-} from "@blobscan/api/src/time-frames";
-import { z } from "@blobscan/zod";
+import { metricsGranularitySchema, timeFrameSchema, z } from "@blobscan/zod";
 
 import {
   allSchema,

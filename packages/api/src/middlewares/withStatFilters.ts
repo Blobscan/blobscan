@@ -4,16 +4,14 @@ import type { Chain } from "@blobscan/chains";
 import dayjs from "@blobscan/dayjs";
 import type { Prisma } from "@blobscan/db";
 import type { Category, Rollup } from "@blobscan/db/prisma/enums";
-import { z } from "@blobscan/zod";
+import type { MetricsGranularity, TimeFrame } from "@blobscan/zod";
+import { metricsGranularitySchema, timeFrameSchema, z } from "@blobscan/zod";
 
-import type { MetricsGranularity, TimeFrame } from "../time-frames";
 import {
   getTimeFrameDays,
   getTimeFrameGranularities,
   getTimeFrameGranularity,
   isTimeFrameGranularity,
-  metricsGranularitySchema,
-  timeFrameSchema,
 } from "../time-frames";
 import { t } from "../trpc-client";
 import {

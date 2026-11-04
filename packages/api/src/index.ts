@@ -8,8 +8,6 @@ export type {
 
 export { createMetricsHandler } from "./instrumentation";
 
-export type { TimeFrame } from "./time-frames";
-
 export { openApiOverride } from "./openapi";
 
 export * from "./app-router";

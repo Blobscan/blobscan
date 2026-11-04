@@ -1,4 +1,4 @@
-import type { MetricsGranularity } from "@blobscan/api/src/time-frames";
+import type { MetricsGranularity } from "@blobscan/zod";
 
 import { Listbox } from "../Selects";
 import type { ListboxProps, SelectOption } from "../Selects";

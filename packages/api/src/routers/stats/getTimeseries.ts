@@ -2,7 +2,8 @@ import dayjs from "@blobscan/dayjs";
 import { Prisma } from "@blobscan/db";
 import { Rollup } from "@blobscan/db/prisma/enums";
 import { Category } from "@blobscan/db/prisma/enums";
-import { booleanSchema, z } from "@blobscan/zod";
+import type { MetricsGranularity } from "@blobscan/zod";
+import { booleanSchema, metricsGranularitySchema, z } from "@blobscan/zod";
 
 import type { TRPCContext } from "../../context";
 import { withSortFilterSchema } from "../../middlewares/withFilters";
@@ -13,8 +14,6 @@ import {
   withStatFilters,
 } from "../../middlewares/withStatFilters";
 import { publicProcedure } from "../../procedures";
-import type { MetricsGranularity } from "../../time-frames";
-import { metricsGranularitySchema } from "../../time-frames";
 import { normalize, cacheTRPCQuery } from "../../utils";
 import type { CacheTTL } from "../../utils/cache";
 import type { Dimension } from "../../zod-schemas";
