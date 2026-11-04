@@ -1,6 +1,7 @@
 import type { MetricsGranularity, TimeFrame } from "@blobscan/zod";
 
-// This module imports only types, so the web client can import it too.
+// apps/web/src/utils/time-frames.ts has a copy of these rules. When you
+// change them, change the copy too.
 
 const TIME_FRAME_DAYS = {
   "1d": 1,

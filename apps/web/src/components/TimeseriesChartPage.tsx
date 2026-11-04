@@ -1,11 +1,5 @@
 import type { ReactNode } from "react";
 
-import {
-  getTimeFrameDays,
-  getTimeFrameGranularity,
-  isTimeFrameGranularity,
-} from "@blobscan/api/src/time-frames";
-
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { useIsTestnet } from "~/hooks/useIsTestnet";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
@@ -18,6 +12,11 @@ import {
   timeFrameParamSchema,
 } from "~/schemas/filters";
 import type { TimeseriesGranularity } from "~/types";
+import {
+  getTimeFrameDays,
+  getTimeFrameGranularity,
+  isTimeFrameGranularity,
+} from "~/utils";
 import type { SkeletonChartOptions } from "./Charts/ChartBase/helpers/skeleton";
 import { TimeseriesControlBar } from "./ControlBars/TimeseriesControlBar";
 import { Header } from "./Header";

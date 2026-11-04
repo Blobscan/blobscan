@@ -1,10 +1,9 @@
 import type { FC } from "react";
 import { useEffect, useState } from "react";
 
-import { getTimeFrameGranularities } from "@blobscan/api/src/time-frames";
-
 import { useUrlState } from "~/hooks/useUrlState";
 import { feeUnitParamsSchema } from "~/schemas/feeUnit";
+import { getTimeFrameGranularities } from "~/utils";
 import {
   DEFAULT_CHART_TIME_FRAME,
   getGranularityOption,
