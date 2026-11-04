@@ -86,7 +86,8 @@ export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
 
   return (
     <ControlBarLayout
-      onApply={apply}
+      // The charts do not use a sort order, so remove it from the URL.
+      onApply={() => apply({ sort: undefined })}
       onClear={() => {
         clear();
         setUnit("eth");

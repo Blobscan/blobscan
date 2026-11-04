@@ -32,7 +32,7 @@ export const ControlBarLayout: FC<ControlBarLayoutProps> = ({
           >
             Clear
           </Button>
-          <Button className="w-full lg:px-3 xl:px-6" onClick={onApply}>
+          <Button className="w-full lg:px-3 xl:px-6" onClick={() => onApply()}>
             Apply
           </Button>
         </div>
