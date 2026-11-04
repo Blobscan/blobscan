@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
-import { blockNumberSchema } from "@blobscan/db";
+import { blockNumberSchema } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
 import {

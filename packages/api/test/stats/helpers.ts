@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import type { TimeFrame } from "../../src";
-import { timeFrameSchema } from "../../src/time-frames";
+import type { TimeFrame } from "@blobscan/zod";
+import { timeFrameSchema } from "@blobscan/zod";
 
 export function runTimeFrameTests({
   statsFiller,

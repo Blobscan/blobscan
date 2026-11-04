@@ -18,7 +18,6 @@ export {
   DailyMetricsSchema,
   TransactionSchema,
 } from "./prisma/zod";
-export * from "./prisma/zod-utils";
 export * from "./prisma/extended-types";
 export * from "./prisma/client";
 export * from "./prisma/errors";

@@ -1,5 +1,6 @@
 import type { BlobscanPrismaClient } from "@blobscan/db";
-import { BlockSchema, TransactionSchema, addressSchema } from "@blobscan/db";
+import { BlockSchema, TransactionSchema } from "@blobscan/db";
+import { addressSchema } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";

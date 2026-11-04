@@ -1,10 +1,9 @@
 import type { Prisma } from "@blobscan/db";
+import { AddressSchema, BlockSchema } from "@blobscan/db";
 import {
-  AddressSchema,
-  BlockSchema,
   dbCategoryCoercionSchema,
   dbRollupCoercionSchema,
-} from "@blobscan/db";
+} from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";

@@ -9,6 +9,8 @@ import {
   BlockSchema,
   DailyMetricsSchema,
   TransactionSchema,
+} from "@blobscan/db";
+import {
   blobStorageSchema,
   dbCategorySchema,
   hexSchema,
@@ -16,7 +18,7 @@ import {
   lowercaseToUpercaseDBRollupSchema,
   optimismDecodedFieldsSchema,
   dbRollupSchema,
-} from "@blobscan/db";
+} from "@blobscan/db/prisma/zod-utils";
 import { logLevelEnum } from "@blobscan/logger";
 import { z } from "@blobscan/zod";
 

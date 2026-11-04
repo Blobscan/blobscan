@@ -4,7 +4,7 @@ import { IpfsGatewayError } from "@blobscan/blob-storage-manager";
 import {
   blobVersionedHashSchema,
   hexSchema,
-} from "@blobscan/db";
+} from "@blobscan/db/prisma/zod-utils";
 import { logger } from "@blobscan/logger";
 import { z } from "@blobscan/zod";
 

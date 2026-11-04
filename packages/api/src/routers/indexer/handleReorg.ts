@@ -1,5 +1,5 @@
 import type { Prisma } from "@blobscan/db";
-import { blockHashSchema } from "@blobscan/db";
+import { blockHashSchema } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
 import type { TRPCInnerContext } from "../../context";

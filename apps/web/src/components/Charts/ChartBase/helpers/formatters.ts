@@ -48,6 +48,8 @@ const TIME_FORMATS: Record<
   hour: { compact: "MMM DD HH:mm", full: `${HUMAN_DATE_FORMAT}, HH:mm [UTC]` },
   day: { compact: "MMM DD", full: HUMAN_DATE_FORMAT },
   week: { compact: "MMM DD", full: `[Week of] ${HUMAN_DATE_FORMAT}` },
+  month: { compact: "MMM YYYY", full: "MMMM YYYY" },
+  year: { compact: "YYYY", full: "YYYY" },
 };
 
 export function formatTimeValue(
