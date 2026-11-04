@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
-import type { BlockIdField } from "@blobscan/db/prisma/zod-utils";
+import type { BlockIdField } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import {

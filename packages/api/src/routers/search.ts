@@ -5,8 +5,6 @@ import {
   BlobsOnTransactionsSchema,
   BlockSchema,
   TransactionSchema,
-} from "@blobscan/db/prisma/zod";
-import {
   addressSchema,
   blobCommitmentSchema,
   blobProofSchema,
@@ -14,7 +12,7 @@ import {
   blockNumberSchema,
   hashSchema,
   isPlaceholderProof,
-} from "@blobscan/db/prisma/zod-utils";
+} from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../procedures";

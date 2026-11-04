@@ -2,8 +2,6 @@ import type { Category, Rollup } from "@blobscan/db/prisma/enums";
 import {
   blockAllComputedFieldsSchema,
   transactionAllComputedFieldsSchema,
-} from "@blobscan/db/prisma/extensions";
-import {
   AddressSchema,
   BlobDataStorageReferenceSchema,
   BlobSchema,
@@ -11,8 +9,6 @@ import {
   BlockSchema,
   DailyMetricsSchema,
   TransactionSchema,
-} from "@blobscan/db/prisma/zod";
-import {
   blobStorageSchema,
   dbCategorySchema,
   hexSchema,
@@ -20,7 +16,7 @@ import {
   lowercaseToUpercaseDBRollupSchema,
   optimismDecodedFieldsSchema,
   dbRollupSchema,
-} from "@blobscan/db/prisma/zod-utils";
+} from "@blobscan/db";
 import { logLevelEnum } from "@blobscan/logger";
 import { z } from "@blobscan/zod";
 

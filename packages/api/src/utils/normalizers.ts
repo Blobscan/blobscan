@@ -1,9 +1,5 @@
-import { Prisma } from "@blobscan/db";
-import { dbEnumSchema } from "@blobscan/db/prisma/zod-utils";
-import type {
-  DBEnum,
-  optimismDecodedFieldsSchema,
-} from "@blobscan/db/prisma/zod-utils";
+import type { DBEnum, optimismDecodedFieldsSchema } from "@blobscan/db";
+import { Prisma, dbEnumSchema } from "@blobscan/db";
 import type { z } from "@blobscan/zod";
 
 import type { ExtendedBlobDataStorageReference } from "../routers/blob/helpers";

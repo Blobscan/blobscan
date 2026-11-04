@@ -1,7 +1,7 @@
 import { createAppRouter, createTRPCContext } from "@blobscan/api";
 import { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import { getChain } from "@blobscan/chains";
-import { RollupRegistry } from "@blobscan/rollups/src/RollupRegistry";
+import { RollupRegistry } from "@blobscan/rollups";
 
 import { createBlobStorages } from "./blob-storages";
 import { env } from "./env";

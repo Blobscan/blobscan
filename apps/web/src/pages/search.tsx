@@ -9,7 +9,7 @@ import {
   blobVersionedHashSchema,
   blockNumberSchema,
   hashSchema,
-} from "@blobscan/db/prisma/zod-utils";
+} from "@blobscan/db";
 
 import { Button } from "~/components/Button";
 import { SeoMetaTags } from "~/components/SeoMetaTags";

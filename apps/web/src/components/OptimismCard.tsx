@@ -1,6 +1,6 @@
 import type { FC } from "react";
 
-import type { OptimismDecodedFields } from "@blobscan/db/prisma/zod-utils";
+import type { OptimismDecodedFields } from "@blobscan/db";
 
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";

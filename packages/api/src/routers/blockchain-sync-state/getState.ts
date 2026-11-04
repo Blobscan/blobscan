@@ -1,4 +1,4 @@
-import { BlockchainSyncStateSchema } from "@blobscan/db/prisma/zod";
+import { BlockchainSyncStateSchema } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
