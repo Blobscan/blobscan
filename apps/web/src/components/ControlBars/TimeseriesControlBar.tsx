@@ -1,3 +1,4 @@
+import cn from "classnames";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
 
@@ -94,8 +95,14 @@ export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
     >
       <div className="flex w-full min-w-0 flex-col gap-2 sm:flex-row lg:max-w-3xl lg:justify-start">
         {/* On small screens, the period selectors and the category and
-            rollup filters have their own rows. */}
-        <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row">
+            rollup filters have their own rows. Only the category and rollup
+            filters fill the free width. Without them, the fee unit toggle
+            stays next to the period selectors. */}
+        <div
+          className={cn("flex min-w-0 flex-col gap-2 sm:flex-row", {
+            "flex-1": isCategorizedTimeseries,
+          })}
+        >
           <div className="flex shrink-0 flex-row gap-2">
             <div className="w-20 shrink-0 sm:w-24">
               <TimeFrameSelector
