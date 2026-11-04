@@ -456,6 +456,9 @@ importers:
       tailwind-merge:
         specifier: ^2.4.0
         version: 2.6.1
+      viem:
+        specifier: ^2.46.1
+        version: 2.46.1(typescript@5.9.3)(zod@4.6.7)
     devDependencies:
       '@svgr/webpack':
         specifier: ^8.1.0
@@ -10292,7 +10295,7 @@ snapshots:
 
   '@scure/bip32@1.7.0':
     dependencies:
-      '@noble/curves': 1.9.1
+      '@noble/curves': 1.9.7
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
 
