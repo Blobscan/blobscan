@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useMemo, useReducer } from "react";
 import type { DateType } from "react-tailwindcss-datepicker";
 
-import type { z } from "@blobscan/zod";
+import type { MetricsGranularity, z } from "@blobscan/zod";
 
 import { useUrlState } from "~/hooks/useUrlState";
-import { filterParamsSchema, timeFrameParamSchema } from "~/schemas/filters";
+import {
+  filterParamsSchema,
+  granularityParamSchema,
+  timeFrameParamSchema,
+} from "~/schemas/filters";
 import type { Sort } from "~/schemas/sort";
 import { sortParamsSchema } from "~/schemas/sort";
 import type { Range } from "../RangeRadioGroup";
@@ -32,6 +36,10 @@ type ControlState = {
   categories: CategorySelectorOption | null;
   range: RangeFilter;
   timeFrame: ChartTimeFrame;
+  /**
+   * Null uses the default granularity of the time frame.
+   */
+  granularity: MetricsGranularity | null;
 
   sort: Sort;
 };
@@ -42,7 +50,8 @@ type Action =
 
 export const controlParamsSchema = filterParamsSchema
   .merge(sortParamsSchema)
-  .merge(timeFrameParamSchema);
+  .merge(timeFrameParamSchema)
+  .merge(granularityParamSchema);
 
 type ControlParams = z.infer<typeof controlParamsSchema>;
 
@@ -63,6 +72,7 @@ const INITIAL_STATE: ControlState = {
     },
   },
   timeFrame: DEFAULT_CHART_TIME_FRAME,
+  granularity: null,
   sort: "desc",
 };
 
@@ -80,6 +90,7 @@ function toControlState(queryParams: ControlParams): Partial<ControlState> {
     rollups,
     sort,
     timeFrame,
+    granularity,
   } = queryParams;
 
   const next: Partial<ControlState> = {};
@@ -98,6 +109,8 @@ function toControlState(queryParams: ControlParams): Partial<ControlState> {
   if (sort) next.sort = sort;
 
   if (timeFrame) next.timeFrame = timeFrame;
+
+  if (granularity) next.granularity = granularity;
 
   if (startDate || endDate) {
     next.range = {
@@ -157,7 +170,7 @@ export function useControlState(extraParams?: ExtraParams) {
   const clear = useCallback(() => dispatch({ type: "CLEAR" }), []);
 
   const apply = useCallback(() => {
-    const { rollups, range, sort, categories, timeFrame } = state;
+    const { rollups, range, sort, categories, timeFrame, granularity } = state;
 
     // Set the empty filters to undefined. If the key is not set,
     // updateState keeps the previous value from the URL.
@@ -166,6 +179,7 @@ export function useControlState(extraParams?: ExtraParams) {
       categories: categories ? [categories.value] : undefined,
       rollups: rollups?.length ? rollups.map((r) => r.value) : undefined,
       timeFrame: timeFrame !== DEFAULT_CHART_TIME_FRAME ? timeFrame : undefined,
+      granularity: granularity ?? undefined,
     };
 
     const clearedRange: ControlParams = {
@@ -222,6 +236,9 @@ export function useControlState(extraParams?: ExtraParams) {
 
       setTimeFrame: (timeFrame: ChartTimeFrame) =>
         dispatch({ type: "UPDATE", payload: { timeFrame } }),
+
+      setGranularity: (granularity: MetricsGranularity | null) =>
+        dispatch({ type: "UPDATE", payload: { granularity } }),
     }),
     []
   );

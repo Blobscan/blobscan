@@ -1,5 +1,4 @@
-import { timeFrameSchema } from "@blobscan/api/src/time-frames";
-import { z } from "@blobscan/zod";
+import { metricsGranularitySchema, timeFrameSchema, z } from "@blobscan/zod";
 
 import {
   allSchema,
@@ -40,6 +39,12 @@ export const chartTimeFrameSchema = timeFrameSchema.extract([
 
 export const timeFrameParamSchema = z.object({
   timeFrame: chartTimeFrameSchema.optional(),
+});
+
+// The URL can have a granularity that the time frame does not allow. The chart
+// pages then use the default granularity of the time frame.
+export const granularityParamSchema = z.object({
+  granularity: metricsGranularitySchema.optional(),
 });
 
 export const dateParamsSchema = z.object({

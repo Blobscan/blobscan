@@ -126,14 +126,14 @@ describe("getTimeseriesStats", () => {
   describe("when getting the periods of a time frame", () => {
     it.each([
       ["1d", "hour", "hour"],
-      ["7d", "hour", "hour"],
+      ["7d", "hour", "day"],
       ["15d", "day", "day"],
       ["30d", "day", "day"],
-      ["90d", "day", "day"],
+      ["90d", "day", "week"],
       ["180d", "day", "week"],
       ["365d", "day", "week"],
-      ["All", "day", "week"],
-      [undefined, "day", "week"],
+      ["All", "week", "week"],
+      [undefined, "week", "week"],
     ] as const)(
       "should give %s with periods of one %s, or one %s for categories and rollups",
       async (timeFrame, globalGranularity, segmentedGranularity) => {
@@ -236,9 +236,57 @@ describe("getTimeseriesStats", () => {
       }
     });
 
+    it.each([
+      ["30d", "hour", undefined],
+      ["30d", "week", undefined],
+      // The fixtures data is before the Dencun fork, so "All" has no periods.
+      ["365d", "month", undefined],
+      ["365d", "week", "all"],
+      ["365d", "month", "all"],
+    ] as const)(
+      "should give %s with periods of one %s when the granularity is set (rollups: %s)",
+      async (timeFrame, granularity, rollups) => {
+        const currentPeriodStart = getPeriodStart(dayjs(), granularity);
+        const result = await caller.getTimeseries({
+          timeFrame,
+          granularity,
+          rollups,
+          sort: "asc",
+        });
+        expect(result.data.granularity).toBe(granularity);
+        expect(result.data.timestamps.length).toBeGreaterThan(0);
+
+        for (const timestamp of result.data.timestamps) {
+          expect(getPeriodStart(timestamp, granularity).toDate()).toEqual(
+            timestamp
+          );
+          expect(timestamp.getTime()).toBeLessThan(
+            currentPeriodStart.valueOf()
+          );
+        }
+      }
+    );
+
+    it.each([
+      ["1d", "day", undefined],
+      ["90d", "hour", undefined],
+      ["90d", "month", undefined],
+      ["365d", "year", undefined],
+      ["365d", "year", "all"],
+      ["30d", "hour", "all"],
+      ["All", "day", "all"],
+    ] as const)(
+      "should fail for %s with periods of one %s (rollups: %s)",
+      async (timeFrame, granularity, rollups) => {
+        await expect(
+          caller.getTimeseries({ timeFrame, granularity, rollups })
+        ).rejects.toThrow(/is not allowed for time frame/);
+      }
+    );
+
     it("should use the granularity of All when no time frame is given", () => {
       expect(getTimeFrameGranularity(undefined, { isCategorized: false })).toBe(
-        "day"
+        "week"
       );
       expect(getTimeFrameGranularity(undefined, { isCategorized: true })).toBe(
         "week"
@@ -258,6 +306,12 @@ describe("getTimeseriesStats", () => {
       timeFrame: "All",
       table: "weeklyMetrics",
       category: "other",
+    },
+    {
+      granularity: "year",
+      timeFrame: "All",
+      table: "yearlyMetrics",
+      category: undefined,
     },
   ] as const)(
     "when including the current period of a $granularity",
@@ -287,6 +341,7 @@ describe("getTimeseriesStats", () => {
 
         const result = await uncachedCaller.getTimeseries({
           timeFrame,
+          granularity,
           categories: category,
           sort: "asc",
           includeCurrentPeriod: "true",

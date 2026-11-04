@@ -1634,7 +1634,7 @@ exports[`getTimeseriesStats > when getting stats for a specific timeframe > shou
 exports[`getTimeseriesStats > when getting stats for a specific timeframe > should get the stats for All 1`] = `
 {
   "data": {
-    "granularity": "day",
+    "granularity": "week",
     "series": [
       {
         "dimension": {

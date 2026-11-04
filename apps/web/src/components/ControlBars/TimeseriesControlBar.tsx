@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 
 import { useUrlState } from "~/hooks/useUrlState";
 import { feeUnitParamsSchema } from "~/schemas/feeUnit";
+import { getTimeFrameGranularities } from "~/utils";
 import {
   DEFAULT_CHART_TIME_FRAME,
+  getGranularityOption,
   getTimeFrameOption,
+  GranularitySelector,
   RollupSelector,
   TimeFrameSelector,
 } from "../Selectors";
@@ -50,10 +53,35 @@ export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
     setUnit(feeUnitParams.unit ?? "eth");
   }, [feeUnitParams]);
 
+  const { options: granularities, default: defaultGranularity } =
+    getTimeFrameGranularities(state.timeFrame, {
+      isCategorized: isCategorizedTimeseries,
+    });
+  // The URL can have a granularity that the time frame does not allow.
+  const granularity =
+    state.granularity && granularities.includes(state.granularity)
+      ? state.granularity
+      : defaultGranularity;
+
+  // Keep the selected granularity when the time frame allows it. Otherwise,
+  // use the default granularity of the time frame. This also removes a
+  // granularity of the URL that the time frame does not allow, so that the
+  // next apply does not write it back to the URL.
+  useEffect(() => {
+    if (
+      state.granularity &&
+      (!granularities.includes(state.granularity) ||
+        state.granularity === defaultGranularity)
+    ) {
+      actions.setGranularity(null);
+    }
+  }, [state.granularity, granularities, defaultGranularity, actions]);
+
   const disableClear =
     !state.categories &&
     !state.rollups?.length &&
     state.timeFrame === DEFAULT_CHART_TIME_FRAME &&
+    !state.granularity &&
     unit === "eth";
 
   return (
@@ -66,22 +94,39 @@ export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
       disableClear={disableClear}
     >
       <div className="flex w-full min-w-0 flex-col gap-2 sm:flex-row lg:max-w-3xl lg:justify-start">
-        {/* Only the category and rollup filters fill the free width. Without
-        them, the fee unit toggle stays next to the time frame selector. */}
+        {/* On small screens, the period selectors and the category and
+            rollup filters have their own rows. Only the category and rollup
+            filters fill the free width. Without them, the fee unit toggle
+            stays next to the period selectors. */}
         <div
-          className={cn("flex min-w-0 flex-row gap-2", {
+          className={cn("flex min-w-0 flex-col gap-2 sm:flex-row", {
             "flex-1": isCategorizedTimeseries,
           })}
         >
-          <div className="w-20 shrink-0 sm:w-24">
-            <TimeFrameSelector
-              selected={getTimeFrameOption(state.timeFrame)}
-              onChange={(option) => actions.setTimeFrame(option.value)}
-            />
+          <div className="flex shrink-0 flex-row gap-2">
+            <div className="w-20 shrink-0 sm:w-24">
+              <TimeFrameSelector
+                selected={getTimeFrameOption(state.timeFrame)}
+                onChange={(option) => actions.setTimeFrame(option.value)}
+              />
+            </div>
+
+            <div className="min-w-0 flex-1 sm:w-28 sm:flex-none">
+              <GranularitySelector
+                granularities={granularities}
+                selected={getGranularityOption(granularity)}
+                onChange={({ value }) =>
+                  actions.setGranularity(
+                    value !== defaultGranularity ? value : null
+                  )
+                }
+                disabled={granularities.length < 2}
+              />
+            </div>
           </div>
 
           {isCategorizedTimeseries && (
-            <>
+            <div className="flex min-w-0 flex-1 flex-row gap-2">
               <div className="w-28 shrink-0">
                 <CategorySelector
                   selected={state.categories}
@@ -95,7 +140,7 @@ export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
                   onChange={actions.setRollups}
                 />
               </div>
-            </>
+            </div>
           )}
         </div>
 
