@@ -1,3 +1,4 @@
+import cn from "classnames";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
 
@@ -65,7 +66,13 @@ export const TimeseriesControlBar: FC<TimeseriesControlBarProps> = ({
       disableClear={disableClear}
     >
       <div className="flex w-full min-w-0 flex-col gap-2 sm:flex-row lg:max-w-3xl lg:justify-start">
-        <div className="flex min-w-0 flex-1 flex-row gap-2">
+        {/* Only the category and rollup filters fill the free width. Without
+        them, the fee unit toggle stays next to the time frame selector. */}
+        <div
+          className={cn("flex min-w-0 flex-row gap-2", {
+            "flex-1": isCategorizedTimeseries,
+          })}
+        >
           <div className="w-20 shrink-0 sm:w-24">
             <TimeFrameSelector
               selected={getTimeFrameOption(state.timeFrame)}
