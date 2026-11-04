@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/blob-storage-manager",
-  "version": "0.15.2",
+  "version": "0.15.3",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -16,11 +16,11 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1155.0",
-    "@blobscan/db": "workspace:^0.33.0",
+    "@blobscan/db": "workspace:^0.33.1",
     "@blobscan/errors": "workspace:^0.0.2",
-    "@blobscan/logger": "workspace:^0.1.4",
-    "@blobscan/open-telemetry": "workspace:^0.0.11",
-    "@blobscan/zod": "workspace:^0.1.1",
+    "@blobscan/logger": "workspace:^0.1.6",
+    "@blobscan/open-telemetry": "workspace:^0.0.12",
+    "@blobscan/zod": "workspace:^0.2.0",
     "@ethersphere/bee-js": "13.2.0",
     "@google-cloud/storage": "^8.4.0",
     "multiformats": "^14.0.0"

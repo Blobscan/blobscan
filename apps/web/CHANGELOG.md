@@ -1,5 +1,45 @@
 # @blobscan/web
 
+## 0.59.0
+
+### Minor Changes
+
+- [#1066](https://github.com/Blobscan/blobscan/pull/1066) [`7db40c7`](https://github.com/Blobscan/blobscan/commit/7db40c7ae3ee33b0a0c14ad9283c5878c8b818a0) Thanks [@PJColombo](https://github.com/PJColombo)! - Add a granularity selector to the chart pages: hourly, daily, weekly, monthly and yearly. It is in the filter bar, next to the time frame selector, and it shows only the granularities that the time frame allows. When the new time frame does not allow the selected granularity, the chart uses the default granularity of the time frame.
+
+  The timeseries stats endpoint has a new `granularity` parameter. It also reads the monthly and yearly metrics tables. A granularity that the time frame does not allow gives a `BAD_REQUEST` error. Without the parameter, the endpoint uses the default granularity (in bold).
+
+  | Time frame      | Global                     | With `categories` or `rollups` |
+  | --------------- | -------------------------- | ------------------------------ |
+  | `1d`            | **hour**                   | **hour**                       |
+  | `7d`            | **hour**, day              | hour, **day**                  |
+  | `15d`           | hour, **day**              | **day**                        |
+  | `30d`           | hour, **day**, week        | **day**, week                  |
+  | `90d`           | **day**, week              | day, **week**                  |
+  | `180d`          | **day**, week, month       | day, **week**, month           |
+  | `365d`          | **day**, week, month       | **week**, month                |
+  | `All` (default) | day, **week**, month, year | **week**, month, year          |
+
+  This changes the default periods of three time frames. With `categories` or `rollups`, `7d` now gives daily periods, and `90d` gives weekly periods. Stacked bars with one segment for each rollup are easier to read with fewer periods. Without `categories` and `rollups`, `All` now gives weekly periods, because its number of daily periods increases each day.
+
+  `@blobscan/zod` now exports the time frame and granularity schemas and their types: `timeFrameSchema`, `TimeFrame`, `metricsGranularitySchema` and `MetricsGranularity`. `@blobscan/api` and `@blobscan/web` import them from there. `@blobscan/api` no longer exports the `TimeFrame` type.
+
+### Patch Changes
+
+- [#1065](https://github.com/Blobscan/blobscan/pull/1065) [`a09d248`](https://github.com/Blobscan/blobscan/commit/a09d2481ca0bee040c2b957d0126adcc9ef14291) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed the charts that did not resize when the viewport became narrower and overflowed the page.
+
+- [#1068](https://github.com/Blobscan/blobscan/pull/1068) [`a1fa8ec`](https://github.com/Blobscan/blobscan/commit/a1fa8ec437db45d837edb4d8948190a756a49f5a) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed the stats metric cards that cut the unit (for example, "Gwei" showed as "G") when the value had many decimals.
+
+- [#1064](https://github.com/Blobscan/blobscan/pull/1064) [`9bec8ee`](https://github.com/Blobscan/blobscan/commit/9bec8ee3a8b4fefef736e5f948c2c7846e7318a3) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed the empty USD chart of the average blob base fee on the stats page.
+- Updated dependencies [[`7db40c7`](https://github.com/Blobscan/blobscan/commit/7db40c7ae3ee33b0a0c14ad9283c5878c8b818a0)]:
+  - @blobscan/api@0.43.0
+  - @blobscan/zod@0.2.0
+  - @blobscan/blob-decoder@0.2.4
+  - @blobscan/blob-storage-manager@0.15.3
+  - @blobscan/db@0.33.1
+  - @blobscan/env@0.6.1
+  - @blobscan/logger@0.1.6
+  - @blobscan/open-telemetry@0.0.12
+
 ## 0.58.0
 
 ### Minor Changes
