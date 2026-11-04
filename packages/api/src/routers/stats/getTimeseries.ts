@@ -2,7 +2,8 @@ import dayjs from "@blobscan/dayjs";
 import { Prisma } from "@blobscan/db";
 import { Rollup } from "@blobscan/db/prisma/enums";
 import { Category } from "@blobscan/db/prisma/enums";
-import { booleanSchema, z } from "@blobscan/zod";
+import type { MetricsGranularity } from "@blobscan/zod";
+import { booleanSchema, metricsGranularitySchema, z } from "@blobscan/zod";
 
 import type { TRPCContext } from "../../context";
 import { withSortFilterSchema } from "../../middlewares/withFilters";
@@ -13,8 +14,6 @@ import {
   withStatFilters,
 } from "../../middlewares/withStatFilters";
 import { publicProcedure } from "../../procedures";
-import type { MetricsGranularity } from "../../time-frames";
-import { metricsGranularitySchema } from "../../time-frames";
 import { normalize, cacheTRPCQuery } from "../../utils";
 import type { CacheTTL } from "../../utils/cache";
 import type { Dimension } from "../../zod-schemas";
@@ -242,6 +241,14 @@ function getMetricsTable(
     IsSameType<
       Prisma.WeeklyMetricsGetPayload<object>,
       Prisma.DailyMetricsGetPayload<object>
+    > &
+    IsSameType<
+      Prisma.MonthlyMetricsGetPayload<object>,
+      Prisma.DailyMetricsGetPayload<object>
+    > &
+    IsSameType<
+      Prisma.YearlyMetricsGetPayload<object>,
+      Prisma.DailyMetricsGetPayload<object>
     > = true;
 
   void tablesHaveSameColumns;
@@ -253,6 +260,10 @@ function getMetricsTable(
       return prisma.dailyMetrics;
     case "week":
       return prisma.weeklyMetrics as unknown as typeof prisma.dailyMetrics;
+    case "month":
+      return prisma.monthlyMetrics as unknown as typeof prisma.dailyMetrics;
+    case "year":
+      return prisma.yearlyMetrics as unknown as typeof prisma.dailyMetrics;
   }
 }
 
@@ -346,14 +357,17 @@ function cacheClosedPeriodsTimeseries(ttl: CacheTTL) {
 }
 
 // A new closed period comes at the end of each period, so the cache keeps the
-// closed periods until then. The weekly periods use the daily cache, so the
-// API reads them again each day. isLastClosedPeriodMissing uses the week
-// length, so the result is correct. The time frame is in the cache key, so
-// the granularities do not share cache entries.
+// closed periods until then. The weekly, monthly and yearly periods use the
+// daily cache, so the API reads them again each day. isLastClosedPeriodMissing
+// uses the period length, so the result is correct. The time frame and the
+// granularity are in the cache key, so the granularities do not share cache
+// entries.
 const closedPeriodsTimeseriesGetters = {
   hour: cacheClosedPeriodsTimeseries("hourly"),
   day: cacheClosedPeriodsTimeseries("daily"),
   week: cacheClosedPeriodsTimeseries("daily"),
+  month: cacheClosedPeriodsTimeseries("daily"),
+  year: cacheClosedPeriodsTimeseries("daily"),
 } satisfies Record<MetricsGranularity, unknown>;
 
 /**
