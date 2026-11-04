@@ -11,11 +11,13 @@ import { useUrlState } from "~/hooks/useUrlState";
 import ErrorPage from "~/pages/_error";
 import { paginationParamsSchema } from "~/schemas/pagination";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
+import { toChecksumAddress } from "~/utils";
 
 const Address: NextPage = () => {
   const router = useRouter();
   const { state: urlState } = useUrlState(paginationParamsSchema);
   const address = (router?.query.address as string | undefined) ?? "";
+  const checksumAddress = toChecksumAddress(address);
 
   const {
     data: addressTxsData,
@@ -51,14 +53,16 @@ const Address: NextPage = () => {
   return (
     <>
       <SeoMetaTags
-        title={`Address ${address ?? "Details"}`}
-        description={`Explore address ${address ?? "details"} on Blobscan.`}
+        title={`Address ${checksumAddress || "Details"}`}
+        description={`Explore address ${
+          checksumAddress || "details"
+        } on Blobscan.`}
       />
       <DetailsLayout
         header="Address Details"
         resource={{
           type: "address",
-          value: address,
+          value: checksumAddress,
         }}
         fields={[
           {
@@ -66,9 +70,10 @@ const Address: NextPage = () => {
             value: (
               <div className="flex items-center gap-2">
                 <div className="relative bottom-0.5">
-                  <EthIdenticon address={address} />
+                  {/* Lower case keeps the identicon the same for all casings. */}
+                  <EthIdenticon address={address.toLowerCase()} />
                 </div>
-                <div className="">{address}</div>
+                <div className="">{checksumAddress}</div>
               </div>
             ),
           },

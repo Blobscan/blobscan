@@ -35,6 +35,21 @@ describe("Search procedure", async () => {
       });
       expect(result).toMatchObject(expectedResults);
     });
+
+    it("should find it by checksummed address", async () => {
+      const result = await searchCaller.search({
+        query: "0x6887246668a3b87F54DeB3b94Ba47a6f63F32985",
+      });
+
+      expect(result).toMatchObject({
+        addresses: [
+          {
+            address: "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
+            rollup: "OPTIMISM",
+          },
+        ],
+      });
+    });
   });
 
   describe("when searching blobs", () => {

@@ -3,7 +3,7 @@ import { ArrowsRightLeftIcon, CubeIcon } from "@heroicons/react/24/outline";
 
 import BlobIcon from "~/icons/blob.svg";
 import type { Rollup, SearchCategory, SearchOutput } from "~/types";
-import { capitalize } from "~/utils";
+import { capitalize, toChecksumAddress } from "~/utils";
 import { Card } from "../Cards/Card";
 import { EmptyState } from "../EmptyState";
 import { EthIdenticon } from "../EthIdenticon";
@@ -36,7 +36,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
       results: addresses.map(({ address, rollup }) => ({
         icon: <EthIdenticon address={address} size="sm" />,
         id: address,
-        label: address,
+        label: toChecksumAddress(address),
         searchQuery,
         rollup: rollup?.toLowerCase() as Rollup | undefined,
       })),

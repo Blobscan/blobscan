@@ -29,6 +29,7 @@ import {
   formatTimestamp,
   shortenHash,
   calculatePercentage,
+  toChecksumAddress,
 } from "~/utils";
 
 const BYTES_UNIT: ByteUnit = "KiB";
@@ -172,11 +173,11 @@ const Txs: NextPage = function () {
                 {
                   item: (
                     <Copyable
-                      value={from}
+                      value={toChecksumAddress(from)}
                       tooltipText="Copy the origin address"
                     >
                       <Link href={routes.address(from)}>
-                        {shortenHash(from)}
+                        {shortenHash(toChecksumAddress(from))}
                       </Link>
                     </Copyable>
                   ),
@@ -184,10 +185,12 @@ const Txs: NextPage = function () {
                 {
                   item: (
                     <Copyable
-                      value={to}
+                      value={toChecksumAddress(to)}
                       tooltipText="Copy the destination address"
                     >
-                      <Link href={routes.address(to)}>{shortenHash(to)}</Link>
+                      <Link href={routes.address(to)}>
+                        {shortenHash(toChecksumAddress(to))}
+                      </Link>
                     </Copyable>
                   ),
                 },

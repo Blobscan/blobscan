@@ -107,15 +107,15 @@ export const search = publicProcedure
   )
   .output(outputSchema)
   .query(async ({ input: { query }, ctx: { prisma } }) => {
-    const isAddress = addressSchema.safeParse(query).success;
-    if (isAddress) {
+    const parsedAddress = addressSchema.safeParse(query);
+    if (parsedAddress.success) {
       const dbAddress = await prisma.address.findUnique({
         select: {
           address: true,
           rollup: true,
         },
         where: {
-          address: query,
+          address: parsedAddress.data,
         },
       });
 

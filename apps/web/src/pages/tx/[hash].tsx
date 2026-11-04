@@ -31,6 +31,7 @@ import {
   formatNumber,
   performDiv,
   pluralize,
+  toChecksumAddress,
 } from "~/utils";
 
 const Tx: NextPage = () => {
@@ -162,16 +163,19 @@ const Tx: NextPage = () => {
       {
         name: "From",
         value: (
-          <Copyable value={from} tooltipText="Copy from address">
-            <Link href={routes.address(from)}>{from}</Link>
+          <Copyable
+            value={toChecksumAddress(from)}
+            tooltipText="Copy from address"
+          >
+            <Link href={routes.address(from)}>{toChecksumAddress(from)}</Link>
           </Copyable>
         ),
       },
       {
         name: "To",
         value: (
-          <Copyable value={to} tooltipText="Copy to address">
-            <Link href={routes.address(to)}>{to}</Link>
+          <Copyable value={toChecksumAddress(to)} tooltipText="Copy to address">
+            <Link href={routes.address(to)}>{toChecksumAddress(to)}</Link>
           </Copyable>
         ),
       },

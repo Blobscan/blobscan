@@ -83,7 +83,11 @@ export const blockHashSchema = hexSchema.length(
 
 export const blockNumberSchema = z.coerce.number().int().positive();
 
-export const addressSchema = hexSchema.length(42, "Invalid address length");
+// The database keeps addresses in lower case. The transform makes a
+// checksummed (mixed-case) address match the stored value.
+export const addressSchema = hexSchema
+  .length(42, "Invalid address length")
+  .transform((address) => address.toLowerCase());
 
 export const blobProofSchema = hexSchema.length(
   98,

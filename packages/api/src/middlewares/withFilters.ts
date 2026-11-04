@@ -83,11 +83,17 @@ export const withDateRangeFilterSchema = z.object({
   endDate: z.date().optional(),
 });
 
+// The filters do not validate the address format. They only change the
+// value to lower case, so that a checksummed address matches the stored value.
+const addressFilterSchema = AddressSchema.shape.address.transform((address) =>
+  address.toLowerCase()
+);
+
 export const withAddressFilterSchema = z.object({
   from: commaSeparatedValuesSchema.transform((values) =>
-    values?.map((v) => AddressSchema.shape.address.parse(v))
+    values?.map((v) => addressFilterSchema.parse(v))
   ),
-  to: AddressSchema.shape.address.optional(),
+  to: addressFilterSchema.optional(),
 });
 
 export const withSortFilterSchema = z.object({
