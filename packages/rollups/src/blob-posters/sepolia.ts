@@ -23,6 +23,7 @@ export const SEPOLIA_REGISTRY: BlobPosterRegistry = {
     "0xdf50ccaa4467b61b51d8ed86320d8ca67a56265e",
     "0xe14b3f075ad9377689daf659e04a2a99a4acede4",
   ],
+  ROBINHOOD: ["0x6d77b3f2cfffa24e474afab0d09c1646e87a0a7b"],
   SCROLL: ["0x2d567ece699eabe5afcd141edb7a4f2d0d6ce8a0"],
   WORLD: ["0x0f3ff4731D7a10B89ED79AD1Fd97844d7F66B96d"],
   STARKNET: ["0x5b98b836969a60fec50fa925905dd1d382a7db43"],
