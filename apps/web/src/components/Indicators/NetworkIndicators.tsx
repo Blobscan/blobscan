@@ -14,12 +14,14 @@ import EthereumIcon from "~/icons/ethereum.svg";
 import GasIcon from "~/icons/gas.svg";
 import { useAppState } from "~/providers/AppState";
 import { useEnv } from "~/providers/Env";
+import { routes } from "~/routes";
 import { capitalize, formatTimestamp } from "~/utils";
 import { DeltaPercentageChange } from "../DeltaPercentage";
 import { FiatDisplay } from "../Displays/FiatDisplay";
 import { Icon } from "../Icon";
 import type { IndicatorProps } from "../Indicator";
 import { Indicator } from "../Indicator";
+import { Link } from "../Link";
 import { Scrollable } from "../Scrollable";
 import { Separator } from "../Separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
@@ -88,7 +90,9 @@ export function NetworkIndicators() {
       value:
         latestUsdPrice !== undefined ? (
           <div className="flex items-center gap-1">
-            <FiatDisplay amount={latestUsdPrice} />
+            <Link href={routes.stat("eth-price")}>
+              <FiatDisplay amount={latestUsdPrice} />
+            </Link>
 
             {past24hUsdPrice ? (
               <>
