@@ -2,8 +2,6 @@ import type { Category, Rollup } from "@blobscan/db/prisma/enums";
 import {
   blockAllComputedFieldsSchema,
   transactionAllComputedFieldsSchema,
-} from "@blobscan/db/prisma/extensions";
-import {
   AddressSchema,
   BlobDataStorageReferenceSchema,
   BlobSchema,
@@ -11,7 +9,7 @@ import {
   BlockSchema,
   DailyMetricsSchema,
   TransactionSchema,
-} from "@blobscan/db/prisma/zod";
+} from "@blobscan/db";
 import {
   blobStorageSchema,
   dbCategorySchema,

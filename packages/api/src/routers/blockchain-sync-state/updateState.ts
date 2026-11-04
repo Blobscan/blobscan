@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
-import { BlockchainSyncStateSchema } from "@blobscan/db/prisma/zod";
+import { BlockchainSyncStateSchema } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import { createAuthedProcedure } from "../../procedures";

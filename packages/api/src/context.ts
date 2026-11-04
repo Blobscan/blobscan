@@ -8,7 +8,7 @@ import type { BlobPropagator } from "@blobscan/blob-propagator";
 import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import type { Chain } from "@blobscan/chains";
 import type { BlobscanPrismaClient } from "@blobscan/db";
-import type { RollupRegistry } from "@blobscan/rollups/src/RollupRegistry";
+import type { RollupRegistry } from "@blobscan/rollups";
 
 import type { ApiClient } from "./utils";
 import { createApiClient } from "./utils";
