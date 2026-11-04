@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/env",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "private": true,
   "main": "./index.ts",
   "types": "./index.ts",
@@ -15,7 +15,7 @@
     "with-env:test": "dotenv -e ../../.env.test --"
   },
   "dependencies": {
-    "@blobscan/zod": "workspace:^0.1.1"
+    "@blobscan/zod": "workspace:^0.2.0"
   },
   "eslintConfig": {
     "root": true,

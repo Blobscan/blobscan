@@ -1,5 +1,12 @@
 # @blobscan/logger
 
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies [[`7db40c7`](https://github.com/Blobscan/blobscan/commit/7db40c7ae3ee33b0a0c14ad9283c5878c8b818a0)]:
+  - @blobscan/zod@0.2.0
+
 ## 0.1.5
 
 ### Patch Changes
