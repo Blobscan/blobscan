@@ -129,6 +129,8 @@ def get_enriched_txs(
             "category": "rollup" if rollup else "other",
             "blobGasPrice": blob_gas_price,
             "blockNumber": block["number"],
+            "blockSlot": block["slot"],
+            "blockEpoch": block.get("epoch"),
             "blob_base_fee": tx["blobGasUsed"] * blob_gas_price,
             "blob_max_fee": tx["blobGasUsed"] * tx["maxFeePerBlobGas"],
             "blob_as_calldata_fee": tx["blobAsCalldataGasUsed"] * tx["gasPrice"],
@@ -659,6 +661,37 @@ class _TxMetricsMixin:
                 and tx["blob_base_fee_usd"] is not None
             )
             assert row["total_usd_priced_transactions"] == expected
+
+    @pytest.mark.parametrize(
+        ("first_column", "last_column", "tx_field"),
+        [
+            ("first_block_number", "last_block_number", "blockNumber"),
+            ("first_slot", "last_slot", "blockSlot"),
+            ("first_epoch", "last_epoch", "blockEpoch"),
+            ("first_block_timestamp", "last_block_timestamp", "blockTimestamp"),
+        ],
+    )
+    def test_block_range(self, postgres, first_column, last_column, tx_field):
+        result = self._result(postgres)
+        for (cat, rollup), row in result.items():
+            values = [
+                tx[tx_field] for tx in self._txs
+                if (cat is None or tx["category"] == cat)
+                and (rollup is None or (tx["rollup"] or "").lower() == rollup)
+            ]
+            if tx_field == "blockTimestamp":
+                values = [
+                    datetime.fromisoformat(v).replace(tzinfo=None) for v in values
+                ]
+            assert row[first_column] == min(values), (cat, rollup)
+            assert row[last_column] == max(values), (cat, rollup)
+
+    def test_row_block_range_is_inside_global_range(self, postgres):
+        result = self._result(postgres)
+        global_row = result[(None, None)]
+        for row in result.values():
+            assert row["first_block_number"] >= global_row["first_block_number"]
+            assert row["last_block_number"] <= global_row["last_block_number"]
 
 
 class _EthPriceMetricsMixin:
