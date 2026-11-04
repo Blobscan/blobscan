@@ -1,5 +1,5 @@
 import type { Prisma } from "@blobscan/db";
-import { AddressSchema, BlockSchema } from "@blobscan/db/prisma/zod";
+import { AddressSchema, BlockSchema } from "@blobscan/db";
 import {
   dbCategoryCoercionSchema,
   dbRollupCoercionSchema,

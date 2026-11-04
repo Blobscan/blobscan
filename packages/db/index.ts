@@ -3,9 +3,21 @@ export {
   blockAllComputedFieldsSchema,
   blockComputedBlobGasBaseFeeSchema,
   blockComputedUsdFieldsSchema,
+  transactionAllComputedFieldsSchema,
   transactionComputedFeeFieldsSchema,
   transactionAllComputedUsdFieldsSchema,
 } from "./prisma/extensions/computed-fields";
+export {
+  AddressSchema,
+  AllTimeMetricsSchema,
+  BlobDataStorageReferenceSchema,
+  BlobSchema,
+  BlobsOnTransactionsSchema,
+  BlockSchema,
+  BlockchainSyncStateSchema,
+  DailyMetricsSchema,
+  TransactionSchema,
+} from "./prisma/zod";
 export * from "./prisma/extended-types";
 export * from "./prisma/client";
 export * from "./prisma/errors";

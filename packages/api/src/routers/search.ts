@@ -5,7 +5,7 @@ import {
   BlobsOnTransactionsSchema,
   BlockSchema,
   TransactionSchema,
-} from "@blobscan/db/prisma/zod";
+} from "@blobscan/db";
 import {
   addressSchema,
   blobCommitmentSchema,
