@@ -3,7 +3,11 @@ import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
-import { dimensionSchema, getDimension } from "../../zod-schemas";
+import {
+  dimensionSchema,
+  getDimension,
+  omitMetricsBlockRange,
+} from "../../zod-schemas";
 import { buildStatsPath } from "./helpers";
 
 const metricsSchema = AllTimeMetricsSchema.omit({
@@ -11,6 +15,7 @@ const metricsSchema = AllTimeMetricsSchema.omit({
   category: true,
   rollup: true,
   updatedAt: true,
+  ...omitMetricsBlockRange,
 });
 
 const outputSchema = z

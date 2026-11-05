@@ -4,6 +4,9 @@ WITH base AS (
     CASE WHEN f.rollup IS NOT NULL THEN 'rollup'::category ELSE 'other'::category END AS category,
     f.rollup,
     tx.block_number,
+    tx.block_timestamp,
+    b.slot,
+    b.epoch,
     tx.hash,
     tx.to_id,
     t.first_block_number_as_receiver                         AS to_first_block_number,
@@ -80,6 +83,16 @@ INSERT INTO hourly_metrics (
   total_blob_max_fee_usd,
   total_usd_priced_transactions,
 
+  -- Block range
+  first_block_number,
+  last_block_number,
+  first_slot,
+  last_slot,
+  first_epoch,
+  last_epoch,
+  first_block_timestamp,
+  last_block_timestamp,
+
   updated_at
 )
 SELECT
@@ -131,6 +144,18 @@ SELECT
   -- transactions without a price, and these are not in the USD totals.
   COUNT(blob_base_fee_usd)::INT AS total_usd_priced_transactions,
 
+  -- Block range. Each row gets the range of its own transactions. As a
+  -- result, a category or a rollup row can have a smaller range than the
+  -- global row. The epoch is NULL when the blocks have no epoch.
+  MIN(block_number) AS first_block_number,
+  MAX(block_number) AS last_block_number,
+  MIN(slot) AS first_slot,
+  MAX(slot) AS last_slot,
+  MIN(epoch) AS first_epoch,
+  MAX(epoch) AS last_epoch,
+  MIN(block_timestamp) AS first_block_timestamp,
+  MAX(block_timestamp) AS last_block_timestamp,
+
   now()
 FROM base JOIN block_metric ON base.period_start = block_metric.period_start
 GROUP BY GROUPING SETS (
@@ -162,5 +187,15 @@ ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blob_as_calldata_fee_usd = EXCLUDED.total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd = EXCLUDED.total_blob_max_fee_usd,
   total_usd_priced_transactions = EXCLUDED.total_usd_priced_transactions,
+
+  -- Block range
+  first_block_number = EXCLUDED.first_block_number,
+  last_block_number = EXCLUDED.last_block_number,
+  first_slot = EXCLUDED.first_slot,
+  last_slot = EXCLUDED.last_slot,
+  first_epoch = EXCLUDED.first_epoch,
+  last_epoch = EXCLUDED.last_epoch,
+  first_block_timestamp = EXCLUDED.first_block_timestamp,
+  last_block_timestamp = EXCLUDED.last_block_timestamp,
 
   updated_at = now()

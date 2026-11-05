@@ -129,6 +129,10 @@ def get_enriched_txs(
             "category": "rollup" if rollup else "other",
             "blobGasPrice": blob_gas_price,
             "blockNumber": block["number"],
+            "blockSlot": block["slot"],
+            "blockEpoch": block.get("epoch"),
+            # The database keeps the block timestamp with no time zone.
+            "blockDatetime": ts.replace(tzinfo=None),
             "blob_base_fee": tx["blobGasUsed"] * blob_gas_price,
             "blob_max_fee": tx["blobGasUsed"] * tx["maxFeePerBlobGas"],
             "blob_as_calldata_fee": tx["blobAsCalldataGasUsed"] * tx["gasPrice"],
@@ -476,6 +480,15 @@ class _TxMetricsMixin:
     def _result(self, postgres):
         return _query_metrics_table(postgres, self._table, self._period_start)
 
+    def _txs_for(self, cat: str | None, rollup: str | None) -> list[dict]:
+        """Return the transactions of the metrics row (cat, rollup)."""
+        return [
+            tx
+            for tx in self._txs
+            if (cat is None or tx["category"] == cat)
+            and (rollup is None or (tx["rollup"] or "").lower() == rollup)
+        ]
+
     def test_global_metrics_exists(self, postgres):
         assert (None, None) in self._result(postgres)
 
@@ -642,23 +655,52 @@ class _TxMetricsMixin:
     def test_total_fees_usd(self, postgres, column, tx_field):
         result = self._result(postgres)
         for (cat, rollup), row in result.items():
-            txs = [
-                tx for tx in self._txs
-                if (cat is None or tx["category"] == cat)
-                and (rollup is None or (tx["rollup"] or "").lower() == rollup)
-            ]
+            txs = self._txs_for(cat, rollup)
             _assert_usd_equal(row[column], _sum_usd([tx[tx_field] for tx in txs]))
 
     def test_total_usd_priced_transactions(self, postgres):
         result = self._result(postgres)
         for (cat, rollup), row in result.items():
             expected = sum(
-                1 for tx in self._txs
-                if (cat is None or tx["category"] == cat)
-                and (rollup is None or (tx["rollup"] or "").lower() == rollup)
-                and tx["blob_base_fee_usd"] is not None
+                1
+                for tx in self._txs_for(cat, rollup)
+                if tx["blob_base_fee_usd"] is not None
             )
             assert row["total_usd_priced_transactions"] == expected
+
+    @pytest.mark.parametrize(
+        ("first_column", "last_column", "tx_field"),
+        [
+            ("first_block_number", "last_block_number", "blockNumber"),
+            ("first_slot", "last_slot", "blockSlot"),
+            ("first_epoch", "last_epoch", "blockEpoch"),
+            ("first_block_timestamp", "last_block_timestamp", "blockDatetime"),
+        ],
+    )
+    def test_block_range(self, postgres, first_column, last_column, tx_field):
+        result = self._result(postgres)
+        for (cat, rollup), row in result.items():
+            # SQL MIN and MAX ignore NULL. A row with only NULL values gets NULL.
+            values = [
+                tx[tx_field]
+                for tx in self._txs_for(cat, rollup)
+                if tx[tx_field] is not None
+            ]
+            assert row[first_column] == (min(values) if values else None), (
+                cat,
+                rollup,
+            )
+            assert row[last_column] == (max(values) if values else None), (
+                cat,
+                rollup,
+            )
+
+    def test_row_block_range_is_inside_global_range(self, postgres):
+        result = self._result(postgres)
+        global_row = result[(None, None)]
+        for row in result.values():
+            assert row["first_block_number"] >= global_row["first_block_number"]
+            assert row["last_block_number"] <= global_row["last_block_number"]
 
 
 class _EthPriceMetricsMixin:

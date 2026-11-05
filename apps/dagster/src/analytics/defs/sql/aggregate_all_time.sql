@@ -38,7 +38,17 @@ unioned AS (
     y.total_blob_base_fee_usd,
     y.total_blob_as_calldata_fee_usd,
     y.total_blob_max_fee_usd,
-    y.total_usd_priced_transactions
+    y.total_usd_priced_transactions,
+
+    -- Block range
+    y.first_block_number,
+    y.last_block_number,
+    y.first_slot,
+    y.last_slot,
+    y.first_epoch,
+    y.last_epoch,
+    y.first_block_timestamp,
+    y.last_block_timestamp
   FROM yearly_metrics y
   CROSS JOIN cutoffs c
   WHERE y.period_start < c.cur_year
@@ -74,7 +84,17 @@ unioned AS (
     m.total_blob_base_fee_usd,
     m.total_blob_as_calldata_fee_usd,
     m.total_blob_max_fee_usd,
-    m.total_usd_priced_transactions
+    m.total_usd_priced_transactions,
+
+    -- Block range
+    m.first_block_number,
+    m.last_block_number,
+    m.first_slot,
+    m.last_slot,
+    m.first_epoch,
+    m.last_epoch,
+    m.first_block_timestamp,
+    m.last_block_timestamp
   FROM monthly_metrics m
   CROSS JOIN cutoffs c
   WHERE m.period_start >= c.cur_year
@@ -111,7 +131,17 @@ unioned AS (
     d.total_blob_base_fee_usd,
     d.total_blob_as_calldata_fee_usd,
     d.total_blob_max_fee_usd,
-    d.total_usd_priced_transactions
+    d.total_usd_priced_transactions,
+
+    -- Block range
+    d.first_block_number,
+    d.last_block_number,
+    d.first_slot,
+    d.last_slot,
+    d.first_epoch,
+    d.last_epoch,
+    d.first_block_timestamp,
+    d.last_block_timestamp
   FROM daily_metrics d
   CROSS JOIN cutoffs c
   WHERE d.period_start >= c.cur_month
@@ -148,7 +178,17 @@ unioned AS (
     h.total_blob_base_fee_usd,
     h.total_blob_as_calldata_fee_usd,
     h.total_blob_max_fee_usd,
-    h.total_usd_priced_transactions
+    h.total_usd_priced_transactions,
+
+    -- Block range
+    h.first_block_number,
+    h.last_block_number,
+    h.first_slot,
+    h.last_slot,
+    h.first_epoch,
+    h.last_epoch,
+    h.first_block_timestamp,
+    h.last_block_timestamp
   FROM hourly_metrics h
   CROSS JOIN cutoffs c
   WHERE h.period_start >= c.cur_day
@@ -186,7 +226,17 @@ aggregated AS (
     SUM(u.total_blob_base_fee_usd)          AS total_blob_base_fee_usd,
     SUM(u.total_blob_as_calldata_fee_usd)   AS total_blob_as_calldata_fee_usd,
     SUM(u.total_blob_max_fee_usd)           AS total_blob_max_fee_usd,
-    SUM(u.total_usd_priced_transactions)    AS total_usd_priced_transactions
+    SUM(u.total_usd_priced_transactions)    AS total_usd_priced_transactions,
+
+    -- Block range
+    MIN(u.first_block_number)               AS first_block_number,
+    MAX(u.last_block_number)                AS last_block_number,
+    MIN(u.first_slot)                       AS first_slot,
+    MAX(u.last_slot)                        AS last_slot,
+    MIN(u.first_epoch)                      AS first_epoch,
+    MAX(u.last_epoch)                       AS last_epoch,
+    MIN(u.first_block_timestamp)            AS first_block_timestamp,
+    MAX(u.last_block_timestamp)             AS last_block_timestamp
   FROM unioned u
   GROUP BY u.category, u.rollup
 )
@@ -222,6 +272,17 @@ INSERT INTO all_time_metrics (
   total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd,
   total_usd_priced_transactions,
+
+  -- Block range
+  first_block_number,
+  last_block_number,
+  first_slot,
+  last_slot,
+  first_epoch,
+  last_epoch,
+  first_block_timestamp,
+  last_block_timestamp,
+
   updated_at
 )
 SELECT
@@ -252,6 +313,17 @@ SELECT
   total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd,
   total_usd_priced_transactions,
+
+  -- Block range
+  first_block_number,
+  last_block_number,
+  first_slot,
+  last_slot,
+  first_epoch,
+  last_epoch,
+  first_block_timestamp,
+  last_block_timestamp,
+
   now()
 FROM aggregated
 ON CONFLICT (category, rollup)
@@ -283,5 +355,15 @@ DO UPDATE SET
   total_blob_as_calldata_fee_usd = EXCLUDED.total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd = EXCLUDED.total_blob_max_fee_usd,
   total_usd_priced_transactions = EXCLUDED.total_usd_priced_transactions,
+
+  -- Block range
+  first_block_number = EXCLUDED.first_block_number,
+  last_block_number = EXCLUDED.last_block_number,
+  first_slot = EXCLUDED.first_slot,
+  last_slot = EXCLUDED.last_slot,
+  first_epoch = EXCLUDED.first_epoch,
+  last_epoch = EXCLUDED.last_epoch,
+  first_block_timestamp = EXCLUDED.first_block_timestamp,
+  last_block_timestamp = EXCLUDED.last_block_timestamp,
 
   updated_at = now();

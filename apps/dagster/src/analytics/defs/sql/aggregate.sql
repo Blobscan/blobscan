@@ -33,6 +33,16 @@ INSERT INTO {{target_table}} (
   total_blob_max_fee_usd,
   total_usd_priced_transactions,
 
+  -- Block range
+  first_block_number,
+  last_block_number,
+  first_slot,
+  last_slot,
+  first_epoch,
+  last_epoch,
+  first_block_timestamp,
+  last_block_timestamp,
+
   updated_at
 )
 SELECT
@@ -71,6 +81,16 @@ SELECT
   SUM(total_blob_max_fee_usd) AS total_blob_max_fee_usd,
   SUM(total_usd_priced_transactions) AS total_usd_priced_transactions,
 
+  -- Block range
+  MIN(first_block_number) AS first_block_number,
+  MAX(last_block_number) AS last_block_number,
+  MIN(first_slot) AS first_slot,
+  MAX(last_slot) AS last_slot,
+  MIN(first_epoch) AS first_epoch,
+  MAX(last_epoch) AS last_epoch,
+  MIN(first_block_timestamp) AS first_block_timestamp,
+  MAX(last_block_timestamp) AS last_block_timestamp,
+
   now()
 FROM {{source_table}}
 WHERE period_start >= :from AND period_start < :to
@@ -103,5 +123,15 @@ ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blob_as_calldata_fee_usd = EXCLUDED.total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd = EXCLUDED.total_blob_max_fee_usd,
   total_usd_priced_transactions = EXCLUDED.total_usd_priced_transactions,
+
+  -- Block range
+  first_block_number = EXCLUDED.first_block_number,
+  last_block_number = EXCLUDED.last_block_number,
+  first_slot = EXCLUDED.first_slot,
+  last_slot = EXCLUDED.last_slot,
+  first_epoch = EXCLUDED.first_epoch,
+  last_epoch = EXCLUDED.last_epoch,
+  first_block_timestamp = EXCLUDED.first_block_timestamp,
+  last_block_timestamp = EXCLUDED.last_block_timestamp,
 
   updated_at = now()
