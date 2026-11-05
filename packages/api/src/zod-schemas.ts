@@ -64,12 +64,26 @@ export function getDimension(
   };
 }
 
+// The block range of a metrics row. The API does not show it yet. A block
+// range is not a metric, so it must not be in the timeseries metrics.
+export const omitMetricsBlockRange = {
+  firstBlockNumber: true,
+  lastBlockNumber: true,
+  firstSlot: true,
+  lastSlot: true,
+  firstEpoch: true,
+  lastEpoch: true,
+  firstBlockTimestamp: true,
+  lastBlockTimestamp: true,
+} as const;
+
 export const timeseriesMetricsSchema = DailyMetricsSchema.omit({
   id: true,
   periodStart: true,
   category: true,
   rollup: true,
   updatedAt: true,
+  ...omitMetricsBlockRange,
 });
 
 export const toLogLevelSchema = z.string().transform((value, ctx) => {
