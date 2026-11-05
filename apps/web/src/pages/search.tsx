@@ -34,9 +34,11 @@ export const getServerSideProps: GetServerSideProps<SearchProps> =
     }
 
     let route: string | undefined;
+    const parsedAddress = addressSchema.safeParse(term);
 
-    if (addressSchema.safeParse(term).success) {
-      route = routes.address(term);
+    if (parsedAddress.success) {
+      // Use the lower-case address, so that each address has one URL.
+      route = routes.address(parsedAddress.data);
     } else if (
       blobCommitmentSchema.safeParse(term).success ||
       blobVersionedHashSchema.safeParse(term).success ||

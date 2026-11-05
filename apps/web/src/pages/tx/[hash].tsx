@@ -31,6 +31,7 @@ import {
   formatNumber,
   performDiv,
   pluralize,
+  toChecksumAddress,
 } from "~/utils";
 
 const Tx: NextPage = () => {
@@ -136,6 +137,8 @@ const Tx: NextPage = () => {
       blobAsCalldataGasFee,
       ethUsdPrice,
     } = tx;
+    const checksumFrom = toChecksumAddress(from);
+    const checksumTo = toChecksumAddress(to);
 
     detailsFields = [
       {
@@ -162,16 +165,16 @@ const Tx: NextPage = () => {
       {
         name: "From",
         value: (
-          <Copyable value={from} tooltipText="Copy from address">
-            <Link href={routes.address(from)}>{from}</Link>
+          <Copyable value={checksumFrom} tooltipText="Copy from address">
+            <Link href={routes.address(from)}>{checksumFrom}</Link>
           </Copyable>
         ),
       },
       {
         name: "To",
         value: (
-          <Copyable value={to} tooltipText="Copy to address">
-            <Link href={routes.address(to)}>{to}</Link>
+          <Copyable value={checksumTo} tooltipText="Copy to address">
+            <Link href={routes.address(to)}>{checksumTo}</Link>
           </Copyable>
         ),
       },

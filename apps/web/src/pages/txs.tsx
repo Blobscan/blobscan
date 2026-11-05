@@ -29,6 +29,7 @@ import {
   formatTimestamp,
   shortenHash,
   calculatePercentage,
+  toChecksumAddress,
 } from "~/utils";
 
 const BYTES_UNIT: ByteUnit = "KiB";
@@ -122,6 +123,8 @@ const Txs: NextPage = function () {
             block,
             blockTimestamp,
           }) => {
+            const checksumFrom = toChecksumAddress(from);
+            const checksumTo = toChecksumAddress(to);
             const totalBlobSize = blobs.reduce(
               (acc, { size }) => acc + size,
               0
@@ -172,11 +175,11 @@ const Txs: NextPage = function () {
                 {
                   item: (
                     <Copyable
-                      value={from}
+                      value={checksumFrom}
                       tooltipText="Copy the origin address"
                     >
                       <Link href={routes.address(from)}>
-                        {shortenHash(from)}
+                        {shortenHash(checksumFrom)}
                       </Link>
                     </Copyable>
                   ),
@@ -184,10 +187,12 @@ const Txs: NextPage = function () {
                 {
                   item: (
                     <Copyable
-                      value={to}
+                      value={checksumTo}
                       tooltipText="Copy the destination address"
                     >
-                      <Link href={routes.address(to)}>{shortenHash(to)}</Link>
+                      <Link href={routes.address(to)}>
+                        {shortenHash(checksumTo)}
+                      </Link>
                     </Copyable>
                   ),
                 },

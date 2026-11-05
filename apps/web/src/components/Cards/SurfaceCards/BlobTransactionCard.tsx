@@ -23,6 +23,7 @@ import {
   normalizeTimestamp,
   pluralize,
   shortenHash,
+  toChecksumAddress,
 } from "~/utils";
 import { RollupBadge } from "../../Badges/RollupBadge";
 import { Link } from "../../Link";
@@ -74,6 +75,8 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   className,
 }) {
   const [opened, setOpened] = useState(false);
+  const checksumFrom = toChecksumAddress(from ?? "");
+  const checksumTo = toChecksumAddress(to ?? "");
   const breakpoint = useBreakpoint();
   const isCompact =
     compact ||
@@ -125,14 +128,16 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                   <div className="flex flex-row items-center gap-1 text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
                     <div className="flex justify-start gap-0.5">
                       <Link href={routes.address(from)}>
-                        {isCompact ? shortenHash(from, 8) : from}
+                        {isCompact
+                          ? shortenHash(checksumFrom, 8)
+                          : checksumFrom}
                       </Link>
                     </div>
                     <ArrowRightIcon className="h-3 w-3" />
                     <div>
                       <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
                         <Link href={routes.address(to)}>
-                          {isCompact ? shortenHash(to, 8) : to}
+                          {isCompact ? shortenHash(checksumTo, 8) : checksumTo}
                         </Link>
                       </div>
                     </div>

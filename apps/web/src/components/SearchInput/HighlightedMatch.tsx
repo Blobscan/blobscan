@@ -5,7 +5,9 @@ export const HighlightedMatch: FC<{
   value: string | number;
   term: string | number;
 }> = function ({ term, value }) {
-  const isHighlighted = value.toString() === term.toString();
+  // A hex value can be in lower case or in checksum case. Ignore the letter case.
+  const isHighlighted =
+    value.toString().toLowerCase() === term.toString().toLowerCase();
 
   return (
     <span

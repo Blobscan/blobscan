@@ -1,4 +1,16 @@
+import { getAddress } from "viem";
+
 const addressRegex = /^0x[a-fA-F0-9]{40}$/;
+
+// This function gives the EIP-55 checksum form of an address. Use it only to show addresses.
+// If the value is not a valid address, the function gives the value without a change.
+export function toChecksumAddress(address: string): string {
+  try {
+    return getAddress(address.toLowerCase());
+  } catch {
+    return address;
+  }
+}
 
 // This function shortens an Ethereum address by removing characters from the middle.
 export function shortenHash(address: string, length = 4): string {
