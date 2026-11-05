@@ -75,6 +75,8 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   className,
 }) {
   const [opened, setOpened] = useState(false);
+  const checksumFrom = toChecksumAddress(from ?? "");
+  const checksumTo = toChecksumAddress(to ?? "");
   const breakpoint = useBreakpoint();
   const isCompact =
     compact ||
@@ -127,17 +129,15 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                     <div className="flex justify-start gap-0.5">
                       <Link href={routes.address(from)}>
                         {isCompact
-                          ? shortenHash(toChecksumAddress(from), 8)
-                          : toChecksumAddress(from)}
+                          ? shortenHash(checksumFrom, 8)
+                          : checksumFrom}
                       </Link>
                     </div>
                     <ArrowRightIcon className="h-3 w-3" />
                     <div>
                       <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
                         <Link href={routes.address(to)}>
-                          {isCompact
-                            ? shortenHash(toChecksumAddress(to), 8)
-                            : toChecksumAddress(to)}
+                          {isCompact ? shortenHash(checksumTo, 8) : checksumTo}
                         </Link>
                       </div>
                     </div>

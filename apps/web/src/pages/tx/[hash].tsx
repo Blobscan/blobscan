@@ -137,6 +137,8 @@ const Tx: NextPage = () => {
       blobAsCalldataGasFee,
       ethUsdPrice,
     } = tx;
+    const checksumFrom = toChecksumAddress(from);
+    const checksumTo = toChecksumAddress(to);
 
     detailsFields = [
       {
@@ -163,19 +165,16 @@ const Tx: NextPage = () => {
       {
         name: "From",
         value: (
-          <Copyable
-            value={toChecksumAddress(from)}
-            tooltipText="Copy from address"
-          >
-            <Link href={routes.address(from)}>{toChecksumAddress(from)}</Link>
+          <Copyable value={checksumFrom} tooltipText="Copy from address">
+            <Link href={routes.address(from)}>{checksumFrom}</Link>
           </Copyable>
         ),
       },
       {
         name: "To",
         value: (
-          <Copyable value={toChecksumAddress(to)} tooltipText="Copy to address">
-            <Link href={routes.address(to)}>{toChecksumAddress(to)}</Link>
+          <Copyable value={checksumTo} tooltipText="Copy to address">
+            <Link href={routes.address(to)}>{checksumTo}</Link>
           </Copyable>
         ),
       },

@@ -123,6 +123,8 @@ const Txs: NextPage = function () {
             block,
             blockTimestamp,
           }) => {
+            const checksumFrom = toChecksumAddress(from);
+            const checksumTo = toChecksumAddress(to);
             const totalBlobSize = blobs.reduce(
               (acc, { size }) => acc + size,
               0
@@ -173,11 +175,11 @@ const Txs: NextPage = function () {
                 {
                   item: (
                     <Copyable
-                      value={toChecksumAddress(from)}
+                      value={checksumFrom}
                       tooltipText="Copy the origin address"
                     >
                       <Link href={routes.address(from)}>
-                        {shortenHash(toChecksumAddress(from))}
+                        {shortenHash(checksumFrom)}
                       </Link>
                     </Copyable>
                   ),
@@ -185,11 +187,11 @@ const Txs: NextPage = function () {
                 {
                   item: (
                     <Copyable
-                      value={toChecksumAddress(to)}
+                      value={checksumTo}
                       tooltipText="Copy the destination address"
                     >
                       <Link href={routes.address(to)}>
-                        {shortenHash(toChecksumAddress(to))}
+                        {shortenHash(checksumTo)}
                       </Link>
                     </Copyable>
                   ),

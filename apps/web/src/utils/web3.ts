@@ -2,8 +2,8 @@ import { getAddress } from "viem";
 
 const addressRegex = /^0x[a-fA-F0-9]{40}$/;
 
-// Returns the EIP-55 checksum form of an address, for display only.
-// If the value is not a valid address, the function returns it unchanged.
+// This function gives the EIP-55 checksum form of an address. Use it only to show addresses.
+// If the value is not a valid address, the function gives the value without a change.
 export function toChecksumAddress(address: string): string {
   try {
     return getAddress(address.toLowerCase());

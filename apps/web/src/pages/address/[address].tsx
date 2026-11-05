@@ -70,7 +70,7 @@ const Address: NextPage = () => {
             value: (
               <div className="flex items-center gap-2">
                 <div className="relative bottom-0.5">
-                  {/* Lower case keeps the identicon the same for all casings. */}
+                  {/* We use lower case, so that the identicon does not change with the letter case. */}
                   <EthIdenticon address={address.toLowerCase()} />
                 </div>
                 <div className="">{checksumAddress}</div>
