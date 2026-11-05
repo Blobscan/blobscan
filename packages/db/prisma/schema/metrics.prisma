@@ -113,12 +113,10 @@ model AllTimeMetrics {
   /// @zod.number.int().nonnegative()
   totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
-  // ------------- BLOCK RANGE -------------
-
-  // The first and the last block of the transactions of the row. Each row
-  // gets the range of its own transactions, thus a category or a rollup row
-  // can have a smaller range than the global row. The epochs are NULL when the
-  // blocks have no epoch.
+  // Block range. The first and the last block of the transactions of the
+  // row. Each row gets the range of its own transactions. As a result, a
+  // category or a rollup row can have a smaller range than the global row.
+  // The epochs are NULL when the blocks have no epoch.
 
   /// @zod.number.int().nonnegative()
   firstBlockNumber    Int?      @map("first_block_number")
@@ -240,12 +238,10 @@ model HourlyMetrics {
   /// @zod.number.int().nonnegative()
   totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
-  // ------------- BLOCK RANGE -------------
-
-  // The first and the last block of the transactions of the row. Each row
-  // gets the range of its own transactions, thus a category or a rollup row
-  // can have a smaller range than the global row. The epochs are NULL when the
-  // blocks have no epoch.
+  // Block range. The first and the last block of the transactions of the
+  // row. Each row gets the range of its own transactions. As a result, a
+  // category or a rollup row can have a smaller range than the global row.
+  // The epochs are NULL when the blocks have no epoch.
 
   /// @zod.number.int().nonnegative()
   firstBlockNumber    Int?      @map("first_block_number")
@@ -371,12 +367,10 @@ model DailyMetrics {
   /// @zod.number.int().nonnegative()
   totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
-  // ------------- BLOCK RANGE -------------
-
-  // The first and the last block of the transactions of the row. Each row
-  // gets the range of its own transactions, thus a category or a rollup row
-  // can have a smaller range than the global row. The epochs are NULL when the
-  // blocks have no epoch.
+  // Block range. The first and the last block of the transactions of the
+  // row. Each row gets the range of its own transactions. As a result, a
+  // category or a rollup row can have a smaller range than the global row.
+  // The epochs are NULL when the blocks have no epoch.
 
   /// @zod.number.int().nonnegative()
   firstBlockNumber    Int?      @map("first_block_number")
@@ -501,12 +495,10 @@ model WeeklyMetrics {
   /// @zod.number.int().nonnegative()
   totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
-  // ------------- BLOCK RANGE -------------
-
-  // The first and the last block of the transactions of the row. Each row
-  // gets the range of its own transactions, thus a category or a rollup row
-  // can have a smaller range than the global row. The epochs are NULL when the
-  // blocks have no epoch.
+  // Block range. The first and the last block of the transactions of the
+  // row. Each row gets the range of its own transactions. As a result, a
+  // category or a rollup row can have a smaller range than the global row.
+  // The epochs are NULL when the blocks have no epoch.
 
   /// @zod.number.int().nonnegative()
   firstBlockNumber    Int?      @map("first_block_number")
@@ -632,12 +624,10 @@ model MonthlyMetrics {
   /// @zod.number.int().nonnegative()
   totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
-  // ------------- BLOCK RANGE -------------
-
-  // The first and the last block of the transactions of the row. Each row
-  // gets the range of its own transactions, thus a category or a rollup row
-  // can have a smaller range than the global row. The epochs are NULL when the
-  // blocks have no epoch.
+  // Block range. The first and the last block of the transactions of the
+  // row. Each row gets the range of its own transactions. As a result, a
+  // category or a rollup row can have a smaller range than the global row.
+  // The epochs are NULL when the blocks have no epoch.
 
   /// @zod.number.int().nonnegative()
   firstBlockNumber    Int?      @map("first_block_number")
@@ -762,12 +752,10 @@ model YearlyMetrics {
   /// @zod.number.int().nonnegative()
   totalUsdPricedTransactions Int?   @map("total_usd_priced_transactions")
 
-  // ------------- BLOCK RANGE -------------
-
-  // The first and the last block of the transactions of the row. Each row
-  // gets the range of its own transactions, thus a category or a rollup row
-  // can have a smaller range than the global row. The epochs are NULL when the
-  // blocks have no epoch.
+  // Block range. The first and the last block of the transactions of the
+  // row. Each row gets the range of its own transactions. As a result, a
+  // category or a rollup row can have a smaller range than the global row.
+  // The epochs are NULL when the blocks have no epoch.
 
   /// @zod.number.int().nonnegative()
   firstBlockNumber    Int?      @map("first_block_number")

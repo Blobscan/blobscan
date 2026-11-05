@@ -82,6 +82,8 @@ INSERT INTO hourly_metrics (
   total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd,
   total_usd_priced_transactions,
+
+  -- Block range
   first_block_number,
   last_block_number,
   first_slot,
@@ -141,9 +143,10 @@ SELECT
   -- The divisor of a USD average. total_transactions also counts the
   -- transactions without a price, and these are not in the USD totals.
   COUNT(blob_base_fee_usd)::INT AS total_usd_priced_transactions,
-  -- The block range of the row. Each row gets the range of its own
-  -- transactions, thus a category or a rollup row can have a smaller range
-  -- than the global row. The epoch is NULL when the blocks have no epoch.
+
+  -- Block range. Each row gets the range of its own transactions. As a
+  -- result, a category or a rollup row can have a smaller range than the
+  -- global row. The epoch is NULL when the blocks have no epoch.
   MIN(block_number) AS first_block_number,
   MAX(block_number) AS last_block_number,
   MIN(slot) AS first_slot,
@@ -184,6 +187,8 @@ ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blob_as_calldata_fee_usd = EXCLUDED.total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd = EXCLUDED.total_blob_max_fee_usd,
   total_usd_priced_transactions = EXCLUDED.total_usd_priced_transactions,
+
+  -- Block range
   first_block_number = EXCLUDED.first_block_number,
   last_block_number = EXCLUDED.last_block_number,
   first_slot = EXCLUDED.first_slot,

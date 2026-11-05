@@ -33,7 +33,7 @@ INSERT INTO {{target_table}} (
   total_blob_max_fee_usd,
   total_usd_priced_transactions,
 
-  -- ------------- BLOCK RANGE -------------
+  -- Block range
   first_block_number,
   last_block_number,
   first_slot,
@@ -81,7 +81,7 @@ SELECT
   SUM(total_blob_max_fee_usd) AS total_blob_max_fee_usd,
   SUM(total_usd_priced_transactions) AS total_usd_priced_transactions,
 
-  -- ------------- BLOCK RANGE -------------
+  -- Block range
   MIN(first_block_number) AS first_block_number,
   MAX(last_block_number) AS last_block_number,
   MIN(first_slot) AS first_slot,
@@ -124,6 +124,7 @@ ON CONFLICT (period_start, category, rollup) DO UPDATE SET
   total_blob_max_fee_usd = EXCLUDED.total_blob_max_fee_usd,
   total_usd_priced_transactions = EXCLUDED.total_usd_priced_transactions,
 
+  -- Block range
   first_block_number = EXCLUDED.first_block_number,
   last_block_number = EXCLUDED.last_block_number,
   first_slot = EXCLUDED.first_slot,

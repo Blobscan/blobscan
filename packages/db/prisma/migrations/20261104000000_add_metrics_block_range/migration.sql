@@ -1,8 +1,8 @@
 -- Add the block range to the metrics tables: the first and the last block
 -- number, slot, epoch and timestamp of the blocks of the period. For
 -- all_time_metrics, the period is all the indexed blocks. Each row gets the
--- range of its own transactions, thus a category or a rollup row can have a
--- smaller range than the global row. The columns are NULL until Dagster
+-- range of its own transactions. As a result, a category or a rollup row can
+-- have a smaller range than the global row. The columns are NULL until Dagster
 -- aggregates their partitions again. The epoch columns are NULL when the
 -- blocks have no epoch.
 

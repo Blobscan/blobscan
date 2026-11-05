@@ -39,6 +39,8 @@ unioned AS (
     y.total_blob_as_calldata_fee_usd,
     y.total_blob_max_fee_usd,
     y.total_usd_priced_transactions,
+
+    -- Block range
     y.first_block_number,
     y.last_block_number,
     y.first_slot,
@@ -83,6 +85,8 @@ unioned AS (
     m.total_blob_as_calldata_fee_usd,
     m.total_blob_max_fee_usd,
     m.total_usd_priced_transactions,
+
+    -- Block range
     m.first_block_number,
     m.last_block_number,
     m.first_slot,
@@ -128,6 +132,8 @@ unioned AS (
     d.total_blob_as_calldata_fee_usd,
     d.total_blob_max_fee_usd,
     d.total_usd_priced_transactions,
+
+    -- Block range
     d.first_block_number,
     d.last_block_number,
     d.first_slot,
@@ -173,6 +179,8 @@ unioned AS (
     h.total_blob_as_calldata_fee_usd,
     h.total_blob_max_fee_usd,
     h.total_usd_priced_transactions,
+
+    -- Block range
     h.first_block_number,
     h.last_block_number,
     h.first_slot,
@@ -220,15 +228,15 @@ aggregated AS (
     SUM(u.total_blob_max_fee_usd)           AS total_blob_max_fee_usd,
     SUM(u.total_usd_priced_transactions)    AS total_usd_priced_transactions,
 
-    -- The block range of all the periods.
-    MIN(u.first_block_number)            AS first_block_number,
-    MAX(u.last_block_number)             AS last_block_number,
-    MIN(u.first_slot)                    AS first_slot,
-    MAX(u.last_slot)                     AS last_slot,
-    MIN(u.first_epoch)                   AS first_epoch,
-    MAX(u.last_epoch)                    AS last_epoch,
-    MIN(u.first_block_timestamp)         AS first_block_timestamp,
-    MAX(u.last_block_timestamp)          AS last_block_timestamp
+    -- Block range
+    MIN(u.first_block_number)               AS first_block_number,
+    MAX(u.last_block_number)                AS last_block_number,
+    MIN(u.first_slot)                       AS first_slot,
+    MAX(u.last_slot)                        AS last_slot,
+    MIN(u.first_epoch)                      AS first_epoch,
+    MAX(u.last_epoch)                       AS last_epoch,
+    MIN(u.first_block_timestamp)            AS first_block_timestamp,
+    MAX(u.last_block_timestamp)             AS last_block_timestamp
   FROM unioned u
   GROUP BY u.category, u.rollup
 )
@@ -264,6 +272,8 @@ INSERT INTO all_time_metrics (
   total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd,
   total_usd_priced_transactions,
+
+  -- Block range
   first_block_number,
   last_block_number,
   first_slot,
@@ -272,6 +282,7 @@ INSERT INTO all_time_metrics (
   last_epoch,
   first_block_timestamp,
   last_block_timestamp,
+
   updated_at
 )
 SELECT
@@ -302,6 +313,8 @@ SELECT
   total_blob_as_calldata_fee_usd,
   total_blob_max_fee_usd,
   total_usd_priced_transactions,
+
+  -- Block range
   first_block_number,
   last_block_number,
   first_slot,
@@ -310,6 +323,7 @@ SELECT
   last_epoch,
   first_block_timestamp,
   last_block_timestamp,
+
   now()
 FROM aggregated
 ON CONFLICT (category, rollup)
@@ -342,6 +356,7 @@ DO UPDATE SET
   total_blob_max_fee_usd = EXCLUDED.total_blob_max_fee_usd,
   total_usd_priced_transactions = EXCLUDED.total_usd_priced_transactions,
 
+  -- Block range
   first_block_number = EXCLUDED.first_block_number,
   last_block_number = EXCLUDED.last_block_number,
   first_slot = EXCLUDED.first_slot,
