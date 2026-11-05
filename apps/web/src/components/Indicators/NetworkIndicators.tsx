@@ -134,12 +134,14 @@ export function NetworkIndicators() {
       icon: <Icon src={GasIcon} />,
       value: latestBlobGasPrice && (
         <div>
-          {prettyFormatWei(latestBlobGasPrice, {
-            numberFormatOpts: {
-              notation: "standard",
-              maximumFractionDigits: 4,
-            },
-          })}{" "}
+          <Link href={routes.stat("avg-blob-gas-price")}>
+            {prettyFormatWei(latestBlobGasPrice, {
+              numberFormatOpts: {
+                notation: "standard",
+                maximumFractionDigits: 4,
+              },
+            })}
+          </Link>{" "}
           {past24hBlobGasPrice ? (
             <>
               <Tooltip>
