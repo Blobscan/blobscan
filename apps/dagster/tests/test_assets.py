@@ -683,8 +683,16 @@ class _TxMetricsMixin:
                 values = [
                     datetime.fromisoformat(v).replace(tzinfo=None) for v in values
                 ]
-            assert row[first_column] == min(values), (cat, rollup)
-            assert row[last_column] == max(values), (cat, rollup)
+            # SQL MIN and MAX ignore NULL. A row with only NULL values gets NULL.
+            values = [v for v in values if v is not None]
+            assert row[first_column] == (min(values) if values else None), (
+                cat,
+                rollup,
+            )
+            assert row[last_column] == (max(values) if values else None), (
+                cat,
+                rollup,
+            )
 
     def test_row_block_range_is_inside_global_range(self, postgres):
         result = self._result(postgres)
