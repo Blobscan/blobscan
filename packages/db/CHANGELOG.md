@@ -1,5 +1,23 @@
 # @blobscan/db
 
+## 0.34.0
+
+### Minor Changes
+
+- [#1070](https://github.com/Blobscan/blobscan/pull/1070) [`81e58ed`](https://github.com/Blobscan/blobscan/commit/81e58ed54718018337c7f6260aabcebfc54b78de) Thanks [@PJColombo](https://github.com/PJColombo)! - Exported the zod model schemas and `transactionAllComputedFieldsSchema` from the `@blobscan/db` index. Changed the imports from `@blobscan/db/prisma/zod`, `@blobscan/db/prisma/extensions` and `@blobscan/rollups/src/RollupRegistry` to the package indexes.
+
+- [#1074](https://github.com/Blobscan/blobscan/pull/1074) [`a943787`](https://github.com/Blobscan/blobscan/commit/a943787137d3eb62dc0ab248eb024e9f667be59b) Thanks [@PJColombo](https://github.com/PJColombo)! - Add the block range to the hourly, daily, weekly, monthly, yearly and all-time metrics tables: `first_block_number`, `last_block_number`, `first_slot`, `last_slot`, `first_epoch`, `last_epoch`, `first_block_timestamp` and `last_block_timestamp`. Dagster sets them each time it aggregates a period.
+
+  Each row gets the range of its own transactions. As a result, a category or a rollup row can have a smaller range than the global row. The epoch comes from the block, and it is NULL when the block has no epoch.
+
+  The existing rows have NULL values until Dagster aggregates their periods again.
+
+- [#1061](https://github.com/Blobscan/blobscan/pull/1061) [`b791ab2`](https://github.com/Blobscan/blobscan/commit/b791ab2d07cec44602d50407756e41bd9fa3af65) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for adi, aztec, robinhood, syndicate and xlayer, and added new blob submitters for abstract, ink, lighter, pegglecoin and taiko
+
+### Patch Changes
+
+- [#1077](https://github.com/Blobscan/blobscan/pull/1077) [`87a63c2`](https://github.com/Blobscan/blobscan/commit/87a63c282bd33a97da0bb7e99ad222fa09d11b13) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed the search and the address filters, which did not find addresses with upper-case letters (for example, checksummed addresses). The API now changes addresses to lower case before it reads the database.
+
 ## 0.33.1
 
 ### Patch Changes
