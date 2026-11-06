@@ -1,5 +1,9 @@
 import dayjs from "@blobscan/dayjs";
 
+export const MS_PER_MINUTE = 60_000;
+export const MS_PER_HOUR = 60 * MS_PER_MINUTE;
+export const MS_PER_DAY = 24 * MS_PER_HOUR;
+
 export const TIMESTAMP_FORMAT = "MMM D, YYYY h:mm:ss AZ";
 
 export function normalizeTimestamp(timestamp: number | Date | string) {

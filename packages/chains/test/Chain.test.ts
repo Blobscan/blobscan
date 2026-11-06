@@ -3,9 +3,11 @@ import { describe, expect, it, test } from "vitest";
 import { testValidError } from "@blobscan/test";
 
 import { Chain } from "../src/Chain";
-import { gnosis, mainnet } from "../src/chains";
+import * as chains from "../src/chains";
 import * as forks from "../src/forks";
 import type { Fork } from "../src/types";
+
+const { gnosis, mainnet } = chains;
 
 describe("Chain", () => {
   const chain = mainnet;
@@ -15,7 +17,7 @@ describe("Chain", () => {
     const expectedFork: Fork = {
       forkName: "dencun",
       activationSlot: 8_626_176,
-      activationDate: new Date("2024-03-13T13:55:00Z"),
+      activationDate: new Date("2024-03-13T13:55:35Z"),
       blobParams: forks.dencun,
     };
 
@@ -69,7 +71,7 @@ describe("Chain", () => {
     );
   });
 
-  describe("slotsPerEpoch", () => {
+  describe("when getting the slots per epoch", () => {
     it("should default to 32 slots per epoch", () => {
       expect(mainnet.slotsPerEpoch).toBe(32);
     });
@@ -94,6 +96,68 @@ describe("Chain", () => {
 
       expect(customChain.slotsPerEpoch).toBe(8);
     });
+  });
+
+  describe("when getting the seconds per slot", () => {
+    it("should default to 12 seconds per slot", () => {
+      expect(mainnet.secondsPerSlot).toBe(12);
+    });
+
+    it("should use the value given to the constructor", () => {
+      expect(gnosis.secondsPerSlot).toBe(5);
+    });
+  });
+
+  describe("when getting a slot timestamp", () => {
+    it("should return the activation date of the latest fork for its activation slot", () => {
+      const { activationSlot, activationDate } = mainnet.latestFork;
+
+      expect(mainnet.getSlotTimestamp(activationSlot)).toEqual(activationDate);
+    });
+
+    it("should add the slot duration for each slot after the anchor", () => {
+      const { activationSlot, activationDate } = mainnet.latestFork;
+
+      expect(
+        mainnet.getSlotTimestamp(activationSlot + 30).getTime() -
+          activationDate.getTime()
+      ).toBe(30 * 12 * 1000);
+    });
+
+    it("should use the chain slot duration", () => {
+      const { activationSlot, activationDate } = gnosis.latestFork;
+
+      expect(
+        gnosis.getSlotTimestamp(activationSlot + 10).getTime() -
+          activationDate.getTime()
+      ).toBe(10 * 5 * 1000);
+    });
+  });
+
+  describe("when comparing the activation params of two forks", () => {
+    const forkPairs = Object.values(chains).flatMap((chain) =>
+      chain.forks.slice(1).map((next, i) => {
+        const prev = chain.forks[i] as Fork;
+
+        return [
+          `${chain.name} ${prev.forkName} → ${next.forkName}`,
+          prev,
+          next,
+          chain.secondsPerSlot,
+        ] as const;
+      })
+    );
+
+    test.each(forkPairs)(
+      "should have an activation date that matches the activation slot for %s",
+      (_, prev, next, secondsPerSlot) => {
+        const slotDiff = next.activationSlot - prev.activationSlot;
+        const timeDiffMs =
+          next.activationDate.getTime() - prev.activationDate.getTime();
+
+        expect(timeDiffMs).toBe(slotDiff * secondsPerSlot * 1000);
+      }
+    );
   });
 
   testValidError(

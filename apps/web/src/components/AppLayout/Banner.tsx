@@ -1,11 +1,48 @@
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
+import cn from "classnames";
 
-import { Link } from "../Link";
+type BannerVariant = "info" | "warning";
 
-// To enable this banner, uncomment the import and <Banner /> in AppLayout.tsx.
-// To disable it, comment them out again.
-export default function Banner() {
+interface BannerProps {
+  variant?: BannerVariant;
+  dismissible?: boolean;
+  icon?: ReactNode;
+  role?: "status" | "alert";
+  children: ReactNode;
+}
+
+const GRADIENT_CLIP_PATH =
+  "polygon(74.8% 41.9%, 97.2% 73.2%, 100% 34.9%, 92.5% 0.4%, 87.5% 0%, 75% 28.6%, 58.5% 54.6%, 50.1% 56.8%, 46.9% 44%, 48.3% 17.4%, 24.7% 53.9%, 0% 27.9%, 11.9% 74.2%, 24.9% 54.1%, 68.6% 100%, 74.8% 41.9%)";
+
+function GradientBlob({ className }: { className: string }) {
+  return (
+    <div
+      className={cn(
+        "absolute top-1/2 -z-10 -translate-y-1/2 transform-gpu blur-2xl",
+        className
+      )}
+      aria-hidden="true"
+    >
+      <div
+        className="aspect-[577/310] w-[36.0625rem] bg-gradient-to-r from-[#ff80b5] to-[#9089fc] opacity-30"
+        style={{ clipPath: GRADIENT_CLIP_PATH }}
+      />
+    </div>
+  );
+}
+
+/**
+ * A full-width notice at the top of the layout.
+ */
+export default function Banner({
+  variant = "info",
+  dismissible = false,
+  icon,
+  role,
+  children,
+}: BannerProps) {
   const [visible, setVisible] = useState(true);
 
   if (!visible) {
@@ -13,58 +50,48 @@ export default function Banner() {
   }
 
   return (
-    <div className="relative isolate flex items-center gap-x-6 overflow-hidden bg-primary-50 px-6 py-2.5 dark:bg-primary-900/30 sm:px-3.5 sm:before:flex-1">
+    <div
+      role={role}
+      className={cn(
+        "relative isolate flex items-center gap-x-6 overflow-hidden px-6 py-2.5 sm:px-3.5 sm:before:flex-1",
+        {
+          "bg-primary-50 dark:bg-primary-900/30": variant === "info",
+          "bg-amber-100 dark:bg-amber-900/40": variant === "warning",
+        }
+      )}
+    >
+      {variant === "info" && (
+        <>
+          <GradientBlob className="left-[max(-7rem,calc(50%-52rem))]" />
+          <GradientBlob className="left-[max(45rem,calc(50%+8rem))]" />
+        </>
+      )}
       <div
-        className="absolute left-[max(-7rem,calc(50%-52rem))] top-1/2 -z-10 -translate-y-1/2 transform-gpu blur-2xl"
-        aria-hidden="true"
+        className={cn("flex items-center gap-x-2 text-sm leading-6", {
+          "text-content-light dark:text-content-dark": variant === "info",
+          "text-amber-900 dark:text-amber-100": variant === "warning",
+        })}
       >
-        <div
-          className="aspect-[577/310] w-[36.0625rem] bg-gradient-to-r from-[#ff80b5] to-[#9089fc] opacity-30"
-          style={{
-            clipPath:
-              "polygon(74.8% 41.9%, 97.2% 73.2%, 100% 34.9%, 92.5% 0.4%, 87.5% 0%, 75% 28.6%, 58.5% 54.6%, 50.1% 56.8%, 46.9% 44%, 48.3% 17.4%, 24.7% 53.9%, 0% 27.9%, 11.9% 74.2%, 24.9% 54.1%, 68.6% 100%, 74.8% 41.9%)",
-          }}
-        />
-      </div>
-      <div
-        className="absolute left-[max(45rem,calc(50%+8rem))] top-1/2 -z-10 -translate-y-1/2 transform-gpu blur-2xl"
-        aria-hidden="true"
-      >
-        <div
-          className="aspect-[577/310] w-[36.0625rem] bg-gradient-to-r from-[#ff80b5] to-[#9089fc] opacity-30"
-          style={{
-            clipPath:
-              "polygon(74.8% 41.9%, 97.2% 73.2%, 100% 34.9%, 92.5% 0.4%, 87.5% 0%, 75% 28.6%, 58.5% 54.6%, 50.1% 56.8%, 46.9% 44%, 48.3% 17.4%, 24.7% 53.9%, 0% 27.9%, 11.9% 74.2%, 24.9% 54.1%, 68.6% 100%, 74.8% 41.9%)",
-          }}
-        />
-      </div>
-      <div className="flex flex-col items-center gap-y-1 text-sm">
+        {icon}
+        {/* Only the content wraps. The icon stays next to the first line. */}
         <div className="flex flex-wrap items-center justify-center gap-x-2">
-          <p className="leading-6 text-content-light dark:text-content-dark">
-            🌐 Blobscan is migrating to IPFS. Mainnet blobs remain permanently
-            pinned on IPFS. Sepolia and Hoodi blobs are now served via IPFS on a
-            best-effort basis without pinning guarantees.
-          </p>
-          <Link
-            href="https://paragraph.com/@blobscan/announcing-transition-to-decentralized-blob-storage"
-            isExternal
-          >
-            Learn more →
-          </Link>
+          {children}
         </div>
       </div>
       <div className="flex flex-1 justify-end">
-        <button
-          type="button"
-          className="-m-3 p-3 focus-visible:outline-offset-[-4px]"
-          onClick={() => setVisible(false)}
-        >
-          <span className="sr-only">Dismiss</span>
-          <XMarkIcon
-            className="h-5 w-5 text-contentSecondary-light dark:text-contentSecondary-dark"
-            aria-hidden="true"
-          />
-        </button>
+        {dismissible && (
+          <button
+            type="button"
+            className="-m-3 p-3 focus-visible:outline-offset-[-4px]"
+            onClick={() => setVisible(false)}
+          >
+            <span className="sr-only">Dismiss</span>
+            <XMarkIcon
+              className="h-5 w-5 text-contentSecondary-light dark:text-contentSecondary-dark"
+              aria-hidden="true"
+            />
+          </button>
+        )}
       </div>
     </div>
   );
