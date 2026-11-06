@@ -4,9 +4,10 @@ import { testValidError } from "@blobscan/test";
 
 import { Chain } from "../src/Chain";
 import * as chains from "../src/chains";
-import { gnosis, mainnet } from "../src/chains";
 import * as forks from "../src/forks";
 import type { Fork } from "../src/types";
+
+const { gnosis, mainnet } = chains;
 
 describe("Chain", () => {
   const chain = mainnet;
@@ -135,29 +136,26 @@ describe("Chain", () => {
 
   describe("fork activation params", () => {
     const forkPairs = Object.values(chains).flatMap((chain) =>
-      chain.forks
-        .slice(1)
-        .map(
-          (fork, i) =>
-            [chain.name, chain.forks[i] as Fork, fork, chain] as const
-        )
+      chain.forks.slice(1).map((next, i) => {
+        const prev = chain.forks[i] as Fork;
+
+        return [
+          `${chain.name} ${prev.forkName} → ${next.forkName}`,
+          prev,
+          next,
+          chain.secondsPerSlot,
+        ] as const;
+      })
     );
 
-    test.each(
-      forkPairs.map(([name, prev, next, chain]) => [
-        `${name} ${prev.forkName} → ${next.forkName}`,
-        prev,
-        next,
-        chain,
-      ])
-    )(
+    test.each(forkPairs)(
       "%s should have activation dates that match their activation slots",
-      (_, prev, next, chain) => {
+      (_, prev, next, secondsPerSlot) => {
         const slotDiff = next.activationSlot - prev.activationSlot;
         const timeDiffMs =
           next.activationDate.getTime() - prev.activationDate.getTime();
 
-        expect(timeDiffMs).toBe(slotDiff * chain.secondsPerSlot * 1000);
+        expect(timeDiffMs).toBe(slotDiff * secondsPerSlot * 1000);
       }
     );
   });
