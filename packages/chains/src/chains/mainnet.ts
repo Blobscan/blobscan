@@ -6,7 +6,7 @@ export const mainnet = new Chain(
   { number: 19_426_589 },
   {
     dencun: {
-      activationDate: new Date("2024-03-13T13:55:00Z"),
+      activationDate: new Date("2024-03-13T13:55:35Z"),
       activationSlot: 8_626_176,
     },
     pectra: {

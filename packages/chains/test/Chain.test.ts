@@ -3,6 +3,7 @@ import { describe, expect, it, test } from "vitest";
 import { testValidError } from "@blobscan/test";
 
 import { Chain } from "../src/Chain";
+import * as chains from "../src/chains";
 import { gnosis, mainnet } from "../src/chains";
 import * as forks from "../src/forks";
 import type { Fork } from "../src/types";
@@ -15,7 +16,7 @@ describe("Chain", () => {
     const expectedFork: Fork = {
       forkName: "dencun",
       activationSlot: 8_626_176,
-      activationDate: new Date("2024-03-13T13:55:00Z"),
+      activationDate: new Date("2024-03-13T13:55:35Z"),
       blobParams: forks.dencun,
     };
 
@@ -94,6 +95,71 @@ describe("Chain", () => {
 
       expect(customChain.slotsPerEpoch).toBe(8);
     });
+  });
+
+  describe("secondsPerSlot", () => {
+    it("should default to 12 seconds per slot", () => {
+      expect(mainnet.secondsPerSlot).toBe(12);
+    });
+
+    it("should use the provided secondsPerSlot value", () => {
+      expect(gnosis.secondsPerSlot).toBe(5);
+    });
+  });
+
+  describe("when getting a slot timestamp", () => {
+    it("should return the activation date of the latest fork for its activation slot", () => {
+      const { activationSlot, activationDate } = mainnet.latestFork;
+
+      expect(mainnet.getSlotTimestamp(activationSlot)).toEqual(activationDate);
+    });
+
+    it("should add the slot duration for each slot after the anchor", () => {
+      const { activationSlot, activationDate } = mainnet.latestFork;
+
+      expect(
+        mainnet.getSlotTimestamp(activationSlot + 30).getTime() -
+          activationDate.getTime()
+      ).toBe(30 * 12 * 1000);
+    });
+
+    it("should use the chain slot duration", () => {
+      const { activationSlot, activationDate } = gnosis.latestFork;
+
+      expect(
+        gnosis.getSlotTimestamp(activationSlot + 10).getTime() -
+          activationDate.getTime()
+      ).toBe(10 * 5 * 1000);
+    });
+  });
+
+  describe("fork activation params", () => {
+    const forkPairs = Object.values(chains).flatMap((chain) =>
+      chain.forks
+        .slice(1)
+        .map(
+          (fork, i) =>
+            [chain.name, chain.forks[i] as Fork, fork, chain] as const
+        )
+    );
+
+    test.each(
+      forkPairs.map(([name, prev, next, chain]) => [
+        `${name} ${prev.forkName} → ${next.forkName}`,
+        prev,
+        next,
+        chain,
+      ])
+    )(
+      "%s should have activation dates that match their activation slots",
+      (_, prev, next, chain) => {
+        const slotDiff = next.activationSlot - prev.activationSlot;
+        const timeDiffMs =
+          next.activationDate.getTime() - prev.activationDate.getTime();
+
+        expect(timeDiffMs).toBe(slotDiff * chain.secondsPerSlot * 1000);
+      }
+    );
   });
 
   testValidError(

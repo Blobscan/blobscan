@@ -6,7 +6,7 @@ export const hoodi = new Chain(
   { number: 0 },
   {
     dencun: {
-      activationDate: new Date("2025-03-17T12:00:00Z"),
+      activationDate: new Date("2025-03-17T12:10:00Z"),
       activationSlot: 0,
     },
     pectra: {

@@ -19,7 +19,7 @@ export const sepolia = new Chain(
     },
     bpo2: {
       activationDate: new Date("2025-10-27T23:16:48Z"),
-      activationSlot: 8_882_784,
+      activationSlot: 8_822_784,
     },
   }
 );

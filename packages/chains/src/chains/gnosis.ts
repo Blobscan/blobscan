@@ -14,5 +14,6 @@ export const gnosis = new Chain(
       activationSlot: 21_405_696,
     },
   },
-  16
+  16,
+  5
 );
