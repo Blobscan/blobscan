@@ -1,8 +1,8 @@
 import cn from "classnames";
 
 import { useIsHomepage } from "~/hooks/useIsHomePage";
-import Banner from "./Banner";
 import { BottomBarLayout } from "./BottomBarLayout";
+import IpfsMigrationBanner from "./IpfsMigrationBanner";
 import SyncLagBanner from "./SyncLagBanner";
 import { TopBarLayout } from "./TopBarLayout";
 
@@ -17,7 +17,7 @@ const AppLayout = ({ children }: LayoutProps) => {
   return (
     <div className="flex min-h-screen flex-col">
       <SyncLagBanner />
-      <Banner />
+      <IpfsMigrationBanner />
       <TopBarLayout />
       <main
         className={cn("container mx-auto grow", {

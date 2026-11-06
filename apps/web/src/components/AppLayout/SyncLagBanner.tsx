@@ -2,6 +2,7 @@ import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
 
 import { formatSyncLag } from "~/utils/sync-lag";
 import { useSyncLag } from "~/hooks/useSyncLag";
+import Banner from "./Banner";
 
 export default function SyncLagBanner() {
   const lag = useSyncLag();
@@ -11,19 +12,21 @@ export default function SyncLagBanner() {
   }
 
   return (
-    <div
+    <Banner
+      variant="warning"
       role="status"
-      className="flex items-center justify-center gap-x-2 bg-amber-100 px-6 py-2.5 text-sm text-amber-900 dark:bg-amber-900/40 dark:text-amber-100"
+      icon={
+        <ExclamationTriangleIcon
+          className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400"
+          aria-hidden="true"
+        />
+      }
     >
-      <ExclamationTriangleIcon
-        className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400"
-        aria-hidden="true"
-      />
-      <p className="leading-6">
+      <p>
         Blobscan is{" "}
         <span className="font-semibold">~{formatSyncLag(lag.lagMs)}</span>{" "}
         behind the chain. Recent data can be missing.
       </p>
-    </div>
+    </Banner>
   );
 }
