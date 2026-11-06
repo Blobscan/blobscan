@@ -2,25 +2,14 @@ import { useEffect, useState } from "react";
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
 
 import { MS_PER_MINUTE } from "~/utils/date";
-import {
-  DEFAULT_INDEXER_LAG_THRESHOLD_MINUTES,
-  formatIndexerLag,
-  getIndexerLag,
-} from "~/utils/indexer-lag";
+import { formatIndexerLag, getIndexerLag } from "~/utils/indexer-lag";
 import { useChain } from "~/hooks/useChain";
 import { useAppState } from "~/providers/AppState";
-import { useEnv } from "~/providers/Env";
 import Banner from "./Banner";
 
 export default function IndexerLagBanner() {
-  const { env } = useEnv();
   const { appState, isError } = useAppState();
   const chain = useChain();
-  // When the validation of the env vars is off, the value can be a string or
-  // it can be missing.
-  const thresholdMinutes =
-    Number(env?.PUBLIC_INDEXER_LAG_THRESHOLD_MINUTES) ||
-    DEFAULT_INDEXER_LAG_THRESHOLD_MINUTES;
 
   // The lag increases while the indexer does not sync, but the synced slot
   // does not change. A clock tick makes the banner render again, so it
@@ -40,7 +29,6 @@ export default function IndexerLagBanner() {
     : getIndexerLag({
         chain,
         lastUpperSyncedSlot: appState?.syncState?.lastUpperSyncedSlot,
-        thresholdMinutes,
       });
 
   if (!lag?.isOutOfSync) {

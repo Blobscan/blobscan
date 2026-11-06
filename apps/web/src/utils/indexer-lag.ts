@@ -2,7 +2,8 @@ import type { Chain } from "@blobscan/chains";
 
 import { MS_PER_DAY, MS_PER_HOUR, MS_PER_MINUTE } from "./date";
 
-export const DEFAULT_INDEXER_LAG_THRESHOLD_MINUTES = 5;
+// The banner shows when the indexer is more than this many minutes behind.
+const INDEXER_LAG_THRESHOLD_MINUTES = 5;
 
 export type IndexerLag = {
   lagMs: number;
@@ -16,11 +17,9 @@ export type IndexerLag = {
 export function getIndexerLag({
   chain,
   lastUpperSyncedSlot,
-  thresholdMinutes,
 }: {
   chain?: Chain;
   lastUpperSyncedSlot?: number | null;
-  thresholdMinutes: number;
 }): IndexerLag | undefined {
   if (
     !chain ||
@@ -37,7 +36,7 @@ export function getIndexerLag({
 
   return {
     lagMs,
-    isOutOfSync: lagMs > thresholdMinutes * MS_PER_MINUTE,
+    isOutOfSync: lagMs > INDEXER_LAG_THRESHOLD_MINUTES * MS_PER_MINUTE,
   };
 }
 

@@ -23,7 +23,6 @@ describe("when getting the indexer lag", () => {
     expect(
       getIndexerLag({
         lastUpperSyncedSlot: activationSlot,
-        thresholdMinutes: 5,
       })
     ).toBeUndefined();
   });
@@ -33,7 +32,6 @@ describe("when getting the indexer lag", () => {
       getIndexerLag({
         chain: mainnet,
         lastUpperSyncedSlot: null,
-        thresholdMinutes: 5,
       })
     ).toBeUndefined();
   });
@@ -45,7 +43,6 @@ describe("when getting the indexer lag", () => {
       getIndexerLag({
         chain: mainnet,
         lastUpperSyncedSlot: activationSlot,
-        thresholdMinutes: 5,
       })
     ).toEqual({ lagMs: 4 * MS_PER_MINUTE, isOutOfSync: false });
   });
@@ -57,7 +54,6 @@ describe("when getting the indexer lag", () => {
       getIndexerLag({
         chain: mainnet,
         lastUpperSyncedSlot: activationSlot + 10,
-        thresholdMinutes: 5,
       })
     ).toEqual({ lagMs: 10 * MS_PER_MINUTE - 10 * 12_000, isOutOfSync: true });
   });
@@ -69,7 +65,6 @@ describe("when getting the indexer lag", () => {
       getIndexerLag({
         chain: mainnet,
         lastUpperSyncedSlot: activationSlot + 100,
-        thresholdMinutes: 5,
       })
     ).toEqual({ lagMs: 0, isOutOfSync: false });
   });
