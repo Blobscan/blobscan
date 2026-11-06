@@ -18,4 +18,6 @@ The BullMQ queue is also used to upload blobs in parallel to different Storages.
 
 [Dagster](https://dagster.io/) calculates the metrics for the charts and the totals (for example, Total Tx Fees Saved, Total Blocks and Total Blobs). The pipeline writes the metrics to the `hourly_metrics`, `daily_metrics`, `weekly_metrics`, `monthly_metrics`, `yearly_metrics` and `all_time_metrics` tables. The API reads the metrics from these tables.
 
+The metrics store the rollup of each row. When the rollup of an address changes (for example, after a migration that labels a new batcher), a Dagster sensor re-aggregates the metrics from the first transaction of that address.
+
 For more information, refer to the [`apps/dagster`](https://github.com/Blobscan/blobscan/tree/main/apps/dagster) README.
