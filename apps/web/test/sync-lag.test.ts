@@ -2,12 +2,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { chains } from "@blobscan/chains";
 
-import { formatIndexerLag, getIndexerLag } from "~/utils/indexer-lag";
+import { MS_PER_DAY, MS_PER_HOUR, MS_PER_MINUTE } from "~/utils/date";
+import { formatSyncLag, getSyncLag } from "~/utils/sync-lag";
 
-const MINUTE = 60_000;
 const { mainnet } = chains;
 
-describe("getIndexerLag", () => {
+describe("getSyncLag", () => {
   const { activationSlot, activationDate } = mainnet.latestFork;
   const anchorMs = activationDate.getTime();
 
@@ -21,7 +21,7 @@ describe("getIndexerLag", () => {
 
   it("should return undefined when there is no chain", () => {
     expect(
-      getIndexerLag({
+      getSyncLag({
         lastUpperSyncedSlot: activationSlot,
         thresholdMinutes: 5,
       })
@@ -30,7 +30,7 @@ describe("getIndexerLag", () => {
 
   it("should return undefined when there is no last synced slot", () => {
     expect(
-      getIndexerLag({
+      getSyncLag({
         chain: mainnet,
         lastUpperSyncedSlot: null,
         thresholdMinutes: 5,
@@ -39,34 +39,34 @@ describe("getIndexerLag", () => {
   });
 
   it("should not be out of sync when the lag is below the threshold", () => {
-    vi.setSystemTime(anchorMs + 4 * MINUTE);
+    vi.setSystemTime(anchorMs + 4 * MS_PER_MINUTE);
 
     expect(
-      getIndexerLag({
+      getSyncLag({
         chain: mainnet,
         lastUpperSyncedSlot: activationSlot,
         thresholdMinutes: 5,
       })
-    ).toEqual({ lagMs: 4 * MINUTE, isOutOfSync: false });
+    ).toEqual({ lagMs: 4 * MS_PER_MINUTE, isOutOfSync: false });
   });
 
   it("should be out of sync when the lag is above the threshold", () => {
-    vi.setSystemTime(anchorMs + 10 * MINUTE);
+    vi.setSystemTime(anchorMs + 10 * MS_PER_MINUTE);
 
     expect(
-      getIndexerLag({
+      getSyncLag({
         chain: mainnet,
         lastUpperSyncedSlot: activationSlot + 10,
         thresholdMinutes: 5,
       })
-    ).toEqual({ lagMs: 10 * MINUTE - 10 * 12_000, isOutOfSync: true });
+    ).toEqual({ lagMs: 10 * MS_PER_MINUTE - 10 * 12_000, isOutOfSync: true });
   });
 
   it("should not return a negative lag when the slot is ahead of the clock", () => {
     vi.setSystemTime(anchorMs);
 
     expect(
-      getIndexerLag({
+      getSyncLag({
         chain: mainnet,
         lastUpperSyncedSlot: activationSlot + 100,
         thresholdMinutes: 5,
@@ -75,15 +75,15 @@ describe("getIndexerLag", () => {
   });
 });
 
-describe("formatIndexerLag", () => {
+describe("formatSyncLag", () => {
   it.each([
     [30_000, "1 minute"],
-    [25 * MINUTE, "25 minutes"],
-    [60 * MINUTE, "1 hour"],
-    [5 * 60 * MINUTE, "5 hours"],
-    [24 * 60 * MINUTE, "1 day"],
-    [3 * 24 * 60 * MINUTE, "3 days"],
+    [25 * MS_PER_MINUTE, "25 minutes"],
+    [MS_PER_HOUR, "1 hour"],
+    [5 * MS_PER_HOUR, "5 hours"],
+    [MS_PER_DAY, "1 day"],
+    [3 * MS_PER_DAY, "3 days"],
   ])("should format %d ms as %s", (lagMs, expected) => {
-    expect(formatIndexerLag(lagMs)).toBe(expected);
+    expect(formatSyncLag(lagMs)).toBe(expected);
   });
 });

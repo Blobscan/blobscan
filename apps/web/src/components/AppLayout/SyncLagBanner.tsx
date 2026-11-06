@@ -1,10 +1,10 @@
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
 
-import { formatIndexerLag } from "~/utils/indexer-lag";
-import { useIndexerLag } from "~/hooks/useIndexerLag";
+import { formatSyncLag } from "~/utils/sync-lag";
+import { useSyncLag } from "~/hooks/useSyncLag";
 
-export function SyncStatusBanner() {
-  const lag = useIndexerLag();
+export default function SyncLagBanner() {
+  const lag = useSyncLag();
 
   if (!lag?.isOutOfSync) {
     return null;
@@ -21,7 +21,7 @@ export function SyncStatusBanner() {
       />
       <p className="leading-6">
         Blobscan is{" "}
-        <span className="font-semibold">~{formatIndexerLag(lag.lagMs)}</span>{" "}
+        <span className="font-semibold">~{formatSyncLag(lag.lagMs)}</span>{" "}
         behind the chain. Recent data can be missing.
       </p>
     </div>

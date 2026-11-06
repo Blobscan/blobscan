@@ -2,6 +2,8 @@ import { createEnv } from "@t3-oss/env-nextjs";
 
 import { booleanSchema, z } from "@blobscan/zod";
 
+import { DEFAULT_SYNC_LAG_THRESHOLD_MINUTES } from "./utils/sync-lag";
+
 export const networkSchema = z.enum([
   "mainnet",
   "hoodi",
@@ -27,7 +29,10 @@ const clientEnvVars = {
   PUBLIC_POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
   PUBLIC_VERCEL_ANALYTICS_ENABLED: booleanSchema.default(false),
   PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL: z.string().url().optional(),
-  PUBLIC_SYNC_LAG_THRESHOLD_MINUTES: z.coerce.number().positive().default(5),
+  PUBLIC_SYNC_LAG_THRESHOLD_MINUTES: z.coerce
+    .number()
+    .positive()
+    .default(DEFAULT_SYNC_LAG_THRESHOLD_MINUTES),
 };
 
 export const clientEnvVarsSchema = z.object(clientEnvVars);
