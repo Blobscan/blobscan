@@ -83,6 +83,32 @@ rolls it up into `daily_metrics`, `weekly_metrics`, `monthly_metrics`,
   write one price each minute. Backfill `eth_usd_price` before you backfill
   the metrics.
 
+### Address metrics
+
+Three more assets store the metrics of each address (see
+`docs/specs/address-metrics.md`). Each row has the `sent_*` values (the
+address is `from`) and the `received_*` values (the address is `to`) of one
+period.
+
+- **`address_hourly_metrics`** follows each update of `hourly_metrics`, so the
+  live and the catch-up schedules also update it. It keeps only the last 30
+  days. A partition older than that does nothing and logs a warning, and
+  `address_hourly_metrics_cleanup_schedule` deletes the older rows every day
+  at 03:30 UTC. The cleanup schedule is running by default.
+- **`address_daily_metrics`** follows `address_hourly_metrics`, but it reads
+  the raw tables, not the hourly rows. Thus it can aggregate any day, also
+  days older than 30 days.
+- **`address_all_time_metrics`** is a full refresh of the closed days of
+  `address_daily_metrics`. It runs from an automation condition when a closed
+  day is updated: after the day closes, and after a re-run of an older day.
+  `aggregated_until` is the last day that it includes. The API adds the daily
+  rows after that day.
+
+To backfill them, materialize `address_daily_metrics` for **all partitions**,
+and `address_hourly_metrics` for the **last 30 days** only. The two backfills
+do not depend on each other. `address_all_time_metrics` then runs from its
+automation condition, or you can materialize it.
+
 ### Initial backfill
 
 Partitions start at `DAGSTER_METRICS_START_DATE` or, if unset, at the Dencun
@@ -155,7 +181,8 @@ most one run writes a metrics table at a time, for scheduled, automation and
 backfill runs:
 
 ```bash
-for t in hourly daily weekly monthly yearly all_time; do
+for t in hourly daily weekly monthly yearly all_time \
+  address_hourly address_daily address_all_time; do
   dagster instance concurrency set "metrics/${t}_metrics" 1
 done
 ```

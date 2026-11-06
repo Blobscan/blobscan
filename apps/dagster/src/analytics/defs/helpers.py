@@ -57,6 +57,41 @@ AGGREGATE_ETH_PRICE_HOURLY_SQL = text(
 )
 AGGREGATE_ALL_TIME_SQL = text((SQL_DIR / "aggregate_all_time.sql").read_text())
 
+ADDRESS_SQL_TEMPLATE = (SQL_DIR / "aggregate_address.sql").read_text()
+ADDRESS_TRUNC_UNITS = frozenset({"hour", "day"})
+
+AGGREGATE_ADDRESS_ALL_TIME_SQL = text(
+    (SQL_DIR / "aggregate_address_all_time.sql").read_text(),
+)
+
+# address_hourly_metrics keeps only this period. The charts use hourly rows
+# only for the 1d and 7d time frames, and address_daily_metrics keeps the full
+# history.
+ADDRESS_HOURLY_RETENTION = timedelta(days=30)
+
+
+def build_address_sql(target: str, trunc: str):
+    """Return the address metrics SQL that writes ``target`` per ``trunc``."""
+    if trunc not in ADDRESS_TRUNC_UNITS:
+        msg = f"Invalid trunc {trunc!r}, expected one of {sorted(ADDRESS_TRUNC_UNITS)}"
+        raise ValueError(msg)
+
+    sql = ADDRESS_SQL_TEMPLATE.replace("{{target_table}}", target).replace(
+        "{{trunc}}", trunc,
+    )
+    if "{{" in sql or "}}" in sql:
+        msg = "Unresolved placeholder in address SQL template"
+        raise ValueError(msg)
+
+    return text(sql)
+
+
+def address_hourly_retention_cutoff(now: datetime | None = None) -> datetime:
+    """Return the start of the oldest hour that address_hourly_metrics keeps."""
+    now = now or datetime.now(UTC)
+    cutoff = now - ADDRESS_HOURLY_RETENTION
+    return cutoff.replace(minute=0, second=0, microsecond=0)
+
 
 def partition_meta(context: dg.AssetExecutionContext) -> str | None:
     pk_range = getattr(context, "partition_key_range", None)
@@ -87,15 +122,19 @@ def execute_sqls_window(
     postgres: PostgresResource,
     sqls: Sequence[TextClause],
     table: str,
+    window: tuple[datetime, datetime] | None = None,
 ) -> list[tuple[int, int]]:
     """Replace ``table`` rows in the partition window with the result of ``sqls``.
 
     The delete and all statements run in one transaction, in order. Returns
     (rowcount, elapsed_ms) for each statement; the time of the delete is
-    added to the first one.
+    added to the first one. ``window`` replaces the partition window, for
+    example to process only a part of it.
     """
-    start = context.partition_time_window.start
-    end = context.partition_time_window.end
+    start, end = window or (
+        context.partition_time_window.start,
+        context.partition_time_window.end,
+    )
     params = {"from": start, "to": end}
 
     results = []
@@ -117,13 +156,14 @@ def execute_sql_window(
     postgres: PostgresResource,
     sql: TextClause,
     table: str,
+    window: tuple[datetime, datetime] | None = None,
 ) -> tuple[int, int]:
     """Replace ``table`` rows in the partition window with the result of ``sql``.
 
     Returns (rowcount, elapsed_ms).
     """
     [result] = execute_sqls_window(
-        context=context, postgres=postgres, sqls=[sql], table=table,
+        context=context, postgres=postgres, sqls=[sql], table=table, window=window,
     )
     return result
 

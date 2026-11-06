@@ -1,10 +1,13 @@
 import dagster as dg
 
 from analytics.defs.helpers import (
+    AGGREGATE_ADDRESS_ALL_TIME_SQL,
     AGGREGATE_ALL_TIME_SQL,
     AGGREGATE_BLOB_HOURLY_SQL,
     AGGREGATE_ETH_PRICE_HOURLY_SQL,
     AGGREGATE_TX_HOURLY_SQL,
+    address_hourly_retention_cutoff,
+    build_address_sql,
     build_aggregate_sql,
     execute_full_refresh,
     execute_sql_window,
@@ -224,6 +227,129 @@ def all_time_metrics(postgres: PostgresResource) -> dg.MaterializeResult:
         postgres=postgres,
         sql=AGGREGATE_ALL_TIME_SQL,
         table="all_time_metrics",
+    )
+
+    return dg.MaterializeResult(
+        metadata={
+            "rows_affected": dg.MetadataValue.int(rowcount),
+            "query_ms": dg.MetadataValue.int(ms),
+        },
+    )
+
+
+# ---------------------------------------------------------------------------
+# Address metrics (see docs/specs/address-metrics.md)
+# ---------------------------------------------------------------------------
+
+_address_hourly_sql = build_address_sql("address_hourly_metrics", "hour")
+_address_daily_sql = build_address_sql("address_daily_metrics", "day")
+
+
+@dg.asset(
+    # The asset does not read hourly_metrics. The dependency makes it follow
+    # the live and the catch-up schedules of hourly_metrics, with the same
+    # automation condition as the rollup levels.
+    deps=[hourly_metrics],
+    partitions_def=hourly_partitions,
+    automation_condition=rollup_condition,
+    backfill_policy=dg.BackfillPolicy.multi_run(24 * 7),
+    pool="metrics/address_hourly_metrics",
+)
+def address_hourly_metrics(
+    context: dg.AssetExecutionContext, postgres: PostgresResource,
+) -> dg.MaterializeResult:
+    """Aggregate the metrics of each address per hour, for the last 30 days.
+
+    A cleanup schedule deletes older rows. Thus a partition older than the
+    retention does nothing, so that a backfill does not do work that the
+    cleanup then deletes. A partition range is cut at the retention limit.
+    """
+    window = context.partition_time_window
+    cutoff = address_hourly_retention_cutoff()
+
+    if window.end <= cutoff:
+        context.log.warning(
+            "Skipped %s: address_hourly_metrics keeps only the hours after %s.",
+            partition_meta(context),
+            cutoff.isoformat(),
+        )
+        return dg.MaterializeResult(
+            metadata={
+                "partition_range": partition_meta(context),
+                "skipped": dg.MetadataValue.bool(True),
+            },
+        )
+
+    rowcount, ms = execute_sql_window(
+        context=context,
+        postgres=postgres,
+        sql=_address_hourly_sql,
+        table="address_hourly_metrics",
+        window=(max(window.start, cutoff), window.end),
+    )
+
+    return dg.MaterializeResult(
+        metadata={
+            "partition_range": partition_meta(context),
+            "skipped": dg.MetadataValue.bool(False),
+            "rows_affected": dg.MetadataValue.int(rowcount),
+            "query_ms": dg.MetadataValue.int(ms),
+        },
+    )
+
+
+@dg.asset(
+    # The asset reads the raw tables, not address_hourly_metrics, so it can
+    # aggregate days older than the hourly retention. The dependency only
+    # makes the current day follow each hourly update.
+    deps=[dg.AssetDep(address_hourly_metrics, partition_mapping=_ignore_missing)],
+    partitions_def=daily_partitions,
+    automation_condition=rollup_condition,
+    backfill_policy=dg.BackfillPolicy.multi_run(30),
+    pool="metrics/address_daily_metrics",
+)
+def address_daily_metrics(
+    context: dg.AssetExecutionContext, postgres: PostgresResource,
+) -> dg.MaterializeResult:
+    rowcount, ms = execute_sql_window(
+        context=context,
+        postgres=postgres,
+        sql=_address_daily_sql,
+        table="address_daily_metrics",
+    )
+
+    return dg.MaterializeResult(
+        metadata={
+            "partition_range": partition_meta(context),
+            "rows_affected": dg.MetadataValue.int(rowcount),
+            "query_ms": dg.MetadataValue.int(ms),
+        },
+    )
+
+
+# Run after an update of a closed day only: after the day closes (the catch-up
+# schedule updates its last hours), and after a re-run of an older day. The
+# updates of the current day do not change the all-time rows.
+closed_day_updated_condition = (
+    dg.AutomationCondition.any_deps_match(
+        dg.AutomationCondition.newly_updated()
+        & ~dg.AutomationCondition.in_latest_time_window(),
+    ).since_last_handled()
+    & ~dg.AutomationCondition.any_deps_in_progress()
+    & ~dg.AutomationCondition.in_progress()
+).with_label("closed_day_updated")
+
+
+@dg.asset(
+    deps=[address_daily_metrics],
+    automation_condition=closed_day_updated_condition,
+    pool="metrics/address_all_time_metrics",
+)
+def address_all_time_metrics(postgres: PostgresResource) -> dg.MaterializeResult:
+    rowcount, ms = execute_full_refresh(
+        postgres=postgres,
+        sql=AGGREGATE_ADDRESS_ALL_TIME_SQL,
+        table="address_all_time_metrics",
     )
 
     return dg.MaterializeResult(

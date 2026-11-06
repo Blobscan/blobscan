@@ -166,3 +166,40 @@ def test_all_time_sql_covers_table_columns(postgres):
     aggregated = re.search(r"aggregated AS \(\s*SELECT(.*?)\bFROM\b", sql, re.DOTALL)
     assert aggregated, "No aggregated CTE"
     assert set(_output_names(aggregated.group(1))) == metrics
+
+
+# ---------------------------------------------------------------------------
+# Address metrics
+# ---------------------------------------------------------------------------
+
+_ADDRESS_SQL_FILES = ["aggregate_address.sql", "aggregate_address_all_time.sql"]
+_ADDRESS_KEY_COLUMNS = {"address", "period_start"}
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("name", _ADDRESS_SQL_FILES)
+def test_address_select_order_matches_insert_columns(name):
+    sql = _read_sql(name)
+    columns = _insert_columns(sql)
+    names = _insert_select_names(sql)
+    assert names == columns
+
+
+@pytest.mark.integration
+def test_address_on_conflict_updates_all_inserted_columns():
+    sql = _read_sql("aggregate_address.sql")
+    inserted = set(_insert_columns(sql)) - _ADDRESS_KEY_COLUMNS
+    assert sorted(_updated_columns(sql)) == sorted(inserted)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("table", ["address_hourly_metrics", "address_daily_metrics"])
+def test_address_sql_covers_table_columns(postgres, table):
+    columns = set(_insert_columns(_read_sql("aggregate_address.sql")))
+    assert columns == _table_columns(postgres, table)
+
+
+@pytest.mark.integration
+def test_address_all_time_sql_covers_table_columns(postgres):
+    columns = set(_insert_columns(_read_sql("aggregate_address_all_time.sql")))
+    assert columns == _table_columns(postgres, "address_all_time_metrics")

@@ -86,7 +86,7 @@ One more column has no prefix:
 
 ### Updates
 
-- **Hourly**: add the current hourly partition to the live schedule (every 10 minutes) and to the catch-up schedule (the last 3 hours).
+- **Hourly**: the asset declares a dependency on `hourly_metrics` and uses the same automation condition as the rollup levels. Thus each run of the live schedule (every 10 minutes) and of the catch-up schedule (the last 3 hours) also updates it. The asset does not read `hourly_metrics`.
 - **Daily**: the current daily partition updates after each hourly run, with the same automation condition as `daily_metrics`. The daily asset declares a dependency on the hourly asset for this purpose only. It does not read the hourly data.
 - **All-time**: it includes closed days only. It runs with eager automation when a daily partition that is not the latest one materializes. This occurs after the day closes, and after a catch-up or reorg run on a closed day.
   - The run deletes all rows, then inserts `SUM`, `MIN` and `MAX` over `address_daily_metrics` with `period_start <= aggregated_until`, grouped by address.

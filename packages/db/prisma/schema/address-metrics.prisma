@@ -1,0 +1,175 @@
+// Metrics of each address. Dagster writes these tables (see
+// docs/specs/address-metrics.md). A row exists only for a period in which the
+// address has at least one canonical blob transaction.
+//
+// Each metric is stored two times:
+// - `sent*`: the transactions where the address is `from`.
+// - `received*`: the transactions where the address is `to`.
+// A self-send (`from = to`) counts in both roles and in selfTotalTransactions.
+//
+// Blob gas used and blob size are not stored. Each blob uses 131072 blob gas
+// and has 131072 bytes, so both values are `totalBlobs * 131072`.
+//
+// The USD fees are Float, as in the network metrics tables. Each fee is
+// converted at the ETH/USD price of the minute of its block. A transaction
+// with no price for its minute is not included, and the value is NULL when no
+// transaction has a price. Divide a USD total by the matching
+// `*TotalUsdPricedTransactions`, not by `*TotalTransactions`.
+
+model AddressHourlyMetrics {
+  id          Int      @id @default(autoincrement())
+  address     String
+  periodStart DateTime @map("period_start")
+  updatedAt   DateTime @default(now()) @map("updated_at")
+
+  /// @zod.number.int().nonnegative()
+  sentTotalTransactions          Int       @default(0) @map("sent_total_transactions")
+  /// @zod.number.int().nonnegative()
+  sentTotalBlobs                 Int       @default(0) @map("sent_total_blobs")
+  /// @zod.bigint.nonnegative()
+  sentTotalBlobUsageSize         BigInt    @default(0) @map("sent_total_blob_usage_size")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  sentTotalBlobBaseFee           Decimal   @default(0) @map("sent_total_blob_base_fee") @db.Decimal(100, 0)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  sentTotalBlobAsCalldataFee     Decimal   @default(0) @map("sent_total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  sentTotalBlobBaseFeeUsd        Float?    @map("sent_total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  sentTotalBlobAsCalldataFeeUsd  Float?    @map("sent_total_blob_as_calldata_fee_usd")
+  /// @zod.number.int().nonnegative()
+  sentTotalUsdPricedTransactions Int       @default(0) @map("sent_total_usd_priced_transactions")
+  sentFirstBlockTimestamp        DateTime? @map("sent_first_block_timestamp")
+  sentLastBlockTimestamp         DateTime? @map("sent_last_block_timestamp")
+
+  /// @zod.number.int().nonnegative()
+  receivedTotalTransactions          Int       @default(0) @map("received_total_transactions")
+  /// @zod.number.int().nonnegative()
+  receivedTotalBlobs                 Int       @default(0) @map("received_total_blobs")
+  /// @zod.bigint.nonnegative()
+  receivedTotalBlobUsageSize         BigInt    @default(0) @map("received_total_blob_usage_size")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  receivedTotalBlobBaseFee           Decimal   @default(0) @map("received_total_blob_base_fee") @db.Decimal(100, 0)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  receivedTotalBlobAsCalldataFee     Decimal   @default(0) @map("received_total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  receivedTotalBlobBaseFeeUsd        Float?    @map("received_total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  receivedTotalBlobAsCalldataFeeUsd  Float?    @map("received_total_blob_as_calldata_fee_usd")
+  /// @zod.number.int().nonnegative()
+  receivedTotalUsdPricedTransactions Int       @default(0) @map("received_total_usd_priced_transactions")
+  receivedFirstBlockTimestamp        DateTime? @map("received_first_block_timestamp")
+  receivedLastBlockTimestamp         DateTime? @map("received_last_block_timestamp")
+
+  /// @zod.number.int().nonnegative()
+  selfTotalTransactions Int @default(0) @map("self_total_transactions")
+
+  @@unique([address, periodStart])
+  @@index([periodStart])
+  @@map("address_hourly_metrics")
+}
+
+model AddressDailyMetrics {
+  id          Int      @id @default(autoincrement())
+  address     String
+  periodStart DateTime @map("period_start") @db.Date
+  updatedAt   DateTime @default(now()) @map("updated_at")
+
+  /// @zod.number.int().nonnegative()
+  sentTotalTransactions          Int       @default(0) @map("sent_total_transactions")
+  /// @zod.number.int().nonnegative()
+  sentTotalBlobs                 Int       @default(0) @map("sent_total_blobs")
+  /// @zod.bigint.nonnegative()
+  sentTotalBlobUsageSize         BigInt    @default(0) @map("sent_total_blob_usage_size")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  sentTotalBlobBaseFee           Decimal   @default(0) @map("sent_total_blob_base_fee") @db.Decimal(100, 0)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  sentTotalBlobAsCalldataFee     Decimal   @default(0) @map("sent_total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  sentTotalBlobBaseFeeUsd        Float?    @map("sent_total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  sentTotalBlobAsCalldataFeeUsd  Float?    @map("sent_total_blob_as_calldata_fee_usd")
+  /// @zod.number.int().nonnegative()
+  sentTotalUsdPricedTransactions Int       @default(0) @map("sent_total_usd_priced_transactions")
+  sentFirstBlockTimestamp        DateTime? @map("sent_first_block_timestamp")
+  sentLastBlockTimestamp         DateTime? @map("sent_last_block_timestamp")
+
+  /// @zod.number.int().nonnegative()
+  receivedTotalTransactions          Int       @default(0) @map("received_total_transactions")
+  /// @zod.number.int().nonnegative()
+  receivedTotalBlobs                 Int       @default(0) @map("received_total_blobs")
+  /// @zod.bigint.nonnegative()
+  receivedTotalBlobUsageSize         BigInt    @default(0) @map("received_total_blob_usage_size")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  receivedTotalBlobBaseFee           Decimal   @default(0) @map("received_total_blob_base_fee") @db.Decimal(100, 0)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  receivedTotalBlobAsCalldataFee     Decimal   @default(0) @map("received_total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  receivedTotalBlobBaseFeeUsd        Float?    @map("received_total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  receivedTotalBlobAsCalldataFeeUsd  Float?    @map("received_total_blob_as_calldata_fee_usd")
+  /// @zod.number.int().nonnegative()
+  receivedTotalUsdPricedTransactions Int       @default(0) @map("received_total_usd_priced_transactions")
+  receivedFirstBlockTimestamp        DateTime? @map("received_first_block_timestamp")
+  receivedLastBlockTimestamp         DateTime? @map("received_last_block_timestamp")
+
+  /// @zod.number.int().nonnegative()
+  selfTotalTransactions Int @default(0) @map("self_total_transactions")
+
+  @@unique([address, periodStart])
+  @@index([periodStart])
+  @@map("address_daily_metrics")
+}
+
+// Closed days only. aggregatedUntil is the last closed day that the row
+// includes. To get the full totals, add the address_daily_metrics rows with
+// periodStart > aggregatedUntil (the current day, and a closed day that this
+// table does not include yet).
+model AddressAllTimeMetrics {
+  id              Int      @id @default(autoincrement())
+  address         String   @unique
+  aggregatedUntil DateTime @map("aggregated_until") @db.Date
+  updatedAt       DateTime @default(now()) @map("updated_at")
+
+  /// @zod.number.int().nonnegative()
+  sentTotalTransactions          Int       @default(0) @map("sent_total_transactions")
+  /// @zod.number.int().nonnegative()
+  sentTotalBlobs                 Int       @default(0) @map("sent_total_blobs")
+  /// @zod.bigint.nonnegative()
+  sentTotalBlobUsageSize         BigInt    @default(0) @map("sent_total_blob_usage_size")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  sentTotalBlobBaseFee           Decimal   @default(0) @map("sent_total_blob_base_fee") @db.Decimal(100, 0)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  sentTotalBlobAsCalldataFee     Decimal   @default(0) @map("sent_total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  sentTotalBlobBaseFeeUsd        Float?    @map("sent_total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  sentTotalBlobAsCalldataFeeUsd  Float?    @map("sent_total_blob_as_calldata_fee_usd")
+  /// @zod.number.int().nonnegative()
+  sentTotalUsdPricedTransactions Int       @default(0) @map("sent_total_usd_priced_transactions")
+  sentFirstBlockTimestamp        DateTime? @map("sent_first_block_timestamp")
+  sentLastBlockTimestamp         DateTime? @map("sent_last_block_timestamp")
+
+  /// @zod.number.int().nonnegative()
+  receivedTotalTransactions          Int       @default(0) @map("received_total_transactions")
+  /// @zod.number.int().nonnegative()
+  receivedTotalBlobs                 Int       @default(0) @map("received_total_blobs")
+  /// @zod.bigint.nonnegative()
+  receivedTotalBlobUsageSize         BigInt    @default(0) @map("received_total_blob_usage_size")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  receivedTotalBlobBaseFee           Decimal   @default(0) @map("received_total_blob_base_fee") @db.Decimal(100, 0)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  receivedTotalBlobAsCalldataFee     Decimal   @default(0) @map("received_total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  receivedTotalBlobBaseFeeUsd        Float?    @map("received_total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  receivedTotalBlobAsCalldataFeeUsd  Float?    @map("received_total_blob_as_calldata_fee_usd")
+  /// @zod.number.int().nonnegative()
+  receivedTotalUsdPricedTransactions Int       @default(0) @map("received_total_usd_priced_transactions")
+  receivedFirstBlockTimestamp        DateTime? @map("received_first_block_timestamp")
+  receivedLastBlockTimestamp         DateTime? @map("received_last_block_timestamp")
+
+  /// @zod.number.int().nonnegative()
+  selfTotalTransactions Int @default(0) @map("self_total_transactions")
+
+  @@map("address_all_time_metrics")
+}
