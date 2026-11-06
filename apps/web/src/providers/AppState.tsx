@@ -20,7 +20,9 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({
     undefined,
     {
       staleTime: 60_000,
-      refetchOnWindowFocus: false,
+      // Keep the sync state fresh on tabs that stay open.
+      refetchInterval: 5 * 60_000,
+      refetchOnWindowFocus: true,
     }
   );
 
