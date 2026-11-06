@@ -33,6 +33,7 @@ export function requiresDirectCount(
     slotRangeFilterEnabled ||
     reorgedFilterEnabled ||
     transactionFilters.toId ||
+    transactionFilters.OR ||
     nonRollupAddressesExists
   );
 }

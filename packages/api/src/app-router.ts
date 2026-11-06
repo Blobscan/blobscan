@@ -1,5 +1,6 @@
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
+import { addressRouter } from "./routers/address";
 import type { BlobRouterConfig } from "./routers/blob";
 import { createBlobRouter } from "./routers/blob";
 import { blockRouter } from "./routers/block";
@@ -22,6 +23,7 @@ export function createAppRouter(config?: AppRouterConfig) {
   return t.router({
     healthcheck,
     search,
+    address: addressRouter,
     blob: createBlobRouter(config?.blobRouter),
     block: blockRouter,
     loggingRouter,
