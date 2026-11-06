@@ -1,5 +1,35 @@
 # @blobscan/web
 
+## 0.60.0
+
+### Minor Changes
+
+- [#1076](https://github.com/Blobscan/blobscan/pull/1076) [`77d1540`](https://github.com/Blobscan/blobscan/commit/77d15406dfc43b5598a93e8efd4f8bd78a26c4b9) Thanks [@PJColombo](https://github.com/PJColombo)! - Make the blob gas price in the top bar a link to the average blob gas price stat page.
+
+- [#1077](https://github.com/Blobscan/blobscan/pull/1077) [`87a63c2`](https://github.com/Blobscan/blobscan/commit/87a63c282bd33a97da0bb7e99ad222fa09d11b13) Thanks [@PJColombo](https://github.com/PJColombo)! - Showed addresses in the EIP-55 checksum format. The copy buttons also copy the checksummed address.
+
+- [#1073](https://github.com/Blobscan/blobscan/pull/1073) [`3cc807d`](https://github.com/Blobscan/blobscan/commit/3cc807d6f760938d9842d4781dc12dab4c9e7452) Thanks [@PJColombo](https://github.com/PJColombo)! - Make the ETH price in the top bar a link to the ETH price stat page.
+
+- [#1078](https://github.com/Blobscan/blobscan/pull/1078) [`4c6d710`](https://github.com/Blobscan/blobscan/commit/4c6d7107e62a738467af716c342d1d0e1300291a) Thanks [@PJColombo](https://github.com/PJColombo)! - Showed a banner on all pages when the indexer is behind the chain. The banner shows how far behind the indexer is, and it goes away when the indexer is in sync again. The banner shows when the indexer is more than 5 minutes behind. The app state now updates each 5 minutes and when the page gets focus again.
+
+  On networks without a chain config, for example devnet, `useChain()` now returns `undefined` and does not throw an error.
+
+- [#1061](https://github.com/Blobscan/blobscan/pull/1061) [`b791ab2`](https://github.com/Blobscan/blobscan/commit/b791ab2d07cec44602d50407756e41bd9fa3af65) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for adi, aztec, robinhood, syndicate and xlayer, and added new blob submitters for abstract, ink, lighter, pegglecoin and taiko
+
+### Patch Changes
+
+- [#1072](https://github.com/Blobscan/blobscan/pull/1072) [`7cdde11`](https://github.com/Blobscan/blobscan/commit/7cdde119a3c8f8cf2a7ee3e00a6269342b9da05d) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed the unused `sort` param that the chart pages added to the URL when you applied the filters.
+
+- [#1070](https://github.com/Blobscan/blobscan/pull/1070) [`81e58ed`](https://github.com/Blobscan/blobscan/commit/81e58ed54718018337c7f6260aabcebfc54b78de) Thanks [@PJColombo](https://github.com/PJColombo)! - Exported the zod model schemas and `transactionAllComputedFieldsSchema` from the `@blobscan/db` index. Changed the imports from `@blobscan/db/prisma/zod`, `@blobscan/db/prisma/extensions` and `@blobscan/rollups/src/RollupRegistry` to the package indexes.
+
+- [#1069](https://github.com/Blobscan/blobscan/pull/1069) [`a4a0ff5`](https://github.com/Blobscan/blobscan/commit/a4a0ff56ddfe0cbe5358b9feac60afab114ce53a) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed the position of the fee unit toggle in the chart control bar. On charts without the category and rollup filters, the toggle is now next to the time frame and granularity selectors and not in the middle of the bar.
+- Updated dependencies [[`87a63c2`](https://github.com/Blobscan/blobscan/commit/87a63c282bd33a97da0bb7e99ad222fa09d11b13), [`4c6d710`](https://github.com/Blobscan/blobscan/commit/4c6d7107e62a738467af716c342d1d0e1300291a), [`81e58ed`](https://github.com/Blobscan/blobscan/commit/81e58ed54718018337c7f6260aabcebfc54b78de), [`a943787`](https://github.com/Blobscan/blobscan/commit/a943787137d3eb62dc0ab248eb024e9f667be59b), [`b791ab2`](https://github.com/Blobscan/blobscan/commit/b791ab2d07cec44602d50407756e41bd9fa3af65)]:
+  - @blobscan/db@0.34.0
+  - @blobscan/api@0.43.1
+  - @blobscan/chains@0.6.0
+  - @blobscan/rollups@0.10.0
+  - @blobscan/blob-storage-manager@0.15.4
+
 ## 0.59.0
 
 ### Minor Changes
