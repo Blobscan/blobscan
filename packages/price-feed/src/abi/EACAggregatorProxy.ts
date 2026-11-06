@@ -1,5 +1,12 @@
 export const EACAggregatorProxyABI = [
   {
+    inputs: [],
+    name: "description",
+    outputs: [{ internalType: "string", name: "", type: "string" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [{ internalType: "uint16", name: "", type: "uint16" }],
     name: "phaseAggregators",
     outputs: [

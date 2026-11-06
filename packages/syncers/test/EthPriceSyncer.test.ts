@@ -1,130 +1,218 @@
- 
-
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { createPublicClient, http } from "viem";
+import { mainnet, polygon } from "viem/chains";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import dayjs from "@blobscan/dayjs";
 import { getPrisma } from "@blobscan/db";
-import { PriceFeed } from "@blobscan/price-feed";
+import { findEthUsdPriceFeed } from "@blobscan/price-feed";
+import type { PriceFeedDefinition } from "@blobscan/price-feed";
 import { fixtures, getViemClient } from "@blobscan/test";
 
 import { env } from "../../env";
 import { ETHPriceSyncer } from "../src";
-import type { ETHPriceSyncerConfig } from "../src/syncers/ETHPriceSyncer";
+import type {
+  ETHPriceSyncerConfig,
+  EthUsdPriceFeedSource,
+} from "../src/syncers/ETHPriceSyncer";
 
 const prisma = getPrisma();
 
-class EthPriceUpdaterMock extends ETHPriceSyncer {
-  constructor({
-    ethUsdPriceFeed,
-  }: Pick<ETHPriceSyncerConfig, "ethUsdPriceFeed">) {
+// The tests run against an Anvil fork of Ethereum mainnet.
+const MAINNET_FEED = findEthUsdPriceFeed(mainnet.id)!;
+
+class EthPriceSyncerMock extends ETHPriceSyncer {
+  constructor(
+    config: Pick<ETHPriceSyncerConfig, "priceFeedSources" | "timeTolerance">
+  ) {
     super({
       prisma,
       cronPattern: env.ETH_PRICE_SYNCER_CRON_PATTERN,
       redisUriOrConnection: env.REDIS_URI,
-      ethUsdPriceFeed,
+      ...config,
     });
-  }
-
-  getWorker() {
-    return this.worker;
   }
 
   getWorkerProcessor() {
     return this.syncerFn;
   }
+}
 
-  getQueue() {
-    return this.queue;
-  }
+function anvilSource(
+  definition: Partial<PriceFeedDefinition> = {}
+): EthUsdPriceFeedSource {
+  return {
+    definition: { ...MAINNET_FEED, ...definition },
+    client: getViemClient(),
+  };
+}
+
+/**
+ * A source whose RPC is not reachable. It uses a different chain, so that it
+ * gets its own `price_feed` row.
+ */
+function unreachableSource(): EthUsdPriceFeedSource {
+  return {
+    definition: findEthUsdPriceFeed(polygon.id)!,
+    client: createPublicClient({
+      chain: polygon,
+      transport: http("http://127.0.0.1:1", { retryCount: 0 }),
+    }),
+  };
 }
 
 describe("EthPriceSyncer", () => {
-  let ethPriceUpdater: EthPriceUpdaterMock;
+  const syncers: EthPriceSyncerMock[] = [];
 
-  beforeEach(async () => {
-    const ethUsdPriceFeed = await PriceFeed.create({
-      client: getViemClient(),
-      dataFeedContractAddress:
-        env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS! as `0x${string}`,
-    });
-    ethPriceUpdater = new EthPriceUpdaterMock({ ethUsdPriceFeed });
+  function createSyncer(
+    config: Pick<ETHPriceSyncerConfig, "priceFeedSources" | "timeTolerance">
+  ) {
+    const syncer = new EthPriceSyncerMock(config);
 
-    return async () => {
-      await ethPriceUpdater.close();
-    };
-  });
+    syncers.push(syncer);
 
-  afterEach(() => {
+    return syncer;
+  }
+
+  afterEach(async () => {
+    await Promise.all(syncers.splice(0).map((syncer) => syncer.close()));
+
     vi.setSystemTime(fixtures.systemDate);
   });
 
-  it("should sync eth price for current timestamp", async () => {
-    const workerProcessor = ethPriceUpdater.getWorkerProcessor();
+  it("should sync the eth price for the current timestamp", async () => {
+    const syncer = createSyncer({ priceFeedSources: [anvilSource()] });
 
-    await workerProcessor();
+    await syncer.getWorkerProcessor()();
 
-    const expectedTimestamp = dayjs().utc().startOf("minute");
-
+    const expectedTimestamp = dayjs().utc().startOf("hour");
     const ethPrices = await prisma.ethUsdPrice.findMany();
-    const ethPrice = ethPrices[0];
 
-    expect(ethPrice?.timestamp.toISOString()).toEqual(
+    expect(ethPrices).toHaveLength(1);
+    expect(ethPrices[0]?.timestamp.toISOString()).toEqual(
       expectedTimestamp.toISOString()
     );
+  });
+
+  it("should store the audit data of the price", async () => {
+    const syncer = createSyncer({ priceFeedSources: [anvilSource()] });
+
+    await syncer.getWorkerProcessor()();
+
+    const ethPrice = await prisma.ethUsdPrice.findFirstOrThrow({
+      include: { priceFeed: true },
+    });
+
+    expect(ethPrice.roundId?.toString()).toMatch(/^\d+$/);
+    expect(ethPrice.roundTimestamp).toBeInstanceOf(Date);
+    expect(ethPrice.roundTimestamp!.getTime()).toBeLessThanOrEqual(
+      ethPrice.timestamp.getTime()
+    );
+    expect(ethPrice.createdAt).toBeInstanceOf(Date);
+    expect(ethPrice.updatedAt).toBeInstanceOf(Date);
+    expect(ethPrice.priceFeed).toMatchObject({
+      chainId: mainnet.id,
+      address: MAINNET_FEED.address,
+      description: "ETH / USD",
+      decimals: 8,
+    });
+  });
+
+  it("should create the price feed row only one time", async () => {
+    const syncer = createSyncer({ priceFeedSources: [anvilSource()] });
+
+    await syncer.getWorkerProcessor()();
+    await syncer.getWorkerProcessor()();
+
+    await expect(prisma.priceFeed.count()).resolves.toBe(1);
+  });
+
+  describe("when the first price feed fails", () => {
+    it("should use the next feed when the RPC is not reachable", async () => {
+      const syncer = createSyncer({
+        priceFeedSources: [unreachableSource(), anvilSource()],
+      });
+
+      await syncer.getWorkerProcessor()();
+
+      const ethPrice = await prisma.ethUsdPrice.findFirstOrThrow({
+        include: { priceFeed: true },
+      });
+
+      expect(ethPrice.priceFeed?.chainId).toBe(mainnet.id);
+    });
+
+    it("should use the next feed when the round is stale", async () => {
+      const staleSource = anvilSource({
+        // The maximum staleness becomes 60 seconds, so the last round is too
+        // old.
+        heartbeat: 0,
+        chain: { ...mainnet, id: 999_999 },
+      });
+      const syncer = createSyncer({
+        priceFeedSources: [staleSource, anvilSource()],
+      });
+
+      await syncer.getWorkerProcessor()();
+
+      const ethPrice = await prisma.ethUsdPrice.findFirstOrThrow({
+        include: { priceFeed: true },
+      });
+
+      expect(ethPrice.priceFeed?.chainId).toBe(mainnet.id);
+    });
+  });
+
+  describe("when all the price feeds fail", () => {
+    it("should throw and not write a price", async () => {
+      const syncer = createSyncer({
+        priceFeedSources: [unreachableSource(), anvilSource()],
+        timeTolerance: 60,
+      });
+
+      await expect(syncer.getWorkerProcessor()()).rejects.toThrow(
+        /No ETH price found/
+      );
+
+      await expect(prisma.ethUsdPrice.count()).resolves.toBe(0);
+    });
   });
 
   describe("when time tolerance is set", () => {
     it("should sync eth price if it is within threshold", async () => {
       const timeTolerance = 3600;
-      const ethUsdPriceFeed = await PriceFeed.create({
-        client: getViemClient(),
-        dataFeedContractAddress:
-          env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS! as `0x${string}`,
+      const syncer = createSyncer({
+        priceFeedSources: [anvilSource()],
         timeTolerance,
       });
 
-      const ethPriceUpdaterWithTimeTolerance = new EthPriceUpdaterMock({
-        ethUsdPriceFeed,
-      });
+      await syncer.getWorkerProcessor()();
 
-      const workerProcessor =
-        ethPriceUpdaterWithTimeTolerance.getWorkerProcessor();
-
-      await workerProcessor();
-
-      const latestPrice = await prisma.ethUsdPrice.findFirst({
+      const latestPrice = await prisma.ethUsdPrice.findFirstOrThrow({
         orderBy: {
           timestamp: "desc",
         },
       });
 
-      const timestamp = dayjs.unix(Number(latestPrice?.timestamp));
-
-      expect(dayjs().diff(timestamp, "second")).toBeLessThanOrEqual(
-        timeTolerance
-      );
+      expect(
+        dayjs(latestPrice.timestamp).diff(latestPrice.roundTimestamp, "second")
+      ).toBeLessThanOrEqual(timeTolerance);
     });
 
-    it("should skip eth price if it is outside threshold", async () => {
-      const timeTolerance = 60;
-
-      const ethUsdPriceFeed = await PriceFeed.create({
-        client: getViemClient(),
-        dataFeedContractAddress:
-          env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS! as `0x${string}`,
-        timeTolerance,
-      });
-      const ethPriceUpdaterWithTimeTolerance = new EthPriceUpdaterMock({
-        ethUsdPriceFeed,
+    it("should use the time tolerance in place of the feed staleness", async () => {
+      const syncer = createSyncer({
+        priceFeedSources: [anvilSource()],
+        timeTolerance: 60,
       });
 
-      const workerProcessor =
-        ethPriceUpdaterWithTimeTolerance.getWorkerProcessor();
-      await workerProcessor();
+      await expect(syncer.getWorkerProcessor()()).rejects.toThrow();
 
-      const ethPrices = await prisma.ethUsdPrice.findMany();
-
-      expect(ethPrices).toHaveLength(0);
+      await expect(prisma.ethUsdPrice.count()).resolves.toBe(0);
     });
+  });
+
+  it("should not accept an empty list of price feeds", () => {
+    expect(() => createSyncer({ priceFeedSources: [] })).toThrow(
+      /no price feed sources/
+    );
   });
 });

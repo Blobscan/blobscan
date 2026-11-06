@@ -47,6 +47,56 @@ const networkSchema = z.enum([
   "devnet",
 ]);
 
+/**
+ * Parses a list of RPC URLs for each chain, in the format
+ * `<chainId>=<url>,<chainId>=<url>`.
+ */
+export const rpcUrlsSchema = z.string().transform((value, ctx) => {
+  const rpcUrls: Record<number, string> = {};
+
+  for (const entry of value.split(",")) {
+    const trimmedEntry = entry.trim();
+
+    if (!trimmedEntry) {
+      continue;
+    }
+
+    const separatorIndex = trimmedEntry.indexOf("=");
+    const chainId = Number(trimmedEntry.slice(0, separatorIndex));
+    const url = trimmedEntry.slice(separatorIndex + 1);
+
+    if (
+      separatorIndex === -1 ||
+      !Number.isInteger(chainId) ||
+      chainId <= 0 ||
+      !z.string().url().safeParse(url).success
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Invalid entry "${trimmedEntry.slice(
+          0,
+          separatorIndex === -1 ? undefined : separatorIndex
+        )}=…". Use the format "<chainId>=<url>,<chainId>=<url>"`,
+      });
+
+      return z.NEVER;
+    }
+
+    if (rpcUrls[chainId]) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Chain ${chainId} has more than one RPC URL`,
+      });
+
+      return z.NEVER;
+    }
+
+    rpcUrls[chainId] = url;
+  }
+
+  return rpcUrls;
+});
+
 const prismaBatchOperationsMaxSizeSchema = z.coerce
   .number()
   .positive()
@@ -160,19 +210,23 @@ export const env = createEnv({
        *  ETH/USD Price Feed
        * ====================
        *
-       * https://polygonscan.com/address/0xF9680D99D6C9589e2a93a78A04A279e509205945
        * https://data.chain.link/
+       *
+       * The syncer reads the Chainlink ETH/USD feeds in the order that
+       * `@blobscan/price-feed` sets. It uses only the chains that have an RPC
+       * URL in ETH_PRICE_SYNCER_RPC_URLS.
        */
-
-      // ETH Price is retrieved every second from the Chainlink: ETH/USD oracle
-      // in the Polygon network.
       ETH_PRICE_SYNCER_ENABLED: booleanSchema.default(false),
       ETH_PRICE_SYNCER_CRON_PATTERN: z.string().default("* * * * *"),
-      ETH_PRICE_SYNCER_CHAIN_ID: z.coerce.number().default(137),
+      ETH_PRICE_SYNCER_RPC_URLS: rpcUrlsSchema.optional(),
+      /** @deprecated Use ETH_PRICE_SYNCER_RPC_URLS. */
+      ETH_PRICE_SYNCER_CHAIN_ID: z.coerce.number().optional(),
+      /** @deprecated Use ETH_PRICE_SYNCER_RPC_URLS. */
       ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL: z.string().url().optional(),
+      /** @deprecated The feed addresses are in `@blobscan/price-feed`. */
       ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS: z
         .string()
-        .default("0xF9680D99D6C9589e2a93a78A04A279e509205945"),
+        .optional(),
       ETH_PRICE_SYNCER_TIME_TOLERANCE: z.coerce.number().positive().optional(),
 
       /*
@@ -368,6 +422,31 @@ export const env = createEnv({
           env.S3_STORAGE_FORCE_PATH_STYLE || false
         }`
       );
+    }
+
+    if (env.ETH_PRICE_SYNCER_ENABLED) {
+      console.log(
+        `ETH price syncer configuration: cronPattern=${
+          env.ETH_PRICE_SYNCER_CRON_PATTERN
+        } rpcChainIds=${Object.keys(env.ETH_PRICE_SYNCER_RPC_URLS ?? {}).join(
+          ","
+        )} timeTolerance=${env.ETH_PRICE_SYNCER_TIME_TOLERANCE ?? "per feed"}`
+      );
+
+      if (
+        env.ETH_PRICE_SYNCER_CHAIN_ID !== undefined ||
+        env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL
+      ) {
+        console.warn(
+          "ETH_PRICE_SYNCER_CHAIN_ID and ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL are deprecated. Use ETH_PRICE_SYNCER_RPC_URLS (for example 137=https://polygon-rpc.example)."
+        );
+      }
+
+      if (env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS) {
+        console.warn(
+          "ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS is deprecated and has no effect. The feed addresses are in @blobscan/price-feed."
+        );
+      }
     }
 
     console.log(

@@ -1,3 +1,8 @@
+import {
+  BaseError,
+  ContractFunctionRevertedError,
+  ContractFunctionZeroDataError,
+} from "viem";
 import type { Address, PublicClient } from "viem";
 
 import { AggregatorV3ABI } from "./abi/AggregatorV3";
@@ -60,6 +65,8 @@ export class PriceFeed {
    */
   private constructor(
     private readonly client: PublicClient,
+    readonly address: Address,
+    readonly description: string,
     private readonly phaseAggregators: PhaseAggregator[],
     readonly priceDecimals: number,
     private readonly timeTolerance: number
@@ -87,11 +94,18 @@ export class PriceFeed {
       client,
       dataFeedContractAddress
     );
-    const priceDecimals = await client.readContract({
-      address: dataFeedContractAddress,
-      abi: EACAggregatorProxyABI,
-      functionName: "decimals",
-    });
+    const [priceDecimals, description] = await Promise.all([
+      client.readContract({
+        address: dataFeedContractAddress,
+        abi: EACAggregatorProxyABI,
+        functionName: "decimals",
+      }),
+      client.readContract({
+        address: dataFeedContractAddress,
+        abi: EACAggregatorProxyABI,
+        functionName: "description",
+      }),
+    ]);
 
     if (!aggregators.length) {
       throw new Error("Failed to create PriceFeed: no aggregators found");
@@ -99,6 +113,8 @@ export class PriceFeed {
 
     const instance = new PriceFeed(
       client,
+      dataFeedContractAddress,
+      description,
       aggregators.sort((a, b) => b.phaseId - a.phaseId),
       priceDecimals,
       timeTolerance || Infinity
@@ -355,8 +371,14 @@ export class PriceFeed {
           }
 
           phaseAggregators.push(phaseAggregator);
-        } catch (_) {
-          continue;
+        } catch (err) {
+          // Skip aggregators that have no data. Do not hide RPC errors,
+          // because then the feed would have missing phases.
+          if (isContractNoDataError(err)) {
+            continue;
+          }
+
+          throw err;
         }
       }
 
@@ -388,7 +410,13 @@ export class PriceFeed {
 
       return toRoundData(rawRoundData, phaseId);
     } catch (err) {
-      return null;
+      // The round does not exist. Other errors (for example RPC errors) go
+      // to the caller.
+      if (isContractNoDataError(err)) {
+        return null;
+      }
+
+      throw err;
     }
   }
 
@@ -410,4 +438,20 @@ export class PriceFeed {
   #getPhaseAggregator(phaseId: number): PhaseAggregator | undefined {
     return this.phaseAggregators.find((p) => p.phaseId === phaseId);
   }
+}
+
+/**
+ * Returns true when the contract itself has no data for the call: it reverts
+ * (for example, the round does not exist) or it returns empty data (for
+ * example, an old phase aggregator). Returns false for RPC errors.
+ */
+function isContractNoDataError(err: unknown): boolean {
+  return (
+    err instanceof BaseError &&
+    err.walk(
+      (e) =>
+        e instanceof ContractFunctionRevertedError ||
+        e instanceof ContractFunctionZeroDataError
+    ) !== null
+  );
 }

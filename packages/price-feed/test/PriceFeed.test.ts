@@ -1,4 +1,4 @@
-import { createPublicClient, formatUnits, http } from "viem";
+import { createPublicClient, custom, formatUnits, http } from "viem";
 import type { PublicClient } from "viem";
 import { mainnet, foundry } from "viem/chains";
 import { expect, describe, it, beforeAll } from "vitest";
@@ -7,9 +7,10 @@ import { testValidError } from "@blobscan/test";
 
 import { PriceFeed } from "../src/PriceFeed";
 import { EACAggregatorProxyABI } from "../src/abi/EACAggregatorProxy";
+import { findEthUsdPriceFeed } from "../src/feeds";
 
-const DATE_FEED_CONTRACT_ADDRESS = process.env
-  .ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS as `0x${string}`;
+// The tests run against an Anvil fork of Ethereum mainnet.
+const DATE_FEED_CONTRACT_ADDRESS = findEthUsdPriceFeed(mainnet.id)!.address;
 
 describe("PriceFeedFinder", () => {
   let client: PublicClient;
@@ -72,6 +73,35 @@ describe("PriceFeedFinder", () => {
       expect(priceData).toBeNull();
     });
 
+    it("should throw when the RPC fails during the search", async () => {
+      let isRpcDown = false;
+      const flakyClient = createPublicClient({
+        chain: client.chain,
+        transport: custom(
+          {
+            request: (args) => {
+              if (isRpcDown) {
+                throw new Error("RPC is down");
+              }
+
+              return client.request(args as Parameters<typeof client.request>[0]);
+            },
+          },
+          { retryCount: 0 }
+        ),
+      });
+      const flakyPriceFeed = await PriceFeed.create({
+        client: flakyClient,
+        dataFeedContractAddress: DATE_FEED_CONTRACT_ADDRESS,
+      });
+
+      isRpcDown = true;
+
+      await expect(
+        flakyPriceFeed.findPriceByTimestamp(timestamp)
+      ).rejects.toThrow();
+    });
+
     it("should return no price data when the timestamp is in the future", async () => {
       const futureTimestamp = new Date("2057-01-24T00:00:00").getTime() / 1000;
 
@@ -82,6 +112,26 @@ describe("PriceFeedFinder", () => {
   });
 
   describe("when creating a new instance", () => {
+    it("should read the feed description and decimals", () => {
+      expect(priceFeed.address).toBe(DATE_FEED_CONTRACT_ADDRESS);
+      expect(priceFeed.description).toBe("ETH / USD");
+      expect(priceFeed.priceDecimals).toBe(8);
+    });
+
+    it("should throw when the RPC is not reachable", async () => {
+      const unreachableClient = createPublicClient({
+        chain: mainnet,
+        transport: http("http://127.0.0.1:1", { retryCount: 0 }),
+      });
+
+      await expect(
+        PriceFeed.create({
+          client: unreachableClient,
+          dataFeedContractAddress: DATE_FEED_CONTRACT_ADDRESS,
+        })
+      ).rejects.toThrow();
+    });
+
     testValidError(
       "should fail when providing an invalid data feed contract address",
       async () => {

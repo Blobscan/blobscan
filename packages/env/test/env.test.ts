@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { env } from "../index";
+import { env, rpcUrlsSchema } from "../index";
 
 describe("@blobscan/env", () => {
   afterEach(() => {
@@ -38,5 +38,43 @@ describe("@blobscan/env", () => {
     const { presetEnvOptions } = await import("@blobscan/zod");
 
     expect(presetEnvOptions.skipValidation).toBe(true);
+  });
+
+  describe("rpcUrlsSchema", () => {
+    it("parses a list of chain IDs and RPC URLs", () => {
+      expect(
+        rpcUrlsSchema.parse(
+          "137=https://polygon.example/key?a=b, 1=http://127.0.0.1:8545"
+        )
+      ).toEqual({
+        137: "https://polygon.example/key?a=b",
+        1: "http://127.0.0.1:8545",
+      });
+    });
+
+    it("ignores empty entries", () => {
+      expect(rpcUrlsSchema.parse("1=http://127.0.0.1:8545,")).toEqual({
+        1: "http://127.0.0.1:8545",
+      });
+    });
+
+    it.each([
+      ["an entry without a chain ID", "https://polygon.example"],
+      ["a chain ID that is not a number", "polygon=https://polygon.example"],
+      ["a URL that is not valid", "137=not-a-url"],
+      [
+        "the same chain ID two times",
+        "137=https://a.example,137=https://b.example",
+      ],
+    ])("rejects %s", (_, value) => {
+      expect(rpcUrlsSchema.safeParse(value).success).toBe(false);
+    });
+
+    it("does not show the URL in the error message", () => {
+      const result = rpcUrlsSchema.safeParse("x=https://rpc.example/secret");
+
+      expect(result.success).toBe(false);
+      expect(JSON.stringify(result.error)).not.toContain("secret");
+    });
   });
 });
