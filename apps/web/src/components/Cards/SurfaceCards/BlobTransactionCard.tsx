@@ -57,7 +57,30 @@ type BlobTransactionCardProps = Partial<{
   >[];
   compact?: boolean;
   className?: string;
+  /**
+   * The role of the address of the page in the transaction. The card shows it
+   * as a mark next to the hash.
+   */
+  addressRole: "sent" | "received" | "self";
 }>;
+
+const ADDRESS_ROLE_MARKS = {
+  sent: {
+    label: "Sent",
+    className:
+      "bg-primary-200 text-primary-700 dark:bg-primary-800 dark:text-primary-300",
+  },
+  received: {
+    label: "Received",
+    className:
+      "bg-blues-100 text-primary-1000 dark:bg-coolGray-200 dark:text-blues-100",
+  },
+  self: {
+    label: "Self",
+    className:
+      "bg-warmGray-200 text-warmGray-600 dark:bg-coolGray-300 dark:text-coolGray-700",
+  },
+} as const;
 
 const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   transaction: {
@@ -73,6 +96,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   blobs: blobsOnTx,
   compact,
   className,
+  addressRole,
 }) {
   const [opened, setOpened] = useState(false);
   const checksumFrom = toChecksumAddress(from ?? "");
@@ -110,7 +134,14 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                 </span>
                 <Link href={routes.tx(hash)}>{hash}</Link>
               </div>
-              <div>
+              <div className="flex items-center gap-2">
+                {addressRole && (
+                  <span
+                    className={`rounded-md px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${ADDRESS_ROLE_MARKS[addressRole].className}`}
+                  >
+                    {ADDRESS_ROLE_MARKS[addressRole].label}
+                  </span>
+                )}
                 {rollup && <RollupBadge rollup={rollup} compact={isCompact} />}
               </div>
             </div>
