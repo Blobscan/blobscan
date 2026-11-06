@@ -2,9 +2,9 @@ import type { Chain } from "@blobscan/chains";
 
 import { MS_PER_DAY, MS_PER_HOUR, MS_PER_MINUTE } from "./date";
 
-export const DEFAULT_SYNC_LAG_THRESHOLD_MINUTES = 5;
+export const DEFAULT_INDEXER_LAG_THRESHOLD_MINUTES = 5;
 
-export type SyncLag = {
+export type IndexerLag = {
   lagMs: number;
   isOutOfSync: boolean;
 };
@@ -13,7 +13,7 @@ export type SyncLag = {
  * Calculates how far the last synced slot is behind the current time.
  * Returns undefined when the function cannot measure the lag.
  */
-export function getSyncLag({
+export function getIndexerLag({
   chain,
   lastUpperSyncedSlot,
   thresholdMinutes,
@@ -21,7 +21,7 @@ export function getSyncLag({
   chain?: Chain;
   lastUpperSyncedSlot?: number | null;
   thresholdMinutes: number;
-}): SyncLag | undefined {
+}): IndexerLag | undefined {
   if (
     !chain ||
     lastUpperSyncedSlot === null ||
@@ -48,7 +48,7 @@ function pluralize(value: number, unit: string) {
 /**
  * Rounds a lag to one human-readable unit: minutes, then hours, then days.
  */
-export function formatSyncLag(lagMs: number) {
+export function formatIndexerLag(lagMs: number) {
   if (lagMs < MS_PER_HOUR) {
     return pluralize(Math.max(1, Math.round(lagMs / MS_PER_MINUTE)), "minute");
   }

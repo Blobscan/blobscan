@@ -2,8 +2,8 @@ import cn from "classnames";
 
 import { useIsHomepage } from "~/hooks/useIsHomePage";
 import { BottomBarLayout } from "./BottomBarLayout";
+import IndexerLagBanner from "./IndexerLagBanner";
 import IpfsMigrationBanner from "./IpfsMigrationBanner";
-import SyncLagBanner from "./SyncLagBanner";
 import { TopBarLayout } from "./TopBarLayout";
 
 interface LayoutProps {
@@ -16,7 +16,7 @@ const AppLayout = ({ children }: LayoutProps) => {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <SyncLagBanner />
+      <IndexerLagBanner />
       <IpfsMigrationBanner />
       <TopBarLayout />
       <main

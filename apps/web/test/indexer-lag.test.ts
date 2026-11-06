@@ -3,11 +3,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { chains } from "@blobscan/chains";
 
 import { MS_PER_DAY, MS_PER_HOUR, MS_PER_MINUTE } from "~/utils/date";
-import { formatSyncLag, getSyncLag } from "~/utils/sync-lag";
+import { formatIndexerLag, getIndexerLag } from "~/utils/indexer-lag";
 
 const { mainnet } = chains;
 
-describe("when getting the sync lag", () => {
+describe("when getting the indexer lag", () => {
   const { activationSlot, activationDate } = mainnet.latestFork;
   const anchorMs = activationDate.getTime();
 
@@ -21,7 +21,7 @@ describe("when getting the sync lag", () => {
 
   it("should return undefined when there is no chain", () => {
     expect(
-      getSyncLag({
+      getIndexerLag({
         lastUpperSyncedSlot: activationSlot,
         thresholdMinutes: 5,
       })
@@ -30,7 +30,7 @@ describe("when getting the sync lag", () => {
 
   it("should return undefined when there is no last synced slot", () => {
     expect(
-      getSyncLag({
+      getIndexerLag({
         chain: mainnet,
         lastUpperSyncedSlot: null,
         thresholdMinutes: 5,
@@ -42,7 +42,7 @@ describe("when getting the sync lag", () => {
     vi.setSystemTime(anchorMs + 4 * MS_PER_MINUTE);
 
     expect(
-      getSyncLag({
+      getIndexerLag({
         chain: mainnet,
         lastUpperSyncedSlot: activationSlot,
         thresholdMinutes: 5,
@@ -54,7 +54,7 @@ describe("when getting the sync lag", () => {
     vi.setSystemTime(anchorMs + 10 * MS_PER_MINUTE);
 
     expect(
-      getSyncLag({
+      getIndexerLag({
         chain: mainnet,
         lastUpperSyncedSlot: activationSlot + 10,
         thresholdMinutes: 5,
@@ -66,7 +66,7 @@ describe("when getting the sync lag", () => {
     vi.setSystemTime(anchorMs);
 
     expect(
-      getSyncLag({
+      getIndexerLag({
         chain: mainnet,
         lastUpperSyncedSlot: activationSlot + 100,
         thresholdMinutes: 5,
@@ -75,7 +75,7 @@ describe("when getting the sync lag", () => {
   });
 });
 
-describe("when formatting the sync lag", () => {
+describe("when formatting the indexer lag", () => {
   it.each([
     [30_000, "1 minute"],
     [25 * MS_PER_MINUTE, "25 minutes"],
@@ -84,6 +84,6 @@ describe("when formatting the sync lag", () => {
     [MS_PER_DAY, "1 day"],
     [3 * MS_PER_DAY, "3 days"],
   ])("should format %d ms as %s", (lagMs, expected) => {
-    expect(formatSyncLag(lagMs)).toBe(expected);
+    expect(formatIndexerLag(lagMs)).toBe(expected);
   });
 });

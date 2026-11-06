@@ -20,7 +20,7 @@ nextjs:
 | `NEXT_PUBLIC_BLOBSCAN_RELEASE`         | Blobscan version                                                                            | No       | (empty)                    |
 | `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` | Enable Vercel analytics                                                                     | No       | `false`                    |
 | `PUBLIC_SENTRY_DSN_WEB`                | Sentry DSN                                                                                  | No       | (empty)                    |
-| `PUBLIC_SYNC_LAG_THRESHOLD_MINUTES`    | Minutes behind the chain before the web app shows the out-of-sync banner                    | No       | `5`                        |
+| `PUBLIC_INDEXER_LAG_THRESHOLD_MINUTES` | Minutes behind the chain before the web app shows the out-of-sync banner                    | No       | `5`                        |
 | `NODE_ENV`                             | Used in Node.js applications to specify the environment in which the application is running | No       | (empty)                    |
 | `SENTRY_PROJECT`                       | Sentry project name                                                                         | No       | (empty)                    |
 | `SENTRY_ORG`                           | Sentry organization                                                                         | No       | (empty)                    |

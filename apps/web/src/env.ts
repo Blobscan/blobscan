@@ -2,7 +2,7 @@ import { createEnv } from "@t3-oss/env-nextjs";
 
 import { booleanSchema, z } from "@blobscan/zod";
 
-import { DEFAULT_SYNC_LAG_THRESHOLD_MINUTES } from "./utils/sync-lag";
+import { DEFAULT_INDEXER_LAG_THRESHOLD_MINUTES } from "./utils/indexer-lag";
 
 export const networkSchema = z.enum([
   "mainnet",
@@ -29,10 +29,10 @@ const clientEnvVars = {
   PUBLIC_POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
   PUBLIC_VERCEL_ANALYTICS_ENABLED: booleanSchema.default(false),
   PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL: z.string().url().optional(),
-  PUBLIC_SYNC_LAG_THRESHOLD_MINUTES: z.coerce
+  PUBLIC_INDEXER_LAG_THRESHOLD_MINUTES: z.coerce
     .number()
     .positive()
-    .default(DEFAULT_SYNC_LAG_THRESHOLD_MINUTES),
+    .default(DEFAULT_INDEXER_LAG_THRESHOLD_MINUTES),
 };
 
 export const clientEnvVarsSchema = z.object(clientEnvVars);
@@ -133,8 +133,8 @@ export const env = createEnv({
     PUBLIC_POSTHOG_HOST: process.env.PUBLIC_POSTHOG_HOST,
     PUBLIC_POSTHOG_ID: process.env.PUBLIC_POSTHOG_ID,
     PUBLIC_SENTRY_DSN_WEB: process.env.PUBLIC_SENTRY_DSN_WEB,
-    PUBLIC_SYNC_LAG_THRESHOLD_MINUTES:
-      process.env.PUBLIC_SYNC_LAG_THRESHOLD_MINUTES,
+    PUBLIC_INDEXER_LAG_THRESHOLD_MINUTES:
+      process.env.PUBLIC_INDEXER_LAG_THRESHOLD_MINUTES,
     PUBLIC_VERCEL_ANALYTICS_ENABLED:
       process.env.NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED,
 
