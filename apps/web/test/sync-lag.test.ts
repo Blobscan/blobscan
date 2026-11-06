@@ -7,7 +7,7 @@ import { formatSyncLag, getSyncLag } from "~/utils/sync-lag";
 
 const { mainnet } = chains;
 
-describe("getSyncLag", () => {
+describe("when getting the sync lag", () => {
   const { activationSlot, activationDate } = mainnet.latestFork;
   const anchorMs = activationDate.getTime();
 
@@ -75,7 +75,7 @@ describe("getSyncLag", () => {
   });
 });
 
-describe("formatSyncLag", () => {
+describe("when formatting the sync lag", () => {
   it.each([
     [30_000, "1 minute"],
     [25 * MS_PER_MINUTE, "25 minutes"],

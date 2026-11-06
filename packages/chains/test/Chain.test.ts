@@ -71,7 +71,7 @@ describe("Chain", () => {
     );
   });
 
-  describe("slotsPerEpoch", () => {
+  describe("when getting the slots per epoch", () => {
     it("should default to 32 slots per epoch", () => {
       expect(mainnet.slotsPerEpoch).toBe(32);
     });
@@ -98,12 +98,12 @@ describe("Chain", () => {
     });
   });
 
-  describe("secondsPerSlot", () => {
+  describe("when getting the seconds per slot", () => {
     it("should default to 12 seconds per slot", () => {
       expect(mainnet.secondsPerSlot).toBe(12);
     });
 
-    it("should use the provided secondsPerSlot value", () => {
+    it("should use the value given to the constructor", () => {
       expect(gnosis.secondsPerSlot).toBe(5);
     });
   });
@@ -134,7 +134,7 @@ describe("Chain", () => {
     });
   });
 
-  describe("fork activation params", () => {
+  describe("when comparing the activation params of two forks", () => {
     const forkPairs = Object.values(chains).flatMap((chain) =>
       chain.forks.slice(1).map((next, i) => {
         const prev = chain.forks[i] as Fork;
@@ -149,7 +149,7 @@ describe("Chain", () => {
     );
 
     test.each(forkPairs)(
-      "%s should have activation dates that match their activation slots",
+      "should have an activation date that matches the activation slot for %s",
       (_, prev, next, secondsPerSlot) => {
         const slotDiff = next.activationSlot - prev.activationSlot;
         const timeDiffMs =
