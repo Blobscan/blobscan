@@ -72,11 +72,11 @@ export const withTelemetry = t.middleware(
         spanName,
         spanOptions,
         async (span) => {
-          const result = await next();
-
-          span.end();
-
-          return result;
+          try {
+            return await next();
+          } finally {
+            span.end();
+          }
         }
       );
 
