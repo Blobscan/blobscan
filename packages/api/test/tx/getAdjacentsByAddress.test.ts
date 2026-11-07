@@ -8,9 +8,6 @@ import { createTransactionCaller } from "./caller";
 describe("getAdjacentsByAddress", () => {
   let txCaller: TxCaller;
   let ctx: TRPCContext;
-  const address = "0x6887246668a3b87f54deb3b94ba47a6f63f32985";
-  const blockTimestamp = new Date("2023-08-28T10:00:00Z");
-  const index = 0;
 
   beforeAll(async () => {
     ctx = await createTestContext();
@@ -18,33 +15,43 @@ describe("getAdjacentsByAddress", () => {
     txCaller = createTransactionCaller(ctx);
   });
 
-  it("should return next transaction", async () => {
-    const { nextTxHash } = await txCaller.getAdjacentsByAddress({
-      senderAddress: address,
-      blockTimestamp,
-      txIndex: index,
+  it("should return the previous and next transactions of the sender", async () => {
+    const result = await txCaller.getAdjacentsByAddress({
+      hash: "txHash012",
     });
 
-    expect(nextTxHash).toMatchInlineSnapshot('"txHash015"');
+    expect(result).toEqual({
+      prevTxHash: "txHash007",
+      nextTxHash: "txHash015",
+    });
   });
 
-  it("should return prev transaction", async () => {
-    const { prevTxHash } = await txCaller.getAdjacentsByAddress({
-      senderAddress: address,
-      blockTimestamp,
-      txIndex: index,
+  it("should not return a previous transaction for the first transaction of the sender", async () => {
+    const { prevTxHash, nextTxHash } = await txCaller.getAdjacentsByAddress({
+      hash: "txHash003",
     });
 
-    expect(prevTxHash).toMatchInlineSnapshot('"txHash007"');
+    expect(prevTxHash).toBeUndefined();
+    expect(nextTxHash).toBe("txHash007");
   });
 
   it("should ignore reorged transactions", async () => {
-    const { nextTxHash } = await txCaller.getAdjacentsByAddress({
-      senderAddress: address,
-      blockTimestamp: new Date("2023-08-31T14:00:00Z"),
-      txIndex: 0,
+    const { prevTxHash, nextTxHash } = await txCaller.getAdjacentsByAddress({
+      hash: "txHash015",
     });
 
+    expect(prevTxHash).toBe("txHash012");
     expect(nextTxHash).toBeUndefined();
+  });
+
+  it("should not return adjacent transactions for an unknown transaction", async () => {
+    const result = await txCaller.getAdjacentsByAddress({
+      hash: "unknownTxHash",
+    });
+
+    expect(result).toEqual({
+      prevTxHash: undefined,
+      nextTxHash: undefined,
+    });
   });
 });
