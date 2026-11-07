@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
@@ -23,6 +23,8 @@ import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { NavArrow } from "~/components/NavArrow";
+import type { NavArrowProps } from "~/components/NavArrow";
 import type { SelectOption } from "~/components/Selects";
 import { Listbox } from "~/components/Selects";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
@@ -30,6 +32,7 @@ import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { routes } from "~/routes";
 import { versionedHashSchema } from "~/schemas/utils";
+import type { GetAdjacentBlobsInput } from "~/types";
 import {
   formatBytes,
   formatTimestamp,
@@ -40,7 +43,13 @@ import {
 const Blob: NextPage = function () {
   const router = useRouter();
   const breakpoint = useBreakpoint();
+  const utils = api.useUtils();
   const id = (router?.query.hash as string | undefined) ?? "0";
+  const positionTxHash = router?.query.tx as string | undefined;
+  const positionIndex =
+    typeof router?.query.index === "string"
+      ? Number(router.query.index)
+      : undefined;
   const { data: blob, error } = api.blob.getByBlobId.useQuery(
     {
       id: id,
@@ -53,6 +62,58 @@ const Blob: NextPage = function () {
       refetchOnWindowFocus: false,
       refetchOnMount: false,
     }
+  );
+  // A blob can be included in several transactions (or several times in the
+  // same one), so the position used for navigation is taken from the URL when
+  // provided, falling back to the first one returned.
+  const position =
+    blob?.transactions.find(
+      ({ txHash, index }) =>
+        txHash === positionTxHash && index === positionIndex
+    ) ?? blob?.transactions[0];
+  const { data: adjacentBlobs } = api.blob.getAdjacentBlobs.useQuery(
+    {
+      txHash: position?.txHash,
+      index: position?.index,
+    } as GetAdjacentBlobsInput,
+    {
+      enabled: !!position,
+      staleTime: Infinity,
+      retry: false,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    }
+  );
+  const [adjacentBlobLoading, setAdjacentBlobLoading] = useState(false);
+
+  const handleNavClick = useCallback<NavArrowProps["onClick"]>(
+    async (direction) => {
+      const adjacentBlob =
+        direction === "next" ? adjacentBlobs?.next : adjacentBlobs?.prev;
+
+      if (!adjacentBlob) {
+        return;
+      }
+
+      setAdjacentBlobLoading(true);
+
+      try {
+        await utils.blob.getByBlobId.ensureData({
+          id: adjacentBlob.versionedHash,
+          expand: "transaction",
+        });
+
+        await router?.push(
+          routes.blob(adjacentBlob.versionedHash, {
+            txHash: adjacentBlob.txHash,
+            index: adjacentBlob.index,
+          })
+        );
+      } finally {
+        setAdjacentBlobLoading(false);
+      }
+    },
+    [adjacentBlobs, router, utils]
   );
   const { data: blobData, error: blobDataError } = useQuery({
     queryKey: ["blob-data", id],
@@ -112,6 +173,8 @@ const Blob: NextPage = function () {
 
   useEffect(() => {
     if (!decoder) {
+      setSelectedBlobViewMode((mode) => (mode === "Decoded" ? "Raw" : mode));
+
       return;
     }
 
@@ -316,7 +379,25 @@ const Blob: NextPage = function () {
         } on Blobscan.`}
       />
       <DetailsLayout
-        header="Blob Details"
+        header={
+          <div className="flex items-center justify-start gap-4">
+            <NavArrow
+              type="prev"
+              size="lg"
+              onClick={() => handleNavClick("prev")}
+              tooltip="Previous Blob in This Block"
+              disabled={!adjacentBlobs?.prev || adjacentBlobLoading}
+            />
+            Blob Details
+            <NavArrow
+              type="next"
+              size="lg"
+              onClick={() => handleNavClick("next")}
+              tooltip="Next Blob in This Block"
+              disabled={!adjacentBlobs?.next || adjacentBlobLoading}
+            />
+          </div>
+        }
         fields={blob ? detailsFields : undefined}
         resource={
           blob

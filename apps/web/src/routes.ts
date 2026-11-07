@@ -5,7 +5,10 @@ export const routes = {
   stats: "/stats",
 
   address: (address: string) => `/address/${address}`,
-  blob: (id: string) => `/blob/${id}`,
+  blob: (id: string, position?: { txHash: string; index: number }) =>
+    position
+      ? `/blob/${id}?tx=${position.txHash}&index=${position.index}`
+      : `/blob/${id}`,
   block: (id: string | number) => `/block/${id}`,
   tx: (hash: string) => `/tx/${hash}`,
   stat: (name: string) => `/stat/${name}`,
