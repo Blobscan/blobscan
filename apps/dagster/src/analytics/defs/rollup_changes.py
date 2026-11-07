@@ -1,21 +1,22 @@
 """Re-aggregate the metrics after the rollup of an address changes.
 
 The hourly SQL reads ``address.rollup`` when it runs, and the metrics tables
-store the rollup of each row. A migration that sets the rollup of existing
-addresses (e.g. a new batcher of a rollup) does not change the metrics that
-were already aggregated: the blobs of those addresses stay in the "other"
-category until their partitions are aggregated again.
+store the rollup of each row. A change of the rollup of an existing address
+(a migration that labels a new batcher, or the indexer applying a new
+registry) does not change the metrics that were already aggregated: the
+blobs of that address keep the old attribution until their partitions are
+aggregated again.
 
-This sensor keeps a snapshot of the labeled addresses in its cursor. When the
-rollup of an address changes, it launches a backfill of every metrics level,
-from the first hour in which that address sent a transaction until now.
+A trigger logs each change of ``address.rollup`` in the
+``address_rollup_change`` table (see the
+20261107000000_add_address_rollup_change_log migration). This sensor reads
+the new rows of the log and launches a backfill of every metrics level, from
+the first hour in which the changed addresses sent a transaction until now.
 """
 
 from __future__ import annotations
 
-import json
-from datetime import UTC, datetime, timedelta
-from typing import TYPE_CHECKING
+from datetime import UTC, datetime
 
 import dagster as dg
 
@@ -24,7 +25,7 @@ import dagster as dg
 from dagster._core.definitions.assets.graph.asset_graph_subset import (
     AssetGraphSubset,
 )
-from sqlalchemy import bindparam, text
+from sqlalchemy import text
 
 from analytics.defs.alerts import send_alert
 from analytics.defs.assets import (
@@ -37,26 +38,31 @@ from analytics.defs.assets import (
 )
 from analytics.defs.resources.postgres import PostgresResource
 
-if TYPE_CHECKING:
-    from collections.abc import Mapping
-
-ROLLUP_SNAPSHOT_SQL = text(
-    "SELECT address, rollup::text FROM address WHERE rollup IS NOT NULL",
+CHANGES_SQL = text(
+    """
+    SELECT id, address
+    FROM address_rollup_change
+    WHERE id > :after
+    ORDER BY id
+    LIMIT :limit
+    """,
 )
 
+# One index lookup on (from_id, block_timestamp, index) per address. It does
+# not use address.first_block_number_as_sender, which a reorg can set to NULL.
+# A forked transaction can only make the window start earlier.
 FIRST_SENT_AT_SQL = text(
     """
-    SELECT MIN(b.timestamp)
-    FROM address a
-      JOIN block b ON b.number = a.first_block_number_as_sender
-    WHERE a.address IN :addresses
+    SELECT MIN(
+      (SELECT MIN(tx.block_timestamp) FROM transaction tx WHERE tx.from_id = a)
+    )
+    FROM unnest(CAST(:addresses AS text[])) AS a
     """,
-).bindparams(bindparam("addresses", expanding=True))
+)
 
-# The live schedule re-aggregates the current hour and the catch-up schedule
-# the previous ones, so a change that only affects these hours (e.g. the
-# indexer inserting the address of a new batcher) needs no backfill.
-LIVE_HOURS = 2
+# The changes that one evaluation reads. A larger log is read in the next
+# evaluations, each one with its own backfill.
+CHANGES_PER_EVALUATION = 1000
 
 BACKFILL_ASSETS = (
     hourly_metrics,
@@ -66,39 +72,18 @@ BACKFILL_ASSETS = (
     yearly_metrics,
 )
 
-BACKFILL_TAGS = {"blobscan/trigger": "address_rollup_change"}
+BACKFILL_TRIGGER_TAG = "blobscan/trigger"
+BACKFILL_CHANGES_TAG = "blobscan/address_rollup_changes"
 
 _ADDRESSES_IN_ALERT = 10
 
 
-def changed_addresses(
-    previous: Mapping[str, str], current: Mapping[str, str],
-) -> list[str]:
-    """Return the addresses whose rollup was set, changed or removed."""
-    return sorted(
-        address
-        for address in previous.keys() | current.keys()
-        if previous.get(address) != current.get(address)
-    )
-
-
-def backfill_start(first_sent_at: datetime | None, now: datetime) -> datetime | None:
-    """Return the start of the window to re-aggregate, or None to skip it.
-
-    The window starts at the hour of ``first_sent_at``, but not before the
-    partitions start. Hours that the live schedules re-aggregate are skipped.
-    """
-    if first_sent_at is None:
-        return None
-
-    start = max(
+def backfill_start(first_sent_at: datetime) -> datetime:
+    """Return the hour of ``first_sent_at``, but not before the partitions."""
+    return max(
         first_sent_at.replace(minute=0, second=0, microsecond=0),
         hourly_partitions.start,
     )
-    live_from = now.replace(minute=0, second=0, microsecond=0) - timedelta(
-        hours=LIVE_HOURS - 1,
-    )
-    return None if start >= live_from else start
 
 
 def build_backfill_subset(start: datetime, now: datetime) -> AssetGraphSubset:
@@ -132,55 +117,58 @@ def _format_addresses(addresses: list[str]) -> str:
 def address_rollup_change_sensor(
     context: dg.SensorEvaluationContext, postgres: PostgresResource,
 ):
-    """Backfill the metrics of the addresses whose rollup changed.
+    """Backfill the metrics of the addresses in the rollup change log.
 
-    The cursor is a JSON object with the rollup of each labeled address. The
-    first evaluation only stores it, so turning the sensor on doesn't launch a
-    backfill. The cursor is updated together with the backfill request.
+    The cursor is the id of the last change that was read. Without a cursor,
+    the sensor reads the log from the start, so it also handles the changes
+    made before it ran for the first time. The cursor is updated together
+    with the backfill request, so a failed evaluation reads the same changes
+    again. To process changes again, set the cursor to an older id.
     """
-    with postgres.get_connection() as conn:
-        current = dict(conn.execute(ROLLUP_SNAPSHOT_SQL).tuples().all())
-
-    cursor = json.dumps(current, sort_keys=True)
-
-    if context.cursor is None:
-        return dg.SensorResult(skip_reason="cursor initialized", cursor=cursor)
-
-    changed = changed_addresses(json.loads(context.cursor), current)
-    if not changed:
-        return dg.SkipReason("no rollup changes")
+    after = int(context.cursor or 0)
 
     with postgres.get_connection() as conn:
+        changes = conn.execute(
+            CHANGES_SQL, {"after": after, "limit": CHANGES_PER_EVALUATION},
+        ).all()
+        if not changes:
+            return dg.SkipReason("no rollup changes")
+
+        addresses = sorted({address for _, address in changes})
         first_sent_at = conn.execute(
-            FIRST_SENT_AT_SQL, {"addresses": changed},
+            FIRST_SENT_AT_SQL, {"addresses": addresses},
         ).scalar()
 
-    now = datetime.now(UTC)
-    # The session time zone is UTC (see PostgresResource) and the column is a
-    # naive timestamp.
-    start = backfill_start(
-        first_sent_at.replace(tzinfo=UTC) if first_sent_at else None, now,
-    )
-    if start is None:
+    first_id, last_id = changes[0].id, changes[-1].id
+    cursor = str(last_id)
+
+    if first_sent_at is None:
         return dg.SensorResult(
             skip_reason=(
-                f"{len(changed)} rollup change(s) with no aggregated hours "
-                "to update"
+                f"rollup changes {first_id}..{last_id}: the addresses have "
+                "sent no transactions"
             ),
             cursor=cursor,
         )
 
+    now = datetime.now(UTC)
+    # The session time zone is UTC (see PostgresResource) and the column is a
+    # naive timestamp.
+    start = backfill_start(first_sent_at.replace(tzinfo=UTC))
+    request = dg.RunRequest.for_asset_graph_subset(
+        build_backfill_subset(start, now),
+        tags={
+            BACKFILL_TRIGGER_TAG: "address_rollup_change",
+            BACKFILL_CHANGES_TAG: f"{first_id}..{last_id}",
+        },
+    )
+
+    # Last step before returning, so only a failed submission of the request
+    # repeats the alert, together with the request.
     send_alert(
-        f":arrows_counterclockwise: The rollup of {len(changed)} address(es) "
-        f"changed: {_format_addresses(changed)}. Launching a metrics backfill "
-        f"from {start:%Y-%m-%dT%H:%M} UTC.",
+        f":arrows_counterclockwise: The rollup of {len(addresses)} address(es) "
+        f"changed: {_format_addresses(addresses)}. Launching a metrics backfill "
+        f"from {start:%Y-%m-%dT%H:%M} UTC (rollup changes {first_id}..{last_id}).",
         context.log,
     )
-    return dg.SensorResult(
-        run_requests=[
-            dg.RunRequest.for_asset_graph_subset(
-                build_backfill_subset(start, now), tags=BACKFILL_TAGS,
-            ),
-        ],
-        cursor=cursor,
-    )
+    return dg.SensorResult(run_requests=[request], cursor=cursor)

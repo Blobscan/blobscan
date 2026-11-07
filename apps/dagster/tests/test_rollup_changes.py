@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-import json
 from contextlib import contextmanager
 from datetime import UTC, datetime
 from unittest.mock import MagicMock, patch
 
 import dagster as dg
-import pytest
 from sqlalchemy import text
 
 from analytics.defs.assets import (
@@ -19,65 +17,37 @@ from analytics.defs.assets import (
 )
 from analytics.defs.resources.postgres import PostgresResource
 from analytics.defs.rollup_changes import (
-    BACKFILL_TAGS,
+    BACKFILL_CHANGES_TAG,
+    BACKFILL_TRIGGER_TAG,
     address_rollup_change_sensor,
     backfill_start,
     build_backfill_subset,
-    changed_addresses,
 )
 
 # A fixture address with no rollup. Its first transaction is in block 1008
 # (2025-02-05T16:59:59Z).
 _UNLABELED_SENDER = "0x0600000000000000000000000000000000000000"
-_NOW = datetime(2025, 3, 1, 10, 20, tzinfo=UTC)
+# A fixture address with the BASE rollup. Its first transaction is in block
+# 1003 (2025-01-10T12:05:00Z).
+_LABELED_SENDER = "0x0400000000000000000000000000000000000000"
+# A fixture address that only receives transactions.
+_RECEIVER = "0x0700000000000000000000000000000000000000"
+
 _SET_ROLLUP_SQL = text(
     "UPDATE address SET rollup = CAST(:rollup AS rollup) WHERE address = :address",
 )
 
 
-class TestChangedAddresses:
-    def test_detects_set_changed_and_removed_rollups(self):
-        previous = {"0xa": "base", "0xb": "optimism", "0xc": "zora"}
-        current = {"0xa": "base", "0xb": "arbitrum", "0xd": "ink"}
-
-        assert changed_addresses(previous, current) == ["0xb", "0xc", "0xd"]
-
-    def test_no_changes(self):
-        assert changed_addresses({"0xa": "base"}, {"0xa": "base"}) == []
-
-
 class TestBackfillStart:
-    def test_none_without_transactions(self):
-        assert backfill_start(None, _NOW) is None
-
     def test_truncates_to_the_hour(self):
         first_sent_at = datetime(2025, 2, 5, 16, 59, 59, tzinfo=UTC)
 
-        assert backfill_start(first_sent_at, _NOW) == datetime(
-            2025, 2, 5, 16, tzinfo=UTC,
-        )
+        assert backfill_start(first_sent_at) == datetime(2025, 2, 5, 16, tzinfo=UTC)
 
     def test_clamps_to_partitions_start(self):
         first_sent_at = datetime(2024, 1, 1, tzinfo=UTC)
 
-        assert backfill_start(first_sent_at, _NOW) == hourly_partitions.start
-
-    @pytest.mark.parametrize(
-        "first_sent_at",
-        [
-            datetime(2025, 3, 1, 9, 0, tzinfo=UTC),  # previous hour
-            datetime(2025, 3, 1, 10, 5, tzinfo=UTC),  # current hour
-        ],
-    )
-    def test_skips_hours_of_the_live_schedules(self, first_sent_at: datetime):
-        assert backfill_start(first_sent_at, _NOW) is None
-
-    def test_includes_the_hour_before_the_catch_up_window(self):
-        first_sent_at = datetime(2025, 3, 1, 8, 59, tzinfo=UTC)
-
-        assert backfill_start(first_sent_at, _NOW) == datetime(
-            2025, 3, 1, 8, tzinfo=UTC,
-        )
+        assert backfill_start(first_sent_at) == hourly_partitions.start
 
 
 class TestBuildBackfillSubset:
@@ -111,26 +81,110 @@ class TestBuildBackfillSubset:
         assert keys[yearly_metrics.key] == ["2025"]
 
 
+def _last_change_id(postgres: PostgresResource) -> int:
+    with postgres.get_connection() as conn:
+        return conn.execute(
+            text("SELECT COALESCE(MAX(id), 0) FROM address_rollup_change"),
+        ).scalar()
+
+
+def _changes_after(postgres: PostgresResource, after: int) -> list[tuple]:
+    with postgres.get_connection() as conn:
+        return conn.execute(
+            text(
+                "SELECT address, old_rollup::text, new_rollup::text "
+                "FROM address_rollup_change WHERE id > :after ORDER BY id",
+            ),
+            {"after": after},
+        ).all()
+
+
 @contextmanager
-def _rollup_of(postgres: PostgresResource, address: str, rollup: str | None):
-    """Set the rollup of a fixture address, and restore it on exit."""
+def _updated_address(postgres: PostgresResource, address: str, **values: object):
+    """Update the columns of a fixture address, and restore them on exit.
+
+    The restore also changes the rollup, so it adds a row to the change log.
+    """
+    columns = {"rollup": "rollup::text", **{c: c for c in values if c != "rollup"}}
+    select = ", ".join(f"{expr} AS {name}" for name, expr in columns.items())
     with postgres.transaction() as conn:
         previous = conn.execute(
-            text("SELECT rollup::text FROM address WHERE address = :address"),
+            text(f"SELECT {select} FROM address WHERE address = :address"),  # noqa: S608 - test columns
             {"address": address},
-        ).scalar()
-        conn.execute(
-            _SET_ROLLUP_SQL,
-            {"address": address, "rollup": rollup},
-        )
+        ).one()._asdict()
+
+    def _set(conn, new: dict) -> None:
+        if "rollup" in new:
+            conn.execute(_SET_ROLLUP_SQL, {"address": address, "rollup": new["rollup"]})
+        for column in new.keys() - {"rollup"}:
+            conn.execute(
+                text(f"UPDATE address SET {column} = :value WHERE address = :address"),  # noqa: S608 - test columns
+                {"address": address, "value": new[column]},
+            )
+
+    with postgres.transaction() as conn:
+        _set(conn, values)
     try:
         yield
     finally:
         with postgres.transaction() as conn:
+            _set(conn, {k: previous[k] for k in values})
+
+
+def _hourly_keys(request: dg.RunRequest) -> list[str]:
+    return sorted(
+        request.asset_graph_subset.get_partitions_subset(
+            hourly_metrics.key,
+        ).get_partition_keys(),
+    )
+
+
+class TestAddressRollupChangeLog:
+    def test_logs_rollup_updates(self, postgres: PostgresResource):
+        after = _last_change_id(postgres)
+
+        with _updated_address(postgres, _UNLABELED_SENDER, rollup="base"):
+            assert _changes_after(postgres, after) == [
+                (_UNLABELED_SENDER, None, "base"),
+            ]
+
+    def test_ignores_updates_that_keep_the_rollup(
+        self, postgres: PostgresResource,
+    ):
+        after = _last_change_id(postgres)
+
+        with postgres.transaction() as conn:
             conn.execute(
-                _SET_ROLLUP_SQL,
-                {"address": address, "rollup": previous},
+                _SET_ROLLUP_SQL, {"address": _LABELED_SENDER, "rollup": "base"},
             )
+            conn.execute(
+                text(
+                    "UPDATE address SET updated_at = now() WHERE address = :address",
+                ),
+                {"address": _LABELED_SENDER},
+            )
+
+        assert _changes_after(postgres, after) == []
+
+    def test_ignores_inserts(self, postgres: PostgresResource):
+        after = _last_change_id(postgres)
+        address = "0x0900000000000000000000000000000000000000"
+
+        with postgres.transaction() as conn:
+            conn.execute(
+                text(
+                    "INSERT INTO address (address, rollup) VALUES (:address, 'base')",
+                ),
+                {"address": address},
+            )
+        try:
+            assert _changes_after(postgres, after) == []
+        finally:
+            with postgres.transaction() as conn:
+                conn.execute(
+                    text("DELETE FROM address WHERE address = :address"),
+                    {"address": address},
+                )
 
 
 class TestAddressRollupChangeSensor:
@@ -153,24 +207,10 @@ class TestAddressRollupChangeSensor:
             == dg.DefaultSensorStatus.RUNNING
         )
 
-    def test_first_evaluation_only_stores_the_snapshot(
-        self, postgres: PostgresResource,
-    ):
-        result, alert = self._evaluate(postgres, cursor=None)
-
-        assert not result.run_requests
-        assert json.loads(result.cursor) == {
-            "0x0100000000000000000000000000000000000000": "optimism",
-            "0x0300000000000000000000000000000000000000": "arbitrum",
-            "0x0400000000000000000000000000000000000000": "base",
-            "0x0500000000000000000000000000000000000000": "world",
-        }
-        alert.assert_not_called()
-
     def test_skips_without_changes(self, postgres: PostgresResource):
-        initial, _ = self._evaluate(postgres, cursor=None)
+        cursor = str(_last_change_id(postgres))
 
-        result, alert = self._evaluate(postgres, cursor=initial.cursor)
+        result, alert = self._evaluate(postgres, cursor=cursor)
 
         assert isinstance(result, dg.SkipReason)
         alert.assert_not_called()
@@ -178,50 +218,83 @@ class TestAddressRollupChangeSensor:
     def test_backfills_from_the_first_hour_of_a_relabeled_address(
         self, postgres: PostgresResource,
     ):
-        initial, _ = self._evaluate(postgres, cursor=None)
+        after = _last_change_id(postgres)
 
-        with _rollup_of(postgres, _UNLABELED_SENDER, "base"):
-            result, alert = self._evaluate(postgres, cursor=initial.cursor)
+        with _updated_address(postgres, _UNLABELED_SENDER, rollup="base"):
+            result, alert = self._evaluate(postgres, cursor=str(after))
 
         [request] = result.run_requests
-        assert request.tags == BACKFILL_TAGS
-        hourly_keys = sorted(
-            request.asset_graph_subset.get_partitions_subset(
-                hourly_metrics.key,
-            ).get_partition_keys(),
-        )
-        assert hourly_keys[0] == "2025-02-05T16:00"
-        assert json.loads(result.cursor)[_UNLABELED_SENDER] == "base"
+        assert request.tags == {
+            BACKFILL_TRIGGER_TAG: "address_rollup_change",
+            BACKFILL_CHANGES_TAG: f"{after + 1}..{after + 1}",
+        }
+        assert _hourly_keys(request)[0] == "2025-02-05T16:00"
+        assert result.cursor == str(after + 1)
         assert _UNLABELED_SENDER in alert.call_args.args[0]
 
     def test_backfills_when_a_rollup_is_removed(
         self, postgres: PostgresResource,
     ):
-        initial, _ = self._evaluate(postgres, cursor=None)
-        labeled = "0x0400000000000000000000000000000000000000"
+        after = _last_change_id(postgres)
 
-        with _rollup_of(postgres, labeled, None):
-            result, _ = self._evaluate(postgres, cursor=initial.cursor)
+        with _updated_address(postgres, _LABELED_SENDER, rollup=None):
+            result, _ = self._evaluate(postgres, cursor=str(after))
 
         [request] = result.run_requests
-        hourly_keys = sorted(
-            request.asset_graph_subset.get_partitions_subset(
-                hourly_metrics.key,
-            ).get_partition_keys(),
-        )
-        # Block 1003, the first transaction of the address
-        assert hourly_keys[0] == "2025-01-10T12:00"
-        assert labeled not in json.loads(result.cursor)
+        assert _hourly_keys(request)[0] == "2025-01-10T12:00"
+
+    def test_uses_the_transactions_without_first_block_number(
+        self, postgres: PostgresResource,
+    ):
+        # A reorg of the first block of the address sets the column to NULL
+        after = _last_change_id(postgres)
+
+        with _updated_address(
+            postgres,
+            _UNLABELED_SENDER,
+            first_block_number_as_sender=None,
+            rollup="base",
+        ):
+            result, _ = self._evaluate(postgres, cursor=str(after))
+
+        [request] = result.run_requests
+        assert _hourly_keys(request)[0] == "2025-02-05T16:00"
+
+    def test_backfills_from_the_earliest_of_several_addresses(
+        self, postgres: PostgresResource,
+    ):
+        after = _last_change_id(postgres)
+
+        with (
+            _updated_address(postgres, _UNLABELED_SENDER, rollup="base"),
+            _updated_address(postgres, _LABELED_SENDER, rollup="zora"),
+        ):
+            result, alert = self._evaluate(postgres, cursor=str(after))
+
+        [request] = result.run_requests
+        assert _hourly_keys(request)[0] == "2025-01-10T12:00"
+        assert result.cursor == str(after + 2)
+        assert "2 address(es)" in alert.call_args.args[0]
+
+    def test_reads_changes_made_before_the_first_evaluation(
+        self, postgres: PostgresResource,
+    ):
+        with _updated_address(postgres, _UNLABELED_SENDER, rollup="base"):
+            last = _last_change_id(postgres)
+            result, _ = self._evaluate(postgres, cursor=None)
+
+        [request] = result.run_requests
+        assert request.tags[BACKFILL_CHANGES_TAG] == f"1..{last}"
+        assert result.cursor == str(last)
 
     def test_does_not_backfill_addresses_without_transactions(
         self, postgres: PostgresResource,
     ):
-        initial, _ = self._evaluate(postgres, cursor=None)
-        receiver_only = "0x0200000000000000000000000000000000000000"
+        after = _last_change_id(postgres)
 
-        with _rollup_of(postgres, receiver_only, "base"):
-            result, alert = self._evaluate(postgres, cursor=initial.cursor)
+        with _updated_address(postgres, _RECEIVER, rollup="base"):
+            result, alert = self._evaluate(postgres, cursor=str(after))
 
         assert not result.run_requests
-        assert json.loads(result.cursor)[receiver_only] == "base"
+        assert result.cursor == str(after + 1)
         alert.assert_not_called()

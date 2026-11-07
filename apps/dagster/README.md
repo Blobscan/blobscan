@@ -134,40 +134,37 @@ levels for the affected dates.
 ### Reprocessing after a rollup change
 
 The hourly SQL reads `address.rollup` when it runs, and the metrics tables
-store the rollup of each row. When a migration sets the rollup of existing
-addresses (for example, a new batcher of a rollup), the metrics that were
-already aggregated keep the old attribution (usually `other`).
+store the rollup of each row. When the rollup of an existing address changes
+(a migration that labels a new batcher, or the indexer applying a new rollup
+registry), the metrics that were already aggregated keep the old attribution
+(usually `other`).
 
-`address_rollup_change_sensor` handles this. It is running by default and
-checks the `address` table every 5 minutes. It stores the rollup of each
-labeled address in its cursor. When the rollup of an address is set, changed
-or removed, it launches a backfill of `hourly_metrics` and all rollup levels.
-The backfill starts at the hour of the first transaction of those addresses
+A database trigger logs each change of `address.rollup` in the
+`address_rollup_change` table. `address_rollup_change_sensor` is running by
+default and reads the new rows of the log every 5 minutes. For each batch of
+changes it launches a backfill of `hourly_metrics` and all rollup levels. The
+backfill starts at the hour of the first transaction of the changed addresses
 and ends at the current partition. `all_time_metrics_schedule` updates
 `all_time_metrics` afterwards. The backfill has the
-`blobscan/trigger=address_rollup_change` tag, and the sensor sends an alert
-(see [Alerts](#alerts)) with the changed addresses.
+`blobscan/trigger=address_rollup_change` tag, and the
+`blobscan/address_rollup_changes` tag with the ids of the changes. The sensor
+sends an alert (see [Alerts](#alerts)) with the changed addresses.
 
-Changes in the last 2 hours (for example, the indexer inserting the address
-of a new batcher) launch no backfill, because the live and catch-up schedules
-aggregate these hours again.
+The log is in the database, so the deploy order doesn't matter: changes made
+while the sensor was stopped, or before it was deployed, are read when it
+runs. Addresses that have sent no transactions launch no backfill.
 
-The first evaluation only stores the cursor. The sensor can only detect
-changes made after that evaluation.
+The sensor cursor is the id of the last change that it read. If a backfill
+fails, `backfill_failure_alert` reports it. Re-execute the backfill from the
+UI, or set the sensor cursor to the id before the failed changes (the start of
+its `blobscan/address_rollup_changes` tag, minus one) to launch it again.
 
-Post-migration checklist, for a migration that changes `address.rollup`:
+After a migration that changes `address.rollup`:
 
-1. Before you apply the migration, make sure that
-   `address_rollup_change_sensor` is running and has evaluated at least once.
-   If it was stopped or reset, its cursor doesn't have the old rollups.
-2. Apply the migration.
-3. In the next 5 minutes, look for the sensor alert and the new backfill in
+1. In the next 5 minutes, look for the sensor alert and the new backfill in
    **Overview** → **Backfills**.
-4. If the sensor didn't detect the change (step 1 was skipped), launch the
-   backfill by hand as in
-   [Reprocessing after a SQL change](#reprocessing-after-a-sql-change). Start
-   it at the first block of the changed addresses
-   (`address.first_block_number_as_sender`).
+2. If no backfill starts, check that `address_rollup_change_sensor` is
+   running and look at its last ticks.
 
 ### Alerts
 
