@@ -2,6 +2,7 @@ import {
   BaseError,
   ContractFunctionRevertedError,
   ContractFunctionZeroDataError,
+  ExecutionRevertedError,
 } from "viem";
 import type { Address, PublicClient } from "viem";
 
@@ -444,6 +445,10 @@ export class PriceFeed {
  * Returns true when the contract itself has no data for the call: it reverts
  * (for example, the round does not exist) or it returns empty data (for
  * example, an old phase aggregator). Returns false for RPC errors.
+ *
+ * Some RPC providers send a revert as a JSON-RPC error with code -32000 and
+ * the message "execution reverted". viem then gives an
+ * `ExecutionRevertedError`, not a `ContractFunctionRevertedError`.
  */
 function isContractNoDataError(err: unknown): boolean {
   return (
@@ -451,7 +456,8 @@ function isContractNoDataError(err: unknown): boolean {
     err.walk(
       (e) =>
         e instanceof ContractFunctionRevertedError ||
-        e instanceof ContractFunctionZeroDataError
+        e instanceof ContractFunctionZeroDataError ||
+        e instanceof ExecutionRevertedError
     ) !== null
   );
 }

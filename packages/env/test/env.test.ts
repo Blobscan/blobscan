@@ -40,8 +40,8 @@ describe("@blobscan/env", () => {
     expect(presetEnvOptions.skipValidation).toBe(true);
   });
 
-  describe("rpcUrlsSchema", () => {
-    it("parses a list of chain IDs and RPC URLs", () => {
+  describe("when parsing ETH_PRICE_SYNCER_RPC_URLS", () => {
+    it("should return the RPC URL of each chain", () => {
       expect(
         rpcUrlsSchema.parse(
           "137=https://polygon.example/key?a=b, 1=http://127.0.0.1:8545"
@@ -52,7 +52,7 @@ describe("@blobscan/env", () => {
       });
     });
 
-    it("ignores empty entries", () => {
+    it("should ignore empty entries", () => {
       expect(rpcUrlsSchema.parse("1=http://127.0.0.1:8545,")).toEqual({
         1: "http://127.0.0.1:8545",
       });
@@ -66,12 +66,16 @@ describe("@blobscan/env", () => {
         "the same chain ID two times",
         "137=https://a.example,137=https://b.example",
       ],
-    ])("rejects %s", (_, value) => {
+    ])("should reject %s", (_, value) => {
       expect(rpcUrlsSchema.safeParse(value).success).toBe(false);
     });
 
-    it("does not show the URL in the error message", () => {
-      const result = rpcUrlsSchema.safeParse("x=https://rpc.example/secret");
+    it.each([
+      ["an entry without a chain ID", "https://rpc.example/v2/secret"],
+      ["a chain ID that is not valid", "x=https://rpc.example/v2/secret"],
+      ["a URL that is not valid", "137=rpc.example/v2/secret"],
+    ])("should not show the URL in the error for %s", (_, value) => {
+      const result = rpcUrlsSchema.safeParse(value);
 
       expect(result.success).toBe(false);
       expect(JSON.stringify(result.error)).not.toContain("secret");

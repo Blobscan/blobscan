@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import dayjs from "@blobscan/dayjs";
 import { getPrisma } from "@blobscan/db";
-import { findEthUsdPriceFeed } from "@blobscan/price-feed";
+import { findEthUsdPriceFeed, PriceFeed } from "@blobscan/price-feed";
 import type { PriceFeedDefinition } from "@blobscan/price-feed";
 import { fixtures, getViemClient } from "@blobscan/test";
 
@@ -34,6 +34,10 @@ class EthPriceSyncerMock extends ETHPriceSyncer {
 
   getWorkerProcessor() {
     return this.syncerFn;
+  }
+
+  getLogger() {
+    return this.logger;
   }
 }
 
@@ -74,6 +78,7 @@ describe("EthPriceSyncer", () => {
   }
 
   afterEach(async () => {
+    vi.restoreAllMocks();
     await Promise.all(syncers.splice(0).map((syncer) => syncer.close()));
 
     vi.setSystemTime(fixtures.systemDate);
@@ -126,6 +131,31 @@ describe("EthPriceSyncer", () => {
     await expect(prisma.priceFeed.count()).resolves.toBe(1);
   });
 
+  it("should create each price feed one time when it returns prices", async () => {
+    const createSpy = vi.spyOn(PriceFeed, "create");
+    const syncer = createSyncer({ priceFeedSources: [anvilSource()] });
+
+    await syncer.getWorkerProcessor()();
+    await syncer.getWorkerProcessor()();
+
+    expect(createSpy).toHaveBeenCalledTimes(1);
+  });
+
+  describe("when a price feed has no round in tolerance", () => {
+    it("should create the price feed again on the next tick", async () => {
+      const createSpy = vi.spyOn(PriceFeed, "create");
+      const syncer = createSyncer({
+        priceFeedSources: [anvilSource()],
+        timeTolerance: 60,
+      });
+
+      await expect(syncer.getWorkerProcessor()()).rejects.toThrow();
+      await expect(syncer.getWorkerProcessor()()).rejects.toThrow();
+
+      expect(createSpy).toHaveBeenCalledTimes(2);
+    });
+  });
+
   describe("when the first price feed fails", () => {
     it("should use the next feed when the RPC is not reachable", async () => {
       const syncer = createSyncer({
@@ -139,6 +169,24 @@ describe("EthPriceSyncer", () => {
       });
 
       expect(ethPrice.priceFeed?.chainId).toBe(mainnet.id);
+    });
+
+    it("should log the cause of the RPC error", async () => {
+      const syncer = createSyncer({
+        priceFeedSources: [unreachableSource(), anvilSource()],
+      });
+      const warnSpy = vi.spyOn(syncer.getLogger(), "warn");
+
+      await syncer.getWorkerProcessor()();
+
+      const warning = String(warnSpy.mock.calls[0]?.[0]);
+
+      expect(warning).toContain("Polygon");
+      expect(warning).toContain(
+        "Failed to retrieve aggregators from data feed contract"
+      );
+      expect(warning).toContain("HTTP request failed");
+      expect(warning).not.toContain("127.0.0.1:1");
     });
 
     it("should use the next feed when the round is stale", async () => {

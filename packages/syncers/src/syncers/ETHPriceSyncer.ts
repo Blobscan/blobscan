@@ -56,14 +56,47 @@ function describeSource({ definition }: EthUsdPriceFeedSource) {
   return `${definition.chain.name} (chain ${definition.chain.id}, feed ${definition.address})`;
 }
 
-function getErrorMessage(err: unknown) {
-  if (err instanceof Error) {
-    return "shortMessage" in err && typeof err.shortMessage === "string"
-      ? err.shortMessage
-      : err.message;
+const MAX_ERROR_CAUSE_DEPTH = 5;
+
+function describeError(err: unknown): string {
+  if (!(err instanceof Error)) {
+    return String(err);
   }
 
-  return String(err);
+  // viem errors have a short message without the request details (for
+  // example the RPC URL, which can contain an API key).
+  const message =
+    "shortMessage" in err && typeof err.shortMessage === "string"
+      ? err.shortMessage
+      : err.message;
+  const status =
+    "status" in err && typeof err.status === "number"
+      ? ` (HTTP ${err.status})`
+      : "";
+
+  return `${message}${status}`;
+}
+
+/**
+ * Returns the messages of the error and of its causes, so that the log shows
+ * the real reason (for example a timeout or HTTP 429), not only the wrapper
+ * error.
+ */
+function getErrorMessage(err: unknown) {
+  const messages: string[] = [];
+  let current: unknown = err;
+
+  while (current !== undefined && messages.length < MAX_ERROR_CAUSE_DEPTH) {
+    const message = describeError(current);
+
+    if (!messages.includes(message)) {
+      messages.push(message);
+    }
+
+    current = current instanceof Error ? current.cause : undefined;
+  }
+
+  return messages.join(": ");
 }
 
 /**
@@ -148,6 +181,9 @@ export class ETHPriceSyncer extends BaseSyncer {
               break;
             }
 
+            // Load the feed again on the next tick. If Chainlink moved the
+            // proxy to a new phase aggregator, the new feed reads it.
+            source.loaded = undefined;
             failures.push(`${describeSource(source)}: no round in tolerance`);
             this.logger.warn(
               `No ETH price in tolerance for ${targetIso} from ${describeSource(
@@ -155,6 +191,7 @@ export class ETHPriceSyncer extends BaseSyncer {
               )}. Trying the next feed.`
             );
           } catch (err) {
+            source.loaded = undefined;
             failures.push(`${describeSource(source)}: ${getErrorMessage(err)}`);
             this.logger.warn(
               `Failed to read the ETH price for ${targetIso} from ${describeSource(

@@ -111,6 +111,71 @@ describe("PriceFeedFinder", () => {
     });
   });
 
+  describe("when the RPC fails on a round", () => {
+    function createClientWithFailingCalls(error: {
+      code: number;
+      message: string;
+    }) {
+      let isFailing = false;
+      const failingClient = createPublicClient({
+        chain: client.chain,
+        transport: custom(
+          {
+            request: (args) => {
+              if (isFailing && args.method === "eth_call") {
+                throw error;
+              }
+
+              return client.request(
+                args as Parameters<typeof client.request>[0]
+              );
+            },
+          },
+          { retryCount: 0 }
+        ),
+      });
+
+      return {
+        failingClient,
+        startFailing: () => {
+          isFailing = true;
+        },
+      };
+    }
+
+    it("should return no price data when the provider reports a revert with code -32000", async () => {
+      const { failingClient, startFailing } = createClientWithFailingCalls(
+        { code: -32000, message: "execution reverted: No data present" }
+      );
+      const failingPriceFeed = await PriceFeed.create({
+        client: failingClient,
+        dataFeedContractAddress: DATE_FEED_CONTRACT_ADDRESS,
+      });
+
+      startFailing();
+
+      await expect(
+        failingPriceFeed.findPriceByRoundId(expectedRoundId)
+      ).resolves.toBeNull();
+    });
+
+    it("should throw when the provider reports an error that is not a revert", async () => {
+      const { failingClient, startFailing } = createClientWithFailingCalls(
+        { code: -32005, message: "rate limit exceeded" }
+      );
+      const failingPriceFeed = await PriceFeed.create({
+        client: failingClient,
+        dataFeedContractAddress: DATE_FEED_CONTRACT_ADDRESS,
+      });
+
+      startFailing();
+
+      await expect(
+        failingPriceFeed.findPriceByRoundId(expectedRoundId)
+      ).rejects.toThrow();
+    });
+  });
+
   describe("when creating a new instance", () => {
     it("should read the feed description and decimals", () => {
       expect(priceFeed.address).toBe(DATE_FEED_CONTRACT_ADDRESS);

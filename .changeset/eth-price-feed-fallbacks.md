@@ -14,4 +14,4 @@ Each feed now has its own maximum staleness (its heartbeat plus 60 seconds). `ET
 
 Add the `price_feed` table and these audit columns to `eth_usd_price`: `round_id`, `round_timestamp`, `price_feed_id`, `created_at` and `updated_at`. The existing rows have NULL values in the new columns.
 
-To upgrade, replace `ETH_PRICE_SYNCER_CHAIN_ID` and `ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL` with `ETH_PRICE_SYNCER_RPC_URLS` (for example `137=https://polygon-rpc.example`). The old vars still work, with a warning. `ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS` has no effect now.
+To upgrade, replace `ETH_PRICE_SYNCER_CHAIN_ID` and `ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL` with `ETH_PRICE_SYNCER_RPC_URLS` (for example `137=https://polygon-rpc.example`). The old vars still work, with a warning. If the old chain ID has no ETH/USD feed in the list, the syncer ignores it and logs a warning. `ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS` has no effect now.

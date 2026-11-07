@@ -2,61 +2,40 @@ import type { PublicClient } from "viem";
 import { createPublicClient, http } from "viem";
 
 import { env } from "@blobscan/env";
-import { ETH_USD_PRICE_FEEDS, findEthUsdPriceFeed } from "@blobscan/price-feed";
+import { logger } from "@blobscan/logger";
+import { ETH_USD_PRICE_FEEDS } from "@blobscan/price-feed";
 import type { BaseSyncer } from "@blobscan/syncers";
-import { ETHPriceSyncer, createRedisConnection } from "@blobscan/syncers";
+import {
+  ETHPriceSyncer,
+  createRedisConnection,
+  resolveEthPriceRpcUrls,
+} from "@blobscan/syncers";
 
 import { prisma } from "../clients/prisma";
 
-const LEGACY_ETH_PRICE_SYNCER_CHAIN_ID = 137;
-
 /**
- * Returns the RPC URL of each chain. ETH_PRICE_SYNCER_RPC_URLS wins over the
- * deprecated ETH_PRICE_SYNCER_CHAIN_ID and ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL.
+ * Short limits for the price feed RPC calls. When an RPC does not respond,
+ * the syncer must go to the next feed quickly, so that the tick ends before
+ * the next minute.
  */
-export function getEthPriceSyncerRpcUrls(
-  ethPriceEnv: Pick<
-    typeof env,
-    | "ETH_PRICE_SYNCER_RPC_URLS"
-    | "ETH_PRICE_SYNCER_CHAIN_ID"
-    | "ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL"
-  >
-): Record<number, string> {
-  const rpcUrls: Record<number, string> = {};
-
-  if (ethPriceEnv.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL) {
-    const legacyChainId =
-      ethPriceEnv.ETH_PRICE_SYNCER_CHAIN_ID ?? LEGACY_ETH_PRICE_SYNCER_CHAIN_ID;
-
-    rpcUrls[legacyChainId] = ethPriceEnv.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL;
-  }
-
-  return { ...rpcUrls, ...ethPriceEnv.ETH_PRICE_SYNCER_RPC_URLS };
-}
+const PRICE_FEED_RPC_TIMEOUT_MS = 5_000;
+const PRICE_FEED_RPC_RETRY_COUNT = 1;
 
 export async function setUpSyncers() {
   const connection = createRedisConnection(env.REDIS_URI);
   const syncers: BaseSyncer[] = [];
 
-  const ethPriceRpcUrls = getEthPriceSyncerRpcUrls(env);
+  if (env.ETH_PRICE_SYNCER_ENABLED) {
+    const { rpcUrls, warnings } = resolveEthPriceRpcUrls({
+      rpcUrls: env.ETH_PRICE_SYNCER_RPC_URLS,
+      legacyChainId: env.ETH_PRICE_SYNCER_CHAIN_ID,
+      legacyRpcUrl: env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL,
+    });
 
-  if (env.ETH_PRICE_SYNCER_ENABLED && Object.keys(ethPriceRpcUrls).length) {
-    const unknownChainIds = Object.keys(ethPriceRpcUrls)
-      .map(Number)
-      .filter((chainId) => !findEthUsdPriceFeed(chainId));
-
-    if (unknownChainIds.length) {
-      throw new Error(
-        `Can't initialize ETH price syncer: no ETH/USD price feed for chain(s) ${unknownChainIds.join(
-          ", "
-        )}. Supported chains: ${ETH_USD_PRICE_FEEDS.map(
-          ({ chain }) => chain.id
-        ).join(", ")}`
-      );
-    }
+    warnings.forEach((warning) => logger.warn(warning));
 
     const priceFeedSources = ETH_USD_PRICE_FEEDS.flatMap((definition) => {
-      const rpcUrl = ethPriceRpcUrls[definition.chain.id];
+      const rpcUrl = rpcUrls[definition.chain.id];
 
       if (!rpcUrl) {
         return [];
@@ -64,21 +43,36 @@ export async function setUpSyncers() {
 
       const client = createPublicClient({
         chain: definition.chain,
-        transport: http(rpcUrl),
+        transport: http(rpcUrl, {
+          timeout: PRICE_FEED_RPC_TIMEOUT_MS,
+          retryCount: PRICE_FEED_RPC_RETRY_COUNT,
+        }),
       }) as PublicClient;
 
       return [{ definition, client }];
     });
 
-    syncers.push(
-      new ETHPriceSyncer({
-        cronPattern: env.ETH_PRICE_SYNCER_CRON_PATTERN,
-        prisma,
-        redisUriOrConnection: connection,
-        priceFeedSources,
-        timeTolerance: env.ETH_PRICE_SYNCER_TIME_TOLERANCE,
-      })
-    );
+    if (!priceFeedSources.length) {
+      logger.warn(
+        "ETH price syncer is enabled but it does not run: set ETH_PRICE_SYNCER_RPC_URLS (for example 137=https://polygon-rpc.example)"
+      );
+    } else {
+      logger.info(
+        `ETH price syncer feeds, in order: ${priceFeedSources
+          .map(({ definition }) => `${definition.chain.name} (${definition.chain.id})`)
+          .join(", ")}`
+      );
+
+      syncers.push(
+        new ETHPriceSyncer({
+          cronPattern: env.ETH_PRICE_SYNCER_CRON_PATTERN,
+          prisma,
+          redisUriOrConnection: connection,
+          priceFeedSources,
+          timeTolerance: env.ETH_PRICE_SYNCER_TIME_TOLERANCE,
+        })
+      );
+    }
   }
 
   await Promise.all(syncers.map((syncer) => syncer.start()));

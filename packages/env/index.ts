@@ -54,7 +54,9 @@ const networkSchema = z.enum([
 export const rpcUrlsSchema = z.string().transform((value, ctx) => {
   const rpcUrls: Record<number, string> = {};
 
-  for (const entry of value.split(",")) {
+  const entries = value.split(",");
+
+  for (const [index, entry] of entries.entries()) {
     const trimmedEntry = entry.trim();
 
     if (!trimmedEntry) {
@@ -71,12 +73,12 @@ export const rpcUrlsSchema = z.string().transform((value, ctx) => {
       chainId <= 0 ||
       !z.string().url().safeParse(url).success
     ) {
+      // Do not put the entry in the message. The URL can contain an API key.
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: `Invalid entry "${trimmedEntry.slice(
-          0,
-          separatorIndex === -1 ? undefined : separatorIndex
-        )}=…". Use the format "<chainId>=<url>,<chainId>=<url>"`,
+        message: `Invalid entry at position ${
+          index + 1
+        }. Use the format "<chainId>=<url>,<chainId>=<url>"`,
       });
 
       return z.NEVER;
@@ -425,12 +427,12 @@ export const env = createEnv({
     }
 
     if (env.ETH_PRICE_SYNCER_ENABLED) {
+      // The REST API logs the chains that it uses, after it merges the
+      // deprecated vars.
       console.log(
         `ETH price syncer configuration: cronPattern=${
           env.ETH_PRICE_SYNCER_CRON_PATTERN
-        } rpcChainIds=${Object.keys(env.ETH_PRICE_SYNCER_RPC_URLS ?? {}).join(
-          ","
-        )} timeTolerance=${env.ETH_PRICE_SYNCER_TIME_TOLERANCE ?? "per feed"}`
+        } timeTolerance=${env.ETH_PRICE_SYNCER_TIME_TOLERANCE ?? "per feed"}`
       );
 
       if (
