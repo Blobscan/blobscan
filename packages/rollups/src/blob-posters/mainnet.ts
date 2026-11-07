@@ -39,6 +39,7 @@ export const MAINNET_REGISTRY: BlobPosterRegistry = {
   HASHKEY: [
     "0x9391791f7cb74f8bfda65edc0749efd964311b55",
     "0xf09ebb62b5ba0cf402b77aba61691cbcf005206f",
+    "0x5e70713222faf60c9e9fb69240d06ae6d688563a",
   ],
   HEMI: [
     "0x65115c6d23274e0a29a63b69130efe901aa52e7a",
@@ -99,7 +100,10 @@ export const MAINNET_REGISTRY: BlobPosterRegistry = {
     "0x4d875acfd836eb3d8a2f25ba03de16c97ec9fc0f",
     "0xf4559766b24402f0fff8fc5a6835d5f6e837aed3",
   ],
-  PARADEX: ["0xc70ae19b5feaa5c19f576e621d2bad9771864fe2"],
+  PARADEX: [
+    "0xc70ae19b5feaa5c19f576e621d2bad9771864fe2",
+    "0x09d1ad25b369a0c48bdf4caab85afd08a3f07044",
+  ],
   PARALLEL: [
     "0x5ead389b57d533a94a0eacd570dc1cc59c25f2d4",
     "0x40acdc94a00b33151b40763b3fed7c46ff639df4",
@@ -151,12 +155,16 @@ export const MAINNET_REGISTRY: BlobPosterRegistry = {
     "0xe2da8ac2e550cd141198a117520d4edc8692ab74",
     "0x000cb000e880a92a8f383d69da2142a969b93de7",
     "0x2267c7246523191b8bf7615b86b3bdee612b7d9e",
+    "0x35376dd47c061bc3b8c8e8d61987019e7ed58f06",
   ],
   THEBINARYHOLDINGS: [
     "0x7f9d9c1bce1062e1077845ea39a0303429600a06",
     "0x68d5BBf3a01ECbB47CE38Cf64a7d6C0eA618040f",
   ],
-  UNICHAIN: ["0x2f60a5184c63ca94f82a27100643dbabe4f3f7fd"],
+  UNICHAIN: [
+    "0x2f60a5184c63ca94f82a27100643dbabe4f3f7fd",
+    "0x9ef649e8746cc47a17708a5e86b2d66c7f6c00d1",
+  ],
   WORLD: ["0xdbbe3d8c2d2b22a2611c5a94a9a12c2fcd49eb29"],
   XGA: ["0x90680f0f6d63060fb7a16bdc722a85b992dd5047"],
   XLAYER: [
@@ -167,7 +175,10 @@ export const MAINNET_REGISTRY: BlobPosterRegistry = {
     "0x0d3250c3d5facb74ac15834096397a3ef790ec99",
     "0xe1d8d4c8656949764c2c9fa9fab2c15d3f42e6c2",
   ],
-  ZIRCUIT: ["0xaf1e4f6a47af647f87c0ec814d8032c4a4bff145"],
+  ZIRCUIT: [
+    "0xaf1e4f6a47af647f87c0ec814d8032c4a4bff145",
+    "0xcf8225801df6ef90ad3bc86808f574403a309de8",
+  ],
   ZERONETWORK: ["0x479b7c95b9509e1a834c994fc94e3581aa8a73b9"],
   ZORA: ["0x625726c858dbf78c0125436c943bf4b4be9d9033"],
 };

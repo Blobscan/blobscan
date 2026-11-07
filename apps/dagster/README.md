@@ -131,6 +131,41 @@ the partition range, and launch the backfill. For example, a fix to
 `aggregate_tx_hourly.sql` means backfilling `hourly_metrics` and all rollup
 levels for the affected dates.
 
+### Reprocessing after a rollup change
+
+The hourly SQL reads `address.rollup` when it runs, and the metrics tables
+store the rollup of each row. When the rollup of an existing address changes
+(a migration that labels a new batcher, or the indexer applying a new rollup
+registry), the metrics that were already aggregated keep the old attribution
+(usually `other`).
+
+A database trigger logs each change of `address.rollup` in the
+`address_rollup_change` table. `address_rollup_change_sensor` is running by
+default and reads the new rows of the log every 5 minutes. For each batch of
+changes it launches a backfill of `hourly_metrics` and all rollup levels. The
+backfill starts at the hour of the first transaction of the changed addresses
+and ends at the current partition. `all_time_metrics_schedule` updates
+`all_time_metrics` afterwards. The backfill has the
+`blobscan/trigger=address_rollup_change` tag, and the
+`blobscan/address_rollup_changes` tag with the ids of the changes. The sensor
+sends an alert (see [Alerts](#alerts)) with the changed addresses.
+
+The log is in the database, so the deploy order doesn't matter: changes made
+while the sensor was stopped, or before it was deployed, are read when it
+runs. Addresses that have sent no transactions launch no backfill.
+
+The sensor cursor is the id of the last change that it read. If a backfill
+fails, `backfill_failure_alert` reports it. Re-execute the backfill from the
+UI, or set the sensor cursor to the id before the failed changes (the start of
+its `blobscan/address_rollup_changes` tag, minus one) to launch it again.
+
+After a migration that changes `address.rollup`:
+
+1. In the next 5 minutes, look for the sensor alert and the new backfill in
+   **Overview** → **Backfills**.
+2. If no backfill starts, check that `address_rollup_change_sensor` is
+   running and look at its last ticks.
+
 ### Alerts
 
 - `metrics_run_failure_alert`: any failed run.
