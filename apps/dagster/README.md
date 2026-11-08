@@ -134,37 +134,43 @@ levels for the affected dates.
 ### Reprocessing after a rollup change
 
 The hourly SQL reads `address.rollup` when it runs, and the metrics tables
-store the rollup of each row. When the rollup of an existing address changes
-(a migration that labels a new batcher, or the indexer applying a new rollup
-registry), the metrics that were already aggregated keep the old attribution
-(usually `other`).
+store the rollup of each row. When the rollup of an existing address changes,
+the metrics that were already aggregated keep the old attribution (usually
+`other`) until they are aggregated again. This happens after a migration that
+labels a new batcher, and also when the indexer runs with a new rollup
+registry: its address upsert overwrites `address.rollup` with the rollup of the
+registry.
 
-A database trigger logs each change of `address.rollup` in the
-`address_rollup_change` table. `address_rollup_change_sensor` is running by
-default and reads the new rows of the log every 5 minutes. For each batch of
-changes it launches a backfill of `hourly_metrics` and all rollup levels. The
-backfill starts at the hour of the first transaction of the changed addresses
-and ends at the current partition. `all_time_metrics_schedule` updates
-`all_time_metrics` afterwards. The backfill has the
-`blobscan/trigger=address_rollup_change` tag, and the
-`blobscan/address_rollup_changes` tag with the ids of the changes. The sensor
-sends an alert (see [Alerts](#alerts)) with the changed addresses.
+Nothing detects these changes. After one of them, launch the backfill by hand:
 
-The log is in the database, so the deploy order doesn't matter: changes made
-while the sensor was stopped, or before it was deployed, are read when it
-runs. Addresses that have sent no transactions launch no backfill.
+1. Find the first hour in which the changed addresses sent a transaction. The
+   query reads the `transaction` table, not
+   `address.first_block_number_as_sender`, which a reorg can set to `NULL`:
 
-The sensor cursor is the id of the last change that it read. If a backfill
-fails, `backfill_failure_alert` reports it. Re-execute the backfill from the
-UI, or set the sensor cursor to the id before the failed changes (the start of
-its `blobscan/address_rollup_changes` tag, minus one) to launch it again.
+   ```sql
+   SELECT date_trunc('hour', MIN(first_tx)) AS backfill_start
+   FROM (
+     SELECT (SELECT MIN(block_timestamp) FROM transaction WHERE from_id = a) AS first_tx
+     FROM unnest(ARRAY['0x...', '0x...']) AS a
+   ) s;
+   ```
 
-After a migration that changes `address.rollup`:
+   A `NULL` result means that the addresses have sent no transactions, and no
+   backfill is needed. A start before `DAGSTER_METRICS_START_DATE` means the
+   first partition.
+2. Launch the backfill from the UI, as in [Initial backfill](#initial-backfill):
+   **Assets** → select `hourly_metrics`, `daily_metrics`, `weekly_metrics`,
+   `monthly_metrics`, `yearly_metrics` and `all_time_metrics` →
+   **Materialize selected**. Select the partitions from the one that contains
+   `backfill_start` to the latest one, and click **Launch backfill**.
+3. If the dialog doesn't accept a range for all the levels at once, launch one
+   backfill per level, in order, each one after the previous one is done:
+   `hourly_metrics`, then `daily_metrics`, then `weekly_metrics` and
+   `monthly_metrics`, then `yearly_metrics`. `all_time_metrics_schedule`
+   updates `all_time_metrics` afterwards.
 
-1. In the next 5 minutes, look for the sensor alert and the new backfill in
-   **Overview** → **Backfills**.
-2. If no backfill starts, check that `address_rollup_change_sensor` is
-   running and look at its last ticks.
+One backfill can cover several changes: start it at the earliest
+`backfill_start`.
 
 ### Alerts
 

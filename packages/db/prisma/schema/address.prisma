@@ -16,17 +16,3 @@ model Address {
   @@index([firstBlockNumberAsSender])
   @@map("address")
 }
-
-/// One row per change of address.rollup. The address_rollup_change_log
-/// trigger writes it (see the 20261107000000_add_address_rollup_change_log
-/// migration). The Dagster address_rollup_change_sensor reads it to
-/// re-aggregate the metrics of the changed addresses. Do not write it.
-model AddressRollupChange {
-  id        Int      @id @default(autoincrement())
-  address   String
-  oldRollup Rollup?  @map("old_rollup")
-  newRollup Rollup?  @map("new_rollup")
-  changedAt DateTime @default(now()) @map("changed_at")
-
-  @@map("address_rollup_change")
-}
