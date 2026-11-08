@@ -44,7 +44,20 @@ const outputSchema = z
         ),
       sent: roleSeriesSchema,
       received: roleSeriesSchema,
-      selfTotalTransactions: z.number().int().array(),
+      selfTotalTransactions: z
+        .number()
+        .int()
+        .array()
+        .describe(
+          "The self-sends (from = to) in each period. They are also in the sent and the received totals."
+        ),
+      selfTotalBlobs: z
+        .number()
+        .int()
+        .array()
+        .describe(
+          "The blobs of the self-sends in each period. They are also in the sent and the received totals."
+        ),
       network: z
         .object({
           totalBlobs: z.number().int().array(),
@@ -160,6 +173,7 @@ const getAddressTimeseries = cacheTRPCQuery(
       received: createRoleSeries(),
     };
     const selfTotalTransactions: number[] = [];
+    const selfTotalBlobs: number[] = [];
     const network = {
       totalBlobs: [] as number[],
       totalBlobBaseFee: [] as bigint[],
@@ -193,6 +207,7 @@ const getAddressTimeseries = cacheTRPCQuery(
       }
 
       selfTotalTransactions.push(row?.selfTotalTransactions ?? 0);
+      selfTotalBlobs.push(row?.selfTotalBlobs ?? 0);
 
       if (row && (!updatedAt || row.updatedAt > updatedAt)) {
         updatedAt = row.updatedAt;
@@ -216,6 +231,7 @@ const getAddressTimeseries = cacheTRPCQuery(
         sent: series.sent,
         received: series.received,
         selfTotalTransactions,
+        selfTotalBlobs,
         network,
         updatedAt,
       },

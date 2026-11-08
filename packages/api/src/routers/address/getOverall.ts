@@ -13,6 +13,8 @@ import {
   decimalToBigInt,
   findEdgeTransaction,
   getAddressGranularity,
+  getLongestGap,
+  getLongestStreak,
   getRoleTotals,
   getTimeFrameStart,
   mergeAggregates,
@@ -31,6 +33,10 @@ const outputSchema = z
   .object({
     data: z.object({
       address: z.string(),
+      category: z
+        .string()
+        .nullable()
+        .describe("Null when the address is not in the database."),
       rollup: z.string().nullable(),
       timeFrame: addressInputSchema.shape.timeFrame,
       sent: roleTotalsSchema,
@@ -61,6 +67,20 @@ const outputSchema = z
               "The blob transactions of the address in either role. A self-send counts one time."
             ),
           activeDays: z.number().int().nonnegative(),
+          longestStreak: z
+            .number()
+            .int()
+            .nonnegative()
+            .describe(
+              "The largest number of consecutive days with blob transactions."
+            ),
+          longestGap: z
+            .number()
+            .int()
+            .nonnegative()
+            .describe(
+              "The largest number of days with no blob transactions between two active days. It is 0 when the address has fewer than two active days."
+            ),
           firstTransaction: transactionRefSchema,
           lastTransaction: transactionRefSchema,
         })
@@ -212,11 +232,13 @@ const getAddressOverall = cacheTRPCQuery(
       allTimeTotals,
       network,
       activeDays,
+      longestStreak,
+      longestGap,
       firstTransaction,
       lastTransaction,
     ] = await Promise.all([
       prisma.address.findUnique({
-        select: { rollup: true },
+        select: { category: true, rollup: true },
         where: { address },
       }),
       input.timeFrame === "All"
@@ -225,6 +247,8 @@ const getAddressOverall = cacheTRPCQuery(
       getAllTimeTotals(prisma, address),
       getNetworkTotals(prisma, input),
       prisma.addressDailyMetrics.count({ where: { address } }),
+      getLongestStreak(prisma, address),
+      getLongestGap(prisma, address),
       findEdgeTransaction(prisma, address, "first"),
       findEdgeTransaction(prisma, address, "last"),
     ]);
@@ -234,6 +258,7 @@ const getAddressOverall = cacheTRPCQuery(
     return {
       data: {
         address,
+        category: dbAddress?.category ?? null,
         rollup: dbAddress?.rollup ?? null,
         timeFrame: input.timeFrame,
         sent: serializeRoleTotals(totals.sent),
@@ -250,6 +275,8 @@ const getAddressOverall = cacheTRPCQuery(
             allTimeTotals.received.totalTransactions -
             allTimeTotals.selfTotalTransactions,
           activeDays,
+          longestStreak,
+          longestGap,
           firstTransaction,
           lastTransaction,
         },

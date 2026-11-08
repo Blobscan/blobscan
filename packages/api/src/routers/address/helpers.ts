@@ -269,3 +269,51 @@ export async function findEdgeTransaction(
 
   return row ? { hash: row.hash, blockTimestamp: row.block_timestamp } : null;
 }
+
+/**
+ * Returns the largest number of consecutive days with blob transactions of
+ * the address. The daily rows are the active days. In a run of consecutive
+ * days, the day minus its row number is the same value, so each run is one
+ * group.
+ */
+export async function getLongestStreak(
+  prisma: BlobscanPrismaClient,
+  address: string
+): Promise<number> {
+  const rows = await prisma.$queryRawUnsafe<{ longest: number | null }[]>(
+    `SELECT MAX(days)::int AS longest FROM (
+      SELECT COUNT(*) AS days FROM (
+        SELECT period_start - (ROW_NUMBER() OVER (ORDER BY period_start))::int AS run
+        FROM address_daily_metrics
+        WHERE address = $1
+      ) days_by_run
+      GROUP BY run
+    ) runs`,
+    address
+  );
+
+  return rows[0]?.longest ?? 0;
+}
+
+/**
+ * Returns the largest number of days with no blob transactions between two
+ * active days of the address. The daily rows are the active days, so the gap
+ * after a row is the days to the next row, minus one. The days before the
+ * first and after the last active day are not gaps.
+ */
+export async function getLongestGap(
+  prisma: BlobscanPrismaClient,
+  address: string
+): Promise<number> {
+  const rows = await prisma.$queryRawUnsafe<{ longest: number | null }[]>(
+    `SELECT MAX(gap)::int AS longest FROM (
+      SELECT period_start
+        - LAG(period_start) OVER (ORDER BY period_start) - 1 AS gap
+      FROM address_daily_metrics
+      WHERE address = $1
+    ) gaps`,
+    address
+  );
+
+  return rows[0]?.longest ?? 0;
+}

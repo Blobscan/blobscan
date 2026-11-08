@@ -94,6 +94,96 @@ describe("address router", () => {
       expect(data.allTime.activeDays).toBe(days.size);
     });
 
+    it("should return the longest run of consecutive active days", async () => {
+      const txs = await canonicalTxs(ctx, BOTH_ROLES);
+      const days = [
+        ...new Set(
+          txs.map((tx) => tx.blockTimestamp.toISOString().slice(0, 10))
+        ),
+      ].sort();
+      const DAY_MS = 24 * 60 * 60 * 1000;
+      let longest = 0;
+      let current = 0;
+
+      days.forEach((day, i) => {
+        const prev = days[i - 1];
+        const isNextDay =
+          prev !== undefined &&
+          new Date(day).getTime() - new Date(prev).getTime() === DAY_MS;
+
+        current = isNextDay ? current + 1 : 1;
+        longest = Math.max(longest, current);
+      });
+
+      const { data } = await caller.getOverall({ address: BOTH_ROLES });
+
+      expect(longest).toBeGreaterThan(0);
+      expect(data.allTime.longestStreak).toBe(longest);
+    });
+
+    it("should return the longest gap between two active days", async () => {
+      const txs = await canonicalTxs(ctx, BOTH_ROLES);
+      const days = [
+        ...new Set(
+          txs.map((tx) => tx.blockTimestamp.toISOString().slice(0, 10))
+        ),
+      ].sort();
+      const DAY_MS = 24 * 60 * 60 * 1000;
+      const longest = days.reduce((max, day, i) => {
+        const prev = days[i - 1];
+
+        return prev === undefined
+          ? max
+          : Math.max(
+              max,
+              (new Date(day).getTime() - new Date(prev).getTime()) / DAY_MS - 1
+            );
+      }, 0);
+
+      const { data } = await caller.getOverall({ address: BOTH_ROLES });
+
+      expect(data.allTime.longestGap).toBe(longest);
+    });
+
+    it("should count only the days between two active days as a gap", async () => {
+      const address = "0x00000000000000000000000000000000000000aa";
+
+      // The gaps are 0, 3 and 2 days.
+      await ctx.prisma.addressDailyMetrics.createMany({
+        data: ["2026-01-01", "2026-01-02", "2026-01-06", "2026-01-09"].map(
+          (day) => ({
+            address,
+            periodStart: new Date(day),
+            sentTotalTransactions: 1,
+          })
+        ),
+      });
+
+      const { data } = await caller.getOverall({ address });
+
+      expect(data.allTime.longestGap).toBe(3);
+    });
+
+    it("should return the category and the rollup of the address", async () => {
+      const dbAddress = await ctx.prisma.address.findUniqueOrThrow({
+        where: { address: BOTH_ROLES },
+      });
+
+      const { data } = await caller.getOverall({ address: BOTH_ROLES });
+
+      expect(data.rollup).toBe(dbAddress.rollup?.toLowerCase() ?? null);
+      expect(data.category).toBe(dbAddress.rollup ? "rollup" : "other");
+    });
+
+    it("should return a null category for an unknown address", async () => {
+      const { data } = await caller.getOverall({
+        address: "0x0000000000000000000000000000000000000001",
+      });
+
+      expect(data.category).toBeNull();
+      expect(data.rollup).toBeNull();
+    });
+
     it("should match a checksummed address", async () => {
       const { data } = await caller.getOverall({
         address: RECEIVER_ONLY.toUpperCase(),
@@ -154,6 +244,8 @@ describe("address router", () => {
       expect(data.received.totalTransactions).toBe(0);
       expect(data.allTime.firstTransaction).toBeNull();
       expect(data.allTime.activeDays).toBe(0);
+      expect(data.allTime.longestStreak).toBe(0);
+      expect(data.allTime.longestGap).toBe(0);
     });
   });
 
@@ -186,6 +278,34 @@ describe("address router", () => {
       expect(sum(data.received.totalTransactions)).toBe(
         txs.filter((tx) => tx.toId === BOTH_ROLES).length
       );
+    });
+
+    it("should return the self-sends and their blobs of each period", async () => {
+      const address = "0x00000000000000000000000000000000000000bb";
+      const day = new Date();
+
+      day.setUTCHours(0, 0, 0, 0);
+      day.setUTCDate(day.getUTCDate() - 2);
+
+      // Two self-sends with 3 blobs in all. They are also in both roles.
+      await ctx.prisma.addressDailyMetrics.create({
+        data: {
+          address,
+          periodStart: day,
+          sentTotalTransactions: 2,
+          sentTotalBlobs: 3,
+          receivedTotalTransactions: 2,
+          receivedTotalBlobs: 3,
+          selfTotalTransactions: 2,
+          selfTotalBlobs: 3,
+        },
+      });
+
+      const { data } = await caller.getTimeseries({ address });
+
+      expect(data.timestamps[0]?.getTime()).toBe(day.getTime());
+      expect(data.selfTotalTransactions).toEqual([2, 0, 0]);
+      expect(data.selfTotalBlobs).toEqual([3, 0, 0]);
     });
 
     it("should use hours for the 1d and 7d time frames", async () => {
