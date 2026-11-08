@@ -5,7 +5,8 @@
 // Each metric is stored two times:
 // - `sent*`: the transactions where the address is `from`.
 // - `received*`: the transactions where the address is `to`.
-// A self-send (`from = to`) counts in both roles and in selfTotalTransactions.
+// A self-send (`from = to`) counts in both roles, and in selfTotalTransactions
+// and selfTotalBlobs.
 //
 // Blob gas used and blob size are not stored. Each blob uses 131072 blob gas
 // and has 131072 bytes, so both values are `totalBlobs * 131072`.
@@ -62,6 +63,8 @@ model AddressHourlyMetrics {
 
   /// @zod.number.int().nonnegative()
   selfTotalTransactions Int @default(0) @map("self_total_transactions")
+  /// @zod.number.int().nonnegative()
+  selfTotalBlobs        Int @default(0) @map("self_total_blobs")
 
   @@unique([address, periodStart])
   @@index([periodStart])
@@ -114,6 +117,8 @@ model AddressDailyMetrics {
 
   /// @zod.number.int().nonnegative()
   selfTotalTransactions Int @default(0) @map("self_total_transactions")
+  /// @zod.number.int().nonnegative()
+  selfTotalBlobs        Int @default(0) @map("self_total_blobs")
 
   @@unique([address, periodStart])
   @@index([periodStart])
@@ -170,6 +175,8 @@ model AddressAllTimeMetrics {
 
   /// @zod.number.int().nonnegative()
   selfTotalTransactions Int @default(0) @map("self_total_transactions")
+  /// @zod.number.int().nonnegative()
+  selfTotalBlobs        Int @default(0) @map("self_total_blobs")
 
   @@map("address_all_time_metrics")
 }

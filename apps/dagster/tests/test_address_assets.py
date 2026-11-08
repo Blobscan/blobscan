@@ -75,10 +75,13 @@ def expected_rows(
     for tx in get_enriched_txs(start, end):
         count, usage = blobs[tx["hash"]]
         for role, address in (("sent", tx["fromId"]), ("received", tx["toId"])):
-            row = rows.setdefault(address, {"self": 0, "sent": [], "received": []})
+            row = rows.setdefault(
+                address, {"self": 0, "self_blobs": 0, "sent": [], "received": []}
+            )
             row[role].append({**tx, "blobs": count, "usage": usage})
         if tx["fromId"] == tx["toId"]:
             rows[tx["fromId"]]["self"] += 1
+            rows[tx["fromId"]]["self_blobs"] += count
 
     return rows
 
@@ -113,6 +116,7 @@ def _assert_row(actual: dict, expected: dict) -> None:
         assert actual[prefix + "last_block_timestamp"] == last
 
     assert actual["self_total_transactions"] == expected["self"]
+    assert actual["self_total_blobs"] == expected["self_blobs"]
 
 
 # ---------------------------------------------------------------------------
@@ -196,6 +200,9 @@ class _AddressMetricsMixin:
         assert row["self_total_transactions"] >= 1
         assert row["sent_total_transactions"] >= row["self_total_transactions"]
         assert row["received_total_transactions"] >= row["self_total_transactions"]
+        assert row["self_total_blobs"] >= 1
+        assert row["sent_total_blobs"] >= row["self_total_blobs"]
+        assert row["received_total_blobs"] >= row["self_total_blobs"]
 
     def test_address_with_both_roles(self, postgres):
         row = self._rows(postgres)[BOTH_ROLES]

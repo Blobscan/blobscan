@@ -29,6 +29,7 @@ INSERT INTO address_all_time_metrics (
   received_last_block_timestamp,
 
   self_total_transactions,
+  self_total_blobs,
 
   updated_at
 )
@@ -60,6 +61,7 @@ SELECT
   MAX(received_last_block_timestamp) AS received_last_block_timestamp,
 
   SUM(self_total_transactions)::INT AS self_total_transactions,
+  SUM(self_total_blobs)::INT AS self_total_blobs,
 
   now() AS updated_at
 FROM address_daily_metrics

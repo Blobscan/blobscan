@@ -4,7 +4,7 @@
 --
 -- Each transaction counts two times: as `sent` for its sender and as
 -- `received` for its receiver. A self-send (from = to) counts in both roles
--- and in self_total_transactions.
+-- and in self_total_transactions and self_total_blobs.
 WITH tx AS (
   SELECT
     DATE_TRUNC('{{trunc}}', tx.block_timestamp) AS period_start,
@@ -82,6 +82,7 @@ INSERT INTO {{target_table}} (
   received_last_block_timestamp,
 
   self_total_transactions,
+  self_total_blobs,
 
   updated_at
 )
@@ -113,6 +114,7 @@ SELECT
   MAX(block_timestamp) FILTER (WHERE NOT is_sent) AS received_last_block_timestamp,
 
   COUNT(*) FILTER (WHERE is_self)::INT AS self_total_transactions,
+  COALESCE(SUM(blobs) FILTER (WHERE is_self), 0)::INT AS self_total_blobs,
 
   now() AS updated_at
 FROM roles
@@ -141,5 +143,6 @@ ON CONFLICT (address, period_start) DO UPDATE SET
   received_last_block_timestamp = EXCLUDED.received_last_block_timestamp,
 
   self_total_transactions = EXCLUDED.self_total_transactions,
+  self_total_blobs = EXCLUDED.self_total_blobs,
 
   updated_at = now()

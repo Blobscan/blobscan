@@ -28,6 +28,7 @@ CREATE TABLE "address_hourly_metrics" (
     "received_first_block_timestamp" TIMESTAMP(3),
     "received_last_block_timestamp" TIMESTAMP(3),
     "self_total_transactions" INTEGER NOT NULL DEFAULT 0,
+    "self_total_blobs" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "address_hourly_metrics_pkey" PRIMARY KEY ("id")
 );
@@ -59,6 +60,7 @@ CREATE TABLE "address_daily_metrics" (
     "received_first_block_timestamp" TIMESTAMP(3),
     "received_last_block_timestamp" TIMESTAMP(3),
     "self_total_transactions" INTEGER NOT NULL DEFAULT 0,
+    "self_total_blobs" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "address_daily_metrics_pkey" PRIMARY KEY ("id")
 );
@@ -90,6 +92,7 @@ CREATE TABLE "address_all_time_metrics" (
     "received_first_block_timestamp" TIMESTAMP(3),
     "received_last_block_timestamp" TIMESTAMP(3),
     "self_total_transactions" INTEGER NOT NULL DEFAULT 0,
+    "self_total_blobs" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "address_all_time_metrics_pkey" PRIMARY KEY ("id")
 );
