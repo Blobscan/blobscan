@@ -54,6 +54,7 @@ One more column has no prefix:
 | Column | Meaning |
 |---|---|
 | `self_total_transactions` | Transactions where `from = to`. They are also in `sent_total_transactions` and in `received_total_transactions`. |
+| `self_total_blobs` | Blobs of the transactions where `from = to`. They are also in `sent_total_blobs` and in `received_total_blobs`. |
 
 - That is 21 metric columns, plus `id`, `address`, `period_start` and `updated_at` (25 columns). The all-time table has no `period_start`, but has `aggregated_until` (24 columns).
 - Do not store blob gas used or blob size. Each blob uses 131072 blob gas and has 131072 bytes, so the code calculates both values as `total_blobs × 131072`.
@@ -144,10 +145,11 @@ The API or the web calculates these values from the columns of one role.
 | Avg fee per tx (USD) | `total_blob_base_fee_usd ÷ total_usd_priced_transactions` |
 | Blob utilization | `total_blob_usage_size ÷ (total_blobs × 131072)` |
 | Cost per useful KB | `total_blob_base_fee ÷ (total_blob_usage_size ÷ 1024)`, and the same in USD |
-| Wasted blob space | `total_blobs × 131072 − total_blob_usage_size` |
-| Cost of the wasted space | `total_blob_base_fee × (1 − utilization)` |
+| Unused blob space | `total_blobs × 131072 − total_blob_usage_size` |
+| Cost of the unused space | `total_blob_base_fee × (1 − utilization)` |
 | Calldata savings | `total_blob_as_calldata_fee − total_blob_base_fee`, and the same in USD |
-| Cadence | `(last_block_timestamp − first_block_timestamp) ÷ (total_transactions − 1)` |
+| Avg txs per day | The mean of the daily txs of the time frame, sent and received together. Days with no txs count as 0. The current day is not complete, so it is not in the mean, except when it is the only day. For an hourly time frame: the mean of the hourly txs × 24. |
+| Avg blobs per day | The same as avg txs per day, with the blobs |
 | Active age | now − the first transaction of the address |
 | Last active | now − the last transaction of the address |
 | Active days | The number of daily rows with transactions in the role |
@@ -208,7 +210,7 @@ Each card shows the value of the main role, which is the shown role with more tr
 | 3 | Total blob fees (ETH/USD) | Calldata savings |
 | 4 | Avg fee per tx | |
 | 5 | Cost per useful KB | |
-| 6 | Blob utilization | Wasted space and its cost |
+| 6 | Blob utilization | Unused space and its cost |
 | 7 | Share of network blobs | |
 | 8 | Timing ratio (sent). If the address has no sent transactions: calldata savings. | |
 
