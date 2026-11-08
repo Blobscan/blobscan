@@ -7,6 +7,26 @@ export type RoleTotals = AddressOverall["sent"];
 
 export type AddressRole = "sent" | "received";
 
+export const ADDRESS_SECTIONS = [
+  "activity",
+  "transactions",
+  "blobs",
+  "usage",
+  "fees",
+  "network",
+] as const;
+
+export type AddressSection = (typeof ADDRESS_SECTIONS)[number];
+
+export const SECTION_LABELS: Record<AddressSection, string> = {
+  activity: "Activity",
+  transactions: "Transactions",
+  blobs: "Blobs",
+  usage: "Blob Usage",
+  fees: "Fees",
+  network: "Network",
+};
+
 export const ROLE_LABELS: Record<AddressRole, string> = {
   sent: "Sent",
   received: "Received",
@@ -97,10 +117,11 @@ export type DerivedMetrics = {
   /** Bytes with data ÷ blob bytes, from 0 to 1. */
   utilization?: number;
   blobSize: bigint;
-  wastedSize: bigint;
-  /** The blob fee of the wasted bytes. */
-  wastedFee?: bigint;
-  wastedFeeUsd?: number;
+  /** Blob bytes without data. */
+  unusedSize: bigint;
+  /** The blob fee of the unused bytes. */
+  unusedFee?: bigint;
+  unusedFeeUsd?: number;
   /** Blob fee for each KiB with data. */
   costPerKb?: bigint;
   costPerKbUsd?: number;
@@ -122,9 +143,10 @@ export function getDerivedMetrics(totals: RoleTotals): DerivedMetrics {
   const fee = toBigInt(totalBlobBaseFee);
   const usage = toBigInt(totalBlobUsageSize);
   const blobSize = BigInt(totalBlobs) * BigInt(BLOB_SIZE);
-  const wastedSize = blobSize - usage;
+  const unusedSize = blobSize - usage;
   const utilization = ratio(usage, blobSize);
   const usd = totalBlobBaseFeeUsd ?? undefined;
+  const unusedFee = blobSize ? (fee * unusedSize) / blobSize : undefined;
 
   return {
     avgBlobsPerTx: ratio(totalBlobs, totalTransactions),
@@ -137,9 +159,9 @@ export function getDerivedMetrics(totals: RoleTotals): DerivedMetrics {
         : undefined,
     utilization,
     blobSize,
-    wastedSize,
-    wastedFee: blobSize ? (fee * wastedSize) / blobSize : undefined,
-    wastedFeeUsd:
+    unusedSize,
+    unusedFee,
+    unusedFeeUsd:
       usd !== undefined && utilization !== undefined
         ? usd * (1 - utilization)
         : undefined,
@@ -151,6 +173,29 @@ export function getDerivedMetrics(totals: RoleTotals): DerivedMetrics {
       totalBlobAsCalldataFeeUsd !== null && usd !== undefined
         ? totalBlobAsCalldataFeeUsd - usd
         : undefined,
+  };
+}
+
+/**
+ * Returns the mean price of blob gas, in wei, that the address paid, and the
+ * mean price of the network in the same periods. Both prices are weighted by
+ * gas. A price is undefined when there is no blob gas.
+ */
+export function getBlobGasPrices(
+  totals: Pick<RoleTotals, "totalBlobs" | "totalBlobBaseFee">,
+  network: Pick<
+    AddressOverall["network"],
+    "totalBlobBaseFee" | "totalBlobGasUsed"
+  >
+): { address?: bigint; network?: bigint } {
+  const gas = BigInt(totals.totalBlobs) * BigInt(BLOB_SIZE);
+  const networkGas = toBigInt(network.totalBlobGasUsed);
+
+  return {
+    address: gas ? toBigInt(totals.totalBlobBaseFee) / gas : undefined,
+    network: networkGas
+      ? toBigInt(network.totalBlobBaseFee) / networkGas
+      : undefined,
   };
 }
 
@@ -190,16 +235,113 @@ export function getNetworkShare(
 }
 
 /**
- * Returns the average time between two transactions, in milliseconds.
+ * Returns the mean of the values of the closed periods. The last period is
+ * the current one, and its values are partial. When it is the only period,
+ * it is used.
  */
-export function getCadence(
-  totalTransactions: number,
-  first?: Date | null,
-  last?: Date | null
-): number | undefined {
-  if (!first || !last || totalTransactions < 2) {
-    return undefined;
-  }
+export function getClosedPeriodsMean(values: number[]): number | undefined {
+  const closed = values.length > 1 ? values.slice(0, -1) : values;
 
-  return (last.getTime() - first.getTime()) / (totalTransactions - 1);
+  return closed.length
+    ? closed.reduce((sum, v) => sum + v, 0) / closed.length
+    : undefined;
+}
+
+/** A timeseries column that has a count or a size for each period. */
+export type SummableColumn =
+  | "totalTransactions"
+  | "totalBlobs"
+  | "totalBlobUsageSize";
+
+// A self-send is in the sent and in the received values. These columns have
+// the self-send values, so that the sum counts a self-send one time. The data
+// size of the self-sends is not stored, so it counts two times.
+const SELF_COLUMNS: Partial<
+  Record<SummableColumn, "selfTotalTransactions" | "selfTotalBlobs">
+> = {
+  totalTransactions: "selfTotalTransactions",
+  totalBlobs: "selfTotalBlobs",
+};
+
+/**
+ * Returns the sent and the received values of each period, together. A
+ * self-send counts one time in the transactions and in the blobs.
+ */
+export function sumRoles(
+  data: AddressTimeseries,
+  column: SummableColumn
+): number[] {
+  const selfColumn = SELF_COLUMNS[column];
+
+  return data.timestamps.map(
+    (_, i) =>
+      Number(data.sent[column][i] ?? 0) +
+      Number(data.received[column][i] ?? 0) -
+      (selfColumn ? data[selfColumn][i] ?? 0 : 0)
+  );
+}
+
+/**
+ * Returns the values of a column in each period: of one role, or of both
+ * roles together (see sumRoles) when there is no role.
+ */
+function getColumnValues(
+  data: AddressTimeseries,
+  column: SummableColumn,
+  role?: AddressRole
+): number[] {
+  return role
+    ? data.timestamps.map((_, i) => Number(data[role][column][i] ?? 0))
+    : sumRoles(data, column);
+}
+
+/**
+ * Returns the UTC day with the largest value of a column, of one role or of
+ * both roles together. Hourly periods are added into days. Returns undefined
+ * when all the values are 0.
+ */
+export function getPeakDay(
+  data: AddressTimeseries,
+  column: SummableColumn,
+  role?: AddressRole
+): { day: Date; value: number } | undefined {
+  const days = new Map<number, number>();
+
+  getColumnValues(data, column, role).forEach((value, i) => {
+    const timestamp = data.timestamps[i];
+
+    if (!timestamp) {
+      return;
+    }
+
+    const day = new Date(timestamp);
+
+    day.setUTCHours(0, 0, 0, 0);
+    days.set(day.getTime(), (days.get(day.getTime()) ?? 0) + value);
+  });
+
+  let peak: { day: Date; value: number } | undefined;
+
+  days.forEach((value, time) => {
+    if (value > 0 && (!peak || value > peak.value)) {
+      peak = { day: new Date(time), value };
+    }
+  });
+
+  return peak;
+}
+
+/**
+ * Returns the mean of a column for each day, of one role or of both roles
+ * together. The charts show the same mean as a line. An hourly mean is
+ * multiplied by 24.
+ */
+export function getDailyMean(
+  data: AddressTimeseries,
+  column: SummableColumn,
+  role?: AddressRole
+): number | undefined {
+  const mean = getClosedPeriodsMean(getColumnValues(data, column, role));
+
+  return mean !== undefined && data.granularity === "hour" ? mean * 24 : mean;
 }
