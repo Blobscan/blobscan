@@ -22,6 +22,8 @@ export type ChartSeries = {
   smooth?: boolean | number;
   z?: number;
   datasetIndex?: number;
+  /** The index of the y-axis of the series. 1 is the right y-axis. */
+  yAxisIndex?: number;
   encode?: { x?: string; y?: string };
   itemStyle?: { color?: unknown; [style: string]: unknown };
   areaStyle?: Record<string, unknown>;
@@ -95,7 +97,7 @@ export function getMetricColumn(column: string) {
 
 type ColumnSource = Record<string, unknown[]> & { timestamp: unknown[] };
 
-function isColumnSource(source: unknown): source is ColumnSource {
+export function isColumnSource(source: unknown): source is ColumnSource {
   return (
     typeof source === "object" &&
     source !== null &&
@@ -217,6 +219,24 @@ export function getSeriesMetricValue(
 }
 
 /**
+ * Returns the value of a column of the first dataset at a data index, or
+ * undefined when the dataset has no such column.
+ */
+export function getDatasetColumnValue(
+  datasets: DatasetComponentOption | DatasetComponentOption[] | undefined,
+  column: string,
+  dataIndex: number
+) {
+  const dataset = Array.isArray(datasets) ? datasets[0] : datasets;
+
+  if (!isColumnSource(dataset?.source)) {
+    return;
+  }
+
+  return dataset.source[column]?.[dataIndex];
+}
+
+/**
  * Returns true when a series has a value to draw for the current period. A
  * bar with a zero has no height, so it has no value to draw. A line with a
  * zero has a point to draw.
@@ -269,6 +289,10 @@ export function createCurrentPeriodSeries(
   const currentPeriodSeriesBase = {
     name: series.name,
     datasetIndex: series.datasetIndex,
+    // The current period values use the y-axis of the series.
+    ...(series.yAxisIndex !== undefined
+      ? { yAxisIndex: series.yAxisIndex }
+      : {}),
     emphasis: series.emphasis,
     tooltip: { show: false },
   };
