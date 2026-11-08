@@ -1,5 +1,13 @@
 # @blobscan/chains
 
+## 0.6.0
+
+### Minor Changes
+
+- [#1078](https://github.com/Blobscan/blobscan/pull/1078) [`4c6d710`](https://github.com/Blobscan/blobscan/commit/4c6d7107e62a738467af716c342d1d0e1300291a) Thanks [@PJColombo](https://github.com/PJColombo)! - Added `secondsPerSlot` and `getSlotTimestamp()` to `Chain`. Gnosis uses 5 seconds for each slot, and the other chains use 12 seconds.
+
+  Corrected the fork activation data that did not agree with the slot clock: the Sepolia BPO2 activation slot (8,822,784), the mainnet Dencun activation date, and the Hoodi Dencun activation date.
+
 ## 0.5.0
 
 ### Minor Changes
