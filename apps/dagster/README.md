@@ -131,6 +131,47 @@ the partition range, and launch the backfill. For example, a fix to
 `aggregate_tx_hourly.sql` means backfilling `hourly_metrics` and all rollup
 levels for the affected dates.
 
+### Reprocessing after a rollup change
+
+The hourly SQL reads `address.rollup` when it runs, and the metrics tables
+store the rollup of each row. When the rollup of an existing address changes,
+the metrics that were already aggregated keep the old attribution (usually
+`other`) until they are aggregated again. This happens after a migration that
+labels a new batcher, and also when the indexer runs with a new rollup
+registry: its address upsert overwrites `address.rollup` with the rollup of the
+registry.
+
+Nothing detects these changes. After one of them, launch the backfill by hand:
+
+1. Find the first hour in which the changed addresses sent a transaction. The
+   query reads the `transaction` table, not
+   `address.first_block_number_as_sender`, which a reorg can set to `NULL`:
+
+   ```sql
+   SELECT date_trunc('hour', MIN(first_tx)) AS backfill_start
+   FROM (
+     SELECT (SELECT MIN(block_timestamp) FROM transaction WHERE from_id = a) AS first_tx
+     FROM unnest(ARRAY['0x...', '0x...']) AS a
+   ) s;
+   ```
+
+   A `NULL` result means that the addresses have sent no transactions, and no
+   backfill is needed. A start before `DAGSTER_METRICS_START_DATE` means the
+   first partition.
+2. Launch the backfill from the UI, as in [Initial backfill](#initial-backfill):
+   **Assets** → select `hourly_metrics`, `daily_metrics`, `weekly_metrics`,
+   `monthly_metrics`, `yearly_metrics` and `all_time_metrics` →
+   **Materialize selected**. Select the partitions from the one that contains
+   `backfill_start` to the latest one, and click **Launch backfill**.
+3. If the dialog doesn't accept a range for all the levels at once, launch one
+   backfill per level, in order, each one after the previous one is done:
+   `hourly_metrics`, then `daily_metrics`, then `weekly_metrics` and
+   `monthly_metrics`, then `yearly_metrics`. `all_time_metrics_schedule`
+   updates `all_time_metrics` afterwards.
+
+One backfill can cover several changes: start it at the earliest
+`backfill_start`.
+
 ### Alerts
 
 - `metrics_run_failure_alert`: any failed run.
