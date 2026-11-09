@@ -60,9 +60,11 @@ jobs:
       - name: Set Github ENV variables
         shell: bash
         run: |
-          echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')" >> $GITHUB_ENV
-          echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
-          echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$(git describe --tags)" >> $GITHUB_ENV
+          {
+            echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')"
+            echo "GIT_COMMIT=$(git rev-parse HEAD)"
+            echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$(git describe --tags)"
+          } >> "$GITHUB_ENV"
 
       - name: Build (smoke, api)
         uses: docker/build-push-action@v7.4.0
@@ -206,9 +208,11 @@ jobs:
       - name: Set Github ENV variables
         shell: bash
         run: |
-          echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')" >> $GITHUB_ENV
-          echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
-          echo "SHORT_SHA=$(git rev-parse --short=7 HEAD)" >> $GITHUB_ENV
+          {
+            echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')"
+            echo "GIT_COMMIT=$(git rev-parse HEAD)"
+            echo "SHORT_SHA=$(git rev-parse --short=7 HEAD)"
+          } >> "$GITHUB_ENV"
 
       # sha-<commit> never moves, so a deployment can pin it and only update
       # when told to. :development moves on every merge to main.
