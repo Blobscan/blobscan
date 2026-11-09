@@ -35,10 +35,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
         with:
           driver-opts: network=host
 
@@ -50,7 +50,7 @@ jobs:
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -63,7 +63,7 @@ jobs:
           echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$(git describe --tags)" >> $GITHUB_ENV
 
       - name: Build (smoke, api)
-        uses: docker/build-push-action@v6.5.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: .
           push: false
@@ -90,7 +90,7 @@ jobs:
           database-url: postgresql://blobscan:s3cr3t@127.0.0.1:5432/blobscan_smoke_api
 
       - name: Build (smoke, web)
-        uses: docker/build-push-action@v6.5.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: .
           push: false
@@ -135,7 +135,7 @@ jobs:
           exit-code: "1"
 
       - name: Build and push (api)
-        uses: docker/build-push-action@v6.5.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: .
           push: true
@@ -168,7 +168,7 @@ jobs:
           exit-code: "1"
 
       - name: Build and push (web)
-        uses: docker/build-push-action@v6.5.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: .
           push: true
@@ -188,15 +188,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Login to DockerHub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -211,7 +211,7 @@ jobs:
       # sha-<commit> never moves, so a deployment can pin it and only update
       # when told to. :development moves on every merge to main.
       - name: Build (scan, dagster)
-        uses: docker/build-push-action@v6.5.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: ./apps/dagster
           push: false
@@ -237,7 +237,7 @@ jobs:
           exit-code: "1"
 
       - name: Build and push (dagster)
-        uses: docker/build-push-action@v6.5.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: ./apps/dagster
           push: true

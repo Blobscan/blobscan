@@ -4,10 +4,12 @@ runs:
   using: "composite"
   steps:
     - name: "Create .env file with db connection"
-      uses: "SpicyPizza/create-envfile@v2.0"
-      with:
-        envkey_DATABASE_URL: "postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public"
-        envkey_DIRECT_URL: "postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public"
+      shell: bash
+      run: |
+        cat > "$GITHUB_WORKSPACE/.env" <<'EOF'
+        DATABASE_URL=postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public
+        DIRECT_URL=postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public
+        EOF
     - name: "Apply Prisma migrations to db"
       shell: bash
       working-directory: packages/db

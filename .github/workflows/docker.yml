@@ -31,10 +31,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
         with:
           driver-opts: network=host
 
@@ -46,7 +46,7 @@ jobs:
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -60,7 +60,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker (API)
         id: meta_api
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: |
             blossomlabs/blobscan-api
@@ -70,7 +70,7 @@ jobs:
             type=semver,pattern={{major}}
 
       - name: Build (scan, api)
-        uses: docker/build-push-action@v6.5.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: .
           push: false
@@ -99,7 +99,7 @@ jobs:
           exit-code: "1"
 
       - name: Build and push (api)
-        uses: docker/build-push-action@v6.5.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: .
           push: true
@@ -115,7 +115,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker (Web)
         id: meta_web
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: |
             blossomlabs/blobscan-web
@@ -125,7 +125,7 @@ jobs:
             type=semver,pattern={{major}}
 
       - name: Build (scan, web)
-        uses: docker/build-push-action@v6.5.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: .
           push: false
@@ -154,7 +154,7 @@ jobs:
           exit-code: "1"
 
       - name: Build and push (web)
-        uses: docker/build-push-action@v6.5.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: .
           push: true
@@ -173,13 +173,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Login to DockerHub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -192,7 +192,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker (Dagster)
         id: meta_dagster
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: |
             blossomlabs/blobscan-dagster
@@ -202,7 +202,7 @@ jobs:
             type=semver,pattern={{major}}
 
       - name: Build (scan, dagster)
-        uses: docker/build-push-action@v6.5.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: ./apps/dagster
           push: false
@@ -228,7 +228,7 @@ jobs:
           exit-code: "1"
 
       - name: Build and push (dagster)
-        uses: docker/build-push-action@v6.5.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: ./apps/dagster
           push: true
