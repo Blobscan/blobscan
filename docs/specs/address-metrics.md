@@ -95,12 +95,12 @@ One more column has no prefix:
 ### Hourly retention
 
 - A cleanup schedule runs one time each day: `DELETE FROM address_hourly_metrics WHERE period_start < now() - interval '30 days'`.
-- Guard: if a partition of `address_hourly_metrics` is older than 30 days, the asset does nothing and logs a warning. This prevents a "backfill all" that the cleanup then deletes.
+- Guard: if a partition of `address_hourly_metrics` ends before the retention limit (now − 30 days), the asset does nothing and logs a warning. This prevents a "backfill all" that the cleanup then deletes. If a partition range starts before the limit and ends after it, the asset writes only the hours after the limit.
 
 ### Backfill
 
 - Daily: the full history, with `BackfillPolicy.multi_run(30)` (30 days for each run).
-- Hourly: the last 30 days only.
+- Hourly: the last 30 days only, with `BackfillPolicy.multi_run(24 × 7)` (7 days for each run).
 - The two backfills do not depend on each other and can run at the same time.
 - After the daily backfill, run the all-time asset one time.
 
@@ -108,73 +108,95 @@ One more column has no prefix:
 
 Add a new `address` router. Do not change `stats.*`.
 
+Both procedures take `{ address, timeFrame }`. The address is changed to lower case. The default time frame is `All`.
+
+### Granularity
+
+- Use the hourly tables for `1d` and `7d`. Use the daily tables for the other time frames.
+- A time frame has its closed periods and the current period. The values of the current period are partial.
+
 ### `address.getOverall({ address, timeFrame })`
 
 - For `All`: read the all-time row, then add the daily rows with `period_start > aggregated_until`. These are the current day, and a closed day that the all-time asset did not include yet.
-- For other time frames: sum the daily rows in the time frame.
-- Return the values for each role, the derived metrics, and the header values.
+- For other time frames: sum the rows in the time frame, from the table of the granularity.
+- Return:
+  - `sent` and `received`: the raw totals of each role. The web calculates the derived metrics.
+  - `selfTotalTransactions`.
+  - `category` and `rollup` of the address. They are null when the address is not in the database.
+  - `network`: the totals of the network-wide row (`category = NULL`, `rollup = NULL`) in the time frame. For `All`, they come from `all_time_metrics`.
+  - `allTime`: values that do not depend on the time frame:
+    - `totalTransactions`: `sent + received − self`, for `All`.
+    - `activeDays`: the number of daily rows of the address (either role).
+    - `longestStreak`: the largest number of consecutive active days.
+    - `longestGap`: the largest number of days with no transactions between two active days. It is 0 when the address has fewer than two active days.
+    - `firstTransaction` and `lastTransaction`.
+  - `updatedAt`: the last update of the rows.
 - The first and last transaction come from live index lookups on `transaction`, not from Dagster. Exclude forked transactions. The `[fromId, blockTimestamp, index]` and `[toId, blockTimestamp, index]` indexes support this.
 
-### `address.getTimeseries({ address, metrics, timeFrame })`
+### `address.getTimeseries({ address, timeFrame })`
 
-- Use the hourly table for `1d` and `7d`. Use the daily table for the other time frames.
-- Return the same shape as `stats.getTimeseries`: `{ granularity, timestamps, series, currentPeriod }`.
-- Return one series for sent, one for received, and the global series. The share and the timing ratio need the global series.
-- For `All`, the first timestamp is the first transaction of the address, not the Dencun date.
-- Fill the gaps with zeros, the same as `getTimeseries`.
+- Return `{ granularity, timestamps, sent, received, selfTotalTransactions, selfTotalBlobs, network, updatedAt }`.
+  - `sent` and `received` have one array for each role metric.
+  - `network` has the arrays of the network-wide row: `totalBlobs`, `totalBlobBaseFee` and `totalBlobGasUsed`. The share and the timing ratio need them.
+- The last timestamp is the current period. Its values are partial.
+- For `All`, the first timestamp is the first period of the address, not the Dencun date.
+- Fill the gaps with zeros, the same as `stats.getTimeseries`.
 
 ### Cache
 
-- Cache with a short TTL, keyed by address and input.
+- Cache each procedure for 60 seconds, keyed by address and input.
 
 ### `tx.getAll`
 
 - Add an `address` filter that matches `from` OR `to`.
-- Each returned transaction shows if it is sent, received or both.
+- The web compares the address with `from` and `to` to find the role of each transaction.
 
 ## Metrics
 
 ### Derived metrics
 
-The API or the web calculates these values from the columns of one role.
+The web calculates these values. Most cards use the main role: the shown role with more transactions.
 
 | Metric | Formula |
 |---|---|
 | Avg blobs per tx | `total_blobs ÷ total_transactions` |
-| Avg fee per tx (ETH) | `total_blob_base_fee ÷ total_transactions` |
-| Avg fee per tx (USD) | `total_blob_base_fee_usd ÷ total_usd_priced_transactions` |
+| Avg blob fee per tx (ETH) | `total_blob_base_fee ÷ total_transactions` |
+| Avg blob fee per tx (USD) | `total_blob_base_fee_usd ÷ total_usd_priced_transactions` |
 | Blob utilization | `total_blob_usage_size ÷ (total_blobs × 131072)` |
-| Cost per useful KB | `total_blob_base_fee ÷ (total_blob_usage_size ÷ 1024)`, and the same in USD |
+| Cost per KiB of blob data | `total_blob_base_fee ÷ (total_blob_usage_size ÷ 1024)`, and the same in USD |
 | Unused blob space | `total_blobs × 131072 − total_blob_usage_size` |
-| Cost of the unused space | `total_blob_base_fee × (1 − utilization)` |
+| Wasted blob fees | `total_blob_base_fee × (1 − utilization)`: the blob fees of the unused space |
 | Calldata savings | `total_blob_as_calldata_fee − total_blob_base_fee`, and the same in USD |
-| Avg txs per day | The mean of the daily txs of the time frame, sent and received together. Days with no txs count as 0. The current day is not complete, so it is not in the mean, except when it is the only day. For an hourly time frame: the mean of the hourly txs × 24. |
-| Avg blobs per day | The same as avg txs per day, with the blobs |
-| Active age | now − the first transaction of the address |
-| Last active | now − the last transaction of the address |
-| Active days | The number of daily rows with transactions in the role |
+| Avg data per tx | `total_blob_usage_size ÷ total_transactions` |
+| Avg daily txs | The mean of the daily txs of the time frame, sent and received together. Days with no txs count as 0. The current day is not complete, so it is not in the mean, except when it is the only day. For an hourly time frame: the mean of the hourly txs × 24. |
+| Avg daily blobs | The same as avg daily txs, with the blobs |
+| Avg daily data | The same as avg daily txs, with the blob usage size of the main role |
+| Max daily txs, blobs, data | The UTC day with the largest value in the time frame, and its date. Hourly periods are added into days. Txs and blobs use the two roles together. Data uses the main role. |
+| Age | Full days from the first transaction of the address to now |
+| Time active | `allTime.activeDays` |
 
-### Metrics with the global row
+### Metrics with the network-wide row
 
-The global row is the row of `hourly_metrics` or `daily_metrics` with `category = NULL` and `rollup = NULL`, for the same period.
+The network-wide row is the row of `hourly_metrics`, `daily_metrics` or `all_time_metrics` with `category = NULL` and `rollup = NULL`.
 
 | Metric | Formula |
 |---|---|
-| Share of network blobs | `address total_blobs ÷ global totalBlobs` |
-| Timing ratio (sent only) | `(address blob base fee ÷ address blob gas) ÷ (global totalBlobBaseFee ÷ global totalBlobGasUsed)` |
+| Share of network blobs | `address total_blobs ÷ network totalBlobs` |
+| Avg blob gas price paid (sent only) | `address blob base fee ÷ address blob gas` |
+| Timing ratio (sent only) | `avg blob gas price paid ÷ (network totalBlobBaseFee ÷ network totalBlobGasUsed)` |
 
 - Both sides of the timing ratio are weighted by gas. Do not use `avgBlobGasPrice`, because it is an average for each block.
 - A ratio below 1 means that the address posts when blob gas costs less than the network average.
 
 ## Web
 
-### Header
+### Overview
 
-The header is always visible and shows all-time values. The values use the two roles together. For example, the first transaction is the first transaction where the address is `from` or `to`, and active days counts the days with a transaction in either role.
+The overview shows all-time values:
 
-- the address and the rollup label (if the address has one)
-- the first transaction (link and date) and the last transaction (link and date)
-- active age, last active and active days
+- the address, with an identicon and a copy button
+- the category and the rollup label (if the address has them)
+- **Blob Txs**: the first and the last transaction, each as a link with a relative time. The full date shows on hover. On narrow screens, the last transaction goes under the first one.
 
 ### Tabs
 
@@ -183,15 +205,17 @@ The header is always visible and shows all-time values. The values use the two r
 ### Transactions tab
 
 - The list shows sent and received transactions together, with a "Sent" or "Received" mark on each transaction. It uses the new `address` filter of `tx.getAll`.
-- The count in the title is `sent_total_transactions + received_total_transactions − self_total_transactions` from `address.getOverall` for `All`. Thus each transaction counts one time, also a self-send.
-- This fixes the current bug: the page calls `tx.getAll` without `count: true`, so the count is empty.
+- The count in the title is `allTime.totalTransactions`. Thus each transaction counts one time, also a self-send.
+- This fixes the earlier bug: the page called `tx.getAll` without `count: true`, so the count was empty.
 
 ### Analytics tab
 
-**Control bar**
+The Analytics tab has six sections. The section is in the URL as `?section=`. The default section is Activity, and the URL does not show it.
+
+**Control bar** (in the chart card of each section, except Activity)
 
 - Time frame. The default is `All`.
-- ETH/USD toggle. It is hidden on testnets, the same as on the stat pages.
+- ETH/USD toggle, in the Fees section only. It is hidden on testnets, the same as on the stat pages.
 - There is no role toggle.
 
 **Roles shown on the page**
@@ -199,53 +223,55 @@ The header is always visible and shows all-time values. The values use the two r
 - In the selected time frame, the received role shows only if `received_total_transactions > self_total_transactions`. Thus a self-sender shows as a sender only.
 - The sent role shows if `sent_total_transactions > 0`.
 
-**Metric cards (8)**
+**Sections**
 
-Each card shows the value of the main role, which is the shown role with more transactions. If the other role is shown, the card also shows its value on a small second line.
-
-| # | Card | Small values on the card |
+| Section | Cards | Charts |
 |---|---|---|
-| 1 | Total txs | Cadence |
-| 2 | Total blobs | Avg blobs per tx |
-| 3 | Total blob fees (ETH/USD) | Calldata savings |
-| 4 | Avg fee per tx | |
-| 5 | Cost per useful KB | |
-| 6 | Blob utilization | Unused space and its cost |
-| 7 | Share of network blobs | |
-| 8 | Timing ratio (sent). If the address has no sent transactions: calldata savings. | |
+| Activity | Age, Time Active, Longest Streak, Longest Gap (all-time, in days) | A calendar heatmap of the daily txs, one row for each year. An outline marks the longest streak. A color bar filters the days by the number of txs. |
+| Transactions | Total Blob Txs (one card for each shown role), Avg. Daily Txs, Max Daily Txs | Blob Transactions |
+| Blobs | Total Blobs (one card for each shown role, with the blob gas used), Avg. Blobs per Tx, Avg. Daily Blobs, Max Daily Blobs | Blobs |
+| Blob Usage | Blob Space (full width: the utilization, and a bar with the used and the unused space), Avg. Data per Tx, Avg. Daily Data, Max Daily Data | Blob Size vs Usage |
+| Fees | Total Blob Fees, Avg. Blob Fee per Tx, Cost per KiB of Blob Data, Calldata Savings, Wasted Blob Fees | Blob Fees, Cost per KiB of Blob Data |
+| Network | Share of Network Blobs, Avg. Blob Gas Price Paid (only with sent txs, with the network price and the difference) | Share of Network Blobs (%), Timing Ratio vs Network |
 
-**Charts (6, in a grid with 2 columns)**
+- The fee cards show ETH, with the USD value under it when the network has an ETH price.
+- The Network cards use all-time data. The time frame changes only the Network charts.
+- Each card and each chart has a help text.
 
-1. Txs
-2. Blobs
-3. Blob fees (ETH/USD)
-4. Cost per useful KB (ETH/USD)
-5. Blob size vs usage size
-6. Timing ratio vs network, sent only, with a reference line at 1.0
+**Charts**
 
-- Each chart has a **Sent** series and a **Received** series, side by side. Do not stack them.
+- **Blob Transactions** and **Blobs**: one bar for each period, which stacks the sent and the received values, and a dashed line with the mean for each period. The tooltip shows the total. The total of the txs counts a self-send one time.
+- **Blobs** also has a line with the avg blobs per tx, on a second y-axis on the right.
+- **Blob Size vs Usage**: the main role only, because the sender fills the blobs. The bars stack the data and the unused space. A line on the right y-axis shows the utilization (%).
+- **Blob Fees**: a sent bar and a received bar, side by side.
+- **Cost per KiB of Blob Data** and **Share of Network Blobs (%)**: one line for each role.
+- **Timing Ratio vs Network**: sent only, with a reference line at 1.0.
 - A series shows only if its role shows (see "Roles shown on the page").
-- Use the current `TimeseriesChartBase` and `transformToDatasets`.
+- The charts use `ChartBase`. The legend is at the bottom.
 - Always show the cards and the charts, also for an address with little activity.
+
+### Known limitations
+
+- For `All`, the address totals include the current day, but `all_time_metrics` has closed days only. Thus the share of network blobs for `All` compares slightly different periods.
 
 ## Tests
 
-- Add an address mixin to `apps/dagster/tests/test_assets.py`. Calculate the expected rows in Python from `db-fixtures.json`, the same as the current mixins.
+- The Dagster tests are in `apps/dagster/tests/test_address_assets.py` and `test_address_automation.py`. They calculate the expected rows in Python from `db-fixtures.json`, the same as the current tests.
 - Test cases:
   - all columns, for each role, at the hourly, daily and all-time levels
-  - reorg: a forked transaction is not counted, and a re-run removes stale rows
-  - no USD price for a minute
+  - reorg: a forked transaction is not counted
   - self-send: the transaction counts in both roles and in `self_total_transactions`
   - the hourly guard: a partition older than 30 days does nothing
   - the 30-day cleanup
   - all-time: closed days only, and `aggregated_until`
+  - the automation conditions of the address assets
 - Add to the fixtures:
   - an address that only receives
   - an address that both sends and receives
   - a self-send
   - a self-sender (an address that sends only to itself)
-- Add web or API tests for the title count (`sent + received − self`) and for the rule that hides the received role of a self-sender.
-- Add API tests for `address.getOverall` (`All` and other time frames, including the gap after `aggregated_until`) and for the `address` filter of `tx.getAll`.
+- Web tests: the role rule that hides the received role of a self-sender, the derived metrics, the daily means, the peak day, the day count of the cards, and the chart axes and tooltip totals.
+- API tests in `packages/api/test/address/address.test.ts`: `address.getOverall` (`All` and other time frames, including the gap after `aggregated_until`), the longest streak and gap, `address.getTimeseries`, and the `address` filter of `tx.getAll`.
 
 ## Out of scope
 
@@ -276,7 +302,5 @@ FROM transaction;
 ## Delivery
 
 - Start from `origin/main`.
-- PR 1: the Prisma migration and the Dagster assets, schedules and tests.
-- PR 2: the `address` router and the `tx.getAll` filter.
-- PR 3: the web page.
+- One PR has the Prisma migration, the Dagster assets, the `address` router, the `tx.getAll` filter and the web page.
 - Changesets are `minor`.

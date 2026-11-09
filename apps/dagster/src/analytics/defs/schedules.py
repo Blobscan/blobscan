@@ -70,7 +70,8 @@ all_time_metrics_schedule = dg.ScheduleDefinition(
 
 
 # Deletes the address_hourly_metrics rows older than the retention (30 days).
-# Running by default: it only deletes rows that the asset no longer writes.
+# The schedule runs by default, because it only deletes rows that the asset
+# no longer writes.
 address_hourly_metrics_cleanup_schedule = dg.ScheduleDefinition(
     name="address_hourly_metrics_cleanup_schedule",
     cron_schedule="30 3 * * *",  # every day at 03:30 UTC
