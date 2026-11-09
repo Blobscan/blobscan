@@ -1,6 +1,8 @@
 name: Docker dev
 
 on:
+  # The branches filter also matches a fork pull request from a branch named main, so the jobs
+  # below must only accept push runs: they execute the checked-out commit with the secrets.
   workflow_run:
     workflows: ["CI"]
     branches: ["main"]
@@ -14,7 +16,7 @@ env:
 
 jobs:
   release_docker:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' }}
     name: Build docker images (API, Web)
     services:
       postgres:
@@ -127,7 +129,7 @@ jobs:
           push: "true"
 
   release_dagster_docker:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' }}
     name: Build docker image (Dagster)
     runs-on: ubuntu-latest
     steps:
