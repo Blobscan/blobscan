@@ -141,36 +141,41 @@ labels a new batcher, and also when the indexer runs with a new rollup
 registry: its address upsert overwrites `address.rollup` with the rollup of the
 registry.
 
-Nothing detects these changes. After one of them, launch the backfill by hand:
+Nothing detects these changes. After one of them, run
+`analytics.backfill_rollup_change` when the new labels are in the database. It
+finds the first transaction of the changed addresses and selects, for each
+level, the partitions from that point to the latest one.
 
-1. Find the first hour in which the changed addresses sent a transaction. The
-   query reads the `transaction` table, not
-   `address.first_block_number_as_sender`, which a reorg can set to `NULL`:
+Run it first without `--launch`. A dry run only reads the database and prints
+the addresses, their current rollup and the partitions:
 
-   ```sql
-   SELECT date_trunc('hour', MIN(first_tx)) AS backfill_start
-   FROM (
-     SELECT (SELECT MIN(block_timestamp) FROM transaction WHERE from_id = a) AS first_tx
-     FROM unnest(ARRAY['0x...', '0x...']) AS a
-   ) s;
-   ```
+```bash
+python -m analytics.backfill_rollup_change --address 0x... --address 0x...
+```
 
-   A `NULL` result means that the addresses have sent no transactions, and no
-   backfill is needed. A start before `DAGSTER_METRICS_START_DATE` means the
-   first partition.
-2. Launch the backfill from the UI, as in [Initial backfill](#initial-backfill):
-   **Assets** → select `hourly_metrics`, `daily_metrics`, `weekly_metrics`,
-   `monthly_metrics`, `yearly_metrics` and `all_time_metrics` →
-   **Materialize selected**. Select the partitions from the one that contains
-   `backfill_start` to the latest one, and click **Launch backfill**.
-3. If the dialog doesn't accept a range for all the levels at once, launch one
-   backfill per level, in order, each one after the previous one is done:
-   `hourly_metrics`, then `daily_metrics`, then `weekly_metrics` and
-   `monthly_metrics`, then `yearly_metrics`. `all_time_metrics_schedule`
-   updates `all_time_metrics` afterwards.
+Then add `--launch` to start one backfill of all the levels, and open the link
+that it prints to follow the progress:
 
-One backfill can cover several changes: start it at the earliest
-`backfill_start`.
+```bash
+python -m analytics.backfill_rollup_change --address 0x... --address 0x... --launch
+```
+
+- Run it in the code location container, or from `apps/dagster` with
+  `PYTHONPATH=src` and the `DATABASE_URL` and the `CHAIN_ID` or
+  `DAGSTER_METRICS_START_DATE` of the deployment. The partitions depend on
+  these values.
+- Set the GraphQL endpoint of the webserver with `--graphql-url` or
+  `DAGSTER_GRAPHQL_URL` (default: `http://localhost:3003/graphql`). The
+  open-source webserver has no authentication, so reach it from inside the
+  network or with a port-forward.
+- `--migration <path>` reads the addresses of a SQL file instead, ignoring line
+  comments. The container has no migration files, so use it from a checkout.
+- `--launch` stops if an address has no rollup, because the migration may not
+  have run yet and the backfill would keep the old attribution. Pass
+  `--allow-unlabelled` when removing a rollup on purpose.
+- The first transaction comes from the `transaction` table, not from
+  `address.first_block_number_as_sender`, which a reorg can set to `NULL`.
+- One backfill can cover several changes: pass all the addresses.
 
 ### Alerts
 
