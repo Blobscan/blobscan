@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/db",
-  "version": "0.34.0",
+  "version": "0.34.1",
   "private": true,
   "main": "./index.ts",
   "types": "./index.ts",
