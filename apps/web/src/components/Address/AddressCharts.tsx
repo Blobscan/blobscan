@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { useMemo } from "react";
-import type { SeriesOption } from "echarts";
+import type { LineSeriesOption, SeriesOption } from "echarts";
 import { useTheme } from "next-themes";
 
 import { ChartBase } from "~/components/Charts/ChartBase";
@@ -185,20 +185,38 @@ function roleBars(column: string) {
     }));
 }
 
+/**
+ * Returns a line that shows its points. A period with no data breaks the
+ * line, thus a single active period shows as a point only.
+ */
+function pointLine(
+  name: string,
+  column: string,
+  color: string,
+  opts: LineSeriesOption = {}
+): LineSeriesOption {
+  return {
+    type: "line",
+    name,
+    encode: { x: "timestamp", y: column },
+    itemStyle: { color },
+    areaStyle: undefined,
+    symbolSize: 4,
+    smooth: false,
+    connectNulls: false,
+    ...opts,
+  };
+}
+
 function roleLines(column: string) {
   return (roles: AddressRole[], theme: ThemeMode): SeriesOption[] =>
-    roles.map((role) => ({
-      type: "line",
-      name: ROLE_LABELS[role],
-      encode: { x: "timestamp", y: `${role}${column}` },
-      itemStyle: { color: ROLE_COLORS[role].main[theme] },
-      areaStyle: undefined,
-      // Show the points: a period with no data breaks the line, so a
-      // single active period has no line.
-      symbolSize: 4,
-      smooth: false,
-      connectNulls: false,
-    }));
+    roles.map((role) =>
+      pointLine(
+        ROLE_LABELS[role],
+        `${role}${column}`,
+        ROLE_COLORS[role].main[theme]
+      )
+    );
 }
 
 const PERIOD_LABELS: Record<AddressTimeseries["granularity"], string> = {
@@ -291,18 +309,9 @@ function getChartSpecs(unit: FeeUnit): ChartSpec[] {
           theme,
           granularity
         ),
-        {
-          type: "line",
-          name: "Avg. Blobs per Tx",
+        pointLine("Avg. Blobs per Tx", "blobsPerTx", LINE_ACCENT_COLOR[theme], {
           yAxisIndex: 1,
-          encode: { x: "timestamp", y: "blobsPerTx" },
-          itemStyle: { color: LINE_ACCENT_COLOR[theme] },
-          areaStyle: undefined,
-          // Show the points: a period with no txs breaks the line.
-          symbolSize: 4,
-          smooth: false,
-          connectNulls: false,
-        },
+        }),
       ],
       tooltipOpts: {
         displayTotal: true,
@@ -358,18 +367,12 @@ function getChartSpecs(unit: FeeUnit): ChartSpec[] {
           encode: { x: "timestamp", y: `${role}Unused` },
           itemStyle: { color: ROLE_COLORS[role].soft[theme] },
         },
-        {
-          type: "line",
-          name: "Utilization (%)",
-          yAxisIndex: 1,
-          encode: { x: "timestamp", y: `${role}Utilization` },
-          itemStyle: { color: LINE_ACCENT_COLOR[theme] },
-          areaStyle: undefined,
-          // Show the points: a period with no blobs breaks the line.
-          symbolSize: 4,
-          smooth: false,
-          connectNulls: false,
-        },
+        pointLine(
+          "Utilization (%)",
+          `${role}Utilization`,
+          LINE_ACCENT_COLOR[theme],
+          { yAxisIndex: 1 }
+        ),
       ],
       // The total is the blob space: the data and the unused space.
       tooltipOpts: {
@@ -396,27 +399,23 @@ function getChartSpecs(unit: FeeUnit): ChartSpec[] {
       series: (roles, theme) =>
         roles.includes("sent")
           ? [
-              {
-                type: "line",
-                name: ROLE_LABELS.sent,
-                encode: { x: "timestamp", y: "sentTimingRatio" },
-                itemStyle: { color: ROLE_COLORS.sent.main[theme] },
-                areaStyle: undefined,
-                // Show the points: a period with no data breaks the line, so a
-                // single active period has no line.
-                symbolSize: 4,
-                smooth: false,
-                markLine: {
-                  silent: true,
-                  symbol: "none",
-                  label: { formatter: "Network", position: "insideEndTop" },
-                  lineStyle: {
-                    color: NETWORK_LINE_COLOR[theme],
-                    type: "dashed",
+              pointLine(
+                ROLE_LABELS.sent,
+                "sentTimingRatio",
+                ROLE_COLORS.sent.main[theme],
+                {
+                  markLine: {
+                    silent: true,
+                    symbol: "none",
+                    label: { formatter: "Network", position: "insideEndTop" },
+                    lineStyle: {
+                      color: NETWORK_LINE_COLOR[theme],
+                      type: "dashed",
+                    },
+                    data: [{ yAxis: 1 }],
                   },
-                  data: [{ yAxis: 1 }],
-                },
-              },
+                }
+              ),
             ]
           : [],
     },
