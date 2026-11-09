@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { chains } from "@blobscan/chains";
 
@@ -11,18 +11,11 @@ describe("when getting the indexer lag", () => {
   const { activationSlot, activationDate } = mainnet.latestFork;
   const anchorMs = activationDate.getTime();
 
-  beforeEach(() => {
-    vi.useFakeTimers({ toFake: ["Date"] });
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
   it("should return undefined when there is no chain", () => {
     expect(
       getIndexerLag({
         lastUpperSyncedSlot: activationSlot,
+        measuredAt: anchorMs,
       })
     ).toBeUndefined();
   });
@@ -32,41 +25,59 @@ describe("when getting the indexer lag", () => {
       getIndexerLag({
         chain: mainnet,
         lastUpperSyncedSlot: null,
+        measuredAt: anchorMs,
       })
     ).toBeUndefined();
   });
 
   it("should not be out of sync when the lag is below the threshold", () => {
-    vi.setSystemTime(anchorMs + 4 * MS_PER_MINUTE);
-
     expect(
       getIndexerLag({
         chain: mainnet,
         lastUpperSyncedSlot: activationSlot,
+        measuredAt: anchorMs + 4 * MS_PER_MINUTE,
       })
     ).toEqual({ lagMs: 4 * MS_PER_MINUTE, isOutOfSync: false });
   });
 
   it("should be out of sync when the lag is above the threshold", () => {
-    vi.setSystemTime(anchorMs + 10 * MS_PER_MINUTE);
-
     expect(
       getIndexerLag({
         chain: mainnet,
         lastUpperSyncedSlot: activationSlot + 10,
+        measuredAt: anchorMs + 10 * MS_PER_MINUTE,
       })
     ).toEqual({ lagMs: 10 * MS_PER_MINUTE - 10 * 12_000, isOutOfSync: true });
   });
 
   it("should not return a negative lag when the slot is ahead of the clock", () => {
-    vi.setSystemTime(anchorMs);
-
     expect(
       getIndexerLag({
         chain: mainnet,
         lastUpperSyncedSlot: activationSlot + 100,
+        measuredAt: anchorMs,
       })
     ).toEqual({ lagMs: 0, isOutOfSync: false });
+  });
+
+  describe("when the current time is much later than the fetch time", () => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("should measure the lag at the fetch time", () => {
+      vi.useFakeTimers({ toFake: ["Date"] });
+      // For example, a tab that was in the background for an hour.
+      vi.setSystemTime(anchorMs + MS_PER_HOUR);
+
+      expect(
+        getIndexerLag({
+          chain: mainnet,
+          lastUpperSyncedSlot: activationSlot,
+          measuredAt: anchorMs + MS_PER_MINUTE,
+        })
+      ).toEqual({ lagMs: MS_PER_MINUTE, isOutOfSync: false });
+    });
   });
 });
 

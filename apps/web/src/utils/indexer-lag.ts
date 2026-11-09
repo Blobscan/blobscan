@@ -11,15 +11,22 @@ export type IndexerLag = {
 };
 
 /**
- * Calculates how far the last synced slot is behind the current time.
- * Returns undefined when the function cannot measure the lag.
+ * Calculates how far the last synced slot is behind the time at which the
+ * client got it (`measuredAt`, in ms). Returns undefined when the function
+ * cannot measure the lag.
+ *
+ * Do not use the current time as `measuredAt`. An old slot that the client
+ * has not refetched yet (for example, on a tab that was in the background)
+ * then gives a lag that is not real.
  */
 export function getIndexerLag({
   chain,
   lastUpperSyncedSlot,
+  measuredAt,
 }: {
   chain?: Chain;
   lastUpperSyncedSlot?: number | null;
+  measuredAt: number;
 }): IndexerLag | undefined {
   if (
     !chain ||
@@ -31,7 +38,7 @@ export function getIndexerLag({
 
   const lagMs = Math.max(
     0,
-    Date.now() - chain.getSlotTimestamp(lastUpperSyncedSlot).getTime()
+    measuredAt - chain.getSlotTimestamp(lastUpperSyncedSlot).getTime()
   );
 
   return {
