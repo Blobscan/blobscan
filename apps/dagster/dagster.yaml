@@ -16,7 +16,7 @@ run_coordinator:
 # in assets.py). Do not set `pools.default_limit` here: on Postgres Dagster
 # initializes each pool with an INSERT and, when the row already exists, falls
 # back to an UPDATE in the same (already aborted) transaction, which fails with
-# InFailedSqlTransaction. Set the limits explicitly instead (see README).
+# InFailedSqlTransaction. Set the limits explicitly instead (see docs/operations.md).
 concurrency:
   runs:
     max_concurrent_runs: 5
