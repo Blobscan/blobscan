@@ -1,0 +1,24 @@
+name: Actionlint
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+      - "tooling/github/**"
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    name: Lint workflows
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      # shellcheck and pyflakes are off so the check covers workflow structure only:
+      # expressions, action inputs, job dependencies and contexts.
+      - name: Run actionlint
+        uses: docker://rhysd/actionlint:1.7.12
+        with:
+          args: -color -shellcheck= -pyflakes=
