@@ -35,7 +35,7 @@ jobs:
     continue-on-error: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Trivy fs
         uses: ./tooling/github/trivy-scan
@@ -54,7 +54,7 @@ jobs:
         image: [blobscan-api, blobscan-web, blobscan-dagster]
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Trivy image
         uses: ./tooling/github/trivy-scan
