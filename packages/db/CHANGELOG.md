@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.34.1
+
+### Patch Changes
+
+- [#1080](https://github.com/Blobscan/blobscan/pull/1080) [`01486ec`](https://github.com/Blobscan/blobscan/commit/01486ecf4fb57b72a48a18fad5c23668d74e76c6) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added the rotated mainnet batchers of hashkey, paradex, taiko, unichain and zircuit
+
 ## 0.34.0
 
 ### Minor Changes
