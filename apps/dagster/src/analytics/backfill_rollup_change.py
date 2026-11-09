@@ -4,11 +4,13 @@ The metrics store the rollup of each row, so the periods that were already
 aggregated keep the old attribution until they are aggregated again. This
 command finds the first transaction of the changed addresses and prints the
 partitions to re-aggregate. With ``--launch``, it also starts one backfill of
-all the metrics levels from that point to the latest partition.
+all the metrics levels from that point to the latest partition. With
+``--wait``, it stays until the backfill ends and exits with 1 if it did not
+succeed.
 
 Usage:
     python -m analytics.backfill_rollup_change --migration <migration.sql>
-    python -m analytics.backfill_rollup_change --address 0x... --launch
+    python -m analytics.backfill_rollup_change --address 0x... --launch [--wait]
 """
 
 from __future__ import annotations
@@ -18,6 +20,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -57,12 +60,32 @@ ASSET_PARTITIONS: dict[str, dg.TimeWindowPartitionsDefinition | None] = {
 DEFAULT_GRAPHQL_URL = "http://localhost:3003/graphql"
 GRAPHQL_TIMEOUT_SECONDS = 60
 MAX_ERROR_BODY_LENGTH = 1000
+POLL_INTERVAL_SECONDS = 30
+# A backfill can take hours. Allow a short outage of the API or of a
+# port-forward, but not an API that stays down.
+MAX_CONSECUTIVE_POLL_ERRORS = 5
+
+SUCCESS_STATUS = "COMPLETED_SUCCESS"
+# COMPLETED is deprecated and does not say if the runs succeeded.
+FINAL_STATUSES = frozenset(
+    {SUCCESS_STATUS, "COMPLETED", "COMPLETED_FAILED", "FAILED", "CANCELED"},
+)
 
 LAUNCH_BACKFILL_MUTATION = """
 mutation LaunchRollupChangeBackfill($params: LaunchBackfillParams!) {
   launchPartitionBackfill(backfillParams: $params) {
     __typename
     ... on LaunchBackfillSuccess { backfillId }
+    ... on Error { message }
+  }
+}
+"""
+
+BACKFILL_STATUS_QUERY = """
+query RollupChangeBackfillStatus($backfillId: String!) {
+  partitionBackfillOrError(backfillId: $backfillId) {
+    __typename
+    ... on PartitionBackfill { status }
     ... on Error { message }
   }
 }
@@ -168,29 +191,19 @@ def build_partitions_by_assets(start: datetime) -> list[dict[str, Any]]:
     return selection
 
 
-def launch_backfill(
+def _call_graphql(
     graphql_url: str,
-    selection: list[dict[str, Any]],
-    addresses: Sequence[str],
-) -> str:
-    """Start the backfill and return its ID."""
+    query: str,
+    variables: dict[str, Any],
+) -> dict[str, Any]:
+    """Run a GraphQL operation and return its ``data``."""
     if not graphql_url.startswith(("http://", "https://")):
         msg = f"The Dagster GraphQL URL must use http or https: {graphql_url}"
         raise BackfillError(msg)
 
-    payload = {
-        "query": LAUNCH_BACKFILL_MUTATION,
-        "variables": {
-            "params": {
-                "partitionsByAssets": selection,
-                "title": "Rollup change",
-                "description": ", ".join(addresses),
-            },
-        },
-    }
     request = urllib.request.Request(  # noqa: S310 (the scheme is checked above)
         graphql_url,
-        data=json.dumps(payload).encode(),
+        data=json.dumps({"query": query, "variables": variables}).encode(),
         headers={"Content-Type": "application/json"},
         method="POST",
     )
@@ -213,12 +226,74 @@ def launch_backfill(
         msg = f"The Dagster API returned errors: {messages}"
         raise BackfillError(msg)
 
-    result = body["data"]["launchPartitionBackfill"]
+    return body["data"]
+
+
+def launch_backfill(
+    graphql_url: str,
+    selection: list[dict[str, Any]],
+    addresses: Sequence[str],
+) -> str:
+    """Start the backfill and return its ID."""
+    data = _call_graphql(
+        graphql_url,
+        LAUNCH_BACKFILL_MUTATION,
+        {
+            "params": {
+                "partitionsByAssets": selection,
+                "title": "Rollup change",
+                "description": ", ".join(addresses),
+            },
+        },
+    )
+    result = data["launchPartitionBackfill"]
     if result["__typename"] != "LaunchBackfillSuccess":
         detail = result.get("message", "no details")
         msg = f"The backfill was not launched ({result['__typename']}): {detail}"
         raise BackfillError(msg)
     return result["backfillId"]
+
+
+def fetch_backfill_status(graphql_url: str, backfill_id: str) -> str:
+    data = _call_graphql(
+        graphql_url,
+        BACKFILL_STATUS_QUERY,
+        {"backfillId": backfill_id},
+    )
+    result = data["partitionBackfillOrError"]
+    if result["__typename"] != "PartitionBackfill":
+        detail = result.get("message", "no details")
+        msg = f"Cannot read backfill {backfill_id} ({result['__typename']}): {detail}"
+        raise BackfillError(msg)
+    return result["status"]
+
+
+def wait_for_backfill(graphql_url: str, backfill_id: str) -> None:
+    """Return when the backfill succeeds, and raise if it ends in another way."""
+    last_status = None
+    poll_errors = 0
+    while True:
+        try:
+            status = fetch_backfill_status(graphql_url, backfill_id)
+        except BackfillError as error:
+            poll_errors += 1
+            if poll_errors >= MAX_CONSECUTIVE_POLL_ERRORS:
+                msg = (
+                    f"Stopped waiting, but backfill {backfill_id} may still be "
+                    f"running: {error}"
+                )
+                raise BackfillError(msg) from error
+        else:
+            poll_errors = 0
+            if status != last_status:
+                print(f"Backfill status: {status}", flush=True)
+                last_status = status
+            if status == SUCCESS_STATUS:
+                return
+            if status in FINAL_STATUSES:
+                msg = f"Backfill {backfill_id} ended with status {status}"
+                raise BackfillError(msg)
+        time.sleep(POLL_INTERVAL_SECONDS)
 
 
 def backfill_url(graphql_url: str, backfill_id: str) -> str:
@@ -278,6 +353,11 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         help="start the backfill",
     )
     parser.add_argument(
+        "--wait",
+        action="store_true",
+        help="with --launch, wait for the backfill and fail if it does not succeed",
+    )
+    parser.add_argument(
         "--allow-unlabelled",
         action="store_true",
         help="launch even if some addresses have no rollup",
@@ -287,7 +367,10 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         default=os.getenv("DAGSTER_GRAPHQL_URL", DEFAULT_GRAPHQL_URL),
         help="Dagster GraphQL endpoint (default: $DAGSTER_GRAPHQL_URL or %(default)s)",
     )
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if args.wait and not args.launch:
+        parser.error("--wait requires --launch")
+    return args
 
 
 def _collect_addresses(args: argparse.Namespace) -> list[str]:
@@ -343,7 +426,10 @@ def _run(args: argparse.Namespace) -> None:
 
     backfill_id = launch_backfill(args.graphql_url, selection, addresses)
     print(f"Launched backfill {backfill_id}")
-    print(f"Progress: {backfill_url(args.graphql_url, backfill_id)}")
+    print(f"Progress: {backfill_url(args.graphql_url, backfill_id)}", flush=True)
+
+    if args.wait:
+        wait_for_backfill(args.graphql_url, backfill_id)
 
 
 def main(argv: Sequence[str] | None = None) -> int:

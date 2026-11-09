@@ -190,6 +190,90 @@ class TestLaunchBackfill:
             cli.launch_backfill("file:///etc/passwd", SELECTION, [LABELLED])
 
 
+def _status(status: str) -> MagicMock:
+    return _graphql_response(
+        {
+            "data": {
+                "partitionBackfillOrError": {
+                    "__typename": "PartitionBackfill",
+                    "status": status,
+                },
+            },
+        },
+    )
+
+
+class TestWaitForBackfill:
+    @pytest.fixture(autouse=True)
+    def _no_sleep(self):
+        with patch("time.sleep"):
+            yield
+
+    def test_returns_when_the_backfill_succeeds(self, capsys):
+        responses = [
+            _status("REQUESTED"),
+            _status("REQUESTED"),
+            _status("COMPLETED_SUCCESS"),
+        ]
+        with patch("urllib.request.urlopen", side_effect=responses) as urlopen:
+            cli.wait_for_backfill(GRAPHQL_URL, "abc")
+
+        assert urlopen.call_count == len(responses)
+        out = capsys.readouterr().out
+        assert out.count("REQUESTED") == 1
+        assert "COMPLETED_SUCCESS" in out
+
+    @pytest.mark.parametrize(
+        "status",
+        ["COMPLETED_FAILED", "FAILED", "CANCELED", "COMPLETED"],
+    )
+    def test_raises_for_other_final_statuses(self, status):
+        with (
+            patch("urllib.request.urlopen", return_value=_status(status)),
+            pytest.raises(cli.BackfillError, match=status),
+        ):
+            cli.wait_for_backfill(GRAPHQL_URL, "abc")
+
+    def test_keeps_waiting_while_canceling(self):
+        responses = [_status("CANCELING"), _status("CANCELED")]
+        with (
+            patch("urllib.request.urlopen", side_effect=responses),
+            pytest.raises(cli.BackfillError, match="CANCELED"),
+        ):
+            cli.wait_for_backfill(GRAPHQL_URL, "abc")
+
+    def test_survives_a_short_api_outage(self):
+        outage = urllib.error.URLError("connection refused")
+        responses = [
+            *[outage] * (cli.MAX_CONSECUTIVE_POLL_ERRORS - 1),
+            _status("COMPLETED_SUCCESS"),
+        ]
+        with patch("urllib.request.urlopen", side_effect=responses):
+            cli.wait_for_backfill(GRAPHQL_URL, "abc")
+
+    def test_an_api_error_count_resets_after_a_success(self):
+        outage = urllib.error.URLError("connection refused")
+        almost_limit = [outage] * (cli.MAX_CONSECUTIVE_POLL_ERRORS - 1)
+        responses = [
+            *almost_limit,
+            _status("REQUESTED"),
+            *almost_limit,
+            _status("COMPLETED_SUCCESS"),
+        ]
+        with patch("urllib.request.urlopen", side_effect=responses):
+            cli.wait_for_backfill(GRAPHQL_URL, "abc")
+
+    def test_gives_up_when_the_api_stays_down(self):
+        outage = urllib.error.URLError("connection refused")
+        with (
+            patch("urllib.request.urlopen", side_effect=outage) as urlopen,
+            pytest.raises(cli.BackfillError, match="may still be running"),
+        ):
+            cli.wait_for_backfill(GRAPHQL_URL, "abc")
+
+        assert urlopen.call_count == cli.MAX_CONSECUTIVE_POLL_ERRORS
+
+
 @pytest.mark.parametrize("suffix", ["/graphql", "/graphql/"])
 def test_backfill_url(suffix):
     url = cli.backfill_url(f"http://dagster.test{suffix}", "abc")
@@ -260,6 +344,27 @@ class TestMain:
 
         assert exit_code == 0
         urlopen.assert_called_once()
+
+    def test_wait_fails_when_the_backfill_fails(self, capsys):
+        responses = [_success(), _status("COMPLETED_FAILED")]
+        with patch("urllib.request.urlopen", side_effect=responses):
+            exit_code = cli.main(
+                [
+                    "--address",
+                    LABELLED,
+                    "--launch",
+                    "--wait",
+                    "--graphql-url",
+                    GRAPHQL_URL,
+                ],
+            )
+
+        assert exit_code == 1
+        assert "COMPLETED_FAILED" in capsys.readouterr().err
+
+    def test_wait_requires_launch(self):
+        with pytest.raises(SystemExit):
+            cli.main(["--address", LABELLED, "--wait"])
 
     def test_requires_an_address(self, capsys):
         assert cli.main([]) == 1
