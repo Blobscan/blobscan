@@ -46,11 +46,9 @@ jobs:
 
       - name: Create version pull request
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
-          title: "chore: version packages"
-          commit: "chore: version packages"
-          version: pnpm changeset:version
-          publish: pnpm changeset:release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          pr-title: "chore: version packages"
+          commit-message: "chore: version packages"
+          version-script: pnpm changeset:version
+          publish-script: pnpm changeset:release
