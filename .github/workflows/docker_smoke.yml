@@ -17,6 +17,7 @@ on:
       - packages/db/**
       - apps/rest-api-server/**
       - apps/web/**
+      - tooling/github/docker-build/**
       - tooling/github/docker-smoke/**
       - .github/workflows/docker_smoke.yml
 
@@ -51,12 +52,9 @@ jobs:
         uses: docker/setup-buildx-action@v4
 
       - name: Build
-        uses: docker/build-push-action@v7.4.0
+        uses: ./tooling/github/docker-build
         with:
-          context: .
           target: ${{ matrix.target }}
-          load: true
-          push: false
           tags: blobscan-${{ matrix.target }}:smoke
           cache-from: type=gha,scope=smoke-${{ matrix.target }}
           cache-to: type=gha,mode=max,scope=smoke-${{ matrix.target }}
