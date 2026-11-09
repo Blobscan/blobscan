@@ -9,10 +9,6 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
-env:
-  DATABASE_URL: "postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public"
-  DIRECT_URL: "postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public"
-
 jobs:
   changesets:
     services:
@@ -33,10 +29,10 @@ jobs:
     name: Create pull request
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
         with:
           driver-opts: network=host
 
@@ -45,6 +41,8 @@ jobs:
 
       - name: Setup DB
         uses: ./tooling/github/setup-db
+        with:
+          export-env: "true"
 
       - name: Create version pull request
         id: changesets

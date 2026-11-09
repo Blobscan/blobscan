@@ -11,8 +11,6 @@ env:
   FORCE_COLOR: 3
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-  DATABASE_URL: postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public
-  DIRECT_URL: postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public
 
 jobs:
   release_docker:
@@ -35,10 +33,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
         with:
           driver-opts: network=host
 
@@ -47,10 +47,11 @@ jobs:
 
       - name: Setup DB
         uses: ./tooling/github/setup-db
+        with:
+          export-env: "true"
 
       - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -58,24 +59,16 @@ jobs:
       - name: Set Github ENV variables
         shell: bash
         run: |
-          echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')" >> $GITHUB_ENV
-          echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
-          echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$(git describe --tags)" >> $GITHUB_ENV
+          {
+            echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')"
+            echo "GIT_COMMIT=$(git rev-parse HEAD)"
+          } >> "$GITHUB_ENV"
 
       - name: Build (smoke, api)
-        uses: docker/build-push-action@v6.5.0
+        uses: ./tooling/github/docker-build
         with:
-          context: .
-          push: false
-          load: true
           target: api
           tags: blobscan-api:smoke
-          build-args: |
-            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
-            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}
-            DATABASE_URL=${{ env.DATABASE_URL }}
-            DIRECT_URL=${{ env.DIRECT_URL }}
 
       - name: Create an empty database (api)
         run: |
@@ -90,19 +83,10 @@ jobs:
           database-url: postgresql://blobscan:s3cr3t@127.0.0.1:5432/blobscan_smoke_api
 
       - name: Build (smoke, web)
-        uses: docker/build-push-action@v6.5.0
+        uses: ./tooling/github/docker-build
         with:
-          context: .
-          push: false
-          load: true
           target: web
           tags: blobscan-web:smoke
-          build-args: |
-            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
-            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}
-            DATABASE_URL=${{ env.DATABASE_URL }}
-            DIRECT_URL=${{ env.DIRECT_URL }}
 
       - name: Create an empty database (web)
         run: |
@@ -116,71 +100,31 @@ jobs:
           image: blobscan-web:smoke
           database-url: postgresql://blobscan:s3cr3t@127.0.0.1:5432/blobscan_smoke_web
 
-      # Vulnerability gate: scan the image that just passed the smoke test BEFORE it is pushed.
-      # --ignore-unfixed: only report CVEs that have a fix available. Accepted risks go in
-      # .trivyignore.
-      #
-      # TEMPORARY: the gate is not blocking (continue-on-error). Vulns are reported and the
-      # image is still pushed. Restore the gate by removing `continue-on-error`.
       - name: Trivy scan (api)
-        uses: aquasecurity/trivy-action@v0.36.0
-        continue-on-error: true
+        uses: ./tooling/github/trivy-scan
         with:
-          version: v0.76.1
-          image-ref: blobscan-api:smoke
-          scanners: vuln
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-          trivyignores: .trivyignore
-          exit-code: "1"
+          image: blobscan-api:smoke
 
       - name: Build and push (api)
-        uses: docker/build-push-action@v6.5.0
+        uses: ./tooling/github/docker-build
         with:
-          context: .
-          push: true
           target: api
           tags: |
             blossomlabs/blobscan-api:development
-          build-args: |
-            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
-            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}
-            DATABASE_URL=${{ env.DATABASE_URL }}
-            DIRECT_URL=${{ env.DIRECT_URL }}
+          push: "true"
 
-      # Vulnerability gate: scan the image that just passed the smoke test BEFORE it is pushed.
-      # --ignore-unfixed: only report CVEs that have a fix available. Accepted risks go in
-      # .trivyignore.
-      #
-      # TEMPORARY: the gate is not blocking (continue-on-error). Vulns are reported and the
-      # image is still pushed. Restore the gate by removing `continue-on-error`.
       - name: Trivy scan (web)
-        uses: aquasecurity/trivy-action@v0.36.0
-        continue-on-error: true
+        uses: ./tooling/github/trivy-scan
         with:
-          version: v0.76.1
-          image-ref: blobscan-web:smoke
-          scanners: vuln
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-          trivyignores: .trivyignore
-          exit-code: "1"
+          image: blobscan-web:smoke
 
       - name: Build and push (web)
-        uses: docker/build-push-action@v6.5.0
+        uses: ./tooling/github/docker-build
         with:
-          context: .
-          push: true
           target: web
           tags: |
             blossomlabs/blobscan-web:development
-          build-args: |
-            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
-            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}
-            DATABASE_URL=${{ env.DATABASE_URL }}
-            DIRECT_URL=${{ env.DIRECT_URL }}
+          push: "true"
 
   release_dagster_docker:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
@@ -188,15 +132,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Login to DockerHub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -204,14 +148,16 @@ jobs:
       - name: Set Github ENV variables
         shell: bash
         run: |
-          echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')" >> $GITHUB_ENV
-          echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
-          echo "SHORT_SHA=$(git rev-parse --short=7 HEAD)" >> $GITHUB_ENV
+          {
+            echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')"
+            echo "GIT_COMMIT=$(git rev-parse HEAD)"
+            echo "SHORT_SHA=$(git rev-parse --short=7 HEAD)"
+          } >> "$GITHUB_ENV"
 
       # sha-<commit> never moves, so a deployment can pin it and only update
       # when told to. :development moves on every merge to main.
       - name: Build (scan, dagster)
-        uses: docker/build-push-action@v6.5.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: ./apps/dagster
           push: false
@@ -222,22 +168,13 @@ jobs:
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
 
-      # Vulnerability gate: scan the image BEFORE it is pushed.
-      # TEMPORARY: not blocking (continue-on-error). Restore the gate by removing it.
       - name: Trivy scan (dagster)
-        uses: aquasecurity/trivy-action@v0.36.0
-        continue-on-error: true
+        uses: ./tooling/github/trivy-scan
         with:
-          version: v0.76.1
-          image-ref: blobscan-dagster:scan
-          scanners: vuln
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-          trivyignores: .trivyignore
-          exit-code: "1"
+          image: blobscan-dagster:scan
 
       - name: Build and push (dagster)
-        uses: docker/build-push-action@v6.5.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: ./apps/dagster
           push: true
