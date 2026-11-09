@@ -66,18 +66,10 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Build (smoke, api)
-        uses: docker/build-push-action@v7.4.0
+        uses: ./tooling/github/docker-build
         with:
-          context: .
-          push: false
-          load: true
           target: api
           tags: blobscan-api:smoke
-          build-args: |
-            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}
-            DATABASE_URL=${{ env.DATABASE_URL }}
-            DIRECT_URL=${{ env.DIRECT_URL }}
 
       - name: Create an empty database (api)
         run: |
@@ -92,18 +84,10 @@ jobs:
           database-url: postgresql://blobscan:s3cr3t@127.0.0.1:5432/blobscan_smoke_api
 
       - name: Build (smoke, web)
-        uses: docker/build-push-action@v7.4.0
+        uses: ./tooling/github/docker-build
         with:
-          context: .
-          push: false
-          load: true
           target: web
           tags: blobscan-web:smoke
-          build-args: |
-            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}
-            DATABASE_URL=${{ env.DATABASE_URL }}
-            DIRECT_URL=${{ env.DIRECT_URL }}
 
       - name: Create an empty database (web)
         run: |
@@ -118,42 +102,30 @@ jobs:
           database-url: postgresql://blobscan:s3cr3t@127.0.0.1:5432/blobscan_smoke_web
 
       - name: Trivy scan (api)
-        uses: ./tooling/github/docker-scan
+        uses: ./tooling/github/trivy-scan
         with:
           image: blobscan-api:smoke
 
       - name: Build and push (api)
-        uses: docker/build-push-action@v7.4.0
+        uses: ./tooling/github/docker-build
         with:
-          context: .
-          push: true
           target: api
           tags: |
             blossomlabs/blobscan-api:development
-          build-args: |
-            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}
-            DATABASE_URL=${{ env.DATABASE_URL }}
-            DIRECT_URL=${{ env.DIRECT_URL }}
+          push: "true"
 
       - name: Trivy scan (web)
-        uses: ./tooling/github/docker-scan
+        uses: ./tooling/github/trivy-scan
         with:
           image: blobscan-web:smoke
 
       - name: Build and push (web)
-        uses: docker/build-push-action@v7.4.0
+        uses: ./tooling/github/docker-build
         with:
-          context: .
-          push: true
           target: web
           tags: |
             blossomlabs/blobscan-web:development
-          build-args: |
-            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}
-            DATABASE_URL=${{ env.DATABASE_URL }}
-            DIRECT_URL=${{ env.DIRECT_URL }}
+          push: "true"
 
   release_dagster_docker:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
@@ -198,7 +170,7 @@ jobs:
             GIT_COMMIT=${{ env.GIT_COMMIT }}
 
       - name: Trivy scan (dagster)
-        uses: ./tooling/github/docker-scan
+        uses: ./tooling/github/trivy-scan
         with:
           image: blobscan-dagster:scan
 

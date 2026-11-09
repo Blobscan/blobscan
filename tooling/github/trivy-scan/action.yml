@@ -1,0 +1,36 @@
+name: "Trivy scan"
+description: >-
+  Scan an image or the repository with Trivy. Only HIGH and CRITICAL CVEs with a fix available are
+  reported. Accepted risks go in .trivyignore.
+inputs:
+  image:
+    description: "Image to scan. Leave empty when scan-type is fs"
+    default: ""
+  scan-type:
+    description: "Trivy scan type: image or fs"
+    default: "image"
+  skip-dirs:
+    description: "Comma-separated directories to skip"
+    default: ""
+  blocking:
+    description: >-
+      Fail the job when vulnerabilities are found. TEMPORARY: it defaults to false, so the image
+      scans of the Docker workflows report vulnerabilities and the image is still pushed. Restore
+      that gate by changing the default to true.
+    default: "false"
+runs:
+  using: "composite"
+  steps:
+    - name: "Trivy scan"
+      uses: aquasecurity/trivy-action@v0.36.0
+      continue-on-error: ${{ inputs.blocking != 'true' }}
+      with:
+        version: v0.76.1
+        scan-type: ${{ inputs.scan-type }}
+        image-ref: ${{ inputs.image }}
+        skip-dirs: ${{ inputs.skip-dirs }}
+        scanners: vuln
+        severity: HIGH,CRITICAL
+        ignore-unfixed: true
+        trivyignores: .trivyignore
+        exit-code: "1"

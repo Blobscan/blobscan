@@ -1,0 +1,36 @@
+name: "Docker build"
+description: >-
+  Build the api or web image with the build args they share. Without `push` the image is loaded in
+  the local Docker daemon. Expects BUILD_TIMESTAMP, GIT_COMMIT, DATABASE_URL and DIRECT_URL in the
+  job environment; NEXT_PUBLIC_BLOBSCAN_RELEASE is optional.
+inputs:
+  target:
+    description: "api or web"
+    required: true
+  tags:
+    description: "Image tags, one per line"
+    required: true
+  labels:
+    description: "Image labels, one per line"
+    default: ""
+  push:
+    description: "Push the image instead of loading it"
+    default: "false"
+runs:
+  using: "composite"
+  steps:
+    - name: "Build ${{ inputs.target }}"
+      uses: docker/build-push-action@v7.4.0
+      with:
+        context: .
+        push: ${{ inputs.push }}
+        load: ${{ inputs.push != 'true' }}
+        target: ${{ inputs.target }}
+        tags: ${{ inputs.tags }}
+        labels: ${{ inputs.labels }}
+        build-args: |
+          NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
+          BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+          GIT_COMMIT=${{ env.GIT_COMMIT }}
+          DATABASE_URL=${{ env.DATABASE_URL }}
+          DIRECT_URL=${{ env.DIRECT_URL }}

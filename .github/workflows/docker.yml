@@ -72,39 +72,23 @@ jobs:
             type=semver,pattern={{major}}
 
       - name: Build (scan, api)
-        uses: docker/build-push-action@v7.4.0
+        uses: ./tooling/github/docker-build
         with:
-          context: .
-          push: false
-          load: true
           target: api
           tags: blobscan-api:scan
-          build-args: |
-            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
-            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}
-            DATABASE_URL=${{ env.DATABASE_URL }}
-            DIRECT_URL=${{ env.DIRECT_URL }}
 
       - name: Trivy scan (api)
-        uses: ./tooling/github/docker-scan
+        uses: ./tooling/github/trivy-scan
         with:
           image: blobscan-api:scan
 
       - name: Build and push (api)
-        uses: docker/build-push-action@v7.4.0
+        uses: ./tooling/github/docker-build
         with:
-          context: .
-          push: true
           target: api
           tags: ${{ steps.meta_api.outputs.tags }}
           labels: ${{ steps.meta_api.outputs.labels }}
-          build-args: |
-            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
-            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}
-            DATABASE_URL=${{ env.DATABASE_URL }}
-            DIRECT_URL=${{ env.DIRECT_URL }}
+          push: "true"
 
       - name: Extract metadata (tags, labels) for Docker (Web)
         id: meta_web
@@ -118,39 +102,23 @@ jobs:
             type=semver,pattern={{major}}
 
       - name: Build (scan, web)
-        uses: docker/build-push-action@v7.4.0
+        uses: ./tooling/github/docker-build
         with:
-          context: .
-          push: false
-          load: true
           target: web
           tags: blobscan-web:scan
-          build-args: |
-            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
-            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}
-            DATABASE_URL=${{ env.DATABASE_URL }}
-            DIRECT_URL=${{ env.DIRECT_URL }}
 
       - name: Trivy scan (web)
-        uses: ./tooling/github/docker-scan
+        uses: ./tooling/github/trivy-scan
         with:
           image: blobscan-web:scan
 
       - name: Build and push (web)
-        uses: docker/build-push-action@v7.4.0
+        uses: ./tooling/github/docker-build
         with:
-          context: .
-          push: true
           target: web
           tags: ${{ steps.meta_web.outputs.tags }}
           labels: ${{ steps.meta_web.outputs.labels }}
-          build-args: |
-            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
-            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}
-            DATABASE_URL=${{ env.DATABASE_URL }}
-            DIRECT_URL=${{ env.DIRECT_URL }}
+          push: "true"
 
   release_dagster_docker:
     name: Build docker image (Dagster)
@@ -198,7 +166,7 @@ jobs:
             GIT_COMMIT=${{ env.GIT_COMMIT }}
 
       - name: Trivy scan (dagster)
-        uses: ./tooling/github/docker-scan
+        uses: ./tooling/github/trivy-scan
         with:
           image: blobscan-dagster:scan
 

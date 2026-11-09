@@ -22,10 +22,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  TRIVY_VERSION: v0.76.1
-  TRIVY_SEVERITY: HIGH,CRITICAL
-
 permissions:
   contents: read
 
@@ -42,16 +38,11 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Trivy fs
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: ./tooling/github/trivy-scan
         with:
-          version: ${{ env.TRIVY_VERSION }}
           scan-type: fs
-          scanners: vuln
-          severity: ${{ env.TRIVY_SEVERITY }}
-          ignore-unfixed: true
-          trivyignores: .trivyignore
           skip-dirs: node_modules
-          exit-code: "1"
+          blocking: "true"
 
   registry:
     name: Scan published image (${{ matrix.image }})
@@ -66,12 +57,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Trivy image
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: ./tooling/github/trivy-scan
         with:
-          version: ${{ env.TRIVY_VERSION }}
-          image-ref: blossomlabs/${{ matrix.image }}:development
-          scanners: vuln
-          severity: ${{ env.TRIVY_SEVERITY }}
-          ignore-unfixed: true
-          trivyignores: .trivyignore
-          exit-code: "1"
+          image: blossomlabs/${{ matrix.image }}:development
+          blocking: "true"
