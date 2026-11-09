@@ -3,7 +3,7 @@
 ## `analytics.backfill_rollup_change`
 
 Launches the metrics backfill that a change of `address.rollup` needs. See
-[Reprocessing after a rollup change](../README.md#reprocessing-after-a-rollup-change)
+[Reprocessing after a rollup change](operations.md#reprocessing-after-a-rollup-change)
 for the reason. Run it when the new labels are in the database.
 
 The command finds the first transaction of the changed addresses and selects,
