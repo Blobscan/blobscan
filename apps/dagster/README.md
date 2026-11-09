@@ -141,41 +141,9 @@ labels a new batcher, and also when the indexer runs with a new rollup
 registry: its address upsert overwrites `address.rollup` with the rollup of the
 registry.
 
-Nothing detects these changes. After one of them, run
-`analytics.backfill_rollup_change` when the new labels are in the database. It
-finds the first transaction of the changed addresses and selects, for each
-level, the partitions from that point to the latest one.
-
-Run it first without `--launch`. A dry run only reads the database and prints
-the addresses, their current rollup and the partitions:
-
-```bash
-python -m analytics.backfill_rollup_change --address 0x... --address 0x...
-```
-
-Then add `--launch` to start one backfill of all the levels, and open the link
-that it prints to follow the progress:
-
-```bash
-python -m analytics.backfill_rollup_change --address 0x... --address 0x... --launch
-```
-
-- Run it in the code location container, or from `apps/dagster` with
-  `PYTHONPATH=src` and the `DATABASE_URL` and the `CHAIN_ID` or
-  `DAGSTER_METRICS_START_DATE` of the deployment. The partitions depend on
-  these values.
-- Set the GraphQL endpoint of the webserver with `--graphql-url` or
-  `DAGSTER_GRAPHQL_URL` (default: `http://localhost:3003/graphql`). The
-  open-source webserver has no authentication, so reach it from inside the
-  network or with a port-forward.
-- `--migration <path>` reads the addresses of a SQL file instead, ignoring line
-  comments. The container has no migration files, so use it from a checkout.
-- `--launch` stops if an address has no rollup, because the migration may not
-  have run yet and the backfill would keep the old attribution. Pass
-  `--allow-unlabelled` when removing a rollup on purpose.
-- The first transaction comes from the `transaction` table, not from
-  `address.first_block_number_as_sender`, which a reorg can set to `NULL`.
-- One backfill can cover several changes: pass all the addresses.
+Nothing detects these changes. After one of them, run the
+`analytics.backfill_rollup_change` command to re-aggregate the affected
+partitions. See [Command line](docs/commandline.md#analyticsbackfill_rollup_change).
 
 ### Alerts
 
