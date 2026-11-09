@@ -63,7 +63,6 @@ jobs:
           {
             echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')"
             echo "GIT_COMMIT=$(git rev-parse HEAD)"
-            echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$(git describe --tags)"
           } >> "$GITHUB_ENV"
 
       - name: Build (smoke, api)
@@ -75,7 +74,6 @@ jobs:
           target: api
           tags: blobscan-api:smoke
           build-args: |
-            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
             DATABASE_URL=${{ env.DATABASE_URL }}
@@ -102,7 +100,6 @@ jobs:
           target: web
           tags: blobscan-web:smoke
           build-args: |
-            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
             DATABASE_URL=${{ env.DATABASE_URL }}
@@ -147,7 +144,6 @@ jobs:
           tags: |
             blossomlabs/blobscan-api:development
           build-args: |
-            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
             DATABASE_URL=${{ env.DATABASE_URL }}
@@ -180,7 +176,6 @@ jobs:
           tags: |
             blossomlabs/blobscan-web:development
           build-args: |
-            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
             DATABASE_URL=${{ env.DATABASE_URL }}
