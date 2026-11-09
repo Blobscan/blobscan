@@ -125,10 +125,179 @@ model AddressDailyMetrics {
   @@map("address_daily_metrics")
 }
 
+// The weeks start on Monday, as DATE_TRUNC('week'). Built from
+// address_daily_metrics.
+model AddressWeeklyMetrics {
+  id          Int      @id @default(autoincrement())
+  address     String
+  periodStart DateTime @map("period_start") @db.Date
+  updatedAt   DateTime @default(now()) @map("updated_at")
+
+  /// @zod.number.int().nonnegative()
+  sentTotalTransactions          Int       @default(0) @map("sent_total_transactions")
+  /// @zod.number.int().nonnegative()
+  sentTotalBlobs                 Int       @default(0) @map("sent_total_blobs")
+  /// @zod.bigint.nonnegative()
+  sentTotalBlobUsageSize         BigInt    @default(0) @map("sent_total_blob_usage_size")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  sentTotalBlobBaseFee           Decimal   @default(0) @map("sent_total_blob_base_fee") @db.Decimal(100, 0)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  sentTotalBlobAsCalldataFee     Decimal   @default(0) @map("sent_total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  sentTotalBlobBaseFeeUsd        Float?    @map("sent_total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  sentTotalBlobAsCalldataFeeUsd  Float?    @map("sent_total_blob_as_calldata_fee_usd")
+  /// @zod.number.int().nonnegative()
+  sentTotalUsdPricedTransactions Int       @default(0) @map("sent_total_usd_priced_transactions")
+  sentFirstBlockTimestamp        DateTime? @map("sent_first_block_timestamp")
+  sentLastBlockTimestamp         DateTime? @map("sent_last_block_timestamp")
+
+  /// @zod.number.int().nonnegative()
+  receivedTotalTransactions          Int       @default(0) @map("received_total_transactions")
+  /// @zod.number.int().nonnegative()
+  receivedTotalBlobs                 Int       @default(0) @map("received_total_blobs")
+  /// @zod.bigint.nonnegative()
+  receivedTotalBlobUsageSize         BigInt    @default(0) @map("received_total_blob_usage_size")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  receivedTotalBlobBaseFee           Decimal   @default(0) @map("received_total_blob_base_fee") @db.Decimal(100, 0)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  receivedTotalBlobAsCalldataFee     Decimal   @default(0) @map("received_total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  receivedTotalBlobBaseFeeUsd        Float?    @map("received_total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  receivedTotalBlobAsCalldataFeeUsd  Float?    @map("received_total_blob_as_calldata_fee_usd")
+  /// @zod.number.int().nonnegative()
+  receivedTotalUsdPricedTransactions Int       @default(0) @map("received_total_usd_priced_transactions")
+  receivedFirstBlockTimestamp        DateTime? @map("received_first_block_timestamp")
+  receivedLastBlockTimestamp         DateTime? @map("received_last_block_timestamp")
+
+  /// @zod.number.int().nonnegative()
+  selfTotalTransactions Int @default(0) @map("self_total_transactions")
+  /// @zod.number.int().nonnegative()
+  selfTotalBlobs        Int @default(0) @map("self_total_blobs")
+
+  @@unique([address, periodStart])
+  @@index([periodStart])
+  @@map("address_weekly_metrics")
+}
+
+// Built from address_daily_metrics.
+model AddressMonthlyMetrics {
+  id          Int      @id @default(autoincrement())
+  address     String
+  periodStart DateTime @map("period_start") @db.Date
+  updatedAt   DateTime @default(now()) @map("updated_at")
+
+  /// @zod.number.int().nonnegative()
+  sentTotalTransactions          Int       @default(0) @map("sent_total_transactions")
+  /// @zod.number.int().nonnegative()
+  sentTotalBlobs                 Int       @default(0) @map("sent_total_blobs")
+  /// @zod.bigint.nonnegative()
+  sentTotalBlobUsageSize         BigInt    @default(0) @map("sent_total_blob_usage_size")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  sentTotalBlobBaseFee           Decimal   @default(0) @map("sent_total_blob_base_fee") @db.Decimal(100, 0)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  sentTotalBlobAsCalldataFee     Decimal   @default(0) @map("sent_total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  sentTotalBlobBaseFeeUsd        Float?    @map("sent_total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  sentTotalBlobAsCalldataFeeUsd  Float?    @map("sent_total_blob_as_calldata_fee_usd")
+  /// @zod.number.int().nonnegative()
+  sentTotalUsdPricedTransactions Int       @default(0) @map("sent_total_usd_priced_transactions")
+  sentFirstBlockTimestamp        DateTime? @map("sent_first_block_timestamp")
+  sentLastBlockTimestamp         DateTime? @map("sent_last_block_timestamp")
+
+  /// @zod.number.int().nonnegative()
+  receivedTotalTransactions          Int       @default(0) @map("received_total_transactions")
+  /// @zod.number.int().nonnegative()
+  receivedTotalBlobs                 Int       @default(0) @map("received_total_blobs")
+  /// @zod.bigint.nonnegative()
+  receivedTotalBlobUsageSize         BigInt    @default(0) @map("received_total_blob_usage_size")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  receivedTotalBlobBaseFee           Decimal   @default(0) @map("received_total_blob_base_fee") @db.Decimal(100, 0)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  receivedTotalBlobAsCalldataFee     Decimal   @default(0) @map("received_total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  receivedTotalBlobBaseFeeUsd        Float?    @map("received_total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  receivedTotalBlobAsCalldataFeeUsd  Float?    @map("received_total_blob_as_calldata_fee_usd")
+  /// @zod.number.int().nonnegative()
+  receivedTotalUsdPricedTransactions Int       @default(0) @map("received_total_usd_priced_transactions")
+  receivedFirstBlockTimestamp        DateTime? @map("received_first_block_timestamp")
+  receivedLastBlockTimestamp         DateTime? @map("received_last_block_timestamp")
+
+  /// @zod.number.int().nonnegative()
+  selfTotalTransactions Int @default(0) @map("self_total_transactions")
+  /// @zod.number.int().nonnegative()
+  selfTotalBlobs        Int @default(0) @map("self_total_blobs")
+
+  @@unique([address, periodStart])
+  @@index([periodStart])
+  @@map("address_monthly_metrics")
+}
+
+// Built from address_monthly_metrics.
+model AddressYearlyMetrics {
+  id          Int      @id @default(autoincrement())
+  address     String
+  periodStart DateTime @map("period_start") @db.Date
+  updatedAt   DateTime @default(now()) @map("updated_at")
+
+  /// @zod.number.int().nonnegative()
+  sentTotalTransactions          Int       @default(0) @map("sent_total_transactions")
+  /// @zod.number.int().nonnegative()
+  sentTotalBlobs                 Int       @default(0) @map("sent_total_blobs")
+  /// @zod.bigint.nonnegative()
+  sentTotalBlobUsageSize         BigInt    @default(0) @map("sent_total_blob_usage_size")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  sentTotalBlobBaseFee           Decimal   @default(0) @map("sent_total_blob_base_fee") @db.Decimal(100, 0)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  sentTotalBlobAsCalldataFee     Decimal   @default(0) @map("sent_total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  sentTotalBlobBaseFeeUsd        Float?    @map("sent_total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  sentTotalBlobAsCalldataFeeUsd  Float?    @map("sent_total_blob_as_calldata_fee_usd")
+  /// @zod.number.int().nonnegative()
+  sentTotalUsdPricedTransactions Int       @default(0) @map("sent_total_usd_priced_transactions")
+  sentFirstBlockTimestamp        DateTime? @map("sent_first_block_timestamp")
+  sentLastBlockTimestamp         DateTime? @map("sent_last_block_timestamp")
+
+  /// @zod.number.int().nonnegative()
+  receivedTotalTransactions          Int       @default(0) @map("received_total_transactions")
+  /// @zod.number.int().nonnegative()
+  receivedTotalBlobs                 Int       @default(0) @map("received_total_blobs")
+  /// @zod.bigint.nonnegative()
+  receivedTotalBlobUsageSize         BigInt    @default(0) @map("received_total_blob_usage_size")
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  receivedTotalBlobBaseFee           Decimal   @default(0) @map("received_total_blob_base_fee") @db.Decimal(100, 0)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  receivedTotalBlobAsCalldataFee     Decimal   @default(0) @map("received_total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.number.nonnegative()
+  receivedTotalBlobBaseFeeUsd        Float?    @map("received_total_blob_base_fee_usd")
+  /// @zod.number.nonnegative()
+  receivedTotalBlobAsCalldataFeeUsd  Float?    @map("received_total_blob_as_calldata_fee_usd")
+  /// @zod.number.int().nonnegative()
+  receivedTotalUsdPricedTransactions Int       @default(0) @map("received_total_usd_priced_transactions")
+  receivedFirstBlockTimestamp        DateTime? @map("received_first_block_timestamp")
+  receivedLastBlockTimestamp         DateTime? @map("received_last_block_timestamp")
+
+  /// @zod.number.int().nonnegative()
+  selfTotalTransactions Int @default(0) @map("self_total_transactions")
+  /// @zod.number.int().nonnegative()
+  selfTotalBlobs        Int @default(0) @map("self_total_blobs")
+
+  @@unique([address, periodStart])
+  @@index([periodStart])
+  @@map("address_yearly_metrics")
+}
+
 // Closed days only. aggregatedUntil is the last closed day that the row
-// includes. To get the full totals, add the address_daily_metrics rows with
-// periodStart > aggregatedUntil (the current day, and a closed day that this
-// table does not include yet).
+// includes. Dagster adds the closed years (address_yearly_metrics), the
+// closed months of the current year (address_monthly_metrics) and the
+// closed days of the current month (address_daily_metrics). To get the full
+// totals, add the address_daily_metrics rows with periodStart >
+// aggregatedUntil (the current day, and a closed day that this table does not
+// include yet).
 model AddressAllTimeMetrics {
   id              Int      @id @default(autoincrement())
   address         String   @unique
