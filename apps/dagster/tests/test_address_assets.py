@@ -76,7 +76,7 @@ def expected_rows(
         count, usage = blobs[tx["hash"]]
         for role, address in (("sent", tx["fromId"]), ("received", tx["toId"])):
             row = rows.setdefault(
-                address, {"self": 0, "self_blobs": 0, "sent": [], "received": []}
+                address, {"self": 0, "self_blobs": 0, "sent": [], "received": []},
             )
             row[role].append({**tx, "blobs": count, "usage": usage})
         if tx["fromId"] == tx["toId"]:
