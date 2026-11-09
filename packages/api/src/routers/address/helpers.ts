@@ -1,6 +1,6 @@
 import dayjs from "@blobscan/dayjs";
-import type { BlobscanPrismaClient, Prisma } from "@blobscan/db";
-import { AddressSchema } from "@blobscan/db";
+import type { BlobscanPrismaClient } from "@blobscan/db";
+import { AddressSchema, Prisma } from "@blobscan/db";
 import type { TimeFrame } from "@blobscan/zod";
 import { timeFrameSchema, z } from "@blobscan/zod";
 
@@ -113,13 +113,58 @@ export function buildRoleSumSelection() {
   ) as Record<RoleColumn, true>;
 }
 
-/** Returns the Prisma `_min` and `_max` selections of the role timestamps. */
-export function buildRoleEdgeSelections() {
+/**
+ * Returns the Prisma aggregate selection of the address metrics: the sums of
+ * the role metrics and of the self-sends, the first and the last block
+ * timestamps of each role, and the last update.
+ */
+export function buildAddressAggregateSelection() {
   return {
+    _sum: { ...buildRoleSumSelection(), selfTotalTransactions: true },
     _min: { sentFirstBlockTimestamp: true, receivedFirstBlockTimestamp: true },
-    _max: { sentLastBlockTimestamp: true, receivedLastBlockTimestamp: true },
+    _max: {
+      sentLastBlockTimestamp: true,
+      receivedLastBlockTimestamp: true,
+      updatedAt: true,
+    },
   } as const;
 }
+
+/**
+ * Returns the Prisma model of the address metrics with the granularity. The
+ * hourly and the daily models have the same fields, thus the code uses one
+ * type for the two.
+ */
+export function getAddressMetricsModel(
+  prisma: BlobscanPrismaClient,
+  granularity: AddressGranularity
+) {
+  return (
+    granularity === "hour"
+      ? prisma.addressHourlyMetrics
+      : prisma.addressDailyMetrics
+  ) as BlobscanPrismaClient["addressDailyMetrics"];
+}
+
+/**
+ * Returns the Prisma model of the network metrics with the granularity. The
+ * hourly and the daily models have the same fields, thus the code uses one
+ * type for the two.
+ */
+export function getNetworkMetricsModel(
+  prisma: BlobscanPrismaClient,
+  granularity: AddressGranularity
+) {
+  return (
+    granularity === "hour" ? prisma.hourlyMetrics : prisma.dailyMetrics
+  ) as BlobscanPrismaClient["dailyMetrics"];
+}
+
+/**
+ * The filter of the network-wide rows of the metrics tables: the rows of all
+ * the categories and rollups together.
+ */
+export const NETWORK_WIDE_FILTER = { category: null, rollup: null } as const;
 
 type RoleSums = Partial<Record<RoleColumn, unknown>> &
   Partial<Record<`${Role}${"First" | "Last"}BlockTimestamp`, Date | null>>;
@@ -149,8 +194,8 @@ function toBigInt(value: unknown) {
   return value === null || value === undefined ? BigInt(0) : BigInt(`${value}`);
 }
 
-function toDecimal(value: unknown, decimal: typeof Prisma.Decimal) {
-  return new decimal(
+function toDecimal(value: unknown) {
+  return new Prisma.Decimal(
     value === null || value === undefined ? 0 : (value as Prisma.Decimal)
   );
 }
@@ -158,22 +203,23 @@ function toDecimal(value: unknown, decimal: typeof Prisma.Decimal) {
 /** Returns the metrics of one role from a row or a `_sum` result. */
 export function getRoleTotals(
   sums: RoleSums | null | undefined,
-  role: Role,
-  decimal: typeof Prisma.Decimal
+  role: Role
 ): RoleTotals {
-  const get = (metric: RoleMetric) => sums?.[`${role}${metric}`];
+  const getRoleValue = (metric: RoleMetric) => sums?.[`${role}${metric}`];
 
   return {
-    totalTransactions: toNumber(get("TotalTransactions")),
-    totalBlobs: toNumber(get("TotalBlobs")),
-    totalBlobUsageSize: toBigInt(get("TotalBlobUsageSize")),
-    totalBlobBaseFee: toDecimal(get("TotalBlobBaseFee"), decimal),
-    totalBlobAsCalldataFee: toDecimal(get("TotalBlobAsCalldataFee"), decimal),
-    totalBlobBaseFeeUsd: toNullableNumber(get("TotalBlobBaseFeeUsd")),
+    totalTransactions: toNumber(getRoleValue("TotalTransactions")),
+    totalBlobs: toNumber(getRoleValue("TotalBlobs")),
+    totalBlobUsageSize: toBigInt(getRoleValue("TotalBlobUsageSize")),
+    totalBlobBaseFee: toDecimal(getRoleValue("TotalBlobBaseFee")),
+    totalBlobAsCalldataFee: toDecimal(getRoleValue("TotalBlobAsCalldataFee")),
+    totalBlobBaseFeeUsd: toNullableNumber(getRoleValue("TotalBlobBaseFeeUsd")),
     totalBlobAsCalldataFeeUsd: toNullableNumber(
-      get("TotalBlobAsCalldataFeeUsd")
+      getRoleValue("TotalBlobAsCalldataFeeUsd")
     ),
-    totalUsdPricedTransactions: toNumber(get("TotalUsdPricedTransactions")),
+    totalUsdPricedTransactions: toNumber(
+      getRoleValue("TotalUsdPricedTransactions")
+    ),
     firstBlockTimestamp: sums?.[`${role}FirstBlockTimestamp`] ?? null,
     lastBlockTimestamp: sums?.[`${role}LastBlockTimestamp`] ?? null,
   };

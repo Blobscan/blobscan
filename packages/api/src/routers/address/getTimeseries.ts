@@ -11,12 +11,17 @@ import {
   addressInputSchema,
   decimalToBigInt,
   getAddressGranularity,
+  getAddressMetricsModel,
   getCurrentPeriodStart,
+  getNetworkMetricsModel,
   getRoleTotals,
   getTimeFrameStart,
+  NETWORK_WIDE_FILTER,
 } from "./helpers";
 
-// Dagster updates the address metrics every 10 minutes.
+// The cache keeps a result for 60 seconds. Dagster updates the address
+// metrics every 10 minutes, thus a cached result is at most 60 seconds older
+// than the database.
 const CACHE_TTL_SECONDS = 60;
 
 const roleSeriesSchema = z.object({
@@ -106,14 +111,10 @@ async function findAddressRows(
   granularity: AddressGranularity,
   start: Date | undefined
 ) {
-  const args = {
+  return getAddressMetricsModel(prisma, granularity).findMany({
     where: { address, periodStart: { gte: start } },
     orderBy: { periodStart: "asc" },
-  } as const;
-
-  return granularity === "hour"
-    ? prisma.addressHourlyMetrics.findMany(args)
-    : prisma.addressDailyMetrics.findMany(args);
+  });
 }
 
 async function findNetworkRows(
@@ -121,19 +122,15 @@ async function findNetworkRows(
   granularity: AddressGranularity,
   start: Date
 ) {
-  const args = {
+  return getNetworkMetricsModel(prisma, granularity).findMany({
     select: {
       periodStart: true,
       totalBlobs: true,
       totalBlobBaseFee: true,
       totalBlobGasUsed: true,
     },
-    where: { category: null, rollup: null, periodStart: { gte: start } },
-  } as const;
-
-  return granularity === "hour"
-    ? prisma.hourlyMetrics.findMany(args)
-    : prisma.dailyMetrics.findMany(args);
+    where: { ...NETWORK_WIDE_FILTER, periodStart: { gte: start } },
+  });
 }
 
 const getAddressTimeseries = cacheTRPCQuery(
@@ -185,7 +182,7 @@ const getAddressTimeseries = cacheTRPCQuery(
       const row = rowsByTime.get(timestamp.getTime());
 
       for (const role of ROLES) {
-        const totals = getRoleTotals(row, role, Prisma.Decimal);
+        const totals = getRoleTotals(row, role);
         const roleSeries = series[role];
 
         roleSeries.totalTransactions.push(totals.totalTransactions);

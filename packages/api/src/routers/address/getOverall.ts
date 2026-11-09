@@ -8,21 +8,25 @@ import type { AddressInput, RoleTotals } from "./helpers";
 import {
   addRoleTotals,
   addressInputSchema,
-  buildRoleEdgeSelections,
-  buildRoleSumSelection,
+  buildAddressAggregateSelection,
   decimalToBigInt,
   findEdgeTransaction,
   getAddressGranularity,
+  getAddressMetricsModel,
   getLongestGap,
   getLongestStreak,
+  getNetworkMetricsModel,
   getRoleTotals,
   getTimeFrameStart,
   mergeAggregates,
+  NETWORK_WIDE_FILTER,
   roleTotalsSchema,
   serializeRoleTotals,
 } from "./helpers";
 
-// Dagster updates the address metrics every 10 minutes.
+// The cache keeps a result for 60 seconds. Dagster updates the address
+// metrics every 10 minutes, thus a cached result is at most 60 seconds older
+// than the database.
 const CACHE_TTL_SECONDS = 60;
 
 const transactionRefSchema = z
@@ -110,11 +114,8 @@ async function getAllTimeTotals(
   // The all-time row has the closed days until aggregatedUntil. Add the daily
   // rows after it: the current day, and a closed day that Dagster did not
   // add yet.
-  const edges = buildRoleEdgeSelections();
   const recent = await prisma.addressDailyMetrics.aggregate({
-    _sum: { ...buildRoleSumSelection(), selfTotalTransactions: true },
-    _min: edges._min,
-    _max: { ...edges._max, updatedAt: true },
+    ...buildAddressAggregateSelection(),
     where: {
       address,
       ...(allTime ? { periodStart: { gt: allTime.aggregatedUntil } } : {}),
@@ -122,8 +123,8 @@ async function getAllTimeTotals(
   });
 
   const recentRow = mergeAggregates(recent);
-  const sent = getRoleTotals(recentRow, "sent", Prisma.Decimal);
-  const received = getRoleTotals(recentRow, "received", Prisma.Decimal);
+  const sent = getRoleTotals(recentRow, "sent");
+  const received = getRoleTotals(recentRow, "received");
   const selfTotalTransactions = recent._sum.selfTotalTransactions ?? 0;
   const recentUpdatedAt = recent._max.updatedAt ?? null;
 
@@ -137,11 +138,8 @@ async function getAllTimeTotals(
   }
 
   return {
-    sent: addRoleTotals(getRoleTotals(allTime, "sent", Prisma.Decimal), sent),
-    received: addRoleTotals(
-      getRoleTotals(allTime, "received", Prisma.Decimal),
-      received
-    ),
+    sent: addRoleTotals(getRoleTotals(allTime, "sent"), sent),
+    received: addRoleTotals(getRoleTotals(allTime, "received"), received),
     selfTotalTransactions:
       allTime.selfTotalTransactions + selfTotalTransactions,
     updatedAt: recentUpdatedAt ?? allTime.updatedAt,
@@ -158,23 +156,16 @@ async function getTimeFrameTotals(
     address,
     periodStart: { gte: getTimeFrameStart(input.timeFrame, granularity) },
   };
-  const edges = buildRoleEdgeSelections();
-  const args = {
-    _sum: { ...buildRoleSumSelection(), selfTotalTransactions: true },
-    _min: edges._min,
-    _max: { ...edges._max, updatedAt: true },
+  const result = await getAddressMetricsModel(prisma, granularity).aggregate({
+    ...buildAddressAggregateSelection(),
     where,
-  } as const;
-  const result =
-    granularity === "hour"
-      ? await prisma.addressHourlyMetrics.aggregate(args)
-      : await prisma.addressDailyMetrics.aggregate(args);
+  });
 
   const row = mergeAggregates(result);
 
   return {
-    sent: getRoleTotals(row, "sent", Prisma.Decimal),
-    received: getRoleTotals(row, "received", Prisma.Decimal),
+    sent: getRoleTotals(row, "sent"),
+    received: getRoleTotals(row, "received"),
     selfTotalTransactions: result._sum.selfTotalTransactions ?? 0,
     updatedAt: result._max.updatedAt ?? null,
   };
@@ -184,10 +175,10 @@ async function getNetworkTotals(
   prisma: TRPCContext["prisma"],
   input: AddressInput
 ) {
-  const global = { category: null, rollup: null };
-
   if (input.timeFrame === "All") {
-    const row = await prisma.allTimeMetrics.findFirst({ where: global });
+    const row = await prisma.allTimeMetrics.findFirst({
+      where: NETWORK_WIDE_FILTER,
+    });
 
     return {
       totalBlobs: row?.totalBlobs ?? 0,
@@ -197,17 +188,17 @@ async function getNetworkTotals(
   }
 
   const granularity = getAddressGranularity(input.timeFrame);
-  const args = {
-    _sum: { totalBlobs: true, totalBlobBaseFee: true, totalBlobGasUsed: true },
+  const { _sum } = await getNetworkMetricsModel(prisma, granularity).aggregate({
+    _sum: {
+      totalBlobs: true,
+      totalBlobBaseFee: true,
+      totalBlobGasUsed: true,
+    },
     where: {
-      ...global,
+      ...NETWORK_WIDE_FILTER,
       periodStart: { gte: getTimeFrameStart(input.timeFrame, granularity) },
     },
-  } as const;
-  const { _sum } =
-    granularity === "hour"
-      ? await prisma.hourlyMetrics.aggregate(args)
-      : await prisma.dailyMetrics.aggregate(args);
+  });
 
   return {
     totalBlobs: _sum.totalBlobs ?? 0,
