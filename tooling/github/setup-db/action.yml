@@ -1,15 +1,32 @@
 name: "Set up DB"
 description: "Set up the database for the CI environment"
+inputs:
+  database-url:
+    description: "Connection string written to DATABASE_URL"
+    default: "postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public"
+  direct-url:
+    description: "Connection string written to DIRECT_URL"
+    default: "postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public"
+  export-env:
+    description: >-
+      Also expose both URLs to the later steps of the job. Keep it off in jobs that run tests:
+      dotenv does not override variables that are already set, so an exported DATABASE_URL would
+      shadow the one in .env.test.
+    default: "false"
 runs:
   using: "composite"
   steps:
     - name: "Create .env file with db connection"
       shell: bash
+      env:
+        DATABASE_URL: ${{ inputs.database-url }}
+        DIRECT_URL: ${{ inputs.direct-url }}
+        EXPORT_ENV: ${{ inputs.export-env }}
       run: |
-        cat > "$GITHUB_WORKSPACE/.env" <<'EOF'
-        DATABASE_URL=postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public
-        DIRECT_URL=postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public
-        EOF
+        printf 'DATABASE_URL=%s\nDIRECT_URL=%s\n' "$DATABASE_URL" "$DIRECT_URL" > "$GITHUB_WORKSPACE/.env"
+        if [ "$EXPORT_ENV" = true ]; then
+          cat "$GITHUB_WORKSPACE/.env" >> "$GITHUB_ENV"
+        fi
     - name: "Apply Prisma migrations to db"
       shell: bash
       working-directory: packages/db

@@ -11,8 +11,6 @@ env:
   FORCE_COLOR: 3
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-  DATABASE_URL: postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public
-  DIRECT_URL: postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public
 
 jobs:
   release_docker:
@@ -47,6 +45,8 @@ jobs:
 
       - name: Setup DB
         uses: ./tooling/github/setup-db
+        with:
+          export-env: "true"
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
