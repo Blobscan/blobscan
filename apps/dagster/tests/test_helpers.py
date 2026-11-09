@@ -7,6 +7,7 @@ from sqlalchemy.sql.elements import TextClause
 
 from analytics.defs.helpers import (
     DENCUN_ACTIVATION,
+    build_address_rollup_sql,
     build_aggregate_sql,
     execute_full_refresh,
     execute_sql_window,
@@ -45,6 +46,23 @@ class TestBuildAggregateSql:
     def test_rejects_unknown_trunc(self):
         with pytest.raises(ValueError, match="Invalid trunc"):
             build_aggregate_sql("src", "tgt", "hour; DROP TABLE x")
+
+
+class TestBuildAddressRollupSql:
+    def test_replaces_all_placeholders(self):
+        result = build_address_rollup_sql(
+            "address_daily_metrics", "address_monthly_metrics", "month",
+        )
+        assert "FROM address_daily_metrics" in result.text
+        assert "INSERT INTO address_monthly_metrics" in result.text
+        assert "DATE_TRUNC('month'" in result.text
+        assert "{{" not in result.text
+        assert "}}" not in result.text
+
+    @pytest.mark.parametrize("trunc", ["hour", "day", "week; DROP TABLE x"])
+    def test_rejects_a_trunc_that_is_not_a_rollup_level(self, trunc):
+        with pytest.raises(ValueError, match="Invalid trunc"):
+            build_address_rollup_sql("src", "tgt", trunc)
 
 
 class TestPartitionMeta:

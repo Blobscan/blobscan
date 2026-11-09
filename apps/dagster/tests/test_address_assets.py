@@ -18,6 +18,9 @@ from analytics.defs.assets import (
     address_all_time_metrics,
     address_daily_metrics,
     address_hourly_metrics,
+    address_monthly_metrics,
+    address_weekly_metrics,
+    address_yearly_metrics,
 )
 from analytics.defs.jobs import delete_old_address_hourly_metrics
 from analytics.defs.resources.postgres import PostgresResource
@@ -37,6 +40,17 @@ HOURLY_PERIOD_START = datetime(2025, 2, 5, 16, tzinfo=UTC)
 DAILY_PARTITION_KEY = "2025-02-05"
 DAILY_PERIOD_START = datetime(2025, 2, 5, tzinfo=UTC)
 
+# The fixture days are 2024-01-01, 2024-12-31, 2025-01-10, 2025-01-31,
+# 2025-02-01 and 2025-02-05. The week of 2025-01-27 has days in two months.
+WEEKLY_PARTITION_KEY = "2025-01-27"
+WEEKLY_PERIOD_START = datetime(2025, 1, 27, tzinfo=UTC)
+MONTHLY_PARTITION_KEY = "2025-02"
+MONTHLY_PERIOD_START = datetime(2025, 2, 1, tzinfo=UTC)
+YEARLY_PARTITION_KEY = "2025"
+YEARLY_PERIOD_START = datetime(2025, 1, 1, tzinfo=UTC)
+FIXTURE_MONTHS = ("2024-01", "2024-12", "2025-01", "2025-02")
+FIXTURE_YEARS = ("2024", "2025")
+
 SELF_SENDER = "0x0600000000000000000000000000000000000000"
 BOTH_ROLES = "0x0200000000000000000000000000000000000000"
 RECEIVER_ONLY = "0x0700000000000000000000000000000000000000"
@@ -44,6 +58,9 @@ RECEIVER_ONLY = "0x0700000000000000000000000000000000000000"
 ADDRESS_TABLES = (
     "address_hourly_metrics",
     "address_daily_metrics",
+    "address_weekly_metrics",
+    "address_monthly_metrics",
+    "address_yearly_metrics",
     "address_all_time_metrics",
 )
 
@@ -147,6 +164,16 @@ def _fixture_days() -> list[str]:
     })
 
 
+def _run_daily_and_rollups(postgres: PostgresResource) -> None:
+    """Run the daily, monthly and yearly levels for all the fixture days."""
+    for day in _fixture_days():
+        _run(postgres, address_daily_metrics, day)
+    for month in FIXTURE_MONTHS:
+        _run(postgres, address_monthly_metrics, month)
+    for year in FIXTURE_YEARS:
+        _run(postgres, address_yearly_metrics, year)
+
+
 def _delete_address_tables(postgres: PostgresResource) -> None:
     with postgres.get_connection() as conn:
         for table in ADDRESS_TABLES:
@@ -178,7 +205,7 @@ def no_hourly_retention():
 # ---------------------------------------------------------------------------
 
 
-class _AddressMetricsMixin:
+class _PeriodRowsMixin:
     """Check every row of one period against the fixture data."""
 
     def _rows(self, postgres) -> dict[str, dict]:
@@ -194,6 +221,10 @@ class _AddressMetricsMixin:
         rows = self._rows(postgres)
         for address, expected in self._expected().items():
             _assert_row(rows[address], expected)
+
+
+class _AddressMetricsMixin(_PeriodRowsMixin):
+    """Also check the roles. The period must include 2025-02-05."""
 
     def test_self_send_counts_in_both_roles(self, postgres):
         row = self._rows(postgres)[SELF_SENDER]
@@ -262,11 +293,97 @@ class TestAddressDailyMetrics(_AddressMetricsMixin):
 
 
 @pytest.mark.integration
-class TestAddressAllTimeMetrics(_AddressMetricsMixin):
+class TestAddressWeeklyMetrics(_PeriodRowsMixin):
     @pytest.fixture(scope="class", autouse=True)
     def setup_metrics(self, postgres, clean_address_metrics):  # noqa: ARG002
         for day in _fixture_days():
             _run(postgres, address_daily_metrics, day)
+        _run(postgres, address_weekly_metrics, WEEKLY_PARTITION_KEY)
+
+    def _rows(self, postgres):
+        return _query(
+            postgres, "address_weekly_metrics", period_start=WEEKLY_PERIOD_START.date(),
+        )
+
+    def _expected(self):
+        end = WEEKLY_PERIOD_START + timedelta(days=7)
+        return expected_rows(WEEKLY_PERIOD_START, end)
+
+    def test_week_has_days_of_two_months(self):
+        days = {
+            tx["blockDatetime"].date()
+            for tx in get_enriched_txs(
+                WEEKLY_PERIOD_START, WEEKLY_PERIOD_START + timedelta(days=7),
+            )
+        }
+        assert {day.month for day in days} == {1, 2}
+
+    def test_no_rows_for_other_weeks(self, postgres):
+        with postgres.get_connection() as conn:
+            periods = conn.execute(
+                text("SELECT DISTINCT period_start FROM address_weekly_metrics"),
+            ).scalars().all()
+        assert periods == [WEEKLY_PERIOD_START.date()]
+
+
+@pytest.mark.integration
+class TestAddressMonthlyMetrics(_AddressMetricsMixin):
+    @pytest.fixture(scope="class", autouse=True)
+    def setup_metrics(self, postgres, clean_address_metrics):  # noqa: ARG002
+        for day in _fixture_days():
+            _run(postgres, address_daily_metrics, day)
+        _run(postgres, address_monthly_metrics, MONTHLY_PARTITION_KEY)
+
+    def _rows(self, postgres):
+        return _query(
+            postgres,
+            "address_monthly_metrics",
+            period_start=MONTHLY_PERIOD_START.date(),
+        )
+
+    def _expected(self):
+        return expected_rows(MONTHLY_PERIOD_START, datetime(2025, 3, 1, tzinfo=UTC))
+
+
+@pytest.mark.integration
+class TestAddressYearlyMetrics(_AddressMetricsMixin):
+    @pytest.fixture(scope="class", autouse=True)
+    def setup_metrics(self, postgres, clean_address_metrics):  # noqa: ARG002
+        _run_daily_and_rollups(postgres)
+
+    def _rows(self, postgres):
+        return _query(
+            postgres, "address_yearly_metrics", period_start=YEARLY_PERIOD_START.date(),
+        )
+
+    def _expected(self):
+        return expected_rows(YEARLY_PERIOD_START, datetime(2026, 1, 1, tzinfo=UTC))
+
+    def test_one_row_for_each_address_and_year(self, postgres):
+        with postgres.get_connection() as conn:
+            counts = conn.execute(
+                text(
+                    "SELECT period_start, COUNT(*) FROM address_yearly_metrics "
+                    "GROUP BY period_start",
+                ),
+            ).all()
+        expected = {
+            datetime(int(year), 1, 1, tzinfo=UTC).date(): len(
+                expected_rows(
+                    datetime(int(year), 1, 1, tzinfo=UTC),
+                    datetime(int(year) + 1, 1, 1, tzinfo=UTC),
+                ),
+            )
+            for year in FIXTURE_YEARS
+        }
+        assert dict(counts) == expected
+
+
+@pytest.mark.integration
+class TestAddressAllTimeMetrics(_AddressMetricsMixin):
+    @pytest.fixture(scope="class", autouse=True)
+    def setup_metrics(self, postgres, clean_address_metrics):  # noqa: ARG002
+        _run_daily_and_rollups(postgres)
         address_all_time_metrics(postgres=postgres)
 
     def _rows(self, postgres):
@@ -304,6 +421,37 @@ class TestAddressAllTimeMetrics(_AddressMetricsMixin):
                 )
                 conn.commit()
             address_all_time_metrics(postgres=postgres)
+
+
+@pytest.mark.integration
+class TestAddressAllTimeSources:
+    """The fixture years are closed, so the all-time rows come from the years."""
+
+    @pytest.fixture(autouse=True)
+    def setup_metrics(self, postgres, clean_address_metrics):  # noqa: ARG002
+        _delete_address_tables(postgres)
+        _run_daily_and_rollups(postgres)
+
+    def test_closed_years_come_from_the_yearly_rows(self, postgres):
+        with postgres.get_connection() as conn:
+            conn.execute(text("DELETE FROM address_daily_metrics"))
+            conn.execute(text("DELETE FROM address_monthly_metrics"))
+            conn.commit()
+        address_all_time_metrics(postgres=postgres)
+
+        rows = _query(postgres, "address_all_time_metrics")
+        expected = expected_rows()
+        assert set(rows) == set(expected)
+        for address, row in expected.items():
+            _assert_row(rows[address], row)
+
+    def test_daily_rows_of_closed_years_are_not_counted_again(self, postgres):
+        with postgres.get_connection() as conn:
+            conn.execute(text("DELETE FROM address_yearly_metrics"))
+            conn.commit()
+        address_all_time_metrics(postgres=postgres)
+
+        assert _query(postgres, "address_all_time_metrics") == {}
 
 
 # ---------------------------------------------------------------------------

@@ -86,6 +86,31 @@ def build_address_sql(target: str, trunc: str):
     return text(sql)
 
 
+ADDRESS_ROLLUP_SQL_TEMPLATE = (SQL_DIR / "aggregate_address_rollup.sql").read_text()
+ADDRESS_ROLLUP_TRUNC_UNITS = frozenset({"week", "month", "year"})
+
+
+def build_address_rollup_sql(source: str, target: str, trunc: str):
+    """Return the SQL that writes ``target`` per ``trunc`` from ``source`` rows."""
+    if trunc not in ADDRESS_ROLLUP_TRUNC_UNITS:
+        msg = (
+            f"Invalid trunc {trunc!r}, expected one of "
+            f"{sorted(ADDRESS_ROLLUP_TRUNC_UNITS)}"
+        )
+        raise ValueError(msg)
+
+    sql = (
+        ADDRESS_ROLLUP_SQL_TEMPLATE.replace("{{source_table}}", source)
+        .replace("{{target_table}}", target)
+        .replace("{{trunc}}", trunc)
+    )
+    if "{{" in sql or "}}" in sql:
+        msg = "Unresolved placeholder in address rollup SQL template"
+        raise ValueError(msg)
+
+    return text(sql)
+
+
 def address_hourly_retention_cutoff(now: datetime | None = None) -> datetime:
     """Return the start of the oldest hour that address_hourly_metrics keeps."""
     now = now or datetime.now(UTC)

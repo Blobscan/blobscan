@@ -24,6 +24,9 @@
 |---|---|---|
 | `address_hourly_metrics` | `(address, period_start)` | 30 days |
 | `address_daily_metrics` | `(address, period_start)` | Forever |
+| `address_weekly_metrics` | `(address, period_start)` | Forever |
+| `address_monthly_metrics` | `(address, period_start)` | Forever |
+| `address_yearly_metrics` | `(address, period_start)` | Forever |
 | `address_all_time_metrics` | `(address)` | Forever. Closed days only. |
 
 - The unique key starts with `address`, because the page always filters by address.
@@ -56,7 +59,7 @@ One more column has no prefix:
 | `self_total_transactions` | Transactions where `from = to`. They are also in `sent_total_transactions` and in `received_total_transactions`. |
 | `self_total_blobs` | Blobs of the transactions where `from = to`. They are also in `sent_total_blobs` and in `received_total_blobs`. |
 
-- That is 21 metric columns, plus `id`, `address`, `period_start` and `updated_at` (25 columns). The all-time table has no `period_start`, but has `aggregated_until` (24 columns).
+- That is 21 metric columns, plus `id`, `address`, `period_start` and `updated_at` (25 columns). The daily, weekly, monthly and yearly tables have the same columns, and their `period_start` is a `DATE`. A week starts on Monday, as `DATE_TRUNC('week')`. The all-time table has no `period_start`, but has `aggregated_until` (24 columns).
 - Do not store blob gas used or blob size. Each blob uses 131072 blob gas and has 131072 bytes, so the code calculates both values as `total_blobs × 131072`.
 - Prisma field names follow the convention of the current metrics models.
 
@@ -74,7 +77,10 @@ One more column has no prefix:
 |---|---|---|---|
 | `address_hourly_metrics` | Hourly | Raw tables | `address_hourly_metrics` |
 | `address_daily_metrics` | Daily | Raw tables | `address_daily_metrics` |
-| `address_all_time_metrics` | None | `address_daily_metrics` | `address_all_time_metrics` |
+| `address_weekly_metrics` | Weekly | `address_daily_metrics` | `address_weekly_metrics` |
+| `address_monthly_metrics` | Monthly | `address_daily_metrics` | `address_monthly_metrics` |
+| `address_yearly_metrics` | Yearly | `address_monthly_metrics` | `address_yearly_metrics` |
+| `address_all_time_metrics` | None | The yearly, monthly and daily tables | `address_all_time_metrics` |
 
 - The raw tables are `transaction`, `block`, `blobs_on_transactions`, `blob`, `eth_usd_price` and `transaction_fork`.
 - The hourly and daily assets use the same SQL with a different `DATE_TRUNC` (`hour` or `day`).
@@ -82,6 +88,8 @@ One more column has no prefix:
   - Combine the two with `UNION ALL`, then `GROUP BY address` with conditional `SUM`, `MIN` and `MAX`.
   - Calculate `self_total_transactions` in the `from_id` part with `COUNT(*) FILTER (WHERE from_id = to_id)`.
 - The daily asset does not read the hourly table. Thus a daily partition can run again at any time, also for days older than 30 days.
+- The weekly, monthly and yearly assets use one SQL (`aggregate_address_rollup.sql`) with a different source table and `DATE_TRUNC`. They are the same levels as the network metrics: daily → weekly, daily → monthly → yearly. All the metrics are sums, except `first_block_timestamp` (`MIN`) and `last_block_timestamp` (`MAX`), so each level has the same values as the transactions of its period.
+- A week can have days in two months, so the all-time SQL does not read the weekly table.
 - Use the same partition definitions as the current metrics assets (`end_offset=1`, start date from `DAGSTER_METRICS_START_DATE` or Dencun).
 - Use the current write method: `delete_window`, then `INSERT … ON CONFLICT`, in one transaction.
 
@@ -89,8 +97,12 @@ One more column has no prefix:
 
 - **Hourly**: the asset declares a dependency on `hourly_metrics` and uses the same automation condition as the rollup levels. Thus each run of the live schedule (every 10 minutes) and of the catch-up schedule (the last 3 hours) also updates it. The asset does not read `hourly_metrics`.
 - **Daily**: the current daily partition updates after each hourly run, with the same automation condition as `daily_metrics`. The daily asset declares a dependency on the hourly asset for this purpose only. It does not read the hourly data.
-- **All-time**: it includes closed days only. It runs with eager automation when a daily partition that is not the latest one materializes. This occurs after the day closes, and after a catch-up or reorg run on a closed day.
-  - The run deletes all rows, then inserts `SUM`, `MIN` and `MAX` over `address_daily_metrics` with `period_start <= aggregated_until`, grouped by address.
+- **Weekly, monthly and yearly**: the same automation condition as the network levels (`rollup_condition`). Each partition, the current one too, runs again when one of its upstream partitions is updated. Thus the current week and month follow the current day, and a re-run of an old day also updates its week, its month and then its year.
+- **All-time**: it includes closed days only. It runs when a daily, monthly or yearly partition that is not the latest one materializes. This occurs after a day, a month or a year closes, and after a catch-up or reorg run on a closed period.
+  - The run deletes all rows, then inserts `SUM`, `MIN` and `MAX`, grouped by address, over the closed periods: the closed years of `address_yearly_metrics`, the closed months of the current year of `address_monthly_metrics`, and the closed days of the current month of `address_daily_metrics`. The network all-time metrics use the same levels.
+  - This reads about one row for each address and closed year, plus the rows of the current year. A full read of the daily table would grow by about 86k rows each year at the current rate.
+  - The run is a full refresh, so it corrects itself: after the levels below it update, the next run has the correct values.
+  - At a month or a year boundary, the run can start before the month or the year updates. The update of that closed month or year then starts the run again.
 
 ### Hourly retention
 
@@ -102,7 +114,8 @@ One more column has no prefix:
 - Daily: the full history, with `BackfillPolicy.multi_run(30)` (30 days for each run).
 - Hourly: the last 30 days only, with `BackfillPolicy.multi_run(24 × 7)` (7 days for each run).
 - The two backfills do not depend on each other and can run at the same time.
-- After the daily backfill, run the all-time asset one time.
+- Weekly and monthly: after the daily backfill. Yearly: after the monthly backfill.
+- After the yearly backfill, run the all-time asset one time.
 
 ## API
 
@@ -258,12 +271,14 @@ The Analytics tab has six sections. The section is in the URL as `?section=`. Th
 
 - The Dagster tests are in `apps/dagster/tests/test_address_assets.py` and `test_address_automation.py`. They calculate the expected rows in Python from `db-fixtures.json`, the same as the current tests.
 - Test cases:
-  - all columns, for each role, at the hourly, daily and all-time levels
+  - all columns, for each role, at the hourly, daily, weekly, monthly, yearly and all-time levels
+  - a week with days in two months
   - reorg: a forked transaction is not counted
   - self-send: the transaction counts in both roles and in `self_total_transactions`
   - the hourly guard: a partition older than 30 days does nothing
   - the 30-day cleanup
   - all-time: closed days only, and `aggregated_until`
+  - all-time: the closed years come from the yearly rows, and the daily rows of a closed year are not counted again
   - the automation conditions of the address assets
 - Add to the fixtures:
   - an address that only receives
@@ -278,25 +293,44 @@ The Analytics tab has six sections. The section is in the URL as `?section=`. Th
 - Counterparty metrics: unique senders, top senders, "Posts to", poster history and concentration. These need a table for each sender–receiver pair.
 - Fee headroom and the max fee columns.
 - Blob gas used and blob size columns (calculated from `total_blobs`).
-- Weekly, monthly and yearly address tables.
 - Blob storage breakdown for each address.
 
 ## Data volume (production)
 
-| Role | Addresses | Address-days |
-|---|---|---|
-| Sent | 6,312 | 60,305 |
-| Received | 5,750 | 62,448 |
+The rows of each table for the full history, from Mar 13, 2024 to Nov 9, 2026 (972 days). One row is one address in one period, for the two roles together.
 
-- `address_daily_metrics`: at most ~123k rows for the full history. An address that sends and receives on the same day has one row, so the real number is lower.
-- `address_all_time_metrics`: at most ~12k rows.
-- `address_hourly_metrics` (30 days): the number of rows is small, because most addresses are active on few days.
-- The sent numbers come from an export of `from_id` and active days. The received numbers come from this query:
+| Table | Rows | New rows each year at the current rate |
+|---|---|---|
+| `address_daily_metrics` | 160,192 | ~86k (about 238 addresses each day) |
+| `address_weekly_metrics` | 36,111 | ~18k |
+| `address_monthly_metrics` | 17,172 | ~9k |
+| `address_yearly_metrics` | 10,279 | about the addresses active in the year |
+| `address_all_time_metrics` | 9,791 | the new addresses |
+
+- `address_hourly_metrics` (30 days): at most about 170k rows (24 rows for each address and day), and fewer, because most addresses are not active in each hour.
+- The numbers come from this query on the production database:
 
 ```sql
-SELECT COUNT(DISTINCT to_id) AS receivers,
-       COUNT(DISTINCT (DATE(block_timestamp), to_id)) AS receiver_days
-FROM transaction;
+WITH txs AS (
+  SELECT tx.block_timestamp, tx.from_id, tx.to_id
+  FROM transaction tx
+  WHERE NOT EXISTS (
+    SELECT 1 FROM transaction_fork tx_f
+    WHERE tx_f.block_hash = tx.block_hash AND tx_f.hash = tx.hash
+  )
+),
+addresses AS (
+  SELECT block_timestamp, from_id AS address FROM txs
+  UNION ALL
+  SELECT block_timestamp, to_id FROM txs
+)
+SELECT
+  COUNT(DISTINCT (DATE_TRUNC('day',   block_timestamp), address)) AS daily_rows,
+  COUNT(DISTINCT (DATE_TRUNC('week',  block_timestamp), address)) AS weekly_rows,
+  COUNT(DISTINCT (DATE_TRUNC('month', block_timestamp), address)) AS monthly_rows,
+  COUNT(DISTINCT (DATE_TRUNC('year',  block_timestamp), address)) AS yearly_rows,
+  COUNT(DISTINCT address)                                         AS all_time_rows
+FROM addresses;
 ```
 
 ## Delivery

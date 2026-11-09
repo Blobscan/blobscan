@@ -7,6 +7,9 @@ from analytics.defs.assets import (
     address_all_time_metrics,
     address_daily_metrics,
     address_hourly_metrics,
+    address_monthly_metrics,
+    address_weekly_metrics,
+    address_yearly_metrics,
     all_time_metrics,
     daily_metrics,
     hourly_metrics,
@@ -24,6 +27,9 @@ METRICS_ASSETS = [
     yearly_metrics,
     address_hourly_metrics,
     address_daily_metrics,
+    address_weekly_metrics,
+    address_monthly_metrics,
+    address_yearly_metrics,
     address_all_time_metrics,
 ]
 

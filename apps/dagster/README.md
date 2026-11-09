@@ -182,7 +182,8 @@ backfill runs:
 
 ```bash
 for t in hourly daily weekly monthly yearly all_time \
-  address_hourly address_daily address_all_time; do
+  address_hourly address_daily address_weekly address_monthly address_yearly \
+  address_all_time; do
   dagster instance concurrency set "metrics/${t}_metrics" 1
 done
 ```

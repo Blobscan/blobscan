@@ -1,5 +1,9 @@
 import dagster as dg
 
+# A runtime import: Dagster reads the annotations of the functions in this
+# module, and the project also runs on Python 3.13.
+from sqlalchemy.sql.elements import TextClause  # noqa: TC002
+
 from analytics.defs.helpers import (
     AGGREGATE_ADDRESS_ALL_TIME_SQL,
     AGGREGATE_ALL_TIME_SQL,
@@ -7,6 +11,7 @@ from analytics.defs.helpers import (
     AGGREGATE_ETH_PRICE_HOURLY_SQL,
     AGGREGATE_TX_HOURLY_SQL,
     address_hourly_retention_cutoff,
+    build_address_rollup_sql,
     build_address_sql,
     build_aggregate_sql,
     execute_full_refresh,
@@ -327,22 +332,105 @@ def address_daily_metrics(
     )
 
 
-# Run after an update of a closed day only: after the day closes (the catch-up
-# schedule updates its last hours), and after a re-run of an older day. The
-# updates of the current day do not change the all-time rows.
-closed_day_updated_condition = (
+_address_weekly_sql = build_address_rollup_sql(
+    "address_daily_metrics", "address_weekly_metrics", "week",
+)
+_address_monthly_sql = build_address_rollup_sql(
+    "address_daily_metrics", "address_monthly_metrics", "month",
+)
+_address_yearly_sql = build_address_rollup_sql(
+    "address_monthly_metrics", "address_yearly_metrics", "year",
+)
+
+
+def _materialize_address_rollup(
+    context: dg.AssetExecutionContext,
+    postgres: PostgresResource,
+    sql: TextClause,
+    table: str,
+) -> dg.MaterializeResult:
+    rowcount, ms = execute_sql_window(
+        context=context, postgres=postgres, sql=sql, table=table,
+    )
+
+    return dg.MaterializeResult(
+        metadata={
+            "partition_range": partition_meta(context),
+            "rows_affected": dg.MetadataValue.int(rowcount),
+            "query_ms": dg.MetadataValue.int(ms),
+        },
+    )
+
+
+# The weekly, monthly and yearly levels follow the network levels: each
+# partition, the current one too, runs again when one of its upstream
+# partitions is updated. Thus a re-run of an old day also updates its week,
+# its month and its year.
+@dg.asset(
+    deps=[dg.AssetDep(address_daily_metrics, partition_mapping=_ignore_missing)],
+    partitions_def=weekly_partitions,
+    automation_condition=rollup_condition,
+    backfill_policy=dg.BackfillPolicy.multi_run(30),
+    pool="metrics/address_weekly_metrics",
+)
+def address_weekly_metrics(
+    context: dg.AssetExecutionContext, postgres: PostgresResource,
+) -> dg.MaterializeResult:
+    return _materialize_address_rollup(
+        context, postgres, _address_weekly_sql, "address_weekly_metrics",
+    )
+
+
+@dg.asset(
+    deps=[dg.AssetDep(address_daily_metrics, partition_mapping=_ignore_missing)],
+    partitions_def=monthly_partitions,
+    automation_condition=rollup_condition,
+    backfill_policy=dg.BackfillPolicy.multi_run(12),
+    pool="metrics/address_monthly_metrics",
+)
+def address_monthly_metrics(
+    context: dg.AssetExecutionContext, postgres: PostgresResource,
+) -> dg.MaterializeResult:
+    return _materialize_address_rollup(
+        context, postgres, _address_monthly_sql, "address_monthly_metrics",
+    )
+
+
+@dg.asset(
+    deps=[dg.AssetDep(address_monthly_metrics, partition_mapping=_ignore_missing)],
+    partitions_def=yearly_partitions,
+    automation_condition=rollup_condition,
+    pool="metrics/address_yearly_metrics",
+)
+def address_yearly_metrics(
+    context: dg.AssetExecutionContext, postgres: PostgresResource,
+) -> dg.MaterializeResult:
+    return _materialize_address_rollup(
+        context, postgres, _address_yearly_sql, "address_yearly_metrics",
+    )
+
+
+# Run after an update of a closed period only: a day, a month or a year that
+# is not the current one. For example, after a day closes (the catch-up
+# schedule updates its last hours), after its month or its year closes, and
+# after a re-run of an older period. The updates of the current periods do not
+# change the all-time rows.
+closed_period_updated_condition = (
     dg.AutomationCondition.any_deps_match(
         dg.AutomationCondition.newly_updated()
         & ~dg.AutomationCondition.in_latest_time_window(),
     ).since_last_handled()
     & ~dg.AutomationCondition.any_deps_in_progress()
     & ~dg.AutomationCondition.in_progress()
-).with_label("closed_day_updated")
+).with_label("closed_period_updated")
 
 
 @dg.asset(
-    deps=[address_daily_metrics],
-    automation_condition=closed_day_updated_condition,
+    # The SQL reads the closed years, the closed months of the current year
+    # and the closed days of the current month (see
+    # aggregate_address_all_time.sql).
+    deps=[address_daily_metrics, address_monthly_metrics, address_yearly_metrics],
+    automation_condition=closed_period_updated_condition,
     pool="metrics/address_all_time_metrics",
 )
 def address_all_time_metrics(postgres: PostgresResource) -> dg.MaterializeResult:
