@@ -49,7 +49,7 @@ const Tx: NextPage = () => {
       refetchOnWindowFocus: false,
     }
   );
-  const { data: adjacentTxs } = api.tx.getAdjacentsByAddress.useQuery(
+  const { data: adjacentTxs } = api.tx.getSenderAdjacentsByHash.useQuery(
     { hash },
     {
       enabled: router?.isReady,

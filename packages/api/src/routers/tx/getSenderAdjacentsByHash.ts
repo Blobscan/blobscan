@@ -1,3 +1,5 @@
+import { TRPCError } from "@trpc/server";
+
 import { TransactionSchema } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
@@ -12,17 +14,17 @@ const outputSchema = z.object({
   nextTxHash: TransactionSchema.shape.hash.optional(),
 });
 
-type AdjacentTxsQueryResult = {
+type AdjacentTxsQuery = {
   prevTxHash: string | null;
   nextTxHash: string | null;
 }[];
 
 /**
  * Returns the previous and next transactions of the sender of the given
- * transaction, skipping transactions of reorged blocks.
+ * transaction. It does not return transactions of reorged blocks.
  *
  * Each side is a `LATERAL` subquery. The `LATERAL` join gives the values of
- * the current transaction to the inner index scan as parameters. Thus
+ * the current transaction to the inner index scan as parameters. Therefore
  * Postgres uses the tuple comparison and `from_id = …` as the `Index Cond`
  * of the `(from_id, block_timestamp, index)` index. The scan starts at the
  * current transaction and stops at the first transaction that is not reorged.
@@ -32,11 +34,11 @@ type AdjacentTxsQueryResult = {
  * not as an index condition. The scan then starts at one end of the index
  * and can read all the rows of the table.
  */
-export const getAdjacentsByAddress = publicProcedure
+export const getSenderAdjacentsByHash = publicProcedure
   .input(inputSchema)
   .output(outputSchema)
   .query(async ({ ctx: { prisma }, input: { hash } }) => {
-    const [result] = await prisma.$queryRaw<AdjacentTxsQueryResult>`
+    const [result] = await prisma.$queryRaw<AdjacentTxsQuery>`
       SELECT prev.hash AS "prevTxHash", next.hash AS "nextTxHash"
       FROM (
         SELECT from_id, block_timestamp, index
@@ -67,8 +69,15 @@ export const getAdjacentsByAddress = publicProcedure
       ) next ON true
     `;
 
+    if (!result) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: `No transaction with hash '${hash}'.`,
+      });
+    }
+
     return {
-      prevTxHash: result?.prevTxHash ?? undefined,
-      nextTxHash: result?.nextTxHash ?? undefined,
+      prevTxHash: result.prevTxHash ?? undefined,
+      nextTxHash: result.nextTxHash ?? undefined,
     };
   });
