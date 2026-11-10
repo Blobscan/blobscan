@@ -64,10 +64,12 @@ export function useAdjacentBlobNavigation({
 
       try {
         const adjacentInput = toAdjacentBlobInput(position, direction);
-        const adjacent = await utils.blob.getAdjacentBlob.ensureData(
-          adjacentInput,
-          { staleTime: BLOB_STALE_TIME }
-        );
+        // `fetch` sends a request if the cached result is older than
+        // `BLOB_STALE_TIME`. Do not use `ensureData`: it always returns the
+        // cached result, also when it is old.
+        const adjacent = await utils.blob.getAdjacentBlob.fetch(adjacentInput, {
+          staleTime: BLOB_STALE_TIME,
+        });
 
         if (!adjacent) {
           return;
@@ -95,17 +97,12 @@ export function useAdjacentBlobNavigation({
               adjacent,
               direction === "next" ? "prev" : "next"
             ),
-            { txHash: position.txHash, index: position.index, blob },
+            { ...position, blob },
             { updatedAt: blobUpdatedAt }
           );
         }
 
-        await router?.push(
-          routes.blob(adjacent.blob.versionedHash, {
-            txHash: adjacent.txHash,
-            index: adjacent.index,
-          })
-        );
+        await router?.push(routes.blob(adjacent.blob.versionedHash, adjacent));
       } catch (err) {
         setError(
           err instanceof Error ? err : new Error("Could not get the blob")

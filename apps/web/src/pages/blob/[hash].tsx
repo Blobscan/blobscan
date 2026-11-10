@@ -55,6 +55,7 @@ const Blob: NextPage = function () {
   const {
     data: blob,
     dataUpdatedAt: blobUpdatedAt,
+    isFetching: blobFetching,
     error,
   } = api.blob.getByBlobId.useQuery(
     {
@@ -71,7 +72,8 @@ const Blob: NextPage = function () {
   );
   // A blob can be in more than one transaction, and more than one time in the
   // same transaction. Thus the navigation uses the position in the URL. If the
-  // URL has no position, the navigation uses the first position of the blob.
+  // URL has no position, the navigation uses the first position in the list of
+  // the blob. The list starts with the newest block.
   const position = useMemo(() => {
     const blobOnTx =
       blob?.transactions.find(
@@ -129,7 +131,9 @@ const Blob: NextPage = function () {
 
       throw new Error(`Failed to fetch data of blob "${id}" from any storage`);
     },
-    enabled: !!blob,
+    // A cached blob can have expired signed URLs. When the page gets the blob
+    // again, wait for the new URLs before the page gets the blob data.
+    enabled: !!blob && !blobFetching,
     retry: false,
     refetchOnWindowFocus: false,
   });
