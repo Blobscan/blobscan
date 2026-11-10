@@ -51,6 +51,7 @@ export function useAdjacentBlobNavigation({
     CACHE_ONLY_OPTIONS
   );
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error>();
 
   const navigate = useCallback(
     async (direction: Direction) => {
@@ -59,6 +60,7 @@ export function useAdjacentBlobNavigation({
       }
 
       setLoading(true);
+      setError(undefined);
 
       try {
         const adjacentInput = toAdjacentBlobInput(position, direction);
@@ -104,6 +106,10 @@ export function useAdjacentBlobNavigation({
             index: adjacent.index,
           })
         );
+      } catch (err) {
+        setError(
+          err instanceof Error ? err : new Error("Could not get the blob")
+        );
       } finally {
         setLoading(false);
       }
@@ -111,5 +117,5 @@ export function useAdjacentBlobNavigation({
     [blob, blobUpdatedAt, position, queryClient, router, utils]
   );
 
-  return { prevBlob, nextBlob, loading, navigate };
+  return { prevBlob, nextBlob, loading, error, navigate };
 }

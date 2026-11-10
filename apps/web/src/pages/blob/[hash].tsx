@@ -67,7 +67,6 @@ const Blob: NextPage = function () {
       retry: false,
       refetchOnReconnect: false,
       refetchOnWindowFocus: false,
-      refetchOnMount: false,
     }
   );
   // A blob can be in more than one transaction, and more than one time in the
@@ -88,6 +87,7 @@ const Blob: NextPage = function () {
     prevBlob,
     nextBlob,
     loading: adjacentBlobLoading,
+    error: adjacentBlobError,
     navigate: handleNavClick,
   } = useAdjacentBlobNavigation({ blob, blobUpdatedAt, position });
   const { data: blobData, error: blobDataError } = useQuery({
@@ -371,6 +371,11 @@ const Blob: NextPage = function () {
               tooltip="Next Blob from This Sender"
               disabled={!position || nextBlob === null || adjacentBlobLoading}
             />
+            {adjacentBlobError && (
+              <span className="text-sm font-normal text-error-600 dark:text-error-300">
+                Couldn&apos;t load the adjacent blob
+              </span>
+            )}
           </div>
         }
         fields={blob ? detailsFields : undefined}
