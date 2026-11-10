@@ -1,7 +1,6 @@
 import type { FC } from "react";
 
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
-import { getDerivedMetrics } from "../../helpers";
 import { SectionLayout } from "./SectionLayout";
 import type { CardInfo } from "./cards";
 import {
@@ -12,6 +11,7 @@ import {
 } from "./cards";
 import type { ChartSpec } from "./charts";
 import { LINE_ACCENT_COLOR, pointLine, stackedRoleBars } from "./charts";
+import { getDerivedMetrics } from "./metrics";
 import type { AnalyticsSectionProps } from "./types";
 
 /** The cards of the section. They are also the skeletons while the data loads. */

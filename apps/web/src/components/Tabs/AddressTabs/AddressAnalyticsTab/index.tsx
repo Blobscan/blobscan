@@ -15,7 +15,7 @@ import {
   getTimeFrameOption,
   TimeFrameSelector,
 } from "~/components/Selectors";
-import { Tabs } from "~/components/Tabs";
+import { TabsBase } from "~/components/Tabs/TabsBase";
 import type { FeeUnit } from "~/components/Toggles";
 import { api } from "~/api-client";
 import { useIsTestnet } from "~/hooks/useIsTestnet";
@@ -24,20 +24,34 @@ import BlobIcon from "~/icons/blob.svg";
 import { feeUnitParamsSchema } from "~/schemas/feeUnit";
 import { timeFrameParamSchema } from "~/schemas/filters";
 import type { RenderableIcon } from "~/types/icons";
-import type { AddressRole, AddressSection } from "../../helpers";
-import {
-  ADDRESS_SECTIONS,
-  getMainRole,
-  getShownRoles,
-  SECTION_LABELS,
-} from "../../helpers";
 import { ActivityTab } from "./ActivityTab";
 import { BlobUsageTab } from "./BlobUsageTab";
 import { BlobsTab } from "./BlobsTab";
 import { FeesTab } from "./FeesTab";
 import { NetworkTab } from "./NetworkTab";
 import { TransactionsTab } from "./TransactionsTab";
-import type { AnalyticsSectionProps } from "./types";
+import { getMainRole, getShownRoles } from "./roles";
+import type { AddressRole, AnalyticsSectionProps } from "./types";
+
+export const ADDRESS_SECTIONS = [
+  "activity",
+  "transactions",
+  "blobs",
+  "usage",
+  "fees",
+  "network",
+] as const;
+
+export type AddressSection = (typeof ADDRESS_SECTIONS)[number];
+
+export const SECTION_LABELS: Record<AddressSection, string> = {
+  activity: "Activity",
+  transactions: "Transactions",
+  blobs: "Blobs",
+  usage: "Blob Usage",
+  fees: "Fees",
+  network: "Network",
+};
 
 const controlParamsSchema = timeFrameParamSchema
   .merge(feeUnitParamsSchema)
@@ -128,7 +142,7 @@ export const AddressAnalyticsTab: FC<AddressAnalyticsTabProps> = function ({
   };
 
   return (
-    <Tabs
+    <TabsBase
       fullWidth
       selected={section}
       onChange={(value) =>

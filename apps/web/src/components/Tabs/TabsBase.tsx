@@ -10,8 +10,8 @@ import {
 import { Tab, TabGroup, TabList } from "@headlessui/react";
 import cn from "classnames";
 
+import { Icon } from "~/components/Icon";
 import type { RenderableIcon } from "~/types/icons";
-import { Icon } from "./Icon";
 
 // useLayoutEffect gives a warning on the server. The block is measured only
 // in the browser.
@@ -27,7 +27,7 @@ export type TabItem<T extends string> = {
   content: ReactNode;
 };
 
-export type TabsProps<T extends string> = {
+export type TabsBaseProps<T extends string> = {
   tabs: TabItem<T>[];
   selected: T;
   onChange: (value: T) => void;
@@ -72,12 +72,12 @@ function prefersReducedMotion() {
  * slides to a tab when the user selects it, and the content fades out and
  * in. The parent keeps the selected tab, for example in the URL.
  */
-export function Tabs<T extends string>({
+export function TabsBase<T extends string>({
   tabs,
   selected,
   onChange,
   fullWidth = false,
-}: TabsProps<T>) {
+}: TabsBaseProps<T>) {
   const selectedIndex = Math.max(
     tabs.findIndex((t) => t.value === selected),
     0

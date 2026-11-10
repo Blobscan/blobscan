@@ -6,19 +6,81 @@ import type {
 } from "~/components/Cards/MetricCard";
 import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { formatNumber } from "~/utils";
-import type {
-  AddressOverall,
-  AddressRole,
-  AddressTimeseries,
-  SummableColumn,
-} from "../../helpers";
-import { BLOB_SIZE, getDailyMean, getPeakDay } from "../../helpers";
+import { BLOB_SIZE } from "./metrics";
+import type { SummableColumn } from "./timeseries";
+import { getClosedPeriodsMean, sumRoles } from "./timeseries";
+import type { AddressOverall, AddressRole, AddressTimeseries } from "./types";
 
 /**
  * The name of a card and its help text. An icon after the name shows the
  * text. Each section defines its cards with this type.
  */
 export type CardInfo = { name: string; description: string };
+
+/**
+ * Returns the values of a column in each period: of one role, or of both
+ * roles together (see sumRoles) when there is no role.
+ */
+function getColumnValues(
+  data: AddressTimeseries,
+  column: SummableColumn,
+  role?: AddressRole
+): number[] {
+  return role
+    ? data.timestamps.map((_, i) => Number(data[role][column][i] ?? 0))
+    : sumRoles(data, column);
+}
+
+/**
+ * Returns the UTC day with the largest value of a column, of one role or of
+ * both roles together. Hourly periods are added into days. Returns undefined
+ * when all the values are 0.
+ */
+function getPeakDay(
+  data: AddressTimeseries,
+  column: SummableColumn,
+  role?: AddressRole
+): { day: Date; value: number } | undefined {
+  const days = new Map<number, number>();
+
+  getColumnValues(data, column, role).forEach((value, i) => {
+    const timestamp = data.timestamps[i];
+
+    if (!timestamp) {
+      return;
+    }
+
+    const day = new Date(timestamp);
+
+    day.setUTCHours(0, 0, 0, 0);
+    days.set(day.getTime(), (days.get(day.getTime()) ?? 0) + value);
+  });
+
+  let peak: { day: Date; value: number } | undefined;
+
+  days.forEach((value, time) => {
+    if (value > 0 && (!peak || value > peak.value)) {
+      peak = { day: new Date(time), value };
+    }
+  });
+
+  return peak;
+}
+
+/**
+ * Returns the mean of a column for each day, of one role or of both roles
+ * together. The charts show the same mean as a line. An hourly mean is
+ * multiplied by 24.
+ */
+function getDailyMean(
+  data: AddressTimeseries,
+  column: SummableColumn,
+  role?: AddressRole
+): number | undefined {
+  const mean = getClosedPeriodsMean(getColumnValues(data, column, role));
+
+  return mean !== undefined && data.granularity === "hour" ? mean * 24 : mean;
+}
 
 /** Returns the cards that show a skeleton while the data loads. */
 export function skeletonCards(cards: CardInfo[]): MetricCardProps[] {

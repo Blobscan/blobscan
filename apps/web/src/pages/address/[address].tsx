@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
-import { AddressTabs } from "~/components/Address/Tabs";
 import { CategoryBadge } from "~/components/Badges/CategoryBadge";
 import { Copyable } from "~/components/Copyable";
 import { EthIdenticon } from "~/components/EthIdenticon";
@@ -10,6 +9,7 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
+import { AddressTabs } from "~/components/Tabs/AddressTabs";
 import { api } from "~/api-client";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";

@@ -7,13 +7,72 @@ import type { MetricCardProps } from "~/components/Cards/MetricCard";
 import { CalendarHeatmap } from "~/components/Charts/CalendarHeatmap";
 import { api } from "~/api-client";
 import { formatNumber } from "~/utils";
-import type { ActivityDay, AddressOverall } from "../../helpers";
-import { getActivityDays } from "../../helpers";
 import type { CardInfo } from "./cards";
 import { skeletonCards } from "./cards";
-import type { AnalyticsSectionProps } from "./types";
+import type {
+  AddressOverall,
+  AddressTimeseries,
+  AnalyticsSectionProps,
+} from "./types";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+/** A day with blob txs, as an item of the calendar heatmap. */
+type ActivityDay = {
+  /** The UTC day, as YYYY-MM-DD. */
+  date: string;
+  sent: number;
+  received: number;
+  /** The txs of both roles. */
+  value: number;
+  /** True when the day is in the longest streak of the address. */
+  highlighted: boolean;
+};
+
+/**
+ * Returns the days with blob txs of a daily timeseries, in order. The days of
+ * the longest run of consecutive active days are highlighted. When two runs
+ * have the same length, the most recent one is highlighted.
+ */
+function getActivityDays(data: AddressTimeseries): ActivityDay[] {
+  const days: ActivityDay[] = data.timestamps.flatMap((timestamp, i) => {
+    const sent = data.sent.totalTransactions[i] ?? 0;
+    const received = data.received.totalTransactions[i] ?? 0;
+
+    return sent || received
+      ? [
+          {
+            date: new Date(timestamp).toISOString().slice(0, 10),
+            sent,
+            received,
+            value: sent + received,
+            highlighted: false,
+          },
+        ]
+      : [];
+  });
+
+  let best: ActivityDay[] = [];
+  let run: ActivityDay[] = [];
+
+  days.forEach((day, i) => {
+    const prev = days[i - 1];
+    const isNextDay =
+      !!prev && Date.parse(day.date) - Date.parse(prev.date) === DAY_MS;
+
+    run = isNextDay ? [...run, day] : [day];
+
+    if (run.length >= best.length) {
+      best = run;
+    }
+  });
+
+  best.forEach((day) => {
+    day.highlighted = true;
+  });
+
+  return days;
+}
+
 /** The heatmap shows the last 365 days, today included. */
 const HEATMAP_DAYS = 365;
 

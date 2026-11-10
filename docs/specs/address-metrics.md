@@ -285,7 +285,7 @@ The Analytics tab has six sections. The section is in the URL as `?section=`. Th
   - an address that both sends and receives
   - a self-send
   - a self-sender (an address that sends only to itself)
-- Web tests: the role rule that hides the received role of a self-sender, the derived metrics, the daily means, the peak day, the day count of the cards, and the chart axes and tooltip totals.
+- Web tests: the day count of the cards, and the chart axes and tooltip totals. The calculation helpers of the address tabs (roles, derived metrics, daily means, peak day, activity days) have no unit tests.
 - API tests in `packages/api/test/address/address.test.ts`: `address.getOverall` (`All` and other time frames, including the gap after `aggregated_until`), the longest streak and gap, `address.getTimeseries`, and the `address` filter of `tx.getAll`.
 
 ## Out of scope

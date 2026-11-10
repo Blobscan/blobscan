@@ -4,15 +4,6 @@ import { prettyFormatWei } from "@blobscan/eth-format";
 
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
 import { formatNumber } from "~/utils";
-import type { AddressOverall } from "../../helpers";
-import {
-  getBlobGasPrices,
-  getMainRole,
-  getNetworkShare,
-  getShownRoles,
-  getTimingRatio,
-  ROLE_LABELS,
-} from "../../helpers";
 import { SectionLayout } from "./SectionLayout";
 import type { CardInfo } from "./cards";
 import { skeletonCards } from "./cards";
@@ -23,7 +14,71 @@ import {
   ROLE_COLORS,
   roleLines,
 } from "./charts";
-import type { AnalyticsSectionProps } from "./types";
+import { BLOB_SIZE, ratio, toBigInt } from "./metrics";
+import { getMainRole, getShownRoles, ROLE_LABELS } from "./roles";
+import type {
+  AddressOverall,
+  AnalyticsSectionProps,
+  RoleTotals,
+} from "./types";
+
+/**
+ * Returns the mean price of blob gas, in wei, that the address paid, and the
+ * mean price of the network in the same periods. Both prices are weighted by
+ * gas. A price is undefined when there is no blob gas.
+ */
+function getBlobGasPrices(
+  totals: Pick<RoleTotals, "totalBlobs" | "totalBlobBaseFee">,
+  network: Pick<
+    AddressOverall["network"],
+    "totalBlobBaseFee" | "totalBlobGasUsed"
+  >
+): { address?: bigint; network?: bigint } {
+  const gas = BigInt(totals.totalBlobs) * BigInt(BLOB_SIZE);
+  const networkGas = toBigInt(network.totalBlobGasUsed);
+
+  return {
+    address: gas ? toBigInt(totals.totalBlobBaseFee) / gas : undefined,
+    network: networkGas
+      ? toBigInt(network.totalBlobBaseFee) / networkGas
+      : undefined,
+  };
+}
+
+/**
+ * Returns the price that the address paid for each unit of blob gas, divided
+ * by the price of the network in the same periods. Both prices are weighted
+ * by gas. A value below 1 means that the address posted when blob gas cost
+ * less than the network average.
+ */
+function getTimingRatio(
+  totals: Pick<RoleTotals, "totalBlobs" | "totalBlobBaseFee">,
+  network: Pick<
+    AddressOverall["network"],
+    "totalBlobBaseFee" | "totalBlobGasUsed"
+  >
+): number | undefined {
+  const gas = BigInt(totals.totalBlobs) * BigInt(BLOB_SIZE);
+  const addressPrice = ratio(toBigInt(totals.totalBlobBaseFee), gas);
+  const networkPrice = ratio(
+    toBigInt(network.totalBlobBaseFee),
+    toBigInt(network.totalBlobGasUsed)
+  );
+
+  if (addressPrice === undefined || !networkPrice) {
+    return undefined;
+  }
+
+  return addressPrice / networkPrice;
+}
+
+/** Returns the share of the network blobs, from 0 to 1. */
+function getNetworkShare(
+  totalBlobs: number,
+  networkTotalBlobs: number
+): number | undefined {
+  return ratio(totalBlobs, networkTotalBlobs);
+}
 
 /**
  * The cards of the section. They are also the skeletons while the data loads.

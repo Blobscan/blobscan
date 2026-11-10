@@ -2,13 +2,13 @@ import type { FC } from "react";
 
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
 import { formatBytes, formatNumber } from "~/utils";
-import type { RoleTotals } from "../../helpers";
-import { BLOB_SIZE } from "../../helpers";
 import { SectionLayout } from "./SectionLayout";
 import type { CardInfo } from "./cards";
 import { dailyMeanCard, peakDayCard, skeletonCards } from "./cards";
 import type { ChartSpec } from "./charts";
 import { LINE_ACCENT_COLOR, pointLine, ROLE_COLORS } from "./charts";
+import { BLOB_SIZE } from "./metrics";
+import type { RoleTotals } from "./types";
 import type { AnalyticsSectionProps } from "./types";
 
 /** The cards of the section. They are also the skeletons while the data loads. */

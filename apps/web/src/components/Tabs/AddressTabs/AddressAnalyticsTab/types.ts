@@ -1,11 +1,15 @@
 import type { ReactNode } from "react";
 
+import type { AppRouterOutputs } from "@blobscan/api";
+
 import type { FeeUnit } from "~/components/Toggles";
-import type {
-  AddressOverall,
-  AddressRole,
-  AddressTimeseries,
-} from "../../helpers";
+
+export type AddressOverall = AppRouterOutputs["address"]["getOverall"]["data"];
+export type AddressTimeseries =
+  AppRouterOutputs["address"]["getTimeseries"]["data"];
+export type RoleTotals = AddressOverall["sent"];
+
+export type AddressRole = "sent" | "received";
 
 /** The props that the Analytics tab gives to each of its sections. */
 export type AnalyticsSectionProps = {

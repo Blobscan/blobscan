@@ -4,12 +4,12 @@ import { useMemo } from "react";
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
 import { FeeUnitToggle } from "~/components/Toggles";
 import type { FeeUnit } from "~/components/Toggles";
-import { getDerivedMetrics } from "../../helpers";
 import { SectionLayout } from "./SectionLayout";
 import type { CardInfo } from "./cards";
 import { feeMetric, skeletonCards } from "./cards";
 import type { ChartSpec } from "./charts";
 import { getFeeAxes, roleBars, roleLines } from "./charts";
+import { getDerivedMetrics } from "./metrics";
 import type { AnalyticsSectionProps } from "./types";
 
 /** The cards of the section. They are also the skeletons while the data loads. */

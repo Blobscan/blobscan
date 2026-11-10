@@ -8,13 +8,10 @@ import type { Axis, ChartBaseProps } from "~/components/Charts/ChartBase";
 import type { ChartDataset } from "~/components/Charts/ChartBase/helpers";
 import type { FeeUnit } from "~/components/Toggles";
 import type { ThemeMode } from "~/types";
-import type { AddressRole, AddressTimeseries } from "../../helpers";
-import {
-  BLOB_SIZE,
-  getClosedPeriodsMean,
-  ROLE_LABELS,
-  sumRoles,
-} from "../../helpers";
+import { BLOB_SIZE } from "./metrics";
+import { ROLE_LABELS } from "./roles";
+import { getClosedPeriodsMean, sumRoles } from "./timeseries";
+import type { AddressRole, AddressTimeseries } from "./types";
 
 type ThemeColor = Record<ThemeMode, string>;
 

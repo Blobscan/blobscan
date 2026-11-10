@@ -3,7 +3,7 @@ import { ChartBarIcon, QueueListIcon } from "@heroicons/react/24/outline";
 
 import { z } from "@blobscan/zod";
 
-import { Tabs } from "~/components/Tabs";
+import { TabsBase } from "~/components/Tabs/TabsBase";
 import { useUrlState } from "~/hooks/useUrlState";
 import { AddressAnalyticsTab } from "./AddressAnalyticsTab";
 import { AddressTransactionsTab } from "./AddressTransactionsTab";
@@ -38,7 +38,7 @@ export const AddressTabs: FC<AddressTabsProps> = function ({
   const tab: Tab = state?.tab ?? "transactions";
 
   return (
-    <Tabs
+    <TabsBase
       selected={tab}
       onChange={(value) =>
         updateState({
