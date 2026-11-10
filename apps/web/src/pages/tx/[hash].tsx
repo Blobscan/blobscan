@@ -21,10 +21,7 @@ import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
-import type {
-  GetAdjacentTxByAddressInput,
-  TransactionWithExpandedBlockAndBlob,
-} from "~/types";
+import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import {
   formatTimestamp,
   formatBytes,
@@ -52,14 +49,10 @@ const Tx: NextPage = () => {
       refetchOnWindowFocus: false,
     }
   );
-  const { data: adjacentTxs } = api.tx.getAdjacentsByAddress.useQuery(
+  const { data: adjacentTxs } = api.tx.getSenderAdjacentsByHash.useQuery(
+    { hash },
     {
-      blockTimestamp: tx?.blockTimestamp,
-      senderAddress: tx?.from,
-      txIndex: tx?.index,
-    } as GetAdjacentTxByAddressInput,
-    {
-      enabled: !!tx,
+      enabled: router?.isReady,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       staleTime: Infinity,
