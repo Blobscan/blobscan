@@ -80,48 +80,123 @@ function hasDisplayableValue(value: Numerish | undefined): value is Numerish {
   return value !== undefined && value !== "" && Number(value) !== 0;
 }
 
-function getPercentage(value?: Numerish, total?: Numerish) {
-  return value && total
-    ? calculatePercentage(value, total).toFixed(2)
-    : undefined;
+// The tooltip text uses this font. The column width calculation uses the same
+// font to measure the text.
+const TOOLTIP_FONT_FAMILY = "sans-serif";
+const TOOLTIP_FONT_SIZE_REM = 0.8;
+const PERCENTAGE_FONT_SIZE_REM = 0.7;
+
+// The text of the value column of a series row. The row shows the percentage
+// in a smaller font after the value.
+function getSeriesValueText(
+  value: Numerish | undefined,
+  axis: Axis,
+  total?: Numerish
+) {
+  return {
+    formattedValue: value ? `${formatAxisValue(value, axis)}` : "-",
+    percentage:
+      value && total ? calculatePercentage(value, total).toFixed(2) : undefined,
+  };
 }
 
-function getFormattedValue(value: Numerish | undefined, axis: Axis) {
-  return value ? formatAxisValue(value, axis) : undefined;
-}
+type SeriesRowContent = {
+  name: string;
+  value?: Numerish;
+  total?: Numerish;
+  isBold?: boolean;
+};
 
 /**
- * The minimum widths of the name column and the value column of the series
- * rows, in `ch` units.
+ * This type contains the minimum widths, in pixels, of the name column and the
+ * value column of the series rows.
  */
 type SeriesColumnWidths = {
   name: number;
   value: number;
 };
 
-// Get the column widths from all the series in the hovered bar, not only from
-// the series that the tooltip shows. Thus the tooltip width does not change
-// when the user hovers from one series to a different series of the bar.
+type TextMeasurer = (
+  text: string,
+  fontSizeRem: number,
+  isBold?: boolean
+) => number;
+
+let measureContext: CanvasRenderingContext2D | null | undefined;
+
+// Returns undefined when the browser cannot measure text.
+function createTextMeasurer(): TextMeasurer | undefined {
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  if (measureContext === undefined) {
+    measureContext = document.createElement("canvas").getContext("2d");
+  }
+
+  const context = measureContext;
+
+  if (!context) {
+    return;
+  }
+
+  const rootFontSize =
+    parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+
+  return (text, fontSizeRem, isBold) => {
+    context.font = `${isBold ? "bold " : ""}${
+      fontSizeRem * rootFontSize
+    }px ${TOOLTIP_FONT_FAMILY}`;
+
+    return context.measureText(text).width;
+  };
+}
+
+// Calculate the column widths from all the rows of the hovered bar, not only
+// from the rows that the tooltip shows. As a result, the tooltip width does not
+// change when the user hovers from one series to a different series of the bar.
 function getSeriesColumnWidths(
-  series: { name: string; value?: Numerish }[],
-  axis: Axis,
-  total?: Numerish
-): SeriesColumnWidths {
-  return series.reduce<SeriesColumnWidths>(
-    (widths, { name, value }) => {
-      const formattedValue = getFormattedValue(value, axis) ?? "-";
-      const percentage = getPercentage(value, total);
-      const valueText = percentage
-        ? `${formattedValue} (${percentage}%)`
-        : `${formattedValue}`;
+  rows: SeriesRowContent[],
+  axis: Axis
+): SeriesColumnWidths | undefined {
+  const measureText = createTextMeasurer();
+
+  if (!measureText) {
+    return;
+  }
+
+  const widths = rows.reduce<SeriesColumnWidths>(
+    (widths, { name, value, total, isBold }) => {
+      const { formattedValue, percentage } = getSeriesValueText(
+        value,
+        axis,
+        total
+      );
+      // The HTML puts a space between the value and the percentage.
+      const percentageWidth = percentage
+        ? measureText(" ", TOOLTIP_FONT_SIZE_REM, isBold) +
+          measureText(`(${percentage}%)`, PERCENTAGE_FONT_SIZE_REM, isBold)
+        : 0;
 
       return {
-        name: Math.max(widths.name, name.length),
-        value: Math.max(widths.value, valueText.length),
+        name: Math.max(
+          widths.name,
+          measureText(name, TOOLTIP_FONT_SIZE_REM, isBold)
+        ),
+        value: Math.max(
+          widths.value,
+          measureText(formattedValue, TOOLTIP_FONT_SIZE_REM, isBold) +
+            percentageWidth
+        ),
       };
     },
     { name: 0, value: 0 }
   );
+
+  return {
+    name: Math.ceil(widths.name),
+    value: Math.ceil(widths.value),
+  };
 }
 
 function buildSeriesHTMLElement({
@@ -146,8 +221,7 @@ function buildSeriesHTMLElement({
   columnWidths?: SeriesColumnWidths;
 }) {
   const isDarkMode = themeMode === "dark";
-  const percentage = getPercentage(value, total);
-  const formattedValue = getFormattedValue(value, axis);
+  const { formattedValue, percentage } = getSeriesValueText(value, axis, total);
   const markerElement =
     marker ?? markerColor
       ? `<div style="width: 10px; height: 10px; background-color:${markerColor}; border-radius: 50%;"></div>`
@@ -164,16 +238,16 @@ function buildSeriesHTMLElement({
       }; display: flex; align-items: center; gap: 4px;">
         ${markerElement}
         <div style="${
-          columnWidths ? `min-width: ${columnWidths.name}ch;` : ""
+          columnWidths ? `min-width: ${columnWidths.name}px;` : ""
         }">${name}</div>
       </div>
       <div style="color: ${isDarkMode ? "#A3A3A3" : "#404040"}; ${
-    columnWidths ? `min-width: ${columnWidths.value}ch; text-align: right;` : ""
+    columnWidths ? `min-width: ${columnWidths.value}px; text-align: right;` : ""
   }">
-        ${formattedValue ?? "-"}
+        ${formattedValue}
         ${
           percentage
-            ? `<span style="opacity: 0.4; font-size: 0.70rem;">(${percentage}%)</span>`
+            ? `<span style="opacity: 0.4; font-size: ${PERCENTAGE_FONT_SIZE_REM}rem;">(${percentage}%)</span>`
             : ""
         }
       </div>
@@ -283,23 +357,41 @@ function createTooltipFormater({
       const totalItems = 15;
       let filteredParams: DefaultLabelFormatterCallbackParams[];
       let columnWidths: SeriesColumnWidths | undefined;
+      const summaryRows: SeriesRowContent[] = [];
 
       if (displayTotal) {
         // Dimensional charts: show only the series that have a value in the
         // hovered bar, from the largest value to the smallest value.
-        const sortedParams = paramOrParams
+        const sortedSeries = paramOrParams
           .map((p) => ({ param: p, value: getValue(p, getSeriesValue) }))
           .filter(({ value }) => hasDisplayableValue(value))
-          .sort((a, b) => Number(b.value) - Number(a.value))
-          .map(({ param }) => param);
+          .sort((a, b) => Number(b.value) - Number(a.value));
+        const sortedParams = sortedSeries.map(({ param }) => param);
+
+        if (rollupSeries.length) {
+          summaryRows.push({
+            name: "Rollup",
+            value: aggregateValues(
+              rollupSeries.map((p) => getValue(p, getSeriesValue)),
+              axes.y.type
+            ),
+            total: dailyTotal,
+            isBold: true,
+          });
+        }
+
+        summaryRows.push({ name: "Total", value: dailyTotal, isBold: true });
 
         columnWidths = getSeriesColumnWidths(
-          sortedParams.map((p) => ({
-            name: formatSeriesName(p.seriesName),
-            value: getValue(p, getSeriesValue),
-          })),
-          axes.y,
-          dailyTotal
+          [
+            ...sortedSeries.map(({ param, value }) => ({
+              name: formatSeriesName(param.seriesName),
+              value,
+              total: dailyTotal,
+            })),
+            ...summaryRows,
+          ],
+          axes.y
         );
 
         const hoveredIndex = sortedParams.findIndex(
@@ -359,35 +451,18 @@ function createTooltipFormater({
         );
       });
 
-      if (displayTotal) {
-        if (rollupSeries.length) {
-          const rollupTotal = aggregateValues(
-            rollupSeries.map((p) => getValue(p, getSeriesValue)),
-            axes.y.type
-          );
-
-          totalSeriesHTMLElements.push(
-            buildSeriesHTMLElement({
-              name: "Rollup",
-              value: rollupTotal,
-              axis: axes.y,
-              total: dailyTotal,
-              themeMode,
-              columnWidths,
-            })
-          );
-        }
-
+      summaryRows.forEach(({ name, value, total }) => {
         totalSeriesHTMLElements.push(
           buildSeriesHTMLElement({
-            name: "Total",
-            value: dailyTotal,
+            name,
+            value,
+            total,
             axis: axes.y,
             themeMode,
             columnWidths,
           })
         );
-      }
+      });
     } else {
       const { name, seriesName, value, color } = paramOrParams;
 
@@ -489,7 +564,8 @@ export function createBaseTooltipOptions({
   return {
     trigger: "axis",
     confine: true,
-    extraCssText: "font-size: 0.80rem;",
+    extraCssText: `font-size: ${TOOLTIP_FONT_SIZE_REM}rem;`,
+    textStyle: { fontFamily: TOOLTIP_FONT_FAMILY },
     backgroundColor: themeMode === "dark" ? "#2E2854" : "#FAFAFA",
     borderColor: themeMode === "dark" ? "#372779" : "#5D25D4",
     formatter: createTooltipFormater({
