@@ -1,15 +1,16 @@
-import { TRPCError } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import type { TRPCContext } from "../../src/context";
 import { createTestContext } from "../helpers";
 import type { BlobCaller } from "./caller";
 import { createBlobCaller } from "./caller";
 
 describe("getAdjacentBlob", () => {
+  let ctx: TRPCContext;
   let blobCaller: BlobCaller;
 
   beforeAll(async () => {
-    const ctx = await createTestContext();
+    ctx = await createTestContext();
 
     blobCaller = createBlobCaller(ctx);
   });
@@ -131,6 +132,43 @@ describe("getAdjacentBlob", () => {
     });
   });
 
+  describe("when the previous transaction of the sender is in a reorged block", () => {
+    it("should ignore the reorged transaction", async () => {
+      await ctx.prisma.transactionFork.create({
+        data: { hash: "txHash012", blockHash: "blockHash005" },
+      });
+
+      await expect(
+        getAdjacentPosition("txHash015", 0, "prev")
+      ).resolves.toEqual({
+        versionedHash: "blobHash001",
+        txHash: "txHash007",
+        index: 0,
+      });
+    });
+  });
+
+  describe("when the transaction of the blob is in a reorged block", () => {
+    const reorgedTxHash =
+      "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272";
+
+    it("should return the last blob of the previous transaction of the sender", async () => {
+      await expect(
+        getAdjacentPosition(reorgedTxHash, 0, "prev")
+      ).resolves.toEqual({
+        versionedHash: "blobHash004",
+        txHash: "txHash015",
+        index: 2,
+      });
+    });
+
+    it("should return null for the next blob", async () => {
+      await expect(
+        getAdjacentPosition(reorgedTxHash, 0, "next")
+      ).resolves.toBeNull();
+    });
+  });
+
   describe("when the same blob is in a transaction more than one time", () => {
     it("should use the position to find the adjacent blobs", async () => {
       await expect(
@@ -175,7 +213,7 @@ describe("getAdjacentBlob", () => {
           index: 99,
           direction: "next",
         })
-      ).rejects.toThrow(TRPCError);
+      ).rejects.toMatchObject({ code: "NOT_FOUND" });
     });
   });
 });
