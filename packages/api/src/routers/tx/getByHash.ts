@@ -1,5 +1,3 @@
-import { TRPCError } from "@trpc/server";
-
 import { z } from "@blobscan/zod";
 
 import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
@@ -9,7 +7,7 @@ import {
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
-import { findResponseTransaction, responseTransactionSchema } from "./helpers";
+import { getResponseTransaction, responseTransactionSchema } from "./helpers";
 
 const inputSchema = z
   .object({
@@ -32,15 +30,6 @@ export const getByHash = publicProcedure
   .use(withExpands)
   .output(outputSchema)
   .use(withBlobSignedUrls)
-  .query(async ({ ctx: { expands, prisma }, input: { hash } }) => {
-    const tx = await findResponseTransaction(prisma, expands, hash);
-
-    if (!tx) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: `No transaction with hash '${hash}'.`,
-      });
-    }
-
-    return tx;
-  });
+  .query(({ ctx: { expands, prisma }, input: { hash } }) =>
+    getResponseTransaction(prisma, expands, hash)
+  );

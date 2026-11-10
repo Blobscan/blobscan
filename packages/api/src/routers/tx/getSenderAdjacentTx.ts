@@ -1,5 +1,3 @@
-import { TRPCError } from "@trpc/server";
-
 import { z } from "@blobscan/zod";
 
 import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
@@ -10,7 +8,8 @@ import {
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import {
-  findResponseTransaction,
+  createTransactionNotFoundError,
+  getResponseTransaction,
   responseTransactionSchema,
   senderAdjacentTxSql,
 } from "./helpers";
@@ -58,10 +57,7 @@ export const getSenderAdjacentTx = publicProcedure
     `;
 
     if (!result) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: `No transaction with hash '${hash}'.`,
-      });
+      throw createTransactionNotFoundError(hash);
     }
 
     const adjacentHash = result.adjacentTxHash;
@@ -70,18 +66,5 @@ export const getSenderAdjacentTx = publicProcedure
       return null;
     }
 
-    const adjacentTx = await findResponseTransaction(
-      prisma,
-      expands,
-      adjacentHash
-    );
-
-    if (!adjacentTx) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: `No transaction with hash '${adjacentHash}'.`,
-      });
-    }
-
-    return adjacentTx;
+    return getResponseTransaction(prisma, expands, adjacentHash);
   });

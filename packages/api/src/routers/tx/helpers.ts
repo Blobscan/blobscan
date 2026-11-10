@@ -1,3 +1,5 @@
+import { TRPCError } from "@trpc/server";
+
 import { Prisma } from "@blobscan/db";
 import type {
   BlobscanPrismaClient,
@@ -180,15 +182,23 @@ export function toResponseTransaction(
   };
 }
 
+export function createTransactionNotFoundError(hash: string) {
+  return new TRPCError({
+    code: "NOT_FOUND",
+    message: `No transaction with hash '${hash}'.`,
+  });
+}
+
 /**
- * Gets the transaction with the given hash in the response format of
- * `tx.getByHash`. Returns `null` if the transaction does not exist.
+ * Returns the transaction with the given hash in the response format of
+ * `tx.getByHash`. Throws a `NOT_FOUND` error if the transaction does not
+ * exist.
  */
-export async function findResponseTransaction(
+export async function getResponseTransaction(
   prisma: BlobscanPrismaClient,
   expands: Expands,
   hash: string
-): Promise<ResponseTransaction | null> {
+): Promise<ResponseTransaction> {
   const [prismaTx, ethUsdPrice] = await Promise.all([
     prisma.transaction.findUnique({
       select: createTransactionSelect(expands),
@@ -198,7 +208,7 @@ export async function findResponseTransaction(
   ]);
 
   if (!prismaTx) {
-    return null;
+    throw createTransactionNotFoundError(hash);
   }
 
   return toResponseTransaction(prismaTx, ethUsdPrice?.price);
@@ -207,7 +217,7 @@ export async function findResponseTransaction(
 export type AdjacentDirection = "prev" | "next";
 
 /**
- * Returns a `LATERAL` subquery that gets the hash of the previous or the next
+ * Returns a `LATERAL` subquery that finds the hash of the previous or the next
  * transaction of a sender. The order is block timestamp, then transaction
  * index. The subquery does not return transactions of reorged blocks.
  *
@@ -218,7 +228,7 @@ export type AdjacentDirection = "prev" | "next";
  * `(from_id, block_timestamp, index)` index. The scan starts at the current
  * transaction and stops at the first transaction that is not reorged.
  *
- * Do not get the current transaction from a CTE and join it in the subquery.
+ * Do not read the current transaction from a CTE and join it in the subquery.
  * Postgres then applies the tuple comparison as a join filter, not as an index
  * condition. The scan then starts at one end of the index and can read all
  * the rows of the table.

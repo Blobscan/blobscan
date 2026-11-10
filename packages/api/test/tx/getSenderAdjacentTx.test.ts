@@ -1,6 +1,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
 import type { TRPCContext } from "../../src";
+import type { AdjacentDirection } from "../../src/routers/tx/helpers";
 import { createTestContext } from "../helpers";
 import type { TxCaller } from "./caller";
 import { createTransactionCaller } from "./caller";
@@ -15,7 +16,7 @@ describe("getSenderAdjacentTx", () => {
     txCaller = createTransactionCaller(ctx);
   });
 
-  async function getAdjacentHash(hash: string, direction: "prev" | "next") {
+  async function getAdjacentHash(hash: string, direction: AdjacentDirection) {
     const result = await txCaller.getSenderAdjacentTx({ hash, direction });
 
     return result?.hash ?? null;
@@ -35,6 +36,9 @@ describe("getSenderAdjacentTx", () => {
   describe("when the transaction is the first transaction of the sender", () => {
     it("should return null for the previous transaction", async () => {
       await expect(getAdjacentHash("txHash003", "prev")).resolves.toBeNull();
+    });
+
+    it("should return the next transaction of the sender", async () => {
       await expect(getAdjacentHash("txHash003", "next")).resolves.toBe(
         "txHash007"
       );
@@ -42,10 +46,13 @@ describe("getSenderAdjacentTx", () => {
   });
 
   describe("when the transaction is the last transaction of the sender", () => {
-    it("should return null for the next transaction", async () => {
+    it("should return the previous transaction of the sender", async () => {
       await expect(getAdjacentHash("txHash016", "prev")).resolves.toBe(
         "txHash006"
       );
+    });
+
+    it("should return null for the next transaction", async () => {
       await expect(getAdjacentHash("txHash016", "next")).resolves.toBeNull();
     });
   });

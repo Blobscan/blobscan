@@ -37,9 +37,9 @@ import {
 } from "~/utils";
 
 const TX_EXPAND = "block,blob";
-// The transaction responses can have signed storage URLs that expire after
-// one hour, so the page does not use a cached transaction that is older than
-// this time.
+// The signed storage URLs in a transaction response expire after one hour.
+// Thus the page does not use a cached transaction that is older than this
+// time.
 const TX_STALE_TIME = 5 * 60 * 1000;
 
 function toSenderAdjacentTxInput(
@@ -67,7 +67,8 @@ const Tx: NextPage = () => {
       refetchOnWindowFocus: false,
     }
   );
-  // The page gets an adjacent transaction only when the user clicks an arrow.
+  // The page requests an adjacent transaction only when the user clicks an
+  // arrow.
   // These queries do not send a request. They only read the cache that the
   // click fills, so an arrow becomes disabled when its result is `null`.
   const cacheOnlyOptions = { enabled: false, staleTime: Infinity } as const;
@@ -107,10 +108,10 @@ const Tx: NextPage = () => {
         // of the request, so that an old transaction does not show as new.
         //
         // Do not put the current transaction in the cache as the adjacent
-        // transaction of the new page in the opposite direction. If the
-        // current transaction is in a reorged block, the search in the
-        // opposite direction does not return it, and the response does not
-        // tell if the block is reorged.
+        // transaction of the new page in the opposite direction. The search in
+        // the opposite direction does not return a transaction in a reorged
+        // block. The response does not tell if the block of the current
+        // transaction is reorged.
         const adjacentUpdatedAt = queryClient.getQueryState(
           getQueryKey(api.tx.getSenderAdjacentTx, adjacentInput, "query")
         )?.dataUpdatedAt;
