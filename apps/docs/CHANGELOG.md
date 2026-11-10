@@ -1,5 +1,11 @@
 # @blobscan/docs
 
+## 0.3.5
+
+### Patch Changes
+
+- [#1088](https://github.com/Blobscan/blobscan/pull/1088) [`4596075`](https://github.com/Blobscan/blobscan/commit/4596075d1486ba0bedda6821440c24fb6f03e21e) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added a command that launches the metrics backfill after a rollup change
+
 ## 0.3.4
 
 ### Patch Changes
