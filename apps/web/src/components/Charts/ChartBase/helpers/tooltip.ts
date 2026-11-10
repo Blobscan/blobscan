@@ -80,6 +80,50 @@ function hasDisplayableValue(value: Numerish | undefined): value is Numerish {
   return value !== undefined && value !== "" && Number(value) !== 0;
 }
 
+function getPercentage(value?: Numerish, total?: Numerish) {
+  return value && total
+    ? calculatePercentage(value, total).toFixed(2)
+    : undefined;
+}
+
+function getFormattedValue(value: Numerish | undefined, axis: Axis) {
+  return value ? formatAxisValue(value, axis) : undefined;
+}
+
+/**
+ * The minimum widths of the name column and the value column of the series
+ * rows, in `ch` units.
+ */
+type SeriesColumnWidths = {
+  name: number;
+  value: number;
+};
+
+// Get the column widths from all the series in the hovered bar, not only from
+// the series that the tooltip shows. Thus the tooltip width does not change
+// when the user hovers from one series to a different series of the bar.
+function getSeriesColumnWidths(
+  series: { name: string; value?: Numerish }[],
+  axis: Axis,
+  total?: Numerish
+): SeriesColumnWidths {
+  return series.reduce<SeriesColumnWidths>(
+    (widths, { name, value }) => {
+      const formattedValue = getFormattedValue(value, axis) ?? "-";
+      const percentage = getPercentage(value, total);
+      const valueText = percentage
+        ? `${formattedValue} (${percentage}%)`
+        : `${formattedValue}`;
+
+      return {
+        name: Math.max(widths.name, name.length),
+        value: Math.max(widths.value, valueText.length),
+      };
+    },
+    { name: 0, value: 0 }
+  );
+}
+
 function buildSeriesHTMLElement({
   name,
   value,
@@ -89,6 +133,7 @@ function buildSeriesHTMLElement({
   total,
   isSelected,
   themeMode,
+  columnWidths,
 }: {
   name: string;
   value?: Numerish;
@@ -98,12 +143,11 @@ function buildSeriesHTMLElement({
   total?: Numerish;
   isSelected?: boolean;
   themeMode?: "light" | "dark";
+  columnWidths?: SeriesColumnWidths;
 }) {
   const isDarkMode = themeMode === "dark";
-  const percentage =
-    value && total ? calculatePercentage(value, total).toFixed(2) : undefined;
-  1;
-  const formattedValue = value ? formatAxisValue(value, axis) : undefined;
+  const percentage = getPercentage(value, total);
+  const formattedValue = getFormattedValue(value, axis);
   const markerElement =
     marker ?? markerColor
       ? `<div style="width: 10px; height: 10px; background-color:${markerColor}; border-radius: 50%;"></div>`
@@ -119,9 +163,13 @@ function buildSeriesHTMLElement({
         isDarkMode ? "#FFFFFF" : "#171717"
       }; display: flex; align-items: center; gap: 4px;">
         ${markerElement}
-        <div>${name}</div>
+        <div style="${
+          columnWidths ? `min-width: ${columnWidths.name}ch;` : ""
+        }">${name}</div>
       </div>
-      <div style="color: ${isDarkMode ? "#A3A3A3" : "#404040"};">
+      <div style="color: ${isDarkMode ? "#A3A3A3" : "#404040"}; ${
+    columnWidths ? `min-width: ${columnWidths.value}ch; text-align: right;` : ""
+  }">
         ${formattedValue ?? "-"}
         ${
           percentage
@@ -234,6 +282,7 @@ function createTooltipFormater({
       );
       const totalItems = 15;
       let filteredParams: DefaultLabelFormatterCallbackParams[];
+      let columnWidths: SeriesColumnWidths | undefined;
 
       if (displayTotal) {
         // Dimensional charts: show only the series that have a value in the
@@ -243,6 +292,16 @@ function createTooltipFormater({
           .filter(({ value }) => hasDisplayableValue(value))
           .sort((a, b) => Number(b.value) - Number(a.value))
           .map(({ param }) => param);
+
+        columnWidths = getSeriesColumnWidths(
+          sortedParams.map((p) => ({
+            name: formatSeriesName(p.seriesName),
+            value: getValue(p, getSeriesValue),
+          })),
+          axes.y,
+          dailyTotal
+        );
+
         const hoveredIndex = sortedParams.findIndex(
           (p) => p.seriesIndex === seriesIndex
         );
@@ -295,6 +354,7 @@ function createTooltipFormater({
             markerColor: typeof color === "string" ? color : undefined,
             themeMode,
             isSelected,
+            columnWidths,
           })
         );
       });
@@ -313,6 +373,7 @@ function createTooltipFormater({
               axis: axes.y,
               total: dailyTotal,
               themeMode,
+              columnWidths,
             })
           );
         }
@@ -323,6 +384,7 @@ function createTooltipFormater({
             value: dailyTotal,
             axis: axes.y,
             themeMode,
+            columnWidths,
           })
         );
       }
