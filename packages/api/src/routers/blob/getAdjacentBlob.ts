@@ -1,6 +1,5 @@
 import { TRPCError } from "@trpc/server";
 
-import { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
@@ -9,7 +8,11 @@ import {
   withExpands,
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
-import { normalize } from "../../utils";
+import {
+  adjacentDirectionSchema,
+  adjacentSqlParts,
+  normalize,
+} from "../../utils";
 import { senderAdjacentTxSql } from "../tx/helpers";
 import { findResponseBlob, responseBlobSchema } from "./helpers";
 
@@ -20,7 +23,7 @@ const blobPositionSchema = z.object({
 
 const inputSchema = blobPositionSchema
   .extend({
-    direction: z.enum(["prev", "next"]),
+    direction: adjacentDirectionSchema,
   })
   .merge(createExpandsSchema(["transaction", "block"]));
 
@@ -70,8 +73,7 @@ export const getAdjacentBlob = publicProcedure
       ctx: { expands, prisma },
       input: { txHash, index, direction },
     }) => {
-      const operator = Prisma.raw(direction === "prev" ? "<" : ">");
-      const order = Prisma.raw(direction === "prev" ? "DESC" : "ASC");
+      const { operator, order } = adjacentSqlParts(direction);
 
       const [adjacent] = await prisma.$queryRaw<AdjacentBlobRow[]>`
         SELECT
@@ -79,6 +81,7 @@ export const getAdjacentBlob = publicProcedure
           COALESCE(in_tx.index, in_sender_tx.index) AS "index",
           COALESCE(in_tx.blob_hash, in_sender_tx.blob_hash) AS "versionedHash"
         FROM (
+          -- senderAdjacentTxSql needs the transaction index as cur.tx_index.
           SELECT bot.tx_hash, bot.index, t.from_id, t.block_timestamp, t.index AS tx_index
           FROM blobs_on_transactions bot
           JOIN transaction t ON t.hash = bot.tx_hash
@@ -91,7 +94,15 @@ export const getAdjacentBlob = publicProcedure
           ORDER BY bot.index ${order}
           LIMIT 1
         ) in_tx ON true
-        LEFT JOIN LATERAL (${senderAdjacentTxSql(direction)}) sender_tx ON true
+        -- Search the transactions of the sender only when the transaction of
+        -- the position has no blob in that direction. The condition uses only
+        -- values of the outer row, so Postgres does not run the subquery when
+        -- it is false.
+        LEFT JOIN LATERAL (
+          SELECT adjacent_tx.hash
+          FROM (${senderAdjacentTxSql(direction)}) adjacent_tx
+          WHERE in_tx.tx_hash IS NULL
+        ) sender_tx ON true
         LEFT JOIN LATERAL (
           SELECT bot.tx_hash, bot.index, bot.blob_hash
           FROM blobs_on_transactions bot

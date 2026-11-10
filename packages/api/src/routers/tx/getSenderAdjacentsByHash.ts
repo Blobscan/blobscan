@@ -33,6 +33,7 @@ export const getSenderAdjacentsByHash = publicProcedure
     const [result] = await prisma.$queryRaw<AdjacentTxsQuery>`
       SELECT prev.hash AS "prevTxHash", next.hash AS "nextTxHash"
       FROM (
+        -- senderAdjacentTxSql needs the transaction index as cur.tx_index.
         SELECT from_id, block_timestamp, index AS tx_index
         FROM transaction
         WHERE hash = ${hash}

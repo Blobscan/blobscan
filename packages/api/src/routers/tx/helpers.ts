@@ -12,7 +12,9 @@ import type {
   Expands,
 } from "../../middlewares/withExpands";
 import type { Prettify } from "../../types";
+import type { AdjacentDirection } from "../../utils";
 import {
+  adjacentSqlParts,
   normalizePrismaBlobDataStorageReferencesFields,
   normalizePrismaTransactionFields,
 } from "../../utils";
@@ -180,8 +182,6 @@ export function toResponseTransaction(
   };
 }
 
-export type AdjacentDirection = "prev" | "next";
-
 /**
  * Returns a `LATERAL` subquery that gets the hash of the previous or the next
  * transaction of a sender. The order is block timestamp, then transaction
@@ -200,8 +200,7 @@ export type AdjacentDirection = "prev" | "next";
  * the rows of the table.
  */
 export function senderAdjacentTxSql(direction: AdjacentDirection) {
-  const operator = Prisma.raw(direction === "prev" ? "<" : ">");
-  const order = Prisma.raw(direction === "prev" ? "DESC" : "ASC");
+  const { operator, order } = adjacentSqlParts(direction);
 
   return Prisma.sql`
     SELECT t.hash

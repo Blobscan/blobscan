@@ -1,6 +1,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
 import type { TRPCContext } from "../../src/context";
+import type { AdjacentDirection } from "../../src/utils";
 import { createTestContext } from "../helpers";
 import type { BlobCaller } from "./caller";
 import { createBlobCaller } from "./caller";
@@ -18,7 +19,7 @@ describe("getAdjacentBlob", () => {
   async function getAdjacentPosition(
     txHash: string,
     index: number,
-    direction: "prev" | "next"
+    direction: AdjacentDirection
   ) {
     const result = await blobCaller.getAdjacentBlob({
       txHash,

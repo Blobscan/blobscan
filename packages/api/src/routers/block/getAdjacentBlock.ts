@@ -3,13 +3,13 @@ import { TRPCError } from "@trpc/server";
 import { blockNumberSchema } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
+import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import {
   createExpandsSchema,
   withExpands,
 } from "../../middlewares/withExpands";
-import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import { publicProcedure } from "../../procedures";
-import { normalize } from "../../utils";
+import { adjacentDirectionSchema, normalize } from "../../utils";
 import {
   createBlockSelect,
   responseBlockSchema,
@@ -19,7 +19,7 @@ import {
 const inputSchema = z
   .object({
     blockNumber: blockNumberSchema,
-    direction: z.enum(["prev", "next"]),
+    direction: adjacentDirectionSchema,
   })
   .merge(createExpandsSchema(["transaction", "blob"]));
 
