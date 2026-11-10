@@ -77,5 +77,9 @@ export type SearchCategory = keyof SearchOutput;
 
 export type AppState = AppRouterOutputs["state"]["getAppState"];
 
-export type GetAdjacentTxByAddressInput =
-  AppRouterInputs["tx"]["getAdjacentsByAddress"];
+export type GetSenderAdjacentTxInput =
+  AppRouterInputs["tx"]["getSenderAdjacentTx"];
+
+export type GetAdjacentBlobInput = AppRouterInputs["blob"]["getAdjacentBlob"];
+
+export type BlobPosition = Pick<GetAdjacentBlobInput, "txHash" | "index">;

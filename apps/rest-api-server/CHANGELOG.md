@@ -1,5 +1,25 @@
 # @blobscan/rest-api-server
 
+## 0.18.5
+
+### Patch Changes
+
+- Updated dependencies [[`a790102`](https://github.com/Blobscan/blobscan/commit/a790102c5e861dca9a574196655ffcc7be89d5ee), [`c4ca720`](https://github.com/Blobscan/blobscan/commit/c4ca720b071c2d1b398e5e87ef02a920d1c4158f), [`f885151`](https://github.com/Blobscan/blobscan/commit/f885151f21aa1c0ae12b67bb518e1b6f70d8f55c)]:
+  - @blobscan/api@0.44.0
+
+## 0.18.4
+
+### Patch Changes
+
+- Updated dependencies [[`87a63c2`](https://github.com/Blobscan/blobscan/commit/87a63c282bd33a97da0bb7e99ad222fa09d11b13), [`4c6d710`](https://github.com/Blobscan/blobscan/commit/4c6d7107e62a738467af716c342d1d0e1300291a), [`81e58ed`](https://github.com/Blobscan/blobscan/commit/81e58ed54718018337c7f6260aabcebfc54b78de), [`a943787`](https://github.com/Blobscan/blobscan/commit/a943787137d3eb62dc0ab248eb024e9f667be59b), [`b791ab2`](https://github.com/Blobscan/blobscan/commit/b791ab2d07cec44602d50407756e41bd9fa3af65)]:
+  - @blobscan/db@0.34.0
+  - @blobscan/api@0.43.1
+  - @blobscan/chains@0.6.0
+  - @blobscan/rollups@0.10.0
+  - @blobscan/blob-propagator@0.11.5
+  - @blobscan/blob-storage-manager@0.15.4
+  - @blobscan/syncers@0.8.3
+
 ## 0.18.3
 
 ### Patch Changes

@@ -297,7 +297,12 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                         value={versionedHash}
                         tooltipText="Copy versioned hash"
                       >
-                        <Link href={routes.blob(versionedHash)}>
+                        <Link
+                          href={routes.blob(
+                            versionedHash,
+                            hash ? { txHash: hash, index: i } : undefined
+                          )}
+                        >
                           {versionedHash}
                         </Link>
                       </Copyable>

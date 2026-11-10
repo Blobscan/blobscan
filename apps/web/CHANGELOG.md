@@ -1,5 +1,61 @@
 # @blobscan/web
 
+## 0.61.0
+
+### Minor Changes
+
+- [#1082](https://github.com/Blobscan/blobscan/pull/1082) [`a790102`](https://github.com/Blobscan/blobscan/commit/a790102c5e861dca9a574196655ffcc7be89d5ee) Thanks [@PJColombo](https://github.com/PJColombo)! - Added previous/next navigation to the blob details page. The arrows move to the adjacent blob in the same transaction. After the last blob of a transaction, the next arrow moves to the first blob of the next transaction of the same sender. Before the first blob, the previous arrow moves to the last blob of the previous transaction of the sender.
+
+  The new `blob.getAdjacentBlob` procedure returns the previous or the next blob of a blob position, in the format of `blob.getByBlobId`. The page sends it only when the user clicks an arrow, and puts the blob in the cache of the next page.
+
+- [#1091](https://github.com/Blobscan/blobscan/pull/1091) [`c003b64`](https://github.com/Blobscan/blobscan/commit/c003b6413f3d147bb2d952d27d60cf68befba97c) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated the rollup chart tooltips to show only the rollups with a value in the hovered bar, sorted from the largest value to the smallest
+
+### Patch Changes
+
+- [#1093](https://github.com/Blobscan/blobscan/pull/1093) [`bdcb515`](https://github.com/Blobscan/blobscan/commit/bdcb5153db3be848e053763952d4d387147dd244) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed the rollup chart tooltips, which changed their width when the user hovered from one rollup to a different rollup of the same bar
+
+- [#1081](https://github.com/Blobscan/blobscan/pull/1081) [`c4ca720`](https://github.com/Blobscan/blobscan/commit/c4ca720b071c2d1b398e5e87ef02a920d1c4158f) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed the slow sender transaction navigation queries that filled the database connection pool. One SQL query now gets the previous and next transactions of the sender with the `(from_id, block_timestamp, index)` index. The transaction page starts this request at the same time as the transaction request.
+
+  **Breaking change:** The `tx.getAdjacentsByAddress` procedure has the new name `tx.getSenderAdjacentsByHash`. Its input is now only the transaction `hash`, not `senderAddress`, `blockTimestamp` and `txIndex`. For an unknown hash, it now throws a `NOT_FOUND` error.
+
+- [#1092](https://github.com/Blobscan/blobscan/pull/1092) [`f885151`](https://github.com/Blobscan/blobscan/commit/f885151f21aa1c0ae12b67bb518e1b6f70d8f55c) Thanks [@PJColombo](https://github.com/PJColombo)! - The transaction page now requests the previous or next transaction of the sender only when the user clicks an arrow. The new `tx.getSenderAdjacentTx` procedure returns the full adjacent transaction in the format of `tx.getByHash`, so a click sends only one request. When the sender has no transaction in that direction, the page stays on the same transaction and disables the arrow. If the request fails, the page shows a message next to the arrows.
+
+  **Breaking change:** The `tx.getSenderAdjacentsByHash` procedure has the new name `tx.getSenderAdjacentTx`. Its input is now the transaction `hash`, a `direction` (`"prev"` or `"next"`) and the `expand` of `tx.getByHash`. It returns the adjacent transaction in the format of `tx.getByHash`, or `null` when there is no transaction in that direction. It does not return `{ prevTxHash, nextTxHash }`.
+
+- [#1090](https://github.com/Blobscan/blobscan/pull/1090) [`a3edfae`](https://github.com/Blobscan/blobscan/commit/a3edfaea881d319a100bf32bf45fc89208044286) Thanks [@PJColombo](https://github.com/PJColombo)! - Stopped the indexer lag banner from showing for a short time when a tab comes back from the background
+- Updated dependencies [[`a790102`](https://github.com/Blobscan/blobscan/commit/a790102c5e861dca9a574196655ffcc7be89d5ee), [`c4ca720`](https://github.com/Blobscan/blobscan/commit/c4ca720b071c2d1b398e5e87ef02a920d1c4158f), [`f885151`](https://github.com/Blobscan/blobscan/commit/f885151f21aa1c0ae12b67bb518e1b6f70d8f55c)]:
+  - @blobscan/api@0.44.0
+
+## 0.60.0
+
+### Minor Changes
+
+- [#1076](https://github.com/Blobscan/blobscan/pull/1076) [`77d1540`](https://github.com/Blobscan/blobscan/commit/77d15406dfc43b5598a93e8efd4f8bd78a26c4b9) Thanks [@PJColombo](https://github.com/PJColombo)! - Make the blob gas price in the top bar a link to the average blob gas price stat page.
+
+- [#1077](https://github.com/Blobscan/blobscan/pull/1077) [`87a63c2`](https://github.com/Blobscan/blobscan/commit/87a63c282bd33a97da0bb7e99ad222fa09d11b13) Thanks [@PJColombo](https://github.com/PJColombo)! - Showed addresses in the EIP-55 checksum format. The copy buttons also copy the checksummed address.
+
+- [#1073](https://github.com/Blobscan/blobscan/pull/1073) [`3cc807d`](https://github.com/Blobscan/blobscan/commit/3cc807d6f760938d9842d4781dc12dab4c9e7452) Thanks [@PJColombo](https://github.com/PJColombo)! - Make the ETH price in the top bar a link to the ETH price stat page.
+
+- [#1078](https://github.com/Blobscan/blobscan/pull/1078) [`4c6d710`](https://github.com/Blobscan/blobscan/commit/4c6d7107e62a738467af716c342d1d0e1300291a) Thanks [@PJColombo](https://github.com/PJColombo)! - Showed a banner on all pages when the indexer is behind the chain. The banner shows how far behind the indexer is, and it goes away when the indexer is in sync again. The banner shows when the indexer is more than 5 minutes behind. The app state now updates each 5 minutes and when the page gets focus again.
+
+  On networks without a chain config, for example devnet, `useChain()` now returns `undefined` and does not throw an error.
+
+- [#1061](https://github.com/Blobscan/blobscan/pull/1061) [`b791ab2`](https://github.com/Blobscan/blobscan/commit/b791ab2d07cec44602d50407756e41bd9fa3af65) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for adi, aztec, robinhood, syndicate and xlayer, and added new blob submitters for abstract, ink, lighter, pegglecoin and taiko
+
+### Patch Changes
+
+- [#1072](https://github.com/Blobscan/blobscan/pull/1072) [`7cdde11`](https://github.com/Blobscan/blobscan/commit/7cdde119a3c8f8cf2a7ee3e00a6269342b9da05d) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed the unused `sort` param that the chart pages added to the URL when you applied the filters.
+
+- [#1070](https://github.com/Blobscan/blobscan/pull/1070) [`81e58ed`](https://github.com/Blobscan/blobscan/commit/81e58ed54718018337c7f6260aabcebfc54b78de) Thanks [@PJColombo](https://github.com/PJColombo)! - Exported the zod model schemas and `transactionAllComputedFieldsSchema` from the `@blobscan/db` index. Changed the imports from `@blobscan/db/prisma/zod`, `@blobscan/db/prisma/extensions` and `@blobscan/rollups/src/RollupRegistry` to the package indexes.
+
+- [#1069](https://github.com/Blobscan/blobscan/pull/1069) [`a4a0ff5`](https://github.com/Blobscan/blobscan/commit/a4a0ff56ddfe0cbe5358b9feac60afab114ce53a) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed the position of the fee unit toggle in the chart control bar. On charts without the category and rollup filters, the toggle is now next to the time frame and granularity selectors and not in the middle of the bar.
+- Updated dependencies [[`87a63c2`](https://github.com/Blobscan/blobscan/commit/87a63c282bd33a97da0bb7e99ad222fa09d11b13), [`4c6d710`](https://github.com/Blobscan/blobscan/commit/4c6d7107e62a738467af716c342d1d0e1300291a), [`81e58ed`](https://github.com/Blobscan/blobscan/commit/81e58ed54718018337c7f6260aabcebfc54b78de), [`a943787`](https://github.com/Blobscan/blobscan/commit/a943787137d3eb62dc0ab248eb024e9f667be59b), [`b791ab2`](https://github.com/Blobscan/blobscan/commit/b791ab2d07cec44602d50407756e41bd9fa3af65)]:
+  - @blobscan/db@0.34.0
+  - @blobscan/api@0.43.1
+  - @blobscan/chains@0.6.0
+  - @blobscan/rollups@0.10.0
+  - @blobscan/blob-storage-manager@0.15.4
+
 ## 0.59.0
 
 ### Minor Changes

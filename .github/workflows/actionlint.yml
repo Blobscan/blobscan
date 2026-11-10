@@ -1,0 +1,37 @@
+name: Actionlint
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+      - "tooling/github/**"
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    name: Lint workflows
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Run actionlint
+        uses: docker://rhysd/actionlint:1.7.12
+        with:
+          args: -color
+
+      # actionlint only reads workflow files, so the shell embedded in the composite actions
+      # is extracted step by step and checked here.
+      - name: Shellcheck composite actions
+        run: |
+          status=0
+          for action in tooling/github/*/action.yml; do
+            count=$(yq '[.runs.steps[] | select(has("run"))] | length' "$action")
+            for ((i = 0; i < count; i++)); do
+              echo "Checking $action (shell step $i)"
+              yq "[.runs.steps[] | select(has(\"run\"))][$i].run" "$action" \
+                | shellcheck --shell=bash - || status=1
+            done
+          done
+          exit "$status"

@@ -69,4 +69,4 @@ pnpm db:seed
 
 ## Metrics aggregation
 
-Dagster calculates the metrics. To calculate the metrics during development, run Dagster and do a backfill of the metrics assets. For the procedure, refer to the [`apps/dagster`](https://github.com/Blobscan/blobscan/tree/main/apps/dagster) README.
+Dagster calculates the metrics. To calculate the metrics during development, run Dagster and do a backfill of the metrics assets. For the procedure, refer to [Initial backfill](https://github.com/Blobscan/blobscan/blob/main/apps/dagster/docs/operations.md#initial-backfill).

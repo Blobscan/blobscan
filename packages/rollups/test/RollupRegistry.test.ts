@@ -54,4 +54,18 @@ describe("RollupRegistry", () => {
       expect(rollupRegistry.getRollup("0x12321312321321321321")).toEqual(null);
     });
   });
+
+  describe("when getting the rollup of a rotated mainnet batcher", () => {
+    const mainnetRegistry = RollupRegistry.create(1);
+
+    it.each([
+      ["0x5e70713222faf60c9e9fb69240d06ae6d688563a", "HASHKEY"],
+      ["0x09d1ad25b369a0c48bdf4caab85afd08a3f07044", "PARADEX"],
+      ["0x35376dd47c061bc3b8c8e8d61987019e7ed58f06", "TAIKO"],
+      ["0x9ef649e8746cc47a17708a5e86b2d66c7f6c00d1", "UNICHAIN"],
+      ["0xcf8225801df6ef90ad3bc86808f574403a309de8", "ZIRCUIT"],
+    ])("should return the rollup of %s", (address, rollup) => {
+      expect(mainnetRegistry.getRollup(address)).toEqual(rollup);
+    });
+  });
 });
