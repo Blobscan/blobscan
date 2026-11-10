@@ -21,54 +21,50 @@ type AdjacentTxsQueryResult = {
  * Returns the previous and next transactions of the sender of the given
  * transaction, skipping transactions of reorged blocks.
  *
- * The query compares the full `(from_id, block_timestamp, index)` tuple and
- * checks the sender after the `LIMIT`, instead of filtering with
- * `from_id = …`. Postgres removes sort keys that an equality filter fixes, so
- * with `from_id = …` the planner can walk the `(block_timestamp, index)` index
- * and filter every row on the sender. When the sender has no adjacent
- * transaction, that scan reads the rest of the table. Without the equality,
- * only the `(from_id, block_timestamp, index)` index gives the order, so each
- * side reads one index entry (plus any reorged ones it skips).
+ * Each side is a `LATERAL` subquery. The `LATERAL` join gives the values of
+ * the current transaction to the inner index scan as parameters. Thus
+ * Postgres uses the tuple comparison and `from_id = …` as the `Index Cond`
+ * of the `(from_id, block_timestamp, index)` index. The scan starts at the
+ * current transaction and stops at the first transaction that is not reorged.
+ *
+ * Do not get the current transaction from a CTE and join it in the
+ * subqueries. Postgres then applies the tuple comparison as a join filter,
+ * not as an index condition. The scan then starts at one end of the index
+ * and can read all the rows of the table.
  */
 export const getAdjacentsByAddress = publicProcedure
   .input(inputSchema)
   .output(outputSchema)
   .query(async ({ ctx: { prisma }, input: { hash } }) => {
     const [result] = await prisma.$queryRaw<AdjacentTxsQueryResult>`
-      WITH cur AS (
+      SELECT prev.hash AS "prevTxHash", next.hash AS "nextTxHash"
+      FROM (
         SELECT from_id, block_timestamp, index
         FROM transaction
         WHERE hash = ${hash}
-      )
-      SELECT
-        (
-          SELECT prev.hash
-          FROM (
-            SELECT t.hash, t.from_id
-            FROM transaction t, cur
-            WHERE (t.from_id, t.block_timestamp, t.index) < (cur.from_id, cur.block_timestamp, cur.index)
-              AND NOT EXISTS (
-                SELECT 1 FROM transaction_fork tf WHERE tf.block_hash = t.block_hash
-              )
-            ORDER BY t.from_id DESC, t.block_timestamp DESC, t.index DESC
-            LIMIT 1
-          ) prev, cur
-          WHERE prev.from_id = cur.from_id
-        ) AS "prevTxHash",
-        (
-          SELECT next.hash
-          FROM (
-            SELECT t.hash, t.from_id
-            FROM transaction t, cur
-            WHERE (t.from_id, t.block_timestamp, t.index) > (cur.from_id, cur.block_timestamp, cur.index)
-              AND NOT EXISTS (
-                SELECT 1 FROM transaction_fork tf WHERE tf.block_hash = t.block_hash
-              )
-            ORDER BY t.from_id ASC, t.block_timestamp ASC, t.index ASC
-            LIMIT 1
-          ) next, cur
-          WHERE next.from_id = cur.from_id
-        ) AS "nextTxHash"
+      ) cur
+      LEFT JOIN LATERAL (
+        SELECT t.hash
+        FROM transaction t
+        WHERE t.from_id = cur.from_id
+          AND (t.from_id, t.block_timestamp, t.index) < (cur.from_id, cur.block_timestamp, cur.index)
+          AND NOT EXISTS (
+            SELECT 1 FROM transaction_fork tf WHERE tf.block_hash = t.block_hash
+          )
+        ORDER BY t.from_id DESC, t.block_timestamp DESC, t.index DESC
+        LIMIT 1
+      ) prev ON true
+      LEFT JOIN LATERAL (
+        SELECT t.hash
+        FROM transaction t
+        WHERE t.from_id = cur.from_id
+          AND (t.from_id, t.block_timestamp, t.index) > (cur.from_id, cur.block_timestamp, cur.index)
+          AND NOT EXISTS (
+            SELECT 1 FROM transaction_fork tf WHERE tf.block_hash = t.block_hash
+          )
+        ORDER BY t.from_id ASC, t.block_timestamp ASC, t.index ASC
+        LIMIT 1
+      ) next ON true
     `;
 
     return {
