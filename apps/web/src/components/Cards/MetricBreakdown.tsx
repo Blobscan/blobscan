@@ -1,7 +1,9 @@
 import type { FC } from "react";
+import { animated } from "@react-spring/web";
 import cn from "classnames";
 import Skeleton from "react-loading-skeleton";
 
+import { useAnimatedPercentage } from "~/hooks/useAnimatedPercentage";
 import { formatNumber } from "~/utils";
 
 export type MetricBreakdownPart = {
@@ -26,6 +28,23 @@ function formatShare(share: number) {
   })}%`;
 }
 
+const BreakdownSegment: FC<{
+  part: MetricBreakdownPart;
+  total: number;
+}> = function ({ part, total }) {
+  const percentage = useAnimatedPercentage(part.value, total);
+
+  return (
+    <animated.div
+      className={cn("h-full", part.colorClassName)}
+      style={{ width: percentage.value.to((value) => `${value * 100}%`) }}
+      title={`${part.label}: ${part.displayValue} (${formatShare(
+        part.value / total
+      )})`}
+    />
+  );
+};
+
 /**
  * A bar that divides a total into parts, with the label and the value of
  * each part under the bar. The first part is at the left and the last part
@@ -47,14 +66,7 @@ export const MetricBreakdown: FC<MetricBreakdownProps> = function ({
       >
         {sum > 0 &&
           parts.map((part) => (
-            <div
-              key={part.label}
-              className={cn("h-full", part.colorClassName)}
-              style={{ width: `${(part.value / sum) * 100}%` }}
-              title={`${part.label}: ${part.displayValue} (${formatShare(
-                part.value / sum
-              )})`}
-            />
+            <BreakdownSegment key={part.label} part={part} total={sum} />
           ))}
       </div>
       <div className="flex justify-between gap-4">

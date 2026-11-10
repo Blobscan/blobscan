@@ -1,9 +1,9 @@
 import type { FC } from "react";
-import { animated, useSpring } from "@react-spring/web";
+import { animated } from "@react-spring/web";
 import cn from "classnames";
 
+import { useAnimatedPercentage } from "~/hooks/useAnimatedPercentage";
 import type { Numerish } from "~/utils";
-import { calculatePercentage } from "~/utils";
 
 export type Color = "green" | "red" | "purple" | "grey";
 
@@ -24,14 +24,7 @@ export const PercentageBar: FC<PercentageBarProps> = function ({
   color = "purple",
   hidePercentage,
 }) {
-  const percentage = calculatePercentage(value, total, {
-    asFraction: true,
-  });
-  const barPercentageProps = useSpring({
-    value: percentage,
-    from: { value: 0 },
-    cancel: !percentage,
-  });
+  const barPercentageProps = useAnimatedPercentage(value, total);
 
   return (
     <div className="flex items-center gap-1.5">
