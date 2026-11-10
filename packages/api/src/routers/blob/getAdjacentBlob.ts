@@ -45,7 +45,7 @@ type AdjacentBlobRow = {
  * After the last blob of the transaction, the next blob is the first blob of
  * the next transaction of the same sender. Before the first blob, the previous
  * blob is the last blob of the previous transaction of the sender. The
- * transactions of the sender have the order of `tx.getSenderAdjacentsByHash`
+ * transactions of the sender have the order of `tx.getSenderAdjacentTx`
  * (block timestamp, then transaction index), and the search does not return
  * transactions of reorged blocks. Returns `null` if there is no blob in that
  * direction.
@@ -59,7 +59,7 @@ type AdjacentBlobRow = {
  * so each one is an index scan that stops at the first match:
  * - The blobs of the same transaction use the `(tx_hash, index)` primary key.
  * - The transactions of the sender use `senderAdjacentTxSql`, which
- *   `tx.getSenderAdjacentsByHash` also uses.
+ *   `tx.getSenderAdjacentTx` also uses.
  * - The blob of the adjacent transaction uses the `(tx_hash, index)` primary
  *   key.
  */
