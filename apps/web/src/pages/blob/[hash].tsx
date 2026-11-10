@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
@@ -23,10 +23,16 @@ import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { NavArrow } from "~/components/NavArrow";
 import type { SelectOption } from "~/components/Selects";
 import { Listbox } from "~/components/Selects";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
+import {
+  BLOB_EXPAND,
+  BLOB_STALE_TIME,
+  useAdjacentBlobNavigation,
+} from "~/hooks/useAdjacentBlobNavigation";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { routes } from "~/routes";
 import { versionedHashSchema } from "~/schemas/utils";
@@ -41,19 +47,51 @@ const Blob: NextPage = function () {
   const router = useRouter();
   const breakpoint = useBreakpoint();
   const id = (router?.query.hash as string | undefined) ?? "0";
-  const { data: blob, error } = api.blob.getByBlobId.useQuery(
+  const positionTxHash = router?.query.tx as string | undefined;
+  const positionIndex =
+    typeof router?.query.index === "string"
+      ? Number(router.query.index)
+      : undefined;
+  const {
+    data: blob,
+    dataUpdatedAt: blobUpdatedAt,
+    isFetching: blobFetching,
+    error,
+  } = api.blob.getByBlobId.useQuery(
     {
       id: id,
-      expand: "transaction",
+      expand: BLOB_EXPAND,
     },
     {
       enabled: router?.isReady,
+      staleTime: BLOB_STALE_TIME,
       retry: false,
       refetchOnReconnect: false,
       refetchOnWindowFocus: false,
-      refetchOnMount: false,
     }
   );
+  // A blob can be in more than one transaction, and more than one time in the
+  // same transaction. Thus the navigation uses the position in the URL. If the
+  // URL has no position, the navigation uses the first position in the list of
+  // the blob. The list starts with the newest block.
+  const position = useMemo(() => {
+    const blobOnTx =
+      blob?.transactions.find(
+        ({ txHash, index }) =>
+          txHash === positionTxHash && index === positionIndex
+      ) ?? blob?.transactions[0];
+
+    return typeof blobOnTx?.index === "number"
+      ? { txHash: blobOnTx.txHash, index: blobOnTx.index }
+      : undefined;
+  }, [blob, positionTxHash, positionIndex]);
+  const {
+    prevBlob,
+    nextBlob,
+    loading: adjacentBlobLoading,
+    error: adjacentBlobError,
+    navigate: handleNavClick,
+  } = useAdjacentBlobNavigation({ blob, blobUpdatedAt, position });
   const { data: blobData, error: blobDataError } = useQuery({
     queryKey: ["blob-data", id],
     queryFn: async () => {
@@ -93,7 +131,9 @@ const Blob: NextPage = function () {
 
       throw new Error(`Failed to fetch data of blob "${id}" from any storage`);
     },
-    enabled: !!blob,
+    // A cached blob can have expired signed URLs. When the page gets the blob
+    // again, wait for the new URLs before the page gets the blob data.
+    enabled: !!blob && !blobFetching,
     retry: false,
     refetchOnWindowFocus: false,
   });
@@ -112,6 +152,8 @@ const Blob: NextPage = function () {
 
   useEffect(() => {
     if (!decoder) {
+      setSelectedBlobViewMode((mode) => (mode === "Decoded" ? "Raw" : mode));
+
       return;
     }
 
@@ -316,7 +358,30 @@ const Blob: NextPage = function () {
         } on Blobscan.`}
       />
       <DetailsLayout
-        header="Blob Details"
+        header={
+          <div className="flex items-center justify-start gap-4">
+            <NavArrow
+              type="prev"
+              size="lg"
+              onClick={() => handleNavClick("prev")}
+              tooltip="Previous Blob from This Sender"
+              disabled={!position || prevBlob === null || adjacentBlobLoading}
+            />
+            Blob Details
+            <NavArrow
+              type="next"
+              size="lg"
+              onClick={() => handleNavClick("next")}
+              tooltip="Next Blob from This Sender"
+              disabled={!position || nextBlob === null || adjacentBlobLoading}
+            />
+            {adjacentBlobError && (
+              <span className="text-sm font-normal text-error-600 dark:text-error-300">
+                Couldn&apos;t load the adjacent blob
+              </span>
+            )}
+          </div>
+        }
         fields={blob ? detailsFields : undefined}
         resource={
           blob

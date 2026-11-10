@@ -280,7 +280,12 @@ const Txs: NextPage = function () {
                                     value={versionedHash}
                                     tooltipText="Copy blob versioned hash"
                                   >
-                                    <Link href={routes.blob(versionedHash)}>
+                                    <Link
+                                      href={routes.blob(versionedHash, {
+                                        txHash: hash,
+                                        index: i,
+                                      })}
+                                    >
                                       {versionedHash}
                                     </Link>
                                   </Copyable>

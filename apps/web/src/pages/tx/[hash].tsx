@@ -352,7 +352,14 @@ const Tx: NextPage = () => {
         <div className="space-y-6">
           {isLoading || !tx || !tx.blobs
             ? Array.from({ length: 2 }).map((_, i) => <BlobCard key={i} />)
-            : tx.blobs.map((b) => <BlobCard key={b.versionedHash} blob={b} />)}
+            : // The blobs have the order of their index in the transaction.
+              tx.blobs.map((b, index) => (
+                <BlobCard
+                  key={index}
+                  blob={b}
+                  position={{ txHash: tx.hash, index }}
+                />
+              ))}
         </div>
       </Card>
     </>

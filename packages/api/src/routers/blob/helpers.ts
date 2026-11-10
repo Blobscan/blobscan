@@ -370,3 +370,37 @@ export function toResponseBlobOnTransaction(
 
   return responseBlobOnTx;
 }
+
+/**
+ * Gets a blob by its versioned hash or KZG commitment, in the response format
+ * of `blob.getByBlobId`. Returns `null` if the blob does not exist.
+ *
+ * All the procedures that return a blob for the `getByBlobId` cache must use
+ * this function, so that the cached data has the same format.
+ */
+export async function findResponseBlob(
+  prisma: BlobscanPrismaClient,
+  expands: Expands,
+  id: string
+): Promise<ResponseBlob | null> {
+  const isExpandEnabled = !!expands.block || !!expands.transaction;
+
+  const [prismaBlob, ethUsdPrices] = await Promise.all([
+    prisma.blob.findFirst({
+      select: createBlobSelect(expands),
+      where: {
+        OR: [{ versionedHash: id }, { commitment: id }],
+      },
+    }) as unknown as Promise<CompletedPrismaBlob | null>,
+    isExpandEnabled ? prisma.blob.findEthUsdPrices(id) : Promise.resolve([]),
+  ]);
+
+  if (!prismaBlob) {
+    return null;
+  }
+
+  return toResponseBlob(
+    prismaBlob,
+    ethUsdPrices.map(({ price }) => price)
+  );
+}

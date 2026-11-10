@@ -1,3 +1,4 @@
+export * from "./adjacent";
 export * from "./auth";
 export * from "./cache";
 export * from "./blob";
