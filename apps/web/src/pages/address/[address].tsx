@@ -1,50 +1,26 @@
 import type { ReactNode } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
-import { ChartBarIcon, QueueListIcon } from "@heroicons/react/24/outline";
 
-import { z } from "@blobscan/zod";
-
-import { AddressAnalytics } from "~/components/Address/AddressAnalytics";
+import { AddressTabs } from "~/components/Address/Tabs";
 import { CategoryBadge } from "~/components/Badges/CategoryBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
-import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
 import { EthIdenticon } from "~/components/EthIdenticon";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
-import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { Link } from "~/components/Link";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
-import { Tabs } from "~/components/Tabs";
 import { api } from "~/api-client";
-import { useUrlState } from "~/hooks/useUrlState";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
-import { paginationParamsSchema } from "~/schemas/pagination";
-import type {
-  Category,
-  Rollup,
-  TransactionWithExpandedBlockAndBlob,
-} from "~/types";
+import type { Category, Rollup } from "~/types";
 import {
-  formatNumber,
   normalizeTimestamp,
   shortenHash,
   TIMESTAMP_FORMAT,
   toChecksumAddress,
 } from "~/utils";
-
-const TABS = ["transactions", "analytics"] as const;
-
-type Tab = (typeof TABS)[number];
-
-// The page owns `section` here only to clear it: a new tab starts on the
-// first section of the Analytics tab.
-const tabParamsSchema = z.object({
-  tab: z.enum(TABS).optional(),
-  section: z.string().optional(),
-});
 
 type TransactionRef = { hash: string; blockTimestamp: Date } | null;
 
@@ -99,30 +75,12 @@ function TransactionRefLine({
   );
 }
 
-function getAddressRole(
-  address: string,
-  { from, to }: { from: string; to: string }
-): "sent" | "received" | "self" {
-  const isSender = from.toLowerCase() === address;
-  const isReceiver = to.toLowerCase() === address;
-
-  if (isSender && isReceiver) {
-    return "self";
-  }
-
-  return isSender ? "sent" : "received";
-}
-
 const Address: NextPage = () => {
   const router = useRouter();
-  const { state: urlState } = useUrlState(paginationParamsSchema);
-  const { state: tabState, updateState: updateTabState } =
-    useUrlState(tabParamsSchema);
   const address = (
     (router?.query.address as string | undefined) ?? ""
   ).toLowerCase();
   const checksumAddress = toChecksumAddress(address);
-  const tab: Tab = tabState?.tab ?? "transactions";
   const queryOpts = {
     enabled: router?.isReady && !!address,
     refetchOnWindowFocus: false,
@@ -134,27 +92,10 @@ const Address: NextPage = () => {
     api.address.getOverall.useQuery({ address, timeFrame: "All" }, queryOpts);
   const overall = overallData?.data;
 
-  const {
-    data: addressTxsData,
-    isLoading,
-    error: txsError,
-  } = api.tx.getAll.useQuery<{
-    transactions: TransactionWithExpandedBlockAndBlob[];
-  }>(
-    { p: urlState?.p, ps: urlState?.ps, address, expand: "block,blob" },
-    {
-      ...queryOpts,
-      refetchOnMount: false,
-      enabled: queryOpts.enabled && tab === "transactions",
-    }
-  );
-
-  const error = txsError ?? overallError;
-
-  if (error) {
+  if (overallError) {
     return (
       <ErrorPage
-        error={error}
+        error={overallError}
         overrides={{
           BAD_REQUEST: {
             title: "Invalid Address",
@@ -242,53 +183,10 @@ const Address: NextPage = () => {
         }}
         fields={detailsFields}
       />
-      <Tabs
-        selected={tab}
-        onChange={(value) =>
-          updateTabState({
-            tab: value !== "transactions" ? value : undefined,
-            section: undefined,
-          })
-        }
-        tabs={[
-          {
-            value: "transactions",
-            label: "Transactions",
-            icon: QueueListIcon,
-            content: (
-              <PaginatedListLayout
-                title={`Blob Transactions ${
-                  totalTransactions
-                    ? `(${formatNumber(totalTransactions)})`
-                    : ""
-                }`}
-                isLoading={isLoading}
-                items={addressTxsData?.transactions.map((tx) => {
-                  const { blobs, ...restTx } = tx;
-
-                  return (
-                    <BlobTransactionCard
-                      key={tx.hash}
-                      transaction={restTx}
-                      blobs={blobs}
-                      addressRole={getAddressRole(address, tx)}
-                    />
-                  );
-                })}
-                totalItems={totalTransactions}
-                page={urlState?.p}
-                pageSize={urlState?.ps}
-                itemSkeleton={<BlobTransactionCard />}
-              />
-            ),
-          },
-          {
-            value: "analytics",
-            label: "Analytics",
-            icon: ChartBarIcon,
-            content: <AddressAnalytics address={address} />,
-          },
-        ]}
+      <AddressTabs
+        address={address}
+        totalTransactions={totalTransactions}
+        enabled={!!queryOpts.enabled}
       />
     </>
   );

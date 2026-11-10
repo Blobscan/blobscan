@@ -345,3 +345,62 @@ export function getDailyMean(
 
   return mean !== undefined && data.granularity === "hour" ? mean * 24 : mean;
 }
+
+/** A day with blob txs, as an item of the calendar heatmap. */
+export type ActivityDay = {
+  /** The UTC day, as YYYY-MM-DD. */
+  date: string;
+  sent: number;
+  received: number;
+  /** The txs of both roles. */
+  value: number;
+  /** True when the day is in the longest streak of the address. */
+  highlighted: boolean;
+};
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * Returns the days with blob txs of a daily timeseries, in order. The days of
+ * the longest run of consecutive active days are highlighted. When two runs
+ * have the same length, the most recent one is highlighted.
+ */
+export function getActivityDays(data: AddressTimeseries): ActivityDay[] {
+  const days: ActivityDay[] = data.timestamps.flatMap((timestamp, i) => {
+    const sent = data.sent.totalTransactions[i] ?? 0;
+    const received = data.received.totalTransactions[i] ?? 0;
+
+    return sent || received
+      ? [
+          {
+            date: new Date(timestamp).toISOString().slice(0, 10),
+            sent,
+            received,
+            value: sent + received,
+            highlighted: false,
+          },
+        ]
+      : [];
+  });
+
+  let best: ActivityDay[] = [];
+  let run: ActivityDay[] = [];
+
+  days.forEach((day, i) => {
+    const prev = days[i - 1];
+    const isNextDay =
+      !!prev && Date.parse(day.date) - Date.parse(prev.date) === DAY_MS;
+
+    run = isNextDay ? [...run, day] : [day];
+
+    if (run.length >= best.length) {
+      best = run;
+    }
+  });
+
+  best.forEach((day) => {
+    day.highlighted = true;
+  });
+
+  return days;
+}

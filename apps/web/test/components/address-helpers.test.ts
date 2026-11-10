@@ -6,6 +6,7 @@ import type {
 } from "~/components/Address/helpers";
 import {
   BLOB_SIZE,
+  getActivityDays,
   getBlobGasPrices,
   getClosedPeriodsMean,
   getDailyMean,
@@ -308,5 +309,88 @@ describe("getPeakDay", () => {
         "totalBlobUsageSize"
       )
     ).toBeUndefined();
+  });
+});
+
+describe("getActivityDays", () => {
+  function daily(days: [string, number, number][]) {
+    return {
+      granularity: "day",
+      timestamps: days.map(([date]) => new Date(`${date}T00:00:00Z`)),
+      sent: { totalTransactions: days.map(([, sent]) => sent) },
+      received: { totalTransactions: days.map(([, , received]) => received) },
+    } as unknown as AddressTimeseries;
+  }
+
+  function highlightedDates(data: AddressTimeseries) {
+    return getActivityDays(data)
+      .filter((day) => day.highlighted)
+      .map((day) => day.date);
+  }
+
+  describe("when some days have no txs", () => {
+    it("should return only the days with txs, with both roles added", () => {
+      expect(
+        getActivityDays(
+          daily([
+            ["2026-11-01", 2, 1],
+            ["2026-11-02", 0, 0],
+            ["2026-11-03", 0, 4],
+          ])
+        )
+      ).toEqual([
+        {
+          date: "2026-11-01",
+          sent: 2,
+          received: 1,
+          value: 3,
+          highlighted: false,
+        },
+        {
+          date: "2026-11-03",
+          sent: 0,
+          received: 4,
+          value: 4,
+          highlighted: true,
+        },
+      ]);
+    });
+  });
+
+  describe("when the address has runs of consecutive days", () => {
+    it("should highlight the longest run", () => {
+      expect(
+        highlightedDates(
+          daily([
+            ["2026-10-01", 1, 0],
+            ["2026-10-02", 1, 0],
+            ["2026-10-03", 1, 0],
+            ["2026-10-10", 1, 0],
+            ["2026-10-11", 1, 0],
+          ])
+        )
+      ).toEqual(["2026-10-01", "2026-10-02", "2026-10-03"]);
+    });
+  });
+
+  describe("when two runs have the same length", () => {
+    it("should highlight the most recent run", () => {
+      expect(
+        highlightedDates(
+          daily([
+            ["2026-10-01", 1, 0],
+            ["2026-10-02", 1, 0],
+            ["2026-10-05", 0, 1],
+            ["2026-10-06", 0, 1],
+          ])
+        )
+      ).toEqual(["2026-10-05", "2026-10-06"]);
+    });
+  });
+
+  describe("when the address has no txs", () => {
+    it("should return no days", () => {
+      expect(getActivityDays(daily([["2026-10-01", 0, 0]]))).toEqual([]);
+    });
   });
 });

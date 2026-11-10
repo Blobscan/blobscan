@@ -1,21 +1,16 @@
-import type { FC } from "react";
+import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { EChartsOption } from "echarts";
 import ReactEChartsCore from "echarts-for-react/lib/core";
 import { useTheme } from "next-themes";
 
-import dayjs from "@blobscan/dayjs";
-
 import { HelpIcon } from "~/components/HelpIcon";
 import echarts from "~/echarts";
 import type { ThemeMode } from "~/types";
-import { formatNumber } from "~/utils";
-import type { AddressTimeseries } from "./helpers";
 
-// The calendar shows the last 365 days in one row of weeks. 365 days are
+// The calendar shows the range in one row of weeks. A range of one year is
 // never more than 53 week columns. The cells are squares, and the cell size
 // comes from the width of the chart. These sizes are in pixels.
-const DAYS_SHOWN = 365;
 const WEEKS_PER_YEAR = 53;
 const MIN_CELL_SIZE = 10;
 const LEFT = 40;
@@ -31,7 +26,7 @@ function getCellSize(width: number) {
 }
 
 // The primary color ramp of the app (`baseColors` in
-// tooling/tailwind/colors.ts), from few txs to many txs.
+// tooling/tailwind/colors.ts), from low values to high values.
 const HEAT_COLORS: Record<ThemeMode, string[]> = {
   light: ["#D4BFFB", "#AE8CF6", "#7F4DE6", "#5D25D4"],
   dark: ["#4C2BA0", "#7A4BE8", "#A98AF5", "#D9C9FC"],
@@ -44,7 +39,7 @@ const CELL_BORDER_COLOR: Record<ThemeMode, string> = {
   light: "#FFFFFF",
   dark: "#1C1A37",
 };
-const STREAK_COLOR: Record<ThemeMode, string> = {
+const HIGHLIGHT_COLOR: Record<ThemeMode, string> = {
   light: "#EA580C",
   dark: "#FB923C",
 };
@@ -53,68 +48,53 @@ const LABEL_COLOR: Record<ThemeMode, string> = {
   dark: "#A3A3A3",
 };
 
-type Day = { date: string; sent: number; received: number; total: number };
+export type CalendarHeatmapItem = {
+  /** The day, as YYYY-MM-DD. */
+  date: string;
+  /** The value that sets the color of the cell. */
+  value: number;
+  /** An outline marks the cell when it is true. */
+  highlighted?: boolean;
+};
 
-/** Returns the days with txs, with the date as YYYY-MM-DD. */
-function getActiveDays(data: AddressTimeseries): Day[] {
-  return data.timestamps.flatMap((timestamp, i) => {
-    const sent = data.sent.totalTransactions[i] ?? 0;
-    const received = data.received.totalTransactions[i] ?? 0;
-
-    return sent || received
-      ? [
-          {
-            date: dayjs.utc(timestamp).format("YYYY-MM-DD"),
-            sent,
-            received,
-            total: sent + received,
-          },
-        ]
-      : [];
-  });
-}
-
-/**
- * Returns the dates of the longest run of consecutive active days. When two
- * runs have the same length, it returns the most recent one.
- */
-function getLongestStreakDates(days: Day[]): Set<string> {
-  let best: string[] = [];
-  let run: string[] = [];
-
-  days.forEach((day, i) => {
-    const prev = days[i - 1];
-    const isNextDay =
-      !!prev && dayjs.utc(day.date).diff(dayjs.utc(prev.date), "day") === 1;
-
-    run = isNextDay ? [...run, day.date] : [day.date];
-
-    if (run.length >= best.length) {
-      best = run;
-    }
-  });
-
-  return new Set(best);
-}
-
-export type ActivityHeatmapProps = {
+export type CalendarHeatmapProps<T extends CalendarHeatmapItem> = {
+  title: ReactNode;
+  /** A text that tells what the chart shows. An icon after the title shows it. */
+  description?: ReactNode;
+  /** The days with a value. Days out of `range` are not shown. */
+  data?: T[];
+  /** The first and the last day that the calendar shows, as YYYY-MM-DD. */
+  range: [string, string];
   /**
-   * The daily timeseries of all the time. The calendar shows only the last
-   * 365 days, but the longest streak comes from all the days.
+   * The text of the highlighted cells in the legend. The legend shows only
+   * when a highlighted cell is in the range.
    */
-  data?: AddressTimeseries;
+  highlightLabel?: string;
+  /** Returns the labels of the color bar ends, for example "1 tx". */
+  formatValue?: (value: number) => string;
+  /** Returns the tooltip HTML of a day. `item` is not set for an empty day. */
+  formatTooltip?: (date: string, item?: T) => string;
+  /** The text that shows when `data` is empty. */
+  emptyMessage?: ReactNode;
   isLoading?: boolean;
 };
 
 /**
- * A calendar with one cell for each day of the last 365 days. The color of a
- * cell is the number of blob txs of the day, and an outline marks the days of
- * the longest streak in that range.
+ * A calendar with one cell for each day of a range. The color of a cell is
+ * the value of the day. The user can drag the handles of the color bar to
+ * show only some values.
  */
-export const ActivityHeatmap: FC<ActivityHeatmapProps> = function ({
+export function CalendarHeatmap<T extends CalendarHeatmapItem>({
+  title,
+  description,
   data,
+  range,
+  highlightLabel,
+  formatValue = String,
+  formatTooltip,
+  emptyMessage,
   isLoading,
-}) {
+}: CalendarHeatmapProps<T>) {
   const { resolvedTheme } = useTheme();
   const theme = (resolvedTheme ?? "light") as ThemeMode;
   // A callback ref: the container shows only after the data loads.
@@ -152,31 +132,26 @@ export const ActivityHeatmap: FC<ActivityHeatmapProps> = function ({
 
   const cellSize = getCellSize(width);
   const calendarHeight = cellSize * 7;
+  const [startDate, endDate] = range;
 
-  const { option, height, hasStreakInRange } = useMemo(() => {
-    const allDays = data ? getActiveDays(data) : [];
-
-    if (!allDays.length) {
-      return { option: undefined, height: 0, hasStreakInRange: false };
+  const { option, height, hasHighlightInRange } = useMemo(() => {
+    if (!data?.length) {
+      return { option: undefined, height: 0, hasHighlightInRange: false };
     }
 
-    const end = dayjs.utc().startOf("day");
-    const start = end.subtract(DAYS_SHOWN - 1, "day");
-    const startDate = start.format("YYYY-MM-DD");
-    const endDate = end.format("YYYY-MM-DD");
-    const days = allDays.filter(
-      (day) => day.date >= startDate && day.date <= endDate
+    const items = data.filter(
+      (item) => item.date >= startDate && item.date <= endDate
     );
-    const streak = getLongestStreakDates(allDays);
-    const byDate = new Map(days.map((day) => [day.date, day]));
-    const maxTxs = Math.max(0, ...days.map((day) => day.total));
-    const visualMapMax = Math.max(maxTxs, 2);
+    const byDate = new Map(items.map((item) => [item.date, item]));
+    const maxValue = Math.max(0, ...items.map((item) => item.value));
+    const visualMapMax = Math.max(maxValue, 2);
     const selectedRange = selectedRangeRef.current;
 
     const option: EChartsOption = {
       animation: false,
       tooltip: {
         confine: true,
+        show: !!formatTooltip,
         backgroundColor: theme === "dark" ? "#2E2854" : "#FAFAFA",
         borderColor: theme === "dark" ? "#372779" : "#5D25D4",
         textStyle: {
@@ -186,27 +161,12 @@ export const ActivityHeatmap: FC<ActivityHeatmapProps> = function ({
         formatter: (params) => {
           const [date] = (params as unknown as { value: [string, number] })
             .value;
-          const day = byDate.get(date);
-          const label = dayjs.utc(date).format("ddd, MMM D, YYYY");
 
-          if (!day) {
-            return `<b>${label}</b><br/>No blob txs`;
-          }
-
-          const parts = [
-            day.sent ? `${formatNumber(day.sent)} sent` : "",
-            day.received ? `${formatNumber(day.received)} received` : "",
-          ].filter(Boolean);
-
-          return `<b>${label}</b><br/>${formatNumber(day.total)} blob ${
-            day.total === 1 ? "tx" : "txs"
-          } (${parts.join(", ")})${
-            streak.has(date) ? "<br/>In the longest streak" : ""
-          }`;
+          return formatTooltip?.(date, byDate.get(date)) ?? "";
         },
       },
-      // A color bar from 1 tx to the busiest day. Its handles select a
-      // range of values, and the other cells show as empty.
+      // A color bar from 1 to the highest value. Its handles select a range
+      // of values, and the other cells show as empty.
       visualMap: {
         type: "continuous",
         min: 1,
@@ -226,7 +186,7 @@ export const ActivityHeatmap: FC<ActivityHeatmapProps> = function ({
         bottom: 16,
         itemWidth: 14,
         itemHeight: 240,
-        text: [`${formatNumber(Math.max(maxTxs, 1))} txs`, "1 tx"],
+        text: [formatValue(Math.max(maxValue, 1)), formatValue(1)],
         textGap: 12,
         textStyle: { color: LABEL_COLOR[theme], fontSize: 11 },
         inRange: { color: HEAT_COLORS[theme] },
@@ -259,12 +219,12 @@ export const ActivityHeatmap: FC<ActivityHeatmapProps> = function ({
         emphasis: {
           itemStyle: { borderColor: LABEL_COLOR[theme], borderWidth: 2 },
         },
-        data: days.map((day) => ({
-          value: [day.date, day.total],
-          ...(streak.has(day.date)
+        data: items.map((item) => ({
+          value: [item.date, item.value],
+          ...(item.highlighted
             ? {
                 itemStyle: {
-                  borderColor: STREAK_COLOR[theme],
+                  borderColor: HIGHLIGHT_COLOR[theme],
                   borderWidth: 2,
                 },
               }
@@ -276,10 +236,18 @@ export const ActivityHeatmap: FC<ActivityHeatmapProps> = function ({
     return {
       option,
       height: TOP + calendarHeight + VISUAL_MAP_HEIGHT + 24,
-      // The longest streak can be older than the range.
-      hasStreakInRange: days.some((day) => streak.has(day.date)),
+      hasHighlightInRange: items.some((item) => item.highlighted),
     };
-  }, [data, theme, cellSize, calendarHeight]);
+  }, [
+    data,
+    startDate,
+    endDate,
+    theme,
+    cellSize,
+    calendarHeight,
+    formatValue,
+    formatTooltip,
+  ]);
 
   if (isLoading) {
     return (
@@ -290,7 +258,7 @@ export const ActivityHeatmap: FC<ActivityHeatmapProps> = function ({
   if (!option) {
     return (
       <p className="py-12 text-center text-sm text-contentSecondary-light dark:text-contentSecondary-dark">
-        This address has no blob transactions.
+        {emptyMessage ?? "No data."}
       </p>
     );
   }
@@ -299,16 +267,16 @@ export const ActivityHeatmap: FC<ActivityHeatmapProps> = function ({
     <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="flex items-center gap-1.5 font-semibold">
-          Daily Blob Txs
-          <HelpIcon description="Blob transactions in each UTC day of the last 365 days, sent or received. A darker cell has more transactions, and an outline marks the longest streak. Drag the handles of the color bar to show only some values." />
+          {title}
+          {description && <HelpIcon description={description} />}
         </span>
-        {hasStreakInRange && (
+        {highlightLabel && hasHighlightInRange && (
           <span className="flex items-center gap-2 text-xs text-contentSecondary-light dark:text-contentSecondary-dark">
             <span
               className="inline-block h-3 w-3 rounded-sm border-2"
-              style={{ borderColor: STREAK_COLOR[theme] }}
+              style={{ borderColor: HIGHLIGHT_COLOR[theme] }}
             />
-            Longest streak
+            {highlightLabel}
           </span>
         )}
       </div>
@@ -328,4 +296,4 @@ export const ActivityHeatmap: FC<ActivityHeatmapProps> = function ({
       </div>
     </div>
   );
-};
+}

@@ -8,35 +8,40 @@ import type { Axis, ChartBaseProps } from "~/components/Charts/ChartBase";
 import type { ChartDataset } from "~/components/Charts/ChartBase/helpers";
 import type { FeeUnit } from "~/components/Toggles";
 import type { ThemeMode } from "~/types";
-import type { AddressRole, AddressSection, AddressTimeseries } from "./helpers";
+import type { AddressRole, AddressTimeseries } from "../../helpers";
 import {
   BLOB_SIZE,
   getClosedPeriodsMean,
   ROLE_LABELS,
   sumRoles,
-} from "./helpers";
+} from "../../helpers";
 
 type ThemeColor = Record<ThemeMode, string>;
 
 // The colors come from `baseColors` in @blobscan/tailwind-config
 // (tooling/tailwind/colors.ts): the primary color for sent, the blue color for
 // received. The soft colors show the unused space in the size chart.
-const ROLE_COLORS: Record<AddressRole, { main: ThemeColor; soft: ThemeColor }> =
-  {
-    sent: {
-      main: { light: "#5D25D4", dark: "#9A71F2" },
-      soft: { light: "#C8AEFA", dark: "#5D25D4" },
-    },
-    received: {
-      main: { light: "#5D88F4", dark: "#5D88F4" },
-      soft: { light: "#C9E5FF", dark: "#3B5BA8" },
-    },
-  };
+export const ROLE_COLORS: Record<
+  AddressRole,
+  { main: ThemeColor; soft: ThemeColor }
+> = {
+  sent: {
+    main: { light: "#5D25D4", dark: "#9A71F2" },
+    soft: { light: "#C8AEFA", dark: "#5D25D4" },
+  },
+  received: {
+    main: { light: "#5D88F4", dark: "#5D88F4" },
+    soft: { light: "#C9E5FF", dark: "#3B5BA8" },
+  },
+};
 
-const NETWORK_LINE_COLOR: ThemeColor = { light: "#A3A3A3", dark: "#7D80AB" };
+export const NETWORK_LINE_COLOR: ThemeColor = {
+  light: "#A3A3A3",
+  dark: "#7D80AB",
+};
 const AVG_LINE_COLOR: ThemeColor = { light: "#404040", dark: "#E5E5E5" };
 // The color of a ratio line on the right y-axis.
-const LINE_ACCENT_COLOR: ThemeColor = {
+export const LINE_ACCENT_COLOR: ThemeColor = {
   light: "#D97706",
   dark: "#FBBF24",
 };
@@ -146,8 +151,7 @@ function buildDataset(data: AddressTimeseries): ChartDataset {
   } as ChartDataset;
 }
 
-type ChartSpec = {
-  section: AddressSection;
+export type ChartSpec = {
   title: string;
   /** The help text of the chart. An icon after the title shows it. */
   description: string;
@@ -173,7 +177,7 @@ const ROLE_TITLE_LABELS: Record<AddressRole, string> = {
   received: "As Receiver",
 };
 
-function roleBars(column: string) {
+export function roleBars(column: string) {
   return (roles: AddressRole[], theme: ThemeMode): SeriesOption[] =>
     roles.map((role) => ({
       type: "bar",
@@ -189,7 +193,7 @@ function roleBars(column: string) {
  * Returns a line that shows its points. A period with no data breaks the
  * line, thus a single active period shows as a point only.
  */
-function pointLine(
+export function pointLine(
   name: string,
   column: string,
   color: string,
@@ -208,7 +212,7 @@ function pointLine(
   };
 }
 
-function roleLines(column: string) {
+export function roleLines(column: string) {
   return (roles: AddressRole[], theme: ThemeMode): SeriesOption[] =>
     roles.map((role) =>
       pointLine(
@@ -229,7 +233,11 @@ const PERIOD_LABELS: Record<AddressTimeseries["granularity"], string> = {
  * values, for example "Blobs Sent", and a dashed line with the average of the
  * bars, for example "Avg. Daily Blobs".
  */
-function stackedRoleBars(column: string, noun: string, avgColumn: string) {
+export function stackedRoleBars(
+  column: string,
+  noun: string,
+  avgColumn: string
+) {
   return (
     roles: AddressRole[],
     theme: ThemeMode,
@@ -267,177 +275,44 @@ function stackedRoleBars(column: string, noun: string, avgColumn: string) {
   };
 }
 
-function getChartSpecs(unit: FeeUnit): ChartSpec[] {
-  const isUsd = unit === "usd";
-  const feeAxis: Axis = isUsd
-    ? { type: "count", unitType: "fiat", unit: "USD" }
-    : { type: "count", unitType: "ether", unit: "wei", displayUnit: "Gwei" };
-  const avgFeeAxis: Axis = isUsd
-    ? { type: "average", unitType: "fiat", unit: "USD" }
-    : { type: "average", unitType: "ether", unit: "wei", displayUnit: "Gwei" };
-
-  return [
-    {
-      section: "transactions",
-      title: "Blob Transactions",
-      description:
-        "Blob transactions in each period, by role. The line is the mean per period in the selected time frame. The total counts a transaction that the address sends to itself one time.",
-      yAxis: { type: "count" },
-      series: stackedRoleBars("Txs", "Txs", "avgTxs"),
-      // The total is the bars, not the average line. It counts a self-send
-      // one time, so it is not the sum of the bars.
-      tooltipOpts: {
-        displayTotal: true,
-        totalStack: "Txs",
-        totalColumn: "totalTxs",
-        totalLabel: "Total Txs",
-      },
-      sortSeries: false,
-    },
-    {
-      section: "blobs",
-      title: "Blobs",
-      description:
-        "Blobs in each period, by role. The dashed line is the mean per period. The other line, on the right axis, is the mean number of blobs per transaction in each period.",
-      yAxis: { type: "count" },
-      y2Axis: { type: "average" },
-      // The blobs per tx line is first in the tooltip and the legend, which
-      // show the series in reverse order.
-      series: (roles, theme, granularity) => [
-        ...stackedRoleBars("Blobs", "Blobs", "avgBlobs")(
-          roles,
-          theme,
-          granularity
-        ),
-        pointLine("Avg. Blobs per Tx", "blobsPerTx", LINE_ACCENT_COLOR[theme], {
-          yAxisIndex: 1,
-        }),
-      ],
-      tooltipOpts: {
-        displayTotal: true,
-        totalStack: "Blobs",
-        totalColumn: "totalBlobs",
-        totalLabel: "Total Blobs",
-      },
-      sortSeries: false,
-    },
-    {
-      section: "fees",
-      title: "Blob Fees",
-      description:
-        "Blob base fees of the transactions in each period, by role. The blob base fee is the blob gas used multiplied by the blob gas price of the block.",
-      yAxis: feeAxis,
-      series: roleBars(isUsd ? "FeeUsd" : "Fee"),
-      tooltipOpts: { displayTotal: true, totalLabel: "Total Blob Fees" },
-    },
-    {
-      section: "fees",
-      title: "Cost per KiB of Blob Data",
-      description:
-        "Blob fees divided by the size of the blob data in each period, by role. Unused blob space makes this cost higher.",
-      yAxis: avgFeeAxis,
-      series: roleLines(isUsd ? "CostPerKbUsd" : "CostPerKb"),
-    },
-    {
-      section: "usage",
-      title: "Blob Size vs Usage",
-      description:
-        "Blob space in each period, divided into data and unused space. The line, on the right axis, is the percentage of the blob space that has data. The chart shows only the role with more transactions.",
-      yAxis: { type: "count", unitType: "byte", unit: "B" },
-      y2Axis: { type: "average" },
-      // The sender fills the blobs, so the sent and the received blobs of an
-      // address come from different parties. The chart shows the main role
-      // only, as the Blob Space card and the cards of the section.
-      mainRoleOnly: true,
-      // The data is at the bottom of each bar. The legend and the tooltip
-      // show the series in reverse order: the utilization line, the unused
-      // space, then the data.
-      series: ([role = "sent"], theme) => [
-        {
-          type: "bar",
-          name: "Data",
-          stack: "usage",
-          encode: { x: "timestamp", y: `${role}Usage` },
-          itemStyle: { color: ROLE_COLORS[role].main[theme] },
+/** Returns the y-axes of the fee charts in the selected unit. */
+export function getFeeAxes(unit: FeeUnit): { total: Axis; average: Axis } {
+  return unit === "usd"
+    ? {
+        total: { type: "count", unitType: "fiat", unit: "USD" },
+        average: { type: "average", unitType: "fiat", unit: "USD" },
+      }
+    : {
+        total: {
+          type: "count",
+          unitType: "ether",
+          unit: "wei",
+          displayUnit: "Gwei",
         },
-        {
-          type: "bar",
-          name: "Unused",
-          stack: "usage",
-          encode: { x: "timestamp", y: `${role}Unused` },
-          itemStyle: { color: ROLE_COLORS[role].soft[theme] },
+        average: {
+          type: "average",
+          unitType: "ether",
+          unit: "wei",
+          displayUnit: "Gwei",
         },
-        pointLine(
-          "Utilization (%)",
-          `${role}Utilization`,
-          LINE_ACCENT_COLOR[theme],
-          { yAxisIndex: 1 }
-        ),
-      ],
-      // The total is the blob space: the data and the unused space.
-      tooltipOpts: {
-        displayTotal: true,
-        totalStack: "usage",
-        totalLabel: "Total Blob Space",
-      },
-      sortSeries: false,
-    },
-    {
-      section: "network",
-      title: "Share of Network Blobs (%)",
-      description:
-        "Blobs of the address in each period, by role, as a percentage of all the blobs of the network in the same period.",
-      yAxis: { type: "average" },
-      series: roleLines("NetworkShare"),
-    },
-    {
-      section: "network",
-      title: "Timing Ratio vs Network",
-      description:
-        "Blob gas price that the address paid in each period, divided by the mean price of the network in the same period. Below 1, the address paid less than the network. Only sent transactions pay blob fees.",
-      yAxis: { type: "average" },
-      series: (roles, theme) =>
-        roles.includes("sent")
-          ? [
-              pointLine(
-                ROLE_LABELS.sent,
-                "sentTimingRatio",
-                ROLE_COLORS.sent.main[theme],
-                {
-                  markLine: {
-                    silent: true,
-                    symbol: "none",
-                    label: { formatter: "Network", position: "insideEndTop" },
-                    lineStyle: {
-                      color: NETWORK_LINE_COLOR[theme],
-                      type: "dashed",
-                    },
-                    data: [{ yAxis: 1 }],
-                  },
-                }
-              ),
-            ]
-          : [],
-    },
-  ];
+      };
 }
 
-export type AddressChartsProps = {
-  section: AddressSection;
+export type SectionChartsProps = {
+  charts: ChartSpec[];
   data?: AddressTimeseries;
   roles: AddressRole[];
   /** The role with more transactions. Some charts show only this role. */
   mainRole?: AddressRole;
-  unit: FeeUnit;
   isLoading?: boolean;
 };
 
-export const AddressCharts: FC<AddressChartsProps> = function ({
-  section,
+/** Shows the charts of a section, one chart on each line. */
+export const SectionCharts: FC<SectionChartsProps> = function ({
+  charts,
   data,
   roles,
   mainRole = "sent",
-  unit,
   isLoading,
 }) {
   const { resolvedTheme } = useTheme();
@@ -446,14 +321,9 @@ export const AddressCharts: FC<AddressChartsProps> = function ({
     () => (data ? buildDataset(data) : undefined),
     [data]
   );
-  const specs = useMemo(
-    () => getChartSpecs(unit).filter((spec) => spec.section === section),
-    [unit, section]
-  );
-
   return (
     <div className="flex flex-col gap-14">
-      {specs.map(
+      {charts.map(
         ({
           title,
           description,
