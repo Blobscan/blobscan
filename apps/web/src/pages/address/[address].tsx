@@ -4,7 +4,6 @@ import { useRouter } from "next/compat/router";
 
 import { AddressTabs } from "~/components/Address/Tabs";
 import { CategoryBadge } from "~/components/Badges/CategoryBadge";
-import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Copyable } from "~/components/Copyable";
 import { EthIdenticon } from "~/components/EthIdenticon";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -137,17 +136,13 @@ const Address: NextPage = () => {
             {
               name: "Category",
               helpText:
-                "Rollup when the address posts blobs for a known rollup. Other when it does not.",
-              value: <CategoryBadge category={overall.category as Category} />,
-            },
-          ]
-        : []),
-      ...(overall.rollup
-        ? [
-            {
-              name: "Rollup",
-              helpText: "The rollup that this address posts blobs for.",
-              value: <RollupBadge rollup={overall.rollup as Rollup} />,
+                "Rollup when the address posts blobs for a known rollup, with the badge of that rollup. Other when it does not.",
+              value: (
+                <CategoryBadge
+                  category={overall.category as Category}
+                  rollup={(overall.rollup as Rollup | null) ?? undefined}
+                />
+              ),
             },
           ]
         : []),
