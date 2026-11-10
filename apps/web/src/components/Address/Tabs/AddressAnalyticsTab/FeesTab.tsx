@@ -6,19 +6,39 @@ import { FeeUnitToggle } from "~/components/Toggles";
 import type { FeeUnit } from "~/components/Toggles";
 import { getDerivedMetrics } from "../../helpers";
 import { SectionLayout } from "./SectionLayout";
+import type { CardInfo } from "./cards";
 import { feeMetric, skeletonCards } from "./cards";
 import type { ChartSpec } from "./charts";
 import { getFeeAxes, roleBars, roleLines } from "./charts";
 import type { AnalyticsSectionProps } from "./types";
 
-/** The names of the cards. They are also the skeletons while the data loads. */
-export const FEES_CARD_NAMES = [
-  "Total Blob Fees",
-  "Avg. Blob Fee per Tx",
-  "Cost per KiB of Blob Data",
-  "Calldata Savings",
-  "Wasted Blob Fees",
-];
+/** The cards of the section. They are also the skeletons while the data loads. */
+const CARDS = {
+  total: {
+    name: "Total Blob Fees",
+    description:
+      "Sum of the blob base fees of the transactions. The blob base fee is the blob gas used multiplied by the blob gas price of the block.",
+  },
+  avgPerTx: {
+    name: "Avg. Blob Fee per Tx",
+    description: "Mean blob base fee of each blob transaction.",
+  },
+  costPerKb: {
+    name: "Cost per KiB of Blob Data",
+    description:
+      "Blob fees divided by the size of the blob data. Unused blob space makes this cost higher.",
+  },
+  calldataSavings: {
+    name: "Calldata Savings",
+    description:
+      "Fees that the address did not pay because it used blobs. It is the cost of the same data as calldata, minus the blob fees.",
+  },
+  wasted: {
+    name: "Wasted Blob Fees",
+    description:
+      "Part of the blob fees that paid for unused blob space. Each blob costs the same, whether it is full or not.",
+  },
+} satisfies Record<string, CardInfo>;
 
 function buildCards({
   overall,
@@ -26,7 +46,7 @@ function buildCards({
   showUsd,
 }: AnalyticsSectionProps): MetricCardProps[] {
   if (!overall) {
-    return skeletonCards(FEES_CARD_NAMES);
+    return skeletonCards(Object.values(CARDS));
   }
 
   const totals = overall[mainRole];
@@ -34,7 +54,7 @@ function buildCards({
 
   return [
     {
-      name: "Total Blob Fees",
+      ...CARDS.total,
       ...feeMetric(
         showUsd,
         BigInt(totals.totalBlobBaseFee),
@@ -42,19 +62,19 @@ function buildCards({
       ),
     },
     {
-      name: "Avg. Blob Fee per Tx",
+      ...CARDS.avgPerTx,
       ...feeMetric(showUsd, dm.avgFeePerTx, dm.avgFeePerTxUsd),
     },
     {
-      name: "Cost per KiB of Blob Data",
+      ...CARDS.costPerKb,
       ...feeMetric(showUsd, dm.costPerKb, dm.costPerKbUsd),
     },
     {
-      name: "Calldata Savings",
+      ...CARDS.calldataSavings,
       ...feeMetric(showUsd, dm.calldataSavings, dm.calldataSavingsUsd),
     },
     {
-      name: "Wasted Blob Fees",
+      ...CARDS.wasted,
       ...feeMetric(showUsd, dm.unusedFee, dm.unusedFeeUsd),
     },
   ];

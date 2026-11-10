@@ -14,9 +14,15 @@ import type {
 } from "../../helpers";
 import { BLOB_SIZE, getDailyMean, getPeakDay } from "../../helpers";
 
+/**
+ * The name of a card and its help text. An icon after the name shows the
+ * text. Each section defines its cards with this type.
+ */
+export type CardInfo = { name: string; description: string };
+
 /** Returns the cards that show a skeleton while the data loads. */
-export function skeletonCards(names: string[]): MetricCardProps[] {
-  return names.map((name) => ({ name }));
+export function skeletonCards(cards: CardInfo[]): MetricCardProps[] {
+  return cards.map(({ name, description }) => ({ name, description }));
 }
 
 /**
@@ -57,13 +63,15 @@ function formatBlobGas(value: bigint) {
 export function roleTotalCards(
   data: AddressOverall,
   roles: AddressRole[],
-  name: string,
+  { name, description }: CardInfo,
   column: "totalTransactions" | "totalBlobs"
 ): MetricCardProps[] {
   const totalRoles: AddressRole[] = roles.length ? roles : ["sent"];
 
   return totalRoles.map((role) => ({
     name: `${name} (${ROLE_CARD_LABELS[role]})`,
+    // The cards of the two roles have the same text.
+    description,
     metric: { primary: { value: data[role][column] } },
     // Each blob uses BLOB_SIZE blob gas, thus the blob gas is the same value
     // in a different unit.
@@ -81,13 +89,13 @@ export function roleTotalCards(
  * same mean as a line.
  */
 export function dailyMeanCard(
-  name: string,
+  card: CardInfo,
   timeseries: AddressTimeseries | undefined,
   column: SummableColumn,
   opts: { type?: MetricType; role?: AddressRole } = {}
 ): MetricCardProps {
   return {
-    name,
+    ...card,
     metric: {
       primary: {
         value: timeseries && getDailyMean(timeseries, column, opts.role),
@@ -104,7 +112,7 @@ export function dailyMeanCard(
  * is no date.
  */
 export function peakDayCard(
-  name: string,
+  card: CardInfo,
   timeseries: AddressTimeseries | undefined,
   column: SummableColumn,
   opts: { type?: MetricType; role?: AddressRole } = {}
@@ -112,7 +120,7 @@ export function peakDayCard(
   const peakDay = timeseries && getPeakDay(timeseries, column, opts.role);
 
   return {
-    name,
+    ...card,
     metric: {
       primary: {
         value: timeseries ? peakDay?.value ?? 0 : undefined,

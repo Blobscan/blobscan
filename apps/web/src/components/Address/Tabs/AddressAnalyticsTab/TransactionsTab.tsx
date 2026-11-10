@@ -2,6 +2,7 @@ import type { FC } from "react";
 
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
 import { SectionLayout } from "./SectionLayout";
+import type { CardInfo } from "./cards";
 import {
   dailyMeanCard,
   peakDayCard,
@@ -12,12 +13,24 @@ import type { ChartSpec } from "./charts";
 import { stackedRoleBars } from "./charts";
 import type { AnalyticsSectionProps } from "./types";
 
-/** The names of the cards. They are also the skeletons while the data loads. */
-export const TRANSACTIONS_CARD_NAMES = [
-  "Total Blob Txs",
-  "Avg. Daily Txs",
-  "Max Daily Txs",
-];
+/** The cards of the section. They are also the skeletons while the data loads. */
+const CARDS = {
+  total: {
+    name: "Total Blob Txs",
+    description:
+      "Number of blob transactions in the selected time frame, in this role. A transaction the address sends to itself counts in both roles.",
+  },
+  avgDaily: {
+    name: "Avg. Daily Txs",
+    description:
+      "Mean number of blob transactions per day in the selected time frame, including days without transactions.",
+  },
+  maxDaily: {
+    name: "Max Daily Txs",
+    description:
+      "Largest number of blob transactions in one UTC day of the selected time frame.",
+  },
+} satisfies Record<string, CardInfo>;
 
 function buildCards({
   overall,
@@ -25,13 +38,13 @@ function buildCards({
   roles,
 }: AnalyticsSectionProps): MetricCardProps[] {
   if (!overall) {
-    return skeletonCards(TRANSACTIONS_CARD_NAMES);
+    return skeletonCards(Object.values(CARDS));
   }
 
   return [
-    ...roleTotalCards(overall, roles, "Total Blob Txs", "totalTransactions"),
-    dailyMeanCard("Avg. Daily Txs", timeseries, "totalTransactions"),
-    peakDayCard("Max Daily Txs", timeseries, "totalTransactions"),
+    ...roleTotalCards(overall, roles, CARDS.total, "totalTransactions"),
+    dailyMeanCard(CARDS.avgDaily, timeseries, "totalTransactions"),
+    peakDayCard(CARDS.maxDaily, timeseries, "totalTransactions"),
   ];
 }
 

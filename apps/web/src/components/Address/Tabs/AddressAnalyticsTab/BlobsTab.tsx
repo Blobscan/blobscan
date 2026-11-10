@@ -3,6 +3,7 @@ import type { FC } from "react";
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
 import { getDerivedMetrics } from "../../helpers";
 import { SectionLayout } from "./SectionLayout";
+import type { CardInfo } from "./cards";
 import {
   dailyMeanCard,
   peakDayCard,
@@ -13,13 +14,28 @@ import type { ChartSpec } from "./charts";
 import { LINE_ACCENT_COLOR, pointLine, stackedRoleBars } from "./charts";
 import type { AnalyticsSectionProps } from "./types";
 
-/** The names of the cards. They are also the skeletons while the data loads. */
-export const BLOBS_CARD_NAMES = [
-  "Total Blobs",
-  "Avg. Blobs per Tx",
-  "Avg. Daily Blobs",
-  "Max Daily Blobs",
-];
+/** The cards of the section. They are also the skeletons while the data loads. */
+const CARDS = {
+  total: {
+    name: "Total Blobs",
+    description:
+      "Number of blobs in the transactions of the selected time frame, in this role. Each blob uses 131,072 units of blob gas.",
+  },
+  avgPerTx: {
+    name: "Avg. Blobs per Tx",
+    description: "Mean number of blobs in each blob transaction.",
+  },
+  avgDaily: {
+    name: "Avg. Daily Blobs",
+    description:
+      "Mean number of blobs per day in the selected time frame, including days without transactions.",
+  },
+  maxDaily: {
+    name: "Max Daily Blobs",
+    description:
+      "Largest number of blobs in one UTC day of the selected time frame.",
+  },
+} satisfies Record<string, CardInfo>;
 
 function buildCards({
   overall,
@@ -28,13 +44,13 @@ function buildCards({
   mainRole = "sent",
 }: AnalyticsSectionProps): MetricCardProps[] {
   if (!overall) {
-    return skeletonCards(BLOBS_CARD_NAMES);
+    return skeletonCards(Object.values(CARDS));
   }
 
   return [
-    ...roleTotalCards(overall, roles, "Total Blobs", "totalBlobs"),
+    ...roleTotalCards(overall, roles, CARDS.total, "totalBlobs"),
     {
-      name: "Avg. Blobs per Tx",
+      ...CARDS.avgPerTx,
       metric: {
         primary: {
           value: getDerivedMetrics(overall[mainRole]).avgBlobsPerTx,
@@ -42,8 +58,8 @@ function buildCards({
         },
       },
     },
-    dailyMeanCard("Avg. Daily Blobs", timeseries, "totalBlobs"),
-    peakDayCard("Max Daily Blobs", timeseries, "totalBlobs"),
+    dailyMeanCard(CARDS.avgDaily, timeseries, "totalBlobs"),
+    peakDayCard(CARDS.maxDaily, timeseries, "totalBlobs"),
   ];
 }
 

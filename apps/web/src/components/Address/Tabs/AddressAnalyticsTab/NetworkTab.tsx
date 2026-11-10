@@ -14,6 +14,7 @@ import {
   ROLE_LABELS,
 } from "../../helpers";
 import { SectionLayout } from "./SectionLayout";
+import type { CardInfo } from "./cards";
 import { skeletonCards } from "./cards";
 import type { ChartSpec } from "./charts";
 import {
@@ -24,11 +25,22 @@ import {
 } from "./charts";
 import type { AnalyticsSectionProps } from "./types";
 
-/** The names of the cards. They are also the skeletons while the data loads. */
-export const NETWORK_CARD_NAMES = [
-  "Share of Network Blobs",
-  "Avg. Blob Gas Price Paid",
-];
+/**
+ * The cards of the section. They are also the skeletons while the data loads.
+ * They use the data of all the time.
+ */
+const CARDS = {
+  share: {
+    name: "Share of Network Blobs",
+    description:
+      "Percentage of all the blobs of the network that are in transactions of this address, for all the time. The time frame does not change this value.",
+  },
+  gasPrice: {
+    name: "Avg. Blob Gas Price Paid",
+    description:
+      "Mean blob gas price of the transactions that the address sent, weighted by blob gas. The card compares it with the mean price of the network. Both are for all the time, and the time frame does not change them.",
+  },
+} satisfies Record<string, CardInfo>;
 
 /**
  * Shows how much more or less than the network the address paid for blob
@@ -83,7 +95,7 @@ function NetworkPriceComparison({
  */
 function buildCards(allTimeOverall?: AddressOverall): MetricCardProps[] {
   if (!allTimeOverall) {
-    return skeletonCards(NETWORK_CARD_NAMES);
+    return skeletonCards(Object.values(CARDS));
   }
 
   const data = allTimeOverall;
@@ -98,7 +110,7 @@ function buildCards(allTimeOverall?: AddressOverall): MetricCardProps[] {
 
   return [
     {
-      name: "Share of Network Blobs",
+      ...CARDS.share,
       metric: {
         primary: {
           value: share !== undefined ? share * 100 : undefined,
@@ -111,7 +123,7 @@ function buildCards(allTimeOverall?: AddressOverall): MetricCardProps[] {
       ? [
           {
             // The sender pays the blob fee.
-            name: "Avg. Blob Gas Price Paid",
+            ...CARDS.gasPrice,
             metric: {
               primary: { value: gasPrices.address, type: "ethereum" },
             },

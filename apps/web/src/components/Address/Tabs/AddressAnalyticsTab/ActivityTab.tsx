@@ -9,7 +9,8 @@ import { api } from "~/api-client";
 import { formatNumber } from "~/utils";
 import type { ActivityDay, AddressOverall } from "../../helpers";
 import { getActivityDays } from "../../helpers";
-import { getMetricDescription } from "../../metric-descriptions";
+import type { CardInfo } from "./cards";
+import { skeletonCards } from "./cards";
 import type { AnalyticsSectionProps } from "./types";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -56,27 +57,45 @@ function formatDayTooltip(date: string, day?: ActivityDay) {
   }`;
 }
 
-/** The names of the cards. They are also the skeletons while the data loads. */
-export const ACTIVITY_CARD_NAMES = [
-  "Age",
-  "Time Active",
-  "Longest Streak",
-  "Longest Gap",
-];
+/**
+ * The cards of the section. They are also the skeletons while the data loads.
+ * They use the data of all the time.
+ */
+const CARDS = {
+  age: {
+    name: "Age",
+    description:
+      "Number of days since the first blob transaction of the address.",
+  },
+  timeActive: {
+    name: "Time Active",
+    description:
+      "Number of UTC days with at least one blob transaction, sent or received.",
+  },
+  longestStreak: {
+    name: "Longest Streak",
+    description:
+      "Largest number of consecutive UTC days with at least one blob transaction.",
+  },
+  longestGap: {
+    name: "Longest Gap",
+    description:
+      "Largest number of days without blob transactions between two active days.",
+  },
+} satisfies Record<string, CardInfo>;
 
 function buildActivityCards(
   allTime?: AddressOverall["allTime"]
 ): MetricCardProps[] {
   if (!allTime) {
-    return ACTIVITY_CARD_NAMES.map((name) => ({ name }));
+    return skeletonCards(Object.values(CARDS));
   }
 
   const { firstTransaction, activeDays, longestStreak, longestGap } = allTime;
-  const [ageName, activeDaysName, streakName, gapName] = ACTIVITY_CARD_NAMES;
 
   return [
     {
-      name: ageName,
+      ...CARDS.age,
       metric: {
         primary: {
           value: firstTransaction
@@ -90,17 +109,17 @@ function buildActivityCards(
       },
     },
     {
-      name: activeDaysName,
+      ...CARDS.timeActive,
       metric: { primary: { value: activeDays, type: "days" } },
     },
     {
-      name: streakName,
+      ...CARDS.longestStreak,
       metric: { primary: { value: longestStreak, type: "days" } },
     },
     // MetricCard shows a skeleton for an undefined value, so an address with
     // fewer than two active days shows 0.
     {
-      name: gapName,
+      ...CARDS.longestGap,
       metric: { primary: { value: longestGap, type: "days" } },
     },
   ];
@@ -132,11 +151,7 @@ export const ActivityTab: FC<AnalyticsSectionProps> = function ({
     <div className="flex flex-col gap-8">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {buildActivityCards(allTime).map((card) => (
-          <MetricCard
-            key={card.name}
-            description={getMetricDescription(card.name)}
-            {...card}
-          />
+          <MetricCard key={card.name} {...card} />
         ))}
       </div>
       <Card>

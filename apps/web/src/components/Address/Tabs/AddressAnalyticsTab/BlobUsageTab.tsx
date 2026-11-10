@@ -5,18 +5,35 @@ import { formatBytes, formatNumber } from "~/utils";
 import type { RoleTotals } from "../../helpers";
 import { BLOB_SIZE } from "../../helpers";
 import { SectionLayout } from "./SectionLayout";
+import type { CardInfo } from "./cards";
 import { dailyMeanCard, peakDayCard, skeletonCards } from "./cards";
 import type { ChartSpec } from "./charts";
 import { LINE_ACCENT_COLOR, pointLine, ROLE_COLORS } from "./charts";
 import type { AnalyticsSectionProps } from "./types";
 
-/** The names of the cards. They are also the skeletons while the data loads. */
-export const BLOB_USAGE_CARD_NAMES = [
-  "Blob Space Utilization",
-  "Avg. Data per Tx",
-  "Avg. Daily Data",
-  "Max Daily Data",
-];
+/** The cards of the section. They are also the skeletons while the data loads. */
+const CARDS = {
+  blobSpace: {
+    name: "Blob Space Utilization",
+    description:
+      "Percentage of the blob space that has data, for the role with more transactions. Each blob has 128 KiB, and the unused space is the part without data.",
+  },
+  avgPerTx: {
+    name: "Avg. Data per Tx",
+    description:
+      "Mean size of the data in the blobs of each transaction. Unused blob space is not included.",
+  },
+  avgDaily: {
+    name: "Avg. Daily Data",
+    description:
+      "Mean size of the blob data per day in the selected time frame, including days without transactions.",
+  },
+  maxDaily: {
+    name: "Max Daily Data",
+    description:
+      "Largest size of blob data in one UTC day of the selected time frame.",
+  },
+} satisfies Record<string, CardInfo>;
 
 // The colors of the used and the unused space are the same as PercentageBar,
 // which shows the blob usage on the details pages.
@@ -29,13 +46,12 @@ const UNUSED_COLOR = "bg-primary-200 dark:bg-primary-800";
  * width of the grid.
  */
 function blobSpaceCard(totals?: RoleTotals): MetricCardProps {
-  const name = "Blob Space Utilization";
   const className = "col-span-full";
 
   if (!totals) {
     // Without a value, the card shows the skeletons of the value and the bar.
     return {
-      name,
+      ...CARDS.blobSpace,
       className,
       metric: { primary: {} },
       breakdown: { ariaLabel: "", parts: [] },
@@ -51,7 +67,7 @@ function blobSpaceCard(totals?: RoleTotals): MetricCardProps {
     : 0;
 
   return {
-    name,
+    ...CARDS.blobSpace,
     className,
     metric: {
       primary: {
@@ -100,9 +116,9 @@ function buildCards({
 }: AnalyticsSectionProps): MetricCardProps[] {
   if (!overall) {
     // The skeleton of the Blob Space card also has its bar.
-    const [, ...names] = BLOB_USAGE_CARD_NAMES;
+    const { blobSpace: _, ...others } = CARDS;
 
-    return [blobSpaceCard(), ...skeletonCards(names)];
+    return [blobSpaceCard(), ...skeletonCards(Object.values(others))];
   }
 
   const totals = overall[mainRole];
@@ -110,7 +126,7 @@ function buildCards({
   return [
     blobSpaceCard(totals),
     {
-      name: "Avg. Data per Tx",
+      ...CARDS.avgPerTx,
       metric: {
         primary: {
           value: totals.totalTransactions
@@ -120,11 +136,11 @@ function buildCards({
         },
       },
     },
-    dailyMeanCard("Avg. Daily Data", timeseries, "totalBlobUsageSize", {
+    dailyMeanCard(CARDS.avgDaily, timeseries, "totalBlobUsageSize", {
       type: "bytes",
       role: mainRole,
     }),
-    peakDayCard("Max Daily Data", timeseries, "totalBlobUsageSize", {
+    peakDayCard(CARDS.maxDaily, timeseries, "totalBlobUsageSize", {
       type: "bytes",
       role: mainRole,
     }),

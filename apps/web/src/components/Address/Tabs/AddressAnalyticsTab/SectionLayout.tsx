@@ -3,7 +3,6 @@ import type { FC, ReactNode } from "react";
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
-import { getMetricDescription } from "../../metric-descriptions";
 import type { ChartSpec } from "./charts";
 import { SectionCharts } from "./charts";
 import type { AnalyticsSectionProps } from "./types";
@@ -35,11 +34,7 @@ export const SectionLayout: FC<SectionLayoutProps> = function ({
     <div className="flex flex-col gap-8">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {cards.map((card) => (
-          <MetricCard
-            key={card.name}
-            description={getMetricDescription(card.name)}
-            {...card}
-          />
+          <MetricCard key={card.name} {...card} />
         ))}
       </div>
       <Card>
