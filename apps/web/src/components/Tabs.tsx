@@ -263,7 +263,8 @@ export function Tabs<T extends string>({
               className={cn(
                 "group relative flex flex-1 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md px-4 text-sm font-semibold transition-colors",
                 { "sm:flex-none": !fullWidth },
-                "text-contentSecondary-light dark:text-contentSecondary-dark",
+                // The same text color as the items of the navigation menu.
+                "text-content-light dark:text-content-dark",
                 "focus:outline-none data-[focus]:ring-2 data-[focus]:ring-indigo-500",
                 "data-[hover]:text-iconHighlight-light dark:data-[hover]:text-iconHighlight-dark",
                 "data-[selected]:text-accent-light dark:data-[selected]:text-accent-dark",
@@ -275,10 +276,9 @@ export function Tabs<T extends string>({
               )}
             >
               {icon && (
-                <Icon
-                  src={icon}
-                  className="text-icon-light transition-colors group-data-[selected]:text-accent-light dark:text-icon-dark dark:group-data-[selected]:text-accent-dark"
-                />
+                // The icon has the color of the label, also on hover and
+                // when the tab is selected.
+                <Icon src={icon} className="transition-colors" />
               )}
               {label}
               {badge !== undefined && badge !== null && (
