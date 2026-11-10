@@ -122,7 +122,7 @@ const Address: NextPage = () => {
           <div className="flex min-w-0 items-center gap-2">
             {/* We use lower case, so that the identicon does not change with the letter case. */}
             <div className="shrink-0">
-              <EthIdenticon address={address} />
+              <EthIdenticon address={address} shape="circle" />
             </div>
             <div className="min-w-0 [&>div]:min-w-0">
               <Copyable value={checksumAddress} tooltipText="Copy Address">
