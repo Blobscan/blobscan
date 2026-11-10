@@ -1,26 +1,13 @@
-import { useEffect, useState } from "react";
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
 
-import { MS_PER_MINUTE } from "~/utils/date";
 import { formatIndexerLag, getIndexerLag } from "~/utils/indexer-lag";
 import { useChain } from "~/hooks/useChain";
 import { useAppState } from "~/providers/AppState";
 import Banner from "./Banner";
 
 export default function IndexerLagBanner() {
-  const { appState, isError } = useAppState();
+  const { appState, isError, dataUpdatedAt } = useAppState();
   const chain = useChain();
-
-  // The lag increases while the indexer does not sync, but the synced slot
-  // does not change. A clock tick makes the banner render again, so it
-  // calculates the lag again.
-  const [, setTick] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => setTick((t) => t + 1), MS_PER_MINUTE);
-
-    return () => clearInterval(interval);
-  }, []);
 
   // After a failed refetch, the query keeps the last data. Do not use that
   // old slot, because the API is down, not the indexer.
@@ -29,6 +16,12 @@ export default function IndexerLagBanner() {
     : getIndexerLag({
         chain,
         lastUpperSyncedSlot: appState?.syncState?.lastUpperSyncedSlot,
+        // Measure the lag at the time of the fetch, not now. When a tab
+        // comes back from the background, the slot is old until the refetch
+        // is complete. A lag from the current time then shows the banner for
+        // a short time. The periodic refetch updates this time, so the lag
+        // still increases while the indexer does not sync.
+        measuredAt: dataUpdatedAt,
       });
 
   if (!lag?.isOutOfSync) {
