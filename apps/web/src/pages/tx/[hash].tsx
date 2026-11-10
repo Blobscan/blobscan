@@ -1,6 +1,8 @@
 import { useCallback, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
+import { skipToken, useQueryClient } from "@tanstack/react-query";
+import { getQueryKey } from "@trpc/react-query";
 
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
@@ -21,7 +23,10 @@ import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
-import type { TransactionWithExpandedBlockAndBlob } from "~/types";
+import type {
+  GetSenderAdjacentTxInput,
+  TransactionWithExpandedBlockAndBlob,
+} from "~/types";
 import {
   formatTimestamp,
   formatBytes,
@@ -31,61 +36,96 @@ import {
   toChecksumAddress,
 } from "~/utils";
 
+const TX_EXPAND = "block,blob";
+// The transaction responses can have signed storage URLs that expire after
+// one hour, so the page does not use a cached transaction that is older than
+// this time.
+const TX_STALE_TIME = 5 * 60 * 1000;
+
+function toSenderAdjacentTxInput(
+  hash: string,
+  direction: GetSenderAdjacentTxInput["direction"]
+): GetSenderAdjacentTxInput {
+  return { hash, direction, expand: TX_EXPAND };
+}
+
 const Tx: NextPage = () => {
   const router = useRouter();
   const utils = api.useUtils();
+  const queryClient = useQueryClient();
   const hash = (router?.query.hash as string | undefined) ?? "";
   const {
     data: tx,
     error,
     isLoading,
   } = api.tx.getByHash.useQuery<TransactionWithExpandedBlockAndBlob>(
-    { hash, expand: "block,blob" },
+    { hash, expand: TX_EXPAND },
     {
       enabled: router?.isReady,
-      staleTime: Infinity,
+      staleTime: TX_STALE_TIME,
       retry: false,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
     }
   );
-  const { data: adjacentTxs } = api.tx.getSenderAdjacentsByHash.useQuery(
-    { hash },
-    {
-      enabled: router?.isReady,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-      staleTime: Infinity,
-      retry: false,
-    }
+  // The page gets an adjacent transaction only when the user clicks an arrow.
+  // These queries do not send a request. They only read the cache that the
+  // click fills, so an arrow becomes disabled when its result is `null`.
+  const cacheOnlyOptions = { enabled: false, staleTime: Infinity } as const;
+  const { data: prevTx } = api.tx.getSenderAdjacentTx.useQuery(
+    hash ? toSenderAdjacentTxInput(hash, "prev") : skipToken,
+    cacheOnlyOptions
+  );
+  const { data: nextTx } = api.tx.getSenderAdjacentTx.useQuery(
+    hash ? toSenderAdjacentTxInput(hash, "next") : skipToken,
+    cacheOnlyOptions
   );
   const [adjacentTxLoading, setAdjacentTxLoading] = useState(false);
 
   const handleNavClick = useCallback<NavArrowProps["onClick"]>(
     async (direction) => {
-      const adjacentTx =
-        direction === "next"
-          ? adjacentTxs?.nextTxHash
-          : adjacentTxs?.prevTxHash;
-
-      if (!adjacentTx) {
+      if (!hash) {
         return;
       }
 
       setAdjacentTxLoading(true);
 
       try {
-        await utils.tx.getByHash.ensureData({
-          hash: adjacentTx,
-          expand: "block,blob",
-        });
+        const adjacentInput = toSenderAdjacentTxInput(hash, direction);
+        const adjacentTx = await utils.tx.getSenderAdjacentTx.ensureData(
+          adjacentInput,
+          { staleTime: TX_STALE_TIME }
+        );
 
-        router?.push(routes.tx(adjacentTx));
+        if (!adjacentTx) {
+          return;
+        }
+
+        // Put the adjacent transaction in the cache of its page, so that the
+        // page does not send a second request. The cache entry keeps the time
+        // of the request, so that an old transaction does not show as new.
+        //
+        // Do not put the current transaction in the cache as the adjacent
+        // transaction of the new page in the opposite direction. If the
+        // current transaction is in a reorged block, the search in the
+        // opposite direction does not return it, and the response does not
+        // tell if the block is reorged.
+        const adjacentUpdatedAt = queryClient.getQueryState(
+          getQueryKey(api.tx.getSenderAdjacentTx, adjacentInput, "query")
+        )?.dataUpdatedAt;
+
+        utils.tx.getByHash.setData(
+          { hash: adjacentTx.hash, expand: TX_EXPAND },
+          adjacentTx,
+          { updatedAt: adjacentUpdatedAt }
+        );
+
+        await router?.push(routes.tx(adjacentTx.hash));
       } finally {
         setAdjacentTxLoading(false);
       }
     },
-    [utils, router, adjacentTxs]
+    [hash, queryClient, router, utils]
   );
 
   if (error) {
@@ -318,7 +358,7 @@ const Tx: NextPage = () => {
               size="lg"
               onClick={() => handleNavClick("prev")}
               tooltip="Previous Transaction from This Sender"
-              disabled={!adjacentTxs?.prevTxHash || adjacentTxLoading}
+              disabled={prevTx === null || adjacentTxLoading}
             />
             Transaction Details
             <NavArrow
@@ -326,7 +366,7 @@ const Tx: NextPage = () => {
               size="lg"
               onClick={() => handleNavClick("next")}
               tooltip="Next Transaction from This Sender"
-              disabled={!adjacentTxs?.nextTxHash || adjacentTxLoading}
+              disabled={nextTx === null || adjacentTxLoading}
             />
           </div>
         }

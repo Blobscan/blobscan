@@ -2,19 +2,14 @@ import { TRPCError } from "@trpc/server";
 
 import { z } from "@blobscan/zod";
 
+import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import {
   createExpandsSchema,
   withExpands,
 } from "../../middlewares/withExpands";
-import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
-import type { CompletedPrismaTransaction } from "./helpers";
-import {
-  createTransactionSelect,
-  responseTransactionSchema,
-  toResponseTransaction,
-} from "./helpers";
+import { findResponseTransaction, responseTransactionSchema } from "./helpers";
 
 const inputSchema = z
   .object({
@@ -38,20 +33,14 @@ export const getByHash = publicProcedure
   .output(outputSchema)
   .use(withBlobSignedUrls)
   .query(async ({ ctx: { expands, prisma }, input: { hash } }) => {
-    const [prismaTx, ethUsdPrice] = await Promise.all([
-      prisma.transaction.findUnique({
-        select: createTransactionSelect(expands),
-        where: { hash },
-      }) as unknown as Promise<CompletedPrismaTransaction | null>,
-      prisma.transaction.findEthUsdPrice(hash),
-    ]);
+    const tx = await findResponseTransaction(prisma, expands, hash);
 
-    if (!prismaTx) {
+    if (!tx) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `No transaction with hash '${hash}'.`,
       });
     }
 
-    return toResponseTransaction(prismaTx, ethUsdPrice?.price);
+    return tx;
   });

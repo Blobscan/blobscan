@@ -1,18 +1,24 @@
 import { TRPCError } from "@trpc/server";
 
-import { TransactionSchema } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
+import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
+import {
+  createExpandsSchema,
+  withExpands,
+} from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
+import { normalize } from "../../utils";
+import { findResponseTransaction, responseTransactionSchema } from "./helpers";
 
-const inputSchema = z.object({
-  hash: z.string(),
-});
+const inputSchema = z
+  .object({
+    hash: z.string(),
+    direction: z.enum(["prev", "next"]),
+  })
+  .merge(createExpandsSchema(["block", "blob"]));
 
-const outputSchema = z.object({
-  prevTxHash: TransactionSchema.shape.hash.optional(),
-  nextTxHash: TransactionSchema.shape.hash.optional(),
-});
+const outputSchema = responseTransactionSchema.transform(normalize).nullable();
 
 type AdjacentTxsQuery = {
   prevTxHash: string | null;
@@ -20,8 +26,14 @@ type AdjacentTxsQuery = {
 }[];
 
 /**
- * Returns the previous and next transactions of the sender of the given
- * transaction. It does not return transactions of reorged blocks.
+ * Returns the previous or the next transaction of the sender of the given
+ * transaction. The order is the block timestamp, then the transaction index.
+ * It does not return transactions of reorged blocks. Returns `null` if the
+ * sender has no transaction in that direction.
+ *
+ * The transaction has the format of `tx.getByHash` with the same `expand`.
+ * Thus the client can put it in the `getByHash` cache, and the page of the
+ * transaction does not send a second request.
  *
  * Each side is a `LATERAL` subquery. The `LATERAL` join gives the values of
  * the current transaction to the inner index scan as parameters. Therefore
@@ -34,10 +46,12 @@ type AdjacentTxsQuery = {
  * not as an index condition. The scan then starts at one end of the index
  * and can read all the rows of the table.
  */
-export const getSenderAdjacentsByHash = publicProcedure
+export const getSenderAdjacentTx = publicProcedure
   .input(inputSchema)
+  .use(withExpands)
   .output(outputSchema)
-  .query(async ({ ctx: { prisma }, input: { hash } }) => {
+  .use(withBlobSignedUrls)
+  .query(async ({ ctx: { expands, prisma }, input: { hash, direction } }) => {
     const [result] = await prisma.$queryRaw<AdjacentTxsQuery>`
       SELECT prev.hash AS "prevTxHash", next.hash AS "nextTxHash"
       FROM (
@@ -76,8 +90,25 @@ export const getSenderAdjacentsByHash = publicProcedure
       });
     }
 
-    return {
-      prevTxHash: result.prevTxHash ?? undefined,
-      nextTxHash: result.nextTxHash ?? undefined,
-    };
+    const adjacentHash =
+      direction === "prev" ? result.prevTxHash : result.nextTxHash;
+
+    if (!adjacentHash) {
+      return null;
+    }
+
+    const adjacentTx = await findResponseTransaction(
+      prisma,
+      expands,
+      adjacentHash
+    );
+
+    if (!adjacentTx) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: `No transaction with hash '${adjacentHash}'.`,
+      });
+    }
+
+    return adjacentTx;
   });

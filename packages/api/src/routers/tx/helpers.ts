@@ -179,3 +179,27 @@ export function toResponseTransaction(
     ethUsdPrice: ethUsdPrice?.toNumber(),
   };
 }
+
+/**
+ * Gets the transaction with the given hash in the response format of
+ * `tx.getByHash`. Returns `null` if the transaction does not exist.
+ */
+export async function findResponseTransaction(
+  prisma: BlobscanPrismaClient,
+  expands: Expands,
+  hash: string
+): Promise<ResponseTransaction | null> {
+  const [prismaTx, ethUsdPrice] = await Promise.all([
+    prisma.transaction.findUnique({
+      select: createTransactionSelect(expands),
+      where: { hash },
+    }) as unknown as Promise<CompletedPrismaTransaction | null>,
+    prisma.transaction.findEthUsdPrice(hash),
+  ]);
+
+  if (!prismaTx) {
+    return null;
+  }
+
+  return toResponseTransaction(prismaTx, ethUsdPrice?.price);
+}
