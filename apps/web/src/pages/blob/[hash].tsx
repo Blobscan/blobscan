@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
 import ErrorPage from "~/pages/_error";
 import "react-loading-skeleton/dist/skeleton.css";
-import { skipToken, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getQueryKey } from "@trpc/react-query";
+import { useQuery } from "@tanstack/react-query";
 import classNames from "classnames";
 
 import type { Decoder } from "@blobscan/blob-decoder";
@@ -25,15 +24,18 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrow } from "~/components/NavArrow";
-import type { NavArrowProps } from "~/components/NavArrow";
 import type { SelectOption } from "~/components/Selects";
 import { Listbox } from "~/components/Selects";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
+import {
+  BLOB_EXPAND,
+  BLOB_STALE_TIME,
+  useAdjacentBlobNavigation,
+} from "~/hooks/useAdjacentBlobNavigation";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { routes } from "~/routes";
 import { versionedHashSchema } from "~/schemas/utils";
-import type { GetAdjacentBlobInput } from "~/types";
 import {
   formatBytes,
   formatTimestamp,
@@ -41,23 +43,9 @@ import {
   TIMESTAMP_FORMAT,
 } from "~/utils";
 
-const BLOB_EXPAND = "transaction";
-// The blob responses can have signed storage URLs that expire after one hour,
-// so the page does not use a cached blob that is older than this time.
-const BLOB_STALE_TIME = 5 * 60 * 1000;
-
-function toAdjacentBlobInput(
-  { txHash, index }: { txHash: string; index: number },
-  direction: GetAdjacentBlobInput["direction"]
-): GetAdjacentBlobInput {
-  return { txHash, index, direction, expand: BLOB_EXPAND };
-}
-
 const Blob: NextPage = function () {
   const router = useRouter();
   const breakpoint = useBreakpoint();
-  const utils = api.useUtils();
-  const queryClient = useQueryClient();
   const id = (router?.query.hash as string | undefined) ?? "0";
   const positionTxHash = router?.query.tx as string | undefined;
   const positionIndex =
@@ -82,9 +70,9 @@ const Blob: NextPage = function () {
       refetchOnMount: false,
     }
   );
-  // A blob can be included in several transactions (or several times in the
-  // same one), so the position used for navigation is taken from the URL when
-  // provided, falling back to the first one returned.
+  // A blob can be in more than one transaction, and more than one time in the
+  // same transaction. Thus the navigation uses the position in the URL. If the
+  // URL has no position, the navigation uses the first position of the blob.
   const position = useMemo(() => {
     const blobOnTx =
       blob?.transactions.find(
@@ -96,78 +84,12 @@ const Blob: NextPage = function () {
       ? { txHash: blobOnTx.txHash, index: blobOnTx.index }
       : undefined;
   }, [blob, positionTxHash, positionIndex]);
-  // The page gets an adjacent blob only when the user clicks an arrow. These
-  // queries do not send a request. They only read the cache that the click
-  // fills, so an arrow becomes disabled when its result is `null`.
-  const cacheOnlyOptions = { enabled: false, staleTime: Infinity } as const;
-  const { data: prevBlob } = api.blob.getAdjacentBlob.useQuery(
-    position ? toAdjacentBlobInput(position, "prev") : skipToken,
-    cacheOnlyOptions
-  );
-  const { data: nextBlob } = api.blob.getAdjacentBlob.useQuery(
-    position ? toAdjacentBlobInput(position, "next") : skipToken,
-    cacheOnlyOptions
-  );
-  const [adjacentBlobLoading, setAdjacentBlobLoading] = useState(false);
-
-  const handleNavClick = useCallback<NavArrowProps["onClick"]>(
-    async (direction) => {
-      if (!blob || !position) {
-        return;
-      }
-
-      setAdjacentBlobLoading(true);
-
-      try {
-        const adjacentInput = toAdjacentBlobInput(position, direction);
-        const adjacent = await utils.blob.getAdjacentBlob.ensureData(
-          adjacentInput,
-          { staleTime: BLOB_STALE_TIME }
-        );
-
-        if (!adjacent) {
-          return;
-        }
-
-        // Put the adjacent blob in the cache of its page, so that the page
-        // does not send a second request. The cache entries keep the time of
-        // the request, so that an old blob does not show as new.
-        const adjacentUpdatedAt = queryClient.getQueryState(
-          getQueryKey(api.blob.getAdjacentBlob, adjacentInput, "query")
-        )?.dataUpdatedAt;
-
-        utils.blob.getByBlobId.setData(
-          { id: adjacent.blob.versionedHash, expand: BLOB_EXPAND },
-          adjacent.blob,
-          { updatedAt: adjacentUpdatedAt }
-        );
-        // In the same transaction, the current blob is the adjacent blob of
-        // the new page in the opposite direction. Do not do this for a
-        // different transaction: if the current transaction is in a reorged
-        // block, the search in the opposite direction does not return it.
-        if (adjacent.txHash === position.txHash) {
-          utils.blob.getAdjacentBlob.setData(
-            toAdjacentBlobInput(
-              adjacent,
-              direction === "next" ? "prev" : "next"
-            ),
-            { txHash: position.txHash, index: position.index, blob },
-            { updatedAt: blobUpdatedAt }
-          );
-        }
-
-        await router?.push(
-          routes.blob(adjacent.blob.versionedHash, {
-            txHash: adjacent.txHash,
-            index: adjacent.index,
-          })
-        );
-      } finally {
-        setAdjacentBlobLoading(false);
-      }
-    },
-    [blob, blobUpdatedAt, position, queryClient, router, utils]
-  );
+  const {
+    prevBlob,
+    nextBlob,
+    loading: adjacentBlobLoading,
+    navigate: handleNavClick,
+  } = useAdjacentBlobNavigation({ blob, blobUpdatedAt, position });
   const { data: blobData, error: blobDataError } = useQuery({
     queryKey: ["blob-data", id],
     queryFn: async () => {
@@ -438,7 +360,7 @@ const Blob: NextPage = function () {
               type="prev"
               size="lg"
               onClick={() => handleNavClick("prev")}
-              tooltip="Previous Blob of This Sender"
+              tooltip="Previous Blob from This Sender"
               disabled={!position || prevBlob === null || adjacentBlobLoading}
             />
             Blob Details
@@ -446,7 +368,7 @@ const Blob: NextPage = function () {
               type="next"
               size="lg"
               onClick={() => handleNavClick("next")}
-              tooltip="Next Blob of This Sender"
+              tooltip="Next Blob from This Sender"
               disabled={!position || nextBlob === null || adjacentBlobLoading}
             />
           </div>

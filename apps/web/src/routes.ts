@@ -1,3 +1,5 @@
+import type { BlobPosition } from "./types";
+
 export const routes = {
   blobs: "/blobs",
   blocks: "/blocks",
@@ -5,7 +7,7 @@ export const routes = {
   stats: "/stats",
 
   address: (address: string) => `/address/${address}`,
-  blob: (id: string, position?: { txHash: string; index: number }) =>
+  blob: (id: string, position?: BlobPosition) =>
     position
       ? `/blob/${id}?tx=${position.txHash}&index=${position.index}`
       : `/blob/${id}`,

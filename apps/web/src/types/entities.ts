@@ -78,3 +78,5 @@ export type SearchCategory = keyof SearchOutput;
 export type AppState = AppRouterOutputs["state"]["getAppState"];
 
 export type GetAdjacentBlobInput = AppRouterInputs["blob"]["getAdjacentBlob"];
+
+export type BlobPosition = Pick<GetAdjacentBlobInput, "txHash" | "index">;
