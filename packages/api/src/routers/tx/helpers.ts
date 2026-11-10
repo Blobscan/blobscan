@@ -1,8 +1,8 @@
+import { Prisma } from "@blobscan/db";
 import type {
   BlobscanPrismaClient,
   EthUsdPrice,
   ExtendedTransactionSelect,
-  Prisma,
 } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
@@ -202,4 +202,40 @@ export async function findResponseTransaction(
   }
 
   return toResponseTransaction(prismaTx, ethUsdPrice?.price);
+}
+
+export type AdjacentDirection = "prev" | "next";
+
+/**
+ * Returns a `LATERAL` subquery that gets the hash of the previous or the next
+ * transaction of a sender. The order is block timestamp, then transaction
+ * index. The subquery does not return transactions of reorged blocks.
+ *
+ * The outer query must have a `cur` row with the `from_id`, `block_timestamp`
+ * and `tx_index` columns of the current transaction. The `LATERAL` join gives
+ * these values to the inner index scan as parameters. Therefore Postgres uses
+ * the tuple comparison and `from_id = …` as the `Index Cond` of the
+ * `(from_id, block_timestamp, index)` index. The scan starts at the current
+ * transaction and stops at the first transaction that is not reorged.
+ *
+ * Do not get the current transaction from a CTE and join it in the subquery.
+ * Postgres then applies the tuple comparison as a join filter, not as an index
+ * condition. The scan then starts at one end of the index and can read all
+ * the rows of the table.
+ */
+export function senderAdjacentTxSql(direction: AdjacentDirection) {
+  const operator = Prisma.raw(direction === "prev" ? "<" : ">");
+  const order = Prisma.raw(direction === "prev" ? "DESC" : "ASC");
+
+  return Prisma.sql`
+    SELECT t.hash
+    FROM transaction t
+    WHERE t.from_id = cur.from_id
+      AND (t.from_id, t.block_timestamp, t.index) ${operator} (cur.from_id, cur.block_timestamp, cur.tx_index)
+      AND NOT EXISTS (
+        SELECT 1 FROM transaction_fork tf WHERE tf.block_hash = t.block_hash
+      )
+    ORDER BY t.from_id ${order}, t.block_timestamp ${order}, t.index ${order}
+    LIMIT 1
+  `;
 }

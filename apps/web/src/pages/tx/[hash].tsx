@@ -64,7 +64,6 @@ const Tx: NextPage = () => {
       enabled: router?.isReady,
       staleTime: TX_STALE_TIME,
       retry: false,
-      refetchOnMount: false,
       refetchOnWindowFocus: false,
     }
   );
@@ -81,6 +80,7 @@ const Tx: NextPage = () => {
     cacheOnlyOptions
   );
   const [adjacentTxLoading, setAdjacentTxLoading] = useState(false);
+  const [adjacentTxError, setAdjacentTxError] = useState<Error>();
 
   const handleNavClick = useCallback<NavArrowProps["onClick"]>(
     async (direction) => {
@@ -89,6 +89,7 @@ const Tx: NextPage = () => {
       }
 
       setAdjacentTxLoading(true);
+      setAdjacentTxError(undefined);
 
       try {
         const adjacentInput = toSenderAdjacentTxInput(hash, direction);
@@ -121,6 +122,12 @@ const Tx: NextPage = () => {
         );
 
         await router?.push(routes.tx(adjacentTx.hash));
+      } catch (err) {
+        setAdjacentTxError(
+          err instanceof Error
+            ? err
+            : new Error("Could not get the adjacent transaction")
+        );
       } finally {
         setAdjacentTxLoading(false);
       }
@@ -368,6 +375,11 @@ const Tx: NextPage = () => {
               tooltip="Next Transaction from This Sender"
               disabled={nextTx === null || adjacentTxLoading}
             />
+            {adjacentTxError && (
+              <span className="text-sm font-normal text-error-600 dark:text-error-300">
+                Couldn&apos;t load the adjacent transaction
+              </span>
+            )}
           </div>
         }
         resource={
