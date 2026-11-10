@@ -2,4 +2,4 @@
 "@blobscan/web": minor
 ---
 
-The tooltip of the rollup charts shows only the rollups that have a value in the hovered bar. It sorts them from the largest value to the smallest value.
+Updated the rollup chart tooltips to show only the rollups with a value in the hovered bar, sorted from the largest value to the smallest
