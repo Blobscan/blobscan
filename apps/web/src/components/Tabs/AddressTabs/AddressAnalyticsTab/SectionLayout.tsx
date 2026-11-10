@@ -3,8 +3,8 @@ import type { FC, ReactNode } from "react";
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
-import type { ChartSpec } from "./charts";
-import { SectionCharts } from "./charts";
+import { SectionCharts } from "./SectionCharts";
+import type { ChartSpec } from "./helpers/charts";
 import type { AnalyticsSectionProps } from "./types";
 
 export type SectionLayoutProps = Pick<

@@ -1,4 +1,4 @@
-import type { AddressTimeseries } from "./types";
+import type { AddressTimeseries } from "../types";
 
 /**
  * Returns the mean of the values of the closed periods. The last period is

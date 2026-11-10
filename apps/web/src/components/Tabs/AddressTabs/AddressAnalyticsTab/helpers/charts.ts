@@ -1,17 +1,13 @@
-import type { FC } from "react";
-import { useMemo } from "react";
 import type { LineSeriesOption, SeriesOption } from "echarts";
-import { useTheme } from "next-themes";
 
-import { ChartBase } from "~/components/Charts/ChartBase";
 import type { Axis, ChartBaseProps } from "~/components/Charts/ChartBase";
 import type { ChartDataset } from "~/components/Charts/ChartBase/helpers";
 import type { FeeUnit } from "~/components/Toggles";
 import type { ThemeMode } from "~/types";
+import type { AddressRole, AddressTimeseries } from "../types";
 import { BLOB_SIZE } from "./metrics";
 import { ROLE_LABELS } from "./roles";
 import { getClosedPeriodsMean, sumRoles } from "./timeseries";
-import type { AddressRole, AddressTimeseries } from "./types";
 
 type ThemeColor = Record<ThemeMode, string>;
 
@@ -50,7 +46,7 @@ function toWeiColumn(values: bigint[]): Column {
 }
 
 /** Returns the dataset that all the address charts use. */
-function buildDataset(data: AddressTimeseries): ChartDataset {
+export function buildDataset(data: AddressTimeseries): ChartDataset {
   const source: Record<string, Column | Date[]> = {
     timestamp: data.timestamps,
   };
@@ -167,11 +163,6 @@ export type ChartSpec = {
    * "(As Sender)".
    */
   mainRoleOnly?: boolean;
-};
-
-const ROLE_TITLE_LABELS: Record<AddressRole, string> = {
-  sent: "As Sender",
-  received: "As Receiver",
 };
 
 export function roleBars(column: string) {
@@ -294,69 +285,3 @@ export function getFeeAxes(unit: FeeUnit): { total: Axis; average: Axis } {
         },
       };
 }
-
-export type SectionChartsProps = {
-  charts: ChartSpec[];
-  data?: AddressTimeseries;
-  roles: AddressRole[];
-  /** The role with more transactions. Some charts show only this role. */
-  mainRole?: AddressRole;
-  isLoading?: boolean;
-};
-
-/** Shows the charts of a section, one chart on each line. */
-export const SectionCharts: FC<SectionChartsProps> = function ({
-  charts,
-  data,
-  roles,
-  mainRole = "sent",
-  isLoading,
-}) {
-  const { resolvedTheme } = useTheme();
-  const theme = (resolvedTheme ?? "light") as ThemeMode;
-  const dataset = useMemo(
-    () => (data ? buildDataset(data) : undefined),
-    [data]
-  );
-  return (
-    <div className="flex flex-col gap-14">
-      {charts.map(
-        ({
-          title,
-          description,
-          yAxis,
-          y2Axis,
-          series,
-          tooltipOpts,
-          sortSeries,
-          mainRoleOnly,
-        }) => (
-          <ChartBase
-            key={title}
-            title={
-              mainRoleOnly ? `${title} (${ROLE_TITLE_LABELS[mainRole]})` : title
-            }
-            description={description}
-            isLoading={isLoading}
-            dataset={dataset}
-            series={series(
-              mainRoleOnly ? [mainRole] : roles,
-              theme,
-              data?.granularity ?? "day"
-            )}
-            axes={{
-              x: { type: "time", granularity: data?.granularity },
-              y: yAxis,
-              y2: y2Axis,
-            }}
-            tooltipOpts={tooltipOpts}
-            sortSeries={sortSeries}
-            legendPosition="bottom"
-            size="xl"
-            skeletonOpts={{ chart: { variant: "bar" } }}
-          />
-        )
-      )}
-    </div>
-  );
-};

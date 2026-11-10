@@ -3,11 +3,11 @@ import type { FC } from "react";
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
 import { formatBytes, formatNumber } from "~/utils";
 import { SectionLayout } from "./SectionLayout";
-import type { CardInfo } from "./cards";
-import { dailyMeanCard, peakDayCard, skeletonCards } from "./cards";
-import type { ChartSpec } from "./charts";
-import { LINE_ACCENT_COLOR, pointLine, ROLE_COLORS } from "./charts";
-import { BLOB_SIZE } from "./metrics";
+import type { CardInfo } from "./helpers/cards";
+import { dailyMeanCard, peakDayCard, skeletonCards } from "./helpers/cards";
+import type { ChartSpec } from "./helpers/charts";
+import { LINE_ACCENT_COLOR, pointLine, ROLE_COLORS } from "./helpers/charts";
+import { BLOB_SIZE } from "./helpers/metrics";
 import type { RoleTotals } from "./types";
 import type { AnalyticsSectionProps } from "./types";
 

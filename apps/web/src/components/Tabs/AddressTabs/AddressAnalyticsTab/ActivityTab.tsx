@@ -7,8 +7,8 @@ import type { MetricCardProps } from "~/components/Cards/MetricCard";
 import { CalendarHeatmap } from "~/components/Charts/CalendarHeatmap";
 import { api } from "~/api-client";
 import { formatNumber } from "~/utils";
-import type { CardInfo } from "./cards";
-import { skeletonCards } from "./cards";
+import type { CardInfo } from "./helpers/cards";
+import { skeletonCards } from "./helpers/cards";
 import type {
   AddressOverall,
   AddressTimeseries,

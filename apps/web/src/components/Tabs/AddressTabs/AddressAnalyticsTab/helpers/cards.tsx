@@ -6,10 +6,10 @@ import type {
 } from "~/components/Cards/MetricCard";
 import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { formatNumber } from "~/utils";
+import type { AddressOverall, AddressRole, AddressTimeseries } from "../types";
 import { BLOB_SIZE } from "./metrics";
 import type { SummableColumn } from "./timeseries";
 import { getClosedPeriodsMean, sumRoles } from "./timeseries";
-import type { AddressOverall, AddressRole, AddressTimeseries } from "./types";
 
 /**
  * The name of a card and its help text. An icon after the name shows the

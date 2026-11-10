@@ -1,4 +1,4 @@
-import type { RoleTotals } from "./types";
+import type { RoleTotals } from "../types";
 
 // Each blob uses this blob gas and has this size in bytes.
 export const BLOB_SIZE = 131_072;

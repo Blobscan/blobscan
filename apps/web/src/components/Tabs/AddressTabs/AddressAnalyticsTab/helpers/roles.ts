@@ -1,4 +1,4 @@
-import type { AddressRole } from "./types";
+import type { AddressRole } from "../types";
 
 export const ROLE_LABELS: Record<AddressRole, string> = {
   sent: "Sent",

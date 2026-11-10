@@ -5,17 +5,17 @@ import { prettyFormatWei } from "@blobscan/eth-format";
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
 import { formatNumber } from "~/utils";
 import { SectionLayout } from "./SectionLayout";
-import type { CardInfo } from "./cards";
-import { skeletonCards } from "./cards";
-import type { ChartSpec } from "./charts";
+import type { CardInfo } from "./helpers/cards";
+import { skeletonCards } from "./helpers/cards";
+import type { ChartSpec } from "./helpers/charts";
 import {
   NETWORK_LINE_COLOR,
   pointLine,
   ROLE_COLORS,
   roleLines,
-} from "./charts";
-import { BLOB_SIZE, ratio, toBigInt } from "./metrics";
-import { getMainRole, getShownRoles, ROLE_LABELS } from "./roles";
+} from "./helpers/charts";
+import { BLOB_SIZE, ratio, toBigInt } from "./helpers/metrics";
+import { getMainRole, getShownRoles, ROLE_LABELS } from "./helpers/roles";
 import type {
   AddressOverall,
   AnalyticsSectionProps,

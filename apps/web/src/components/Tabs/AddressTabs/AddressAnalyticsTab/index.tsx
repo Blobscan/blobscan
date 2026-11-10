@@ -30,7 +30,7 @@ import { BlobsTab } from "./BlobsTab";
 import { FeesTab } from "./FeesTab";
 import { NetworkTab } from "./NetworkTab";
 import { TransactionsTab } from "./TransactionsTab";
-import { getMainRole, getShownRoles } from "./roles";
+import { getMainRole, getShownRoles } from "./helpers/roles";
 import type { AddressRole, AnalyticsSectionProps } from "./types";
 
 export const ADDRESS_SECTIONS = [

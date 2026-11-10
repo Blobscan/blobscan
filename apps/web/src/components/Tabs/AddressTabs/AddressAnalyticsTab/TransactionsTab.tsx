@@ -2,15 +2,15 @@ import type { FC } from "react";
 
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
 import { SectionLayout } from "./SectionLayout";
-import type { CardInfo } from "./cards";
+import type { CardInfo } from "./helpers/cards";
 import {
   dailyMeanCard,
   peakDayCard,
   roleTotalCards,
   skeletonCards,
-} from "./cards";
-import type { ChartSpec } from "./charts";
-import { stackedRoleBars } from "./charts";
+} from "./helpers/cards";
+import type { ChartSpec } from "./helpers/charts";
+import { stackedRoleBars } from "./helpers/charts";
 import type { AnalyticsSectionProps } from "./types";
 
 /** The cards of the section. They are also the skeletons while the data loads. */
