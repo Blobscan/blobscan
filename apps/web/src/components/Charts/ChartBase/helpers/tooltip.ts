@@ -75,6 +75,11 @@ function getValue(
   return toNumerish(param.value);
 }
 
+// The tooltip shows "-" for these values.
+function hasDisplayableValue(value: Numerish | undefined): value is Numerish {
+  return value !== undefined && value !== "" && Number(value) !== 0;
+}
+
 function buildSeriesHTMLElement({
   name,
   value,
@@ -228,10 +233,30 @@ function createTooltipFormater({
         (d.seriesId as string).includes("rollup")
       );
       const totalItems = 15;
-      const filteredParams =
-        seriesIndex != null
-          ? getNeighbouringElements(paramOrParams, seriesIndex, totalItems)
-          : paramOrParams.slice(-10); // fallback if no hovered series
+      let filteredParams: DefaultLabelFormatterCallbackParams[];
+
+      if (displayTotal) {
+        // Dimensional charts: show only the series that have a value in the
+        // hovered bar, from the largest value to the smallest value.
+        const sortedParams = paramOrParams
+          .map((p) => ({ param: p, value: getValue(p, getSeriesValue) }))
+          .filter(({ value }) => hasDisplayableValue(value))
+          .sort((a, b) => Number(b.value) - Number(a.value))
+          .map(({ param }) => param);
+        const hoveredIndex = sortedParams.findIndex(
+          (p) => p.seriesIndex === seriesIndex
+        );
+
+        filteredParams =
+          hoveredIndex >= 0
+            ? getNeighbouringElements(sortedParams, hoveredIndex, totalItems)
+            : sortedParams.slice(0, totalItems);
+      } else {
+        filteredParams =
+          seriesIndex != null
+            ? getNeighbouringElements(paramOrParams, seriesIndex, totalItems)
+            : paramOrParams.slice(-10); // fallback if no hovered series
+      }
 
       const { name, value } = paramOrParams[0] || {};
       const date = name?.length
@@ -355,7 +380,10 @@ function createTooltipFormater({
                 : ""
             }
             <div style="display: flex; flex-direction: column; gap: 2px; width: 100%;">
-              ${seriesHTMLElements.reverse().join("\n")}
+              ${(displayTotal
+                ? seriesHTMLElements
+                : seriesHTMLElements.reverse()
+              ).join("\n")}
             </div>
             ${
               totalSeriesHTMLElements.length
