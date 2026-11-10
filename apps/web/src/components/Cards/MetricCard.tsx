@@ -16,6 +16,8 @@ import {
   parseSuffixedNumber,
 } from "~/utils";
 import { Card } from "./Card";
+import { MetricBreakdown, MetricBreakdownSkeleton } from "./MetricBreakdown";
+import type { MetricBreakdownProps } from "./MetricBreakdown";
 
 export type MetricType =
   | "standard"
@@ -46,6 +48,13 @@ export type MetricCardProps = Partial<{
   secondaryValue: ReactNode;
   /** A text that tells what the metric is. An icon after the name shows it. */
   description: ReactNode;
+  /**
+   * A bar under the value that divides a total into parts, for example the
+   * used and the unused space.
+   */
+  breakdown: MetricBreakdownProps;
+  /** Classes of the card, for example its place in a grid. */
+  className: string;
 }>;
 
 /**
@@ -244,9 +253,13 @@ export const MetricCard: FC<MetricCardProps> = function ({
   metric,
   secondaryValue,
   description,
+  breakdown,
+  className,
 }) {
+  const isValueSet = metric?.primary.value !== undefined;
+
   return (
-    <Card compact={compact}>
+    <Card compact={compact} className={className}>
       <div
         className={cn(
           {
@@ -273,11 +286,21 @@ export const MetricCard: FC<MetricCardProps> = function ({
         {metric && <Metric {...(metric ?? {})} compact={compact} />}
         {secondaryValue !== undefined &&
           secondaryValue !== null &&
-          metric?.primary.value !== undefined && (
+          isValueSet && (
             <div className="text-sm text-contentSecondary-light dark:text-contentSecondary-dark">
               {secondaryValue}
             </div>
           )}
+        {breakdown &&
+          (isValueSet ? (
+            <div className="mt-2">
+              <MetricBreakdown {...breakdown} />
+            </div>
+          ) : (
+            <div className="mt-2">
+              <MetricBreakdownSkeleton />
+            </div>
+          ))}
       </div>
     </Card>
   );

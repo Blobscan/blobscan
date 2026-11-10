@@ -1,24 +1,94 @@
 import type { FC } from "react";
 
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
+import { formatBytes, formatNumber } from "~/utils";
+import type { RoleTotals } from "../../helpers";
 import { BLOB_SIZE } from "../../helpers";
-import { BlobSpaceCard } from "./BlobSpaceCard";
 import { SectionLayout } from "./SectionLayout";
 import { dailyMeanCard, peakDayCard, skeletonCards } from "./cards";
 import type { ChartSpec } from "./charts";
 import { LINE_ACCENT_COLOR, pointLine, ROLE_COLORS } from "./charts";
 import type { AnalyticsSectionProps } from "./types";
 
-/**
- * The names of the cards. They are also the skeletons while the data loads.
- * The Blob Space card, before these cards, shows the utilization and the used
- * and the unused space.
- */
+/** The names of the cards. They are also the skeletons while the data loads. */
 export const BLOB_USAGE_CARD_NAMES = [
+  "Blob Space Utilization",
   "Avg. Data per Tx",
   "Avg. Daily Data",
   "Max Daily Data",
 ];
+
+// The colors of the used and the unused space are the same as PercentageBar,
+// which shows the blob usage on the details pages.
+const USED_COLOR = "bg-primary-700 dark:bg-primary-500";
+const UNUSED_COLOR = "bg-primary-200 dark:bg-primary-800";
+
+/**
+ * Returns the card with the share of the blob space that has data, and a bar
+ * that divides the space into the used and the unused part. It uses the full
+ * width of the grid.
+ */
+function blobSpaceCard(totals?: RoleTotals): MetricCardProps {
+  const name = "Blob Space Utilization";
+  const className = "col-span-full";
+
+  if (!totals) {
+    // Without a value, the card shows the skeletons of the value and the bar.
+    return {
+      name,
+      className,
+      metric: { primary: {} },
+      breakdown: { ariaLabel: "", parts: [] },
+    };
+  }
+
+  const used = BigInt(totals.totalBlobUsageSize);
+  const total = BigInt(totals.totalBlobs) * BigInt(BLOB_SIZE);
+  const unused = total - used;
+  // Keep 4 decimal places of the percentage with integer division.
+  const usedPercentage = total
+    ? Number((used * BigInt(1_000_000)) / total) / 10_000
+    : 0;
+
+  return {
+    name,
+    className,
+    metric: {
+      primary: {
+        value: usedPercentage,
+        type: "percentage",
+        numberFormatOpts: { maximumFractionDigits: 1 },
+      },
+    },
+    // The total is the space that the percentage refers to.
+    secondaryValue: total
+      ? `used of ${formatBytes(total)} (${formatNumber(totals.totalBlobs)} ${
+          totals.totalBlobs === 1 ? "blob" : "blobs"
+        })`
+      : "No blobs in this time frame",
+    breakdown: {
+      ariaLabel: total
+        ? `${formatNumber(usedPercentage, "standard", {
+            maximumFractionDigits: 1,
+          })}% of the blob space is used`
+        : "No blob space",
+      parts: [
+        {
+          label: "Used",
+          value: Number(used),
+          displayValue: formatBytes(used),
+          colorClassName: USED_COLOR,
+        },
+        {
+          label: "Unused",
+          value: Number(unused),
+          displayValue: formatBytes(unused),
+          colorClassName: UNUSED_COLOR,
+        },
+      ],
+    },
+  };
+}
 
 // The sender fills the blobs, so the sent and the received blobs of an
 // address come from different parties. The cards and the chart of this
@@ -29,12 +99,16 @@ function buildCards({
   mainRole = "sent",
 }: AnalyticsSectionProps): MetricCardProps[] {
   if (!overall) {
-    return skeletonCards(BLOB_USAGE_CARD_NAMES);
+    // The skeleton of the Blob Space card also has its bar.
+    const [, ...names] = BLOB_USAGE_CARD_NAMES;
+
+    return [blobSpaceCard(), ...skeletonCards(names)];
   }
 
   const totals = overall[mainRole];
 
   return [
+    blobSpaceCard(totals),
     {
       name: "Avg. Data per Tx",
       metric: {
@@ -101,22 +175,9 @@ const CHARTS: ChartSpec[] = [
 ];
 
 export const BlobUsageTab: FC<AnalyticsSectionProps> = function (props) {
-  const { overall, mainRole = "sent" } = props;
-  const totals = overall?.[mainRole];
-
   return (
     <SectionLayout
       {...props}
-      header={
-        <BlobSpaceCard
-          className="col-span-full"
-          usedSize={totals ? BigInt(totals.totalBlobUsageSize) : undefined}
-          totalSize={
-            totals ? BigInt(totals.totalBlobs) * BigInt(BLOB_SIZE) : undefined
-          }
-          totalBlobs={totals?.totalBlobs}
-        />
-      }
       cards={buildCards(props)}
       charts={CHARTS}
       controls={props.timeFrameControl}

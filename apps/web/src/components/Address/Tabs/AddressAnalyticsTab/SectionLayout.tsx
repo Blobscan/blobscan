@@ -14,8 +14,6 @@ export type SectionLayoutProps = Pick<
 > & {
   cards: MetricCardProps[];
   charts: ChartSpec[];
-  /** A card before the metric cards, on a line of its own. */
-  header?: ReactNode;
   /** The controls of the charts, for example the time frame. */
   controls: ReactNode;
 };
@@ -27,7 +25,6 @@ export type SectionLayoutProps = Pick<
 export const SectionLayout: FC<SectionLayoutProps> = function ({
   cards,
   charts,
-  header,
   controls,
   timeseries,
   isTimeseriesLoading,
@@ -37,7 +34,6 @@ export const SectionLayout: FC<SectionLayoutProps> = function ({
   return (
     <div className="flex flex-col gap-8">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-        {header}
         {cards.map((card) => (
           <MetricCard
             key={card.name}

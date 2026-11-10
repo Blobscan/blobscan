@@ -18,6 +18,8 @@ const METRIC_DESCRIPTIONS: Record<string, string> = {
   "Max Daily Blobs":
     "Largest number of blobs in one UTC day of the selected time frame.",
   // Blob usage
+  "Blob Space Utilization":
+    "Percentage of the blob space that has data, for the role with more transactions. Each blob has 128 KiB, and the unused space is the part without data.",
   "Avg. Data per Tx":
     "Mean size of the data in the blobs of each transaction. Unused blob space is not included.",
   "Avg. Daily Data":
