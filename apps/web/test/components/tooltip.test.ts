@@ -107,3 +107,64 @@ describe("tooltip formatter", () => {
     }
   });
 });
+
+describe("tooltip total", () => {
+  const STACKS = ["Blobs", "Blobs", undefined];
+
+  function getTotalFormatter(
+    opts: Pick<
+      Parameters<typeof createBaseTooltipOptions>[0],
+      "totalStack" | "totalLabel"
+    > = {}
+  ) {
+    const { formatter } = createBaseTooltipOptions({
+      currentSeriesRef: { current: null },
+      axes,
+      themeMode: "light",
+      displayTotal: true,
+      getSeriesStack: (seriesIndex) => STACKS[seriesIndex],
+      ...opts,
+    });
+
+    return formatter as Formatter;
+  }
+
+  function seriesParam(seriesIndex: number, seriesName: string, value: number) {
+    return {
+      name: CLOSED_PERIOD.toISOString(),
+      seriesId: seriesName,
+      seriesIndex,
+      seriesName,
+      value,
+    } as unknown as DefaultLabelFormatterCallbackParams;
+  }
+
+  const params = [
+    seriesParam(0, "Blobs Received", 7),
+    seriesParam(1, "Blobs Sent", 10),
+    seriesParam(2, "Avg. Daily Blobs", 8),
+  ];
+
+  // The total is the last value of the tooltip.
+  function getTotal(html: string) {
+    return html
+      .slice(html.lastIndexOf("<hr"))
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  it("should add all the series when there is no total stack", () => {
+    expect(getTotal(getTotalFormatter()(params))).toBe("Total 25");
+  });
+
+  it("should add only the series of the total stack", () => {
+    expect(
+      getTotal(
+        getTotalFormatter({ totalStack: "Blobs", totalLabel: "Total Blobs" })(
+          params
+        )
+      )
+    ).toBe("Total Blobs 17");
+  });
+});

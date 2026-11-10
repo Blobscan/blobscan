@@ -4,6 +4,7 @@ import { ArrowRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 
 import { formatWei } from "@blobscan/eth-format";
 
+import { Badge } from "~/components/Badges/Badge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Collapsable } from "~/components/Collapsable";
 import { Copyable } from "~/components/Copyable";
@@ -57,7 +58,30 @@ type BlobTransactionCardProps = Partial<{
   >[];
   compact?: boolean;
   className?: string;
+  /**
+   * The role of the address of the page in the transaction. The card shows it
+   * next to the block and timestamp.
+   */
+  addressRole: "sent" | "received" | "self";
 }>;
+
+const ADDRESS_ROLE_MARKS = {
+  sent: {
+    label: "Sent",
+    className:
+      "bg-primary-200 text-primary-700 dark:bg-primary-800 dark:text-primary-300",
+  },
+  received: {
+    label: "Received",
+    className:
+      "bg-blues-100 text-primary-1000 dark:bg-coolGray-200 dark:text-blues-100",
+  },
+  self: {
+    label: "Self",
+    className:
+      "bg-warmGray-200 text-warmGray-600 dark:bg-coolGray-300 dark:text-coolGray-700",
+  },
+} as const;
 
 const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   transaction: {
@@ -73,6 +97,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   blobs: blobsOnTx,
   compact,
   className,
+  addressRole,
 }) {
   const [opened, setOpened] = useState(false);
   const checksumFrom = toChecksumAddress(from ?? "");
@@ -97,7 +122,11 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
           compact ? "rounded" : "rounded-none rounded-t-md"
         }`}
       >
-        <div className="flex flex-col text-sm">
+        <div
+          className={`relative flex flex-col text-sm ${
+            rollup ? "md:min-h-24" : ""
+          }`}
+        >
           {hash ? (
             <div className="flex w-full items-center justify-between gap-2 md:gap-0">
               <div
@@ -110,7 +139,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                 </span>
                 <Link href={routes.tx(hash)}>{hash}</Link>
               </div>
-              <div>
+              <div className="flex items-center gap-2">
                 {rollup && <RollupBadge rollup={rollup} compact={isCompact} />}
               </div>
             </div>
@@ -191,13 +220,23 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
               </div>
             </div>
             {!!blockNumber && !!blockTimestamp && (
-              <div className="t mt-1 flex items-center gap-2 self-start md:flex-col md:justify-center md:gap-0">
-                <div className="flex gap-1 text-contentSecondary-light dark:text-contentSecondary-dark">
-                  Block
-                  <Link href={routes.block(blockNumber)}>{blockNumber}</Link>
-                </div>
-                <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
-                  {normalizeTimestamp(blockTimestamp).fromNow()}
+              <div className="mt-1 flex shrink-0 items-center gap-3 self-start md:absolute md:right-0 md:top-1/2 md:mt-0 md:-translate-y-1/2 md:self-center">
+                {addressRole && (
+                  <Badge
+                    size="xs"
+                    className={ADDRESS_ROLE_MARKS[addressRole].className}
+                  >
+                    {ADDRESS_ROLE_MARKS[addressRole].label}
+                  </Badge>
+                )}
+                <div className="flex items-center gap-2 md:flex-col md:gap-0">
+                  <div className="flex gap-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                    Block
+                    <Link href={routes.block(blockNumber)}>{blockNumber}</Link>
+                  </div>
+                  <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
+                    {normalizeTimestamp(blockTimestamp).fromNow()}
+                  </div>
                 </div>
               </div>
             )}

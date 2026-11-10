@@ -34,6 +34,33 @@ export type SeriesValueGetter = (
   dataIndex: number
 ) => unknown;
 
+/** Returns the index of the y-axis of a series. 1 is the right y-axis. */
+export type SeriesYAxisIndexGetter = (seriesIndex: number) => number;
+
+/** Returns the stack of a series, or undefined when it is not stacked. */
+export type SeriesStackGetter = (seriesIndex: number) => string | undefined;
+
+/** Returns the value of a dataset column at a data index. */
+export type DatasetValueGetter = (column: string, dataIndex: number) => unknown;
+
+export type TooltipTotalOptions = {
+  /** Shows the total of the series at the bottom of the tooltip. */
+  displayTotal?: boolean;
+  /**
+   * Adds only the series of this stack into the total. Without it, the
+   * total adds all the series of the left y-axis.
+   */
+  totalStack?: string;
+  /**
+   * Reads the total from this dataset column, in place of the sum of the
+   * series. Use it when the series have values in common, for example a
+   * self-send that is in the sent and in the received series.
+   */
+  totalColumn?: string;
+  /** The name of the total. The default is "Total". */
+  totalLabel?: string;
+};
+
 function toNumerish(value: unknown): Numerish | undefined {
   return typeof value === "number" ||
     typeof value === "string" ||
@@ -306,19 +333,48 @@ function createTooltipFormater({
   axes,
   themeMode,
   displayTotal,
+  totalStack,
+  totalColumn,
+  totalLabel = "Total",
+  sortSeries = true,
   currentPeriod,
   getSeriesValue,
-}: {
+  getSeriesYAxisIndex,
+  getSeriesStack,
+  getDatasetValue,
+}: TooltipTotalOptions & {
   currentSeriesRef: MutableRefObject<{
     seriesIndex?: number;
     seriesName?: string;
   } | null>;
   axes: Axes;
   themeMode: "light" | "dark";
-  displayTotal?: boolean;
   currentPeriod?: CurrentPeriod;
+  /**
+   * False when the chart keeps the order of its series. Then the tooltip of
+   * a chart with a total also keeps that order.
+   */
+  sortSeries?: boolean;
   getSeriesValue?: SeriesValueGetter;
+  getSeriesYAxisIndex?: SeriesYAxisIndexGetter;
+  getSeriesStack?: SeriesStackGetter;
+  getDatasetValue?: DatasetValueGetter;
 }) {
+  // A series on the right y-axis uses the format of that axis.
+  const isOnSecondYAxis = (seriesIndex?: number) =>
+    !!axes.y2 &&
+    seriesIndex !== undefined &&
+    getSeriesYAxisIndex?.(seriesIndex) === 1;
+  const getSeriesAxis = (seriesIndex?: number) =>
+    isOnSecondYAxis(seriesIndex) && axes.y2 ? axes.y2 : axes.y;
+  // The values of the right y-axis have a different scale, so the total
+  // does not include them.
+  const isInTotal = (seriesIndex?: number) =>
+    !isOnSecondYAxis(seriesIndex) &&
+    (totalStack === undefined ||
+      (seriesIndex !== undefined &&
+        getSeriesStack?.(seriesIndex) === totalStack));
+
   return (
     allParamOrParams:
       | DefaultLabelFormatterCallbackParams
@@ -342,12 +398,21 @@ function createTooltipFormater({
         return "Loading…";
       }
 
-      const dailyTotal = displayTotal
-        ? aggregateValues(
-            paramOrParams.map((p) => getValue(p, getSeriesValue)),
+      const dataIndex = paramOrParams[0]?.dataIndex;
+      const columnTotal =
+        displayTotal && totalColumn && dataIndex !== undefined
+          ? toNumerish(getDatasetValue?.(totalColumn, dataIndex))
+          : undefined;
+      const dailyTotal = !displayTotal
+        ? undefined
+        : columnTotal !== undefined
+        ? columnTotal
+        : aggregateValues(
+            paramOrParams
+              .filter((p) => isInTotal(p.seriesIndex))
+              .map((p) => getValue(p, getSeriesValue)),
             axes.y.type
-          )
-        : undefined;
+          );
 
       const rollupSeries = paramOrParams.filter((d) =>
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -361,11 +426,18 @@ function createTooltipFormater({
 
       if (displayTotal) {
         // Dimensional charts: show only the series that have a value in the
-        // hovered bar, from the largest value to the smallest value.
-        const sortedSeries = paramOrParams
-          .map((p) => ({ param: p, value: getValue(p, getSeriesValue) }))
-          .filter(({ value }) => hasDisplayableValue(value))
-          .sort((a, b) => Number(b.value) - Number(a.value));
+        // hovered bar, from the largest value to the smallest value. A chart
+        // with a fixed series order (sortSeries false) keeps that order and
+        // all its series, for example its average lines.
+        const sortedSeries = sortSeries
+          ? paramOrParams
+              .map((p) => ({ param: p, value: getValue(p, getSeriesValue) }))
+              .filter(({ value }) => hasDisplayableValue(value))
+              .sort((a, b) => Number(b.value) - Number(a.value))
+          : paramOrParams.map((p) => ({
+              param: p,
+              value: getValue(p, getSeriesValue),
+            }));
         const sortedParams = sortedSeries.map(({ param }) => param);
 
         if (rollupSeries.length) {
@@ -380,7 +452,7 @@ function createTooltipFormater({
           });
         }
 
-        summaryRows.push({ name: "Total", value: dailyTotal, isBold: true });
+        summaryRows.push({ name: totalLabel, value: dailyTotal, isBold: true });
 
         columnWidths = getSeriesColumnWidths(
           [
@@ -441,8 +513,8 @@ function createTooltipFormater({
           buildSeriesHTMLElement({
             name: formattedName,
             value: getValue(p, getSeriesValue),
-            total: dailyTotal,
-            axis: axes.y,
+            total: isInTotal(p.seriesIndex) ? dailyTotal : undefined,
+            axis: getSeriesAxis(p.seriesIndex),
             markerColor: typeof color === "string" ? color : undefined,
             themeMode,
             isSelected,
@@ -464,7 +536,7 @@ function createTooltipFormater({
         );
       });
     } else {
-      const { name, seriesName, value, color } = paramOrParams;
+      const { name, seriesName, value, color, seriesIndex } = paramOrParams;
 
       const formattedName = formatSeriesName(seriesName);
 
@@ -472,7 +544,7 @@ function createTooltipFormater({
         buildSeriesHTMLElement({
           name: formattedName,
           value: (value as number | string) ?? 0,
-          axis: axes.y,
+          axis: getSeriesAxis(seriesIndex),
           markerColor: typeof color === "string" ? color : undefined,
           isSelected: true,
           themeMode,
@@ -517,10 +589,14 @@ function createTooltipFormater({
                 : ""
             }
             <div style="display: flex; flex-direction: column; gap: 2px; width: 100%;">
-              ${(displayTotal
-                ? seriesHTMLElements
-                : seriesHTMLElements.reverse()
-              ).join("\n")}
+              ${
+                // The sorted rows are already from the largest value. The
+                // other rows show in reverse series order.
+                (displayTotal && sortSeries
+                  ? seriesHTMLElements
+                  : seriesHTMLElements.reverse()
+                ).join("\n")
+              }
             </div>
             ${
               totalSeriesHTMLElements.length
@@ -542,24 +618,38 @@ function createTooltipFormater({
 export function createBaseTooltipOptions({
   currentSeriesRef,
   displayTotal,
+  totalStack,
+  totalColumn,
+  totalLabel,
+  sortSeries,
   axes,
   themeMode,
   currentPeriod,
   getSeriesValue,
-}: {
+  getSeriesYAxisIndex,
+  getSeriesStack,
+  getDatasetValue,
+}: TooltipTotalOptions & {
   currentSeriesRef: MutableRefObject<{
     seriesIndex?: number;
     seriesName?: string;
   } | null>;
   axes: Axes;
-  displayTotal?: boolean;
   themeMode: "light" | "dark";
   currentPeriod?: CurrentPeriod;
+  /**
+   * False when the chart keeps the order of its series. Then the tooltip of
+   * a chart with a total also keeps that order.
+   */
+  sortSeries?: boolean;
   /**
    * Returns the tooltip value of a data point. The tooltip uses the encoded
    * value when it returns undefined.
    */
   getSeriesValue?: SeriesValueGetter;
+  getSeriesYAxisIndex?: SeriesYAxisIndexGetter;
+  getSeriesStack?: SeriesStackGetter;
+  getDatasetValue?: DatasetValueGetter;
 }): TooltipComponentOption {
   return {
     trigger: "axis",
@@ -573,8 +663,15 @@ export function createBaseTooltipOptions({
       axes,
       themeMode,
       displayTotal,
+      totalStack,
+      totalColumn,
+      totalLabel,
+      sortSeries,
       currentPeriod,
       getSeriesValue,
+      getSeriesYAxisIndex,
+      getSeriesStack,
+      getDatasetValue,
     }),
   };
 }

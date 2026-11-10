@@ -64,6 +64,11 @@ export type Axis = TimeAxis | UnitlessAxis | EtherAxis | BytesAxis | FiatAxis;
 export type Axes = {
   x: Axis;
   y: Axis;
+  /**
+   * A second y-axis on the right. A series uses it when its `yAxisIndex` is
+   * 1. Use it for values with a different scale or unit.
+   */
+  y2?: Axis;
 };
 
 export type StandardEncoding = {

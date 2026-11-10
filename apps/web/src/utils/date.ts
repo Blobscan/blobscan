@@ -51,3 +51,26 @@ export const HUMAN_DATE_FORMAT = "dddd, MMMM, DD YYYY";
 export function getHumanDate(date: string | Date) {
   return dayjs(date).format(HUMAN_DATE_FORMAT);
 }
+
+const DAYS_PER_YEAR = 365;
+
+function pluralize(count: number, unit: string) {
+  return `${count.toLocaleString("en-US")} ${count === 1 ? unit : `${unit}s`}`;
+}
+
+/**
+ * Formats a number of days. From 365 days, it shows the years and the
+ * remaining days, for example "1 year, 35 days". A year is 365 days.
+ */
+export function formatDayCount(days: number) {
+  const years = Math.floor(days / DAYS_PER_YEAR);
+  const remainingDays = days % DAYS_PER_YEAR;
+
+  if (!years) {
+    return pluralize(days, "day");
+  }
+
+  return remainingDays
+    ? `${pluralize(years, "year")}, ${pluralize(remainingDays, "day")}`
+    : pluralize(years, "year");
+}

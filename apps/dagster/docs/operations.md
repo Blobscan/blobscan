@@ -39,6 +39,19 @@ roughly:
 `136 × (query_ms of a 1-week run) / 3`. The rollup levels read the
 already-aggregated tables and are cheap in comparison.
 
+### Address metrics
+
+Backfill the address metrics in this order. Each step can start when the step
+before it is done:
+
+1. `address_daily_metrics` for **all partitions**, and
+   `address_hourly_metrics` for the **last 30 days** only. These two backfills
+   do not depend on each other.
+2. `address_weekly_metrics` and `address_monthly_metrics` for all partitions.
+3. `address_yearly_metrics` for all partitions.
+4. `address_all_time_metrics` one time. It also runs from its automation
+   condition.
+
 Avoid `dg launch --partition-range` for large ranges: it executes the whole
 range in-process as a single run and a single query, without the backfill
 policy or the concurrency limits.
@@ -89,7 +102,9 @@ most one run writes a metrics table at a time, for scheduled, automation and
 backfill runs:
 
 ```bash
-for t in hourly daily weekly monthly yearly all_time; do
+for t in hourly daily weekly monthly yearly all_time \
+  address_hourly address_daily address_weekly address_monthly address_yearly \
+  address_all_time; do
   dagster instance concurrency set "metrics/${t}_metrics" 1
 done
 ```

@@ -6,7 +6,11 @@ from typing import TYPE_CHECKING
 import dagster as dg
 
 from .assets import hourly_partitions
-from .jobs import all_time_metrics_job, hourly_metrics_job
+from .jobs import (
+    address_hourly_metrics_cleanup_job,
+    all_time_metrics_job,
+    hourly_metrics_job,
+)
 
 if TYPE_CHECKING:
     from dagster._core.definitions.unresolved_asset_job_definition import (
@@ -61,6 +65,17 @@ all_time_metrics_schedule = dg.ScheduleDefinition(
     name="all_time_metrics_schedule",
     cron_schedule="5-59/10 * * * *",  # every 10 minutes, at :05, :15, ...
     job=all_time_metrics_job,
+    default_status=dg.DefaultScheduleStatus.RUNNING,
+)
+
+
+# Deletes the address_hourly_metrics rows older than the retention (30 days).
+# The schedule runs by default, because it only deletes rows that the asset
+# no longer writes.
+address_hourly_metrics_cleanup_schedule = dg.ScheduleDefinition(
+    name="address_hourly_metrics_cleanup_schedule",
+    cron_schedule="30 3 * * *",  # every day at 03:30 UTC
+    job=address_hourly_metrics_cleanup_job,
     default_status=dg.DefaultScheduleStatus.RUNNING,
 )
 

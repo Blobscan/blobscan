@@ -119,10 +119,13 @@ class TestPartitionRange:
 
 
 class TestBuildPartitionsByAssets:
-    def test_selects_every_metrics_asset(self):
+    def test_selects_every_metrics_asset_that_stores_the_rollup(self):
         graph = defs().resolve_asset_graph()
         asset_names = {key.to_user_string() for key in graph.get_all_asset_keys()}
-        assert set(cli.ASSET_PARTITIONS) == asset_names
+        # The address metrics do not store the rollup, so a rollup change does
+        # not change them.
+        rollup_assets = {n for n in asset_names if not n.startswith("address_")}
+        assert set(cli.ASSET_PARTITIONS) == rollup_assets
 
     def test_all_time_metrics_has_no_partitions(self):
         selection = cli.build_partitions_by_assets(TestPartitionRange.start)

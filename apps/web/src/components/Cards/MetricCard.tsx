@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import type { FC, ReactNode } from "react";
 import { animated, useSpring } from "@react-spring/web";
 import cn from "classnames";
 
@@ -7,20 +7,25 @@ import Skeleton from "react-loading-skeleton";
 
 import { prettyFormatWei } from "@blobscan/eth-format";
 
+import { HelpIcon } from "~/components/HelpIcon";
 import {
   formatBytes,
+  formatDayCount,
   formatNumber,
   parseDecimalNumber,
   parseSuffixedNumber,
 } from "~/utils";
 import { Card } from "./Card";
+import { MetricBreakdown, MetricBreakdownSkeleton } from "./MetricBreakdown";
+import type { MetricBreakdownProps } from "./MetricBreakdown";
 
 export type MetricType =
   | "standard"
   | "bytes"
   | "ethereum"
   | "fiat"
-  | "percentage";
+  | "percentage"
+  | "days";
 
 type Metric = {
   value?: bigint | number;
@@ -36,6 +41,20 @@ export type MetricCardProps = Partial<{
   name: string;
   compact: boolean;
   metric: MetricProp;
+  /**
+   * A second form of the value, on a line under it. For example, the USD
+   * value of an amount in ether.
+   */
+  secondaryValue: ReactNode;
+  /** A text that tells what the metric is. An icon after the name shows it. */
+  description: ReactNode;
+  /**
+   * A bar under the value that divides a total into parts, for example the
+   * used and the unused space.
+   */
+  breakdown: MetricBreakdownProps;
+  /** Classes of the card, for example its place in a grid. */
+  className: string;
 }>;
 
 /**
@@ -92,6 +111,11 @@ function parseMetricValue(
         maximumFractionDigits: 2,
         ...numberFormatOpts,
       })} %`;
+      break;
+    case "days":
+      // The total number of days animates. The displayed text, for example
+      // "1 year, 35 days", comes from that number on each frame.
+      formattedValue = Number(value).toString();
       break;
     default:
       formattedValue = formatNumber(value, mode, {
@@ -161,9 +185,11 @@ function Metric({
   // The placeholder must use the same text as the animated value. If it is
   // wider, it pushes the unit out of the card and the card cuts it.
   const formatDisplayedValue = (v: number) =>
-    `${formatNumber(v.toFixed(parsedMetric.decimalPart?.length ?? 0))}${
-      parsedMetric.suffix ?? ""
-    }`;
+    type === "days"
+      ? formatDayCount(Math.round(v))
+      : `${formatNumber(v.toFixed(parsedMetric.decimalPart?.length ?? 0))}${
+          parsedMetric.suffix ?? ""
+        }`;
   const valueProps = useSpring({
     value: parsedMetric.numericPart,
     from: { value: 0 },
@@ -225,9 +251,15 @@ export const MetricCard: FC<MetricCardProps> = function ({
   name,
   compact = false,
   metric,
+  secondaryValue,
+  description,
+  breakdown,
+  className,
 }) {
+  const isValueSet = metric?.primary.value !== undefined;
+
   return (
-    <Card compact={compact}>
+    <Card compact={compact} className={className}>
       <div
         className={cn(
           {
@@ -239,13 +271,36 @@ export const MetricCard: FC<MetricCardProps> = function ({
         )}
       >
         <div
-          className={cn("text-sm", "font-semibold dark:text-warmGray-50", {
-            "sm:text-sm": !compact,
-          })}
+          className={cn(
+            "flex items-center gap-1.5",
+            "text-sm font-semibold dark:text-warmGray-50",
+            { "sm:text-sm": !compact }
+          )}
         >
           {name ?? <Skeleton width={80} height={20} />}
+          {/* The help icon is right after the name. */}
+          {name !== undefined && description && (
+            <HelpIcon description={description} />
+          )}
         </div>
         {metric && <Metric {...(metric ?? {})} compact={compact} />}
+        {secondaryValue !== undefined &&
+          secondaryValue !== null &&
+          isValueSet && (
+            <div className="text-sm text-contentSecondary-light dark:text-contentSecondary-dark">
+              {secondaryValue}
+            </div>
+          )}
+        {breakdown &&
+          (isValueSet ? (
+            <div className="mt-2">
+              <MetricBreakdown {...breakdown} />
+            </div>
+          ) : (
+            <div className="mt-2">
+              <MetricBreakdownSkeleton />
+            </div>
+          ))}
       </div>
     </Card>
   );

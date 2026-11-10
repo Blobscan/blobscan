@@ -8,10 +8,11 @@ import ReactEChartsCore from "echarts-for-react/lib/core";
 import { useTheme } from "next-themes";
 
 import { EmptyState } from "~/components/EmptyState";
+import { HelpIcon } from "~/components/HelpIcon";
 import echarts from "~/echarts";
 import type { Size, ThemeMode, TimeseriesDimension } from "~/types";
 import { Legend } from "./Legend";
-import type { LegendItemData, LegendProps } from "./Legend";
+import type { LegendItemData, LegendPosition, LegendProps } from "./Legend";
 import {
   addCurrentPeriodColumns,
   createXAxisOptions,
@@ -19,16 +20,20 @@ import {
   createBaseTooltipOptions,
   createCurrentPeriodSeries,
   createYAxisOptions,
+  getBinaryAxisScale,
+  getLeftAxisMax,
   DEFAULT_SERIES_COLOR,
   createBaseSeriesOptions,
   getCurrentPeriod,
+  getDatasetColumnValue,
   getDimensionColor,
   getMainSeriesIndex,
   getSeriesMetricValue,
   hasCurrentPeriodValue,
+  hasValueUnits,
   isCurrentPeriodSeries,
 } from "./helpers";
-import type { ChartDataset, ChartSeries } from "./helpers";
+import type { ChartDataset, ChartSeries, TooltipTotalOptions } from "./helpers";
 import type { SkeletonChartOptions } from "./helpers/skeleton";
 import { createChartSkeletonOptions } from "./helpers/skeleton";
 import type { Axes } from "./types";
@@ -40,6 +45,8 @@ export interface SkeletonOptions {
 
 export interface ChartBaseProps {
   title: ReactNode;
+  /** A text that tells what the chart shows. An icon after the title shows it. */
+  description?: ReactNode;
   headerControls?: ReactNode;
   /**
    * When a dataset includes the current period, which is not complete, the
@@ -49,21 +56,28 @@ export interface ChartBaseProps {
   series?: SeriesOption[];
   axes: Axes;
   compact?: boolean;
+  /** Where the legend goes. The default is "right". */
+  legendPosition?: LegendPosition;
+  /**
+   * The chart sorts the series by name. Set it to false to keep the order of
+   * `series`. The legend and the tooltip show the series in reverse order.
+   */
+  sortSeries?: boolean;
   isLoading?: boolean;
   size?: Size;
   skeletonOpts?: SkeletonOptions;
-  tooltipOpts?: {
-    displayTotal?: boolean;
-  };
+  tooltipOpts?: TooltipTotalOptions;
 }
 
 function ChartHeader({
   title,
+  description,
   dataUnit,
   controls,
   isLoading,
 }: {
   title: ReactNode;
+  description?: ReactNode;
   dataUnit?: string;
   controls?: ReactNode;
   isLoading?: boolean;
@@ -71,8 +85,9 @@ function ChartHeader({
   return (
     <div className="flex w-full justify-between p-1">
       {title && (
-        <div className="flex-start -mb-2 flex font-semibold">
+        <div className="flex-start -mb-2 flex items-center gap-1.5 font-semibold">
           {`${title}${dataUnit ? ` (${dataUnit})` : ""}`}
+          {description && <HelpIcon description={description} />}
         </div>
       )}
       {!isLoading && controls}
@@ -88,6 +103,7 @@ function DataZoomSkeleton() {
 
 export const ChartBase: FC<ChartBaseProps> = function ({
   title,
+  description,
   headerControls,
   dataset,
   axes,
@@ -95,6 +111,8 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   tooltipOpts,
   series: seriesProp,
   compact,
+  legendPosition = "right",
+  sortSeries = true,
   isLoading,
   size = "md",
 }) {
@@ -124,7 +142,10 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     setChart(null);
   }
 
-  const yUnit = axes.y.displayUnit ?? axes.y.unit;
+  // The title shows the unit only when the values do not show it.
+  const yUnit = hasValueUnits(axes.y)
+    ? undefined
+    : axes.y.displayUnit ?? axes.y.unit;
   const chartSkeletonOptions = useMemo(
     () =>
       createChartSkeletonOptions({
@@ -160,8 +181,10 @@ export const ChartBase: FC<ChartBaseProps> = function ({
             ...restSeries,
           };
         })
-        ?.sort((a, b) => String(a.name).localeCompare(String(b.name))),
-    [seriesProp, themeMode]
+        ?.sort((a, b) =>
+          sortSeries ? String(a.name).localeCompare(String(b.name)) : 0
+        ),
+    [seriesProp, themeMode, sortSeries]
   );
   const currentPeriod = useMemo(
     () =>
@@ -230,6 +253,33 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         : undefined,
     [currentPeriodTimestamp]
   );
+  const getSeriesYAxisIndex = useCallback(
+    (seriesIndex: number) =>
+      (chartSeriesRef.current?.[seriesIndex] as ChartSeries | undefined)
+        ?.yAxisIndex ?? 0,
+    []
+  );
+  const getSeriesStack = useCallback(
+    (seriesIndex: number) =>
+      (chartSeriesRef.current?.[seriesIndex] as ChartSeries | undefined)?.stack,
+    []
+  );
+  const getDatasetValue = useCallback(
+    (column: string, dataIndex: number) =>
+      getDatasetColumnValue(chartDatasetRef.current, column, dataIndex),
+    []
+  );
+  // When each byte value shows its own unit, the ticks are powers of 2, for
+  // example 256 KiB, 512 KiB and 768 KiB.
+  const yScale = useMemo(
+    () =>
+      hasValueUnits(axes.y) && seriesProp && dataset
+        ? getBinaryAxisScale(
+            getLeftAxisMax(seriesProp as ChartSeries[], dataset)
+          )
+        : undefined,
+    [axes.y, seriesProp, dataset]
+  );
   const baseOptions = useMemo(
     () =>
       ({
@@ -242,27 +292,50 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           show: false,
         },
         grid: {
-          top: 27,
-          right: 10,
+          // The top label of the right y-axis must be below the toolbox.
+          top: axes.y2 ? 44 : 27,
+          // The right y-axis needs space for its labels.
+          right: axes.y2 ? 40 : 10,
           bottom: compact ? 22 : 82,
           left: 40,
         },
         xAxis: createXAxisOptions(axes.x, compact),
-        yAxis: createYAxisOptions(axes.y, compact),
+        yAxis: axes.y2
+          ? [
+              createYAxisOptions(axes.y, compact, yScale),
+              createYAxisOptions(axes.y2, compact, { position: "right" }),
+            ]
+          : createYAxisOptions(axes.y, compact, yScale),
         tooltip: createBaseTooltipOptions({
           currentSeriesRef: hoveredSeriesRef,
           axes,
-          displayTotal: tooltipOpts?.displayTotal,
+          ...tooltipOpts,
           themeMode,
+          sortSeries,
           currentPeriod,
           getSeriesValue,
+          getSeriesYAxisIndex,
+          getSeriesStack,
+          getDatasetValue,
         }),
         toolbox: !compact ? createBaseToolboxOptions({ themeMode }) : undefined,
         dataZoom: !compact
           ? [{ type: "inside" }, { type: "slider", start: 0, end: 100 }]
           : undefined,
       } satisfies EChartsOption),
-    [compact, axes, tooltipOpts, themeMode, currentPeriod, getSeriesValue]
+    [
+      compact,
+      axes,
+      yScale,
+      tooltipOpts,
+      themeMode,
+      sortSeries,
+      currentPeriod,
+      getSeriesValue,
+      getSeriesYAxisIndex,
+      getSeriesStack,
+      getDatasetValue,
+    ]
   );
 
   const idleTimerRef = useRef<number | null>(null);
@@ -490,19 +563,21 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     <div className="h-full">
       <ChartHeader
         title={title}
+        description={description}
         dataUnit={yUnit}
         controls={shouldRenderChart ? headerControls : undefined}
         isLoading={isLoading}
       />
       <div
         className={cn(
-          "relative flex w-full flex-col gap-1 overflow-visible md:flex-row md:gap-2",
+          "relative flex w-full flex-col gap-1 overflow-visible",
+          { "md:flex-row md:gap-2": legendPosition === "right" },
           {
             "h-48 md:h-56 lg:h-56": size === "xs",
             "h-[180px] sm:h-56": size === "sm",
             "h-[220px] sm:h-[354px]": size === "md",
             "h-[260px] sm:h-96": size === "lg",
-            "h-[300px] sm:h-[22rem]": size === "xl",
+            "h-[300px] sm:h-[26rem]": size === "xl",
             "h-[22rem] sm:h-[22rem] md:h-[28rem] lg:h-[30rem] xl:h-[36rem]":
               size === "2xl",
           },
@@ -529,9 +604,12 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         )}
         {isLoading && !compact ? <DataZoomSkeleton /> : null}
         {!compact && shouldRenderChart && (
-          <div className="h-4 md:h-full">
+          <div
+            className={cn("h-4", { "md:h-full": legendPosition === "right" })}
+          >
             <Legend
               items={legendItems}
+              position={legendPosition}
               selectedItem={selectedLegendItem}
               isLoading={isLoading}
               skeletonOpts={skeletonOpts?.legend}

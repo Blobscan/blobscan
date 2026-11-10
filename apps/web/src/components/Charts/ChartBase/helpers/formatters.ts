@@ -5,6 +5,7 @@ import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
 import type { Rollup, TimeseriesGranularity } from "~/types";
 import {
   convertBytes,
+  formatBytes,
   formatFiat,
   formatNumber,
   HUMAN_DATE_FORMAT,
@@ -78,11 +79,27 @@ export function formatEtherValue(
   });
 }
 
+/**
+ * Returns true when each value of the axis shows its own unit, for example
+ * "896 KiB". Then the chart title does not show the unit.
+ */
+export function hasValueUnits(axis: Axis) {
+  return axis.unitType === "byte" && axis.unit === "B" && !axis.displayUnit;
+}
+
 export function formatBytesValue(
   value: Numerish,
-  { displayUnit, unit }: BytesAxis,
+  axis: BytesAxis,
   compact?: boolean
 ) {
+  const { displayUnit, unit } = axis;
+
+  // Without a fixed display unit, each value uses its best unit, and shows it.
+  // The axis labels use 1 decimal place: "1.4 MiB".
+  if (hasValueUnits(axis)) {
+    return formatBytes(value, { decimals: compact ? 1 : 2 });
+  }
+
   let convertedValue = value;
 
   if (unit === "B" && displayUnit) {
