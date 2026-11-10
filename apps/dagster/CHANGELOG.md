@@ -1,5 +1,11 @@
 # @blobscan/dagster
 
+## 0.7.0
+
+### Minor Changes
+
+- [#1088](https://github.com/Blobscan/blobscan/pull/1088) [`4596075`](https://github.com/Blobscan/blobscan/commit/4596075d1486ba0bedda6821440c24fb6f03e21e) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added a command that launches the metrics backfill after a rollup change
+
 ## 0.6.0
 
 ### Minor Changes

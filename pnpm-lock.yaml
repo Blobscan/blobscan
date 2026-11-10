@@ -237,7 +237,7 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.43.1
+        specifier: workspace:^0.44.0
         version: link:../../packages/api
       '@blobscan/blob-propagator':
         specifier: workspace:^0.11.5
@@ -328,7 +328,7 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.43.1
+        specifier: workspace:^0.44.0
         version: link:../../packages/api
       '@blobscan/blob-decoder':
         specifier: workspace:^0.2.4

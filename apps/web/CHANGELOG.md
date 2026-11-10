@@ -1,5 +1,31 @@
 # @blobscan/web
 
+## 0.61.0
+
+### Minor Changes
+
+- [#1082](https://github.com/Blobscan/blobscan/pull/1082) [`a790102`](https://github.com/Blobscan/blobscan/commit/a790102c5e861dca9a574196655ffcc7be89d5ee) Thanks [@PJColombo](https://github.com/PJColombo)! - Added previous/next navigation to the blob details page. The arrows move to the adjacent blob in the same transaction. After the last blob of a transaction, the next arrow moves to the first blob of the next transaction of the same sender. Before the first blob, the previous arrow moves to the last blob of the previous transaction of the sender.
+
+  The new `blob.getAdjacentBlob` procedure returns the previous or the next blob of a blob position, in the format of `blob.getByBlobId`. The page sends it only when the user clicks an arrow, and puts the blob in the cache of the next page.
+
+- [#1091](https://github.com/Blobscan/blobscan/pull/1091) [`c003b64`](https://github.com/Blobscan/blobscan/commit/c003b6413f3d147bb2d952d27d60cf68befba97c) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated the rollup chart tooltips to show only the rollups with a value in the hovered bar, sorted from the largest value to the smallest
+
+### Patch Changes
+
+- [#1093](https://github.com/Blobscan/blobscan/pull/1093) [`bdcb515`](https://github.com/Blobscan/blobscan/commit/bdcb5153db3be848e053763952d4d387147dd244) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed the rollup chart tooltips, which changed their width when the user hovered from one rollup to a different rollup of the same bar
+
+- [#1081](https://github.com/Blobscan/blobscan/pull/1081) [`c4ca720`](https://github.com/Blobscan/blobscan/commit/c4ca720b071c2d1b398e5e87ef02a920d1c4158f) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed the slow sender transaction navigation queries that filled the database connection pool. One SQL query now gets the previous and next transactions of the sender with the `(from_id, block_timestamp, index)` index. The transaction page starts this request at the same time as the transaction request.
+
+  **Breaking change:** The `tx.getAdjacentsByAddress` procedure has the new name `tx.getSenderAdjacentsByHash`. Its input is now only the transaction `hash`, not `senderAddress`, `blockTimestamp` and `txIndex`. For an unknown hash, it now throws a `NOT_FOUND` error.
+
+- [#1092](https://github.com/Blobscan/blobscan/pull/1092) [`f885151`](https://github.com/Blobscan/blobscan/commit/f885151f21aa1c0ae12b67bb518e1b6f70d8f55c) Thanks [@PJColombo](https://github.com/PJColombo)! - The transaction page now requests the previous or next transaction of the sender only when the user clicks an arrow. The new `tx.getSenderAdjacentTx` procedure returns the full adjacent transaction in the format of `tx.getByHash`, so a click sends only one request. When the sender has no transaction in that direction, the page stays on the same transaction and disables the arrow. If the request fails, the page shows a message next to the arrows.
+
+  **Breaking change:** The `tx.getSenderAdjacentsByHash` procedure has the new name `tx.getSenderAdjacentTx`. Its input is now the transaction `hash`, a `direction` (`"prev"` or `"next"`) and the `expand` of `tx.getByHash`. It returns the adjacent transaction in the format of `tx.getByHash`, or `null` when there is no transaction in that direction. It does not return `{ prevTxHash, nextTxHash }`.
+
+- [#1090](https://github.com/Blobscan/blobscan/pull/1090) [`a3edfae`](https://github.com/Blobscan/blobscan/commit/a3edfaea881d319a100bf32bf45fc89208044286) Thanks [@PJColombo](https://github.com/PJColombo)! - Stopped the indexer lag banner from showing for a short time when a tab comes back from the background
+- Updated dependencies [[`a790102`](https://github.com/Blobscan/blobscan/commit/a790102c5e861dca9a574196655ffcc7be89d5ee), [`c4ca720`](https://github.com/Blobscan/blobscan/commit/c4ca720b071c2d1b398e5e87ef02a920d1c4158f), [`f885151`](https://github.com/Blobscan/blobscan/commit/f885151f21aa1c0ae12b67bb518e1b6f70d8f55c)]:
+  - @blobscan/api@0.44.0
+
 ## 0.60.0
 
 ### Minor Changes
