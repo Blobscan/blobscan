@@ -66,11 +66,24 @@ const Blob: NextPage = function () {
   // A blob can be included in several transactions (or several times in the
   // same one), so the position used for navigation is taken from the URL when
   // provided, falling back to the first one returned.
+  // The URL position does not need the blob, so the adjacent blobs request
+  // starts at the same time as the blob request. If the blob does not have
+  // the URL position, the first position of the blob is used.
+  const urlPosition =
+    positionTxHash !== undefined &&
+    positionIndex !== undefined &&
+    Number.isInteger(positionIndex) &&
+    positionIndex >= 0
+      ? { txHash: positionTxHash, index: positionIndex }
+      : undefined;
+  const blobHasUrlPosition = blob?.transactions.some(
+    ({ txHash, index }) =>
+      txHash === urlPosition?.txHash && index === urlPosition?.index
+  );
   const position =
-    blob?.transactions.find(
-      ({ txHash, index }) =>
-        txHash === positionTxHash && index === positionIndex
-    ) ?? blob?.transactions[0];
+    urlPosition && blobHasUrlPosition !== false
+      ? urlPosition
+      : blob?.transactions[0];
   const { data: adjacentBlobs } = api.blob.getAdjacentBlobs.useQuery(
     {
       txHash: position?.txHash,
