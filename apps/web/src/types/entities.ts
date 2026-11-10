@@ -77,4 +77,4 @@ export type SearchCategory = keyof SearchOutput;
 
 export type AppState = AppRouterOutputs["state"]["getAppState"];
 
-export type GetAdjacentBlobsInput = AppRouterInputs["blob"]["getAdjacentBlobs"];
+export type GetAdjacentBlobInput = AppRouterInputs["blob"]["getAdjacentBlob"];

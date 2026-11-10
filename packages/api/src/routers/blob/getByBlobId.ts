@@ -2,19 +2,14 @@ import { TRPCError } from "@trpc/server";
 
 import { z } from "@blobscan/zod";
 
+import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import {
   createExpandsSchema,
   withExpands,
 } from "../../middlewares/withExpands";
-import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
-import type { CompletedPrismaBlob } from "./helpers";
-import {
-  responseBlobSchema,
-  createBlobSelect,
-  toResponseBlob,
-} from "./helpers";
+import { findResponseBlob, responseBlobSchema } from "./helpers";
 
 const inputSchema = z
   .object({
@@ -38,29 +33,15 @@ export const getByBlobId = publicProcedure
   .use(withExpands)
   .output(outputSchema)
   .use(withBlobSignedUrls)
-  .query(async ({ ctx: { expands, prisma }, input }) => {
-    const { id } = input;
-    const isExpandEnabled = !!expands.block || !!expands.transaction;
+  .query(async ({ ctx: { expands, prisma }, input: { id } }) => {
+    const blob = await findResponseBlob(prisma, expands, id);
 
-    const [prismaBlob, ethUsdPrices] = await Promise.all([
-      prisma.blob.findFirst({
-        select: createBlobSelect(expands),
-        where: {
-          OR: [{ versionedHash: id }, { commitment: id }],
-        },
-      }) as unknown as Promise<CompletedPrismaBlob | null>,
-      isExpandEnabled ? prisma.blob.findEthUsdPrices(id) : Promise.resolve([]),
-    ]);
-
-    if (!prismaBlob) {
+    if (!blob) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `No blob with versioned hash or kzg commitment '${id}'.`,
       });
     }
 
-    return toResponseBlob(
-      prismaBlob,
-      ethUsdPrices.map(({ price }) => price)
-    );
+    return blob;
   });
