@@ -38,7 +38,9 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({
   });
 
   return (
-    <AppStateContext.Provider value={{ appState, isLoading, isError, dataUpdatedAt }}>
+    <AppStateContext.Provider
+      value={{ appState, isLoading, isError, dataUpdatedAt }}
+    >
       {children}
     </AppStateContext.Provider>
   );

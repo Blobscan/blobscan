@@ -3,7 +3,11 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { chains } from "@blobscan/chains";
 
 import { MS_PER_DAY, MS_PER_HOUR, MS_PER_MINUTE } from "~/utils/date";
-import { formatIndexerLag, getIndexerLag } from "~/utils/indexer-lag";
+import {
+  formatIndexerLag,
+  getAppStateIndexerLag,
+  getIndexerLag,
+} from "~/utils/indexer-lag";
 
 const { mainnet } = chains;
 
@@ -59,25 +63,62 @@ describe("when getting the indexer lag", () => {
       })
     ).toEqual({ lagMs: 0, isOutOfSync: false });
   });
+});
 
-  describe("when the current time is much later than the fetch time", () => {
-    afterEach(() => {
-      vi.useRealTimers();
-    });
+describe("when getting the indexer lag from the app state", () => {
+  const { activationSlot, activationDate } = mainnet.latestFork;
+  const anchorMs = activationDate.getTime();
+  const appState = { syncState: { lastUpperSyncedSlot: activationSlot } };
 
-    it("should measure the lag at the fetch time", () => {
-      vi.useFakeTimers({ toFake: ["Date"] });
-      // For example, a tab that was in the background for an hour.
-      vi.setSystemTime(anchorMs + MS_PER_HOUR);
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
-      expect(
-        getIndexerLag({
-          chain: mainnet,
-          lastUpperSyncedSlot: activationSlot,
-          measuredAt: anchorMs + MS_PER_MINUTE,
-        })
-      ).toEqual({ lagMs: MS_PER_MINUTE, isOutOfSync: false });
-    });
+  it("should measure the lag at the fetch time, not at the current time", () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    // For example, a tab that was in the background for an hour.
+    vi.setSystemTime(anchorMs + MS_PER_HOUR);
+
+    expect(
+      getAppStateIndexerLag({
+        chain: mainnet,
+        appState,
+        isError: false,
+        dataUpdatedAt: anchorMs + MS_PER_MINUTE,
+      })
+    ).toEqual({ lagMs: MS_PER_MINUTE, isOutOfSync: false });
+  });
+
+  it("should be out of sync when the fetch time is far after the slot", () => {
+    expect(
+      getAppStateIndexerLag({
+        chain: mainnet,
+        appState,
+        isError: false,
+        dataUpdatedAt: anchorMs + 10 * MS_PER_MINUTE,
+      })
+    ).toEqual({ lagMs: 10 * MS_PER_MINUTE, isOutOfSync: true });
+  });
+
+  it("should return undefined when the last fetch failed", () => {
+    expect(
+      getAppStateIndexerLag({
+        chain: mainnet,
+        appState,
+        isError: true,
+        dataUpdatedAt: anchorMs + 10 * MS_PER_MINUTE,
+      })
+    ).toBeUndefined();
+  });
+
+  it("should return undefined when there is no app state", () => {
+    expect(
+      getAppStateIndexerLag({
+        chain: mainnet,
+        isError: false,
+        dataUpdatedAt: 0,
+      })
+    ).toBeUndefined();
   });
 });
 

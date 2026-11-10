@@ -47,6 +47,36 @@ export function getIndexerLag({
   };
 }
 
+/**
+ * Calculates the indexer lag from the result of the app state query.
+ * Returns undefined when the function cannot measure the lag.
+ */
+export function getAppStateIndexerLag({
+  chain,
+  appState,
+  isError,
+  dataUpdatedAt,
+}: {
+  chain?: Chain;
+  appState?: { syncState?: { lastUpperSyncedSlot?: number | null } | null };
+  isError: boolean;
+  dataUpdatedAt: number;
+}): IndexerLag | undefined {
+  // After a failed refetch, the query keeps the last data. Do not use that
+  // old slot, because the API is down, not the indexer.
+  if (isError) {
+    return;
+  }
+
+  return getIndexerLag({
+    chain,
+    lastUpperSyncedSlot: appState?.syncState?.lastUpperSyncedSlot,
+    // The periodic refetch updates the fetch time, so the lag still
+    // increases while the indexer does not sync.
+    measuredAt: dataUpdatedAt,
+  });
+}
+
 function pluralize(value: number, unit: string) {
   return `${value} ${unit}${value === 1 ? "" : "s"}`;
 }
