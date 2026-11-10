@@ -14,7 +14,9 @@ import type {
   Expands,
 } from "../../middlewares/withExpands";
 import type { Prettify } from "../../types";
+import type { AdjacentDirection } from "../../utils";
 import {
+  adjacentSqlParts,
   normalizePrismaBlobDataStorageReferencesFields,
   normalizePrismaTransactionFields,
 } from "../../utils";
@@ -214,10 +216,8 @@ export async function getResponseTransaction(
   return toResponseTransaction(prismaTx, ethUsdPrice?.price);
 }
 
-export type AdjacentDirection = "prev" | "next";
-
 /**
- * Returns a `LATERAL` subquery that finds the hash of the previous or the next
+ * Returns a `LATERAL` subquery that gets the hash of the previous or the next
  * transaction of a sender. The order is block timestamp, then transaction
  * index. The subquery does not return transactions of reorged blocks.
  *
@@ -228,14 +228,13 @@ export type AdjacentDirection = "prev" | "next";
  * `(from_id, block_timestamp, index)` index. The scan starts at the current
  * transaction and stops at the first transaction that is not reorged.
  *
- * Do not read the current transaction from a CTE and join it in the subquery.
+ * Do not get the current transaction from a CTE and join it in the subquery.
  * Postgres then applies the tuple comparison as a join filter, not as an index
  * condition. The scan then starts at one end of the index and can read all
  * the rows of the table.
  */
 export function senderAdjacentTxSql(direction: AdjacentDirection) {
-  const operator = Prisma.raw(direction === "prev" ? "<" : ">");
-  const order = Prisma.raw(direction === "prev" ? "DESC" : "ASC");
+  const { operator, order } = adjacentSqlParts(direction);
 
   return Prisma.sql`
     SELECT t.hash

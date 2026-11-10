@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
 import type { TRPCContext } from "../../src";
-import type { AdjacentDirection } from "../../src/routers/tx/helpers";
+import type { AdjacentDirection } from "../../src/utils";
 import { createTestContext } from "../helpers";
 import type { TxCaller } from "./caller";
 import { createTransactionCaller } from "./caller";

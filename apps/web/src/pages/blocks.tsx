@@ -5,7 +5,6 @@ import type { EtherUnit } from "@blobscan/eth-format";
 import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
-import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
@@ -14,6 +13,7 @@ import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
+import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
 import type { TimestampFormat } from "~/components/Toggles";
@@ -314,7 +314,12 @@ const Blocks: NextPage = function () {
                           value={blobVersionedHash}
                           tooltipText="Copy blob versioned hash"
                         >
-                          <Link href={routes.blob(blobVersionedHash)}>
+                          <Link
+                            href={routes.blob(blobVersionedHash, {
+                              txHash: transactionHash,
+                              index: blobIndex,
+                            })}
+                          >
                             {shortenHash(blobVersionedHash, 27)}
                           </Link>
                         </Copyable>

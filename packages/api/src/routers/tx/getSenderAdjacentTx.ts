@@ -6,7 +6,7 @@ import {
   withExpands,
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
-import { normalize } from "../../utils";
+import { adjacentDirectionSchema, normalize } from "../../utils";
 import {
   createTransactionNotFoundError,
   getResponseTransaction,
@@ -17,7 +17,7 @@ import {
 const inputSchema = z
   .object({
     hash: z.string(),
-    direction: z.enum(["prev", "next"]),
+    direction: adjacentDirectionSchema,
   })
   .merge(createExpandsSchema(["block", "blob"]));
 

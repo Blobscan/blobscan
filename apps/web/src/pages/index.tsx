@@ -95,7 +95,14 @@ const Home: NextPage = () => {
       )
       .slice(0, LATEST_ITEMS_LENGTH);
     const blobs = transactions
-      .flatMap((tx) => tx.blobs.map((b) => ({ ...b, rollup: tx.rollup })))
+      .flatMap((tx) =>
+        // The blobs have the order of their index in the transaction.
+        tx.blobs.map((b, index) => ({
+          ...b,
+          rollup: tx.rollup,
+          position: { txHash: tx.hash, index },
+        }))
+      )
       .slice(0, LATEST_ITEMS_LENGTH);
 
     return {
@@ -330,12 +337,13 @@ const Home: NextPage = () => {
             ) : !isEmpty ? (
               <SlidableList
                 items={blobs.map((b) => ({
-                  id: b.versionedHash,
+                  id: `${b.position.txHash}-${b.position.index}`,
                   element: (
                     <BlobCard
                       blob={b}
+                      position={b.position}
                       compact
-                      key={b.versionedHash}
+                      key={`${b.position.txHash}-${b.position.index}`}
                       className={CARD_HEIGHT}
                     />
                   ),

@@ -7,7 +7,7 @@ import { Separator } from "~/components/Separator";
 import { Skeleton } from "~/components/Skeleton";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { routes } from "~/routes";
-import type { Blob, Rollup } from "~/types";
+import type { Blob, BlobPosition, Rollup } from "~/types";
 import { Link } from "../../Link";
 import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
@@ -22,6 +22,9 @@ type BlobCardProps = Partial<{
     | "dataStorageReferences"
     | "proof"
   > & { rollup?: Rollup | null };
+  // The position of the blob in its transaction. The blob page needs it,
+  // because a blob can be in more than one transaction.
+  position?: BlobPosition;
   compact?: boolean;
   className?: string;
 }>;
@@ -36,6 +39,7 @@ const BlobCard: FC<BlobCardProps> = ({
     proof,
     rollup,
   } = {},
+  position,
   compact,
   className,
 }) => {
@@ -55,7 +59,9 @@ const BlobCard: FC<BlobCardProps> = ({
               <span className="text-contentSecondary-light dark:text-surfaceContentSecondary-dark">
                 Blob
               </span>
-              <Link href={routes.blob(versionedHash)}>{versionedHash}</Link>
+              <Link href={routes.blob(versionedHash, position)}>
+                {versionedHash}
+              </Link>
             </div>
             {rollup ? (
               <RollupBadge key={rollup} rollup={rollup} compact />

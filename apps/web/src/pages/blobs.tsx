@@ -92,6 +92,7 @@ const Blobs: NextPage = function () {
               size,
               dataStorageReferences,
               txHash,
+              index,
               blockTimestamp,
               blockNumber,
               transaction,
@@ -110,7 +111,9 @@ const Blobs: NextPage = function () {
                       value={versionedHash}
                       tooltipText="Copy versioned hash"
                     >
-                      <Link href={routes.blob(versionedHash)}>
+                      <Link
+                        href={routes.blob(versionedHash, { txHash, index })}
+                      >
                         {shortenHash(versionedHash, 8)}
                       </Link>
                     </Copyable>
