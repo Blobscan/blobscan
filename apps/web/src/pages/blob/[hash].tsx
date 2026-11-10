@@ -141,13 +141,20 @@ const Blob: NextPage = function () {
           adjacent.blob,
           { updatedAt: adjacentUpdatedAt }
         );
-        // The current blob is the adjacent blob of the new page in the
-        // opposite direction.
-        utils.blob.getAdjacentBlob.setData(
-          toAdjacentBlobInput(adjacent, direction === "next" ? "prev" : "next"),
-          { txHash: position.txHash, index: position.index, blob },
-          { updatedAt: blobUpdatedAt }
-        );
+        // In the same transaction, the current blob is the adjacent blob of
+        // the new page in the opposite direction. Do not do this for a
+        // different transaction: if the current transaction is in a reorged
+        // block, the search in the opposite direction does not return it.
+        if (adjacent.txHash === position.txHash) {
+          utils.blob.getAdjacentBlob.setData(
+            toAdjacentBlobInput(
+              adjacent,
+              direction === "next" ? "prev" : "next"
+            ),
+            { txHash: position.txHash, index: position.index, blob },
+            { updatedAt: blobUpdatedAt }
+          );
+        }
 
         await router?.push(
           routes.blob(adjacent.blob.versionedHash, {
@@ -431,7 +438,7 @@ const Blob: NextPage = function () {
               type="prev"
               size="lg"
               onClick={() => handleNavClick("prev")}
-              tooltip="Previous Blob in This Block"
+              tooltip="Previous Blob of This Sender"
               disabled={!position || prevBlob === null || adjacentBlobLoading}
             />
             Blob Details
@@ -439,7 +446,7 @@ const Blob: NextPage = function () {
               type="next"
               size="lg"
               onClick={() => handleNavClick("next")}
-              tooltip="Next Blob in This Block"
+              tooltip="Next Blob of This Sender"
               disabled={!position || nextBlob === null || adjacentBlobLoading}
             />
           </div>

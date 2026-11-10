@@ -54,7 +54,42 @@ describe("getAdjacentBlob", () => {
   });
 
   describe("when the blob is the last blob of its transaction", () => {
-    it("should return the first blob of the next transaction of the block", async () => {
+    it("should return the first blob of the next transaction of the sender", async () => {
+      await expect(
+        getAdjacentPosition("txHash003", 1, "next")
+      ).resolves.toEqual({
+        versionedHash: "blobHash001",
+        txHash: "txHash007",
+        index: 0,
+      });
+    });
+
+    it("should go to a transaction of the sender in a different block", async () => {
+      await expect(
+        getAdjacentPosition("txHash006", 2, "next")
+      ).resolves.toEqual({
+        versionedHash:
+          "0xb100000000000000000000000000000000000000000000000000000000000000",
+        txHash: "txHash016",
+        index: 0,
+      });
+    });
+  });
+
+  describe("when the blob is the first blob of its transaction", () => {
+    it("should return the last blob of the previous transaction of the sender", async () => {
+      await expect(
+        getAdjacentPosition("txHash007", 0, "prev")
+      ).resolves.toEqual({
+        versionedHash: "blobHash002",
+        txHash: "txHash003",
+        index: 1,
+      });
+    });
+  });
+
+  describe("when transactions of the sender have the same block timestamp", () => {
+    it("should order them by their transaction index", async () => {
       await expect(
         getAdjacentPosition("txHash005", 2, "next")
       ).resolves.toEqual({
@@ -62,11 +97,6 @@ describe("getAdjacentBlob", () => {
         txHash: "txHash006",
         index: 0,
       });
-    });
-  });
-
-  describe("when the blob is the first blob of its transaction", () => {
-    it("should return the last blob of the previous transaction of the block", async () => {
       await expect(
         getAdjacentPosition("txHash006", 0, "prev")
       ).resolves.toEqual({
@@ -77,18 +107,26 @@ describe("getAdjacentBlob", () => {
     });
   });
 
-  describe("when the blob is the first blob of the block", () => {
+  describe("when the blob is the first blob of the first transaction of the sender", () => {
     it("should return null for the previous blob", async () => {
       await expect(
-        getAdjacentPosition("txHash001", 0, "prev")
+        getAdjacentPosition("txHash003", 0, "prev")
       ).resolves.toBeNull();
     });
   });
 
-  describe("when the blob is the last blob of the block", () => {
+  describe("when the blob is the last blob of the last transaction of the sender", () => {
     it("should return null for the next blob", async () => {
       await expect(
-        getAdjacentPosition("txHash003", 1, "next")
+        getAdjacentPosition("txHash016", 0, "next")
+      ).resolves.toBeNull();
+    });
+  });
+
+  describe("when the next transaction of the sender is in a reorged block", () => {
+    it("should ignore the reorged transaction", async () => {
+      await expect(
+        getAdjacentPosition("txHash015", 2, "next")
       ).resolves.toBeNull();
     });
   });
