@@ -55,23 +55,23 @@ function getCellSize(width: number) {
   );
 }
 
-// The primary color ramp of the app (`baseColors` in
-// tooling/tailwind/colors.ts), from low values to high values.
+// Violet colors from low values to high values. More activity is darker
+// in light mode and brighter in dark mode.
 const HEAT_COLORS: Record<ThemeMode, string[]> = {
-  light: ["#D4BFFB", "#AE8CF6", "#7F4DE6", "#5D25D4"],
-  dark: ["#4C2BA0", "#7A4BE8", "#A98AF5", "#D9C9FC"],
+  light: ["#DCCCF7", "#B99AEF", "#8D60DC", "#5D25D4"],
+  dark: ["#443565", "#6C4A9E", "#9A71D8", "#C8AEFA"],
 };
 const EMPTY_COLOR: Record<ThemeMode, string> = {
-  light: "#F5F5F5",
-  dark: "#2A2650",
+  light: "#EDECF2",
+  dark: "#2B2B42",
 };
 const CELL_BORDER_COLOR: Record<ThemeMode, string> = {
   light: "#FFFFFF",
   dark: "#1C1A37",
 };
 const HIGHLIGHT_COLOR: Record<ThemeMode, string> = {
-  light: "#EA580C",
-  dark: "#FB923C",
+  light: "#3A176E",
+  dark: "#E6D9FF",
 };
 const LABEL_COLOR: Record<ThemeMode, string> = {
   light: "#737373",
