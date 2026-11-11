@@ -59,6 +59,35 @@ export function createYAxisOptions(
   } as YAxisComponentOption;
 }
 
+export function createEndpointXAxisOptions(
+  metricInfo: Axis,
+  pointCount: number
+) {
+  const options = createXAxisOptions(metricInfo, true);
+
+  return {
+    ...options,
+    axisTick: { show: false },
+    axisLabel: {
+      ...options.axisLabel,
+      interval: Math.max(0, pointCount - 2),
+      showMinLabel: true,
+      showMaxLabel: true,
+    },
+  } as XAxisComponentOption;
+}
+
+/** Returns a zero baseline and one rounded upper limit for a summary chart. */
+export function getEndpointAxisScale(max: number) {
+  const magnitude =
+    max > 0 && Number.isFinite(max) ? 10 ** Math.floor(Math.log10(max)) : 1;
+  const normalized = max / magnitude;
+  const step = [1, 2, 5, 10].find((value) => value >= normalized) ?? 1;
+  const upperLimit = step * magnitude;
+
+  return { min: 0, max: upperLimit, interval: upperLimit };
+}
+
 /**
  * Returns the largest value of the left y-axis: the largest sum of the series
  * of a stack, or the largest value of a series that is not stacked.

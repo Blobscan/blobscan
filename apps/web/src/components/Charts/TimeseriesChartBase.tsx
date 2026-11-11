@@ -47,7 +47,12 @@ type ThemeColor = Record<ThemeMode, string>;
 export type TimeseriesChartProps = Prettify<
   Pick<
     ChartBaseProps,
-    "headerControls" | "compact" | "size" | "skeletonOpts" | "isLoading"
+    | "headerControls"
+    | "compact"
+    | "minimal"
+    | "size"
+    | "skeletonOpts"
+    | "isLoading"
   > & {
     dataset?: TimeseriesDataset | TimeseriesDataset[];
   }
