@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 import { SeoMetaTags } from "~/components/SeoMetaTags";
-import { useHasEthPrice } from "~/hooks/useHasEthPrice";
+import { useIsMainnet } from "~/hooks/useIsMainnet";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import { useUrlState } from "~/hooks/useUrlState";
 import { feeUnitParamsSchema } from "~/schemas/feeUnit";
@@ -87,8 +87,8 @@ export const TimeseriesChartPage = function ({
   isCategorizedTimeseries,
 }: TimeseriesChartPageProps) {
   const { state, isReady } = useUrlState(controlQueryParamsSchema);
-  const hasEthPrice = useHasEthPrice();
-  const usdChart = hasEthPrice === true ? usdChartProp : undefined;
+  const isMainnet = useIsMainnet();
+  const usdChart = isMainnet === true ? usdChartProp : undefined;
   const queryParamsExists = Boolean(
     state?.categories?.length || state?.rollups?.length
   );
@@ -127,7 +127,7 @@ export const TimeseriesChartPage = function ({
     rollups: isCategorizedTimeseries ? rollups : undefined,
   });
 
-  if (!isReady || (usdChartProp && hasEthPrice === undefined)) {
+  if (!isReady || (usdChartProp && isMainnet === undefined)) {
     return null;
   }
 

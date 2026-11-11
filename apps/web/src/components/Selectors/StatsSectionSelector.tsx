@@ -1,4 +1,4 @@
-import { useHasEthPrice } from "~/hooks/useHasEthPrice";
+import { useIsMainnet } from "~/hooks/useIsMainnet";
 import { Listbox } from "../Selects";
 import type { ListboxProps, SelectOption } from "../Selects";
 
@@ -34,9 +34,9 @@ export type StatsSectionSelectorProps = Omit<
 >;
 
 export function StatsSectionSelector(props: StatsSectionSelectorProps) {
-  const hasEthPrice = useHasEthPrice();
+  const isMainnet = useIsMainnet();
   const options = SECTION_OPTIONS.filter(
-    (option) => option.value !== "price" || hasEthPrice === true
+    (option) => option.value !== "price" || isMainnet === true
   ) as [SectionOption, ...SectionOption[]];
 
   return <Listbox {...props} options={options} />;

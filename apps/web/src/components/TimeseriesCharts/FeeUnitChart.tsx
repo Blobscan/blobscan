@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 
-import { useHasEthPrice } from "~/hooks/useHasEthPrice";
+import { useIsMainnet } from "~/hooks/useIsMainnet";
 import type { TimeseriesChartProps } from "../Charts/TimeseriesChartBase";
 import { FeeUnitToggle } from "../Toggles";
 import type { FeeUnit } from "../Toggles";
@@ -27,10 +27,10 @@ export function FeeUnitChart({
   isLoading,
   ...chartProps
 }: FeeUnitChartProps) {
-  const hasEthPrice = useHasEthPrice();
+  const isMainnet = useIsMainnet();
   const [unit, setUnit] = useState<FeeUnit>(defaultUnit);
 
-  if (hasEthPrice !== true) {
+  if (isMainnet !== true) {
     return (
       <EthChart
         {...chartProps}
@@ -45,7 +45,7 @@ export function FeeUnitChart({
   return (
     <Chart
       {...chartProps}
-      isLoading={isLoading || hasEthPrice === undefined}
+      isLoading={isLoading || isMainnet === undefined}
       headerControls={
         <div className="flex items-center gap-3">
           <FeeUnitToggle

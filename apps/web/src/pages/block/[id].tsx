@@ -20,7 +20,7 @@ import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { useChain } from "~/hooks/useChain";
 import { useExternalExplorers } from "~/hooks/useExternalExplorers";
-import { useHasEthPrice } from "~/hooks/useHasEthPrice";
+import { useIsMainnet } from "~/hooks/useIsMainnet";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
 import { hashSchema } from "~/schemas/utils";
@@ -37,7 +37,7 @@ const EXPAND_QUERY_PARAM = "transaction,blob";
 
 const Block: NextPage = function () {
   const router = useRouter();
-  const hasEthPrice = useHasEthPrice();
+  const isMainnet = useIsMainnet();
   const utils = api.useUtils();
   const { buildResourceUrl } = useExternalExplorers("consensus");
   const [adjacentBlockLoading, setAdjacentBlockLoading] = useState(false);
@@ -357,7 +357,7 @@ const Block: NextPage = function () {
       },
     ];
 
-    if (hasEthPrice && blockData.ethUsdPrice) {
+    if (isMainnet && blockData.ethUsdPrice) {
       detailsFields.push({
         name: "ETH Price",
         helpText:

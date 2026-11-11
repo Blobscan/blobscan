@@ -3,16 +3,16 @@ import type { NextPage } from "next";
 import { NotFoundErrorView } from "~/components/ErrorViews/NotFoundErrorView";
 import { TimeseriesChartPage } from "~/components/TimeseriesChartPage";
 import { EthPriceChart } from "~/components/TimeseriesCharts/EthPriceChart";
-import { useHasEthPrice } from "~/hooks/useHasEthPrice";
+import { useIsMainnet } from "~/hooks/useIsMainnet";
 
 const EthPrice: NextPage = function () {
-  const hasEthPrice = useHasEthPrice();
+  const isMainnet = useIsMainnet();
 
-  if (hasEthPrice === undefined) {
+  if (isMainnet === undefined) {
     return null;
   }
 
-  if (!hasEthPrice) {
+  if (!isMainnet) {
     return (
       <NotFoundErrorView
         title="Chart Not Available"

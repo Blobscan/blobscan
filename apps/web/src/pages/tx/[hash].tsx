@@ -19,7 +19,7 @@ import { OptimismCard } from "~/components/OptimismCard";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
-import { useHasEthPrice } from "~/hooks/useHasEthPrice";
+import { useIsMainnet } from "~/hooks/useIsMainnet";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
@@ -34,7 +34,7 @@ import {
 
 const Tx: NextPage = () => {
   const router = useRouter();
-  const hasEthPrice = useHasEthPrice();
+  const isMainnet = useIsMainnet();
   const utils = api.useUtils();
   const hash = (router?.query.hash as string | undefined) ?? "";
   const {
@@ -296,7 +296,7 @@ const Tx: NextPage = () => {
       }
     );
 
-    if (hasEthPrice && ethUsdPrice) {
+    if (isMainnet && ethUsdPrice) {
       detailsFields.push({
         name: "ETH Price",
         value: <FiatDisplay amount={ethUsdPrice} />,
