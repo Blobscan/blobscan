@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 
 import { SeoMetaTags } from "~/components/SeoMetaTags";
-import { useIsMainnet } from "~/hooks/useIsMainnet";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import { useUrlState } from "~/hooks/useUrlState";
 import { feeUnitParamsSchema } from "~/schemas/feeUnit";
@@ -28,7 +27,6 @@ export type TimeseriesChartPageProps = {
   chart: TimeseriesChartComponent;
   /**
    * The same chart in USD. With it, the control bar shows a USD/Ether selector.
-   * Networks with no ETH price (e.g. testnets) do not use it.
    */
   usdChart?: TimeseriesChartComponent;
   /**
@@ -81,14 +79,12 @@ const controlQueryParamsSchema = categoriesParamSchema
 
 export const TimeseriesChartPage = function ({
   chart: ethChart,
-  usdChart: usdChartProp,
+  usdChart,
   title,
   description,
   isCategorizedTimeseries,
 }: TimeseriesChartPageProps) {
   const { state, isReady } = useUrlState(controlQueryParamsSchema);
-  const isMainnet = useIsMainnet();
-  const usdChart = isMainnet === true ? usdChartProp : undefined;
   const queryParamsExists = Boolean(
     state?.categories?.length || state?.rollups?.length
   );
@@ -127,7 +123,7 @@ export const TimeseriesChartPage = function ({
     rollups: isCategorizedTimeseries ? rollups : undefined,
   });
 
-  if (!isReady || (usdChartProp && isMainnet === undefined)) {
+  if (!isReady) {
     return null;
   }
 

@@ -468,7 +468,7 @@ const Stats: NextPage = function () {
           <FeeUnitChart
             key="total-blob-base-fees"
             ethChart={TotalBlobBaseFeesChart}
-            usdChart={TotalBlobBaseFeesUsdChart}
+            usdChart={isMainnet ? TotalBlobBaseFeesUsdChart : undefined}
             defaultUnit="usd"
             dataset={selectedCategorizedChartDatasets}
             headerControls={(unit) =>
@@ -481,7 +481,7 @@ const Stats: NextPage = function () {
           <FeeUnitChart
             key="avg-blob-base-fee"
             ethChart={AvgBlobBaseFeeChart}
-            usdChart={AvgBlobBaseFeeUsdChart}
+            usdChart={isMainnet ? AvgBlobBaseFeeUsdChart : undefined}
             defaultUnit="usd"
             dataset={globalChartDatasets}
             headerControls={(unit) => buildViewLink("avg-blob-base-fee", unit)}
@@ -644,6 +644,9 @@ const Stats: NextPage = function () {
           <div className="flex w-full flex-wrap items-center justify-start gap-4">
             <div className="w-36">
               <StatsSectionSelector
+                options={SECTION_OPTIONS.filter(
+                  (option) => option.value !== "price" || isMainnet === true
+                )}
                 selected={selectedSection}
                 onChange={handleSectionChange}
               />

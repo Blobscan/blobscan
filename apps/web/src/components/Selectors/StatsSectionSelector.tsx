@@ -1,4 +1,3 @@
-import { useIsMainnet } from "~/hooks/useIsMainnet";
 import { Listbox } from "../Selects";
 import type { ListboxProps, SelectOption } from "../Selects";
 
@@ -30,14 +29,9 @@ export const DEFAULT_SECTION = SECTION_OPTIONS[0];
 
 export type StatsSectionSelectorProps = Omit<
   ListboxProps<SectionName, false, false>,
-  "options" | "multiple" | "nullable" | "placeholder"
+  "multiple" | "nullable" | "placeholder"
 >;
 
 export function StatsSectionSelector(props: StatsSectionSelectorProps) {
-  const isMainnet = useIsMainnet();
-  const options = SECTION_OPTIONS.filter(
-    (option) => option.value !== "price" || isMainnet === true
-  ) as [SectionOption, ...SectionOption[]];
-
-  return <Listbox {...props} options={options} />;
+  return <Listbox {...props} />;
 }

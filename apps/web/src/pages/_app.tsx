@@ -14,6 +14,7 @@ import AppLayout from "~/components/AppLayout/AppLayout";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { FeedbackWidget } from "~/components/FeedbackWidget/FeedbackWidget";
 import { api } from "~/api-client";
+import { useIsMainnet } from "~/hooks/useIsMainnet";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { AppStateProvider } from "~/providers/AppState";
 import { BlobDecoderWorkerProvider } from "~/providers/BlobDecoderWorker";
@@ -29,6 +30,7 @@ declare global {
 function App({ Component, pageProps }: NextAppProps) {
   const { resolvedTheme } = useTheme();
   const isMounted = useIsMounted();
+  const isMainnet = useIsMainnet();
   const router = useRouter();
   const { env } = useEnv();
 
@@ -60,7 +62,9 @@ function App({ Component, pageProps }: NextAppProps) {
       highlightColor={resolvedTheme === "dark" ? "#7D80AB" : "#E2CFFF"}
     >
       <AppLayout>
-        <Component {...pageProps} />
+        {(router.pathname !== "/stat/eth-price" || isMainnet === true) && (
+          <Component {...pageProps} />
+        )}
       </AppLayout>
       <FeedbackWidget />
     </SkeletonTheme>
