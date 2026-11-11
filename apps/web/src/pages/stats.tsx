@@ -44,7 +44,7 @@ import type { FeeUnit } from "~/components/Toggles";
 import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
-import { useIsTestnet } from "~/hooks/useIsTestnet";
+import { useIsMainnet } from "~/hooks/useIsMainnet";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import { useUrlState } from "~/hooks/useUrlState";
 import ErrorPage from "~/pages/_error";
@@ -80,7 +80,7 @@ const controlQueryParamsSchema = statsSectionSchema
 
 const Stats: NextPage = function () {
   const chain = useChain();
-  const isTestnet = useIsTestnet();
+  const isMainnet = useIsMainnet();
   const { state, updateState } = useUrlState(controlQueryParamsSchema);
   const { categories, rollups } =
     state?.categories?.length && state?.rollups?.length
@@ -104,7 +104,7 @@ const Stats: NextPage = function () {
       "totalBlobUsageSize",
       "totalBlobGasUsed",
       "totalBlobBaseFee",
-      "totalBlobBaseFeeUsd",
+      ...(isMainnet ? (["totalBlobBaseFeeUsd"] as const) : []),
       "totalTransactions",
       "totalUniqueReceivers",
       "totalUniqueSenders",
@@ -124,18 +124,18 @@ const Stats: NextPage = function () {
       "avgBlobGasPrice",
       "minBlobGasPrice",
       "avgBlobBaseFee",
-      "totalUsdPricedTransactions",
+      ...(isMainnet ? (["totalUsdPricedTransactions"] as const) : []),
       "avgBlobMaxFee",
-      "totalBlobBaseFeeUsd",
+      ...(isMainnet ? (["totalBlobBaseFeeUsd"] as const) : []),
       "totalTransactions",
       "totalBlocks",
       "totalUniqueReceivers",
       "totalUniqueSenders",
       "totalBlobAsCalldataGasUsed",
       "totalBlobGasUsed",
-      "maxEthPrice",
-      "avgEthPrice",
-      "minEthPrice",
+      ...(isMainnet
+        ? (["maxEthPrice", "avgEthPrice", "minEthPrice"] as const)
+        : []),
     ],
     timeFrame: "15d",
   });
@@ -419,18 +419,18 @@ const Stats: NextPage = function () {
             description:
               "The total blob base fees. These fees exclude execution gas fees.",
             metric: {
-              // On networks with no ETH price (e.g. testnets), USD amounts
-              // mean nothing, so the card shows the amount in ETH.
+              // Use native fees when the network has no ETH price.
               primary:
-                isTestnet === false
+                isMainnet === true
                   ? {
                       value: aggregatedMetrics?.totalBlobBaseFeeUsd,
                       type: "fiat",
                     }
                   : {
-                      value: isTestnet
-                        ? aggregatedMetrics?.totalBlobBaseFee
-                        : undefined,
+                      value:
+                        isMainnet === false
+                          ? aggregatedMetrics?.totalBlobBaseFee
+                          : undefined,
                       type: "ethereum",
                     },
             },
@@ -441,7 +441,7 @@ const Stats: NextPage = function () {
               "The estimated cost to send blob data as calldata, minus the blob base fees.",
             metric: {
               primary:
-                isTestnet === false
+                isMainnet === true
                   ? {
                       value:
                         aggregatedMetrics?.totalBlobAsCalldataFeeUsd !==
@@ -454,7 +454,7 @@ const Stats: NextPage = function () {
                     }
                   : {
                       value:
-                        isTestnet &&
+                        isMainnet === false &&
                         aggregatedMetrics?.totalBlobAsCalldataFee !==
                           undefined &&
                         aggregatedMetrics.totalBlobBaseFee !== undefined
@@ -493,7 +493,7 @@ const Stats: NextPage = function () {
           <FeeUnitChart
             key="total-blob-base-fees"
             ethChart={TotalBlobBaseFeesChart}
-            usdChart={TotalBlobBaseFeesUsdChart}
+            usdChart={isMainnet ? TotalBlobBaseFeesUsdChart : undefined}
             defaultUnit="usd"
             dataset={selectedCategorizedChartDatasets}
             headerControls={(unit) =>
@@ -506,7 +506,7 @@ const Stats: NextPage = function () {
           <FeeUnitChart
             key="avg-blob-base-fee"
             ethChart={AvgBlobBaseFeeChart}
-            usdChart={AvgBlobBaseFeeUsdChart}
+            usdChart={isMainnet ? AvgBlobBaseFeeUsdChart : undefined}
             defaultUnit="usd"
             dataset={globalChartDatasets}
             headerControls={(unit) => buildViewLink("avg-blob-base-fee", unit)}
@@ -619,7 +619,7 @@ const Stats: NextPage = function () {
     [
       aggregatedMetrics,
       blobSize,
-      isTestnet,
+      isMainnet,
       selectedCategorizedChartDatasets,
       globalChartDatasets,
       categorizedDatasetsLoading,
@@ -630,11 +630,17 @@ const Stats: NextPage = function () {
   const error =
     categorizedChartsError || globalChartsError || overallStatsError;
 
-  const currentSectionOption = selectedSection?.value ?? "all";
+  const currentSectionOption =
+    selectedSection.value === "price" && !isMainnet
+      ? "all"
+      : selectedSection.value;
+  const availableSections = sections.filter(
+    (section) => section.id !== "price" || isMainnet === true
+  );
   const displayedSections =
     currentSectionOption === "all"
-      ? sections
-      : sections.filter((s) => s.id === currentSectionOption);
+      ? availableSections
+      : availableSections.filter((s) => s.id === currentSectionOption);
 
   const handleSectionChange = useCallback(
     (option: SectionOption) => {
@@ -647,9 +653,13 @@ const Stats: NextPage = function () {
 
   useEffect(() => {
     setSelectedSection(
-      SECTION_OPTIONS.find((s) => s.value === state?.section) ?? DEFAULT_SECTION
+      SECTION_OPTIONS.find(
+        (s) =>
+          s.value === state?.section &&
+          (s.value !== "price" || isMainnet === true)
+      ) ?? DEFAULT_SECTION
     );
-  }, [state?.section]);
+  }, [state?.section, isMainnet]);
 
   if (error) {
     return <ErrorPage error={error} />;
@@ -667,6 +677,9 @@ const Stats: NextPage = function () {
           <div className="flex w-full flex-wrap items-center justify-start gap-4">
             <div className="w-36">
               <StatsSectionSelector
+                options={SECTION_OPTIONS.filter(
+                  (option) => option.value !== "price" || isMainnet === true
+                )}
                 selected={selectedSection}
                 onChange={handleSectionChange}
               />

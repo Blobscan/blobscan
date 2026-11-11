@@ -29,9 +29,9 @@ export const DEFAULT_SECTION = SECTION_OPTIONS[0];
 
 export type StatsSectionSelectorProps = Omit<
   ListboxProps<SectionName, false, false>,
-  "options" | "multiple" | "nullable" | "placeholder"
+  "multiple" | "nullable" | "placeholder"
 >;
 
 export function StatsSectionSelector(props: StatsSectionSelectorProps) {
-  return <Listbox {...props} options={SECTION_OPTIONS} />;
+  return <Listbox {...props} />;
 }
