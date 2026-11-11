@@ -5,7 +5,7 @@ import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
 import type { Rollup } from "~/types";
 import { Icon } from "../Icon";
 import type { BadgeProps } from "./Badge";
-import { Badge } from "./Badge";
+import { BrandBadge, getBrandColorStyle } from "./BrandBadge";
 
 type RollupBadgeProps = BadgeProps & {
   amount?: number;
@@ -20,14 +20,17 @@ export const RollupBadge: React.FC<RollupBadgeProps> = ({
   ...props
 }) => {
   const {
-    badgeClassname,
+    color,
     iconClassname,
     name,
     iconSrc = `${rollup}.svg`,
   } = ROLLUP_DEFINITIONS[rollup];
 
   const rollupIcon = (
-    <div className="relative">
+    <div
+      className="relative text-[var(--brand-color-light)] dark:text-[var(--brand-color-dark)]"
+      style={getBrandColorStyle(color)}
+    >
       <Icon
         src={
           iconSrc.startsWith("/")
@@ -58,8 +61,8 @@ export const RollupBadge: React.FC<RollupBadgeProps> = ({
   );
 
   return (
-    <Badge className={badgeClassname} {...props}>
+    <BrandBadge brandColor={color} {...props}>
       {content}
-    </Badge>
+    </BrandBadge>
   );
 };

@@ -216,7 +216,7 @@ export const ActivityTab: FC<AnalyticsSectionProps> = function ({
       <Card>
         <CalendarHeatmap
           title="Daily Blob Txs"
-          description="Blob transactions in each UTC day of the last 365 days, sent or received. A darker cell has more transactions, and an outline marks the longest streak. Drag the handles of the color bar to show only some values."
+          description="Blob transactions in each UTC day of the last 365 days, sent or received. More transactions make a cell darker in light mode and brighter in dark mode. An outline marks the longest streak. Drag the handles of the color bar to show only some values."
           data={activityDays}
           range={heatmapRange}
           highlightLabel="Longest streak"

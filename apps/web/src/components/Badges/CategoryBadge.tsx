@@ -6,26 +6,20 @@ import {
 import cn from "classnames";
 
 import { CATEGORY_OPTIONS } from "~/components/Selectors/CategorySelector";
+import { CATEGORY_COLORS } from "~/defintions/categories";
 import type { Category, Rollup } from "~/types";
 import type { RenderableIcon } from "~/types/icons";
 import { Icon } from "../Icon";
 import type { BadgeProps } from "./Badge";
-import { Badge } from "./Badge";
+import { BrandBadge } from "./BrandBadge";
 import { RollupBadge } from "./RollupBadge";
 
-const CATEGORY_STYLES: Record<
-  Category,
-  { icon: RenderableIcon; className: string }
-> = {
+const CATEGORY_STYLES: Record<Category, { icon: RenderableIcon }> = {
   rollup: {
     icon: Square3Stack3DIcon,
-    className:
-      "bg-primary-200 text-primary-800 dark:bg-primary-800 dark:text-primary-200",
   },
   other: {
     icon: QuestionMarkCircleIcon,
-    className:
-      "bg-neutral-200 text-neutral-700 dark:bg-neutral-700 dark:text-neutral-200",
   },
 };
 
@@ -44,25 +38,22 @@ export const CategoryBadge: FC<CategoryBadgeProps> = function ({
   className: extraClassName,
   ...props
 }) {
-  const { icon, className } = CATEGORY_STYLES[category];
+  const { icon } = CATEGORY_STYLES[category];
   const label =
     CATEGORY_OPTIONS.find(({ value }) => value === category)?.label ?? category;
   const subRollup = category === "rollup" ? rollup : undefined;
 
   return (
-    <Badge
+    <BrandBadge
+      brandColor={CATEGORY_COLORS[category]}
       // With a rollup badge inside, the padding at the end is the same as
       // the space around the rollup badge.
-      className={cn(
-        className,
-        { "gap-2 py-1 pr-1": subRollup },
-        extraClassName
-      )}
+      className={cn({ "gap-2 py-1 pr-1": subRollup }, extraClassName)}
       {...props}
     >
       <Icon src={icon} size="sm" />
       {label}
       {subRollup && <RollupBadge rollup={subRollup} size={props.size} />}
-    </Badge>
+    </BrandBadge>
   );
 };
