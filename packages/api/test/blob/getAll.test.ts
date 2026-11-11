@@ -25,10 +25,13 @@ describe("getAll", () => {
   });
 
   runPaginationTestsSuite("blob", (paginationInput) =>
-    blobCaller.getAll(paginationInput).then(({ blobs, totalBlobs }) => ({
-      items: blobs,
-      totalItems: totalBlobs,
-    }))
+    blobCaller
+      .getAll(paginationInput)
+      .then(({ blobs, totalBlobs, pagination }) => ({
+        items: blobs,
+        pagination,
+        totalItems: totalBlobs,
+      }))
   );
 
   runFiltersTestsSuite("blob", (baseGetAllInput) =>

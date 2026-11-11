@@ -1,6 +1,7 @@
 import type { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
+import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import {
   createExpandsSchema,
   withExpands,
@@ -13,7 +14,7 @@ import {
   withPaginationSchema,
   withPagination,
 } from "../../middlewares/withPagination";
-import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
+import { paginate, paginationResponseSchema } from "../../pagination";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import { countBlocks } from "./getCount";
@@ -26,6 +27,7 @@ import {
 
 const outputSchema = z
   .object({
+    pagination: paginationResponseSchema,
     blocks: responseBlockSchema.array(),
     totalBlocks: z.number().optional(),
   })
@@ -56,37 +58,51 @@ export const getAll = publicProcedure
       sort,
     } = filters;
 
-    // `slot` and `number` are monotonically correlated, so when the request
-    // filters by a slot range we order by `slot` to let Postgres satisfy both
-    // the range predicate and the ordering from the `slot` index alone. Ordering
-    // by `number` here forces a full scan of the `number` index, discarding
-    // millions of out-of-range rows (see EXPLAIN: ~9s vs ~5ms). The resulting
-    // order is identical because both columns increase together.
-    const orderBy: Prisma.BlockOrderByWithRelationInput = blockFilters.slot
-      ? { slot: sort }
-      : { number: sort };
+    const baseWhere: Prisma.BlockWhereInput = {
+      ...blockFilters,
+      transactionForks: blockType,
+      transactions: transactionFilters
+        ? { some: transactionFilters }
+        : undefined,
+    };
 
-    const blocksOp = prisma.block.findMany({
-      select: createBlockSelect(expands, filters),
-      where: {
-        ...blockFilters,
-        transactionForks: blockType,
-        transactions: transactionFilters
-          ? {
-              some: transactionFilters,
-            }
-          : undefined,
-      },
-      orderBy,
+    const blocksOp = paginate({
+      resource: "block",
+      filters,
+      sort,
       ...pagination,
+      fields: blockFilters.slot
+        ? [{ name: "slot", type: "number" }]
+        : [
+            { name: "number", type: "number" },
+            { name: "slot", type: "number" },
+          ],
+      fetchPage: ({ where, orderBy, take }) =>
+        prisma.block.findMany({
+          select: createBlockSelect(expands, filters),
+          where: {
+            AND: [baseWhere, where as Prisma.BlockWhereInput],
+          },
+          orderBy: orderBy as Prisma.BlockOrderByWithRelationInput[],
+          take,
+        }),
+      hasPage: (where) =>
+        prisma.block
+          .findFirst({
+            where: { AND: [baseWhere, where as Prisma.BlockWhereInput] },
+            select: { hash: true },
+          })
+          .then(Boolean),
     });
     const countOp = count
       ? countBlocks(prisma, filters)
       : Promise.resolve(undefined);
 
-    const [prismaBlocks, totalBlocks] = await Promise.all([blocksOp, countOp]);
+    const [{ items: prismaBlocks, pagination: pageInfo }, totalBlocks] =
+      await Promise.all([blocksOp, countOp]);
 
     return {
+      pagination: pageInfo,
       blocks: prismaBlocks.map((prismaBlock) =>
         toResponseBlock(prismaBlock as unknown as CompletedPrismaBlock)
       ),

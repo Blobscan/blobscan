@@ -6,7 +6,7 @@ import { api } from "~/api-client";
 import { useUrlState } from "~/hooks/useUrlState";
 import ErrorPage from "~/pages/_error";
 import { paginationParamsSchema } from "~/schemas/pagination";
-import type { TransactionWithExpandedBlockAndBlob } from "~/types";
+import type { Pagination, TransactionWithExpandedBlockAndBlob } from "~/types";
 import { formatNumber } from "~/utils";
 
 function getAddressRole(
@@ -26,7 +26,7 @@ function getAddressRole(
 export type AddressTransactionsTabProps = {
   /** The address in lower case. */
   address: string;
-  /** The number of blob txs of all the time, for the title and the pages. */
+  /** The all-time number of blob transactions for the title. */
   totalTransactions?: number;
   enabled: boolean;
 };
@@ -34,13 +34,19 @@ export type AddressTransactionsTabProps = {
 /** The paginated list of the blob transactions of the address. */
 export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
   function ({ address, totalTransactions, enabled }) {
-    const { state: urlState } = useUrlState(paginationParamsSchema);
+    const { state: urlState, isReady } = useUrlState(paginationParamsSchema);
     const { data, isLoading, error } = api.tx.getAll.useQuery<{
       transactions: TransactionWithExpandedBlockAndBlob[];
+      pagination: Pagination;
     }>(
-      { p: urlState?.p, ps: urlState?.ps, address, expand: "block,blob" },
       {
-        enabled,
+        cursor: urlState?.cursor,
+        ps: urlState?.ps,
+        address,
+        expand: "block,blob",
+      },
+      {
+        enabled: enabled && isReady,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
         retry: false,
@@ -51,12 +57,16 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
       return (
         <ErrorPage
           error={error}
-          overrides={{
-            BAD_REQUEST: {
-              title: "Invalid Address",
-              description: "Please provide a valid Ethereum address.",
-            },
-          }}
+          overrides={
+            urlState?.cursor
+              ? undefined
+              : {
+                  BAD_REQUEST: {
+                    title: "Invalid Address",
+                    description: "Please provide a valid Ethereum address.",
+                  },
+                }
+          }
         />
       );
     }
@@ -79,8 +89,7 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
             />
           );
         })}
-        totalItems={totalTransactions}
-        page={urlState?.p}
+        pagination={data?.pagination}
         pageSize={urlState?.ps}
         itemSkeleton={<BlobTransactionCard />}
       />

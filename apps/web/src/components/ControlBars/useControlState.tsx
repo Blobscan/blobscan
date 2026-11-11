@@ -9,6 +9,7 @@ import {
   granularityParamSchema,
   timeFrameParamSchema,
 } from "~/schemas/filters";
+import { paginationParamsSchema } from "~/schemas/pagination";
 import type { Sort } from "~/schemas/sort";
 import { sortParamsSchema } from "~/schemas/sort";
 import type { Range } from "../RangeRadioGroup";
@@ -51,7 +52,8 @@ type Action =
 export const controlParamsSchema = filterParamsSchema
   .merge(sortParamsSchema)
   .merge(timeFrameParamSchema)
-  .merge(granularityParamSchema);
+  .merge(granularityParamSchema)
+  .merge(paginationParamsSchema.pick({ cursor: true }));
 
 type ControlParams = z.infer<typeof controlParamsSchema>;
 
@@ -179,6 +181,7 @@ export function useControlState(extraParams?: ExtraParams) {
       // Set the empty filters to undefined. If the key is not set,
       // updateState keeps the previous value from the URL.
       const newUrlState: ControlParams = {
+        cursor: undefined,
         sort,
         categories: categories ? [categories.value] : undefined,
         rollups: rollups?.length ? rollups.map((r) => r.value) : undefined,

@@ -1,7 +1,7 @@
 import { z } from "@blobscan/zod";
 
 export const paginationParamsSchema = z.object({
-  p: z.coerce.number().optional(),
+  cursor: z.string().optional(),
   ps: z.coerce.number().optional(),
 });
 

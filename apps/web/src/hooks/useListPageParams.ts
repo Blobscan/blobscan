@@ -6,7 +6,7 @@ import { useUrlState } from "./useUrlState";
 export function useListPageParams() {
   const { state: urlState, isReady } = useUrlState(listPageParamsSchema);
 
-  const { p, ps, sort, ...filterState } = urlState || {};
+  const { cursor, ps, sort, ...filterState } = urlState || {};
 
   const filterParams: Omit<FiltersParam, "categories" | "rollups"> & {
     categories?: string;
@@ -21,7 +21,7 @@ export function useListPageParams() {
       : undefined,
   };
 
-  const pagination = { p, ps };
+  const pagination = { cursor, ps };
 
   return {
     filterParams,

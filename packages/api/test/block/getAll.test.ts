@@ -27,10 +27,13 @@ describe("getAll", () => {
   });
 
   runPaginationTestsSuite("block", (paginationInput) =>
-    blockCaller.getAll(paginationInput).then(({ blocks, totalBlocks }) => ({
-      items: blocks,
-      totalItems: totalBlocks,
-    }))
+    blockCaller
+      .getAll(paginationInput)
+      .then(({ blocks, totalBlocks, pagination }) => ({
+        items: blocks,
+        pagination,
+        totalItems: totalBlocks,
+      }))
   );
 
   runFiltersTestsSuite("block", (filterInput) =>

@@ -30,8 +30,9 @@ describe("getAll", () => {
   runPaginationTestsSuite("transaction", (paginationInput) =>
     txCaller
       .getAll(paginationInput)
-      .then(({ transactions, totalTransactions }) => ({
+      .then(({ transactions, totalTransactions, pagination }) => ({
         items: transactions,
+        pagination,
         totalItems: totalTransactions,
       }))
   );

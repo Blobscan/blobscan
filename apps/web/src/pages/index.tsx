@@ -22,7 +22,7 @@ import { toAggregatedMetrics } from "~/hooks/useAggregateOverallStats";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
-import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
+import type { BlockWithExpandedBlobsAndTransactions, Pagination } from "~/types";
 
 const LATEST_ITEMS_LENGTH = 5;
 
@@ -44,8 +44,8 @@ const Home: NextPage = () => {
     isLoading: latestBlocksLoading,
   } = api.block.getAll.useQuery<{
     blocks: BlockWithExpandedBlobsAndTransactions[];
+    pagination: Pagination;
   }>({
-    p: 1,
     ps: LATEST_ITEMS_LENGTH,
     expand: "transaction,blob",
   });

@@ -6,7 +6,6 @@ import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
-import { ContentReveal } from "~/components/ContentReveal";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
@@ -14,7 +13,6 @@ import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
-import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
 import type { TimestampFormat } from "~/components/Toggles";
 import { TimestampToggle } from "~/components/Toggles";
@@ -22,11 +20,10 @@ import { api } from "~/api-client";
 import { useListPageParams } from "~/hooks/useListPageParams";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
-import type { TransactionWithExpandedBlockAndBlob } from "~/types";
+import type { Pagination, TransactionWithExpandedBlockAndBlob } from "~/types";
 import type { ByteUnit } from "~/utils";
 import {
   formatBytes,
-  formatNumber,
   formatTimestamp,
   shortenHash,
   calculatePercentage,
@@ -36,7 +33,7 @@ import {
 const BYTES_UNIT: ByteUnit = "KiB";
 
 const Txs: NextPage = function () {
-  const { pagination, filterParams, sort } = useListPageParams();
+  const { pagination, filterParams, sort, isReady } = useListPageParams();
   const {
     data: txsData,
     isLoading: txsIsLoading,
@@ -44,22 +41,18 @@ const Txs: NextPage = function () {
   } = api.tx.getAll.useQuery<{
     transactions: TransactionWithExpandedBlockAndBlob[];
     totalTransactions?: number;
-  }>({
-    ...pagination,
-    ...filterParams,
-    sort,
-    expand: "block,blob",
-  });
-  const {
-    data: countData,
-    error: countError,
-    isLoading: countIsLoading,
-  } = api.tx.getCount.useQuery(filterParams, {
-    refetchOnWindowFocus: false,
-  });
+    pagination: Pagination;
+  }>(
+    {
+      ...pagination,
+      ...filterParams,
+      sort,
+      expand: "block,blob",
+    },
+    { enabled: isReady }
+  );
   const { transactions } = txsData || {};
-  const { totalTransactions } = countData || {};
-  const error = txsError ?? countError;
+  const error = txsError;
   const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
   const transactionHeaders = [
     {
@@ -352,31 +345,14 @@ const Txs: NextPage = function () {
         title="Blob Transactions"
         description="Browse and explore all blob transactions."
       />
-      <Header>
-        <div className="flex items-center gap-2">
-          <div>Blob Transactions</div>
-          <div>
-            <ContentReveal
-              isLoading={countIsLoading || totalTransactions === undefined}
-            >
-              {!countIsLoading && totalTransactions !== undefined ? (
-                `(${formatNumber(totalTransactions)})`
-              ) : (
-                <div className="relative left-0 top-1">
-                  <Skeleton width={100} height={25} />
-                </div>
-              )}
-            </ContentReveal>
-          </div>
-        </div>
-      </Header>
+      <Header>Blob Transactions</Header>
       <ListControlBar />
       <PaginatedTable
         emptyStateDescription="No Blob Transactions"
         isLoading={txsIsLoading}
         headers={transactionHeaders}
         rows={transactionRows}
-        totalItems={totalTransactions}
+        pagination={txsData?.pagination}
         paginationData={pagination}
         isExpandable
       />
