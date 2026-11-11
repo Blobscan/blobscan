@@ -72,8 +72,6 @@ export const getAll = publicProcedure
       };
 
       const prismaTxsOp = paginate({
-        resource: "transaction",
-        filters,
         sort,
         ...pagination,
         fields: [

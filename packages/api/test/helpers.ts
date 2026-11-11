@@ -235,17 +235,17 @@ export function runPaginationTestsSuite(
       }
     );
 
-    it("should reject a cursor for different filters or order", async () => {
+    it("should accept a cursor with different filters or order", async () => {
       const first = await fetcher({ ps: 1 });
       expect(first.pagination.nextCursor).not.toBeNull();
       for (const changed of [
         { sort: "asc" as const },
         { from: "address1" },
-        { startBlock: 1001 },
+        { address: "address2" },
       ]) {
         await expect(
           fetcher({ ...changed, ps: 1, cursor: first.pagination.nextCursor! })
-        ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+        ).resolves.toHaveProperty("pagination");
       }
     });
 

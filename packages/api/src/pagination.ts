@@ -1,5 +1,4 @@
 import { TRPCError } from "@trpc/server";
-import { createHash } from "node:crypto";
 
 import { z } from "@blobscan/zod";
 
@@ -15,7 +14,6 @@ type Position = (string | number | null)[];
 const cursorSchema = z
   .object({
     version: z.literal(1),
-    query: z.string().length(64),
     direction: z.enum(["next", "previous"]),
     inclusive: z.boolean().default(false),
     position: z.array(
@@ -36,24 +34,8 @@ export type PageQuery = {
   take: number;
 };
 
-function canonicalize(value: unknown): unknown {
-  if (value instanceof Date) return value.toISOString();
-  if (Array.isArray(value)) return value.map(canonicalize);
-  if (value !== null && typeof value === "object") {
-    return Object.fromEntries(
-      Object.entries(value)
-        .filter(([, entry]) => entry !== undefined)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .map(([key, entry]) => [key, canonicalize(entry)])
-    );
-  }
-  return value;
-}
-
 /** Compare all sort fields so a removed record does not invalidate its position. */
 export async function paginate<T extends object>({
-  resource,
-  filters,
   sort = "desc",
   fields,
   cursor,
@@ -61,8 +43,6 @@ export async function paginate<T extends object>({
   fetchPage,
   hasPage,
 }: {
-  resource: "block" | "transaction" | "blob";
-  filters: unknown;
   sort?: Sort;
   fields: readonly CursorField<T>[];
   cursor?: string;
@@ -73,10 +53,6 @@ export async function paginate<T extends object>({
   items: T[];
   pagination: z.infer<typeof paginationResponseSchema>;
 }> {
-  const query = createHash("sha256")
-    .update(JSON.stringify(canonicalize({ resource, filters, sort, fields })))
-    .digest("hex");
-
   let anchor: Position | undefined;
   let direction: Direction = "next";
   let inclusive = false;
@@ -88,8 +64,7 @@ export async function paginate<T extends object>({
       const decoded = cursorSchema.parse(
         JSON.parse(Buffer.from(cursor, "base64url").toString("utf8"))
       );
-      if (decoded.query !== query || decoded.position.length !== fields.length)
-        throw new Error();
+      if (decoded.position.length !== fields.length) throw new Error();
       fields.forEach((field, i) => {
         const value = decoded.position[i];
         if (value === null && field.nullable) return;
@@ -113,8 +88,7 @@ export async function paginate<T extends object>({
     } catch {
       throw new TRPCError({
         code: "BAD_REQUEST",
-        message:
-          "Invalid cursor. Use a cursor from the same resource, filters, and sort order.",
+        message: "Invalid cursor.",
       });
     }
   }
@@ -189,7 +163,6 @@ export async function paginate<T extends object>({
     return Buffer.from(
       JSON.stringify({
         version: 1,
-        query,
         direction: pageDirection,
         position,
         inclusive: includeAnchor,

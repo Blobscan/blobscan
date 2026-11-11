@@ -10,7 +10,7 @@ Return a `pagination` object with `nextCursor` and `previousCursor`. Each token 
 
 Keep the default page size at 50. Accept only integer values from 1 to 100 for `ps`. Reject values outside this range.
 
-Reject a cursor if its resource, filters, or sort order do not match the request. Clear the cursor in the web interface when filters, sort order, or page size change.
+Do not include a query hash in the cursor. Clients must start with the first page when the resource, filters, or sort order change. The web interface clears the cursor when filters, sort order, or page size change. The server still checks the token structure and position values.
 
 Store `cursor` and `ps` in the web page URL. Support reloads, shared links, and browser Back and Forward through this URL state.
 

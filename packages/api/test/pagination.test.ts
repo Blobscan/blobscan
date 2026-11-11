@@ -24,7 +24,20 @@ describe("cursor pagination", () => {
     caller = router.createCaller(ctx);
   });
 
-  it("rejects a cursor from a different resource", async () => {
+  it("encodes only the cursor position and navigation state", async () => {
+    const { pagination } = await caller.tx.getAll({ ps: 1 });
+    const token = JSON.parse(
+      Buffer.from(pagination.nextCursor!, "base64url").toString()
+    );
+    expect(token).toEqual({
+      version: 1,
+      direction: "next",
+      position: expect.any(Array),
+      inclusive: false,
+    });
+  });
+
+  it("rejects a cursor with incompatible sort fields", async () => {
     const { pagination } = await caller.block.getAll({ ps: 1 });
     await expect(
       caller.tx.getAll({ cursor: pagination.nextCursor! })

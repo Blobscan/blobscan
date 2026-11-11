@@ -72,8 +72,6 @@ export const getAll = publicProcedure
       };
 
       const blobsOnTransactinonsOp = paginate({
-        resource: "blob",
-        filters,
         sort,
         ...pagination,
         fields: [

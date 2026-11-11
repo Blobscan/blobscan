@@ -67,8 +67,6 @@ export const getAll = publicProcedure
     };
 
     const blocksOp = paginate({
-      resource: "block",
-      filters,
       sort,
       ...pagination,
       fields: blockFilters.slot

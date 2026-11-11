@@ -38,7 +38,7 @@ The response includes the resource list and a `pagination` object:
 
 When a next or previous page exists, its cursor is a string. Pass that string unchanged as the `cursor` parameter to get that page. Both directions use the same parameter. A `null` cursor means that no page exists in that direction. To return to the first page, omit `cursor` again.
 
-Keep the resource, filters, and sort order the same when you use a cursor. If you change them, start with the first page. The server rejects invalid cursors and cursors for different query settings. The cursor format is internal to the server; clients must not decode or construct tokens.
+Keep the resource, filters, and sort order the same when you use a cursor. If you change them, start with the first page. The server checks the cursor structure and position values. It does not check whether the query settings have changed. The cursor format is internal to the server; clients must not decode or construct tokens.
 
 The `ps` parameter sets the page size. Its default is 50. It must be an integer from 1 to 100. The `p` parameter is no longer supported; requests that include it return an error.
 
