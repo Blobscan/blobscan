@@ -5,7 +5,6 @@ import dayjs from "@blobscan/dayjs";
 import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
-import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { ContentReveal } from "~/components/ContentReveal";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
@@ -15,9 +14,9 @@ import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Skeleton } from "~/components/Skeleton";
-import { Table } from "~/components/Table";
 import type { TimestampFormat } from "~/components/Toggles";
 import { TimestampToggle } from "~/components/Toggles";
+import { TransactionBlobsTable } from "~/components/TransactionBlobsTable";
 import { api } from "~/api-client";
 import { useListPageParams } from "~/hooks/useListPageParams";
 import ErrorPage from "~/pages/_error";
@@ -25,11 +24,9 @@ import { routes } from "~/routes";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import type { ByteUnit } from "~/utils";
 import {
-  formatBytes,
   formatNumber,
   formatTimestamp,
   shortenHash,
-  calculatePercentage,
   toChecksumAddress,
 } from "~/utils";
 
@@ -228,114 +225,7 @@ const Txs: NextPage = function () {
                   ),
                 },
               ],
-              expandItem: (
-                <Table
-                  className="mb-4 mt-2 rounded-lg bg-primary-50 px-8 dark:bg-primary-800"
-                  size="xs"
-                  alignment="left"
-                  headers={[
-                    {
-                      cells: [
-                        {
-                          item: "Position",
-                          className: "w-[20px]",
-                        },
-                        {
-                          item: "Blob Versioned Hash",
-                          className: "w-[400px]",
-                        },
-                        {
-                          item: `Size (${BYTES_UNIT})`,
-                          className: "w-[80px] border",
-                        },
-                        {
-                          item: `Usage (${BYTES_UNIT})`,
-                          className: "w-[140px]",
-                        },
-                        {
-                          item: "Storages",
-                          className: "w-[60px]",
-                        },
-                      ],
-                      className: "dark:border-border-dark/20",
-                      sticky: true,
-                    },
-                  ]}
-                  rows={
-                    blobs
-                      ? blobs.map(
-                          (
-                            {
-                              versionedHash,
-                              size,
-                              dataStorageReferences,
-                              usageSize,
-                            },
-                            i
-                          ) => ({
-                            cells: [
-                              { item: i },
-                              {
-                                item: (
-                                  <Copyable
-                                    value={versionedHash}
-                                    tooltipText="Copy blob versioned hash"
-                                  >
-                                    <Link
-                                      href={routes.blob(versionedHash, {
-                                        txHash: hash,
-                                        index: i,
-                                      })}
-                                    >
-                                      {versionedHash}
-                                    </Link>
-                                  </Copyable>
-                                ),
-                              },
-                              {
-                                item: formatBytes(size, {
-                                  unit: BYTES_UNIT,
-                                  hideUnit: true,
-                                }),
-                              },
-                              {
-                                item: (
-                                  <span>
-                                    {formatBytes(usageSize, {
-                                      unit: BYTES_UNIT,
-                                      hideUnit: true,
-                                    })}{" "}
-                                    <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                                      ({calculatePercentage(usageSize, size)}
-                                      %)
-                                    </span>
-                                  </span>
-                                ),
-                              },
-                              {
-                                item: dataStorageReferences && (
-                                  <div className="flex items-center gap-2">
-                                    {dataStorageReferences.map(
-                                      ({ storage, url }) => (
-                                        <StorageBadge
-                                          key={storage}
-                                          storage={storage}
-                                          url={url}
-                                          compact
-                                        />
-                                      )
-                                    )}
-                                  </div>
-                                ),
-                              },
-                            ],
-                            className: "dark:border-border-dark/10",
-                          })
-                        )
-                      : undefined
-                  }
-                />
-              ),
+              expandItem: <TransactionBlobsTable blobs={blobs} txHash={hash} />,
             };
           }
         )
