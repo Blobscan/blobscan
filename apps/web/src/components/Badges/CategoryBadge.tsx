@@ -3,7 +3,6 @@ import {
   Squares2X2Icon,
   Square3Stack3DIcon,
 } from "@heroicons/react/24/outline";
-import cn from "classnames";
 
 import { CATEGORY_OPTIONS } from "~/components/Selectors/CategorySelector";
 import { CATEGORY_COLORS } from "~/defintions/categories";
@@ -34,7 +33,7 @@ type CategoryBadgeProps = BadgeProps & {
 export const CategoryBadge: FC<CategoryBadgeProps> = function ({
   category,
   rollup,
-  className: extraClassName,
+  className,
   ...props
 }) {
   const { icon } = CATEGORY_STYLES[category];
@@ -43,21 +42,16 @@ export const CategoryBadge: FC<CategoryBadgeProps> = function ({
   const subRollup = category === "rollup" ? rollup : undefined;
 
   return (
-    <BrandBadge
-      brandColor={CATEGORY_COLORS[category]}
-      // Keep the same space around the rollup badge.
-      className={cn({ "gap-2 pr-1": subRollup }, extraClassName)}
-      {...props}
-    >
-      <Icon src={icon} size="sm" />
-      {label}
-      {subRollup && (
-        <RollupBadge
-          rollup={subRollup}
-          size={props.size}
-          className="h-6 px-2"
-        />
-      )}
-    </BrandBadge>
+    <div className="flex items-center gap-2">
+      <BrandBadge
+        brandColor={CATEGORY_COLORS[category]}
+        className={className}
+        {...props}
+      >
+        <Icon src={icon} size="sm" />
+        {label}
+      </BrandBadge>
+      {subRollup && <RollupBadge rollup={subRollup} size={props.size} />}
+    </div>
   );
 };
