@@ -46,7 +46,19 @@ function toWeiColumn(values: bigint[]): Column {
 }
 
 /** Returns the dataset that all the address charts use. */
-export function buildDataset(data: AddressTimeseries): ChartDataset {
+export function buildDataset(
+  data: AddressTimeseries
+): ChartDataset | undefined {
+  const hasTransactions = data.timestamps.some(
+    (_, i) =>
+      (data.sent.totalTransactions[i] ?? 0) > 0 ||
+      (data.received.totalTransactions[i] ?? 0) > 0
+  );
+
+  if (!hasTransactions) {
+    return undefined;
+  }
+
   const source: Record<string, Column | Date[]> = {
     timestamp: data.timestamps,
   };

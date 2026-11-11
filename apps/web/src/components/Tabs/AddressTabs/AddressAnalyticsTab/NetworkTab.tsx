@@ -168,30 +168,26 @@ function buildCards(allTimeOverall?: AddressOverall): MetricCardProps[] {
       ...CARDS.share,
       metric: {
         primary: {
-          value: share !== undefined ? share * 100 : undefined,
+          value: (share ?? 0) * 100,
           type: "percentage",
           numberFormatOpts: { maximumFractionDigits: 4 },
         },
       },
     },
-    ...(data.sent.totalTransactions
-      ? [
-          {
-            // The sender pays the blob fee.
-            ...CARDS.gasPrice,
-            metric: {
-              primary: { value: gasPrices.address, type: "ethereum" },
-            },
-            secondaryValue:
-              gasPrices.network !== undefined ? (
-                <NetworkPriceComparison
-                  timingRatio={getTimingRatio(data.sent, data.network)}
-                  networkPrice={gasPrices.network}
-                />
-              ) : undefined,
-          } satisfies MetricCardProps,
-        ]
-      : []),
+    {
+      // The sender pays the blob fee.
+      ...CARDS.gasPrice,
+      metric: {
+        primary: { value: gasPrices.address ?? BigInt(0), type: "ethereum" },
+      },
+      secondaryValue:
+        data.sent.totalTransactions && gasPrices.network !== undefined ? (
+          <NetworkPriceComparison
+            timingRatio={getTimingRatio(data.sent, data.network)}
+            networkPrice={gasPrices.network}
+          />
+        ) : undefined,
+    },
   ];
 }
 

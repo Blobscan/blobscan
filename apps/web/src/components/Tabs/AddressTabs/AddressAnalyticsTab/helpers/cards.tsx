@@ -160,7 +160,9 @@ export function dailyMeanCard(
     ...card,
     metric: {
       primary: {
-        value: timeseries && getDailyMean(timeseries, column, opts.role),
+        value: timeseries
+          ? getDailyMean(timeseries, column, opts.role) ?? 0
+          : undefined,
         type: opts.type,
         numberFormatOpts: opts.type ? undefined : { maximumFractionDigits: 2 },
       },

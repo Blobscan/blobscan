@@ -131,7 +131,7 @@ function buildCards({
         primary: {
           value: totals.totalTransactions
             ? Number(totals.totalBlobUsageSize) / totals.totalTransactions
-            : undefined,
+            : 0,
           type: "bytes",
         },
       },

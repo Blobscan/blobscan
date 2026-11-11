@@ -222,7 +222,6 @@ export const ActivityTab: FC<AnalyticsSectionProps> = function ({
           highlightLabel="Longest streak"
           formatValue={formatTxCount}
           formatTooltip={formatDayTooltip}
-          emptyMessage="This address has no blob transactions."
           isLoading={timeseries.isLoading}
         />
       </Card>

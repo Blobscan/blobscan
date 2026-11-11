@@ -5,6 +5,7 @@ import ReactEChartsCore from "echarts-for-react/lib/core";
 import { useTheme } from "next-themes";
 
 import { ContentReveal } from "~/components/ContentReveal";
+import { EmptyState } from "~/components/EmptyState";
 import { HelpIcon } from "~/components/HelpIcon";
 import echarts from "~/echarts";
 import type { ThemeMode } from "~/types";
@@ -106,7 +107,7 @@ export type CalendarHeatmapProps<T extends CalendarHeatmapItem> = {
   /** Returns the tooltip HTML of a day. `item` is not set for an empty day. */
   formatTooltip?: (date: string, item?: T) => string;
   /** The text that shows when `data` is empty. */
-  emptyMessage?: ReactNode;
+  emptyMessage?: string;
   isLoading?: boolean;
 };
 
@@ -301,9 +302,9 @@ export function CalendarHeatmap<T extends CalendarHeatmapItem>({
 
   if (!option) {
     return (
-      <p className="py-12 text-center text-sm text-contentSecondary-light dark:text-contentSecondary-dark">
-        {emptyMessage ?? "No data."}
-      </p>
+      <div className="h-48">
+        <EmptyState size="md" description={emptyMessage ?? "No Chart Data"} />
+      </div>
     );
   }
 
