@@ -5,6 +5,7 @@ import dayjs from "@blobscan/dayjs";
 import { formatWei } from "@blobscan/eth-format";
 
 import { Badge } from "~/components/Badges/Badge";
+import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Copyable } from "~/components/Copyable";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
@@ -83,7 +84,7 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
 
     return (
       <PaginatedTable
-        tableClassName="w-full min-w-[1280px]"
+        tableClassName="w-full min-w-[1320px]"
         title={`Blob Transactions${
           totalTransactions !== undefined
             ? ` (${formatNumber(totalTransactions)})`
@@ -94,6 +95,7 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
         headers={[
           {
             cells: [
+              { item: "", className: "w-[40px]" },
               { item: "Hash", className: "w-[120px]" },
               { item: "Block", className: "w-[88px]" },
               {
@@ -163,6 +165,12 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
           return {
             className: "px-2",
             cells: [
+              {
+                item:
+                  tx.category === "rollup" && tx.rollup ? (
+                    <RollupBadge rollup={tx.rollup} compact />
+                  ) : null,
+              },
               {
                 item: (
                   <Copyable value={tx.hash} tooltipText="Copy hash">
