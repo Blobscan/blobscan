@@ -1,5 +1,11 @@
 # @blobscan/dagster
 
+## 0.8.0
+
+### Minor Changes
+
+- [#1083](https://github.com/Blobscan/blobscan/pull/1083) [`24db0b0`](https://github.com/Blobscan/blobscan/commit/24db0b05a5a84bb7cb970aaedf50bb327a63c0d1) Thanks [@PJColombo](https://github.com/PJColombo)! - Add the metrics of each address. New tables keep the hourly (last 30 days), daily, weekly, monthly, yearly and all-time values of each address as sender and as receiver. New Dagster assets fill them, and a daily schedule deletes the hourly rows older than 30 days. As for the network metrics, the weekly and monthly values come from the daily rows, the yearly values come from the monthly rows, and the all-time values come from the closed years, months and days.
+
 ## 0.7.0
 
 ### Minor Changes

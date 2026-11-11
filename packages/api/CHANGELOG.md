@@ -1,5 +1,18 @@
 # @blobscan/api
 
+## 0.45.0
+
+### Minor Changes
+
+- [#1083](https://github.com/Blobscan/blobscan/pull/1083) [`24db0b0`](https://github.com/Blobscan/blobscan/commit/24db0b05a5a84bb7cb970aaedf50bb327a63c0d1) Thanks [@PJColombo](https://github.com/PJColombo)! - Add the `address` router with `getOverall` and `getTimeseries`, which return the metrics of an address as sender and as receiver. `getOverall` also returns the category of the address, its longest streak and its longest gap, and `getTimeseries` returns the self-sends and their blobs. Add an `address` filter to `tx.getAll` that returns the transactions where the address is the sender or the receiver.
+
+### Patch Changes
+
+- Updated dependencies [[`24db0b0`](https://github.com/Blobscan/blobscan/commit/24db0b05a5a84bb7cb970aaedf50bb327a63c0d1)]:
+  - @blobscan/db@0.35.0
+  - @blobscan/blob-storage-manager@0.15.5
+  - @blobscan/rollups@0.10.2
+
 ## 0.44.0
 
 ### Minor Changes

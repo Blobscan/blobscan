@@ -1,5 +1,32 @@
 # @blobscan/web
 
+## 0.62.0
+
+### Minor Changes
+
+- [#1083](https://github.com/Blobscan/blobscan/pull/1083) [`24db0b0`](https://github.com/Blobscan/blobscan/commit/24db0b05a5a84bb7cb970aaedf50bb327a63c0d1) Thanks [@PJColombo](https://github.com/PJColombo)! - Revamp the address page. The header shows the category of the address and its first and last blob transactions. The Transactions tab shows the sent and the received transactions together. The new Analytics tab has six sections: Activity, Transactions, Blobs, Blob Usage, Fees and Network. Each section shows metric cards and charts of the address as sender and as receiver, and a help icon explains each card and chart. The Activity section shows the age, the active days, the longest streak and the longest gap of the address, and a calendar of its daily transactions in the last year.
+
+- [#1102](https://github.com/Blobscan/blobscan/pull/1102) [`fe38f79`](https://github.com/Blobscan/blobscan/commit/fe38f79c57ae3c84ad9dd6cd4213b4e35447ef93) Thanks [@PJColombo](https://github.com/PJColombo)! - Added help icons to charts, metric cards, and transaction and blob detail fields.
+
+- [#1098](https://github.com/Blobscan/blobscan/pull/1098) [`f0a5b5b`](https://github.com/Blobscan/blobscan/commit/f0a5b5b473bbf37d211bb7c79e6bb82af581bd23) Thanks [@PJColombo](https://github.com/PJColombo)! - Added a fade and upward movement when content replaces skeletons. Added sequence delays for lists and tables, with reduced motion support.
+
+### Patch Changes
+
+- [#1101](https://github.com/Blobscan/blobscan/pull/1101) [`f70fcde`](https://github.com/Blobscan/blobscan/commit/f70fcdeb72219158baa0617bf57f61c472951bfc) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed loading placeholders and content reveal effects in address analytics cards and charts. Matched the heatmap placeholders to its daily cells, kept its title visible during loading, and improved chart legend spacing. Changed the longest streak outline to follow the outer edges of the cell group and use yellow in both themes.
+
+- [#1097](https://github.com/Blobscan/blobscan/pull/1097) [`0bd2a38`](https://github.com/Blobscan/blobscan/commit/0bd2a3800af2b12ccd43f93ff047f14562bd8986) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed address analytics cards that stayed hidden or continued to show loading skeletons after an empty result. The cards now show zero when the selected time frame has no data. Empty address charts now show "No Chart Data" and the logo, which is preloaded from a smaller image file.
+
+- [#1100](https://github.com/Blobscan/blobscan/pull/1100) [`5f85a51`](https://github.com/Blobscan/blobscan/commit/5f85a51bbd9b994709cf9773aba12756acfb45bf) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed the address tab and section highlights to start at the URL selections when the page loads.
+
+- [#1099](https://github.com/Blobscan/blobscan/pull/1099) [`01554f2`](https://github.com/Blobscan/blobscan/commit/01554f2400fa1f0702f81e15423d637ed5cc1bab) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved the light theme text colors to make content levels easier to distinguish. Used the secondary text color for metric card titles and light theme detail row names.
+
+- [#1096](https://github.com/Blobscan/blobscan/pull/1096) [`eafb321`](https://github.com/Blobscan/blobscan/commit/eafb321849a263d99885114f2e69c9cc5fc1de98) Thanks [@PJColombo](https://github.com/PJColombo)! - Use shared brand colors for rollup charts, badges and selector icons. Make the chart colors lighter in light mode, and use the same palette for the Other category. Update the address activity heatmap and its longest streak outline for light and dark modes.
+- Updated dependencies [[`24db0b0`](https://github.com/Blobscan/blobscan/commit/24db0b05a5a84bb7cb970aaedf50bb327a63c0d1), [`24db0b0`](https://github.com/Blobscan/blobscan/commit/24db0b05a5a84bb7cb970aaedf50bb327a63c0d1)]:
+  - @blobscan/api@0.45.0
+  - @blobscan/db@0.35.0
+  - @blobscan/blob-storage-manager@0.15.5
+  - @blobscan/rollups@0.10.2
+
 ## 0.61.0
 
 ### Minor Changes
