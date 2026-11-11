@@ -105,6 +105,7 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
                       Class Declarations
                       <CountBadge
                         count={decodedBlob.classDeclarations.length}
+                        size="sm"
                       />
                     </div>
                   ),
@@ -158,7 +159,10 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
                 item: (
                   <div className="flex items-center justify-center gap-2 text-base">
                     State Updates
-                    <CountBadge count={decodedBlob.stateUpdatesSize} />
+                    <CountBadge
+                      count={decodedBlob.stateUpdatesSize}
+                      size="sm"
+                    />
                   </div>
                 ),
                 alignment: "center",

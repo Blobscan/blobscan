@@ -120,7 +120,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
                   <div className="flex items-center gap-2 rounded-md bg-primary-200 p-2 font-semibold dark:bg-primary-900">
                     {capitalize(category)}
                     {results.length > 1 && (
-                      <CountBadge count={results.length} />
+                      <CountBadge count={results.length} size="sm" />
                     )}
                   </div>
                   {results.map(({ id, ...props }) => (

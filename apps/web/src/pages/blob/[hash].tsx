@@ -322,7 +322,7 @@ const Blob: NextPage = function () {
         name: (
           <div className="flex flex-wrap items-center gap-2">
             Blocks And Transactions
-            <CountBadge count={blob.transactions.length} />
+            <CountBadge count={blob.transactions.length} size="sm" />
           </div>
         ),
         value: (

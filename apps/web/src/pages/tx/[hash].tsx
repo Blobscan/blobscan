@@ -250,12 +250,14 @@ const Tx: NextPage = () => {
         helpText:
           "The total size of blobs in this transaction, including padding bytes.",
         value: (
-          <span>
-            {formatBytes(totalBlobSize)}{" "}
-            <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-              ({blobs.length} {pluralize("blob", blobs.length)})
-            </span>
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            {formatBytes(totalBlobSize)}
+            <CountBadge
+              count={blobs.length}
+              label={pluralize("blob", blobs.length)}
+              size="xs"
+            />
+          </div>
         ),
       },
       {
@@ -433,7 +435,7 @@ const Tx: NextPage = () => {
         header={
           <div className="flex items-center gap-2">
             Blobs
-            <CountBadge count={tx?.blobs.length} />
+            <CountBadge count={tx?.blobs.length} size="sm" />
           </div>
         }
       >
