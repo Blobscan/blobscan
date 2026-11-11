@@ -44,7 +44,7 @@ import type { FeeUnit } from "~/components/Toggles";
 import { api } from "~/api-client";
 import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
 import { useChain } from "~/hooks/useChain";
-import { useIsTestnet } from "~/hooks/useIsTestnet";
+import { useHasEthPrice } from "~/hooks/useHasEthPrice";
 import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import { useUrlState } from "~/hooks/useUrlState";
 import ErrorPage from "~/pages/_error";
@@ -80,7 +80,7 @@ const controlQueryParamsSchema = statsSectionSchema
 
 const Stats: NextPage = function () {
   const chain = useChain();
-  const isTestnet = useIsTestnet();
+  const hasEthPrice = useHasEthPrice();
   const { state, updateState } = useUrlState(controlQueryParamsSchema);
   const { categories, rollups } =
     state?.categories?.length && state?.rollups?.length
@@ -104,7 +104,7 @@ const Stats: NextPage = function () {
       "totalBlobUsageSize",
       "totalBlobGasUsed",
       "totalBlobBaseFee",
-      "totalBlobBaseFeeUsd",
+      ...(hasEthPrice ? (["totalBlobBaseFeeUsd"] as const) : []),
       "totalTransactions",
       "totalUniqueReceivers",
       "totalUniqueSenders",
@@ -124,18 +124,18 @@ const Stats: NextPage = function () {
       "avgBlobGasPrice",
       "minBlobGasPrice",
       "avgBlobBaseFee",
-      "totalUsdPricedTransactions",
+      ...(hasEthPrice ? (["totalUsdPricedTransactions"] as const) : []),
       "avgBlobMaxFee",
-      "totalBlobBaseFeeUsd",
+      ...(hasEthPrice ? (["totalBlobBaseFeeUsd"] as const) : []),
       "totalTransactions",
       "totalBlocks",
       "totalUniqueReceivers",
       "totalUniqueSenders",
       "totalBlobAsCalldataGasUsed",
       "totalBlobGasUsed",
-      "maxEthPrice",
-      "avgEthPrice",
-      "minEthPrice",
+      ...(hasEthPrice
+        ? (["maxEthPrice", "avgEthPrice", "minEthPrice"] as const)
+        : []),
     ],
     timeFrame: "15d",
   });
@@ -398,18 +398,18 @@ const Stats: NextPage = function () {
           {
             name: "Total Blob Fees",
             metric: {
-              // On networks with no ETH price (e.g. testnets), USD amounts
-              // mean nothing, so the card shows the amount in ETH.
+              // Use native fees when the network has no ETH price.
               primary:
-                isTestnet === false
+                hasEthPrice === true
                   ? {
                       value: aggregatedMetrics?.totalBlobBaseFeeUsd,
                       type: "fiat",
                     }
                   : {
-                      value: isTestnet
-                        ? aggregatedMetrics?.totalBlobBaseFee
-                        : undefined,
+                      value:
+                        hasEthPrice === false
+                          ? aggregatedMetrics?.totalBlobBaseFee
+                          : undefined,
                       type: "ethereum",
                     },
             },
@@ -418,7 +418,7 @@ const Stats: NextPage = function () {
             name: "Total Tx Fees Saved",
             metric: {
               primary:
-                isTestnet === false
+                hasEthPrice === true
                   ? {
                       value:
                         aggregatedMetrics?.totalBlobAsCalldataFeeUsd !==
@@ -431,7 +431,7 @@ const Stats: NextPage = function () {
                     }
                   : {
                       value:
-                        isTestnet &&
+                        hasEthPrice === false &&
                         aggregatedMetrics?.totalBlobAsCalldataFee !==
                           undefined &&
                         aggregatedMetrics.totalBlobBaseFee !== undefined
@@ -586,7 +586,7 @@ const Stats: NextPage = function () {
     [
       aggregatedMetrics,
       blobSize,
-      isTestnet,
+      hasEthPrice,
       selectedCategorizedChartDatasets,
       globalChartDatasets,
       categorizedDatasetsLoading,
@@ -597,11 +597,17 @@ const Stats: NextPage = function () {
   const error =
     categorizedChartsError || globalChartsError || overallStatsError;
 
-  const currentSectionOption = selectedSection?.value ?? "all";
+  const currentSectionOption =
+    selectedSection.value === "price" && !hasEthPrice
+      ? "all"
+      : selectedSection.value;
+  const availableSections = sections.filter(
+    (section) => section.id !== "price" || hasEthPrice === true
+  );
   const displayedSections =
     currentSectionOption === "all"
-      ? sections
-      : sections.filter((s) => s.id === currentSectionOption);
+      ? availableSections
+      : availableSections.filter((s) => s.id === currentSectionOption);
 
   const handleSectionChange = useCallback(
     (option: SectionOption) => {
@@ -614,9 +620,13 @@ const Stats: NextPage = function () {
 
   useEffect(() => {
     setSelectedSection(
-      SECTION_OPTIONS.find((s) => s.value === state?.section) ?? DEFAULT_SECTION
+      SECTION_OPTIONS.find(
+        (s) =>
+          s.value === state?.section &&
+          (s.value !== "price" || hasEthPrice === true)
+      ) ?? DEFAULT_SECTION
     );
-  }, [state?.section]);
+  }, [state?.section, hasEthPrice]);
 
   if (error) {
     return <ErrorPage error={error} />;

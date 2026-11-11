@@ -1,3 +1,4 @@
+import { useHasEthPrice } from "~/hooks/useHasEthPrice";
 import { Listbox } from "../Selects";
 import type { ListboxProps, SelectOption } from "../Selects";
 
@@ -33,5 +34,10 @@ export type StatsSectionSelectorProps = Omit<
 >;
 
 export function StatsSectionSelector(props: StatsSectionSelectorProps) {
-  return <Listbox {...props} options={SECTION_OPTIONS} />;
+  const hasEthPrice = useHasEthPrice();
+  const options = SECTION_OPTIONS.filter(
+    (option) => option.value !== "price" || hasEthPrice === true
+  ) as [SectionOption, ...SectionOption[]];
+
+  return <Listbox {...props} options={options} />;
 }
