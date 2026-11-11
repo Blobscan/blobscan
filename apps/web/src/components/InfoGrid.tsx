@@ -41,7 +41,7 @@ export const InfoGrid: React.FC<InfoGridProps> = function ({ fields }) {
             <Fragment key={i}>
               <ContentReveal
                 index={i}
-                className="col-span-4 font-semibold dark:text-coolGray-400 md:col-span-1"
+                className="col-span-4 font-semibold text-contentSecondary-light dark:text-coolGray-400 md:col-span-1"
               >
                 {helpText ? (
                   <InfoField description={helpText}>{name}</InfoField>

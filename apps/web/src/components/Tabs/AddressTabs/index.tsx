@@ -34,8 +34,13 @@ export const AddressTabs: FC<AddressTabsProps> = function ({
   totalTransactions,
   enabled,
 }) {
-  const { state, updateState } = useUrlState(tabParamsSchema);
+  const { state, updateState, isReady } = useUrlState(tabParamsSchema);
   const tab: Tab = state?.tab ?? "transactions";
+
+  // Wait for the URL selection before the tab bar sets its first position.
+  if (!isReady) {
+    return null;
+  }
 
   return (
     <TabsBase
