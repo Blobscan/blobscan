@@ -29,8 +29,8 @@ export function ratio(
 }
 
 export type DerivedMetrics = {
-  avgBlobsPerTx?: number;
-  avgFeePerTx?: bigint;
+  avgBlobsPerTx: number;
+  avgFeePerTx: bigint;
   avgFeePerTxUsd?: number;
   /** Bytes with data ÷ blob bytes, from 0 to 1. */
   utilization?: number;
@@ -38,10 +38,10 @@ export type DerivedMetrics = {
   /** Blob bytes without data. */
   unusedSize: bigint;
   /** The blob fee of the unused bytes. */
-  unusedFee?: bigint;
+  unusedFee: bigint;
   unusedFeeUsd?: number;
   /** Blob fee for each KiB with data. */
-  costPerKb?: bigint;
+  costPerKb: bigint;
   costPerKbUsd?: number;
   calldataSavings: bigint;
   calldataSavingsUsd?: number;
@@ -63,33 +63,38 @@ export function getDerivedMetrics(totals: RoleTotals): DerivedMetrics {
   const blobSize = BigInt(totalBlobs) * BigInt(BLOB_SIZE);
   const unusedSize = blobSize - usage;
   const utilization = ratio(usage, blobSize);
-  const usd = totalBlobBaseFeeUsd ?? undefined;
-  const unusedFee = blobSize ? (fee * unusedSize) / blobSize : undefined;
+  // An empty address has no fees, even when no USD price is available.
+  const usd = totalTransactions ? totalBlobBaseFeeUsd ?? undefined : 0;
+  const unusedFee = blobSize ? (fee * unusedSize) / blobSize : BigInt(0);
 
   return {
-    avgBlobsPerTx: ratio(totalBlobs, totalTransactions),
+    avgBlobsPerTx: ratio(totalBlobs, totalTransactions) ?? 0,
     avgFeePerTx: totalTransactions
       ? fee / BigInt(totalTransactions)
-      : undefined,
-    avgFeePerTxUsd:
-      usd !== undefined && totalUsdPricedTransactions
+      : BigInt(0),
+    avgFeePerTxUsd: totalTransactions
+      ? usd !== undefined && totalUsdPricedTransactions
         ? usd / totalUsdPricedTransactions
-        : undefined,
+        : undefined
+      : 0,
     utilization,
     blobSize,
     unusedSize,
     unusedFee,
     unusedFeeUsd:
-      usd !== undefined && utilization !== undefined
-        ? usd * (1 - utilization)
-        : undefined,
-    costPerKb: usage ? (fee * BigInt(1024)) / usage : undefined,
+      usd !== undefined ? usd * (1 - (utilization ?? 0)) : undefined,
+    costPerKb: usage ? (fee * BigInt(1024)) / usage : BigInt(0),
     costPerKbUsd:
-      usd !== undefined && usage ? usd / (Number(usage) / 1024) : undefined,
-    calldataSavings: toBigInt(totalBlobAsCalldataFee) - fee,
-    calldataSavingsUsd:
-      totalBlobAsCalldataFeeUsd !== null && usd !== undefined
-        ? totalBlobAsCalldataFeeUsd - usd
+      usd !== undefined
+        ? usage
+          ? usd / (Number(usage) / 1024)
+          : 0
         : undefined,
+    calldataSavings: toBigInt(totalBlobAsCalldataFee) - fee,
+    calldataSavingsUsd: totalTransactions
+      ? totalBlobAsCalldataFeeUsd !== null && usd !== undefined
+        ? totalBlobAsCalldataFeeUsd - usd
+        : undefined
+      : 0,
   };
 }

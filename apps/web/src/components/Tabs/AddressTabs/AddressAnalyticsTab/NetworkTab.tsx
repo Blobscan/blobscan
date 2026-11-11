@@ -168,7 +168,7 @@ function buildCards(allTimeOverall?: AddressOverall): MetricCardProps[] {
       ...CARDS.share,
       metric: {
         primary: {
-          value: share !== undefined ? share * 100 : undefined,
+          value: (share ?? 0) * 100,
           type: "percentage",
           numberFormatOpts: { maximumFractionDigits: 4 },
         },
