@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes content-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer components {
+  @media (prefers-reduced-motion: no-preference) {
+    .content-reveal {
+      animation: content-reveal 180ms ease-out backwards;
+    }
+
+    .content-reveal .content-reveal {
+      animation: none;
+    }
+  }
+}
+
 @layer base {
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {

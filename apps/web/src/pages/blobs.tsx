@@ -5,6 +5,7 @@ import dayjs from "@blobscan/dayjs";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
+import { ContentReveal } from "~/components/ContentReveal";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
@@ -92,6 +93,7 @@ const Blobs: NextPage = function () {
               size,
               dataStorageReferences,
               txHash,
+              index,
               blockTimestamp,
               blockNumber,
               transaction,
@@ -110,7 +112,9 @@ const Blobs: NextPage = function () {
                       value={versionedHash}
                       tooltipText="Copy versioned hash"
                     >
-                      <Link href={routes.blob(versionedHash)}>
+                      <Link
+                        href={routes.blob(versionedHash, { txHash, index })}
+                      >
                         {shortenHash(versionedHash, 8)}
                       </Link>
                     </Copyable>
@@ -192,13 +196,17 @@ const Blobs: NextPage = function () {
         <div className="flex items-center gap-2">
           <div>Blobs</div>
           <div>
-            {!countIsLoading && totalBlobs !== undefined ? (
-              `(${formatNumber(totalBlobs)})`
-            ) : (
-              <div className="relative left-0 top-1">
-                <Skeleton width={100} height={25} />
-              </div>
-            )}
+            <ContentReveal
+              isLoading={countIsLoading || totalBlobs === undefined}
+            >
+              {!countIsLoading && totalBlobs !== undefined ? (
+                `(${formatNumber(totalBlobs)})`
+              ) : (
+                <div className="relative left-0 top-1">
+                  <Skeleton width={100} height={25} />
+                </div>
+              )}
+            </ContentReveal>
           </div>
         </div>
       </Header>

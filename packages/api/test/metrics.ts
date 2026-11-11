@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+
 import type { BlobscanPrismaClient } from "@blobscan/db";
 
 // The Dagster pipeline populates the metrics tables in production. These
@@ -301,5 +304,88 @@ export async function aggregateMetrics(
       )
     ),
     prisma.$executeRawUnsafe(AGGREGATE_ALL_TIME_METRICS_SQL),
+  ]);
+}
+
+// The address metrics use the Dagster SQL itself, with the same parameters.
+const DAGSTER_SQL_DIR = path.resolve(
+  __dirname,
+  "../../../apps/dagster/src/analytics/defs/sql"
+);
+
+function readDagsterSql(name: string) {
+  return fs
+    .readFileSync(path.join(DAGSTER_SQL_DIR, name), "utf8")
+    .replaceAll(":from", "$1::timestamp")
+    .replaceAll(":to", "$2::timestamp");
+}
+
+const ADDRESS_METRICS_SQL = readDagsterSql("aggregate_address.sql");
+const ADDRESS_ALL_TIME_METRICS_SQL = readDagsterSql(
+  "aggregate_address_all_time.sql"
+);
+
+const ADDRESS_ROLLUP_METRICS_SQL = readDagsterSql(
+  "aggregate_address_rollup.sql"
+);
+
+const ADDRESS_METRICS_TABLES = [
+  { table: "address_hourly_metrics", trunc: "hour" },
+  { table: "address_daily_metrics", trunc: "day" },
+] as const;
+
+// In this order: the yearly level reads the monthly rows.
+const ADDRESS_ROLLUP_METRICS_TABLES = [
+  {
+    source: "address_daily_metrics",
+    table: "address_weekly_metrics",
+    trunc: "week",
+  },
+  {
+    source: "address_daily_metrics",
+    table: "address_monthly_metrics",
+    trunc: "month",
+  },
+  {
+    source: "address_monthly_metrics",
+    table: "address_yearly_metrics",
+    trunc: "year",
+  },
+] as const;
+
+/**
+ * Fills the address metrics tables from the data in the database, in the
+ * same way as the Dagster address assets. The all-time table has the days
+ * before the current day of the database, from the closed years, months and
+ * days.
+ */
+export async function aggregateAddressMetrics(prisma: BlobscanPrismaClient) {
+  await prisma.$transaction([
+    prisma.addressHourlyMetrics.deleteMany(),
+    prisma.addressDailyMetrics.deleteMany(),
+    prisma.addressWeeklyMetrics.deleteMany(),
+    prisma.addressMonthlyMetrics.deleteMany(),
+    prisma.addressYearlyMetrics.deleteMany(),
+    prisma.addressAllTimeMetrics.deleteMany(),
+    ...ADDRESS_METRICS_TABLES.map(({ table, trunc }) =>
+      prisma.$executeRawUnsafe(
+        ADDRESS_METRICS_SQL.replaceAll("{{target_table}}", table).replaceAll(
+          "{{trunc}}",
+          trunc
+        ),
+        "1970-01-01T00:00:00.000Z",
+        MAX_DATE
+      )
+    ),
+    ...ADDRESS_ROLLUP_METRICS_TABLES.map(({ source, table, trunc }) =>
+      prisma.$executeRawUnsafe(
+        ADDRESS_ROLLUP_METRICS_SQL.replaceAll("{{source_table}}", source)
+          .replaceAll("{{target_table}}", table)
+          .replaceAll("{{trunc}}", trunc),
+        "1970-01-01T00:00:00.000Z",
+        MAX_DATE
+      )
+    ),
+    prisma.$executeRawUnsafe(ADDRESS_ALL_TIME_METRICS_SQL),
   ]);
 }

@@ -47,7 +47,9 @@ if TYPE_CHECKING:
     from sqlalchemy.engine import Connection
 
 # In upstream-to-downstream order. Dagster uses the dependencies of the assets
-# to order the runs. all_time_metrics has no partitions.
+# to order the runs. all_time_metrics has no partitions. The address_*_metrics
+# assets are not here: their rows do not store the rollup, and the API reads
+# the rollup of an address from the address table.
 ASSET_PARTITIONS: dict[str, dg.TimeWindowPartitionsDefinition | None] = {
     "hourly_metrics": hourly_partitions,
     "daily_metrics": daily_partitions,

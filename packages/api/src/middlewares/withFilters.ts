@@ -40,6 +40,7 @@ export type Filters = Partial<{
     fromId: FromAddressFilter;
     toId: string;
     from: RollupFilter;
+    OR: [{ fromId: string }, { toId: string }];
   }>;
 
   sort: Prisma.SortOrder;
@@ -94,6 +95,11 @@ export const withAddressFilterSchema = z.object({
     values?.map((v) => addressFilterSchema.parse(v))
   ),
   to: addressFilterSchema.optional(),
+  address: addressFilterSchema
+    .optional()
+    .describe(
+      "Returns the transactions where the address is the sender or the receiver."
+    ),
 });
 
 export const withSortFilterSchema = z.object({
@@ -143,6 +149,7 @@ export const withFilters = t.middleware(
       endDate,
       from,
       to,
+      address,
     } = input as FiltersOutputSchema;
 
     const blockRangeExists = startBlock !== undefined || endBlock !== undefined;
@@ -175,10 +182,7 @@ export const withFilters = t.middleware(
     } else if (epochRangeExists) {
       const slotsPerEpoch = chain.slotsPerEpoch;
       blockFilters.slot = {
-        gte:
-          startEpoch !== undefined
-            ? startEpoch * slotsPerEpoch
-            : undefined,
+        gte: startEpoch !== undefined ? startEpoch * slotsPerEpoch : undefined,
         lte:
           endEpoch !== undefined
             ? (endEpoch + 1) * slotsPerEpoch - 1
@@ -188,6 +192,10 @@ export const withFilters = t.middleware(
 
     if (to) {
       transactionFilters.toId = to;
+    }
+
+    if (address) {
+      transactionFilters.OR = [{ fromId: address }, { toId: address }];
     }
 
     if (from?.length) {

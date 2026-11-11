@@ -6,6 +6,7 @@ import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
+import { ContentReveal } from "~/components/ContentReveal";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
@@ -280,7 +281,12 @@ const Txs: NextPage = function () {
                                     value={versionedHash}
                                     tooltipText="Copy blob versioned hash"
                                   >
-                                    <Link href={routes.blob(versionedHash)}>
+                                    <Link
+                                      href={routes.blob(versionedHash, {
+                                        txHash: hash,
+                                        index: i,
+                                      })}
+                                    >
                                       {versionedHash}
                                     </Link>
                                   </Copyable>
@@ -350,13 +356,17 @@ const Txs: NextPage = function () {
         <div className="flex items-center gap-2">
           <div>Blob Transactions</div>
           <div>
-            {!countIsLoading && totalTransactions !== undefined ? (
-              `(${formatNumber(totalTransactions)})`
-            ) : (
-              <div className="relative left-0 top-1">
-                <Skeleton width={100} height={25} />
-              </div>
-            )}
+            <ContentReveal
+              isLoading={countIsLoading || totalTransactions === undefined}
+            >
+              {!countIsLoading && totalTransactions !== undefined ? (
+                `(${formatNumber(totalTransactions)})`
+              ) : (
+                <div className="relative left-0 top-1">
+                  <Skeleton width={100} height={25} />
+                </div>
+              )}
+            </ContentReveal>
           </div>
         </div>
       </Header>

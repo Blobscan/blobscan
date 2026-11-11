@@ -1,45 +1,100 @@
+import type { ReactNode } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
-import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
+import { CategoryBadge } from "~/components/Badges/CategoryBadge";
+import { Copyable } from "~/components/Copyable";
 import { EthIdenticon } from "~/components/EthIdenticon";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
-import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
+import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
+import { Link } from "~/components/Link";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
+import { AddressTabs } from "~/components/Tabs/AddressTabs";
 import { api } from "~/api-client";
-import { useUrlState } from "~/hooks/useUrlState";
 import ErrorPage from "~/pages/_error";
-import { paginationParamsSchema } from "~/schemas/pagination";
-import type { TransactionWithExpandedBlockAndBlob } from "~/types";
-import { toChecksumAddress } from "~/utils";
+import { routes } from "~/routes";
+import type { Category, Rollup } from "~/types";
+import {
+  normalizeTimestamp,
+  shortenHash,
+  TIMESTAMP_FORMAT,
+  toChecksumAddress,
+} from "~/utils";
+
+type TransactionRef = { hash: string; blockTimestamp: Date } | null;
+
+/** A line of a field with more than one value, for example "First: 0x12…". */
+function SubfieldLine({
+  label,
+  children,
+}: {
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex min-w-0 items-center gap-2">
+      <span className="shrink-0 text-contentSecondary-light dark:text-contentSecondary-dark">
+        {label}:
+      </span>
+      {children}
+    </div>
+  );
+}
+
+function TransactionRefLine({
+  label,
+  tx,
+}: {
+  label: string;
+  tx: TransactionRef;
+}) {
+  const timestamp = tx ? normalizeTimestamp(tx.blockTimestamp) : undefined;
+
+  return (
+    // The hash is truncated when the row is too narrow. The label and the
+    // date stay complete.
+    <SubfieldLine label={label}>
+      {tx && timestamp ? (
+        <>
+          <div className="min-w-0">
+            <Link href={routes.tx(tx.hash)}>{shortenHash(tx.hash, 8)}</Link>
+          </div>
+          {/* The full date shows on hover. */}
+          <span
+            className="shrink-0 whitespace-nowrap text-sm text-contentTertiary-light dark:text-contentTertiary-dark"
+            title={timestamp.format(TIMESTAMP_FORMAT)}
+          >
+            ({timestamp.fromNow()})
+          </span>
+        </>
+      ) : (
+        <span>-</span>
+      )}
+    </SubfieldLine>
+  );
+}
 
 const Address: NextPage = () => {
   const router = useRouter();
-  const { state: urlState } = useUrlState(paginationParamsSchema);
-  const address = (router?.query.address as string | undefined) ?? "";
+  const address = (
+    (router?.query.address as string | undefined) ?? ""
+  ).toLowerCase();
   const checksumAddress = toChecksumAddress(address);
+  const queryOpts = {
+    enabled: router?.isReady && !!address,
+    refetchOnWindowFocus: false,
+    retry: false,
+  };
 
-  const {
-    data: addressTxsData,
-    isLoading,
-    error,
-  } = api.tx.getAll.useQuery<{
-    transactions: TransactionWithExpandedBlockAndBlob[];
-    totalTransactions: number;
-  }>(
-    { p: urlState?.p, ps: urlState?.ps, from: address, expand: "block,blob" },
-    {
-      enabled: router?.isReady,
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      retry: false,
-    }
-  );
+  // The all-time values of the overview and of the transaction count.
+  const { data: overallData, error: overallError } =
+    api.address.getOverall.useQuery({ address, timeFrame: "All" }, queryOpts);
+  const overall = overallData?.data;
 
-  if (error) {
+  if (overallError) {
     return (
       <ErrorPage
-        error={error}
+        error={overallError}
         overrides={{
           BAD_REQUEST: {
             title: "Invalid Address",
@@ -48,6 +103,63 @@ const Address: NextPage = () => {
         }}
       />
     );
+  }
+
+  const totalTransactions = overall?.allTime.totalTransactions;
+  let detailsFields: DetailsLayoutProps["fields"] | undefined;
+
+  if (overall) {
+    const { firstTransaction, lastTransaction } = overall.allTime;
+
+    detailsFields = [
+      {
+        name: "Address",
+        helpText: "The Ethereum address of this page.",
+        value: (
+          // On a narrow screen, the address is truncated. The identicon and
+          // the copy button stay complete.
+          <div className="flex min-w-0 items-center gap-2">
+            {/* We use lower case, so that the identicon does not change with the letter case. */}
+            <div className="shrink-0">
+              <EthIdenticon address={address} shape="circle" />
+            </div>
+            <div className="min-w-0 [&>div]:min-w-0">
+              <Copyable value={checksumAddress} tooltipText="Copy Address">
+                {checksumAddress}
+              </Copyable>
+            </div>
+          </div>
+        ),
+      },
+      ...(overall.category
+        ? [
+            {
+              name: "Category",
+              helpText:
+                "Rollup when the address posts blobs for a known rollup, with the badge of that rollup. Other when it does not.",
+              value: (
+                <CategoryBadge
+                  category={overall.category as Category}
+                  rollup={(overall.rollup as Rollup | null) ?? undefined}
+                />
+              ),
+            },
+          ]
+        : []),
+      {
+        name: "Blob Txs",
+        helpText:
+          "The first and the last blob transaction that this address sent or received.",
+        value: (
+          // One line on wide screens. On narrow screens, Last goes under
+          // First.
+          <div className="flex min-w-0 flex-col gap-1 md:flex-row md:items-center md:gap-8">
+            <TransactionRefLine label="First" tx={firstTransaction} />
+            <TransactionRefLine label="Last" tx={lastTransaction} />
+          </div>
+        ),
+      },
+    ];
   }
 
   return (
@@ -64,43 +176,13 @@ const Address: NextPage = () => {
           type: "address",
           value: checksumAddress,
         }}
-        fields={[
-          {
-            name: "Address",
-            value: (
-              <div className="flex items-center gap-2">
-                <div className="relative bottom-0.5">
-                  {/* We use lower case, so that the identicon does not change with the letter case. */}
-                  <EthIdenticon address={address.toLowerCase()} />
-                </div>
-                <div className="">{checksumAddress}</div>
-              </div>
-            ),
-          },
-        ]}
+        fields={detailsFields}
+        skeletonRows={3}
       />
-      <PaginatedListLayout
-        title={`Blob Transactions ${
-          addressTxsData?.totalTransactions
-            ? `(${addressTxsData.totalTransactions})`
-            : ""
-        }`}
-        isLoading={isLoading}
-        items={addressTxsData?.transactions.map((tx) => {
-          const { blobs, ...restTx } = tx;
-
-          return (
-            <BlobTransactionCard
-              key={tx.hash}
-              transaction={restTx}
-              blobs={blobs}
-            />
-          );
-        })}
-        totalItems={addressTxsData?.totalTransactions}
-        page={urlState?.p}
-        pageSize={urlState?.ps}
-        itemSkeleton={<BlobTransactionCard />}
+      <AddressTabs
+        address={address}
+        totalTransactions={totalTransactions}
+        enabled={!!queryOpts.enabled}
       />
     </>
   );

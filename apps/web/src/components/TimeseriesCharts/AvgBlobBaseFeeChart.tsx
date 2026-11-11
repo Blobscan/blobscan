@@ -3,6 +3,8 @@ import { createTimeseriesChart } from "./factories";
 
 export const AvgBlobBaseFeeChart = createTimeseriesChart({
   baseProps: {
+    description:
+      "The average blob base fee per transaction in each period. This fee excludes execution gas fees.",
     title: "Avg. Blob Base Fee",
     yAxis: {
       type: "average",

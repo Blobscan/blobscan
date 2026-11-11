@@ -5,9 +5,11 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
 import { useBreakpoint } from "~/hooks/useBreakpoint";
+import { ContentReveal } from "./ContentReveal";
 import { InfoField } from "./InfoField";
 
 export type InfoGridProps = {
+  skeletonRows?: number;
   fields?: {
     name: ReactNode;
     value: ReactNode;
@@ -15,12 +17,15 @@ export type InfoGridProps = {
   }[];
 };
 
-export const InfoGrid: React.FC<InfoGridProps> = function ({ fields }) {
+export const InfoGrid: React.FC<InfoGridProps> = function ({
+  fields,
+  skeletonRows,
+}) {
   const breakpoint = useBreakpoint();
   const isCompact = breakpoint === "default";
   const headerWidth = isCompact ? "100%" : "55%";
   const valueWidth = isCompact ? "100%" : "50%";
-  const skeletonsLength = isCompact ? 4 : 7;
+  const skeletonsLength = skeletonRows ?? (isCompact ? 4 : 7);
   const skeletonHeight = isCompact ? 15 : 15;
 
   return (
@@ -38,16 +43,22 @@ export const InfoGrid: React.FC<InfoGridProps> = function ({ fields }) {
           ))
         : fields.map(({ name, value, helpText }, i) => (
             <Fragment key={i}>
-              <div className="col-span-4 font-semibold dark:text-coolGray-400 md:col-span-1">
+              <ContentReveal
+                index={i}
+                className="col-span-4 font-semibold text-contentSecondary-light dark:text-coolGray-400 md:col-span-1"
+              >
                 {helpText ? (
                   <InfoField description={helpText}>{name}</InfoField>
                 ) : (
                   name
                 )}
-              </div>
-              <div className="col-span-4 break-words text-sm md:col-span-3">
+              </ContentReveal>
+              <ContentReveal
+                index={i}
+                className="col-span-4 break-words text-sm md:col-span-3"
+              >
                 {value}
-              </div>
+              </ContentReveal>
             </Fragment>
           ))}
     </div>

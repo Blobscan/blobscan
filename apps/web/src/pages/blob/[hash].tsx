@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
@@ -11,6 +11,7 @@ import type { Decoder } from "@blobscan/blob-decoder";
 import dayjs from "@blobscan/dayjs";
 
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
+import { CategoryBadge } from "~/components/Badges/CategoryBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
@@ -23,10 +24,16 @@ import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { NavArrow } from "~/components/NavArrow";
 import type { SelectOption } from "~/components/Selects";
 import { Listbox } from "~/components/Selects";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
+import {
+  BLOB_EXPAND,
+  BLOB_STALE_TIME,
+  useAdjacentBlobNavigation,
+} from "~/hooks/useAdjacentBlobNavigation";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { routes } from "~/routes";
 import { versionedHashSchema } from "~/schemas/utils";
@@ -41,19 +48,51 @@ const Blob: NextPage = function () {
   const router = useRouter();
   const breakpoint = useBreakpoint();
   const id = (router?.query.hash as string | undefined) ?? "0";
-  const { data: blob, error } = api.blob.getByBlobId.useQuery(
+  const positionTxHash = router?.query.tx as string | undefined;
+  const positionIndex =
+    typeof router?.query.index === "string"
+      ? Number(router.query.index)
+      : undefined;
+  const {
+    data: blob,
+    dataUpdatedAt: blobUpdatedAt,
+    isFetching: blobFetching,
+    error,
+  } = api.blob.getByBlobId.useQuery(
     {
       id: id,
-      expand: "transaction",
+      expand: BLOB_EXPAND,
     },
     {
       enabled: router?.isReady,
+      staleTime: BLOB_STALE_TIME,
       retry: false,
       refetchOnReconnect: false,
       refetchOnWindowFocus: false,
-      refetchOnMount: false,
     }
   );
+  // A blob can be in more than one transaction, and more than one time in the
+  // same transaction. Thus the navigation uses the position in the URL. If the
+  // URL has no position, the navigation uses the first position in the list of
+  // the blob. The list starts with the newest block.
+  const position = useMemo(() => {
+    const blobOnTx =
+      blob?.transactions.find(
+        ({ txHash, index }) =>
+          txHash === positionTxHash && index === positionIndex
+      ) ?? blob?.transactions[0];
+
+    return typeof blobOnTx?.index === "number"
+      ? { txHash: blobOnTx.txHash, index: blobOnTx.index }
+      : undefined;
+  }, [blob, positionTxHash, positionIndex]);
+  const {
+    prevBlob,
+    nextBlob,
+    loading: adjacentBlobLoading,
+    error: adjacentBlobError,
+    navigate: handleNavClick,
+  } = useAdjacentBlobNavigation({ blob, blobUpdatedAt, position });
   const { data: blobData, error: blobDataError } = useQuery({
     queryKey: ["blob-data", id],
     queryFn: async () => {
@@ -93,7 +132,9 @@ const Blob: NextPage = function () {
 
       throw new Error(`Failed to fetch data of blob "${id}" from any storage`);
     },
-    enabled: !!blob,
+    // A cached blob can have expired signed URLs. When the page gets the blob
+    // again, wait for the new URLs before the page gets the blob data.
+    enabled: !!blob && !blobFetching,
     retry: false,
     refetchOnWindowFocus: false,
   });
@@ -112,6 +153,8 @@ const Blob: NextPage = function () {
 
   useEffect(() => {
     if (!decoder) {
+      setSelectedBlobViewMode((mode) => (mode === "Decoded" ? "Raw" : mode));
+
       return;
     }
 
@@ -146,6 +189,8 @@ const Blob: NextPage = function () {
 
     detailsFields.push({
       name: "Versioned Hash",
+      helpText:
+        "The hash that identifies this blob commitment. The first byte identifies the commitment version.",
       value: (
         <Copyable
           value={blob.versionedHash}
@@ -157,6 +202,7 @@ const Blob: NextPage = function () {
     if (blob.transactions[0]) {
       detailsFields.push({
         name: "Status",
+        helpText: "The finality status of the block that contains this item.",
         value: blob.transactions[0] && (
           <BlockStatusBadge blockNumber={blob.transactions[0].blockNumber} />
         ),
@@ -164,12 +210,13 @@ const Blob: NextPage = function () {
     }
 
     if (isUnique && blob.transactions[0]) {
-      const { blockNumber, blockTimestamp, txHash, index, rollup } =
+      const { blockNumber, blockTimestamp, txHash, index, rollup, category } =
         blob.transactions[0];
 
       detailsFields.push(
         {
           name: "Block",
+          helpText: "The block that contains this item.",
           value: (
             <div className="flex items-center gap-2 truncate">
               <Link href={routes.block(blockNumber)}>{blockNumber}</Link>
@@ -182,6 +229,7 @@ const Blob: NextPage = function () {
         },
         {
           name: "Transaction",
+          helpText: "The transaction that includes this blob.",
           value: (
             <div className="flex items-center gap-2 truncate" title={txHash}>
               {<Link href={routes.tx(txHash)}>{txHash}</Link>}
@@ -191,6 +239,7 @@ const Blob: NextPage = function () {
         },
         {
           name: "Timestamp",
+          helpText: "The time of the block that contains this item.",
           value: (
             <div className="whitespace-break-spaces">
               {formatTimestamp(blockTimestamp)}
@@ -199,15 +248,21 @@ const Blob: NextPage = function () {
         }
       );
 
-      if (rollup) {
+      if (category) {
         detailsFields.push({
-          name: "Rollup",
-          value: <RollupBadge key={rollup} rollup={rollup} />,
+          name: "Category",
+          helpText:
+            "Rollup when the transaction posts blobs for a known rollup. Other when it does not.",
+          value: (
+            <CategoryBadge category={category} rollup={rollup ?? undefined} />
+          ),
         });
       }
 
       detailsFields.push({
         name: "Position In Transaction",
+        helpText:
+          "The position of this blob in the transaction, starting from zero.",
         value: index,
       });
     }
@@ -215,17 +270,26 @@ const Blob: NextPage = function () {
     detailsFields.push(
       {
         name: "Commitment",
+        helpText: "The KZG cryptographic commitment to the blob data.",
         value: (
           <Copyable value={blob.commitment} tooltipText="Copy commitment" />
         ),
       },
       {
         name: "Proof",
+        helpText:
+          "The KZG proof used to verify that the blob data matches its commitment.",
         value: <Copyable value={blob.proof} tooltipText="Copy proof" />,
       },
-      { name: "Size", value: formatBytes(blob.size) },
+      {
+        name: "Size",
+        helpText: "The full size of this blob, including padding bytes.",
+        value: formatBytes(blob.size),
+      },
       {
         name: "Usage",
+        helpText:
+          "The size of this blob after trailing zero bytes are removed. The percentage compares this size with the full blob size.",
         value: (
           <BlobUsageDisplay
             blobSize={blob.size}
@@ -239,6 +303,7 @@ const Blob: NextPage = function () {
     if (blob.dataStorageReferences.length > 0) {
       detailsFields.push({
         name: "Storages",
+        helpText: "The storage services that provide a copy of this blob data.",
         value: (
           <div className="flex flex-wrap items-center gap-2">
             {blob.dataStorageReferences.map(({ storage, url }) => (
@@ -316,7 +381,30 @@ const Blob: NextPage = function () {
         } on Blobscan.`}
       />
       <DetailsLayout
-        header="Blob Details"
+        header={
+          <div className="flex items-center justify-start gap-4">
+            <NavArrow
+              type="prev"
+              size="lg"
+              onClick={() => handleNavClick("prev")}
+              tooltip="Previous Blob from This Sender"
+              disabled={!position || prevBlob === null || adjacentBlobLoading}
+            />
+            Blob Details
+            <NavArrow
+              type="next"
+              size="lg"
+              onClick={() => handleNavClick("next")}
+              tooltip="Next Blob from This Sender"
+              disabled={!position || nextBlob === null || adjacentBlobLoading}
+            />
+            {adjacentBlobError && (
+              <span className="text-sm font-normal text-error-600 dark:text-error-300">
+                Couldn&apos;t load the adjacent blob
+              </span>
+            )}
+          </div>
+        }
         fields={blob ? detailsFields : undefined}
         resource={
           blob

@@ -2,6 +2,7 @@ import { t } from "../../trpc-client";
 import type { ProcedureConfig } from "../../types";
 import { createIpfsReferences } from "./createIpfsReferences";
 import { createWeaveVMReferences } from "./createWeaveVMReferences";
+import { getAdjacentBlob } from "./getAdjacentBlob";
 import { getAll } from "./getAll";
 import { createBlobDataByBlobIdProcedure } from "./getBlobDataByBlobId";
 import { getByBlobId } from "./getByBlobId";
@@ -15,6 +16,7 @@ export function createBlobRouter(config?: BlobRouterConfig) {
   return t.router({
     createIpfsReferences,
     createWeaveVMReferences,
+    getAdjacentBlob,
     getAll,
     getByBlobId,
     getCount,

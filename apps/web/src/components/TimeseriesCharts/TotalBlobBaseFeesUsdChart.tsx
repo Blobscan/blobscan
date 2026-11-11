@@ -2,6 +2,8 @@ import { createTimeseriesChart } from "./factories";
 
 export const TotalBlobBaseFeesUsdChart = createTimeseriesChart({
   baseProps: {
+    description:
+      "The total blob base fees in each period, in USD. These fees exclude execution gas fees.",
     title: "Total Blob Base Fees",
     yAxis: {
       type: "count",

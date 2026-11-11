@@ -1,6 +1,8 @@
 import { createMaxAvgMinChart } from "./factories";
 
 export const EthPriceChart = createMaxAvgMinChart({
+  description:
+    "The highest, average, and lowest ETH prices in USD in each period.",
   title: "ETH Price",
   label: "ETH Price",
   metrics: {

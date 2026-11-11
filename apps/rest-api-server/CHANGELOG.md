@@ -1,5 +1,24 @@
 # @blobscan/rest-api-server
 
+## 0.18.6
+
+### Patch Changes
+
+- Updated dependencies [[`24db0b0`](https://github.com/Blobscan/blobscan/commit/24db0b05a5a84bb7cb970aaedf50bb327a63c0d1), [`24db0b0`](https://github.com/Blobscan/blobscan/commit/24db0b05a5a84bb7cb970aaedf50bb327a63c0d1)]:
+  - @blobscan/api@0.45.0
+  - @blobscan/db@0.35.0
+  - @blobscan/blob-propagator@0.11.6
+  - @blobscan/blob-storage-manager@0.15.5
+  - @blobscan/rollups@0.10.2
+  - @blobscan/syncers@0.8.4
+
+## 0.18.5
+
+### Patch Changes
+
+- Updated dependencies [[`a790102`](https://github.com/Blobscan/blobscan/commit/a790102c5e861dca9a574196655ffcc7be89d5ee), [`c4ca720`](https://github.com/Blobscan/blobscan/commit/c4ca720b071c2d1b398e5e87ef02a920d1c4158f), [`f885151`](https://github.com/Blobscan/blobscan/commit/f885151f21aa1c0ae12b67bb518e1b6f70d8f55c)]:
+  - @blobscan/api@0.44.0
+
 ## 0.18.4
 
 ### Patch Changes

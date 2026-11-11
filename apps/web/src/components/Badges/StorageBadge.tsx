@@ -8,7 +8,7 @@ import type { BlobStorage } from "~/types";
 import { capitalize } from "~/utils";
 import { Icon } from "../Icon";
 import type { BadgeProps } from "./Badge";
-import { Badge } from "./Badge";
+import { BrandBadge } from "./BrandBadge";
 
 type StorageBadgeProps = BadgeProps & {
   compact?: boolean;
@@ -24,7 +24,7 @@ export const StorageBadge: FC<StorageBadgeProps> = ({
 }) => {
   const {
     name = capitalize(storage),
-    badgeClassname,
+    color,
     iconSrc = `${storage}.svg`,
   } = STORAGE_DEFINITIONS[storage];
 
@@ -42,10 +42,14 @@ export const StorageBadge: FC<StorageBadgeProps> = ({
       {compact ? (
         storageIcon
       ) : (
-        <Badge className={badgeClassname} {...props}>
+        <BrandBadge
+          brandColor={color}
+          className="hover:brightness-95 dark:hover:brightness-110"
+          {...props}
+        >
           {storageIcon}
           {name}
-        </Badge>
+        </BrandBadge>
       )}
     </NextLink>
   );

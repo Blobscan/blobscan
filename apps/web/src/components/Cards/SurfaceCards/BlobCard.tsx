@@ -2,12 +2,13 @@ import type { FC } from "react";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
+import { ContentReveal } from "~/components/ContentReveal";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Separator } from "~/components/Separator";
 import { Skeleton } from "~/components/Skeleton";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { routes } from "~/routes";
-import type { Blob, Rollup } from "~/types";
+import type { Blob, BlobPosition, Rollup } from "~/types";
 import { Link } from "../../Link";
 import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
@@ -22,6 +23,9 @@ type BlobCardProps = Partial<{
     | "dataStorageReferences"
     | "proof"
   > & { rollup?: Rollup | null };
+  // The position of the blob in its transaction. The blob page needs it,
+  // because a blob can be in more than one transaction.
+  position?: BlobPosition;
   compact?: boolean;
   className?: string;
 }>;
@@ -36,6 +40,7 @@ const BlobCard: FC<BlobCardProps> = ({
     proof,
     rollup,
   } = {},
+  position,
   compact,
   className,
 }) => {
@@ -49,31 +54,39 @@ const BlobCard: FC<BlobCardProps> = ({
   return (
     <SurfaceCardBase className={className}>
       <div className="flex flex-col gap-1 text-sm">
-        {versionedHash ? (
-          <div className="flex justify-between gap-2">
-            <div className={`flex gap-1 ${isCompact ? "max-w-[92%]" : ""}`}>
-              <span className="text-contentSecondary-light dark:text-surfaceContentSecondary-dark">
-                Blob
-              </span>
-              <Link href={routes.blob(versionedHash)}>{versionedHash}</Link>
+        <ContentReveal isLoading={!versionedHash}>
+          {versionedHash ? (
+            <div className="flex justify-between gap-2">
+              <div className={`flex gap-1 ${isCompact ? "max-w-[92%]" : ""}`}>
+                <span className="text-contentSecondary-light dark:text-surfaceContentSecondary-dark">
+                  Blob
+                </span>
+                <Link href={routes.blob(versionedHash, position)}>
+                  {versionedHash}
+                </Link>
+              </div>
+              {rollup ? (
+                <RollupBadge key={rollup} rollup={rollup} compact />
+              ) : null}
             </div>
-            {rollup ? (
-              <RollupBadge key={rollup} rollup={rollup} compact />
-            ) : null}
-          </div>
-        ) : (
-          <Skeleton width={isCompact ? undefined : 630} />
-        )}
-        {commitment ? (
-          <CardField name="Commitment" value={commitment} />
-        ) : (
-          <Skeleton width={isCompact ? undefined : 760} size="xs" />
-        )}
-        {proof ? (
-          <CardField name="Proof" value={proof} />
-        ) : (
-          <Skeleton width={isCompact ? undefined : 740} size="xs" />
-        )}
+          ) : (
+            <Skeleton width={isCompact ? undefined : 630} />
+          )}
+        </ContentReveal>
+        <ContentReveal isLoading={!commitment}>
+          {commitment ? (
+            <CardField name="Commitment" value={commitment} />
+          ) : (
+            <Skeleton width={isCompact ? undefined : 760} size="xs" />
+          )}
+        </ContentReveal>
+        <ContentReveal isLoading={!proof}>
+          {proof ? (
+            <CardField name="Proof" value={proof} />
+          ) : (
+            <Skeleton width={isCompact ? undefined : 740} size="xs" />
+          )}
+        </ContentReveal>
         <div className="flex flex-row items-center gap-2 text-xs">
           {size !== undefined && usageSize !== undefined && (
             <BlobUsageDisplay
