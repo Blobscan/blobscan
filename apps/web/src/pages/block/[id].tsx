@@ -244,14 +244,12 @@ const Block: NextPage = function () {
         name: "Blob Size",
         helpText: "The total amount of blob data in this block.",
         value: (
-          <div className="flex flex-wrap items-center gap-2">
+          <span>
             {formatBytes(totalBlobSize)}
-            <CountBadge
-              count={blobCount}
-              label={pluralize("blob", blobCount)}
-              size="xs"
-            />
-          </div>
+            <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
+              ({formatNumber(blobCount)} {pluralize("blob", blobCount)})
+            </span>
+          </span>
         ),
       },
       {
@@ -284,16 +282,12 @@ const Block: NextPage = function () {
         helpText:
           "The total amount of blob gas consumed in excess of the target, prior to the current block",
         value: (
-          <div className="flex flex-wrap items-center gap-2">
+          <div>
             {blockData.excessBlobGas.toString()}
-            <CountBadge
-              count={Number(blockData.excessBlobGas) / blobSize}
-              label={pluralize(
-                "blob",
-                Number(blockData.excessBlobGas) / blobSize
-              )}
-              size="xs"
-            />
+            <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
+              ({formatNumber(Number(blockData.excessBlobGas) / blobSize)}{" "}
+              {pluralize("blob", Number(blockData.excessBlobGas) / blobSize)})
+            </span>
           </div>
         ),
       },
@@ -327,13 +321,12 @@ const Block: NextPage = function () {
         name: "Blob Gas Limit",
         helpText: "The maximum blob gas limit for this block.",
         value: (
-          <div className="flex flex-wrap items-center gap-2">
+          <div>
             {formatNumber(blobGasLimit)}
-            <CountBadge
-              count={maxBlobsPerBlock}
-              label={`${pluralize("blob", maxBlobsPerBlock)} per block`}
-              size="xs"
-            />
+            <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
+              ({formatNumber(maxBlobsPerBlock)}{" "}
+              {pluralize("blob", maxBlobsPerBlock)} per block)
+            </span>
           </div>
         ),
       },
