@@ -6,6 +6,8 @@ import { createTimeseriesChart } from "./factories";
 
 export const TotalBlobGasComparisonChart = createTimeseriesChart({
   baseProps: {
+    description:
+      "The blob gas used in each period compared with the estimated execution gas needed to send the same data as calldata.",
     title: "Total Blob Gas Expenditure Comparison",
     yAxis: {
       type: "count",

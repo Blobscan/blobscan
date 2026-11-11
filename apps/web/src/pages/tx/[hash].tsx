@@ -184,15 +184,22 @@ const Tx: NextPage = () => {
     detailsFields = [
       {
         name: "Hash",
+        helpText: "The unique hash of this transaction.",
         value: <Copyable value={hash} tooltipText="Copy Hash" />,
       },
-      { name: "Status", value: <BlockStatusBadge blockNumber={blockNumber} /> },
+      {
+        name: "Status",
+        helpText: "The finality status of the block that contains this item.",
+        value: <BlockStatusBadge blockNumber={blockNumber} />,
+      },
       {
         name: "Block",
+        helpText: "The block that contains this item.",
         value: <Link href={routes.block(blockNumber)}>{blockNumber}</Link>,
       },
       {
         name: "Timestamp",
+        helpText: "The time of the block that contains this item.",
         value: (
           <div className="whitespace-break-spaces">
             {formatTimestamp(blockTimestamp)}
@@ -201,10 +208,13 @@ const Tx: NextPage = () => {
       },
       {
         name: "Position In Block",
+        helpText:
+          "The position of this transaction in the block, starting from zero.",
         value: tx.index,
       },
       {
         name: "From",
+        helpText: "The address that sent this transaction.",
         value: (
           <Copyable value={checksumFrom} tooltipText="Copy from address">
             <Link href={routes.address(from)}>{checksumFrom}</Link>
@@ -213,6 +223,7 @@ const Tx: NextPage = () => {
       },
       {
         name: "To",
+        helpText: "The destination address of this transaction.",
         value: (
           <Copyable value={checksumTo} tooltipText="Copy to address">
             <Link href={routes.address(to)}>{checksumTo}</Link>
@@ -224,6 +235,7 @@ const Tx: NextPage = () => {
     if (rollup) {
       detailsFields.push({
         name: "Rollup",
+        helpText: "The rollup associated with the blob transaction.",
         value: <RollupBadge rollup={rollup} />,
       });
     }
@@ -234,6 +246,8 @@ const Tx: NextPage = () => {
     detailsFields.push(
       {
         name: "Blob Size",
+        helpText:
+          "The total size of blobs in this transaction, including padding bytes.",
         value: (
           <span>
             {formatBytes(totalBlobSize)}{" "}
@@ -246,6 +260,9 @@ const Tx: NextPage = () => {
       {
         name: "Blob Usage",
 
+        helpText:
+          "The total size of blob data after trailing zero bytes are removed. The percentage compares this size with the full blob size.",
+
         value: (
           <BlobUsageDisplay
             blobSize={totalBlobSize}
@@ -257,6 +274,7 @@ const Tx: NextPage = () => {
 
       {
         name: "Blob Gas Price",
+        helpText: "The price per unit of blob gas in this block.",
         value: (
           <EtherDisplay
             weiAmount={block.blobGasPrice}
@@ -269,6 +287,8 @@ const Tx: NextPage = () => {
       },
       {
         name: "Blob Fee",
+        helpText:
+          "Base is the blob fee paid. Max is the maximum total blob fee allowed by the sender. These amounts exclude execution gas fees.",
         value: (
           <div className="flex flex-col gap-4">
             {blobGasBaseFee ? (
@@ -296,10 +316,14 @@ const Tx: NextPage = () => {
       },
       {
         name: "Blob Gas Used",
+        helpText:
+          "The total blob gas used by this transaction. Blob gas is separate from execution gas.",
         value: formatNumber(blobGasUsed),
       },
       {
         name: "Blob As Calldata Gas Used",
+        helpText:
+          "The estimated execution gas needed to send the same blob data as calldata.",
         value: (
           <div>
             {formatNumber(blobAsCalldataGasUsed)}{" "}
@@ -321,6 +345,8 @@ const Tx: NextPage = () => {
       },
       {
         name: "Blob As Calldata Gas Fee",
+        helpText:
+          "The estimated fee to send the same blob data as calldata at the execution gas price of this transaction.",
         value: (
           <div className="display flex gap-1">
             <EtherDisplay weiAmount={blobAsCalldataGasFee} />
@@ -345,6 +371,7 @@ const Tx: NextPage = () => {
     if (ethUsdPrice) {
       detailsFields.push({
         name: "ETH Price",
+        helpText: "The price of one ETH in USD at the time of this block.",
         value: <FiatDisplay amount={ethUsdPrice} />,
       });
     }

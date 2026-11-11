@@ -6,6 +6,8 @@ import { createTimeseriesChart } from "./factories";
 
 export const TotalUniqueAddressesChart = createTimeseriesChart({
   baseProps: {
+    description:
+      "The number of new blob transaction senders and receivers in each period, based on their first block in each role. An address can appear in both groups.",
     title: "Total Unique Addresses",
     yAxis: { type: "count" },
     timeseries: [

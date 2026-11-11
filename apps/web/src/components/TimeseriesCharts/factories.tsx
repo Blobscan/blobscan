@@ -2,7 +2,7 @@
  * Functions that make timeseries chart components. Put other chart helpers in
  * helpers.ts.
  */
-import type { FC } from "react";
+import type { FC, ReactNode } from "react";
 import React from "react";
 
 import type { TimeseriesMetric } from "~/types";
@@ -87,12 +87,14 @@ const MAX_MIN_SERIES_STYLE = {
  */
 export function createMaxAvgMinChart({
   title,
+  description,
   label,
   metrics: { max, avg, min },
   yAxis,
   componentName,
 }: {
   title: string;
+  description?: ReactNode;
   /** The series names are "Max. <label>", "Avg. <label>" and "Min. <label>". */
   label: string;
   metrics: {
@@ -106,6 +108,7 @@ export function createMaxAvgMinChart({
   return createTimeseriesChart({
     baseProps: {
       title,
+      description,
       yAxis,
       timeseries: [
         {

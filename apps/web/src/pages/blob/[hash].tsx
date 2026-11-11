@@ -188,6 +188,8 @@ const Blob: NextPage = function () {
 
     detailsFields.push({
       name: "Versioned Hash",
+      helpText:
+        "The hash that identifies this blob commitment. The first byte identifies the commitment version.",
       value: (
         <Copyable
           value={blob.versionedHash}
@@ -199,6 +201,7 @@ const Blob: NextPage = function () {
     if (blob.transactions[0]) {
       detailsFields.push({
         name: "Status",
+        helpText: "The finality status of the block that contains this item.",
         value: blob.transactions[0] && (
           <BlockStatusBadge blockNumber={blob.transactions[0].blockNumber} />
         ),
@@ -212,6 +215,7 @@ const Blob: NextPage = function () {
       detailsFields.push(
         {
           name: "Block",
+          helpText: "The block that contains this item.",
           value: (
             <div className="flex items-center gap-2 truncate">
               <Link href={routes.block(blockNumber)}>{blockNumber}</Link>
@@ -224,6 +228,7 @@ const Blob: NextPage = function () {
         },
         {
           name: "Transaction",
+          helpText: "The transaction that includes this blob.",
           value: (
             <div className="flex items-center gap-2 truncate" title={txHash}>
               {<Link href={routes.tx(txHash)}>{txHash}</Link>}
@@ -233,6 +238,7 @@ const Blob: NextPage = function () {
         },
         {
           name: "Timestamp",
+          helpText: "The time of the block that contains this item.",
           value: (
             <div className="whitespace-break-spaces">
               {formatTimestamp(blockTimestamp)}
@@ -244,12 +250,15 @@ const Blob: NextPage = function () {
       if (rollup) {
         detailsFields.push({
           name: "Rollup",
+          helpText: "The rollup associated with the blob transaction.",
           value: <RollupBadge key={rollup} rollup={rollup} />,
         });
       }
 
       detailsFields.push({
         name: "Position In Transaction",
+        helpText:
+          "The position of this blob in the transaction, starting from zero.",
         value: index,
       });
     }
@@ -257,17 +266,26 @@ const Blob: NextPage = function () {
     detailsFields.push(
       {
         name: "Commitment",
+        helpText: "The KZG cryptographic commitment to the blob data.",
         value: (
           <Copyable value={blob.commitment} tooltipText="Copy commitment" />
         ),
       },
       {
         name: "Proof",
+        helpText:
+          "The KZG proof used to verify that the blob data matches its commitment.",
         value: <Copyable value={blob.proof} tooltipText="Copy proof" />,
       },
-      { name: "Size", value: formatBytes(blob.size) },
+      {
+        name: "Size",
+        helpText: "The full size of this blob, including padding bytes.",
+        value: formatBytes(blob.size),
+      },
       {
         name: "Usage",
+        helpText:
+          "The size of this blob after trailing zero bytes are removed. The percentage compares this size with the full blob size.",
         value: (
           <BlobUsageDisplay
             blobSize={blob.size}
@@ -281,6 +299,7 @@ const Blob: NextPage = function () {
     if (blob.dataStorageReferences.length > 0) {
       detailsFields.push({
         name: "Storages",
+        helpText: "The storage services that provide a copy of this blob data.",
         value: (
           <div className="flex flex-wrap items-center gap-2">
             {blob.dataStorageReferences.map(({ storage, url }) => (

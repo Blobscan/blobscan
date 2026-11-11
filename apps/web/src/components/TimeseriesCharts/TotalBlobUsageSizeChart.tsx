@@ -2,6 +2,8 @@ import { createTimeseriesChart } from "./factories";
 
 export const TotalBlobUsageSizeChart = createTimeseriesChart({
   baseProps: {
+    description:
+      "The total size of blob data in each period after trailing zero bytes are removed.",
     title: "Total Blob Usage",
     yAxis: {
       type: "count",

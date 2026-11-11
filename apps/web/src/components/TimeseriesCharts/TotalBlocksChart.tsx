@@ -3,6 +3,8 @@ import { createTimeseriesChart } from "./factories";
 
 export const TotalBlocksChart = createTimeseriesChart({
   baseProps: {
+    description:
+      "The number of blocks that contain blob transactions in each period.",
     title: "Total Blocks",
     yAxis: { type: "count" },
     timeseries: [

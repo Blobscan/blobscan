@@ -1,6 +1,8 @@
 import { createMaxAvgMinChart } from "./factories";
 
 export const BlobGasPriceChart = createMaxAvgMinChart({
+  description:
+    "The highest, average, and lowest price per unit of blob gas in each period.",
   title: "Blob Gas Price",
   label: "Blob Gas Price",
   metrics: {
