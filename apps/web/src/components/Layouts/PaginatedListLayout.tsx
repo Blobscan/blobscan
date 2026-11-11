@@ -15,6 +15,7 @@ export type PaginatedListLayoutProps = {
   title?: ReactNode;
   items?: ReactNode[];
   pagination?: PaginationInfo;
+  totalItems?: number;
   pageSize?: number;
   itemSkeleton: ReactNode;
   isLoading?: boolean;
@@ -25,11 +26,12 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   title,
   items,
   pagination,
+  totalItems,
   pageSize = 50,
   itemSkeleton,
   isLoading,
 }) {
-  const { onChange, onPageSizeChange, hasCursor } =
+  const { onChange, onPageSizeChange, hasCursor, currentPage } =
     useCursorPagination(pageSize);
   const isEmpty = !isLoading && !items?.length;
 
@@ -48,6 +50,9 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
               <div className="w-full self-center sm:w-auto">
                 <Pagination
                   pagination={pagination}
+                  currentPage={currentPage}
+                  pageSize={pageSize}
+                  totalItems={totalItems}
                   hasCursor={hasCursor}
                   isLoading={isLoading}
                   onChange={onChange}
@@ -81,6 +86,9 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
               <div className="w-full sm:w-auto">
                 <Pagination
                   pagination={pagination}
+                  currentPage={currentPage}
+                  pageSize={pageSize}
+                  totalItems={totalItems}
                   hasCursor={hasCursor}
                   isLoading={isLoading}
                   onChange={onChange}

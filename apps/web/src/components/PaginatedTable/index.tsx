@@ -27,6 +27,7 @@ export type PaginatedTableProps = {
   emptyStateDescription?: string;
   isLoading: boolean;
   pagination?: PaginationInfo;
+  totalItems?: number;
   isExpandable?: boolean;
   paginationData?: PaginationData;
   rowSkeletonHeight?: string | number;
@@ -52,6 +53,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
   headers,
   rows,
   pagination,
+  totalItems,
   paginationData,
   emptyStateDescription,
   isExpandable = false,
@@ -60,7 +62,8 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
   const { ps = 50 } = paginationData || {};
   const isEmpty = !isLoading && !rows?.length;
 
-  const { onChange, onPageSizeChange, hasCursor } = useCursorPagination(ps);
+  const { onChange, onPageSizeChange, hasCursor, currentPage } =
+    useCursorPagination(ps);
 
   return (
     <Card
@@ -70,6 +73,9 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
             <div className="w-full self-center sm:w-auto">
               <Pagination
                 pagination={pagination}
+                currentPage={currentPage}
+                pageSize={ps}
+                totalItems={totalItems}
                 hasCursor={hasCursor}
                 isLoading={isLoading}
                 onChange={onChange}
@@ -112,6 +118,9 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
             <div className="w-full sm:w-auto">
               <Pagination
                 pagination={pagination}
+                currentPage={currentPage}
+                pageSize={ps}
+                totalItems={totalItems}
                 hasCursor={hasCursor}
                 isLoading={isLoading}
                 onChange={onChange}

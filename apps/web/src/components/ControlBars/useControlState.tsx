@@ -53,7 +53,7 @@ export const controlParamsSchema = filterParamsSchema
   .merge(sortParamsSchema)
   .merge(timeFrameParamSchema)
   .merge(granularityParamSchema)
-  .merge(paginationParamsSchema.pick({ cursor: true }));
+  .merge(paginationParamsSchema.pick({ cursor: true, page: true }));
 
 type ControlParams = z.infer<typeof controlParamsSchema>;
 
@@ -182,6 +182,7 @@ export function useControlState(extraParams?: ExtraParams) {
       // updateState keeps the previous value from the URL.
       const newUrlState: ControlParams = {
         cursor: undefined,
+        page: undefined,
         sort,
         categories: categories ? [categories.value] : undefined,
         rollups: rollups?.length ? rollups.map((r) => r.value) : undefined,

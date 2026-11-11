@@ -5,7 +5,10 @@ import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
 import { useUrlState } from "~/hooks/useUrlState";
 import ErrorPage from "~/pages/_error";
-import { paginationParamsSchema } from "~/schemas/pagination";
+import {
+  normalizePaginationParams,
+  paginationParamsSchema,
+} from "~/schemas/pagination";
 import type { Pagination, TransactionWithExpandedBlockAndBlob } from "~/types";
 import { formatNumber } from "~/utils";
 
@@ -35,13 +38,16 @@ export type AddressTransactionsTabProps = {
 export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
   function ({ address, totalTransactions, enabled }) {
     const { state: urlState, isReady } = useUrlState(paginationParamsSchema);
+    const { cursor, ps } = normalizePaginationParams(urlState);
     const { data, isLoading, error } = api.tx.getAll.useQuery<{
       transactions: TransactionWithExpandedBlockAndBlob[];
       pagination: Pagination;
+      totalTransactions?: number;
     }>(
       {
-        cursor: urlState?.cursor,
-        ps: urlState?.ps,
+        cursor,
+        ps,
+        count: true,
         address,
         expand: "block,blob",
       },
@@ -53,12 +59,14 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
       }
     );
 
+    const transactionCount = data?.totalTransactions ?? totalTransactions;
+
     if (error) {
       return (
         <ErrorPage
           error={error}
           overrides={
-            urlState?.cursor
+            cursor
               ? undefined
               : {
                   BAD_REQUEST: {
@@ -74,7 +82,9 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
     return (
       <PaginatedListLayout
         title={`Blob Transactions ${
-          totalTransactions ? `(${formatNumber(totalTransactions)})` : ""
+          transactionCount === undefined
+            ? ""
+            : `(${formatNumber(transactionCount)})`
         }`}
         isLoading={isLoading}
         items={data?.transactions.map((tx) => {
@@ -90,7 +100,8 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
           );
         })}
         pagination={data?.pagination}
-        pageSize={urlState?.ps}
+        totalItems={transactionCount}
+        pageSize={ps}
         itemSkeleton={<BlobTransactionCard />}
       />
     );

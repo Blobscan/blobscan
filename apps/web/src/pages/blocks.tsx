@@ -14,6 +14,7 @@ import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
+import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
 import type { TimestampFormat } from "~/components/Toggles";
 import { TimestampToggle } from "~/components/Toggles";
@@ -28,7 +29,7 @@ import type {
   Rollup,
 } from "~/types";
 import type { ByteUnit } from "~/utils";
-import { normalizeTimestamp, shortenHash } from "~/utils";
+import { formatNumber, normalizeTimestamp, shortenHash } from "~/utils";
 
 const BYTES_UNIT: ByteUnit = "KiB";
 const ETHER_UNIT: EtherUnit = "Gwei";
@@ -43,9 +44,11 @@ const Blocks: NextPage = function () {
   } = api.block.getAll.useQuery<{
     blocks: BlockWithExpandedBlobsAndTransactions[];
     pagination: Pagination;
+    totalBlocks?: number;
   }>(
     {
       ...pagination,
+      count: true,
       ...filterParams,
       sort,
       expand: "transaction,blob",
@@ -369,7 +372,16 @@ const Blocks: NextPage = function () {
         title="Blocks"
         description="Browse and explore all blocks containing EIP-4844 blob transactions."
       />
-      <Header>Blocks</Header>
+      <Header>
+        <div className="flex items-center gap-2">
+          <span>Blocks</span>
+          {blocksData?.totalBlocks === undefined ? (
+            <Skeleton width={100} height={25} />
+          ) : (
+            <span>({formatNumber(blocksData.totalBlocks)})</span>
+          )}
+        </div>
+      </Header>
       <ListControlBar />
       <PaginatedTable
         emptyStateDescription="No Blocks"
@@ -377,6 +389,7 @@ const Blocks: NextPage = function () {
         headers={blockHeaders}
         rows={blocksRows}
         pagination={blocksData?.pagination}
+        totalItems={blocksData?.totalBlocks}
         paginationData={pagination}
         isExpandable
       />

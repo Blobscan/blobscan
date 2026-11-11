@@ -13,6 +13,7 @@ import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
+import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
 import type { TimestampFormat } from "~/components/Toggles";
 import { TimestampToggle } from "~/components/Toggles";
@@ -24,6 +25,7 @@ import type { Pagination, TransactionWithExpandedBlockAndBlob } from "~/types";
 import type { ByteUnit } from "~/utils";
 import {
   formatBytes,
+  formatNumber,
   formatTimestamp,
   shortenHash,
   calculatePercentage,
@@ -45,6 +47,7 @@ const Txs: NextPage = function () {
   }>(
     {
       ...pagination,
+      count: true,
       ...filterParams,
       sort,
       expand: "block,blob",
@@ -345,7 +348,16 @@ const Txs: NextPage = function () {
         title="Blob Transactions"
         description="Browse and explore all blob transactions."
       />
-      <Header>Blob Transactions</Header>
+      <Header>
+        <div className="flex items-center gap-2">
+          <span>Blob Transactions</span>
+          {txsData?.totalTransactions === undefined ? (
+            <Skeleton width={100} height={25} />
+          ) : (
+            <span>({formatNumber(txsData.totalTransactions)})</span>
+          )}
+        </div>
+      </Header>
       <ListControlBar />
       <PaginatedTable
         emptyStateDescription="No Blob Transactions"
@@ -353,6 +365,7 @@ const Txs: NextPage = function () {
         headers={transactionHeaders}
         rows={transactionRows}
         pagination={txsData?.pagination}
+        totalItems={txsData?.totalTransactions}
         paginationData={pagination}
         isExpandable
       />
