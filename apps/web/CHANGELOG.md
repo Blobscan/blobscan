@@ -1,5 +1,19 @@
 # @blobscan/web
 
+## 0.63.0
+
+### Minor Changes
+
+- [#1108](https://github.com/Blobscan/blobscan/pull/1108) [`d4bc12a`](https://github.com/Blobscan/blobscan/commit/d4bc12aebd7f4db81239be5519fa88216068020c) Thanks [@PJColombo](https://github.com/PJColombo)! - Replaced address transaction cards with a paginated, expandable table. Added direction labels, rollup logos, blob usage, and fee columns. Shared the blob table across transaction views.
+
+### Patch Changes
+
+- [#1106](https://github.com/Blobscan/blobscan/pull/1106) [`6be6db6`](https://github.com/Blobscan/blobscan/commit/6be6db6dc8bf1af767e2e357d85873e8b8058a9e) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed ETH price charts, metrics, and USD fee displays from testnets and Gnosis.
+
+- [#1109](https://github.com/Blobscan/blobscan/pull/1109) [`63603fa`](https://github.com/Blobscan/blobscan/commit/63603fad52f48f44247b35cc3e77fbc649d20438) Thanks [@PJColombo](https://github.com/PJColombo)! - Changed category and rollup badges to appear side by side.
+
+- [#1103](https://github.com/Blobscan/blobscan/pull/1103) [`5779749`](https://github.com/Blobscan/blobscan/commit/5779749cf84aa805fc5d7b72f82a3bd85d4db2aa) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated badges to use the same height, borders, and background tints. Replaced the Rollup field with Category on transaction and blob pages, and used a four-square icon for Other.
+
 ## 0.62.0
 
 ### Minor Changes
