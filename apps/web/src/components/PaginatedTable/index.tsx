@@ -144,6 +144,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
                 : rows
             }
             fixedColumnsWidth
+            revealRows={!isLoading}
           />
           <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
             <div className="flex items-center justify-start gap-2">

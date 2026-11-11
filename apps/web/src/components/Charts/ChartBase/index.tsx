@@ -11,6 +11,7 @@ import { EmptyState } from "~/components/EmptyState";
 import { HelpIcon } from "~/components/HelpIcon";
 import echarts from "~/echarts";
 import type { Size, ThemeMode, TimeseriesDimension } from "~/types";
+import { ContentReveal } from "../../ContentReveal";
 import { Legend } from "./Legend";
 import type { LegendItemData, LegendPosition, LegendProps } from "./Legend";
 import {
@@ -568,7 +569,8 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         controls={shouldRenderChart ? headerControls : undefined}
         isLoading={isLoading}
       />
-      <div
+      <ContentReveal
+        isLoading={isLoading}
         className={cn(
           "relative flex w-full flex-col gap-1 overflow-visible",
           { "md:flex-row md:gap-2": legendPosition === "right" },
@@ -618,7 +620,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
             />
           </div>
         )}
-      </div>
+      </ContentReveal>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import cn from "classnames";
 import { twMerge } from "tailwind-merge";
 
 import type { Size } from "~/types";
+import { getContentRevealProps } from "../ContentReveal";
 import { TableCell } from "./TableCell";
 import type { TableCellProps } from "./TableCell";
 import { TableHeader } from "./TableHeader";
@@ -57,6 +58,7 @@ export type TableProps = {
   size?: Size;
   alignment?: Alignment;
   fixedColumnsWidth?: boolean;
+  revealRows?: boolean;
 } & VariantProps<typeof tableVariants>;
 
 export const Table: FC<TableProps> = function ({
@@ -68,6 +70,7 @@ export const Table: FC<TableProps> = function ({
   headers,
   rows,
   fixedColumnsWidth = false,
+  revealRows = false,
 }) {
   return (
     <div className={twMerge(tableVariants({ variant }))}>
@@ -124,7 +127,7 @@ export const Table: FC<TableProps> = function ({
                   )}
                 </thead>
               )}
-              <tbody>
+              <tbody key={revealRows ? "revealed" : "static"}>
                 {rows?.map(
                   (
                     { cells, expandItem, className: generalRowClassName },
@@ -161,12 +164,22 @@ export const Table: FC<TableProps> = function ({
                       )
                     );
 
+                    const revealProps = revealRows
+                      ? getContentRevealProps(i)
+                      : {};
+
                     return expandableRowsMode ? (
-                      <ExpandableTableRow key={i} expandItem={expandItem}>
+                      <ExpandableTableRow
+                        key={i}
+                        expandItem={expandItem}
+                        {...revealProps}
+                      >
                         {tableCells}
                       </ExpandableTableRow>
                     ) : (
-                      <TableRow key={i}>{tableCells}</TableRow>
+                      <TableRow key={i} {...revealProps}>
+                        {tableCells}
+                      </TableRow>
                     );
                   }
                 )}

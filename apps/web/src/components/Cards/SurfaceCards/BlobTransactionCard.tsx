@@ -7,6 +7,7 @@ import { formatWei } from "@blobscan/eth-format";
 import { Badge } from "~/components/Badges/Badge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Collapsable } from "~/components/Collapsable";
+import { ContentReveal } from "~/components/ContentReveal";
 import { Copyable } from "~/components/Copyable";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { IconButton } from "~/components/IconButton";
@@ -127,25 +128,29 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
             rollup ? "md:min-h-24" : ""
           }`}
         >
-          {hash ? (
-            <div className="flex w-full items-center justify-between gap-2 md:gap-0">
-              <div
-                className={`${
-                  isCompact ? "max-w-[86%]" : "max-w-[70%] sm:w-full"
-                }`}
-              >
-                <span className="text-surfaceContentSecondary-light dark:text-surfaceContentSecondary-dark">
-                  Tx{" "}
-                </span>
-                <Link href={routes.tx(hash)}>{hash}</Link>
+          <ContentReveal isLoading={!hash}>
+            {hash ? (
+              <div className="flex w-full items-center justify-between gap-2 md:gap-0">
+                <div
+                  className={`${
+                    isCompact ? "max-w-[86%]" : "max-w-[70%] sm:w-full"
+                  }`}
+                >
+                  <span className="text-surfaceContentSecondary-light dark:text-surfaceContentSecondary-dark">
+                    Tx{" "}
+                  </span>
+                  <Link href={routes.tx(hash)}>{hash}</Link>
+                </div>
+                <div className="flex items-center gap-2">
+                  {rollup && (
+                    <RollupBadge rollup={rollup} compact={isCompact} />
+                  )}
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                {rollup && <RollupBadge rollup={rollup} compact={isCompact} />}
-              </div>
-            </div>
-          ) : (
-            <Skeleton width={isCompact ? undefined : 500} className="mb-1" />
-          )}
+            ) : (
+              <Skeleton width={isCompact ? undefined : 500} className="mb-1" />
+            )}
+          </ContentReveal>
           <div className="flex w-full flex-col items-center justify-between text-xs md:flex-row">
             <div
               className={`w-full ${
@@ -153,69 +158,78 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
               }`}
             >
               <div className="flex flex-col gap-1 truncate">
-                {from && to ? (
-                  <div className="flex flex-row items-center gap-1 text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-                    <div className="flex justify-start gap-0.5">
-                      <Link href={routes.address(from)}>
-                        {isCompact
-                          ? shortenHash(checksumFrom, 8)
-                          : checksumFrom}
-                      </Link>
-                    </div>
-                    <ArrowRightIcon className="h-3 w-3" />
-                    <div>
-                      <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                        <Link href={routes.address(to)}>
-                          {isCompact ? shortenHash(checksumTo, 8) : checksumTo}
+                <ContentReveal isLoading={!(from && to)}>
+                  {from && to ? (
+                    <div className="flex flex-row items-center gap-1 text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+                      <div className="flex justify-start gap-0.5">
+                        <Link href={routes.address(from)}>
+                          {isCompact
+                            ? shortenHash(checksumFrom, 8)
+                            : checksumFrom}
                         </Link>
                       </div>
-                    </div>
-                  </div>
-                ) : (
-                  <Skeleton width={isCompact ? "80%" : 590} size="xs" />
-                )}
-                {blobGasBaseFee && blobGasMaxFee ? (
-                  <div className="flex w-full flex-row gap-1">
-                    <CardField
-                      name={<div title="Blob Base Fee">B. Base Fee</div>}
-                      value={
-                        <div className="truncate">
-                          {formatWei(blobGasBaseFee)}
-                        </div>
-                      }
-                    />
-                    <CardField
-                      name={<div title="Blob Max Fee">B.Max Fee</div>}
-                      value={
-                        <div className="truncate">
-                          {formatWei(blobGasMaxFee)}
-                        </div>
-                      }
-                    />
-                  </div>
-                ) : (
-                  <Skeleton width={isCompact ? "90%" : 320} size="xs" />
-                )}
-                <div className="flex gap-2 text-xs">
-                  {blobsOnTx ? (
-                    <>
+                      <ArrowRightIcon className="h-3 w-3" />
                       <div>
-                        {blobsOnTx.length} {pluralize("Blob", blobsOnTx.length)}
+                        <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                          <Link href={routes.address(to)}>
+                            {isCompact
+                              ? shortenHash(checksumTo, 8)
+                              : checksumTo}
+                          </Link>
+                        </div>
                       </div>
-                      {typeof totalBlobSize !== "undefined" &&
-                        typeof totalBlobUsage !== "undefined" && (
-                          <>
-                            <Separator />
-                            <BlobUsageDisplay
-                              blobSize={totalBlobSize}
-                              blobUsage={totalBlobUsage}
-                            />
-                          </>
-                        )}
-                    </>
+                    </div>
                   ) : (
-                    <Skeleton width={140} size="xs" />
+                    <Skeleton width={isCompact ? "80%" : 590} size="xs" />
                   )}
+                </ContentReveal>
+                <ContentReveal isLoading={!(blobGasBaseFee && blobGasMaxFee)}>
+                  {blobGasBaseFee && blobGasMaxFee ? (
+                    <div className="flex w-full flex-row gap-1">
+                      <CardField
+                        name={<div title="Blob Base Fee">B. Base Fee</div>}
+                        value={
+                          <div className="truncate">
+                            {formatWei(blobGasBaseFee)}
+                          </div>
+                        }
+                      />
+                      <CardField
+                        name={<div title="Blob Max Fee">B.Max Fee</div>}
+                        value={
+                          <div className="truncate">
+                            {formatWei(blobGasMaxFee)}
+                          </div>
+                        }
+                      />
+                    </div>
+                  ) : (
+                    <Skeleton width={isCompact ? "90%" : 320} size="xs" />
+                  )}
+                </ContentReveal>
+                <div className="flex gap-2 text-xs">
+                  <ContentReveal className="flex gap-2" isLoading={!blobsOnTx}>
+                    {blobsOnTx ? (
+                      <>
+                        <div>
+                          {blobsOnTx.length}{" "}
+                          {pluralize("Blob", blobsOnTx.length)}
+                        </div>
+                        {typeof totalBlobSize !== "undefined" &&
+                          typeof totalBlobUsage !== "undefined" && (
+                            <>
+                              <Separator />
+                              <BlobUsageDisplay
+                                blobSize={totalBlobSize}
+                                blobUsage={totalBlobUsage}
+                              />
+                            </>
+                          )}
+                      </>
+                    ) : (
+                      <Skeleton width={140} size="xs" />
+                    )}
+                  </ContentReveal>
                 </div>
               </div>
             </div>

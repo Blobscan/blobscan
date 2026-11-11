@@ -16,6 +16,7 @@ import { useAppState } from "~/providers/AppState";
 import { useEnv } from "~/providers/Env";
 import { routes } from "~/routes";
 import { capitalize, formatTimestamp } from "~/utils";
+import { ContentReveal } from "../ContentReveal";
 import { DeltaPercentageChange } from "../DeltaPercentage";
 import { FiatDisplay } from "../Displays/FiatDisplay";
 import { Icon } from "../Icon";
@@ -76,7 +77,9 @@ export function NetworkIndicators() {
     indicators.push({
       name: "Network",
       value: env ? (
-        capitalize(env.PUBLIC_NETWORK_NAME)
+        <ContentReveal as="span">
+          {capitalize(env.PUBLIC_NETWORK_NAME)}
+        </ContentReveal>
       ) : (
         <Skeleton height={14} width={48} />
       ),

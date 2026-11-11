@@ -7,6 +7,7 @@ import Skeleton from "react-loading-skeleton";
 
 import { prettyFormatWei } from "@blobscan/eth-format";
 
+import { ContentReveal } from "~/components/ContentReveal";
 import { HelpIcon } from "~/components/HelpIcon";
 import {
   formatBytes,
@@ -197,7 +198,7 @@ function Metric({
   });
 
   return (
-    <div>
+    <ContentReveal isLoading={!isValueSet}>
       {isValueSet ? (
         <div className="flex gap-2 dark:text-warmGray-50">
           <MetricLayout compact={compact}>
@@ -243,7 +244,7 @@ function Metric({
       ) : (
         <Skeleton height={20} width="60%" />
       )}
-    </div>
+    </ContentReveal>
   );
 }
 
@@ -277,7 +278,9 @@ export const MetricCard: FC<MetricCardProps> = function ({
             { "sm:text-sm": !compact }
           )}
         >
-          {name ?? <Skeleton width={80} height={20} />}
+          <ContentReveal as="span" isLoading={name == null}>
+            {name ?? <Skeleton width={80} height={20} />}
+          </ContentReveal>
           {/* The help icon is right after the name. */}
           {name !== undefined && description && (
             <HelpIcon description={description} />
@@ -293,9 +296,9 @@ export const MetricCard: FC<MetricCardProps> = function ({
           )}
         {breakdown &&
           (isValueSet ? (
-            <div className="mt-2">
+            <ContentReveal className="mt-2">
               <MetricBreakdown {...breakdown} />
-            </div>
+            </ContentReveal>
           ) : (
             <div className="mt-2">
               <MetricBreakdownSkeleton />

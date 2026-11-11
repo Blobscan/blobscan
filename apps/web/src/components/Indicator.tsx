@@ -1,3 +1,4 @@
+import { ContentReveal } from "./ContentReveal";
 import { Skeleton } from "./Skeleton";
 
 export type IndicatorProps = {
@@ -20,7 +21,7 @@ export function Indicator({
         {name}:
       </span>
       {value !== undefined ? (
-        <div className="flex items-center gap-1">
+        <ContentReveal className="flex items-center gap-1">
           <div className="text-nowrap text-content-light dark:text-content-dark">
             {value}
           </div>
@@ -29,7 +30,7 @@ export function Indicator({
               <div className="opacity-30">|</div> {secondaryValue}
             </div>
           )}
-        </div>
+        </ContentReveal>
       ) : (
         <Skeleton width={75} />
       )}
