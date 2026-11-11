@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import {
-  QuestionMarkCircleIcon,
+  Squares2X2Icon,
   Square3Stack3DIcon,
 } from "@heroicons/react/24/outline";
 import cn from "classnames";
@@ -19,15 +19,14 @@ const CATEGORY_STYLES: Record<Category, { icon: RenderableIcon }> = {
     icon: Square3Stack3DIcon,
   },
   other: {
-    icon: QuestionMarkCircleIcon,
+    icon: Squares2X2Icon,
   },
 };
 
 type CategoryBadgeProps = BadgeProps & {
   category: Category;
   /**
-   * The rollup of the category. For the rollup category, its badge shows
-   * inside this badge, after the label.
+   * Show the rollup badge after the category label.
    */
   rollup?: Rollup;
 };
@@ -46,14 +45,19 @@ export const CategoryBadge: FC<CategoryBadgeProps> = function ({
   return (
     <BrandBadge
       brandColor={CATEGORY_COLORS[category]}
-      // With a rollup badge inside, the padding at the end is the same as
-      // the space around the rollup badge.
-      className={cn({ "gap-2 py-1 pr-1": subRollup }, extraClassName)}
+      // Keep the same space around the rollup badge.
+      className={cn({ "gap-2 pr-1": subRollup }, extraClassName)}
       {...props}
     >
       <Icon src={icon} size="sm" />
       {label}
-      {subRollup && <RollupBadge rollup={subRollup} size={props.size} />}
+      {subRollup && (
+        <RollupBadge
+          rollup={subRollup}
+          size={props.size}
+          className="h-6 px-2"
+        />
+      )}
     </BrandBadge>
   );
 };
