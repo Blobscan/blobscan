@@ -6,6 +6,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
 import { Button } from "./Button";
+import { ContentReveal } from "./ContentReveal";
 import { Input } from "./Inputs/Input";
 
 type NavigationButton = {
@@ -20,7 +21,6 @@ export type PaginationProps = {
   onChange(page: number): void;
 };
 
- 
 const NOOP = () => {};
 
 const FirstButton: FC<NavigationButton> = function ({ disabled, onChange }) {
@@ -124,7 +124,7 @@ export const Pagination: FC<PaginationProps> = function ({
                 <Skeleton width={33} />
               </span>
             ) : (
-              pages
+              <ContentReveal as="span">{pages}</ContentReveal>
             )}
           </div>
         </div>

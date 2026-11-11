@@ -141,6 +141,11 @@ export const AddressAnalyticsTab: FC<AddressAnalyticsTabProps> = function ({
     enabled,
   };
 
+  // Wait for the URL selection before the section bar sets its first position.
+  if (!isReady) {
+    return null;
+  }
+
   return (
     <TabsBase
       fullWidth

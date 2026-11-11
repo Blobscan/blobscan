@@ -6,6 +6,7 @@ import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
+import { ContentReveal } from "~/components/ContentReveal";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
@@ -374,13 +375,17 @@ const Blocks: NextPage = function () {
         <div className="flex items-center gap-2">
           <div>Blocks</div>
           <div>
-            {!countIsLoading && totalBlocks !== undefined ? (
-              `(${formatNumber(totalBlocks)})`
-            ) : (
-              <div className="relative left-0 top-1">
-                <Skeleton width={100} height={25} />
-              </div>
-            )}
+            <ContentReveal
+              isLoading={countIsLoading || totalBlocks === undefined}
+            >
+              {!countIsLoading && totalBlocks !== undefined ? (
+                `(${formatNumber(totalBlocks)})`
+              ) : (
+                <div className="relative left-0 top-1">
+                  <Skeleton width={100} height={25} />
+                </div>
+              )}
+            </ContentReveal>
           </div>
         </div>
       </Header>

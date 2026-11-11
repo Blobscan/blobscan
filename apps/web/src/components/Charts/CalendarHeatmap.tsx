@@ -4,6 +4,7 @@ import type { EChartsOption } from "echarts";
 import ReactEChartsCore from "echarts-for-react/lib/core";
 import { useTheme } from "next-themes";
 
+import { ContentReveal } from "~/components/ContentReveal";
 import { EmptyState } from "~/components/EmptyState";
 import { HelpIcon } from "~/components/HelpIcon";
 import echarts from "~/echarts";
@@ -308,7 +309,7 @@ export function CalendarHeatmap<T extends CalendarHeatmapItem>({
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <ContentReveal className="flex flex-col gap-2">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="flex items-center gap-1.5 font-semibold">
           {title}
@@ -350,6 +351,6 @@ export function CalendarHeatmap<T extends CalendarHeatmapItem>({
           />
         )}
       </div>
-    </div>
+    </ContentReveal>
   );
 }

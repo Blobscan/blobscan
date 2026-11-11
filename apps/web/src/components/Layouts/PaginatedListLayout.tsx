@@ -4,6 +4,7 @@ import { useRouter } from "next/compat/router";
 
 import { Header } from "~/components/Header";
 import { Card } from "../Cards/Card";
+import { ContentReveal } from "../ContentReveal";
 import { EmptyState } from "../EmptyState";
 import { Pagination } from "../Pagination";
 import type { PaginationProps } from "../Pagination";
@@ -113,7 +114,9 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
                     <Fragment key={i}>{itemSkeleton}</Fragment>
                   ))
                 : (items ?? []).map((item, i) => (
-                    <Fragment key={i}>{item}</Fragment>
+                    <ContentReveal key={i} index={i}>
+                      {item}
+                    </ContentReveal>
                   ))}
             </div>
             <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
