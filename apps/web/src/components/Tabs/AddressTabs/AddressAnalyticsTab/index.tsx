@@ -18,7 +18,7 @@ import {
 import { TabsBase } from "~/components/Tabs/TabsBase";
 import type { FeeUnit } from "~/components/Toggles";
 import { api } from "~/api-client";
-import { useIsTestnet } from "~/hooks/useIsTestnet";
+import { useIsMainnet } from "~/hooks/useIsMainnet";
 import { useUrlState } from "~/hooks/useUrlState";
 import BlobIcon from "~/icons/blob.svg";
 import { feeUnitParamsSchema } from "~/schemas/feeUnit";
@@ -82,8 +82,8 @@ export const AddressAnalyticsTab: FC<AddressAnalyticsTabProps> = function ({
   address,
 }) {
   const { state, updateState, isReady } = useUrlState(controlParamsSchema);
-  const isTestnet = useIsTestnet();
-  const showUsd = isTestnet === false;
+  const isMainnet = useIsMainnet();
+  const showUsd = isMainnet === true;
   const timeFrame = state?.timeFrame ?? DEFAULT_CHART_TIME_FRAME;
   const unit: FeeUnit = showUsd ? state?.unit ?? "eth" : "eth";
   const section: AddressSection = state?.section ?? "activity";
