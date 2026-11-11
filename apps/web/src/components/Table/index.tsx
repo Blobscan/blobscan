@@ -6,6 +6,7 @@ import cn from "classnames";
 import { twMerge } from "tailwind-merge";
 
 import type { Size } from "~/types";
+import { getContentRevealProps } from "../ContentReveal";
 import { TableCell } from "./TableCell";
 import type { TableCellProps } from "./TableCell";
 import { TableHeader } from "./TableHeader";
@@ -164,12 +165,7 @@ export const Table: FC<TableProps> = function ({
                     );
 
                     const revealProps = revealRows
-                      ? {
-                          className: "table-row-reveal",
-                          style: {
-                            animationDelay: `${Math.min(i * 30, 120)}ms`,
-                          },
-                        }
+                      ? getContentRevealProps(i)
                       : {};
 
                     return expandableRowsMode ? (

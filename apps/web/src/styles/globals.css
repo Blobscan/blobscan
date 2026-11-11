@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@keyframes table-row-reveal {
+@keyframes content-reveal {
   from {
     opacity: 0;
     transform: translateY(4px);
@@ -15,8 +15,12 @@
 
 @layer components {
   @media (prefers-reduced-motion: no-preference) {
-    .table-row-reveal {
-      animation: table-row-reveal 180ms ease-out both;
+    .content-reveal {
+      animation: content-reveal 180ms ease-out backwards;
+    }
+
+    .content-reveal .content-reveal {
+      animation: none;
     }
   }
 }

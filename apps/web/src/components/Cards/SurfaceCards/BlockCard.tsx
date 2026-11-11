@@ -4,6 +4,7 @@ import type { FC } from "react";
 import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
+import { ContentReveal } from "~/components/ContentReveal";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Separator } from "~/components/Separator";
 import { Skeleton } from "~/components/Skeleton";
@@ -60,13 +61,15 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
     <SurfaceCardBase className={className}>
       <div className="flex  justify-between gap-2 text-sm">
         <div className="flex gap-2 md:flex-row">
-          {number ? (
-            <div className="flex gap-1 text-contentSecondary-light dark:text-contentSecondary-dark">
-              Block <Link href={routes.block(number)}>{number}</Link>
-            </div>
-          ) : (
-            <Skeleton width={150} />
-          )}
+          <ContentReveal isLoading={!number}>
+            {number ? (
+              <div className="flex gap-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                Block <Link href={routes.block(number)}>{number}</Link>
+              </div>
+            ) : (
+              <Skeleton width={150} />
+            )}
+          </ContentReveal>
         </div>
         <div className="flex items-center gap-2">
           {Object.entries(rollupToAmount).map(([rollup, amount], i) => (
@@ -79,54 +82,63 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
           ))}
         </div>
       </div>
-      {timestamp ? (
-        <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
-          {normalizeTimestamp(timestamp).fromNow()}
-        </div>
-      ) : (
-        <Skeleton width={110} size="xs" />
-      )}
-      <div className="mt-1.5 flex flex-col gap-1 text-xs">
-        <div className="flex w-full gap-1">
-          {blobGasPrice && blobGasUsed ? (
-            <>
-              <CardField
-                name={<div title="Blob Gas Price">B. Gas Price</div>}
-                value={formatWei(blobGasPrice)}
-              />
-              <Separator />
-              <CardField
-                name={<div title="Blob Gas Used">B. Gas Used</div>}
-                value={blobGasUsed.toString()}
-              />
-            </>
-          ) : (
-            <Skeleton width={300} size="xs" />
-          )}
-        </div>
-        {transactions ? (
-          <div className="flex gap-1">
-            <span>
-              {transactions.length} {pluralize("Tx", transactions.length)}
-            </span>
-            <Separator />
-            <span>
-              {blobCount} {pluralize("Blob", blobCount ?? 0)}
-            </span>
-            {totalBlobSize !== undefined && totalBlobUsage !== undefined && (
-              <>
-                <Separator />
-                <BlobUsageDisplay
-                  blobSize={totalBlobSize}
-                  blobUsage={totalBlobUsage}
-                  variant="inline"
-                />
-              </>
-            )}
+      <ContentReveal isLoading={!timestamp}>
+        {timestamp ? (
+          <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
+            {normalizeTimestamp(timestamp).fromNow()}
           </div>
         ) : (
-          <Skeleton width={170} size="xs" />
+          <Skeleton width={110} size="xs" />
         )}
+      </ContentReveal>
+      <div className="mt-1.5 flex flex-col gap-1 text-xs">
+        <div className="flex w-full gap-1">
+          <ContentReveal
+            className="flex w-full gap-1"
+            isLoading={!(blobGasPrice && blobGasUsed)}
+          >
+            {blobGasPrice && blobGasUsed ? (
+              <>
+                <CardField
+                  name={<div title="Blob Gas Price">B. Gas Price</div>}
+                  value={formatWei(blobGasPrice)}
+                />
+                <Separator />
+                <CardField
+                  name={<div title="Blob Gas Used">B. Gas Used</div>}
+                  value={blobGasUsed.toString()}
+                />
+              </>
+            ) : (
+              <Skeleton width={300} size="xs" />
+            )}
+          </ContentReveal>
+        </div>
+        <ContentReveal isLoading={!transactions}>
+          {transactions ? (
+            <div className="flex gap-1">
+              <span>
+                {transactions.length} {pluralize("Tx", transactions.length)}
+              </span>
+              <Separator />
+              <span>
+                {blobCount} {pluralize("Blob", blobCount ?? 0)}
+              </span>
+              {totalBlobSize !== undefined && totalBlobUsage !== undefined && (
+                <>
+                  <Separator />
+                  <BlobUsageDisplay
+                    blobSize={totalBlobSize}
+                    blobUsage={totalBlobUsage}
+                    variant="inline"
+                  />
+                </>
+              )}
+            </div>
+          ) : (
+            <Skeleton width={170} size="xs" />
+          )}
+        </ContentReveal>
       </div>
     </SurfaceCardBase>
   );
