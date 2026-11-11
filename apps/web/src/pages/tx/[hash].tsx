@@ -5,7 +5,7 @@ import { skipToken, useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
 
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
-import { RollupBadge } from "~/components/Badges/RollupBadge";
+import { CategoryBadge } from "~/components/Badges/CategoryBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { Copyable } from "~/components/Copyable";
@@ -169,6 +169,7 @@ const Tx: NextPage = () => {
       from,
       to,
       rollup,
+      category,
       blobGasUsdPrice,
       blobGasUsed,
       blobGasBaseFee,
@@ -232,13 +233,12 @@ const Tx: NextPage = () => {
       },
     ];
 
-    if (rollup) {
-      detailsFields.push({
-        name: "Rollup",
-        helpText: "The rollup associated with the blob transaction.",
-        value: <RollupBadge rollup={rollup} />,
-      });
-    }
+    detailsFields.push({
+      name: "Category",
+      helpText:
+        "Rollup when the transaction posts blobs for a known rollup. Other when it does not.",
+      value: <CategoryBadge category={category} rollup={rollup ?? undefined} />,
+    });
 
     const totalBlobSize = blobs.reduce((acc, b) => acc + b.size, 0);
     const totalBlobUsageSize = blobs.reduce((acc, b) => acc + b.usageSize, 0);

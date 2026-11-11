@@ -1,43 +1,33 @@
 import type { BlobStorage } from "~/types";
 import type { ResourceDefinition } from "~/types/definition";
 
-export const STORAGE_DEFINITIONS: Record<
-  BlobStorage,
-  Omit<ResourceDefinition, "color">
-> = {
+export const STORAGE_DEFINITIONS: Record<BlobStorage, ResourceDefinition> = {
   google: {
     name: "Google",
-    badgeClassname:
-      "bg-slate-100 hover:bg-slate-200 text-slate-800 hover:text-slate-900 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 dark:hover:text-slate-200",
+    color: { light: "#64748B", dark: "#CBD5E1" },
   },
   swarm: {
     name: "Swarm",
-    badgeClassname:
-      "bg-orange-100 hover:bg-orange-200 text-orange-800 hover:text-orange-900 dark:bg-orange-900 dark:text-orange-300 dark:hover:bg-orange-800 dark:hover:text-orange-200",
+    color: { light: "#EA580C", dark: "#FDBA74" },
   },
   swarmycloud: {
     name: "Swarm",
-    badgeClassname:
-      "bg-orange-100 hover:bg-orange-200 text-orange-800 hover:text-orange-900 dark:bg-orange-900 dark:text-orange-300 dark:hover:bg-orange-800 dark:hover:text-orange-200",
+    color: { light: "#EA580C", dark: "#FDBA74" },
   },
   postgres: {
     name: "Postgres",
-    badgeClassname:
-      "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800",
+    color: { light: "#2563EB", dark: "#93C5FD" },
   },
   weavevm: {
     name: "Load Network",
-    badgeClassname:
-      "bg-blue-300 text-gray-800 hover:bg-blue-200 hover:text-blue-900 dark:bg-blue-800 dark:text-blue-300 dark:hover:bg-blue-600 dark:hover:text-blue-200",
+    color: { light: "#2563EB", dark: "#93C5FD" },
   },
   s3: {
     name: "S3",
-    badgeClassname:
-      "bg-yellow-100 hover:bg-yellow-200 text-yellow-800 hover:text-yellow-900 dark:bg-yellow-900 dark:text-yellow-300 dark:hover:bg-yellow-800 dark:hover:text-yellow-200",
+    color: { light: "#CA8A04", dark: "#FDE047" },
   },
   ipfs: {
     name: "IPFS",
-    badgeClassname:
-      "bg-teal-100 hover:bg-teal-200 text-teal-800 hover:text-teal-900 dark:bg-teal-900 dark:text-teal-300 dark:hover:bg-teal-800 dark:hover:text-teal-200",
+    color: { light: "#0D9488", dark: "#5EEAD4" },
   },
 };

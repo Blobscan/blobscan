@@ -11,6 +11,7 @@ import type { Decoder } from "@blobscan/blob-decoder";
 import dayjs from "@blobscan/dayjs";
 
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
+import { CategoryBadge } from "~/components/Badges/CategoryBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
@@ -209,7 +210,7 @@ const Blob: NextPage = function () {
     }
 
     if (isUnique && blob.transactions[0]) {
-      const { blockNumber, blockTimestamp, txHash, index, rollup } =
+      const { blockNumber, blockTimestamp, txHash, index, rollup, category } =
         blob.transactions[0];
 
       detailsFields.push(
@@ -247,11 +248,14 @@ const Blob: NextPage = function () {
         }
       );
 
-      if (rollup) {
+      if (category) {
         detailsFields.push({
-          name: "Rollup",
-          helpText: "The rollup associated with the blob transaction.",
-          value: <RollupBadge key={rollup} rollup={rollup} />,
+          name: "Category",
+          helpText:
+            "Rollup when the transaction posts blobs for a known rollup. Other when it does not.",
+          value: (
+            <CategoryBadge category={category} rollup={rollup ?? undefined} />
+          ),
         });
       }
 

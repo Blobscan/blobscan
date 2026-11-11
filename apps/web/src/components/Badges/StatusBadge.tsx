@@ -1,31 +1,32 @@
 import type { FC } from "react";
 import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
 
+import type { ResourceDefinition } from "~/types/definition";
 import type { RenderableIcon } from "~/types/icons";
 import { capitalize } from "~/utils";
 import { Icon } from "../Icon";
-import { Badge } from "./Badge";
+import type { BadgeProps } from "./Badge";
+import { BrandBadge } from "./BrandBadge";
 
 export type Status = "finalized" | "unfinalized";
 
 type StatusConfig = {
   icon?: RenderableIcon;
-  style: string;
+  color: ResourceDefinition["color"];
 };
 
 const STATUSES: Record<Status, StatusConfig> = {
   finalized: {
     icon: CheckCircleIcon,
-    style:
-      "bg-green-300 text-green-700 border-green-600 dark:bg-green-900/60 dark:text-green-500",
+    color: { light: "#16A34A", dark: "#4ADE80" },
   },
   unfinalized: {
     icon: ClockIcon,
-    style: "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300",
+    color: { light: "#6B7280", dark: "#9CA3AF" },
   },
 };
 
-interface StatusBadgeProps {
+interface StatusBadgeProps extends BadgeProps {
   status: Status;
 }
 
@@ -33,12 +34,14 @@ export const StatusBadge: FC<StatusBadgeProps> = ({
   status = "unfinalized",
   ...props
 }) => {
-  const { style, icon } = STATUSES[status];
-  const statusIcon = icon ? <Icon src={icon} /> : null;
+  const { color, icon } = STATUSES[status];
+  const statusIcon = icon ? (
+    <Icon src={icon} size={props.size ?? "md"} />
+  ) : null;
   return (
-    <Badge className={style} {...props}>
+    <BrandBadge brandColor={color} {...props}>
       {statusIcon}
       {capitalize(status)}
-    </Badge>
+    </BrandBadge>
   );
 };

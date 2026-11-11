@@ -5,24 +5,29 @@ import { twMerge } from "tailwind-merge";
 
 const badgeVariants = cva(
   `
+    h-8
     w-fit
+    shrink-0
     whitespace-nowrap
     flex
     items-center
     gap-1.5
     rounded-full
     px-2.5
-    py-0.5
+    py-0
+    leading-none
     transition-colors
   `,
   {
     variants: {
       variant: {
         primary: `
-          bg-accent-light
-          text-accentContent-light
-          dark:bg-primary-500
-          dark:text-accentContent-dark"
+          border
+          border-primary-500
+          bg-primary-500/10
+          text-content-light
+          dark:bg-primary-500/20
+          dark:text-content-dark
         `,
       },
       size: {
