@@ -29,6 +29,7 @@ export function ratio(
 }
 
 export type DerivedMetrics = {
+  totalFeeUsd?: number;
   avgBlobsPerTx: number;
   avgFeePerTx: bigint;
   avgFeePerTxUsd?: number;
@@ -41,7 +42,7 @@ export type DerivedMetrics = {
   unusedFee: bigint;
   unusedFeeUsd?: number;
   /** Blob fee for each KiB with data. */
-  costPerKb: bigint;
+  costPerKb: bigint | null;
   costPerKbUsd?: number;
   calldataSavings: bigint;
   calldataSavingsUsd?: number;
@@ -68,6 +69,7 @@ export function getDerivedMetrics(totals: RoleTotals): DerivedMetrics {
   const unusedFee = blobSize ? (fee * unusedSize) / blobSize : BigInt(0);
 
   return {
+    totalFeeUsd: usd,
     avgBlobsPerTx: ratio(totalBlobs, totalTransactions) ?? 0,
     avgFeePerTx: totalTransactions
       ? fee / BigInt(totalTransactions)
@@ -83,11 +85,17 @@ export function getDerivedMetrics(totals: RoleTotals): DerivedMetrics {
     unusedFee,
     unusedFeeUsd:
       usd !== undefined ? usd * (1 - (utilization ?? 0)) : undefined,
-    costPerKb: usage ? (fee * BigInt(1024)) / usage : BigInt(0),
+    costPerKb: totalTransactions
+      ? usage
+        ? (fee * BigInt(1024)) / usage
+        : null
+      : BigInt(0),
     costPerKbUsd:
       usd !== undefined
         ? usage
           ? usd / (Number(usage) / 1024)
+          : totalTransactions
+          ? undefined
           : 0
         : undefined,
     calldataSavings: toBigInt(totalBlobAsCalldataFee) - fee,

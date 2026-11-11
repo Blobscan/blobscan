@@ -29,7 +29,8 @@ export type MetricType =
   | "days";
 
 type Metric = {
-  value?: bigint | number;
+  /** Undefined loads the value. Null shows that the value is unavailable. */
+  value?: bigint | number | null;
   numberFormatOpts?: Intl.NumberFormatOptions;
   type?: MetricType;
 };
@@ -210,44 +211,46 @@ function Metric({
       {isValueSet ? (
         <div className="flex gap-2 dark:text-warmGray-50">
           <MetricLayout compact={compact}>
-            {isValueSet ? (
+            {value === null ? (
+              "N/A"
+            ) : (
               <animated.div>
                 {valueProps.value.to(formatDisplayedValue)}
               </animated.div>
-            ) : (
-              0
             )}
           </MetricLayout>
-          <div className="absolute flex items-end  gap-1">
-            {/* Render an invisible component that fills the maximum space the metric value is going
+          {value !== null && (
+            <div className="absolute flex items-end  gap-1">
+              {/* Render an invisible component that fills the maximum space the metric value is going
             to take up to prevent the metric unit from jumping around when the metric value animation
             is running
             */}
-            <div className="invisible">
-              <MetricLayout compact={compact}>
-                {createPlaceholder(
-                  formatDisplayedValue(parsedMetric.numericPart)
-                )}
-              </MetricLayout>
-            </div>
-            <div
-              className={cn(
-                "relative left-0.5 text-xs text-contentSecondary-light dark:text-contentSecondary-dark md:left-0",
-                { " sm:text-xs": compact },
-                { " sm:text-sm": !compact },
-                { "bottom-1": !hasSecondary },
-                { "bottom-0.5 text-xs": hasSecondary }
-              )}
-            >
-              {parsedMetric?.unit}
-            </div>
-            {secondary && (
-              <div className="relative bottom-1 text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-                ({secondary.value}
-                {secondary.type === "percentage" ? "%" : ""})
+              <div className="invisible">
+                <MetricLayout compact={compact}>
+                  {createPlaceholder(
+                    formatDisplayedValue(parsedMetric.numericPart)
+                  )}
+                </MetricLayout>
               </div>
-            )}
-          </div>
+              <div
+                className={cn(
+                  "relative left-0.5 text-xs text-contentSecondary-light dark:text-contentSecondary-dark md:left-0",
+                  { " sm:text-xs": compact },
+                  { " sm:text-sm": !compact },
+                  { "bottom-1": !hasSecondary },
+                  { "bottom-0.5 text-xs": hasSecondary }
+                )}
+              >
+                {parsedMetric?.unit}
+              </div>
+              {secondary && (
+                <div className="relative bottom-1 text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+                  ({secondary.value}
+                  {secondary.type === "percentage" ? "%" : ""})
+                </div>
+              )}
+            </div>
+          )}
         </div>
       ) : (
         <Skeleton height={20} width={skeletonWidth} />

@@ -103,7 +103,7 @@ export function skeletonCards(
  */
 export function feeMetric(
   showUsd: boolean,
-  wei: bigint | undefined,
+  wei: bigint | null | undefined,
   usd: number | null | undefined
 ): Pick<MetricCardProps, "metric" | "secondaryValue"> {
   return {

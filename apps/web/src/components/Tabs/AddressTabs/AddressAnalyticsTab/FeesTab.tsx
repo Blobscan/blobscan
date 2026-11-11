@@ -57,11 +57,7 @@ function buildCards({
   return [
     {
       ...CARDS.total,
-      ...feeMetric(
-        showUsd,
-        BigInt(totals.totalBlobBaseFee),
-        totals.totalBlobBaseFeeUsd
-      ),
+      ...feeMetric(showUsd, BigInt(totals.totalBlobBaseFee), dm.totalFeeUsd),
     },
     {
       ...CARDS.avgPerTx,
