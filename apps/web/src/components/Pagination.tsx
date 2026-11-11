@@ -31,31 +31,25 @@ export const Pagination: FC<PaginationProps> = function ({
         variant="outline"
         size="sm"
         disabled={isLoading || !pagination?.previousCursor}
-        className="inline-flex items-center gap-1"
+        aria-label="Previous"
+        className="inline-flex items-center"
         onClick={() =>
           pagination?.previousCursor && onChange(pagination.previousCursor)
         }
       >
-        <ChevronLeftIcon
-          className="hidden h-4 w-4 sm:block"
-          aria-hidden="true"
-        />
-        Previous
+        <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
       </Button>
       <Button
         variant="outline"
         size="sm"
         disabled={isLoading || !pagination?.nextCursor}
-        className="inline-flex items-center gap-1"
+        aria-label="Next"
+        className="inline-flex items-center"
         onClick={() =>
           pagination?.nextCursor && onChange(pagination.nextCursor)
         }
       >
-        Next
-        <ChevronRightIcon
-          className="hidden h-4 w-4 sm:block"
-          aria-hidden="true"
-        />
+        <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
       </Button>
     </nav>
   );
