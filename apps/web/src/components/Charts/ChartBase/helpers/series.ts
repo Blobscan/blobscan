@@ -1,5 +1,6 @@
 import type { SeriesOption } from "echarts";
 
+import { CATEGORY_COLORS } from "~/defintions/categories";
 import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
 import type { Rollup, TimeseriesDimension } from "~/types";
 
@@ -53,9 +54,9 @@ export function getDimensionColor(
     case "category": {
       switch (dimension.name) {
         case "other":
-          return "#505050";
+          return CATEGORY_COLORS.other[themeMode];
         case "rollup":
-          return DEFAULT_COLORS[1];
+          return CATEGORY_COLORS.rollup[themeMode];
       }
 
       break;
