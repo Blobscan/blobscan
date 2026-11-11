@@ -1,3 +1,5 @@
+/// <reference types="next/image-types/global" />
+
 // We declare svg module to prevent:
 
 // https://stackoverflow.com/questions/44717164/unable-to-import-svg-files-in-typescript
