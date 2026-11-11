@@ -46,7 +46,9 @@ function buildCards({
   showUsd,
 }: AnalyticsSectionProps): MetricCardProps[] {
   if (!overall) {
-    return skeletonCards(Object.values(CARDS));
+    return skeletonCards(Object.values(CARDS), {
+      isSecondaryValueLoading: showUsd,
+    });
   }
 
   const totals = overall[mainRole];
@@ -55,11 +57,7 @@ function buildCards({
   return [
     {
       ...CARDS.total,
-      ...feeMetric(
-        showUsd,
-        BigInt(totals.totalBlobBaseFee),
-        totals.totalBlobBaseFeeUsd
-      ),
+      ...feeMetric(showUsd, BigInt(totals.totalBlobBaseFee), dm.totalFeeUsd),
     },
     {
       ...CARDS.avgPerTx,

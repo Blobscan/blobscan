@@ -9,6 +9,7 @@ import { ContentReveal } from "./ContentReveal";
 import { InfoField } from "./InfoField";
 
 export type InfoGridProps = {
+  skeletonRows?: number;
   fields?: {
     name: ReactNode;
     value: ReactNode;
@@ -16,12 +17,15 @@ export type InfoGridProps = {
   }[];
 };
 
-export const InfoGrid: React.FC<InfoGridProps> = function ({ fields }) {
+export const InfoGrid: React.FC<InfoGridProps> = function ({
+  fields,
+  skeletonRows,
+}) {
   const breakpoint = useBreakpoint();
   const isCompact = breakpoint === "default";
   const headerWidth = isCompact ? "100%" : "55%";
   const valueWidth = isCompact ? "100%" : "50%";
-  const skeletonsLength = isCompact ? 4 : 7;
+  const skeletonsLength = skeletonRows ?? (isCompact ? 4 : 7);
   const skeletonHeight = isCompact ? 15 : 15;
 
   return (

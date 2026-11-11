@@ -13,12 +13,14 @@ import { Separator } from "../Separator";
 export type DetailsLayoutProps = {
   header: ReactNode;
   fields: InfoGridProps["fields"];
+  skeletonRows?: InfoGridProps["skeletonRows"];
   resource?: ExplorerResource;
 };
 
 export const DetailsLayout: FC<DetailsLayoutProps> = function ({
   header,
   fields,
+  skeletonRows,
   resource,
 }) {
   const { buildResourceUrl, explorers } = useExternalExplorers("execution");
@@ -57,7 +59,7 @@ export const DetailsLayout: FC<DetailsLayoutProps> = function ({
           </div>
         }
       >
-        <InfoGrid fields={fields} />
+        <InfoGrid fields={fields} skeletonRows={skeletonRows} />
       </Card>
     </>
   );

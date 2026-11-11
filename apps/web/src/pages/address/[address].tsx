@@ -177,6 +177,7 @@ const Address: NextPage = () => {
           value: checksumAddress,
         }}
         fields={detailsFields}
+        skeletonRows={3}
       />
       <AddressTabs
         address={address}

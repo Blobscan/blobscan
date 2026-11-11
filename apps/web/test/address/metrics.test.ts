@@ -23,6 +23,7 @@ const EMPTY_TOTALS: RoleTotals = {
 describe("address metric cards", () => {
   it("returns zero for all derived card values without transactions", () => {
     expect(getDerivedMetrics(EMPTY_TOTALS)).toMatchObject({
+      totalFeeUsd: 0,
       avgBlobsPerTx: 0,
       avgFeePerTx: BigInt(0),
       avgFeePerTxUsd: 0,
@@ -49,6 +50,7 @@ describe("address metric cards", () => {
         totalUsdPricedTransactions: 2,
       })
     ).toMatchObject({
+      totalFeeUsd: 8,
       avgBlobsPerTx: 2,
       avgFeePerTx: BigInt(512),
       avgFeePerTxUsd: 4,
@@ -69,10 +71,26 @@ describe("address metric cards", () => {
       totalBlobUsageSize: BigInt(1024),
     });
 
+    expect(metrics.totalFeeUsd).toBeUndefined();
     expect(metrics.avgFeePerTxUsd).toBeUndefined();
     expect(metrics.unusedFeeUsd).toBeUndefined();
     expect(metrics.costPerKbUsd).toBeUndefined();
     expect(metrics.calldataSavingsUsd).toBeUndefined();
+  });
+
+  it("keeps cost per KiB unavailable when paid blobs have no useful data", () => {
+    const metrics = getDerivedMetrics({
+      ...EMPTY_TOTALS,
+      totalTransactions: 1,
+      totalBlobs: 1,
+      totalBlobBaseFee: BigInt(1024),
+      totalBlobBaseFeeUsd: 8,
+      totalUsdPricedTransactions: 1,
+    });
+
+    expect(metrics.costPerKb).toBeNull();
+    expect(metrics.costPerKbUsd).toBeUndefined();
+    expect(metrics.totalFeeUsd).toBe(8);
   });
 
   it("keeps ratios undefined when the denominator is zero", () => {

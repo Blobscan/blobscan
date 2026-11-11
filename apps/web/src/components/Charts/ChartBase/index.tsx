@@ -589,25 +589,30 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           }
         )}
       >
-        {shouldRenderChart ? (
-          <ReactEChartsCore
-            echarts={echarts}
-            // The final instance gets this option before onChartReady. During
-            // a load, give the skeleton, so that the empty axes do not show.
-            option={isLoading ? chartSkeletonOptions : baseOptions}
-            onChartReady={setChart}
-            // In a flex row, the chart must shrink below the canvas width.
-            // Then its container gets smaller and the chart resizes.
-            className="min-w-0"
-            style={{ height: "100%", width: "100%" }}
-          />
-        ) : (
-          <EmptyState size={"md"} description="No Chart Data" />
-        )}
-        {isLoading && !compact ? <DataZoomSkeleton /> : null}
+        <div className="relative min-h-0 min-w-0 flex-1">
+          {shouldRenderChart ? (
+            <ReactEChartsCore
+              echarts={echarts}
+              // The final instance gets this option before onChartReady. During
+              // a load, give the skeleton, so that the empty axes do not show.
+              option={isLoading ? chartSkeletonOptions : baseOptions}
+              onChartReady={setChart}
+              // In a flex row, the chart must shrink below the canvas width.
+              // Then its container gets smaller and the chart resizes.
+              className="min-w-0"
+              style={{ height: "100%", width: "100%" }}
+            />
+          ) : (
+            <EmptyState size={"md"} description="No Chart Data" />
+          )}
+          {isLoading && !compact ? <DataZoomSkeleton /> : null}
+        </div>
         {!compact && shouldRenderChart && (
           <div
-            className={cn("h-4", { "md:h-full": legendPosition === "right" })}
+            className={cn("shrink-0", {
+              "mt-4 h-6": legendPosition === "bottom",
+              "h-4 md:h-full": legendPosition === "right",
+            })}
           >
             <Legend
               items={legendItems}

@@ -29,7 +29,8 @@ export type MetricType =
   | "days";
 
 type Metric = {
-  value?: bigint | number;
+  /** Undefined loads the value. Null shows that the value is unavailable. */
+  value?: bigint | number | null;
   numberFormatOpts?: Intl.NumberFormatOptions;
   type?: MetricType;
 };
@@ -47,6 +48,13 @@ export type MetricCardProps = Partial<{
    * value of an amount in ether.
    */
   secondaryValue: ReactNode;
+  /** True while the second value loads. */
+  isSecondaryValueLoading: boolean;
+  /** Widths of the value placeholders, in pixels or CSS units. */
+  skeletonOpts: {
+    primaryWidth?: number | string;
+    secondaryWidth?: number | string;
+  };
   /** A text that tells what the metric is. An icon after the name shows it. */
   description: ReactNode;
   /**
@@ -173,7 +181,8 @@ function Metric({
   primary,
   secondary,
   compact,
-}: MetricProp & { compact?: boolean }) {
+  skeletonWidth = "60%",
+}: MetricProp & { compact?: boolean; skeletonWidth?: number | string }) {
   const hasSecondary = secondary !== undefined;
   const { value, numberFormatOpts, type = "standard" } = primary;
   const parsedMetric = parseMetricValue(value ?? 0, {
@@ -202,47 +211,49 @@ function Metric({
       {isValueSet ? (
         <div className="flex gap-2 dark:text-warmGray-50">
           <MetricLayout compact={compact}>
-            {isValueSet ? (
+            {value === null ? (
+              "N/A"
+            ) : (
               <animated.div>
                 {valueProps.value.to(formatDisplayedValue)}
               </animated.div>
-            ) : (
-              0
             )}
           </MetricLayout>
-          <div className="absolute flex items-end  gap-1">
-            {/* Render an invisible component that fills the maximum space the metric value is going
+          {value !== null && (
+            <div className="absolute flex items-end  gap-1">
+              {/* Render an invisible component that fills the maximum space the metric value is going
             to take up to prevent the metric unit from jumping around when the metric value animation
             is running
             */}
-            <div className="invisible">
-              <MetricLayout compact={compact}>
-                {createPlaceholder(
-                  formatDisplayedValue(parsedMetric.numericPart)
-                )}
-              </MetricLayout>
-            </div>
-            <div
-              className={cn(
-                "relative left-0.5 text-xs text-contentSecondary-light dark:text-contentSecondary-dark md:left-0",
-                { " sm:text-xs": compact },
-                { " sm:text-sm": !compact },
-                { "bottom-1": !hasSecondary },
-                { "bottom-0.5 text-xs": hasSecondary }
-              )}
-            >
-              {parsedMetric?.unit}
-            </div>
-            {secondary && (
-              <div className="relative bottom-1 text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-                ({secondary.value}
-                {secondary.type === "percentage" ? "%" : ""})
+              <div className="invisible">
+                <MetricLayout compact={compact}>
+                  {createPlaceholder(
+                    formatDisplayedValue(parsedMetric.numericPart)
+                  )}
+                </MetricLayout>
               </div>
-            )}
-          </div>
+              <div
+                className={cn(
+                  "relative left-0.5 text-xs text-contentSecondary-light dark:text-contentSecondary-dark md:left-0",
+                  { " sm:text-xs": compact },
+                  { " sm:text-sm": !compact },
+                  { "bottom-1": !hasSecondary },
+                  { "bottom-0.5 text-xs": hasSecondary }
+                )}
+              >
+                {parsedMetric?.unit}
+              </div>
+              {secondary && (
+                <div className="relative bottom-1 text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+                  ({secondary.value}
+                  {secondary.type === "percentage" ? "%" : ""})
+                </div>
+              )}
+            </div>
+          )}
         </div>
       ) : (
-        <Skeleton height={20} width="60%" />
+        <Skeleton height={20} width={skeletonWidth} />
       )}
     </ContentReveal>
   );
@@ -253,6 +264,8 @@ export const MetricCard: FC<MetricCardProps> = function ({
   compact = false,
   metric,
   secondaryValue,
+  isSecondaryValueLoading = false,
+  skeletonOpts,
   description,
   breakdown,
   className,
@@ -286,14 +299,31 @@ export const MetricCard: FC<MetricCardProps> = function ({
             <HelpIcon description={description} />
           )}
         </div>
-        {metric && <Metric {...(metric ?? {})} compact={compact} />}
-        {secondaryValue !== undefined &&
-          secondaryValue !== null &&
-          isValueSet && (
-            <div className="text-sm text-contentSecondary-light dark:text-contentSecondary-dark">
-              {secondaryValue}
-            </div>
-          )}
+        {metric && (
+          <Metric
+            {...metric}
+            compact={compact}
+            skeletonWidth={skeletonOpts?.primaryWidth}
+          />
+        )}
+        {(isSecondaryValueLoading ||
+          (secondaryValue !== undefined &&
+            secondaryValue !== null &&
+            isValueSet)) && (
+          <ContentReveal
+            isLoading={isSecondaryValueLoading}
+            className="text-sm text-contentSecondary-light dark:text-contentSecondary-dark"
+          >
+            {isSecondaryValueLoading ? (
+              <Skeleton
+                height={16}
+                width={skeletonOpts?.secondaryWidth ?? "45%"}
+              />
+            ) : (
+              secondaryValue
+            )}
+          </ContentReveal>
+        )}
         {breakdown &&
           (isValueSet ? (
             <ContentReveal className="mt-2">

@@ -27,7 +27,7 @@ const COLOR_BAR_LABELS_WIDTH = 130;
 
 /** Returns a callback ref and the width of its element, in pixels. */
 function useElementWidth() {
-  // A callback ref: the element shows only after the data loads.
+  // A callback ref measures the loading grid and the chart.
   const [element, setElement] = useState<HTMLDivElement | null>(null);
   const [width, setWidth] = useState(0);
 
@@ -72,8 +72,8 @@ const CELL_BORDER_COLOR: Record<ThemeMode, string> = {
   dark: "#1C1A37",
 };
 const HIGHLIGHT_COLOR: Record<ThemeMode, string> = {
-  light: "#3A176E",
-  dark: "#E6D9FF",
+  light: "#CA8A04",
+  dark: "#FCD34D",
 };
 const LABEL_COLOR: Record<ThemeMode, string> = {
   light: "#737373",
@@ -85,7 +85,7 @@ export type CalendarHeatmapItem = {
   date: string;
   /** The value that sets the color of the cell. */
   value: number;
-  /** An outline marks the cell when it is true. */
+  /** An outer outline marks the group of highlighted cells. */
   highlighted?: boolean;
 };
 
@@ -161,155 +161,200 @@ export function CalendarHeatmap<T extends CalendarHeatmapItem>({
   const calendarHeight = cellSize * 7;
   const [startDate, endDate] = range;
 
-  const { option, colorBarOption, height, hasHighlightInRange } =
-    useMemo(() => {
-      if (!data?.length) {
-        return {
-          option: undefined,
-          colorBarOption: undefined,
-          height: 0,
-          hasHighlightInRange: false,
-        };
-      }
+  const height = TOP + calendarHeight + BOTTOM;
+  const skeletonCells = useMemo(() => {
+    const dayMs = 24 * 60 * 60 * 1000;
+    const startTime = Date.parse(startDate);
+    const firstRow = (new Date(startTime).getUTCDay() + 6) % 7;
+    const dayCount = Math.floor((Date.parse(endDate) - startTime) / dayMs) + 1;
 
-      const items = data.filter(
-        (item) => item.date >= startDate && item.date <= endDate
-      );
-      const byDate = new Map(items.map((item) => [item.date, item]));
-      const maxValue = Math.max(0, ...items.map((item) => item.value));
-      const visualMapMax = Math.max(maxValue, 2);
-      const selectedRange = selectedRangeRef.current;
-      // The two charts have the same value range and colors.
-      const visualMap = {
-        type: "continuous" as const,
-        min: 1,
-        max: visualMapMax,
-        ...(selectedRange
-          ? {
-              range: [
-                Math.max(1, Math.min(selectedRange[0], visualMapMax)),
-                Math.max(1, Math.min(selectedRange[1], visualMapMax)),
-              ],
-            }
-          : {}),
-        inRange: { color: HEAT_COLORS[theme] },
-        outOfRange: { color: EMPTY_COLOR[theme] },
-      };
-
-      const option: EChartsOption = {
-        animation: false,
-        tooltip: {
-          confine: true,
-          show: !!formatTooltip,
-          backgroundColor: theme === "dark" ? "#2E2854" : "#FAFAFA",
-          borderColor: theme === "dark" ? "#372779" : "#5D25D4",
-          textStyle: {
-            color: theme === "dark" ? "#FFFFFF" : "#171717",
-            fontSize: 12,
-          },
-          formatter: (params) => {
-            const [date] = (params as unknown as { value: [string, number] })
-              .value;
-
-            return formatTooltip?.(date, byDate.get(date)) ?? "";
-          },
-        },
-        // The color bar chart shows the bar. This one only sets the colors.
-        visualMap: { ...visualMap, show: false },
-        calendar: {
-          top: TOP,
-          left: LEFT,
-          cellSize,
-          range: [startDate, endDate],
-          splitLine: { show: false },
-          itemStyle: {
-            color: EMPTY_COLOR[theme],
-            borderColor: CELL_BORDER_COLOR[theme],
-            borderWidth: 2,
-          },
-          yearLabel: { show: false },
-          monthLabel: { color: LABEL_COLOR[theme], fontSize: 11 },
-          dayLabel: {
-            firstDay: 1,
-            nameMap: ["", "Mon", "", "Wed", "", "Fri", ""],
-            color: LABEL_COLOR[theme],
-            fontSize: 11,
-          },
-        },
-        series: {
-          type: "heatmap",
-          coordinateSystem: "calendar",
-          // A hover on a cell outlines it.
-          emphasis: {
-            itemStyle: { borderColor: LABEL_COLOR[theme], borderWidth: 2 },
-          },
-          data: items.map((item) => ({
-            value: [item.date, item.value],
-            ...(item.highlighted
-              ? {
-                  itemStyle: {
-                    borderColor: HIGHLIGHT_COLOR[theme],
-                    borderWidth: 2,
-                  },
-                }
-              : {}),
-          })),
-        },
-      };
-
-      // A color bar from 1 to the highest value. Its handles select a range
-      // of values, and the other cells show as empty.
-      const colorBarOption: EChartsOption = {
-        animation: false,
-        visualMap: {
-          ...visualMap,
-          calculable: true,
-          precision: 0,
-          orient: "horizontal",
-          left: "center",
-          bottom: 8,
-          itemWidth: 14,
-          itemHeight: colorBarLength,
-          text: [formatValue(Math.max(maxValue, 1)), formatValue(1)],
-          textGap: 12,
-          textStyle: { color: LABEL_COLOR[theme], fontSize: 11 },
-        },
-      };
+    return Array.from({ length: dayCount }, (_, day) => {
+      const offset = firstRow + day;
 
       return {
-        option,
-        colorBarOption,
-        height: TOP + calendarHeight + BOTTOM,
-        hasHighlightInRange: items.some((item) => item.highlighted),
+        x: LEFT + Math.floor(offset / 7) * cellSize + 1,
+        y: TOP + (offset % 7) * cellSize + 1,
       };
-    }, [
-      data,
-      startDate,
-      endDate,
-      theme,
-      cellSize,
-      calendarHeight,
-      colorBarLength,
-      formatValue,
-      formatTooltip,
-    ]);
+    });
+  }, [startDate, endDate, cellSize]);
 
-  if (isLoading) {
-    return (
-      <div className="h-48 animate-pulse rounded-md bg-primary-100 dark:bg-primary-900/40" />
-    );
-  }
+  const { option, colorBarOption, hasHighlightInRange } = useMemo(() => {
+    if (!data?.length) {
+      return {
+        option: undefined,
+        colorBarOption: undefined,
+        hasHighlightInRange: false,
+      };
+    }
 
-  if (!option) {
-    return (
-      <div className="h-48">
-        <EmptyState size="md" description={emptyMessage ?? "No Chart Data"} />
-      </div>
+    const items = data.filter(
+      (item) => item.date >= startDate && item.date <= endDate
     );
-  }
+    const byDate = new Map(items.map((item) => [item.date, item]));
+    // Use grid positions to remove edges between highlighted cells.
+    const dayMs = 24 * 60 * 60 * 1000;
+    const startTime = Date.parse(startDate);
+    const firstRow = (new Date(startTime).getUTCDay() + 6) % 7;
+    const highlightedCells = items
+      .filter((item) => item.highlighted)
+      .map((item) => {
+        const offset = (Date.parse(item.date) - startTime) / dayMs + firstRow;
+        return { column: Math.floor(offset / 7), row: offset % 7 };
+      });
+    const highlightedPositions = new Set(
+      highlightedCells.map(({ column, row }) => `${column},${row}`)
+    );
+    const outline = highlightedCells.flatMap(({ column, row }) => {
+      const x = LEFT + column * cellSize;
+      const y = TOP + row * cellSize;
+      const edges = [
+        { column: column - 1, row, x1: x, y1: y, x2: x, y2: y + cellSize },
+        {
+          column: column + 1,
+          row,
+          x1: x + cellSize,
+          y1: y,
+          x2: x + cellSize,
+          y2: y + cellSize,
+        },
+        { column, row: row - 1, x1: x, y1: y, x2: x + cellSize, y2: y },
+        {
+          column,
+          row: row + 1,
+          x1: x,
+          y1: y + cellSize,
+          x2: x + cellSize,
+          y2: y + cellSize,
+        },
+      ];
+
+      return edges
+        .filter(
+          (edge) => !highlightedPositions.has(`${edge.column},${edge.row}`)
+        )
+        .map(({ x1, y1, x2, y2 }) => ({
+          type: "line" as const,
+          silent: true,
+          z: 10,
+          shape: { x1, y1, x2, y2 },
+          style: {
+            stroke: HIGHLIGHT_COLOR[theme],
+            lineWidth: 2,
+            lineCap: "square" as const,
+          },
+        }));
+    });
+    const maxValue = Math.max(0, ...items.map((item) => item.value));
+    const visualMapMax = Math.max(maxValue, 2);
+    const selectedRange = selectedRangeRef.current;
+    // The two charts have the same value range and colors.
+    const visualMap = {
+      type: "continuous" as const,
+      min: 1,
+      max: visualMapMax,
+      ...(selectedRange
+        ? {
+            range: [
+              Math.max(1, Math.min(selectedRange[0], visualMapMax)),
+              Math.max(1, Math.min(selectedRange[1], visualMapMax)),
+            ],
+          }
+        : {}),
+      inRange: { color: HEAT_COLORS[theme] },
+      outOfRange: { color: EMPTY_COLOR[theme] },
+    };
+
+    const option: EChartsOption = {
+      animation: false,
+      graphic: outline,
+      tooltip: {
+        confine: true,
+        show: !!formatTooltip,
+        backgroundColor: theme === "dark" ? "#2E2854" : "#FAFAFA",
+        borderColor: theme === "dark" ? "#372779" : "#5D25D4",
+        textStyle: {
+          color: theme === "dark" ? "#FFFFFF" : "#171717",
+          fontSize: 12,
+        },
+        formatter: (params) => {
+          const [date] = (params as unknown as { value: [string, number] })
+            .value;
+
+          return formatTooltip?.(date, byDate.get(date)) ?? "";
+        },
+      },
+      // The color bar chart shows the bar. This one only sets the colors.
+      visualMap: { ...visualMap, show: false },
+      calendar: {
+        top: TOP,
+        left: LEFT,
+        cellSize,
+        range: [startDate, endDate],
+        splitLine: { show: false },
+        itemStyle: {
+          color: EMPTY_COLOR[theme],
+          borderColor: CELL_BORDER_COLOR[theme],
+          borderWidth: 2,
+        },
+        yearLabel: { show: false },
+        monthLabel: { color: LABEL_COLOR[theme], fontSize: 11 },
+        dayLabel: {
+          firstDay: 1,
+          nameMap: ["", "Mon", "", "Wed", "", "Fri", ""],
+          color: LABEL_COLOR[theme],
+          fontSize: 11,
+        },
+      },
+      series: {
+        type: "heatmap",
+        coordinateSystem: "calendar",
+        // A hover on a cell outlines it.
+        emphasis: {
+          itemStyle: { borderColor: LABEL_COLOR[theme], borderWidth: 2 },
+        },
+        data: items.map((item) => ({
+          value: [item.date, item.value],
+        })),
+      },
+    };
+
+    // A color bar from 1 to the highest value. Its handles select a range
+    // of values, and the other cells show as empty.
+    const colorBarOption: EChartsOption = {
+      animation: false,
+      visualMap: {
+        ...visualMap,
+        calculable: true,
+        precision: 0,
+        orient: "horizontal",
+        left: "center",
+        bottom: 8,
+        itemWidth: 14,
+        itemHeight: colorBarLength,
+        text: [formatValue(Math.max(maxValue, 1)), formatValue(1)],
+        textGap: 12,
+        textStyle: { color: LABEL_COLOR[theme], fontSize: 11 },
+      },
+    };
+
+    return {
+      option,
+      colorBarOption,
+      hasHighlightInRange: items.some((item) => item.highlighted),
+    };
+  }, [
+    data,
+    startDate,
+    endDate,
+    theme,
+    cellSize,
+    colorBarLength,
+    formatValue,
+    formatTooltip,
+  ]);
 
   return (
-    <ContentReveal className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="flex items-center gap-1.5 font-semibold">
           {title}
@@ -325,32 +370,73 @@ export function CalendarHeatmap<T extends CalendarHeatmapItem>({
           </span>
         )}
       </div>
-      {/* The calendar is wider than a narrow screen. It scrolls. */}
-      <div className="overflow-x-auto">
-        <div ref={setContainer} className="min-w-[640px]">
-          {width > 0 && (
-            <ReactEChartsCore
-              ref={calendarRef}
-              echarts={echarts}
-              option={option}
-              notMerge
-              style={{ height, width: "100%" }}
-            />
-          )}
+      <ContentReveal isLoading={isLoading} className="flex flex-col gap-2">
+        {/* The calendar is wider than a narrow screen. It scrolls. */}
+        <div className="overflow-x-auto">
+          <div ref={setContainer} className="min-w-[640px]">
+            {isLoading ? (
+              <div
+                role="status"
+                aria-label="Loading daily activity"
+                className="animate-pulse"
+              >
+                <svg width="100%" height={height} aria-hidden="true">
+                  {skeletonCells.map(({ x, y }, day) => (
+                    <rect
+                      key={day}
+                      x={x}
+                      y={y}
+                      width={cellSize - 2}
+                      height={cellSize - 2}
+                      fill={theme === "dark" ? "#434672" : "#EADEFD"}
+                    />
+                  ))}
+                </svg>
+              </div>
+            ) : option ? (
+              width > 0 && (
+                <ReactEChartsCore
+                  ref={calendarRef}
+                  echarts={echarts}
+                  option={option}
+                  notMerge
+                  style={{ height, width: "100%" }}
+                />
+              )
+            ) : (
+              <div className="h-48">
+                <EmptyState
+                  size="md"
+                  description={emptyMessage ?? "No Chart Data"}
+                />
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-      {/* The color bar is out of the scroll area, so it stays in view. */}
-      <div ref={setColorBarContainer}>
-        {colorBarLength > 0 && (
-          <ReactEChartsCore
-            echarts={echarts}
-            option={colorBarOption}
-            notMerge
-            onEvents={colorBarEvents}
-            style={{ height: COLOR_BAR_HEIGHT, width: "100%" }}
-          />
-        )}
-      </div>
-    </ContentReveal>
+        {/* The color bar is out of the scroll area, so it stays in view. */}
+        <div ref={setColorBarContainer}>
+          {isLoading ? (
+            <div
+              className="relative animate-pulse"
+              style={{ height: COLOR_BAR_HEIGHT }}
+              aria-hidden="true"
+            >
+              <div
+                className="absolute bottom-2 left-1/2 h-3.5 -translate-x-1/2 rounded-sm bg-[#EADEFD] dark:bg-[#434672]"
+                style={{ width: colorBarLength }}
+              />
+            </div>
+          ) : colorBarOption && colorBarLength > 0 ? (
+            <ReactEChartsCore
+              echarts={echarts}
+              option={colorBarOption}
+              notMerge
+              onEvents={colorBarEvents}
+              style={{ height: COLOR_BAR_HEIGHT, width: "100%" }}
+            />
+          ) : null}
+        </div>
+      </ContentReveal>
+    </div>
   );
 }

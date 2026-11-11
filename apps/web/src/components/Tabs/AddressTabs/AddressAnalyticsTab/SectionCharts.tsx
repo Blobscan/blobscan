@@ -48,32 +48,45 @@ export const SectionCharts: FC<SectionChartsProps> = function ({
           tooltipOpts,
           sortSeries,
           mainRoleOnly,
-        }) => (
-          <ChartBase
-            key={title}
-            title={
-              mainRoleOnly ? `${title} (${ROLE_TITLE_LABELS[mainRole]})` : title
-            }
-            description={description}
-            isLoading={isLoading}
-            dataset={dataset}
-            series={series(
-              mainRoleOnly ? [mainRole] : roles,
-              theme,
-              data?.granularity ?? "day"
-            )}
-            axes={{
-              x: { type: "time", granularity: data?.granularity },
-              y: yAxis,
-              y2: y2Axis,
-            }}
-            tooltipOpts={tooltipOpts}
-            sortSeries={sortSeries}
-            legendPosition="bottom"
-            size="xl"
-            skeletonOpts={{ chart: { variant: "bar" } }}
-          />
-        )
+        }) => {
+          const chartSeries = series(
+            mainRoleOnly ? [mainRole] : roles,
+            theme,
+            data?.granularity ?? "day"
+          );
+
+          return (
+            <ChartBase
+              key={title}
+              title={
+                mainRoleOnly
+                  ? `${title} (${ROLE_TITLE_LABELS[mainRole]})`
+                  : title
+              }
+              description={description}
+              isLoading={isLoading}
+              dataset={dataset}
+              series={chartSeries}
+              axes={{
+                x: { type: "time", granularity: data?.granularity },
+                y: yAxis,
+                y2: y2Axis,
+              }}
+              tooltipOpts={tooltipOpts}
+              sortSeries={sortSeries}
+              legendPosition="bottom"
+              size="xl"
+              skeletonOpts={{
+                chart: { variant: "bar", itemCount: 90 },
+                legend: {
+                  itemCount:
+                    Math.max(chartSeries.length, 1) +
+                    (chartSeries.length > 1 ? 1 : 0),
+                },
+              }}
+            />
+          );
+        }
       )}
     </div>
   );
