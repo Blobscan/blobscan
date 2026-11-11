@@ -12,6 +12,7 @@ import dayjs from "@blobscan/dayjs";
 
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { CategoryBadge } from "~/components/Badges/CategoryBadge";
+import { CountBadge } from "~/components/Badges/CountBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
@@ -318,7 +319,12 @@ const Blob: NextPage = function () {
       const rollupTxsExist = blob.transactions.find((tx) => !!tx.rollup);
 
       detailsFields.push({
-        name: `Blocks And Transactions (${blob.transactions.length})`,
+        name: (
+          <div className="flex flex-wrap items-center gap-2">
+            Blocks And Transactions
+            <CountBadge count={blob.transactions.length} />
+          </div>
+        ),
         value: (
           <div className="flex flex-col gap-6 md:gap-3">
             {blob.transactions.map(

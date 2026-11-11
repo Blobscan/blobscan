@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
+import { CountBadge } from "~/components/Badges/CountBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
@@ -407,9 +408,12 @@ const Block: NextPage = function () {
       />
 
       <Card
-        header={`Blob Transactions ${
-          blockData ? `(${blockData.transactions.length})` : ""
-        }`}
+        header={
+          <div className="flex items-center gap-2">
+            Blob Transactions
+            <CountBadge count={blockData?.transactions.length} />
+          </div>
+        }
       >
         <div className="space-y-6">
           {isLoading || !blockData
