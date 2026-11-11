@@ -153,6 +153,7 @@ const Home: NextPage = () => {
             <div className="col-span-2">
               <MetricCard
                 name="Total Tx Fees Saved"
+                description="The estimated cost to send blob data as calldata, minus the blob base fees."
                 metric={{
                   primary: {
                     value:
@@ -170,6 +171,7 @@ const Home: NextPage = () => {
             </div>
             <MetricCard
               name="Total Blocks"
+              description="The number of blocks that contain blob transactions."
               metric={{
                 primary: {
                   value: globalOverallStats?.totalBlocks,
@@ -179,6 +181,7 @@ const Home: NextPage = () => {
             />
             <MetricCard
               name="Total Txs"
+              description="The number of transactions that contain blobs."
               metric={{
                 primary: {
                   value: globalOverallStats?.totalTransactions,
@@ -188,6 +191,7 @@ const Home: NextPage = () => {
             />
             <MetricCard
               name="Total Blobs"
+              description="The number of blobs in the selected scope. Repeated blobs are counted each time they appear."
               metric={{
                 primary: {
                   value: globalOverallStats?.totalBlobs,
@@ -197,6 +201,7 @@ const Home: NextPage = () => {
             />
             <MetricCard
               name="Total Blob Size"
+              description="The total size of blobs, including padding bytes."
               metric={{
                 primary: {
                   value: globalOverallStats?.totalBlobSize,

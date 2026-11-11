@@ -183,6 +183,8 @@ const Stats: NextPage = function () {
         metrics: [
           {
             name: "Total Blobs",
+            description:
+              "The number of blobs in the selected scope. Repeated blobs are counted each time they appear.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.totalBlobs,
@@ -191,6 +193,7 @@ const Stats: NextPage = function () {
           },
           {
             name: "Total Blob Size",
+            description: "The total size of blobs, including padding bytes.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.totalBlobSize,
@@ -200,6 +203,8 @@ const Stats: NextPage = function () {
           },
           {
             name: "Total Blob Usage Size",
+            description:
+              "The total size of blob data after trailing zero bytes are removed.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.totalBlobUsageSize,
@@ -209,6 +214,8 @@ const Stats: NextPage = function () {
           },
           {
             name: "Avg. Blob Usage Size",
+            description:
+              "The average blob size after trailing zero bytes are removed. The percentage compares this size with the full blob size.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.avgBlobUsageSize,
@@ -231,6 +238,8 @@ const Stats: NextPage = function () {
           },
           {
             name: "Total Unique Blobs",
+            description:
+              "The number of distinct blobs that first appear in the selected period, identified by their versioned hashes.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.totalUniqueBlobs,
@@ -271,6 +280,7 @@ const Stats: NextPage = function () {
         metrics: [
           {
             name: "Total Blocks",
+            description: "The number of blocks that contain blob transactions.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.totalBlocks,
@@ -295,6 +305,8 @@ const Stats: NextPage = function () {
         metrics: [
           {
             name: "Total Blob Gas Used",
+            description:
+              "The total blob gas used. Blob gas is separate from execution gas.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.totalBlobGasUsed,
@@ -303,6 +315,8 @@ const Stats: NextPage = function () {
           },
           {
             name: "Total Gas Saved",
+            description:
+              "The estimated gas needed to send blob data as calldata, minus the blob gas used.",
             metric: {
               primary: {
                 value:
@@ -329,6 +343,8 @@ const Stats: NextPage = function () {
           },
           {
             name: "Max. Blob Gas Price",
+            description:
+              "The highest price per unit of blob gas in the selected scope.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.maxBlobGasPrice,
@@ -341,6 +357,7 @@ const Stats: NextPage = function () {
           },
           {
             name: "Avg. Blob Gas Price",
+            description: "The average price per unit of blob gas.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.avgBlobGasPrice,
@@ -353,6 +370,8 @@ const Stats: NextPage = function () {
           },
           {
             name: "Min. Blob Gas Price",
+            description:
+              "The lowest price per unit of blob gas in the selected scope.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.minBlobGasPrice,
@@ -397,6 +416,8 @@ const Stats: NextPage = function () {
         metrics: [
           {
             name: "Total Blob Fees",
+            description:
+              "The total blob base fees. These fees exclude execution gas fees.",
             metric: {
               // On networks with no ETH price (e.g. testnets), USD amounts
               // mean nothing, so the card shows the amount in ETH.
@@ -416,6 +437,8 @@ const Stats: NextPage = function () {
           },
           {
             name: "Total Tx Fees Saved",
+            description:
+              "The estimated cost to send blob data as calldata, minus the blob base fees.",
             metric: {
               primary:
                 isTestnet === false
@@ -456,6 +479,8 @@ const Stats: NextPage = function () {
           },
           {
             name: "Avg. Max Blob Gas Fee",
+            description:
+              "The average maximum fee per unit of blob gas set by transaction senders.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.avgMaxBlobGasFee,
@@ -497,6 +522,7 @@ const Stats: NextPage = function () {
         metrics: [
           {
             name: "Total Transactions",
+            description: "The number of transactions that contain blobs.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.totalTransactions,
@@ -505,6 +531,8 @@ const Stats: NextPage = function () {
           },
           {
             name: "Total Unique Receivers",
+            description:
+              "The number of addresses whose first received blob transaction is in the selected period.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.totalUniqueReceivers,
@@ -513,6 +541,8 @@ const Stats: NextPage = function () {
           },
           {
             name: "Total Unique Senders",
+            description:
+              "The number of addresses whose first sent blob transaction is in the selected period.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.totalUniqueSenders,
@@ -545,6 +575,7 @@ const Stats: NextPage = function () {
         metrics: [
           {
             name: "Max. ETH Price",
+            description: "The highest ETH price in USD in the selected scope.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.maxEthPrice,
@@ -554,6 +585,7 @@ const Stats: NextPage = function () {
           },
           {
             name: "Avg. ETH Price",
+            description: "The average ETH price in USD in the selected scope.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.avgEthPrice,
@@ -563,6 +595,7 @@ const Stats: NextPage = function () {
           },
           {
             name: "Min. ETH Price",
+            description: "The lowest ETH price in USD in the selected scope.",
             metric: {
               primary: {
                 value: aggregatedMetrics?.minEthPrice,

@@ -2,6 +2,8 @@ import { createTimeseriesChart } from "./factories";
 
 export const TotalBlobSizeChart = createTimeseriesChart({
   baseProps: {
+    description:
+      "The total size of blobs in each period, including padding bytes.",
     title: "Total Blob Size",
     yAxis: {
       type: "count",
