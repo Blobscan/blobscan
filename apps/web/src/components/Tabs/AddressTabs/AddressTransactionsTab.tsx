@@ -39,15 +39,17 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
   function ({ address, totalTransactions, enabled }) {
     const { state: urlState, isReady } = useUrlState(paginationParamsSchema);
     const { cursor, ps } = normalizePaginationParams(urlState);
-    const { data, isLoading, error } = api.tx.getAll.useQuery<{
+    const {
+      data,
+      isLoading,
+      error: transactionsError,
+    } = api.tx.getAll.useQuery<{
       transactions: TransactionWithExpandedBlockAndBlob[];
       pagination: Pagination;
-      totalTransactions?: number;
     }>(
       {
         cursor,
         ps,
-        count: true,
         address,
         expand: "block,blob",
       },
@@ -59,7 +61,14 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
       }
     );
 
-    const transactionCount = data?.totalTransactions ?? totalTransactions;
+    const { data: countData, error: countError } = api.tx.getCount.useQuery(
+      { address },
+      {
+        enabled: enabled && isReady,
+      }
+    );
+    const transactionCount = countData?.totalTransactions ?? totalTransactions;
+    const error = transactionsError ?? countError;
 
     if (error) {
       return (

@@ -41,20 +41,24 @@ const Txs: NextPage = function () {
     error: txsError,
   } = api.tx.getAll.useQuery<{
     transactions: TransactionWithExpandedBlockAndBlob[];
-    totalTransactions?: number;
     pagination: Pagination;
   }>(
     {
       ...pagination,
-      count: true,
       ...filterParams,
       sort,
       expand: "block,blob",
     },
     { enabled: isReady }
   );
+  const { data: countData, error: countError } = api.tx.getCount.useQuery(
+    filterParams,
+    {
+      enabled: isReady,
+    }
+  );
   const { transactions } = txsData || {};
-  const error = txsError;
+  const error = txsError ?? countError;
   const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
   const transactionHeaders = [
     {
@@ -350,7 +354,7 @@ const Txs: NextPage = function () {
       <Header>
         <div className="flex items-center gap-2">
           <span>Blob Transactions</span>
-          <CountBadge count={txsData?.totalTransactions} />
+          <CountBadge count={countData?.totalTransactions} />
         </div>
       </Header>
       <ListControlBar />
@@ -360,7 +364,7 @@ const Txs: NextPage = function () {
         headers={transactionHeaders}
         rows={transactionRows}
         pagination={txsData?.pagination}
-        totalItems={txsData?.totalTransactions}
+        totalItems={countData?.totalTransactions}
         paginationData={pagination}
         isExpandable
       />

@@ -44,19 +44,23 @@ const Blocks: NextPage = function () {
   } = api.block.getAll.useQuery<{
     blocks: BlockWithExpandedBlobsAndTransactions[];
     pagination: Pagination;
-    totalBlocks?: number;
   }>(
     {
       ...pagination,
-      count: true,
       ...filterParams,
       sort,
       expand: "transaction,blob",
     },
     { enabled: isReady }
   );
+  const { data: countData, error: countError } = api.block.getCount.useQuery(
+    filterParams,
+    {
+      enabled: isReady,
+    }
+  );
   const { blocks } = blocksData || {};
-  const error = blocksError;
+  const error = blocksError ?? countError;
   const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
   const blockHeaders = [
     {
@@ -375,7 +379,7 @@ const Blocks: NextPage = function () {
       <Header>
         <div className="flex items-center gap-2">
           <span>Blocks</span>
-          <CountBadge count={blocksData?.totalBlocks} />
+          <CountBadge count={countData?.totalBlocks} />
         </div>
       </Header>
       <ListControlBar />
@@ -385,7 +389,7 @@ const Blocks: NextPage = function () {
         headers={blockHeaders}
         rows={blocksRows}
         pagination={blocksData?.pagination}
-        totalItems={blocksData?.totalBlocks}
+        totalItems={countData?.totalBlocks}
         paginationData={pagination}
         isExpandable
       />

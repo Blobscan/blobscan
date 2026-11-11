@@ -4,7 +4,7 @@ Use cursor pagination for the block, blob, and transaction lists, including the 
 
 Use First, Previous, and Next controls. Remove page-number entry and the Last control because direct page jumps do not follow from a cursor position.
 
-Remove the `p` request parameter and reject requests that include it with a clear error. Update the web interface in the same release. Keep `ps` for page size and keep total counts optional through `count`. The web interface uses cursor information to control navigation. It requests the total count with each list request to show the item count and total pages.
+Remove the `p` request parameter and reject requests that include it with a clear error. Update the web interface in the same release. Keep `ps` for page size and keep total counts optional through `count`. The web interface uses cursor information to control navigation. It loads the total count with a separate query for the active filters. The item count and total pages stay visible while another cursor page loads.
 
 Return a `pagination` object with `nextCursor` and `previousCursor`. Each token includes its direction, so both use the same `cursor` request parameter. Use `null` when no page exists in a direction.
 

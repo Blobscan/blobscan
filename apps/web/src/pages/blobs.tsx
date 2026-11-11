@@ -34,19 +34,23 @@ const Blobs: NextPage = function () {
   } = api.blob.getAll.useQuery<{
     blobs: BlobWithExpandedTransaction[];
     pagination: Pagination;
-    totalBlobs?: number;
   }>(
     {
       ...pagination,
-      count: true,
       ...filterParams,
       sort,
       expand: "transaction",
     },
     { enabled: isReady }
   );
+  const { data: countData, error: countError } = api.blob.getCount.useQuery(
+    filterParams,
+    {
+      enabled: isReady,
+    }
+  );
   const { blobs } = blobsData || {};
-  const error = blobsError;
+  const error = blobsError ?? countError;
   const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
   const blobHeaders = [
     {
@@ -194,7 +198,7 @@ const Blobs: NextPage = function () {
       <Header>
         <div className="flex items-center gap-2">
           <span>Blobs</span>
-          <CountBadge count={blobsData?.totalBlobs} />
+          <CountBadge count={countData?.totalBlobs} />
         </div>
       </Header>
       <ListControlBar />
@@ -204,7 +208,7 @@ const Blobs: NextPage = function () {
         headers={blobHeaders}
         rows={blobRows}
         pagination={blobsData?.pagination}
-        totalItems={blobsData?.totalBlobs}
+        totalItems={countData?.totalBlobs}
         paginationData={pagination}
       />
     </>
