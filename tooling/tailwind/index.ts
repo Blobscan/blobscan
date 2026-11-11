@@ -118,19 +118,19 @@ const semanticColors = {
     dark: coolGray[300],
   },
   content: {
-    light: warmGray[700],
+    light: "#171320",
     dark: warmGray[50],
   },
   contentSecondary: {
-    light: warmGray[600],
+    light: "#625A73",
     dark: coolGray[800],
   },
   contentTertiary: {
-    light: warmGray[400],
+    light: "#746D80",
     dark: coolGray[500],
   },
   contentDisabled: {
-    light: warmGray[400],
+    light: "#A3A0AD",
     dark: coolGray[500],
   },
   control: {

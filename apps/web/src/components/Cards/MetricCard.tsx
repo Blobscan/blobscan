@@ -273,7 +273,7 @@ export const MetricCard: FC<MetricCardProps> = function ({
         <div
           className={cn(
             "flex items-center gap-1.5",
-            "text-sm font-semibold dark:text-warmGray-50",
+            "text-sm font-semibold text-contentSecondary-light dark:text-contentSecondary-dark",
             { "sm:text-sm": !compact }
           )}
         >
