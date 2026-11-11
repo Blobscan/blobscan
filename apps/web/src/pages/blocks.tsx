@@ -4,6 +4,7 @@ import type { NextPage } from "next";
 import type { EtherUnit } from "@blobscan/eth-format";
 import { formatWei } from "@blobscan/eth-format";
 
+import { CountBadge } from "~/components/Badges/CountBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
@@ -14,7 +15,6 @@ import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
-import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
 import type { TimestampFormat } from "~/components/Toggles";
 import { TimestampToggle } from "~/components/Toggles";
@@ -29,7 +29,7 @@ import type {
   Rollup,
 } from "~/types";
 import type { ByteUnit } from "~/utils";
-import { formatNumber, normalizeTimestamp, shortenHash } from "~/utils";
+import { normalizeTimestamp, shortenHash } from "~/utils";
 
 const BYTES_UNIT: ByteUnit = "KiB";
 const ETHER_UNIT: EtherUnit = "Gwei";
@@ -375,11 +375,7 @@ const Blocks: NextPage = function () {
       <Header>
         <div className="flex items-center gap-2">
           <span>Blocks</span>
-          {blocksData?.totalBlocks === undefined ? (
-            <Skeleton width={100} height={25} />
-          ) : (
-            <span>({formatNumber(blocksData.totalBlocks)})</span>
-          )}
+          <CountBadge count={blocksData?.totalBlocks} />
         </div>
       </Header>
       <ListControlBar />

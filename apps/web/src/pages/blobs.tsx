@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 
 import dayjs from "@blobscan/dayjs";
 
+import { CountBadge } from "~/components/Badges/CountBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
@@ -12,7 +13,6 @@ import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
-import { Skeleton } from "~/components/Skeleton";
 import { TimestampToggle } from "~/components/Toggles";
 import type { TimestampFormat } from "~/components/Toggles";
 import { api } from "~/api-client";
@@ -21,7 +21,7 @@ import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
 import type { BlobWithExpandedTransaction, Pagination } from "~/types";
 import type { ByteUnit } from "~/utils";
-import { formatNumber, formatTimestamp, shortenHash } from "~/utils";
+import { formatTimestamp, shortenHash } from "~/utils";
 
 const BYTES_UNIT: ByteUnit = "KiB";
 
@@ -194,11 +194,7 @@ const Blobs: NextPage = function () {
       <Header>
         <div className="flex items-center gap-2">
           <span>Blobs</span>
-          {blobsData?.totalBlobs === undefined ? (
-            <Skeleton width={100} height={25} />
-          ) : (
-            <span>({formatNumber(blobsData.totalBlobs)})</span>
-          )}
+          <CountBadge count={blobsData?.totalBlobs} />
         </div>
       </Header>
       <ListControlBar />

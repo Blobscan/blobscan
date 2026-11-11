@@ -1,5 +1,6 @@
 import type { FC } from "react";
 
+import { CountBadge } from "~/components/Badges/CountBadge";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
@@ -10,7 +11,6 @@ import {
   paginationParamsSchema,
 } from "~/schemas/pagination";
 import type { Pagination, TransactionWithExpandedBlockAndBlob } from "~/types";
-import { formatNumber } from "~/utils";
 
 function getAddressRole(
   address: string,
@@ -81,11 +81,12 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
 
     return (
       <PaginatedListLayout
-        title={`Blob Transactions ${
-          transactionCount === undefined
-            ? ""
-            : `(${formatNumber(transactionCount)})`
-        }`}
+        title={
+          <div className="flex items-center gap-2">
+            <span>Blob Transactions</span>
+            <CountBadge count={transactionCount} />
+          </div>
+        }
         isLoading={isLoading}
         items={data?.transactions.map((tx) => {
           const { blobs, ...restTx } = tx;
