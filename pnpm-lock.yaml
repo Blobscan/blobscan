@@ -237,19 +237,19 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.44.0
+        specifier: workspace:^0.45.0
         version: link:../../packages/api
       '@blobscan/blob-propagator':
-        specifier: workspace:^0.11.5
+        specifier: workspace:^0.11.6
         version: link:../../packages/blob-propagator
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.15.4
+        specifier: workspace:^0.15.5
         version: link:../../packages/blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.6.0
         version: link:../../packages/chains
       '@blobscan/db':
-        specifier: workspace:^0.34.0
+        specifier: workspace:^0.35.0
         version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.6.1
@@ -267,10 +267,10 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../../packages/price-feed
       '@blobscan/rollups':
-        specifier: workspace:^0.10.0
+        specifier: workspace:^0.10.2
         version: link:../../packages/rollups
       '@blobscan/syncers':
-        specifier: workspace:^0.8.3
+        specifier: workspace:^0.8.4
         version: link:../../packages/syncers
       '@blobscan/zod':
         specifier: workspace:^0.2.0
@@ -328,13 +328,13 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.44.0
+        specifier: workspace:^0.45.0
         version: link:../../packages/api
       '@blobscan/blob-decoder':
         specifier: workspace:^0.2.4
         version: link:../../packages/blob-decoder
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.15.4
+        specifier: workspace:^0.15.5
         version: link:../../packages/blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.6.0
@@ -343,7 +343,7 @@ importers:
         specifier: workspace:^0.1.1
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.34.0
+        specifier: workspace:^0.35.0
         version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.6.1
@@ -358,7 +358,7 @@ importers:
         specifier: workspace:^0.0.12
         version: link:../../packages/open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^0.10.0
+        specifier: workspace:^0.10.2
         version: link:../../packages/rollups
       '@blobscan/zod':
         specifier: workspace:^0.2.0
@@ -488,13 +488,13 @@ importers:
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^0.11.5
+        specifier: workspace:^0.11.6
         version: link:../../packages/blob-propagator
       '@blobscan/dayjs':
         specifier: workspace:^0.1.0
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.34.0
+        specifier: workspace:^0.35.0
         version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.6.1
@@ -515,7 +515,7 @@ importers:
   packages/api:
     dependencies:
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.15.4
+        specifier: workspace:^0.15.5
         version: link:../blob-storage-manager
       '@blobscan/chains':
         specifier: workspace:^0.6.0
@@ -524,7 +524,7 @@ importers:
         specifier: workspace:^0.1.1
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.34.0
+        specifier: workspace:^0.35.0
         version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.6.1
@@ -536,7 +536,7 @@ importers:
         specifier: workspace:^0.0.12
         version: link:../open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^0.10.0
+        specifier: workspace:^0.10.2
         version: link:../rollups
       '@blobscan/zod':
         specifier: workspace:^0.2.0
@@ -567,7 +567,7 @@ importers:
         version: 5.4.6(zod@4.6.7)
     devDependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^0.11.5
+        specifier: workspace:^0.11.6
         version: link:../blob-propagator
       '@types/jsonwebtoken':
         specifier: ^9.0.2
@@ -576,7 +576,7 @@ importers:
   packages/auth:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.34.0
+        specifier: workspace:^0.35.0
         version: link:../db
       '@next-auth/prisma-adapter':
         specifier: ^1.0.5
@@ -612,10 +612,10 @@ importers:
   packages/blob-propagator:
     dependencies:
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.15.4
+        specifier: workspace:^0.15.5
         version: link:../blob-storage-manager
       '@blobscan/db':
-        specifier: workspace:^0.34.0
+        specifier: workspace:^0.35.0
         version: link:../db
       '@blobscan/errors':
         specifier: workspace:^0.0.2
@@ -642,7 +642,7 @@ importers:
         specifier: ^3.1155.0
         version: 3.1156.0
       '@blobscan/db':
-        specifier: workspace:^0.34.0
+        specifier: workspace:^0.35.0
         version: link:../db
       '@blobscan/errors':
         specifier: workspace:^0.0.2
@@ -815,7 +815,7 @@ importers:
   packages/rollups:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.34.1
+        specifier: workspace:^0.35.0
         version: link:../db
 
   packages/syncers:
@@ -824,7 +824,7 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.34.0
+        specifier: workspace:^0.35.0
         version: link:../db
       '@blobscan/errors':
         specifier: workspace:^0.0.2
@@ -6203,6 +6203,7 @@ packages:
 
   node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
+    deprecated: This package is no longer needed on supported Node.js versions. Node.js 16+ includes AbortController and AbortSignal as built-in globals. All Node.js versions requiring this polyfill are end-of-life. Use the built-in globals instead.
 
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
