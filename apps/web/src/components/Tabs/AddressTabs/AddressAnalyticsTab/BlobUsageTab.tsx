@@ -54,6 +54,8 @@ function blobSpaceCard(totals?: RoleTotals): MetricCardProps {
       ...CARDS.blobSpace,
       className,
       metric: { primary: {} },
+      isSecondaryValueLoading: true,
+      skeletonOpts: { primaryWidth: 80, secondaryWidth: "min(240px, 100%)" },
       breakdown: { ariaLabel: "", parts: [] },
     };
   }

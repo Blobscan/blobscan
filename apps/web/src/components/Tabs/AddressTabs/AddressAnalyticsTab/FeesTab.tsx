@@ -46,7 +46,9 @@ function buildCards({
   showUsd,
 }: AnalyticsSectionProps): MetricCardProps[] {
   if (!overall) {
-    return skeletonCards(Object.values(CARDS));
+    return skeletonCards(Object.values(CARDS), {
+      isSecondaryValueLoading: showUsd,
+    });
   }
 
   const totals = overall[mainRole];

@@ -99,7 +99,22 @@ export function MetricBreakdownSkeleton() {
   return (
     <div className="flex flex-col gap-3">
       <Skeleton height={4} />
-      <Skeleton height={36} />
+      <div className="flex justify-between gap-4">
+        {["Used", "Unused"].map((label, i) => (
+          <div
+            key={label}
+            className={cn("flex flex-col gap-1", { "items-end": i > 0 })}
+          >
+            <div className="flex items-center gap-1.5 text-xs">
+              <Skeleton circle width={8} height={8} />
+              <Skeleton width={i === 0 ? 32 : 48} height={12} />
+            </div>
+            <div className="text-sm">
+              <Skeleton width={80} height={16} />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

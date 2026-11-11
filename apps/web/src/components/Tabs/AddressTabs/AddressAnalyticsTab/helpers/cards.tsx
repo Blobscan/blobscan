@@ -83,8 +83,18 @@ function getDailyMean(
 }
 
 /** Returns the cards that show a skeleton while the data loads. */
-export function skeletonCards(cards: CardInfo[]): MetricCardProps[] {
-  return cards.map(({ name, description }) => ({ name, description }));
+export function skeletonCards(
+  cards: CardInfo[],
+  {
+    isSecondaryValueLoading = false,
+  }: Pick<MetricCardProps, "isSecondaryValueLoading"> = {}
+): MetricCardProps[] {
+  return cards.map(({ name, description }) => ({
+    name,
+    description,
+    metric: { primary: {} },
+    isSecondaryValueLoading,
+  }));
 }
 
 /**

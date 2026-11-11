@@ -48,7 +48,12 @@ function buildCards({
   mainRole = "sent",
 }: AnalyticsSectionProps): MetricCardProps[] {
   if (!overall) {
-    return skeletonCards(Object.values(CARDS));
+    const { total, ...others } = CARDS;
+
+    return [
+      ...skeletonCards([total], { isSecondaryValueLoading: true }),
+      ...skeletonCards(Object.values(others)),
+    ];
   }
 
   return [
