@@ -108,7 +108,12 @@ period.
   month or year is updated. `aggregated_until` is the last day that it
   includes. The API adds the daily rows after that day.
 
-For backfills, reprocessing, alerts and concurrency, see
+Asset checks compare the network metrics with the source tables, each rollup
+level with the level it comes from, and the dimension rows of each hour with
+their totals. A freshness check fails when the newest aggregated block is too
+old. See [Checks](docs/operations.md#checks).
+
+For backfills, reprocessing, checks, alerts and concurrency, see
 [Operations](docs/operations.md). For the commands, see
 [Command line](docs/commandline.md).
 

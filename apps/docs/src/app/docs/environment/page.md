@@ -108,19 +108,20 @@ nextjs:
 
 These variables are used by the metrics pipeline in `apps/dagster`.
 
-| Variable                     | Description                                                                   | Required                                        | Default value                   |
-| ---------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------- |
-| `DATABASE_URL`               | Connection string of the Blobscan database                                    | Yes                                             | (empty)                         |
-| `CHAIN_ID`                   | Chain ID. Partitions start at the Dencun activation of this chain             | Yes, unless `DAGSTER_METRICS_START_DATE` is set | (empty)                         |
-| `DAGSTER_METRICS_START_DATE` | Start of the metrics partitions in UTC, as `YYYY-MM-DD` or `YYYY-MM-DDTHH:MM` | No                                              | Dencun activation of `CHAIN_ID` |
-| `DAGSTER_ALERT_WEBHOOK_URL`  | Slack-compatible webhook that receives the alerts                             | No                                              | (empty)                         |
-| `DAGSTER_GRAPHQL_URL`        | GraphQL endpoint of the webserver, used by `analytics.backfill_rollup_change` | No                                              | `http://localhost:3003/graphql` |
-| `POSTGRES_USER`              | User of the Dagster instance database                                         | Yes                                             | (empty)                         |
-| `POSTGRES_PASSWORD`          | Password of the Dagster instance database                                     | Yes                                             | (empty)                         |
-| `POSTGRES_DB`                | Name of the Dagster instance database                                         | Yes                                             | (empty)                         |
-| `POSTGRES_PORT`              | Port of the Dagster instance database                                         | Yes                                             | (empty)                         |
-| `DAGSTER_CURRENT_IMAGE`      | Image of the run containers                                                   | With the Docker run launcher                    | (empty)                         |
-| `DAGSTER_DOCKER_NETWORK`     | Docker network of the run containers                                          | With the Docker run launcher                    | (empty)                         |
+| Variable                          | Description                                                                                  | Required                                        | Default value                   |
+| --------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------- |
+| `DATABASE_URL`                    | Connection string of the Blobscan database                                                   | Yes                                             | (empty)                         |
+| `CHAIN_ID`                        | Chain ID. Partitions start at the Dencun activation of this chain                            | Yes, unless `DAGSTER_METRICS_START_DATE` is set | (empty)                         |
+| `DAGSTER_METRICS_START_DATE`      | Start of the metrics partitions in UTC, as `YYYY-MM-DD` or `YYYY-MM-DDTHH:MM`                | No                                              | Dencun activation of `CHAIN_ID` |
+| `DAGSTER_ALERT_WEBHOOK_URL`       | Slack-compatible webhook that receives the alerts                                            | No                                              | (empty)                         |
+| `DAGSTER_METRICS_MAX_LAG_MINUTES` | Maximum age in minutes of the newest aggregated block before the `data_is_fresh` check fails | No                                              | `60`                            |
+| `DAGSTER_GRAPHQL_URL`             | GraphQL endpoint of the webserver, used by `analytics.backfill_rollup_change`                | No                                              | `http://localhost:3003/graphql` |
+| `POSTGRES_USER`                   | User of the Dagster instance database                                                        | Yes                                             | (empty)                         |
+| `POSTGRES_PASSWORD`               | Password of the Dagster instance database                                                    | Yes                                             | (empty)                         |
+| `POSTGRES_DB`                     | Name of the Dagster instance database                                                        | Yes                                             | (empty)                         |
+| `POSTGRES_PORT`                   | Port of the Dagster instance database                                                        | Yes                                             | (empty)                         |
+| `DAGSTER_CURRENT_IMAGE`           | Image of the run containers                                                                  | With the Docker run launcher                    | (empty)                         |
+| `DAGSTER_DOCKER_NETWORK`          | Docker network of the run containers                                                         | With the Docker run launcher                    | (empty)                         |
 
 ## Docker
 

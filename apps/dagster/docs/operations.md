@@ -78,17 +78,58 @@ Nothing detects these changes. After one of them, run the
 `analytics.backfill_rollup_change` command to re-aggregate the affected
 partitions. See [Command line](commandline.md#analyticsbackfill_rollup_change).
 
+## Checks
+
+Asset checks (`src/analytics/defs/checks.py`) find metrics that are wrong
+although every run succeeded. They are not partitioned: each one reads a range
+of periods.
+
+| Check | Runs | Fails when |
+| --- | --- | --- |
+| `hourly_metrics:matches_source_tables` | hourly at :20 | The transactions, blocks or blobs of a global hourly row differ from the `transaction` and `blobs_on_transactions` tables. It compares the 48 hours before the 3 hours that the catch-up schedule re-aggregates. |
+| `hourly_metrics:data_is_fresh` | every 10 minutes (:07, :17, ...) | The newest aggregated block is older than `DAGSTER_METRICS_MAX_LAG_MINUTES` (default 60). The description tells whether the indexer has newer transactions (the pipeline is behind) or not (the indexer has stopped, or the chain has had no blob transaction). |
+| `hourly_metrics:dimensions_add_up` | hourly at :20 | For an hour, the category rows do not add up to the global row, or the rollup rows do not add up to the `rollup` category row. |
+| `daily_metrics:sums_match_hourly_metrics`, `weekly_metrics:sums_match_daily_metrics`, `monthly_metrics:sums_match_daily_metrics`, `yearly_metrics:sums_match_monthly_metrics` | hourly at :20 | A row of a closed period is not the sum of the rows it is aggregated from, or a row is missing or extra. A period is compared when it closed at least 1 hour ago. |
+
+`data_is_fresh` has the `ERROR` severity, the others `WARN`. The checks
+compare only the columns with an exact type (INTEGER, BIGINT and DECIMAL), not
+the ETH prices and the USD fees (DOUBLE PRECISION).
+
+How to fix a failure:
+
+- `matches_source_tables`: backfill `hourly_metrics` and the levels downstream
+  of it for the hours in the `first_mismatches` metadata. Usually, data was
+  indexed or reorged after the catch-up schedule re-aggregated these hours.
+- `sums_match_*`: materialize the partitions in the `first_mismatches`
+  metadata again. Usually, the cascade did not run after an upstream update.
+- `dimensions_add_up`: a run writes all the rows of an hour in one statement,
+  so a failure means a bug in the hourly SQL. Fix it, then backfill.
+
+The checks run from their own automation condition (a cron tick), through the
+`default_automation_condition_sensor`. The jobs of the schedules
+(`hourly_metrics_job` and the rollup levels) leave the checks out, and the
+cascade does not run them, so the live runs do not get slower. A backfill or a
+**Materialize** from the UI runs the checks of the selected assets with each
+run, which adds the time of these checks to each run.
+
 ## Alerts
 
 - `metrics_run_failure_alert`: any failed run.
 - `hourly_metrics_staleness_alert`: `hourly_metrics` not updated for 30
   minutes; alerts once when it goes stale and once when it recovers.
+- `metrics_check_alert`: a [check](#checks) fails; alerts once when it fails
+  and once when it passes again. While a backfill is in progress, it does not
+  report the new failures of the checks other than `data_is_fresh`, because a
+  backfill rewrites the levels one after the other. It reports them after the
+  backfill if they still fail.
 
 `metrics_run_failure_alert` is enabled by default.
-`hourly_metrics_staleness_alert` is stopped by default, the same as the live
-schedules: enable it after you enable them. Only updates of the current or the
-previous hour partition count, so a backfill does not hide a stopped live
-schedule. Both sensors always log the alert. To also post
+`hourly_metrics_staleness_alert` and `metrics_check_alert` are stopped by
+default, the same as the live schedules: enable them after you enable the
+schedules and the initial backfill completes. For
+`hourly_metrics_staleness_alert`, only updates of the current or the previous
+hour partition count, so a backfill does not hide a stopped live schedule. The
+sensors always log the alert. To also post
 it to Slack (or any service accepting a Slack-compatible `{"text": ...}`
 payload), set `DAGSTER_ALERT_WEBHOOK_URL` on the code location
 (`dagster-blobscan`) container.
