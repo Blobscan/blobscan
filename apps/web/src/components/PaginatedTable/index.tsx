@@ -2,6 +2,7 @@ import type { FC, ReactNode } from "react";
 import Skeleton from "react-loading-skeleton";
 
 import { Card } from "~/components/Cards/Card";
+import type { PaginationProps } from "~/components/Pagination";
 import { Pagination } from "~/components/Pagination";
 import type { TableProps } from "~/components/Table";
 import { Table } from "~/components/Table";
@@ -65,21 +66,23 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
   const { onChange, onPageSizeChange, hasCursor, currentPage } =
     useCursorPagination(ps);
 
+  const paginationProps: PaginationProps = {
+    pagination,
+    currentPage,
+    pageSize: ps,
+    totalItems,
+    hasCursor,
+    isLoading,
+    onChange,
+  };
+
   return (
     <Card
       header={
         isEmpty && !hasCursor ? null : (
           <div className={`flex flex-col justify-end md:flex-row`}>
             <div className="w-full self-center sm:w-auto">
-              <Pagination
-                pagination={pagination}
-                currentPage={currentPage}
-                pageSize={ps}
-                totalItems={totalItems}
-                hasCursor={hasCursor}
-                isLoading={isLoading}
-                onChange={onChange}
-              />
+              <Pagination {...paginationProps} />
             </div>
           </div>
         )
@@ -116,15 +119,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
               />
             </div>
             <div className="w-full sm:w-auto">
-              <Pagination
-                pagination={pagination}
-                currentPage={currentPage}
-                pageSize={ps}
-                totalItems={totalItems}
-                hasCursor={hasCursor}
-                isLoading={isLoading}
-                onChange={onChange}
-              />
+              <Pagination {...paginationProps} />
             </div>
           </div>
         </div>

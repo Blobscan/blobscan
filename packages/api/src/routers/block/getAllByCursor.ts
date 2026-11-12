@@ -20,6 +20,7 @@ import { normalize } from "../../utils";
 import { countBlocks } from "./getCount";
 import type { CompletedPrismaBlock } from "./helpers";
 import {
+  createBlockListWhere,
   responseBlockSchema,
   createBlockSelect,
   toResponseBlock,
@@ -51,20 +52,9 @@ export const getAllByCursor = publicProcedure
   .output(outputSchema)
   .use(withBlobSignedUrls)
   .query(async ({ ctx: { expands, filters, pagination, prisma, count } }) => {
-    const {
-      blockFilters = {},
-      blockType,
-      transactionFilters = {},
-      sort,
-    } = filters;
+    const { blockFilters = {}, sort } = filters;
 
-    const baseWhere: Prisma.BlockWhereInput = {
-      ...blockFilters,
-      transactionForks: blockType,
-      transactions: transactionFilters
-        ? { some: transactionFilters }
-        : undefined,
-    };
+    const baseWhere = createBlockListWhere(filters);
 
     const blocksOp = paginate({
       sort,

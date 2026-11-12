@@ -20,6 +20,7 @@ import { normalize } from "../../utils";
 import { countBlobs } from "./getCount";
 import type { CompletedPrismaBlobOnTransaction } from "./helpers";
 import {
+  createBlobListWhere,
   responseBlobOnTransactionSchema,
   createBlobsOnTransactionsSelect,
   toResponseBlobOnTransaction,
@@ -54,22 +55,9 @@ export const getAllByCursor = publicProcedure
     async ({
       ctx: { count, expands, filters, pagination, prisma, rollupRegistry },
     }) => {
-      const {
-        blockFilters = {},
-        blockType,
-        transactionFilters,
-        sort,
-      } = filters;
+      const { blockFilters = {}, sort } = filters;
 
-      const baseWhere: Prisma.BlobsOnTransactionsWhereInput = {
-        blockNumber: blockFilters.number,
-        blockTimestamp: blockFilters.timestamp,
-        block: {
-          slot: blockFilters.slot,
-          transactionForks: blockType,
-        },
-        transaction: transactionFilters,
-      };
+      const baseWhere = createBlobListWhere(filters);
 
       const blobsOnTransactinonsOp = paginate({
         sort,

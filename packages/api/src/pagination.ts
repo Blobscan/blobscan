@@ -11,13 +11,19 @@ type Direction = "next" | "previous";
 type Sort = "asc" | "desc";
 type Position = (string | number | null)[];
 
+const MAX_CURSOR_INTEGER = 2147483647;
+
 const cursorSchema = z
   .object({
     version: z.literal(1),
     direction: z.enum(["next", "previous"]),
     inclusive: z.boolean().default(false),
     position: z.array(
-      z.union([z.string().max(128), z.number().int().nonnegative(), z.null()])
+      z.union([
+        z.string().max(128),
+        z.number().int().nonnegative().max(MAX_CURSOR_INTEGER),
+        z.null(),
+      ])
     ),
   })
   .strict();

@@ -19,6 +19,7 @@ import { normalize } from "../../utils";
 import { countTxs } from "./getCount";
 import type { CompletedPrismaTransaction } from "./helpers";
 import {
+  createTransactionListWhere,
   createTransactionSelect,
   responseTransactionSchema,
   toResponseTransaction,
@@ -52,12 +53,7 @@ export const getAll = publicProcedure
     async ({
       ctx: { prisma, expands, filters, pagination, count, rollupRegistry },
     }) => {
-      const {
-        transactionFilters = {},
-        blockFilters = {},
-        blockType,
-        sort,
-      } = filters;
+      const { blockFilters = {}, sort } = filters;
 
       let leadingOrderColumn: Prisma.TransactionOrderByWithRelationInput = {
         blockTimestamp: sort,
@@ -71,15 +67,7 @@ export const getAll = publicProcedure
 
       const prismaTxsOp = prisma.transaction.findMany({
         select: createTransactionSelect(expands),
-        where: {
-          ...transactionFilters,
-          blockNumber: blockFilters.number,
-          blockTimestamp: blockFilters.timestamp,
-          block: {
-            slot: blockFilters.slot,
-            transactionForks: blockType,
-          },
-        },
+        where: createTransactionListWhere(filters),
         orderBy: [
           leadingOrderColumn,
           {

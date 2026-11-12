@@ -294,6 +294,70 @@ describe("cursor pagination", () => {
     );
 
     it.each(["blocks", "transactions", "blobs"])(
+      "rejects cursor positions above the database range for /v1/%s",
+      async (resource) => {
+        const response = await fetch(`${baseUrl}/v1/${resource}?ps=1`);
+        expect(response.status).toBe(200);
+        const first = await response.json();
+        const token = JSON.parse(
+          Buffer.from(first.pagination.nextCursor, "base64url").toString()
+        );
+        const numericPositions = token.position.flatMap(
+          (value: unknown, index: number) =>
+            typeof value === "number" ? [index] : []
+        );
+        expect(numericPositions.length).toBeGreaterThan(0);
+        for (const index of numericPositions) {
+          for (const [value, status] of [
+            [2147483647, 200],
+            [2147483648, 400],
+          ] as const) {
+            const position = [...token.position];
+            position[index] = value;
+            const cursor = Buffer.from(
+              JSON.stringify({ ...token, position })
+            ).toString("base64url");
+            const result = await fetch(
+              `${baseUrl}/v1/${resource}?ps=1&cursor=${cursor}`
+            );
+            expect(result.status).toBe(status);
+            if (status === 400) {
+              expect((await result.json()).message).toBe("Invalid cursor.");
+            }
+          }
+        }
+      }
+    );
+
+    it.each(["blocks", "transactions", "blobs"])(
+      "keeps filters consistent between /%s and its v1 route",
+      async (resource) => {
+        const filterCases: Record<string, string>[] = [
+          { sort: "asc", startBlock: "1002", endBlock: "1007" },
+          { startSlot: "102", endSlot: "107" },
+          { startDate: "2023-08-31T00:00:00.000Z" },
+          { from: "address1" },
+          { address: "address2" },
+          { rollups: "optimism" },
+          { type: "reorged" },
+        ];
+        for (const filters of filterCases) {
+          const query = new URLSearchParams({
+            ps: "100",
+            ...filters,
+          }).toString();
+          const legacy = await fetch(`${baseUrl}/${resource}?${query}`);
+          const cursor = await fetch(`${baseUrl}/v1/${resource}?${query}`);
+          expect(legacy.status).toBe(200);
+          expect(cursor.status).toBe(200);
+          expect((await legacy.json())[resource]).toEqual(
+            (await cursor.json())[resource]
+          );
+        }
+      }
+    );
+
+    it.each(["blocks", "transactions", "blobs"])(
       "paginates /%s and rejects page numbers",
       async (resource) => {
         const response = await fetch(`${baseUrl}/v1/${resource}?ps=1`);

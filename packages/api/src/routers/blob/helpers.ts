@@ -12,6 +12,7 @@ import type {
   ExpandedTransaction,
   Expands,
 } from "../../middlewares/withExpands";
+import type { Filters } from "../../middlewares/withFilters";
 import type { Prettify } from "../../types";
 import { isFullyDefined } from "../../utils";
 import {
@@ -100,6 +101,23 @@ export type CompletedPrismaBlobOnTransaction = Prettify<
     };
   }
 >;
+
+export function createBlobListWhere({
+  blockFilters = {},
+  blockType,
+  transactionFilters,
+}: Filters): Prisma.BlobsOnTransactionsWhereInput {
+  return {
+    blockNumber: blockFilters.number,
+    blockTimestamp: blockFilters.timestamp,
+    block: {
+      slot: blockFilters.slot,
+      transactionForks: blockType,
+    },
+    transaction: transactionFilters,
+  };
+}
+
 export function createBlobSelect(expands: Expands) {
   const blockExpand = expands.block ? { block: expands.block } : {};
   const txExpand = expands.transaction

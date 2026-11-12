@@ -7,6 +7,7 @@ import type { Pagination as PaginationInfo } from "~/types";
 import { Card } from "../Cards/Card";
 import { ContentReveal } from "../ContentReveal";
 import { EmptyState } from "../EmptyState";
+import type { PaginationProps } from "../Pagination";
 import { Pagination } from "../Pagination";
 import { PageSizeSelector } from "../Selectors";
 
@@ -35,6 +36,16 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
     useCursorPagination(pageSize);
   const isEmpty = !isLoading && !items?.length;
 
+  const paginationProps: PaginationProps = {
+    pagination,
+    currentPage,
+    pageSize,
+    totalItems,
+    hasCursor,
+    isLoading,
+    onChange,
+  };
+
   return (
     <>
       <Header>{header}</Header>
@@ -48,15 +59,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
             >
               {title && <div>{title}</div>}
               <div className="w-full self-center sm:w-auto">
-                <Pagination
-                  pagination={pagination}
-                  currentPage={currentPage}
-                  pageSize={pageSize}
-                  totalItems={totalItems}
-                  hasCursor={hasCursor}
-                  isLoading={isLoading}
-                  onChange={onChange}
-                />
+                <Pagination {...paginationProps} />
               </div>
             </div>
           ) : undefined
@@ -84,15 +87,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
                 />
               </div>
               <div className="w-full sm:w-auto">
-                <Pagination
-                  pagination={pagination}
-                  currentPage={currentPage}
-                  pageSize={pageSize}
-                  totalItems={totalItems}
-                  hasCursor={hasCursor}
-                  isLoading={isLoading}
-                  onChange={onChange}
-                />
+                <Pagination {...paginationProps} />
               </div>
             </div>
           </div>
