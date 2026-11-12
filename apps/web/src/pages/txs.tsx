@@ -4,8 +4,8 @@ import type { NextPage } from "next";
 import dayjs from "@blobscan/dayjs";
 import { formatWei } from "@blobscan/eth-format";
 
+import { CountBadge } from "~/components/Badges/CountBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
-import { ContentReveal } from "~/components/ContentReveal";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
@@ -13,7 +13,6 @@ import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
-import { Skeleton } from "~/components/Skeleton";
 import type { TimestampFormat } from "~/components/Toggles";
 import { TimestampToggle } from "~/components/Toggles";
 import { TransactionBlobsTable } from "~/components/TransactionBlobsTable";
@@ -21,41 +20,37 @@ import { api } from "~/api-client";
 import { useListPageParams } from "~/hooks/useListPageParams";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
-import type { TransactionWithExpandedBlockAndBlob } from "~/types";
+import type { Pagination, TransactionWithExpandedBlockAndBlob } from "~/types";
 import type { ByteUnit } from "~/utils";
-import {
-  formatNumber,
-  formatTimestamp,
-  shortenHash,
-  toChecksumAddress,
-} from "~/utils";
+import { formatTimestamp, shortenHash, toChecksumAddress } from "~/utils";
 
 const BYTES_UNIT: ByteUnit = "KiB";
 
 const Txs: NextPage = function () {
-  const { pagination, filterParams, sort } = useListPageParams();
+  const { pagination, filterParams, sort, isReady } = useListPageParams();
   const {
     data: txsData,
     isLoading: txsIsLoading,
     error: txsError,
-  } = api.tx.getAll.useQuery<{
+  } = api.tx.getAllByCursor.useQuery<{
     transactions: TransactionWithExpandedBlockAndBlob[];
-    totalTransactions?: number;
-  }>({
-    ...pagination,
-    ...filterParams,
-    sort,
-    expand: "block,blob",
-  });
-  const {
-    data: countData,
-    error: countError,
-    isLoading: countIsLoading,
-  } = api.tx.getCount.useQuery(filterParams, {
-    refetchOnWindowFocus: false,
-  });
+    pagination: Pagination;
+  }>(
+    {
+      ...pagination,
+      ...filterParams,
+      sort,
+      expand: "block,blob",
+    },
+    { enabled: isReady }
+  );
+  const { data: countData, error: countError } = api.tx.getCount.useQuery(
+    filterParams,
+    {
+      enabled: isReady,
+    }
+  );
   const { transactions } = txsData || {};
-  const { totalTransactions } = countData || {};
   const error = txsError ?? countError;
   const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
   const transactionHeaders = [
@@ -244,20 +239,8 @@ const Txs: NextPage = function () {
       />
       <Header>
         <div className="flex items-center gap-2">
-          <div>Blob Transactions</div>
-          <div>
-            <ContentReveal
-              isLoading={countIsLoading || totalTransactions === undefined}
-            >
-              {!countIsLoading && totalTransactions !== undefined ? (
-                `(${formatNumber(totalTransactions)})`
-              ) : (
-                <div className="relative left-0 top-1">
-                  <Skeleton width={100} height={25} />
-                </div>
-              )}
-            </ContentReveal>
-          </div>
+          <span>Blob Transactions</span>
+          <CountBadge count={countData?.totalTransactions} />
         </div>
       </Header>
       <ListControlBar />
@@ -266,7 +249,8 @@ const Txs: NextPage = function () {
         isLoading={txsIsLoading}
         headers={transactionHeaders}
         rows={transactionRows}
-        totalItems={totalTransactions}
+        pagination={txsData?.pagination}
+        totalItems={countData?.totalTransactions}
         paginationData={pagination}
         isExpandable
       />

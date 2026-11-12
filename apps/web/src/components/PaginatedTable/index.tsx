@@ -1,6 +1,4 @@
-import { useCallback } from "react";
 import type { FC, ReactNode } from "react";
-import { useRouter } from "next/compat/router";
 import Skeleton from "react-loading-skeleton";
 
 import { Card } from "~/components/Cards/Card";
@@ -8,10 +6,10 @@ import type { PaginationProps } from "~/components/Pagination";
 import { Pagination } from "~/components/Pagination";
 import type { TableProps } from "~/components/Table";
 import { Table } from "~/components/Table";
-import type { Rollup } from "~/types";
+import { useCursorPagination } from "~/hooks/useCursorPagination";
+import type { Pagination as PaginationInfo, Rollup } from "~/types";
 import { EmptyState } from "../EmptyState";
 import { PageSizeSelector } from "../Selectors/PageSizeSelector";
-import type { PageSizeOption } from "../Selectors/PageSizeSelector";
 
 const DEFAULT_ROW_SKELETON_HEIGHT = 22;
 
@@ -22,7 +20,7 @@ export interface PaginatedTableQueryFilters {
 }
 
 type PaginationData = {
-  p?: number;
+  cursor?: string;
   ps?: number;
 };
 
@@ -30,6 +28,7 @@ export type PaginatedTableProps = {
   title?: ReactNode;
   emptyStateDescription?: string;
   isLoading: boolean;
+  pagination?: PaginationInfo;
   totalItems?: number;
   isExpandable?: boolean;
   paginationData?: PaginationData;
@@ -56,6 +55,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
   isLoading,
   headers,
   rows,
+  pagination,
   totalItems,
   paginationData,
   emptyStateDescription,
@@ -63,72 +63,36 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
   rowSkeletonHeight = DEFAULT_ROW_SKELETON_HEIGHT,
   tableClassName,
 }) {
-  const { p = 1, ps = 50 } = paginationData || {};
+  const { ps = 50 } = paginationData || {};
   const isEmpty = !isLoading && !rows?.length;
 
-  const router = useRouter();
-  const pages =
-    totalItems !== undefined
-      ? totalItems === 0
-        ? 1
-        : Math.ceil(totalItems / ps)
-      : undefined;
+  const { onChange, onPageSizeChange, hasCursor, currentPage } =
+    useCursorPagination(ps);
 
-  const handlePageSizeSelection = useCallback(
-    ({ value: newPageSize }: PageSizeOption) => {
-      if (!router) {
-        return;
-      }
-
-      const { p: _, ...rest } = router.query;
-
-      void router.push({
-        pathname: router.pathname,
-        query: {
-          ...rest,
-          ps: newPageSize,
-        },
-      });
-    },
-    [router]
-  );
-
-  const handlePageSelection = useCallback<PaginationProps["onChange"]>(
-    (newPage) => {
-      if (!router) {
-        return;
-      }
-
-      void router.push({
-        pathname: router.pathname,
-        query: {
-          ...router.query,
-          p: newPage,
-          ps,
-        },
-      });
-    },
-    [ps, router]
-  );
+  const paginationProps: PaginationProps = {
+    pagination,
+    currentPage,
+    pageSize: ps,
+    totalItems,
+    hasCursor,
+    isLoading,
+    onChange,
+  };
 
   return (
     <Card
       className="min-w-0"
       header={
-        isEmpty && !title ? null : (
+        isEmpty && !title && !hasCursor ? null : (
           <div
             className={`flex flex-wrap items-center gap-3 ${
               title ? "justify-between" : "justify-end"
             }`}
           >
             {title && <div className="min-w-0">{title}</div>}
-            {!isEmpty && (
+            {(!isEmpty || hasCursor) && (
               <div className="w-full self-center sm:w-auto">
-                <Pagination
-                  selected={p}
-                  pages={pages}
-                  onChange={handlePageSelection}
-                />
+                <Pagination {...paginationProps} />
               </div>
             )}
           </div>
@@ -159,16 +123,11 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
               Displayed items:
               <PageSizeSelector
                 selected={{ value: ps }}
-                onChange={handlePageSizeSelection}
+                onChange={onPageSizeChange}
               />
             </div>
             <div className="w-full sm:w-auto">
-              <Pagination
-                selected={p}
-                pages={pages}
-                inverseCompact
-                onChange={handlePageSelection}
-              />
+              <Pagination {...paginationProps} />
             </div>
           </div>
         </div>

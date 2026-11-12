@@ -69,6 +69,18 @@ export type CompletedPrismaBlock = Prettify<
   }
 >;
 
+export function createBlockListWhere({
+  blockFilters = {},
+  blockType,
+  transactionFilters = {},
+}: Filters): Prisma.BlockWhereInput {
+  return {
+    ...blockFilters,
+    transactionForks: blockType,
+    transactions: transactionFilters ? { some: transactionFilters } : undefined,
+  };
+}
+
 export function createBlockSelect(expands: Expands, filters?: Filters) {
   const blobExpand = expands.blob?.select;
   const transactionExpand = expands.transaction?.select ?? {};

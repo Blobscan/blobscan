@@ -5,6 +5,7 @@ import dayjs from "@blobscan/dayjs";
 import { formatWei } from "@blobscan/eth-format";
 
 import { Badge } from "~/components/Badges/Badge";
+import { CountBadge } from "~/components/Badges/CountBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Copyable } from "~/components/Copyable";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
@@ -18,14 +19,12 @@ import { api } from "~/api-client";
 import { useUrlState } from "~/hooks/useUrlState";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
-import { paginationParamsSchema } from "~/schemas/pagination";
-import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import {
-  formatNumber,
-  formatTimestamp,
-  shortenHash,
-  toChecksumAddress,
-} from "~/utils";
+  normalizePaginationParams,
+  paginationParamsSchema,
+} from "~/schemas/pagination";
+import type { Pagination, TransactionWithExpandedBlockAndBlob } from "~/types";
+import { formatTimestamp, shortenHash, toChecksumAddress } from "~/utils";
 
 function getAddressRole(
   address: string,
@@ -134,30 +133,49 @@ export type AddressTransactionsTabProps = {
 /** The table of transactions sent or received by the address. */
 export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
   function ({ address, totalTransactions, enabled }) {
-    const { state: urlState } = useUrlState(paginationParamsSchema);
+    const { state: urlState, isReady } = useUrlState(paginationParamsSchema);
+    const { cursor, ps } = normalizePaginationParams(urlState);
     const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
-    const { data, isLoading, error } = api.tx.getAll.useQuery<{
+    const {
+      data,
+      isLoading,
+      error: transactionsError,
+    } = api.tx.getAllByCursor.useQuery<{
       transactions: TransactionWithExpandedBlockAndBlob[];
+      pagination: Pagination;
     }>(
-      { p: urlState?.p, ps: urlState?.ps, address, expand: "block,blob" },
+      { cursor, ps, address, expand: "block,blob" },
       {
-        enabled,
+        enabled: enabled && isReady,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
         retry: false,
       }
     );
 
+    const { data: countData, error: countError } = api.tx.getCount.useQuery(
+      { address },
+      {
+        enabled: enabled && isReady,
+      }
+    );
+    const transactionCount = countData?.totalTransactions ?? totalTransactions;
+    const error = transactionsError ?? countError;
+
     if (error) {
       return (
         <ErrorPage
           error={error}
-          overrides={{
-            BAD_REQUEST: {
-              title: "Invalid Address",
-              description: "Please provide a valid Ethereum address.",
-            },
-          }}
+          overrides={
+            cursor
+              ? undefined
+              : {
+                  BAD_REQUEST: {
+                    title: "Invalid Address",
+                    description: "Please provide a valid Ethereum address.",
+                  },
+                }
+          }
         />
       );
     }
@@ -165,11 +183,12 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
     return (
       <PaginatedTable
         tableClassName="w-full min-w-[1320px]"
-        title={`Blob Transactions${
-          totalTransactions !== undefined
-            ? ` (${formatNumber(totalTransactions)})`
-            : ""
-        }`}
+        title={
+          <div className="flex items-center gap-2">
+            <span>Blob Transactions</span>
+            <CountBadge count={transactionCount} />
+          </div>
+        }
         isLoading={isLoading}
         emptyStateDescription="No Blob Transactions"
         headers={[
@@ -241,8 +260,9 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
         rows={data?.transactions.map((tx) =>
           getTransactionRow(tx, address, timeFormat)
         )}
-        totalItems={totalTransactions}
-        paginationData={urlState ?? undefined}
+        pagination={data?.pagination}
+        totalItems={transactionCount}
+        paginationData={{ cursor, ps }}
         isExpandable
       />
     );

@@ -1,6 +1,7 @@
 import type { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
+import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import {
   createExpandsSchema,
   withExpands,
@@ -13,12 +14,12 @@ import {
   withPaginationSchema,
   withPagination,
 } from "../../middlewares/withPagination";
-import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import { countBlocks } from "./getCount";
 import type { CompletedPrismaBlock } from "./helpers";
 import {
+  createBlockListWhere,
   responseBlockSchema,
   createBlockSelect,
   toResponseBlock,
@@ -49,12 +50,7 @@ export const getAll = publicProcedure
   .output(outputSchema)
   .use(withBlobSignedUrls)
   .query(async ({ ctx: { expands, filters, pagination, prisma, count } }) => {
-    const {
-      blockFilters = {},
-      blockType,
-      transactionFilters = {},
-      sort,
-    } = filters;
+    const { blockFilters = {}, sort } = filters;
 
     // `slot` and `number` are monotonically correlated, so when the request
     // filters by a slot range we order by `slot` to let Postgres satisfy both
@@ -68,15 +64,7 @@ export const getAll = publicProcedure
 
     const blocksOp = prisma.block.findMany({
       select: createBlockSelect(expands, filters),
-      where: {
-        ...blockFilters,
-        transactionForks: blockType,
-        transactions: transactionFilters
-          ? {
-              some: transactionFilters,
-            }
-          : undefined,
-      },
+      where: createBlockListWhere(filters),
       orderBy,
       ...pagination,
     });

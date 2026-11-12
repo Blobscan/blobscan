@@ -1,12 +1,13 @@
 import type { FiltersParam } from "~/schemas/filters";
 import { listPageParamsSchema } from "~/schemas/listPage";
+import { normalizePaginationParams } from "~/schemas/pagination";
 import { toCommaSeparatedParam } from "~/schemas/utils";
 import { useUrlState } from "./useUrlState";
 
 export function useListPageParams() {
   const { state: urlState, isReady } = useUrlState(listPageParamsSchema);
 
-  const { p, ps, sort, ...filterState } = urlState || {};
+  const { cursor, ps, page, sort, ...filterState } = urlState || {};
 
   const filterParams: Omit<FiltersParam, "categories" | "rollups"> & {
     categories?: string;
@@ -21,7 +22,11 @@ export function useListPageParams() {
       : undefined,
   };
 
-  const pagination = { p, ps };
+  const normalizedPagination = normalizePaginationParams({ cursor, ps, page });
+  const pagination = {
+    cursor: normalizedPagination.cursor,
+    ps: normalizedPagination.ps,
+  };
 
   return {
     filterParams,

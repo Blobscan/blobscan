@@ -3,6 +3,7 @@ import type { FC } from "react";
 
 import type { DecodedStarknetBlob } from "@blobscan/blob-decoder";
 
+import { CountBadge } from "~/components/Badges/CountBadge";
 import { Link } from "~/components/Link";
 import { Table } from "~/components/Table";
 import { Toggle } from "~/components/Toggle";
@@ -100,10 +101,13 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
               cells: [
                 {
                   item: (
-                    <span className="text-base">
-                      Class Declarations ({decodedBlob.classDeclarations.length}
-                      )
-                    </span>
+                    <div className="flex items-center justify-center gap-2 text-base">
+                      Class Declarations
+                      <CountBadge
+                        count={decodedBlob.classDeclarations.length}
+                        size="sm"
+                      />
+                    </div>
                   ),
                   alignment: "center",
                 },
@@ -153,8 +157,12 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
             cells: [
               {
                 item: (
-                  <div className="text-base">
-                    State Updates ({decodedBlob.stateUpdatesSize})
+                  <div className="flex items-center justify-center gap-2 text-base">
+                    State Updates
+                    <CountBadge
+                      count={decodedBlob.stateUpdatesSize}
+                      size="sm"
+                    />
                   </div>
                 ),
                 alignment: "center",

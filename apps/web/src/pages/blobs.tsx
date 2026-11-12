@@ -3,9 +3,9 @@ import type { NextPage } from "next";
 
 import dayjs from "@blobscan/dayjs";
 
+import { CountBadge } from "~/components/Badges/CountBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
-import { ContentReveal } from "~/components/ContentReveal";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
@@ -13,41 +13,44 @@ import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
-import { Skeleton } from "~/components/Skeleton";
 import { TimestampToggle } from "~/components/Toggles";
 import type { TimestampFormat } from "~/components/Toggles";
 import { api } from "~/api-client";
 import { useListPageParams } from "~/hooks/useListPageParams";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
-import type { BlobWithExpandedTransaction } from "~/types";
+import type { BlobWithExpandedTransaction, Pagination } from "~/types";
 import type { ByteUnit } from "~/utils";
-import { formatNumber, formatTimestamp, shortenHash } from "~/utils";
+import { formatTimestamp, shortenHash } from "~/utils";
 
 const BYTES_UNIT: ByteUnit = "KiB";
 
 const Blobs: NextPage = function () {
-  const { pagination, filterParams, sort } = useListPageParams();
+  const { pagination, filterParams, sort, isReady } = useListPageParams();
   const {
     data: blobsData,
     error: blobsError,
     isLoading,
-  } = api.blob.getAll.useQuery<{ blobs: BlobWithExpandedTransaction[] }>({
-    ...pagination,
-    ...filterParams,
-    sort,
-    expand: "transaction",
-  });
-  const {
-    data: countData,
-    error: countError,
-    isLoading: countIsLoading,
-  } = api.blob.getCount.useQuery(filterParams, {
-    refetchOnWindowFocus: false,
-  });
-  const error = blobsError ?? countError;
+  } = api.blob.getAllByCursor.useQuery<{
+    blobs: BlobWithExpandedTransaction[];
+    pagination: Pagination;
+  }>(
+    {
+      ...pagination,
+      ...filterParams,
+      sort,
+      expand: "transaction",
+    },
+    { enabled: isReady }
+  );
+  const { data: countData, error: countError } = api.blob.getCount.useQuery(
+    filterParams,
+    {
+      enabled: isReady,
+    }
+  );
   const { blobs } = blobsData || {};
-  const { totalBlobs } = countData || {};
+  const error = blobsError ?? countError;
   const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
   const blobHeaders = [
     {
@@ -194,20 +197,8 @@ const Blobs: NextPage = function () {
       <SeoMetaTags title="Blobs" description="Browse and explore all blobs." />
       <Header>
         <div className="flex items-center gap-2">
-          <div>Blobs</div>
-          <div>
-            <ContentReveal
-              isLoading={countIsLoading || totalBlobs === undefined}
-            >
-              {!countIsLoading && totalBlobs !== undefined ? (
-                `(${formatNumber(totalBlobs)})`
-              ) : (
-                <div className="relative left-0 top-1">
-                  <Skeleton width={100} height={25} />
-                </div>
-              )}
-            </ContentReveal>
-          </div>
+          <span>Blobs</span>
+          <CountBadge count={countData?.totalBlobs} />
         </div>
       </Header>
       <ListControlBar />
@@ -216,7 +207,8 @@ const Blobs: NextPage = function () {
         isLoading={isLoading}
         headers={blobHeaders}
         rows={blobRows}
-        totalItems={totalBlobs}
+        pagination={blobsData?.pagination}
+        totalItems={countData?.totalBlobs}
         paginationData={pagination}
       />
     </>

@@ -1,6 +1,7 @@
 import type { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
+import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import {
   createExpandsSchema,
   withExpands,
@@ -13,12 +14,12 @@ import {
   withPaginationSchema,
   withPagination,
 } from "../../middlewares/withPagination";
-import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import { countBlobs } from "./getCount";
 import type { CompletedPrismaBlobOnTransaction } from "./helpers";
 import {
+  createBlobListWhere,
   responseBlobOnTransactionSchema,
   createBlobsOnTransactionsSelect,
   toResponseBlobOnTransaction,
@@ -50,21 +51,9 @@ export const getAll = publicProcedure
   .use(withBlobSignedUrls)
   .query(
     async ({
-      ctx: {
-        count,
-        expands,
-        filters,
-        pagination,
-        prisma,
-        rollupRegistry,
-      },
+      ctx: { count, expands, filters, pagination, prisma, rollupRegistry },
     }) => {
-      const {
-        blockFilters = {},
-        blockType,
-        transactionFilters,
-        sort,
-      } = filters;
+      const { blockFilters = {}, sort } = filters;
 
       let leadingOrderColumn: Prisma.BlobsOnTransactionsOrderByWithRelationInput =
         {
@@ -79,16 +68,7 @@ export const getAll = publicProcedure
 
       const blobsOnTransactinonsOp = prisma.blobsOnTransactions.findMany({
         select: createBlobsOnTransactionsSelect(expands),
-        where: {
-          blockNumber: blockFilters.number,
-          blockTimestamp: blockFilters.timestamp,
-          block: {
-            slot: blockFilters.slot,
-            transactionForks: blockType,
-          },
-
-          transaction: transactionFilters,
-        },
+        where: createBlobListWhere(filters),
         orderBy: [
           leadingOrderColumn,
           { txIndex: sort },

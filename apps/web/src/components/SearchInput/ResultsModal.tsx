@@ -4,6 +4,7 @@ import { ArrowsRightLeftIcon, CubeIcon } from "@heroicons/react/24/outline";
 import BlobIcon from "~/icons/blob.svg";
 import type { Rollup, SearchCategory, SearchOutput } from "~/types";
 import { capitalize, toChecksumAddress } from "~/utils";
+import { CountBadge } from "../Badges/CountBadge";
 import { Card } from "../Cards/Card";
 import { EmptyState } from "../EmptyState";
 import { EthIdenticon } from "../EthIdenticon";
@@ -116,10 +117,11 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
             <div className="flex max-h-[350px] flex-col md:max-h-[550px]">
               {categoryResults.map(({ category, results }) => (
                 <Fragment key={category}>
-                  <div className="rounded-md bg-primary-200 p-2 font-semibold dark:bg-primary-900">
-                    {`${capitalize(category)} ${
-                      results.length > 1 ? `(${results.length})` : ""
-                    }`}
+                  <div className="flex items-center gap-2 rounded-md bg-primary-200 p-2 font-semibold dark:bg-primary-900">
+                    {capitalize(category)}
+                    {results.length > 1 && (
+                      <CountBadge count={results.length} size="sm" />
+                    )}
                   </div>
                   {results.map(({ id, ...props }) => (
                     <button

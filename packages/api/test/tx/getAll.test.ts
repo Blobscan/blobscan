@@ -29,25 +29,30 @@ describe("getAll", () => {
 
   runPaginationTestsSuite("transaction", (paginationInput) =>
     txCaller
-      .getAll(paginationInput)
-      .then(({ transactions, totalTransactions }) => ({
+      .getAllByCursor(paginationInput)
+      .then(({ transactions, totalTransactions, pagination }) => ({
         items: transactions,
+        pagination,
         totalItems: totalTransactions,
       }))
   );
 
   runFiltersTestsSuite("transaction", (filterInput) =>
-    txCaller.getAll(filterInput).then(({ transactions }) => transactions)
+    txCaller
+      .getAllByCursor(filterInput)
+      .then(({ transactions }) => transactions)
   );
 
   runExpandsTestsSuite("transaction", ["block", "blob"], (input) =>
-    txCaller.getAll(input).then(({ transactions }) => transactions)
+    txCaller.getAllByCursor(input).then(({ transactions }) => transactions)
   );
 
   it("should get the total number of transactions", async () => {
     const expectedTotalTransactions = fixtures.canonicalTxs.length;
 
-    const { totalTransactions } = await txCaller.getAll({ count: true });
+    const { totalTransactions } = await txCaller.getAllByCursor({
+      count: true,
+    });
 
     expect(totalTransactions).toBe(expectedTotalTransactions);
   });
@@ -61,7 +66,7 @@ describe("getAll", () => {
       },
     });
 
-    const { totalTransactions } = await txCaller.getAll({
+    const { totalTransactions } = await txCaller.getAllByCursor({
       count: true,
       rollups: "base",
     });

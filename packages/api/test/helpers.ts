@@ -11,13 +11,13 @@ import { RollupRegistry } from "@blobscan/rollups";
 import { env, redis } from "@blobscan/test";
 
 import type { TRPCContext } from "../src/context";
+import type { WithCursorPaginationSchema } from "../src/middlewares/withCursorPagination";
+import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withCursorPagination";
 import type { ZodExpandEnum } from "../src/middlewares/withExpands";
 import type { FiltersInputSchema } from "../src/middlewares/withFilters";
-import type { WithPaginationSchema } from "../src/middlewares/withPagination";
-import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
 import type { ApiClient } from "../src/utils";
 
-type FilterAndPagination = FiltersInputSchema & WithPaginationSchema;
+type FilterAndPagination = FiltersInputSchema & WithCursorPaginationSchema;
 
 type Entity = "address" | "block" | "transaction" | "blob";
 
@@ -118,12 +118,14 @@ export async function createTestContext({
 
 export function runPaginationTestsSuite(
   entity: Entity,
-  fetcher: (
-    paginationInput: WithPaginationSchema
-  ) => Promise<{ items: unknown[]; totalItems?: number }>
+  fetcher: (paginationInput: FilterAndPagination) => Promise<{
+    items: unknown[];
+    totalItems?: number;
+    pagination: { nextCursor: string | null; previousCursor: string | null };
+  }>
 ) {
   return describe(`when getting paginated ${entity} results`, () => {
-    let input: WithPaginationSchema;
+    let input: WithCursorPaginationSchema;
 
     it("should default to the first page when no page was specified", async () => {
       input = {
@@ -136,9 +138,7 @@ export function runPaginationTestsSuite(
     });
 
     it("should return the default amount of results when no limit was specified", async () => {
-      input = {
-        p: 1,
-      };
+      input = {};
 
       const { items } = await fetcher(input);
       const expectedResultsAmount = Math.min(DEFAULT_PAGE_LIMIT, items.length);
@@ -147,12 +147,15 @@ export function runPaginationTestsSuite(
     });
 
     it("should return the correct results when a specific page is requested", async () => {
-      input = {
-        p: 3,
+      const first = await fetcher({ ps: 2 });
+      const second = await fetcher({
         ps: 2,
-      };
-
-      const { items } = await fetcher(input);
+        cursor: first.pagination.nextCursor!,
+      });
+      const { items } = await fetcher({
+        ps: 2,
+        cursor: second.pagination.nextCursor!,
+      });
 
       expect(items).toMatchSnapshot();
     });
@@ -165,6 +168,89 @@ export function runPaginationTestsSuite(
       const { items } = await fetcher(input);
 
       expect(items.length).toBe(input.ps);
+    });
+
+    it.each([
+      { sort: "asc" as const },
+      { sort: "desc" as const },
+      { from: "address1" },
+      { address: "address1" },
+      { to: "address2" },
+      { type: "reorged" as const },
+      { startBlock: 1002, endBlock: 1007 },
+      { startSlot: 102, endSlot: 107 },
+      { startEpoch: 3, endEpoch: 3 },
+      { startDate: new Date("2023-08-01"), endDate: new Date("2023-09-01") },
+    ])(
+      "should traverse each result once in both directions for %j",
+      async (filters) => {
+        const expected = await fetcher({ ...filters, ps: 100 });
+        const pages = [];
+        let cursor: string | undefined;
+        do {
+          const page = await fetcher({ ...filters, ps: 2, cursor });
+          pages.push(page);
+          cursor = page.pagination.nextCursor ?? undefined;
+          expect(pages.length).toBeLessThan(100);
+        } while (cursor);
+
+        expect(pages.flatMap(({ items }) => items)).toEqual(expected.items);
+        expect(pages[0]!.pagination.previousCursor).toBeNull();
+        expect(pages.at(-1)!.pagination.nextCursor).toBeNull();
+        let page = pages.at(-1)!;
+        for (let i = pages.length - 2; i >= 0; i--) {
+          expect(page.pagination.previousCursor).not.toBeNull();
+          page = await fetcher({
+            ...filters,
+            ps: 2,
+            cursor: page.pagination.previousCursor!,
+          });
+          expect(page.items).toEqual(pages[i]!.items);
+        }
+        expect(page.pagination.previousCursor).toBeNull();
+      }
+    );
+
+    it.each([0, -1, 1.5, 101])("should reject page size %s", async (ps) => {
+      await expect(fetcher({ ps })).rejects.toMatchObject({
+        code: "BAD_REQUEST",
+      });
+    });
+
+    it("should reject page numbers", async () => {
+      await expect(
+        fetcher({ p: 1 } as unknown as WithCursorPaginationSchema)
+      ).rejects.toMatchObject({
+        code: "BAD_REQUEST",
+        message: expect.stringContaining("p parameter"),
+      });
+    });
+
+    it.each(["", "invalid!", "eyJ2ZXJzaW9uIjoyfQ"])(
+      "should reject invalid cursor %j",
+      async (cursor) => {
+        await expect(fetcher({ cursor })).rejects.toMatchObject({
+          code: "BAD_REQUEST",
+        });
+      }
+    );
+
+    it("should accept a cursor with different filters or order", async () => {
+      const first = await fetcher({ ps: 1 });
+      expect(first.pagination.nextCursor).not.toBeNull();
+      for (const changed of [
+        { sort: "asc" as const },
+        { from: "address1" },
+        { address: "address2" },
+      ]) {
+        await expect(
+          fetcher({ ...changed, ps: 1, cursor: first.pagination.nextCursor! })
+        ).resolves.toHaveProperty("pagination");
+      }
+    });
+
+    it("should omit totals unless requested", async () => {
+      expect((await fetcher({ ps: 1 })).totalItems).toBeUndefined();
     });
 
     it("should return the total number of items when count is provided", async () => {
@@ -343,7 +429,7 @@ export function runExpandsTestsSuite(
   entity: Entity,
   allowedExpands: ZodExpandEnum[],
   fetcher: (
-    input: WithPaginationSchema | { expand?: string }
+    input: WithCursorPaginationSchema | { expand?: string }
   ) => Promise<unknown>
 ) {
   describe(`when getting expanded ${entity} results`, () => {

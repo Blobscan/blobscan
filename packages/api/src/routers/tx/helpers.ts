@@ -13,6 +13,7 @@ import type {
   ExpandedBlock,
   Expands,
 } from "../../middlewares/withExpands";
+import type { Filters } from "../../middlewares/withFilters";
 import type { Prettify } from "../../types";
 import type { AdjacentDirection } from "../../utils";
 import {
@@ -79,6 +80,22 @@ export type CompletedPrismaTransaction = Prettify<
     >[];
   }
 >;
+
+export function createTransactionListWhere({
+  transactionFilters = {},
+  blockFilters = {},
+  blockType,
+}: Filters): Prisma.TransactionWhereInput {
+  return {
+    ...transactionFilters,
+    blockNumber: blockFilters.number,
+    blockTimestamp: blockFilters.timestamp,
+    block: {
+      slot: blockFilters.slot,
+      transactionForks: blockType,
+    },
+  };
+}
 
 export function createTransactionSelect(expands: Expands) {
   const blockExpand = expands.block?.select;

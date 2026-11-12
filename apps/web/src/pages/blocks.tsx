@@ -4,9 +4,9 @@ import type { NextPage } from "next";
 import type { EtherUnit } from "@blobscan/eth-format";
 import { formatWei } from "@blobscan/eth-format";
 
+import { CountBadge } from "~/components/Badges/CountBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
-import { ContentReveal } from "~/components/ContentReveal";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
@@ -15,7 +15,6 @@ import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
-import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
 import type { TimestampFormat } from "~/components/Toggles";
 import { TimestampToggle } from "~/components/Toggles";
@@ -24,38 +23,44 @@ import { useChain } from "~/hooks/useChain";
 import { useListPageParams } from "~/hooks/useListPageParams";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
-import type { BlockWithExpandedBlobsAndTransactions, Rollup } from "~/types";
+import type {
+  BlockWithExpandedBlobsAndTransactions,
+  Pagination,
+  Rollup,
+} from "~/types";
 import type { ByteUnit } from "~/utils";
-import { formatNumber, normalizeTimestamp, shortenHash } from "~/utils";
+import { normalizeTimestamp, shortenHash } from "~/utils";
 
 const BYTES_UNIT: ByteUnit = "KiB";
 const ETHER_UNIT: EtherUnit = "Gwei";
 
 const Blocks: NextPage = function () {
   const chain = useChain();
-  const { pagination, filterParams, sort } = useListPageParams();
+  const { pagination, filterParams, sort, isReady } = useListPageParams();
   const {
     data: blocksData,
     isLoading: blocksIsLoading,
     error: blocksError,
-  } = api.block.getAll.useQuery<{
+  } = api.block.getAllByCursor.useQuery<{
     blocks: BlockWithExpandedBlobsAndTransactions[];
-  }>({
-    ...pagination,
-    ...filterParams,
-    sort,
-    expand: "transaction,blob",
-  });
-  const {
-    data: countData,
-    error: countError,
-    isLoading: countIsLoading,
-  } = api.block.getCount.useQuery(filterParams, {
-    refetchOnWindowFocus: false,
-  });
+    pagination: Pagination;
+  }>(
+    {
+      ...pagination,
+      ...filterParams,
+      sort,
+      expand: "transaction,blob",
+    },
+    { enabled: isReady }
+  );
+  const { data: countData, error: countError } = api.block.getCount.useQuery(
+    filterParams,
+    {
+      enabled: isReady,
+    }
+  );
   const { blocks } = blocksData || {};
-  const { totalBlocks } = countData || {};
-  const error = blocksError || countError;
+  const error = blocksError ?? countError;
   const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
   const blockHeaders = [
     {
@@ -373,20 +378,8 @@ const Blocks: NextPage = function () {
       />
       <Header>
         <div className="flex items-center gap-2">
-          <div>Blocks</div>
-          <div>
-            <ContentReveal
-              isLoading={countIsLoading || totalBlocks === undefined}
-            >
-              {!countIsLoading && totalBlocks !== undefined ? (
-                `(${formatNumber(totalBlocks)})`
-              ) : (
-                <div className="relative left-0 top-1">
-                  <Skeleton width={100} height={25} />
-                </div>
-              )}
-            </ContentReveal>
-          </div>
+          <span>Blocks</span>
+          <CountBadge count={countData?.totalBlocks} />
         </div>
       </Header>
       <ListControlBar />
@@ -395,7 +388,8 @@ const Blocks: NextPage = function () {
         isLoading={blocksIsLoading}
         headers={blockHeaders}
         rows={blocksRows}
-        totalItems={totalBlocks}
+        pagination={blocksData?.pagination}
+        totalItems={countData?.totalBlocks}
         paginationData={pagination}
         isExpandable
       />

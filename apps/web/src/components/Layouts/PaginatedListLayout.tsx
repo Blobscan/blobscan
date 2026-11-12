@@ -1,22 +1,22 @@
-import { Fragment, useCallback } from "react";
+import { Fragment } from "react";
 import type { FC, ReactNode } from "react";
-import { useRouter } from "next/compat/router";
 
 import { Header } from "~/components/Header";
+import { useCursorPagination } from "~/hooks/useCursorPagination";
+import type { Pagination as PaginationInfo } from "~/types";
 import { Card } from "../Cards/Card";
 import { ContentReveal } from "../ContentReveal";
 import { EmptyState } from "../EmptyState";
-import { Pagination } from "../Pagination";
 import type { PaginationProps } from "../Pagination";
-import type { PageSizeOption } from "../Selectors";
+import { Pagination } from "../Pagination";
 import { PageSizeSelector } from "../Selectors";
 
 export type PaginatedListLayoutProps = {
   header?: ReactNode;
   title?: ReactNode;
   items?: ReactNode[];
+  pagination?: PaginationInfo;
   totalItems?: number;
-  page?: number;
   pageSize?: number;
   itemSkeleton: ReactNode;
   isLoading?: boolean;
@@ -26,69 +26,32 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   header,
   title,
   items,
+  pagination,
   totalItems,
-  page = 1,
   pageSize = 50,
   itemSkeleton,
   isLoading,
 }) {
-  const router = useRouter();
-  const pages =
-    totalItems !== undefined
-      ? totalItems === 0
-        ? 1
-        : Math.ceil(totalItems / pageSize)
-      : undefined;
+  const { onChange, onPageSizeChange, hasCursor, currentPage } =
+    useCursorPagination(pageSize);
   const isEmpty = !isLoading && !items?.length;
 
-  const handlePageSizeSelection = useCallback(
-    (option: PageSizeOption) => {
-      if (!router) {
-        return;
-      }
-
-      const newPageSize = option.value;
-
-      void router.push({
-        pathname: router.pathname,
-        query: {
-          ...router.query,
-          /**
-           * Update the selected page to a lower value if we require less pages to show the
-           * new amount of elements per page.
-           */
-          p: Math.min(Math.ceil(totalItems ?? 0 / newPageSize), page),
-          ps: newPageSize,
-        },
-      });
-    },
-    [page, totalItems, router]
-  );
-
-  const handlePageSelection = useCallback<PaginationProps["onChange"]>(
-    (newPage) => {
-      if (!router) {
-        return;
-      }
-
-      void router.push({
-        pathname: router.pathname,
-        query: {
-          ...router.query,
-          p: newPage,
-          ps: pageSize,
-        },
-      });
-    },
-    [pageSize, router]
-  );
+  const paginationProps: PaginationProps = {
+    pagination,
+    currentPage,
+    pageSize,
+    totalItems,
+    hasCursor,
+    isLoading,
+    onChange,
+  };
 
   return (
     <>
       <Header>{header}</Header>
       <Card
         header={
-          !isEmpty ? (
+          !isEmpty || hasCursor ? (
             <div
               className={`flex flex-col ${
                 title ? "justify-between" : "justify-end"
@@ -96,11 +59,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
             >
               {title && <div>{title}</div>}
               <div className="w-full self-center sm:w-auto">
-                <Pagination
-                  selected={page}
-                  pages={pages}
-                  onChange={handlePageSelection}
-                />
+                <Pagination {...paginationProps} />
               </div>
             </div>
           ) : undefined
@@ -124,16 +83,11 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
                 Displayed items:
                 <PageSizeSelector
                   selected={{ value: pageSize }}
-                  onChange={handlePageSizeSelection}
+                  onChange={onPageSizeChange}
                 />
               </div>
               <div className="w-full sm:w-auto">
-                <Pagination
-                  selected={page}
-                  pages={pages}
-                  inverseCompact
-                  onChange={handlePageSelection}
-                />
+                <Pagination {...paginationProps} />
               </div>
             </div>
           </div>

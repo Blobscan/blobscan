@@ -6,6 +6,7 @@ import { getQueryKey } from "@trpc/react-query";
 
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { CategoryBadge } from "~/components/Badges/CategoryBadge";
+import { CountBadge } from "~/components/Badges/CountBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { Copyable } from "~/components/Copyable";
@@ -430,7 +431,14 @@ const Tx: NextPage = () => {
         />
       )}
 
-      <Card header={`Blobs ${tx ? `(${tx.blobs.length})` : ""}`}>
+      <Card
+        header={
+          <div className="flex items-center gap-2">
+            Blobs
+            <CountBadge count={tx?.blobs.length} size="sm" />
+          </div>
+        }
+      >
         <div className="space-y-6">
           {isLoading || !tx || !tx.blobs
             ? Array.from({ length: 2 }).map((_, i) => <BlobCard key={i} />)
