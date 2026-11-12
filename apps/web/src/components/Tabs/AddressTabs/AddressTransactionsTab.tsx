@@ -136,11 +136,7 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
     const { state: urlState, isReady } = useUrlState(paginationParamsSchema);
     const { cursor, ps } = normalizePaginationParams(urlState);
     const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
-    const {
-      data,
-      isLoading,
-      error: transactionsError,
-    } = api.tx.getAllByCursor.useQuery<{
+    const { data, isLoading, error } = api.tx.getAllByCursor.useQuery<{
       transactions: TransactionWithExpandedBlockAndBlob[];
       pagination: Pagination;
     }>(
@@ -152,15 +148,6 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
         retry: false,
       }
     );
-
-    const { data: countData, error: countError } = api.tx.getCount.useQuery(
-      { address },
-      {
-        enabled: enabled && isReady,
-      }
-    );
-    const transactionCount = countData?.totalTransactions ?? totalTransactions;
-    const error = transactionsError ?? countError;
 
     if (error) {
       return (
@@ -186,7 +173,7 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
         title={
           <div className="flex items-center gap-2">
             <span>Blob Transactions</span>
-            <CountBadge count={transactionCount} />
+            <CountBadge count={totalTransactions} />
           </div>
         }
         isLoading={isLoading}
@@ -261,7 +248,7 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
           getTransactionRow(tx, address, timeFormat)
         )}
         pagination={data?.pagination}
-        totalItems={transactionCount}
+        totalItems={totalTransactions}
         paginationData={{ cursor, ps }}
         isExpandable
       />
