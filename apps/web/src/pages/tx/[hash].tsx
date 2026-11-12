@@ -22,6 +22,7 @@ import { OptimismCard } from "~/components/OptimismCard";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
+import { useIsMainnet } from "~/hooks/useIsMainnet";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
 import type {
@@ -52,6 +53,7 @@ function toSenderAdjacentTxInput(
 
 const Tx: NextPage = () => {
   const router = useRouter();
+  const isMainnet = useIsMainnet();
   const utils = api.useUtils();
   const queryClient = useQueryClient();
   const hash = (router?.query.hash as string | undefined) ?? "";
@@ -369,7 +371,7 @@ const Tx: NextPage = () => {
       }
     );
 
-    if (ethUsdPrice) {
+    if (isMainnet && ethUsdPrice) {
       detailsFields.push({
         name: "ETH Price",
         helpText: "The price of one ETH in USD at the time of this block.",

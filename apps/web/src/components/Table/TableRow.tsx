@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Children, useState } from "react";
 import type { FC, HTMLAttributes, ReactNode } from "react";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 
@@ -48,7 +48,10 @@ export const ExpandableTableRow: FC<ExpandableTableRowProps> = function ({
       </TableRow>
       {expandItem && (
         <tr>
-          <td colSpan={100} className="border-b dark:border-border-dark/40">
+          <td
+            colSpan={Children.count(children) + 1}
+            className="border-b dark:border-border-dark/40"
+          >
             <Collapsable opened={expandOpened}>{expandItem}</Collapsable>
           </td>
         </tr>

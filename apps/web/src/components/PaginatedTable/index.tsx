@@ -25,6 +25,7 @@ type PaginationData = {
 };
 
 export type PaginatedTableProps = {
+  title?: ReactNode;
   emptyStateDescription?: string;
   isLoading: boolean;
   pagination?: PaginationInfo;
@@ -33,16 +34,16 @@ export type PaginatedTableProps = {
   paginationData?: PaginationData;
   rowSkeletonHeight?: string | number;
   tableTopSlot?: ReactNode;
+  tableClassName?: TableProps["className"];
 } & Pick<TableProps, "headers" | "rows">;
 
 const getRowsSkeleton = (
   cellsNumber = 0,
-  isExpandable: boolean,
   height: PaginatedTableProps["rowSkeletonHeight"]
 ) => {
   return Array.from({ length: 10 }).map((_) => ({
     cells: Array.from({
-      length: isExpandable ? cellsNumber + 1 : cellsNumber,
+      length: cellsNumber,
     }).map((_, i) => ({
       item: <Skeleton key={i} height={height} width={"100%"} />,
     })),
@@ -50,6 +51,7 @@ const getRowsSkeleton = (
 };
 
 export const PaginatedTable: FC<PaginatedTableProps> = function ({
+  title,
   isLoading,
   headers,
   rows,
@@ -59,6 +61,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
   emptyStateDescription,
   isExpandable = false,
   rowSkeletonHeight = DEFAULT_ROW_SKELETON_HEIGHT,
+  tableClassName,
 }) {
   const { ps = 50 } = paginationData || {};
   const isEmpty = !isLoading && !rows?.length;
@@ -78,12 +81,20 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
 
   return (
     <Card
+      className="min-w-0"
       header={
-        isEmpty && !hasCursor ? null : (
-          <div className={`flex flex-col justify-end md:flex-row`}>
-            <div className="w-full self-center sm:w-auto">
-              <Pagination {...paginationProps} />
-            </div>
+        isEmpty && !title && !hasCursor ? null : (
+          <div
+            className={`flex flex-wrap items-center gap-3 ${
+              title ? "justify-between" : "justify-end"
+            }`}
+          >
+            {title && <div className="min-w-0">{title}</div>}
+            {(!isEmpty || hasCursor) && (
+              <div className="w-full self-center sm:w-auto">
+                <Pagination {...paginationProps} />
+              </div>
+            )}
           </div>
         )
       }
@@ -96,15 +107,12 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
       ) : (
         <div className="flex flex-col gap-6">
           <Table
+            className={tableClassName}
             expandableRowsMode={isExpandable}
             headers={headers}
             rows={
               isLoading
-                ? getRowsSkeleton(
-                    headers?.[0]?.cells.length,
-                    isExpandable,
-                    rowSkeletonHeight
-                  )
+                ? getRowsSkeleton(headers?.[0]?.cells.length, rowSkeletonHeight)
                 : rows
             }
             fixedColumnsWidth

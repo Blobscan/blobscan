@@ -5,23 +5,18 @@ import { ArrowRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { formatWei } from "@blobscan/eth-format";
 
 import { Badge } from "~/components/Badges/Badge";
-import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Collapsable } from "~/components/Collapsable";
 import { ContentReveal } from "~/components/ContentReveal";
-import { Copyable } from "~/components/Copyable";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { IconButton } from "~/components/IconButton";
 import { Rotable } from "~/components/Rotable";
 import { Separator } from "~/components/Separator";
 import { Skeleton } from "~/components/Skeleton";
-import { Table } from "~/components/Table";
+import { TransactionBlobsTable } from "~/components/TransactionBlobsTable";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { routes } from "~/routes";
 import type { Blob, Transaction } from "~/types";
-import type { BytesOptions, ByteUnit } from "~/utils";
 import {
-  calculatePercentage,
-  formatBytes,
   normalizeTimestamp,
   pluralize,
   shortenHash,
@@ -31,13 +26,6 @@ import { RollupBadge } from "../../Badges/RollupBadge";
 import { Link } from "../../Link";
 import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
-
-const BYTE_UNIT: ByteUnit = "KiB";
-
-const BYTE_OPTS: BytesOptions = {
-  hideUnit: true,
-  unit: BYTE_UNIT,
-};
 
 type BlobTransactionCardProps = Partial<{
   transaction: Partial<
@@ -272,96 +260,10 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
       </SurfaceCardBase>
       {blobsOnTx && (
         <Collapsable opened={opened}>
-          <Table
-            className="mb-4 mt-2 rounded-b-lg bg-primary-50 px-8 dark:bg-primary-800"
-            size="xs"
-            fixedColumnsWidth
-            alignment="left"
-            headers={[
-              {
-                cells: [
-                  {
-                    item: "Position",
-                    className: "w-[40px]",
-                  },
-                  {
-                    item: "Versioned Hash",
-                    className: "w-[300px]",
-                  },
-                  {
-                    item: `Size (${BYTE_UNIT})`,
-                    className: "w-[100px]",
-                  },
-                  {
-                    item: `Usage Size (${BYTE_UNIT})`,
-                    className: "w-[100px]",
-                  },
-                  {
-                    item: "Storages",
-                    className: "w-[120px]",
-                  },
-                ],
-                className: "dark:border-border-dark/20",
-              },
-            ]}
-            rows={blobsOnTx.map(
-              (
-                { dataStorageReferences, versionedHash, size, usageSize },
-                i
-              ) => ({
-                cells: [
-                  {
-                    item: i,
-                  },
-                  {
-                    item: (
-                      <Copyable
-                        value={versionedHash}
-                        tooltipText="Copy versioned hash"
-                      >
-                        <Link
-                          href={routes.blob(
-                            versionedHash,
-                            hash ? { txHash: hash, index: i } : undefined
-                          )}
-                        >
-                          {versionedHash}
-                        </Link>
-                      </Copyable>
-                    ),
-                  },
-                  {
-                    item: formatBytes(size, BYTE_OPTS),
-                  },
-                  {
-                    item: (
-                      <span>
-                        {formatBytes(usageSize, BYTE_OPTS)}{" "}
-                        <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                          ({calculatePercentage(usageSize, size)}%)
-                        </span>
-                      </span>
-                    ),
-                  },
-                  {
-                    item: dataStorageReferences?.length ? (
-                      <div className="flex items-center gap-2">
-                        {dataStorageReferences.map(({ storage, url }) => (
-                          <StorageBadge
-                            key={storage}
-                            storage={storage}
-                            url={url}
-                            compact
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="text-x">Propagating…</span>
-                    ),
-                  },
-                ],
-              })
-            )}
+          <TransactionBlobsTable
+            blobs={blobsOnTx}
+            txHash={hash}
+            variant="card"
           />
         </Collapsable>
       )}
