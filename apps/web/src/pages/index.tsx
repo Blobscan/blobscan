@@ -138,19 +138,6 @@ const Home: NextPage = () => {
       },
     },
     {
-      name: "Avg. Blob Gas Price",
-      metric: {
-        primary: {
-          value: globalOverallStats?.avgBlobGasPrice,
-          type: "ethereum",
-          numberFormatOpts: {
-            notation: "standard",
-            maximumFractionDigits: 9,
-          },
-        },
-      },
-    },
-    {
       name: "Blob Fees Burned",
       metric: {
         primary: {
@@ -242,7 +229,7 @@ const Home: NextPage = () => {
                 minimal
               />
             </div>
-            <div className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:grid-cols-3 lg:gap-6 xl:grid-cols-5">
+            <div className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 lg:grid-cols-4 lg:gap-6">
               {metrics.map((metric) => (
                 <MetricCard key={metric.name} {...metric} />
               ))}
