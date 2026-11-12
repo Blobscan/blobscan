@@ -43,7 +43,7 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
       data,
       isLoading,
       error: transactionsError,
-    } = api.tx.getAll.useQuery<{
+    } = api.tx.getAllByCursor.useQuery<{
       transactions: TransactionWithExpandedBlockAndBlob[];
       pagination: Pagination;
     }>(

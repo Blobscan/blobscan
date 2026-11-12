@@ -42,7 +42,7 @@ const Home: NextPage = () => {
     data: blocksData,
     error: latestBlocksError,
     isLoading: latestBlocksLoading,
-  } = api.block.getAll.useQuery<{
+  } = api.block.getAllByCursor.useQuery<{
     blocks: BlockWithExpandedBlobsAndTransactions[];
     pagination: Pagination;
   }>({

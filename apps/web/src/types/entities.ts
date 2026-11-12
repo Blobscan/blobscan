@@ -9,7 +9,8 @@ import type { MakeRequired } from "./helpers";
 
 export type BlobStorage = Lowercase<BlobStorageEnum>;
 
-export type Pagination = AppRouterOutputs["block"]["getAll"]["pagination"];
+export type Pagination =
+  AppRouterOutputs["block"]["getAllByCursor"]["pagination"];
 
 export type Rollup = Lowercase<RollupEnum>;
 

@@ -26,7 +26,7 @@ describe("getAll", () => {
 
   runPaginationTestsSuite("blob", (paginationInput) =>
     blobCaller
-      .getAll(paginationInput)
+      .getAllByCursor(paginationInput)
       .then(({ blobs, totalBlobs, pagination }) => ({
         items: blobs,
         pagination,
@@ -35,10 +35,10 @@ describe("getAll", () => {
   );
 
   runFiltersTestsSuite("blob", (baseGetAllInput) =>
-    blobCaller.getAll(baseGetAllInput).then(({ blobs }) => blobs)
+    blobCaller.getAllByCursor(baseGetAllInput).then(({ blobs }) => blobs)
   );
 
   runExpandsTestsSuite("blob", ["block", "transaction"], (input) =>
-    blobCaller.getAll(input).then(({ blobs }) => blobs)
+    blobCaller.getAllByCursor(input).then(({ blobs }) => blobs)
   );
 });

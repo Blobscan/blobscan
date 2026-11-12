@@ -28,7 +28,7 @@ describe("getAll", () => {
 
   runPaginationTestsSuite("block", (paginationInput) =>
     blockCaller
-      .getAll(paginationInput)
+      .getAllByCursor(paginationInput)
       .then(({ blocks, totalBlocks, pagination }) => ({
         items: blocks,
         pagination,
@@ -37,17 +37,17 @@ describe("getAll", () => {
   );
 
   runFiltersTestsSuite("block", (filterInput) =>
-    blockCaller.getAll(filterInput).then(({ blocks }) => blocks)
+    blockCaller.getAllByCursor(filterInput).then(({ blocks }) => blocks)
   );
 
   runExpandsTestsSuite("block", ["transaction", "blob"], (expandInput) =>
-    blockCaller.getAll(expandInput).then(({ blocks }) => blocks)
+    blockCaller.getAllByCursor(expandInput).then(({ blocks }) => blocks)
   );
 
   it("should return the total number of blocks correctly", async () => {
     const expectedTotalBlocks = fixtures.canonicalBlocks.length;
 
-    const { totalBlocks } = await blockCaller.getAll({ count: true });
+    const { totalBlocks } = await blockCaller.getAllByCursor({ count: true });
 
     expect(totalBlocks).toBe(expectedTotalBlocks);
   });

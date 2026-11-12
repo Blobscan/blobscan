@@ -14,7 +14,6 @@ import {
   withPaginationSchema,
   withPagination,
 } from "../../middlewares/withPagination";
-import { paginate, paginationResponseSchema } from "../../pagination";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import { countTxs } from "./getCount";
@@ -27,7 +26,6 @@ import {
 
 const outputSchema = z
   .object({
-    pagination: paginationResponseSchema,
     transactions: responseTransactionSchema.array(),
     totalTransactions: z.number().optional(),
   })
@@ -61,54 +59,46 @@ export const getAll = publicProcedure
         sort,
       } = filters;
 
-      const baseWhere: Prisma.TransactionWhereInput = {
-        ...transactionFilters,
-        blockNumber: blockFilters.number,
-        blockTimestamp: blockFilters.timestamp,
-        block: {
-          slot: blockFilters.slot,
-          transactionForks: blockType,
-        },
+      let leadingOrderColumn: Prisma.TransactionOrderByWithRelationInput = {
+        blockTimestamp: sort,
       };
 
-      const prismaTxsOp = paginate({
-        sort,
-        ...pagination,
-        fields: [
-          blockFilters.number
-            ? { name: "blockNumber", type: "number" }
-            : { name: "blockTimestamp", type: "date" },
-          { name: "index", type: "number", nullable: true },
-          { name: "hash", type: "string" },
+      if (blockFilters.number) {
+        leadingOrderColumn = {
+          blockNumber: sort,
+        };
+      }
+
+      const prismaTxsOp = prisma.transaction.findMany({
+        select: createTransactionSelect(expands),
+        where: {
+          ...transactionFilters,
+          blockNumber: blockFilters.number,
+          blockTimestamp: blockFilters.timestamp,
+          block: {
+            slot: blockFilters.slot,
+            transactionForks: blockType,
+          },
+        },
+        orderBy: [
+          leadingOrderColumn,
+          {
+            index: sort,
+          },
         ],
-        fetchPage: ({ where, orderBy, take }) =>
-          prisma.transaction.findMany({
-            select: createTransactionSelect(expands),
-            where: {
-              AND: [baseWhere, where as Prisma.TransactionWhereInput],
-            },
-            orderBy: orderBy as Prisma.TransactionOrderByWithRelationInput[],
-            take,
-          }),
-        hasPage: (where) =>
-          prisma.transaction
-            .findFirst({
-              where: {
-                AND: [baseWhere, where as Prisma.TransactionWhereInput],
-              },
-              select: { hash: true },
-            })
-            .then(Boolean),
+        ...pagination,
       });
+
       const countOp = count
         ? countTxs(prisma, filters, rollupRegistry)
         : Promise.resolve(undefined);
 
-      const [{ items: prismaTxs, pagination: pageInfo }, txCountOrStats] =
-        await Promise.all([prismaTxsOp, countOp]);
+      const [prismaTxs, txCountOrStats] = await Promise.all([
+        prismaTxsOp,
+        countOp,
+      ]);
 
       return {
-        pagination: pageInfo,
         transactions: prismaTxs.map((tx) =>
           toResponseTransaction(tx as unknown as CompletedPrismaTransaction)
         ),

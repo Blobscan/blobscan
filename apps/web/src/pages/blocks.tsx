@@ -41,7 +41,7 @@ const Blocks: NextPage = function () {
     data: blocksData,
     isLoading: blocksIsLoading,
     error: blocksError,
-  } = api.block.getAll.useQuery<{
+  } = api.block.getAllByCursor.useQuery<{
     blocks: BlockWithExpandedBlobsAndTransactions[];
     pagination: Pagination;
   }>(

@@ -4,11 +4,11 @@ Use cursor pagination for the block, blob, and transaction lists, including the 
 
 Use First, Previous, and Next controls. Remove page-number entry and the Last control because direct page jumps do not follow from a cursor position.
 
-Remove the `p` request parameter and reject requests that include it with a clear error. Update the web interface in the same release. Keep `ps` for page size and keep total counts optional through `count`. The web interface uses cursor information to control navigation. It loads the total count with a separate query for the active filters. The item count and total pages stay visible while another cursor page loads.
+Add `/v1/blocks`, `/v1/blobs`, and `/v1/transactions` for cursor pagination. These routes reject the `p` request parameter with a clear error. Keep the existing unversioned routes and tRPC `getAll` procedures unchanged, including their page-number pagination, defaults, validation, response fields, filters, and sort order. Add separate tRPC `getAllByCursor` procedures for the web interface. Keep `ps` for page size and keep total counts optional through `count`. The web interface uses cursor information to control navigation. It loads the total count with a separate query for the active filters. The item count and total pages stay visible while another cursor page loads.
 
 Return a `pagination` object with `nextCursor` and `previousCursor`. Each token includes its direction, so both use the same `cursor` request parameter. Use `null` when no page exists in a direction.
 
-Keep the default page size at 50. Accept only integer values from 1 to 100 for `ps`. Reject values outside this range.
+For the v1 routes, keep the default page size at 50. Accept only integer values from 1 to 100 for `ps`. Reject values outside this range.
 
 Do not include a query hash in the cursor. Clients must start with the first page when the resource, filters, or sort order change. The web interface clears the cursor when filters, sort order, or page size change. The server still checks the token structure and position values.
 

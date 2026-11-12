@@ -4,6 +4,7 @@ import { createIpfsReferences } from "./createIpfsReferences";
 import { createWeaveVMReferences } from "./createWeaveVMReferences";
 import { getAdjacentBlob } from "./getAdjacentBlob";
 import { getAll } from "./getAll";
+import { getAllByCursor } from "./getAllByCursor";
 import { createBlobDataByBlobIdProcedure } from "./getBlobDataByBlobId";
 import { getByBlobId } from "./getByBlobId";
 import { getCount } from "./getCount";
@@ -18,6 +19,7 @@ export function createBlobRouter(config?: BlobRouterConfig) {
     createWeaveVMReferences,
     getAdjacentBlob,
     getAll,
+    getAllByCursor,
     getByBlobId,
     getCount,
     getBlobDataByBlobId: createBlobDataByBlobIdProcedure(

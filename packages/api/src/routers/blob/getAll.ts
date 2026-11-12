@@ -14,7 +14,6 @@ import {
   withPaginationSchema,
   withPagination,
 } from "../../middlewares/withPagination";
-import { paginate, paginationResponseSchema } from "../../pagination";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import { countBlobs } from "./getCount";
@@ -27,7 +26,6 @@ import {
 
 const outputSchema = z
   .object({
-    pagination: paginationResponseSchema,
     blobs: responseBlobOnTransactionSchema.array(),
     totalBlobs: z.number().optional(),
   })
@@ -61,56 +59,48 @@ export const getAll = publicProcedure
         sort,
       } = filters;
 
-      const baseWhere: Prisma.BlobsOnTransactionsWhereInput = {
-        blockNumber: blockFilters.number,
-        blockTimestamp: blockFilters.timestamp,
-        block: {
-          slot: blockFilters.slot,
-          transactionForks: blockType,
-        },
-        transaction: transactionFilters,
-      };
+      let leadingOrderColumn: Prisma.BlobsOnTransactionsOrderByWithRelationInput =
+        {
+          blockTimestamp: sort,
+        };
 
-      const blobsOnTransactinonsOp = paginate({
-        sort,
-        ...pagination,
-        fields: [
-          blockFilters.number
-            ? { name: "blockNumber", type: "number" }
-            : { name: "blockTimestamp", type: "date" },
-          { name: "txIndex", type: "number" },
-          { name: "index", type: "number" },
-          { name: "txHash", type: "string" },
+      if (blockFilters.number) {
+        leadingOrderColumn = {
+          blockNumber: sort,
+        };
+      }
+
+      const blobsOnTransactinonsOp = prisma.blobsOnTransactions.findMany({
+        select: createBlobsOnTransactionsSelect(expands),
+        where: {
+          blockNumber: blockFilters.number,
+          blockTimestamp: blockFilters.timestamp,
+          block: {
+            slot: blockFilters.slot,
+            transactionForks: blockType,
+          },
+
+          transaction: transactionFilters,
+        },
+        orderBy: [
+          leadingOrderColumn,
+          { txIndex: sort },
+          {
+            index: sort,
+          },
         ],
-        fetchPage: ({ where, orderBy, take }) =>
-          prisma.blobsOnTransactions.findMany({
-            select: createBlobsOnTransactionsSelect(expands),
-            where: {
-              AND: [baseWhere, where as Prisma.BlobsOnTransactionsWhereInput],
-            },
-            orderBy:
-              orderBy as Prisma.BlobsOnTransactionsOrderByWithRelationInput[],
-            take,
-          }),
-        hasPage: (where) =>
-          prisma.blobsOnTransactions
-            .findFirst({
-              where: {
-                AND: [baseWhere, where as Prisma.BlobsOnTransactionsWhereInput],
-              },
-              select: { txHash: true },
-            })
-            .then(Boolean),
+        ...pagination,
       });
       const countOp = count
         ? countBlobs(prisma, rollupRegistry, filters)
         : undefined;
 
-      const [{ items: prismaBlobsOnTxs, pagination: pageInfo }, totalBlobs] =
-        await Promise.all([blobsOnTransactinonsOp, countOp]);
+      const [prismaBlobsOnTxs, totalBlobs] = await Promise.all([
+        blobsOnTransactinonsOp,
+        countOp,
+      ]);
 
       return {
-        pagination: pageInfo,
         blobs: prismaBlobsOnTxs.map((prismaBlobOnTx) =>
           toResponseBlobOnTransaction(
             prismaBlobOnTx as unknown as CompletedPrismaBlobOnTransaction

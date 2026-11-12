@@ -11,13 +11,13 @@ import { RollupRegistry } from "@blobscan/rollups";
 import { env, redis } from "@blobscan/test";
 
 import type { TRPCContext } from "../src/context";
+import type { WithCursorPaginationSchema } from "../src/middlewares/withCursorPagination";
+import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withCursorPagination";
 import type { ZodExpandEnum } from "../src/middlewares/withExpands";
 import type { FiltersInputSchema } from "../src/middlewares/withFilters";
-import type { WithPaginationSchema } from "../src/middlewares/withPagination";
-import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
 import type { ApiClient } from "../src/utils";
 
-type FilterAndPagination = FiltersInputSchema & WithPaginationSchema;
+type FilterAndPagination = FiltersInputSchema & WithCursorPaginationSchema;
 
 type Entity = "address" | "block" | "transaction" | "blob";
 
@@ -125,7 +125,7 @@ export function runPaginationTestsSuite(
   }>
 ) {
   return describe(`when getting paginated ${entity} results`, () => {
-    let input: WithPaginationSchema;
+    let input: WithCursorPaginationSchema;
 
     it("should default to the first page when no page was specified", async () => {
       input = {
@@ -219,7 +219,7 @@ export function runPaginationTestsSuite(
 
     it("should reject page numbers", async () => {
       await expect(
-        fetcher({ p: 1 } as unknown as WithPaginationSchema)
+        fetcher({ p: 1 } as unknown as WithCursorPaginationSchema)
       ).rejects.toMatchObject({
         code: "BAD_REQUEST",
         message: expect.stringContaining("p parameter"),
@@ -429,7 +429,7 @@ export function runExpandsTestsSuite(
   entity: Entity,
   allowedExpands: ZodExpandEnum[],
   fetcher: (
-    input: WithPaginationSchema | { expand?: string }
+    input: WithCursorPaginationSchema | { expand?: string }
   ) => Promise<unknown>
 ) {
   describe(`when getting expanded ${entity} results`, () => {

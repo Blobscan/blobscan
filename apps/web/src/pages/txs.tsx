@@ -39,7 +39,7 @@ const Txs: NextPage = function () {
     data: txsData,
     isLoading: txsIsLoading,
     error: txsError,
-  } = api.tx.getAll.useQuery<{
+  } = api.tx.getAllByCursor.useQuery<{
     transactions: TransactionWithExpandedBlockAndBlob[];
     pagination: Pagination;
   }>(

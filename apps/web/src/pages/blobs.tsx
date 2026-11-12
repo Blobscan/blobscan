@@ -31,7 +31,7 @@ const Blobs: NextPage = function () {
     data: blobsData,
     error: blobsError,
     isLoading,
-  } = api.blob.getAll.useQuery<{
+  } = api.blob.getAllByCursor.useQuery<{
     blobs: BlobWithExpandedTransaction[];
     pagination: Pagination;
   }>(
