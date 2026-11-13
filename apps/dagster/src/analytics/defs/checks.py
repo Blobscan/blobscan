@@ -12,15 +12,20 @@ The checks find metrics that are wrong although every run succeeded:
 - ``hourly_metrics:dimensions_add_up``: the category or rollup rows of an hour
   do not add up to the global or to the ``rollup`` category row.
 
-The checks are not partitioned: each one reads a whole range of periods. They
-run from their own automation condition (a cron tick), so they do not run with
-the live, catch-up and cascade runs of their assets. See docs/operations.md.
+The checks are not partitioned: each one reads the recent periods only, so its
+cost does not grow with the history. They run from their own automation
+condition (a cron tick), so they do not run with the live, catch-up and cascade
+runs of their assets. See docs/operations.md.
+
+The metrics and source tables store their times without a time zone (UTC) or
+as dates. The parameters are passed as naive UTC datetimes and as dates, so
+the comparisons do not depend on the time zone of the database session.
 """
 
 from __future__ import annotations
 
 import os
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from typing import TYPE_CHECKING, Any
 
@@ -54,6 +59,15 @@ FRESHNESS_CHECK_CRON = "7-59/10 * * * *"
 # The hours that the source check compares, before the hours that the hourly
 # catch-up schedule still re-aggregates.
 SOURCE_CHECK_HOURS = 48
+
+# The hours that the dimension check compares, up to the in-progress hour. A
+# run writes all the rows of an hour in one statement, so the open hours can
+# be compared too.
+DIMENSION_CHECK_HOURS = 48
+
+# The number of closed periods that each rollup check compares. The older
+# periods change only with a backfill, and its cascade rewrites their rollups.
+ROLLUP_CHECK_PERIODS = {"day": 14, "week": 8, "month": 6, "year": 2}
 
 # A rollup period is compared only when it closed at least this long ago, so
 # the cascade that follows its last update has time to complete.
@@ -162,9 +176,10 @@ def _differing_columns_sql(
 def build_rollup_check_sql(source: str, target: str, trunc: str) -> TextClause:
     """Return the rows of ``target`` that are not the sum of ``source``.
 
-    Only the periods before ``:to`` are compared. A group that is only in
-    ``source`` is "missing", one that is only in ``target`` is "extra". The
-    table names and ``trunc`` are internal constants.
+    Only the periods in [``:from``, ``:to``) are compared. Both are dates.
+    A group that is only in ``source`` is "missing", one that is only in
+    ``target`` is "extra". The table names and ``trunc`` are internal
+    constants.
     """
     sums = ",\n    ".join(f"SUM({c}) AS {c}" for c in ROLLUP_COLUMNS)
     columns = ", ".join(ROLLUP_COLUMNS)
@@ -183,13 +198,13 @@ WITH expected AS (
     rollup,
     {sums}
   FROM {source}
-  WHERE period_start < :to
+  WHERE period_start >= :from AND period_start < :to
   GROUP BY DATE_TRUNC('{trunc}', period_start), category, rollup
 ),
 actual AS (
   SELECT period_start, category, rollup, {columns}
   FROM {target}
-  WHERE period_start < :to
+  WHERE period_start >= :from AND period_start < :to
 ),
 compared AS (
   SELECT
@@ -226,7 +241,7 @@ def build_dimension_check_sql() -> TextClause:
 
     Two comparisons for each hour: the category rows against the global row,
     and the rollup rows against the "rollup" category row. A missing row
-    counts as zeros.
+    counts as zeros. Only the hours from ``:from`` are compared.
     """
     columns = ", ".join(DIMENSION_COLUMNS)
     sums = ", ".join(f"SUM({c}) AS {c}" for c in DIMENSION_COLUMNS)
@@ -237,20 +252,20 @@ def build_dimension_check_sql() -> TextClause:
         f"""
 WITH global_rows AS (
   SELECT period_start, {columns} FROM hourly_metrics
-  WHERE category IS NULL AND rollup IS NULL
+  WHERE category IS NULL AND rollup IS NULL AND period_start >= :from
 ),
 category_sums AS (
   SELECT period_start, {sums} FROM hourly_metrics
-  WHERE category IS NOT NULL AND rollup IS NULL
+  WHERE category IS NOT NULL AND rollup IS NULL AND period_start >= :from
   GROUP BY period_start
 ),
 rollup_category_rows AS (
   SELECT period_start, {columns} FROM hourly_metrics
-  WHERE category = 'rollup' AND rollup IS NULL
+  WHERE category = 'rollup' AND rollup IS NULL AND period_start >= :from
 ),
 rollup_sums AS (
   SELECT period_start, {sums} FROM hourly_metrics
-  WHERE rollup IS NOT NULL
+  WHERE rollup IS NOT NULL AND period_start >= :from
   GROUP BY period_start
 ),
 compared AS (
@@ -280,6 +295,11 @@ DIMENSION_CHECK_SQL = build_dimension_check_sql()
 def _as_utc(value: datetime) -> datetime:
     """Return a naive database TIMESTAMP (always UTC) as an aware datetime."""
     return value.replace(tzinfo=UTC) if value.tzinfo is None else value
+
+
+def _db_timestamp(value: datetime) -> datetime:
+    """Return an aware datetime as a naive UTC datetime, for a TIMESTAMP column."""
+    return value.astimezone(UTC).replace(tzinfo=None)
 
 
 def _floor_hour(value: datetime) -> datetime:
@@ -335,7 +355,11 @@ def source_check_window(now: datetime) -> tuple[datetime, datetime]:
 def find_source_mismatches(
     conn: Connection, start: datetime, end: datetime,
 ) -> list[dict[str, Any]]:
-    return _fetch(conn, SOURCE_CHECK_SQL, {"from": start, "to": end})
+    return _fetch(
+        conn,
+        SOURCE_CHECK_SQL,
+        {"from": _db_timestamp(start), "to": _db_timestamp(end)},
+    )
 
 
 def evaluate_source_check(conn: Connection, now: datetime) -> dg.AssetCheckResult:
@@ -410,7 +434,8 @@ def _minutes(delta: timedelta) -> int:
 def evaluate_freshness_check(
     conn: Connection, now: datetime, max_lag: timedelta,
 ) -> dg.AssetCheckResult:
-    row = conn.execute(FRESHNESS_SQL, {"since": now - FRESHNESS_LOOKBACK}).one()
+    since = _db_timestamp(now - FRESHNESS_LOOKBACK)
+    row = conn.execute(FRESHNESS_SQL, {"since": since}).one()
 
     metrics_latest = _as_utc(row.metrics_latest) if row.metrics_latest else None
     source_latest = _as_utc(row.source_latest) if row.source_latest else None
@@ -426,16 +451,25 @@ def evaluate_freshness_check(
         )
 
     if not passed:
-        if source_latest is None or now - source_latest > max_lag:
-            description += (
-                " No newer blob transaction is indexed either: the indexer has"
-                " stopped, or the chain has had no blob transaction."
-            )
-        else:
+        # The pipeline is behind when the indexer has newer transactions, also
+        # when the indexer is stale itself.
+        if source_latest is not None and (
+            metrics_latest is None or source_latest > metrics_latest
+        ):
             description += (
                 " The indexer has newer transactions"
                 f" ({_minutes(now - source_latest)} minutes old), so the"
                 " metrics pipeline is behind."
+            )
+            if now - source_latest > max_lag:
+                description += (
+                    " The indexer has not indexed a recent blob transaction"
+                    " either: it may have stopped too."
+                )
+        else:
+            description += (
+                " No newer blob transaction is indexed either: the indexer has"
+                " stopped, or the chain has had no blob transaction."
             )
 
     metadata: dict[str, Any] = {
@@ -494,10 +528,35 @@ def closed_until(trunc: str, now: datetime) -> datetime:
     return starts[trunc]
 
 
+def _months_before(value: datetime, months: int) -> datetime:
+    index = value.year * 12 + value.month - 1 - months
+    return value.replace(year=index // 12, month=index % 12 + 1)
+
+
+def rollup_check_window(trunc: str, now: datetime) -> tuple[date, date]:
+    """Return the [start, end) dates of the closed periods that a check compares.
+
+    The rollup tables store ``period_start`` as a DATE, so the window is
+    passed as dates: comparing a DATE with a datetime would depend on the time
+    zone of the database session.
+    """
+    end = closed_until(trunc, now)
+    periods = ROLLUP_CHECK_PERIODS[trunc]
+    if trunc == "day":
+        start = end - timedelta(days=periods)
+    elif trunc == "week":
+        start = end - timedelta(weeks=periods)
+    elif trunc == "month":
+        start = _months_before(end, periods)
+    else:
+        start = end.replace(year=end.year - periods)
+    return start.date(), end.date()
+
+
 def find_rollup_mismatches(
-    conn: Connection, sql: TextClause, until: datetime,
+    conn: Connection, sql: TextClause, start: date, end: date,
 ) -> list[dict[str, Any]]:
-    return _fetch(conn, sql, {"to": until})
+    return _fetch(conn, sql, {"from": start, "to": end})
 
 
 def _build_rollup_check(
@@ -510,16 +569,16 @@ def _build_rollup_check(
         asset=asset,
         name=f"sums_match_{source}",
         description=(
-            f"Each row of a closed period of {target} is the sum of the {source}"
-            " rows of that period."
+            f"Each row of the last {ROLLUP_CHECK_PERIODS[trunc]} closed periods of"
+            f" {target} is the sum of the {source} rows of that period."
         ),
         automation_condition=_on_cron(CONSISTENCY_CHECKS_CRON),
     )
     def _check(postgres: PostgresResource) -> dg.AssetCheckResult:
-        until = closed_until(trunc, datetime.now(UTC))
+        start, end = rollup_check_window(trunc, datetime.now(UTC))
         with postgres.get_connection() as conn:
-            rows = find_rollup_mismatches(conn, sql, until)
-        return rollup_check_result(target, source, rows, until)
+            rows = find_rollup_mismatches(conn, sql, start, end)
+        return rollup_check_result(target, source, rows, start, end)
 
     return _check
 
@@ -528,7 +587,8 @@ def rollup_check_result(
     target: str,
     source: str,
     rows: Sequence[Mapping[str, Any]],
-    until: datetime,
+    start: date,
+    end: date,
 ) -> dg.AssetCheckResult:
     if rows:
         first = rows[0]
@@ -552,7 +612,7 @@ def rollup_check_result(
         severity=dg.AssetCheckSeverity.WARN,
         description=description,
         metadata={
-            "closed_until": dg.MetadataValue.text(until.isoformat()),
+            "window": dg.MetadataValue.text(f"{start.isoformat()}..{end.isoformat()}"),
             **_mismatch_metadata(rows),
         },
     )
@@ -573,8 +633,15 @@ yearly_metrics_sums_match = _build_rollup_check(
 # ---------------------------------------------------------------------------
 
 
-def find_dimension_mismatches(conn: Connection) -> list[dict[str, Any]]:
-    return _fetch(conn, DIMENSION_CHECK_SQL, {})
+def dimension_check_start(now: datetime) -> datetime:
+    """Return the first hour that the dimension check compares."""
+    return _floor_hour(now) - timedelta(hours=DIMENSION_CHECK_HOURS)
+
+
+def find_dimension_mismatches(
+    conn: Connection, start: datetime,
+) -> list[dict[str, Any]]:
+    return _fetch(conn, DIMENSION_CHECK_SQL, {"from": _db_timestamp(start)})
 
 
 def dimension_check_result(rows: Sequence[Mapping[str, Any]]) -> dg.AssetCheckResult:
@@ -602,16 +669,18 @@ def dimension_check_result(rows: Sequence[Mapping[str, Any]]) -> dg.AssetCheckRe
     asset=hourly_metrics,
     name="dimensions_add_up",
     description=(
-        "For each hour, the category rows add up to the global row, and the"
-        " rollup rows add up to the rollup category row."
+        f"For each of the last {DIMENSION_CHECK_HOURS} hours, the category rows"
+        " add up to the global row, and the rollup rows add up to the rollup"
+        " category row."
     ),
     automation_condition=_on_cron(CONSISTENCY_CHECKS_CRON),
 )
 def hourly_metrics_dimensions_add_up(
     postgres: PostgresResource,
 ) -> dg.AssetCheckResult:
+    start = dimension_check_start(datetime.now(UTC))
     with postgres.get_connection() as conn:
-        rows = find_dimension_mismatches(conn)
+        rows = find_dimension_mismatches(conn, start)
     return dimension_check_result(rows)
 
 

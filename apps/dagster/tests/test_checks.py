@@ -9,12 +9,15 @@ when the connection closes.
 from __future__ import annotations
 
 import json
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import dagster as dg
 import pytest
+from dagster._core.storage.asset_check_execution_record import (
+    AssetCheckExecutionRecordStatus,
+)
 from sqlalchemy import text
 
 from analytics.defs.alerts import metrics_check_alert
@@ -37,6 +40,7 @@ from analytics.defs.checks import (
     build_rollup_check_sql,
     closed_until,
     dimension_check_result,
+    dimension_check_start,
     evaluate_freshness_check,
     evaluate_source_check,
     find_dimension_mismatches,
@@ -44,6 +48,7 @@ from analytics.defs.checks import (
     find_source_mismatches,
     max_data_lag,
     rollup_check_result,
+    rollup_check_window,
     source_check_window,
 )
 from analytics.defs.helpers import start_of_week
@@ -74,7 +79,12 @@ def _naive(*args: int) -> datetime:
 
 # Covers every fixture hour from the partitions start (see conftest.py)
 SOURCE_WINDOW = (datetime(2024, 3, 13, tzinfo=UTC), datetime(2025, 3, 1, tzinfo=UTC))
-FAR_FUTURE = datetime(2030, 1, 1, tzinfo=UTC)
+# Rollup and dimension windows that cover every fixture period
+ALL_DATES = (date(2024, 1, 1), date(2030, 1, 1))
+EARLIEST_HOUR = datetime(2024, 1, 1, tzinfo=UTC)
+# A session time zone east of UTC, where comparing a DATE or a TIMESTAMP
+# column with an aware datetime moves the boundary by one hour.
+EAST_OF_UTC = "Etc/GMT-1"
 
 ROLLUP_LEVELS = [
     ("hourly_metrics", "daily_metrics", "day"),
@@ -213,11 +223,19 @@ class TestRollupChecks:
     @pytest.mark.parametrize(("source", "target", "trunc"), ROLLUP_LEVELS)
     def test_sums_match_after_aggregation(self, conn, source, target, trunc):
         sql = build_rollup_check_sql(source, target, trunc)
-        assert find_rollup_mismatches(conn, sql, FAR_FUTURE) == []
+        assert find_rollup_mismatches(conn, sql, *ALL_DATES) == []
 
-    def _daily_mismatches(self, conn, until: datetime = FAR_FUTURE):
+    def _daily_mismatches(self, conn, window: tuple[date, date] = ALL_DATES):
         sql = build_rollup_check_sql("hourly_metrics", "daily_metrics", "day")
-        return find_rollup_mismatches(conn, sql, until)
+        return find_rollup_mismatches(conn, sql, *window)
+
+    def _change_daily_row(self, conn) -> None:
+        _execute(
+            conn,
+            "UPDATE daily_metrics SET total_blobs = total_blobs + 1"
+            " WHERE period_start = :ps AND category IS NULL AND rollup IS NULL",
+            ps=date(2025, 2, 5),
+        )
 
     def test_reports_a_changed_row(self, conn):
         _execute(
@@ -256,21 +274,31 @@ class TestRollupChecks:
             " WHERE period_start = :ps AND category IS NULL AND rollup IS NULL",
             ps=datetime(2025, 2, 3, tzinfo=UTC),
         )
-        rows = find_rollup_mismatches(conn, sql, FAR_FUTURE)
+        rows = find_rollup_mismatches(conn, sql, *ALL_DATES)
         assert {(r["period_start"], r["problem"]) for r in rows} == {
             (_naive(2024, 6, 3), "extra"),
             (_naive(2025, 2, 3), "missing"),
         }
 
     def test_ignores_periods_that_are_not_closed(self, conn):
-        _execute(
-            conn,
-            "UPDATE daily_metrics SET total_blobs = total_blobs + 1"
-            " WHERE period_start = :ps AND category IS NULL AND rollup IS NULL",
-            ps=datetime(2025, 2, 5, tzinfo=UTC),
-        )
-        until = closed_until("day", datetime(2025, 2, 5, 12, tzinfo=UTC))
-        assert self._daily_mismatches(conn, until) == []
+        self._change_daily_row(conn)
+        window = rollup_check_window("day", _utc(2025, 2, 5, 12))
+        assert self._daily_mismatches(conn, window) == []
+
+    def test_ignores_periods_before_the_window(self, conn):
+        self._change_daily_row(conn)
+        window = rollup_check_window("day", _utc(2025, 2, 25, 12))
+        assert window[0] > date(2025, 2, 5)
+        assert self._daily_mismatches(conn, window) == []
+        assert len(self._daily_mismatches(conn)) == 1
+
+    def test_does_not_depend_on_the_session_time_zone(self, conn):
+        # Before the fix, the cutoff was an aware datetime: east of UTC, the
+        # open day 2025-02-05 was compared.
+        _execute(conn, f"SET LOCAL TIME ZONE '{EAST_OF_UTC}'")
+        self._change_daily_row(conn)
+        window = rollup_check_window("day", _utc(2025, 2, 5, 12))
+        assert self._daily_mismatches(conn, window) == []
 
     def test_result(self):
         rows = [
@@ -283,15 +311,16 @@ class TestRollupChecks:
             },
         ]
         result = rollup_check_result(
-            "daily_metrics", "hourly_metrics", rows, FAR_FUTURE,
+            "daily_metrics", "hourly_metrics", rows, *ALL_DATES,
         )
         assert not result.passed
         assert result.severity == dg.AssetCheckSeverity.WARN
         assert "2025-02-05T00:00 rollup: total_blobs, total_blob_size" in (
             result.description or ""
         )
+        assert result.metadata["window"].value == "2024-01-01..2030-01-01"
         assert rollup_check_result(
-            "daily_metrics", "hourly_metrics", [], FAR_FUTURE,
+            "daily_metrics", "hourly_metrics", [], *ALL_DATES,
         ).passed
 
 
@@ -312,6 +341,20 @@ def test_closed_until(trunc, now, expected):
     assert closed_until(trunc, now) == expected
 
 
+@pytest.mark.parametrize(
+    ("trunc", "now", "expected"),
+    [
+        ("day", _utc(2025, 2, 5, 12), (date(2025, 1, 22), date(2025, 2, 5))),
+        ("week", _utc(2025, 2, 5, 12), (date(2024, 12, 9), date(2025, 2, 3))),
+        ("month", _utc(2025, 2, 5, 12), (date(2024, 8, 1), date(2025, 2, 1))),
+        ("month", _utc(2025, 7, 5, 12), (date(2025, 1, 1), date(2025, 7, 1))),
+        ("year", _utc(2025, 2, 5, 12), (date(2023, 1, 1), date(2025, 1, 1))),
+    ],
+)
+def test_rollup_check_window(trunc, now, expected):
+    assert rollup_check_window(trunc, now) == expected
+
+
 # ---------------------------------------------------------------------------
 # The dimension check of hourly_metrics
 # ---------------------------------------------------------------------------
@@ -319,7 +362,7 @@ def test_closed_until(trunc, now, expected):
 
 class TestDimensionCheck:
     def test_adds_up_after_aggregation(self, conn):
-        assert find_dimension_mismatches(conn) == []
+        assert find_dimension_mismatches(conn, EARLIEST_HOUR) == []
 
     def test_reports_a_changed_category_row(self, conn):
         _execute(
@@ -328,7 +371,7 @@ class TestDimensionCheck:
             " WHERE period_start = :ps AND category = 'other' AND rollup IS NULL",
             ps=HOUR,
         )
-        assert find_dimension_mismatches(conn) == [
+        assert find_dimension_mismatches(conn, EARLIEST_HOUR) == [
             {
                 "period_start": NAIVE_HOUR,
                 "comparison": "categories add up to the global row",
@@ -343,7 +386,7 @@ class TestDimensionCheck:
             " WHERE period_start = :ps AND rollup IS NOT NULL",
             ps=HOUR,
         )
-        assert find_dimension_mismatches(conn) == [
+        assert find_dimension_mismatches(conn, EARLIEST_HOUR) == [
             {
                 "period_start": NAIVE_HOUR,
                 "comparison": "rollups add up to the rollup category row",
@@ -358,9 +401,24 @@ class TestDimensionCheck:
             " WHERE period_start = :ps AND category IS NULL AND rollup IS NULL",
             ps=HOUR,
         )
-        [row] = find_dimension_mismatches(conn)
+        [row] = find_dimension_mismatches(conn, EARLIEST_HOUR)
         assert row["comparison"] == "categories add up to the global row"
         assert "total_transactions" in row["columns"]
+
+    def test_ignores_hours_before_the_window(self, conn):
+        _execute(
+            conn,
+            "UPDATE hourly_metrics SET total_blobs = total_blobs + 1"
+            " WHERE period_start = :ps AND rollup IS NOT NULL",
+            ps=NAIVE_HOUR,
+        )
+        # East of UTC, an aware parameter would leave out the first hour
+        _execute(conn, f"SET LOCAL TIME ZONE '{EAST_OF_UTC}'")
+        assert len(find_dimension_mismatches(conn, HOUR)) == 1
+        assert find_dimension_mismatches(conn, HOUR + timedelta(hours=1)) == []
+
+    def test_window(self):
+        assert dimension_check_start(_utc(2025, 2, 5, 20, 20)) == _utc(2025, 2, 3, 20)
 
     def test_result(self):
         result = dimension_check_result(
@@ -420,6 +478,21 @@ class TestFreshnessCheck:
         result = evaluate_freshness_check(conn, now, self.MAX_LAG)
         assert not result.passed
         assert "metrics pipeline is behind" in (result.description or "")
+        assert "stopped" not in (result.description or "")
+
+    def test_fails_when_both_are_behind(self, conn):
+        # The indexer is stale, but the metrics do not have its newest data
+        now = self._newest_block(conn) + timedelta(hours=2)
+        _execute(
+            conn,
+            "DELETE FROM hourly_metrics"
+            " WHERE period_start = :ps AND category IS NULL AND rollup IS NULL",
+            ps=HOUR,
+        )
+        result = evaluate_freshness_check(conn, now, self.MAX_LAG)
+        assert not result.passed
+        assert "metrics pipeline is behind" in (result.description or "")
+        assert "may have stopped too" in (result.description or "")
 
 
 class TestMaxDataLag:
@@ -600,6 +673,24 @@ class TestMetricsCheckAlert:
         self._report(instance, self.SOURCE_KEY, passed=True)
         messages, _ = self._evaluate(instance, None)
         assert messages == []
+
+    def test_skips_a_check_whose_run_crashed(self):
+        # The check of a crashed run stays PLANNED: metrics_run_failure_alert
+        # reports the run, and this sensor keeps the last reported state.
+        instance = dg.DagsterInstance.ephemeral()
+        self._report(instance, self.SOURCE_KEY, passed=False)
+        messages, cursor = self._evaluate(instance, None)
+        assert len(messages) == 1
+
+        planned = MagicMock(status=AssetCheckExecutionRecordStatus.PLANNED)
+        with patch.object(
+            type(instance.event_log_storage),
+            "get_latest_asset_check_execution_by_key",
+            return_value={self.SOURCE_KEY: planned},
+        ):
+            messages, planned_cursor = self._evaluate(instance, cursor)
+        assert messages == []
+        assert planned_cursor == cursor
 
     def test_defers_consistency_failures_during_a_backfill(self):
         instance = dg.DagsterInstance.ephemeral()
