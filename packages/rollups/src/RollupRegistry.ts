@@ -41,8 +41,16 @@ export class RollupRegistry {
   }
 
   getRollup(blobPoster: string) {
+    const normalizedBlobPoster = blobPoster.toLowerCase();
     const rollup = Object.entries(this.registry).find(([_, blobPosters]) => {
-      return blobPosters.includes(blobPoster);
+      if (!blobPosters) {
+        return false;
+      }
+
+      return blobPosters.some(
+        (registeredBlobPoster) =>
+          registeredBlobPoster.toLowerCase() === normalizedBlobPoster
+      );
     });
 
     if (!rollup) {
