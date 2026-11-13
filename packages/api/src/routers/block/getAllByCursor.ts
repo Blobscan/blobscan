@@ -74,13 +74,6 @@ export const getAllByCursor = publicProcedure
           orderBy: orderBy as Prisma.BlockOrderByWithRelationInput[],
           take,
         }),
-      hasPage: (where) =>
-        prisma.block
-          .findFirst({
-            where: { AND: [baseWhere, where as Prisma.BlockWhereInput] },
-            select: { hash: true },
-          })
-          .then(Boolean),
     });
     const countOp = count
       ? countBlocks(prisma, filters)

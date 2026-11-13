@@ -40,6 +40,58 @@ export type PageQuery = {
   take: number;
 };
 
+function decodeCursor<T>(
+  cursor: string,
+  fields: readonly CursorField<T>[]
+): z.infer<typeof cursorSchema> {
+  try {
+    if (!/^[A-Za-z0-9_-]+$/.test(cursor) || cursor.length > 4096)
+      throw new Error();
+    const decoded = cursorSchema.parse(
+      JSON.parse(Buffer.from(cursor, "base64url").toString("utf8"))
+    );
+    if (decoded.position.length !== fields.length) throw new Error();
+    fields.forEach((field, i) => {
+      const value = decoded.position[i];
+      if (value === null && field.nullable) return;
+      if (field.type === "date") {
+        if (
+          typeof value !== "string" ||
+          !Number.isFinite(Date.parse(value)) ||
+          new Date(value).toISOString() !== value
+        )
+          throw new Error();
+      } else if (
+        typeof value !== field.type ||
+        (field.type === "string" && value === "")
+      ) {
+        throw new Error();
+      }
+    });
+    return decoded;
+  } catch {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Invalid cursor.",
+    });
+  }
+}
+
+function encodeCursor(
+  position: Position,
+  pageDirection: Direction,
+  includeAnchor = false
+): string {
+  return Buffer.from(
+    JSON.stringify({
+      version: 1,
+      direction: pageDirection,
+      position,
+      inclusive: includeAnchor,
+    })
+  ).toString("base64url");
+}
+
 /** Compare all sort fields so a removed record does not invalidate its position. */
 export async function paginate<T extends object>({
   sort = "desc",
@@ -47,57 +99,21 @@ export async function paginate<T extends object>({
   cursor,
   limit,
   fetchPage,
-  hasPage,
 }: {
   sort?: Sort;
   fields: readonly CursorField<T>[];
   cursor?: string;
   limit: number;
   fetchPage: (query: PageQuery) => Promise<T[]>;
-  hasPage: (where: Record<string, unknown>) => Promise<boolean>;
 }): Promise<{
   items: T[];
   pagination: z.infer<typeof paginationResponseSchema>;
 }> {
-  let anchor: Position | undefined;
-  let direction: Direction = "next";
-  let inclusive = false;
-
-  if (cursor !== undefined) {
-    try {
-      if (!/^[A-Za-z0-9_-]+$/.test(cursor) || cursor.length > 4096)
-        throw new Error();
-      const decoded = cursorSchema.parse(
-        JSON.parse(Buffer.from(cursor, "base64url").toString("utf8"))
-      );
-      if (decoded.position.length !== fields.length) throw new Error();
-      fields.forEach((field, i) => {
-        const value = decoded.position[i];
-        if (value === null && field.nullable) return;
-        if (field.type === "date") {
-          if (
-            typeof value !== "string" ||
-            !Number.isFinite(Date.parse(value)) ||
-            new Date(value).toISOString() !== value
-          )
-            throw new Error();
-        } else if (
-          typeof value !== field.type ||
-          (field.type === "string" && value === "")
-        ) {
-          throw new Error();
-        }
-      });
-      anchor = decoded.position;
-      direction = decoded.direction;
-      inclusive = decoded.inclusive;
-    } catch {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Invalid cursor.",
-      });
-    }
-  }
+  const decoded =
+    cursor === undefined ? undefined : decodeCursor(cursor, fields);
+  const anchor = decoded?.position;
+  const direction = decoded?.direction ?? "next";
+  const inclusive = decoded?.inclusive ?? false;
 
   function order(pageDirection: Direction): Sort {
     return pageDirection === "next" ? sort : sort === "asc" ? "desc" : "asc";
@@ -161,21 +177,6 @@ export async function paginate<T extends object>({
     });
   }
 
-  function encode(
-    position: Position,
-    pageDirection: Direction,
-    includeAnchor = false
-  ): string {
-    return Buffer.from(
-      JSON.stringify({
-        version: 1,
-        direction: pageDirection,
-        position,
-        inclusive: includeAnchor,
-      })
-    ).toString("base64url");
-  }
-
   const rows = await fetchPage({
     where: anchor ? seek(anchor, direction, inclusive) : {},
     orderBy: fields.map(({ name }) => ({ [name]: order(direction) })),
@@ -189,14 +190,8 @@ export async function paginate<T extends object>({
   const last = items[items.length - 1];
   const firstPosition = first ? positionOf(first) : anchor;
   const lastPosition = last ? positionOf(last) : anchor;
-  const oppositeDirection = direction === "next" ? "previous" : "next";
-  const oppositePosition = direction === "next" ? firstPosition : lastPosition;
-  const hasOpposite =
-    anchor && oppositePosition
-      ? await hasPage(
-          seek(oppositePosition, oppositeDirection, items.length === 0)
-        )
-      : false;
+  // A cursor comes from another page. That page can become empty if records change.
+  const hasOpposite = anchor !== undefined;
 
   const hasNext = direction === "next" ? hasMore : hasOpposite;
   const hasPrevious = direction === "previous" ? hasMore : hasOpposite;
@@ -205,11 +200,11 @@ export async function paginate<T extends object>({
     pagination: {
       nextCursor:
         hasNext && lastPosition
-          ? encode(lastPosition, "next", items.length === 0)
+          ? encodeCursor(lastPosition, "next", items.length === 0)
           : null,
       previousCursor:
         hasPrevious && firstPosition
-          ? encode(firstPosition, "previous", items.length === 0)
+          ? encodeCursor(firstPosition, "previous", items.length === 0)
           : null,
     },
   };

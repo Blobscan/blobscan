@@ -4,7 +4,7 @@ import {
   createOpenApiHttpHandler,
   generateOpenApiDocument,
 } from "trpc-to-openapi";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import "../../../apps/rest-api-server/src/bigint";
 import { fixtures } from "@blobscan/test";
@@ -24,6 +24,34 @@ describe("cursor pagination", () => {
     ctx = await createTestContext();
     caller = router.createCaller(ctx);
   });
+
+  it.each(["blob", "block", "tx"] as const)(
+    "does not query the opposite page for %s cursors",
+    async (resource) => {
+      const model = {
+        blob: ctx.prisma.blobsOnTransactions,
+        block: ctx.prisma.block,
+        tx: ctx.prisma.transaction,
+      }[resource];
+      const findFirst = vi.spyOn(model, "findFirst");
+      try {
+        const getPage = caller[resource].getAllByCursor;
+        const first = await getPage({ ps: 1 });
+        const second = await getPage({
+          ps: 1,
+          cursor: first.pagination.nextCursor!,
+        });
+        const previous = await getPage({
+          ps: 1,
+          cursor: second.pagination.previousCursor!,
+        });
+        expect(previous).toEqual(first);
+        expect(findFirst).not.toHaveBeenCalled();
+      } finally {
+        findFirst.mockRestore();
+      }
+    }
+  );
 
   it("encodes only the cursor position and navigation state", async () => {
     const { pagination } = await caller.tx.getAllByCursor({ ps: 1 });
