@@ -78,6 +78,51 @@ Nothing detects these changes. After one of them, run the
 `analytics.backfill_rollup_change` command to re-aggregate the affected
 partitions. See [Command line](commandline.md#analyticsbackfill_rollup_change).
 
+## Late data
+
+The live and catch-up schedules aggregate each hour during its last 3 hours.
+Data that the indexer writes later, for example after an outage of the
+indexer, is aggregated by `metrics_late_data_sensor`:
+
+- Every 5 minutes, it finds the hours of the last 30 days (before the 3 hours
+  of the catch-up schedule) where the indexer wrote a transaction or a fork
+  after `hourly_metrics` last aggregated the hour, or up to 5 minutes before
+  it (a write can commit after the aggregation took its snapshot). An hour
+  with transactions and no `hourly_metrics` rows counts too: that is what an
+  outage of the indexer leaves. When a reorg makes a block canonical again,
+  the indexer API bumps the `updated_at` of its transactions, so their hours
+  count as changed.
+- It waits until the indexer has not written to an hour for 15 minutes, so an
+  indexer that is catching up does not start a run for each block.
+- It starts one `hourly_metrics_job` run for each range of changed hours, at
+  most one week per run (the backfill policy). The runs have the
+  `blobscan/late_data` tag. The automation conditions of the rollup levels and
+  of the address metrics then update the periods that contain these hours.
+- It alerts once for each new range (`send_alert`). Dagster retries a failed
+  run twice (the `dagster/max_retries` tag, with `run_retries` in
+  `dagster.yaml`). After that, the sensor does not start it again for the same
+  data: `metrics_run_failure_alert` reports it, and you can re-execute it from
+  the UI.
+
+The sensor is stopped by default: before the initial backfill, every hour is
+missing. Enable it with the live schedules. For hours older than 30 days,
+backfill them by hand.
+
+The sensor only sees the late transactions and forks. It does not see:
+
+- Late ETH/USD prices: after an outage of the price syncer, the USD fees of
+  these hours stay partial or `NULL`. Backfill the hours after the prices are
+  synced.
+- Late `blob` or `blobs_on_transactions` rows: `blobs_on_transactions` has no
+  `updated_at`. The indexer writes them with their transactions, so this only
+  matters after a manual change.
+- Changes of the category or the rollup of an address: run
+  [`analytics.backfill_rollup_change`](#reprocessing-after-a-rollup-change).
+
+The sensor compares `transaction.inserted_at` and `updated_at` with
+`hourly_metrics.updated_at`. Both are written by `now()` of the database, so
+the indexer and Dagster must use the same database time zone (UTC).
+
 ## Checks
 
 Asset checks (`src/analytics/defs/checks.py`) find metrics that are wrong
@@ -132,6 +177,8 @@ does not report these failures until the backfill ends.
 - `metrics_run_failure_alert`: any failed run.
 - `hourly_metrics_staleness_alert`: `hourly_metrics` not updated for 30
   minutes; alerts once when it goes stale and once when it recovers.
+- `metrics_late_data_sensor`: hours re-aggregated because of
+  [late data](#late-data); alerts once for each new range.
 - `metrics_check_alert`: a [check](#checks) fails; alerts once when it fails
   and once when it passes again. While a backfill is in progress, it does not
   report the new failures of the checks other than `data_is_fresh`, because a
@@ -139,9 +186,10 @@ does not report these failures until the backfill ends.
   backfill if they still fail.
 
 `metrics_run_failure_alert` is enabled by default.
-`hourly_metrics_staleness_alert` and `metrics_check_alert` are stopped by
-default, the same as the live schedules: enable them after you enable the
-schedules and the initial backfill completes. For
+`hourly_metrics_staleness_alert`, `metrics_check_alert` and
+`metrics_late_data_sensor` are stopped by default, the same as the live
+schedules: enable them after you enable the schedules and the initial backfill
+completes. For
 `hourly_metrics_staleness_alert`, only updates of the current or the previous
 hour partition count, so a backfill does not hide a stopped live schedule. The
 sensors always log the alert. To also post

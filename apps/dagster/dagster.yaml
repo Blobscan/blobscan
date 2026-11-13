@@ -25,6 +25,12 @@ concurrency:
       - key: "dagster/backfill"
         limit: 3
 
+# Run retries: only the runs with a dagster/max_retries tag are retried, such
+# as the runs of metrics_late_data_sensor. The other runs keep 0 retries.
+run_retries:
+  enabled: true
+  max_retries: 0
+
 # Run launcher: spins up a new Docker container for each pipeline run.
 # Environment variables and volumes are forwarded to launched containers.
 # Values are read from the daemon's environment, so every var listed here

@@ -1,4 +1,4 @@
-import type { Prisma } from "@blobscan/db";
+import { Prisma } from "@blobscan/db";
 import { blockHashSchema } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
@@ -159,6 +159,16 @@ export const handleReorg = createAuthedProcedure("indexer")
               },
             },
           })
+        );
+        // The transactions of the forwarded blocks count again, but deleting
+        // their fork rows leaves no trace. Bumping updated_at lets the
+        // metrics pipeline see that their hours changed and aggregate them
+        // again. NOW() is the clock that the other timestamps use.
+        operations.push(
+          prisma.$executeRaw`
+            UPDATE transaction SET updated_at = NOW()
+            WHERE block_hash IN (${Prisma.join(forwardedBlocks)})
+          `
         );
       }
 

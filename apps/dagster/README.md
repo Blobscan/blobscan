@@ -61,6 +61,9 @@ rolls it up into `daily_metrics`, `weekly_metrics`, `monthly_metrics`,
 - **`live_hourly_schedule`** refreshes the in-progress hour every 10 minutes.
   `hourly_catch_up_schedule` re-aggregates the last 3 hours at :05 to pick up
   late data and reorgs.
+- **`metrics_late_data_sensor`** re-aggregates the older hours that the
+  indexer changed after they were aggregated, for example after an outage of
+  the indexer. See [Late data](docs/operations.md#late-data).
 - **Rollup levels** (daily, weekly, monthly, yearly) are materialized by
   automation conditions when their upstream partitions are updated. This
   includes the in-progress period, so each live update of `hourly_metrics`

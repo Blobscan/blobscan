@@ -224,6 +224,39 @@ describe("handleReorg", () => {
         "block fork txs should have been deleted"
       ).toEqual(0);
     });
+
+    it("should bump the updated_at of the forwarded block transactions", async () => {
+      const before = new Date();
+
+      await authorizedCaller.handleReorg({
+        forwardedBlocks: forwardedBlockHashes,
+      });
+
+      const forwardedBlockTxs = await authorizedCtx.prisma.transaction.findMany(
+        {
+          select: {
+            updatedAt: true,
+          },
+          where: {
+            blockHash: {
+              in: forwardedBlockHashes,
+            },
+          },
+        }
+      );
+
+      expect(
+        forwardedBlockTxs.length,
+        "forwarded block doesn't have transactions"
+      ).toBeGreaterThan(0);
+
+      for (const { updatedAt } of forwardedBlockTxs) {
+        // NOW() has millisecond precision in the column
+        expect(updatedAt.getTime()).toBeGreaterThanOrEqual(
+          before.getTime() - 1000
+        );
+      }
+    });
   });
 
   it("should skip if receiving empty forwarded and rewinded block arrays", async () => {
