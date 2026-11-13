@@ -249,7 +249,7 @@ def _describe(ranges: Sequence[LateRange]) -> str:
 @dg.sensor(
     name="metrics_late_data_sensor",
     job=hourly_metrics_job,
-    minimum_interval_seconds=5 * 60,
+    minimum_interval_seconds=60 * 60,
     default_status=dg.DefaultSensorStatus.STOPPED,
 )
 def metrics_late_data_sensor(
