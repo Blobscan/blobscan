@@ -1,5 +1,11 @@
 # @blobscan/dagster
 
+## 0.10.1
+
+### Patch Changes
+
+- [#1118](https://github.com/Blobscan/blobscan/pull/1118) [`a17f6e5`](https://github.com/Blobscan/blobscan/commit/a17f6e525f5d51bbed11b22b31fb549434afcca0) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Run `metrics_late_data_sensor` every hour instead of every 5 minutes. Late data is rare, and each evaluation scans the last 30 days, so an hourly check is enough.
+
 ## 0.10.0
 
 ### Minor Changes
