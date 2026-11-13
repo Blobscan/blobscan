@@ -86,22 +86,38 @@ indexer, is aggregated by `metrics_late_data_sensor`:
 
 - Every 5 minutes, it finds the hours of the last 30 days (before the 3 hours
   of the catch-up schedule) where the indexer wrote a transaction or a fork
-  after `hourly_metrics` last aggregated the hour. An hour with transactions
-  and no `hourly_metrics` rows counts too: that is what an outage of the
-  indexer leaves.
+  after `hourly_metrics` last aggregated the hour, or up to 5 minutes before
+  it (a write can commit after the aggregation took its snapshot). An hour
+  with transactions and no `hourly_metrics` rows counts too: that is what an
+  outage of the indexer leaves. When a reorg makes a block canonical again,
+  the indexer API bumps the `updated_at` of its transactions, so their hours
+  count as changed.
 - It waits until the indexer has not written to an hour for 15 minutes, so an
   indexer that is catching up does not start a run for each block.
 - It starts one `hourly_metrics_job` run for each range of changed hours, at
   most one week per run (the backfill policy). The runs have the
   `blobscan/late_data` tag. The automation conditions of the rollup levels and
   of the address metrics then update the periods that contain these hours.
-- It alerts once for each new range (`send_alert`). A run that fails is not
-  started again for the same data: `metrics_run_failure_alert` reports it, and
-  you can re-execute it from the UI.
+- It alerts once for each new range (`send_alert`). Dagster retries a failed
+  run twice (the `dagster/max_retries` tag, with `run_retries` in
+  `dagster.yaml`). After that, the sensor does not start it again for the same
+  data: `metrics_run_failure_alert` reports it, and you can re-execute it from
+  the UI.
 
 The sensor is stopped by default: before the initial backfill, every hour is
 missing. Enable it with the live schedules. For hours older than 30 days,
 backfill them by hand.
+
+The sensor only sees the late transactions and forks. It does not see:
+
+- Late ETH/USD prices: after an outage of the price syncer, the USD fees of
+  these hours stay partial or `NULL`. Backfill the hours after the prices are
+  synced.
+- Late `blob` or `blobs_on_transactions` rows: `blobs_on_transactions` has no
+  `updated_at`. The indexer writes them with their transactions, so this only
+  matters after a manual change.
+- Changes of the category or the rollup of an address: run
+  [`analytics.backfill_rollup_change`](#reprocessing-after-a-rollup-change).
 
 The sensor compares `transaction.inserted_at` and `updated_at` with
 `hourly_metrics.updated_at`. Both are written by `now()` of the database, so

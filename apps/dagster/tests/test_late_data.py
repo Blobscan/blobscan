@@ -22,6 +22,7 @@ from analytics.defs.jobs import hourly_metrics_job
 from analytics.defs.late_data import (
     LATE_DATA_TAG,
     MAX_HOURS_PER_RUN,
+    MAX_RETRIES,
     LateHour,
     build_run_request,
     find_late_hours,
@@ -158,6 +159,18 @@ class TestFindLateHours:
         assert late.period_start == HOUR
         assert late.aggregated_at is None
 
+    def test_a_write_that_committed_after_the_aggregation_started(self, conn):
+        # The write started 2 minutes before the aggregation: it may have
+        # committed after the snapshot of the aggregation
+        _aggregated_two_hours_ago(conn)
+        _index_hour_again(conn, ago="2 hours 2 minutes")
+        assert _late_hours(conn) == [HOUR]
+
+    def test_a_write_well_before_the_aggregation(self, conn):
+        _aggregated_two_hours_ago(conn)
+        _index_hour_again(conn, ago="2 hours 10 minutes")
+        assert _late_hours(conn) == []
+
     def test_waits_until_the_indexer_stops_writing_the_hour(self, conn):
         _aggregated_two_hours_ago(conn)
         _index_hour_again(conn, ago="0 minutes")
@@ -247,6 +260,7 @@ def test_run_request_aggregates_the_range():
         "dagster/asset_partition_range_start": "2025-02-05T16:00",
         "dagster/asset_partition_range_end": "2025-02-05T18:00",
         LATE_DATA_TAG: "true",
+        "dagster/max_retries": str(MAX_RETRIES),
     }
 
 

@@ -45,6 +45,15 @@ LATE_DATA_LOOKBACK = timedelta(days=30)
 # this long, so an indexer that is catching up does not start a run for each
 # block it writes.
 LATE_DATA_SETTLE = timedelta(minutes=15)
+# now() is the start time of a database transaction, not its commit time. An
+# indexer write that starts before an aggregation and commits after its
+# snapshot has changed_at < aggregated_at, although the aggregation did not
+# see it. A change this close before an aggregation counts as late, which
+# costs at most one more run of the hour.
+AGGREGATION_MARGIN = timedelta(minutes=5)
+# Dagster retries a failed run this many times (run_retries in dagster.yaml),
+# so a short outage of the database does not leave the hours wrong.
+MAX_RETRIES = 2
 # The backfill policy of hourly_metrics: at most one week of hours per run.
 MAX_HOURS_PER_RUN = 24 * 7
 # Changed hours that are at most this far apart go to the same run. An hour
@@ -105,7 +114,7 @@ FROM hours h
 WHERE h.changed_at < (now() AT TIME ZONE 'UTC') - :settle
   AND CASE
     WHEN a.aggregated_at IS NULL THEN h.has_transactions
-    ELSE h.changed_at > a.aggregated_at
+    ELSE h.changed_at > a.aggregated_at - :margin
   END
 ORDER BY h.period_start
 """,
@@ -137,7 +146,8 @@ class LateRange:
     @property
     def run_key(self) -> str:
         # A new change of the range gives a new key, and so a new run. The
-        # same key is never launched twice, also when its run failed.
+        # same key is never launched twice: a failed run is retried by
+        # Dagster (MAX_RETRIES), not by the sensor.
         changed_at = self.changed_at.isoformat()
         return f"late-data:{self.first_key}..{self.last_key}@{changed_at}"
 
@@ -169,6 +179,7 @@ def find_late_hours(
         "from": start.astimezone(UTC).replace(tzinfo=None),
         "to": end.astimezone(UTC).replace(tzinfo=None),
         "settle": LATE_DATA_SETTLE,
+        "margin": AGGREGATION_MARGIN,
     }
     return [
         LateHour(
@@ -215,6 +226,7 @@ def build_run_request(late_range: LateRange) -> dg.RunRequest:
             _RANGE_START_TAG: late_range.first_key,
             _RANGE_END_TAG: late_range.last_key,
             LATE_DATA_TAG: "true",
+            "dagster/max_retries": str(MAX_RETRIES),
         },
     )
 
