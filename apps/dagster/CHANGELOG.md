@@ -1,5 +1,15 @@
 # @blobscan/dagster
 
+## 0.9.0
+
+### Minor Changes
+
+- [#1114](https://github.com/Blobscan/blobscan/pull/1114) [`b7c66e4`](https://github.com/Blobscan/blobscan/commit/b7c66e4170021e7efe85a70f8ec10f3deade5a29) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add asset checks to the network metrics. They compare the hourly counts with the source tables, each rollup level with the level it is aggregated from, and the category and rollup rows of each hour with their totals, over the recent periods only (the last 48 hours, or the last closed days, weeks, months and years). A freshness check fails when the newest aggregated block is older than `DAGSTER_METRICS_MAX_LAG_MINUTES` (default 60). The checks run from a cron automation condition, and the scheduled jobs no longer run checks with their assets. A new `metrics_check_alert` sensor (stopped by default) alerts once when a check fails and once when it passes again, and waits for running backfills to end before it reports consistency failures.
+
+### Patch Changes
+
+- [#1111](https://github.com/Blobscan/blobscan/pull/1111) [`c485f72`](https://github.com/Blobscan/blobscan/commit/c485f72810d915f54c35577aa8a6a3c0ad69339e) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated Dagster to 1.13.29 to match the Helm chart.
+
 ## 0.8.0
 
 ### Minor Changes

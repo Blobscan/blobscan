@@ -1,5 +1,17 @@
 # @blobscan/docs
 
+## 0.3.6
+
+### Patch Changes
+
+- [#1114](https://github.com/Blobscan/blobscan/pull/1114) [`b7c66e4`](https://github.com/Blobscan/blobscan/commit/b7c66e4170021e7efe85a70f8ec10f3deade5a29) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add asset checks to the network metrics. They compare the hourly counts with the source tables, each rollup level with the level it is aggregated from, and the category and rollup rows of each hour with their totals, over the recent periods only (the last 48 hours, or the last closed days, weeks, months and years). A freshness check fails when the newest aggregated block is older than `DAGSTER_METRICS_MAX_LAG_MINUTES` (default 60). The checks run from a cron automation condition, and the scheduled jobs no longer run checks with their assets. A new `metrics_check_alert` sensor (stopped by default) alerts once when a check fails and once when it passes again, and waits for running backfills to end before it reports consistency failures.
+
+- [#1105](https://github.com/Blobscan/blobscan/pull/1105) [`89b569a`](https://github.com/Blobscan/blobscan/commit/89b569a1fc6e5831e8b085f90be7d77e8ff7c658) Thanks [@PJColombo](https://github.com/PJColombo)! - Added cursor pagination at `/v1/blocks`, `/v1/blobs`, and `/v1/transactions`. Kept the existing unversioned list routes and tRPC `getAll` procedures compatible. Updated the web lists, including address page transactions, to use the new `getAllByCursor` procedures. Added First, Previous, and Next controls with cursor state in the URL, current and total page numbers, and item count badges that stay visible during page navigation. Replaced counts in parentheses with the shared count badge in detail page headings, search result headings, and Starknet table headings. Reduced count badge sizes relative to their headers and matched the loading skeleton to each badge size. Restricted web page sizes to 10, 25, 50, and 100, with 50 as the default for invalid route values.
+
+  The new v1 routes use the returned `pagination.nextCursor` or `pagination.previousCursor` token through `cursor`. Their page size must be an integer from 1 to 100. The existing routes still accept `p` and keep their previous page-size rules.
+
+  Reject numeric cursor positions above the database integer limit with a client error.
+
 ## 0.3.5
 
 ### Patch Changes
