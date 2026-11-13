@@ -84,7 +84,7 @@ The live and catch-up schedules aggregate each hour during its last 3 hours.
 Data that the indexer writes later, for example after an outage of the
 indexer, is aggregated by `metrics_late_data_sensor`:
 
-- Every 5 minutes, it finds the hours of the last 30 days (before the 3 hours
+- Every hour, it finds the hours of the last 30 days (before the 3 hours
   of the catch-up schedule) where the indexer wrote a transaction or a fork
   after `hourly_metrics` last aggregated the hour, or up to 5 minutes before
   it (a write can commit after the aggregation took its snapshot). An hour
