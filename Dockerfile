@@ -69,6 +69,12 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} D
 FROM base AS web
 WORKDIR /app
 
+# npm, npx and corepack are not used at runtime; the copies bundled in the base image carry
+# their own brace-expansion and undici, which trivy reports.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+    /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
+
+
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
 ENV NODE_ENV=production
@@ -119,6 +125,12 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} D
 # stage: api
 FROM base AS api
 WORKDIR /app
+
+# npm, npx and corepack are not used at runtime; the copies bundled in the base image carry
+# their own brace-expansion and undici, which trivy reports.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+    /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
+
 
 ENV NODE_ENV=production
 
