@@ -40,7 +40,7 @@ The response includes the resource list and a `pagination` object:
 }
 ```
 
-When a next or previous page exists, its cursor is a string. Pass that string unchanged as the `cursor` parameter to get that page. Both directions use the same parameter. A `null` cursor means that no page exists in that direction. To return to the first page, omit `cursor` again.
+A cursor is a string that the client can use to request another page. Pass that string unchanged as the `cursor` parameter to get that page. Both directions use the same parameter. A `null` cursor means that no page exists in that direction. To return to the first page, omit `cursor` again.
 
 Keep the resource, filters, and sort order the same when you use a cursor. If you change them, start with the first page. The server checks the cursor structure and position values. It does not check whether the query settings have changed. The cursor format is internal to the server; clients must not decode or construct tokens.
 
@@ -49,3 +49,5 @@ The `ps` parameter sets the page size. Its default is 50. It must be an integer 
 Total counts are optional. Use `count=true` to include the resource total. Pagination does not require a total count.
 
 Each request uses the current database state. A cursor records a position, so it can still work if the record at that position was removed. Results can change after a chain reorganization. Pagination does not preserve a fixed snapshot between requests.
+
+The server infers the opposite page from the cursor direction instead of querying for it. A request with a next cursor returns a previous cursor; a request with a previous cursor returns a next cursor. If matching records change, that inferred page can be empty. Empty pages return an inclusive recovery cursor in the opposite direction. Clients can also omit the cursor to restart from the first page.

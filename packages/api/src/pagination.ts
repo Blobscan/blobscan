@@ -47,14 +47,12 @@ export async function paginate<T extends object>({
   cursor,
   limit,
   fetchPage,
-  hasPage,
 }: {
   sort?: Sort;
   fields: readonly CursorField<T>[];
   cursor?: string;
   limit: number;
   fetchPage: (query: PageQuery) => Promise<T[]>;
-  hasPage: (where: Record<string, unknown>) => Promise<boolean>;
 }): Promise<{
   items: T[];
   pagination: z.infer<typeof paginationResponseSchema>;
@@ -189,14 +187,8 @@ export async function paginate<T extends object>({
   const last = items[items.length - 1];
   const firstPosition = first ? positionOf(first) : anchor;
   const lastPosition = last ? positionOf(last) : anchor;
-  const oppositeDirection = direction === "next" ? "previous" : "next";
-  const oppositePosition = direction === "next" ? firstPosition : lastPosition;
-  const hasOpposite =
-    anchor && oppositePosition
-      ? await hasPage(
-          seek(oppositePosition, oppositeDirection, items.length === 0)
-        )
-      : false;
+  // A cursor comes from another page. That page can become empty if records change.
+  const hasOpposite = anchor !== undefined;
 
   const hasNext = direction === "next" ? hasMore : hasOpposite;
   const hasPrevious = direction === "previous" ? hasMore : hasOpposite;

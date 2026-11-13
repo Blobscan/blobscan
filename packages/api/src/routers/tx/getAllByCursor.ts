@@ -78,15 +78,6 @@ export const getAllByCursor = publicProcedure
             orderBy: orderBy as Prisma.TransactionOrderByWithRelationInput[],
             take,
           }),
-        hasPage: (where) =>
-          prisma.transaction
-            .findFirst({
-              where: {
-                AND: [baseWhere, where as Prisma.TransactionWhereInput],
-              },
-              select: { hash: true },
-            })
-            .then(Boolean),
       });
       const countOp = count
         ? countTxs(prisma, filters, rollupRegistry)

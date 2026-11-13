@@ -80,15 +80,6 @@ export const getAllByCursor = publicProcedure
               orderBy as Prisma.BlobsOnTransactionsOrderByWithRelationInput[],
             take,
           }),
-        hasPage: (where) =>
-          prisma.blobsOnTransactions
-            .findFirst({
-              where: {
-                AND: [baseWhere, where as Prisma.BlobsOnTransactionsWhereInput],
-              },
-              select: { txHash: true },
-            })
-            .then(Boolean),
       });
       const countOp = count
         ? countBlobs(prisma, rollupRegistry, filters)
