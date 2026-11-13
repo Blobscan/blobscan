@@ -1,5 +1,21 @@
 # @blobscan/web
 
+## 0.64.0
+
+### Minor Changes
+
+- [#1105](https://github.com/Blobscan/blobscan/pull/1105) [`89b569a`](https://github.com/Blobscan/blobscan/commit/89b569a1fc6e5831e8b085f90be7d77e8ff7c658) Thanks [@PJColombo](https://github.com/PJColombo)! - Added cursor pagination at `/v1/blocks`, `/v1/blobs`, and `/v1/transactions`. Kept the existing unversioned list routes and tRPC `getAll` procedures compatible. Updated the web lists, including address page transactions, to use the new `getAllByCursor` procedures. Added First, Previous, and Next controls with cursor state in the URL, current and total page numbers, and item count badges that stay visible during page navigation. Replaced counts in parentheses with the shared count badge in detail page headings, search result headings, and Starknet table headings. Reduced count badge sizes relative to their headers and matched the loading skeleton to each badge size. Restricted web page sizes to 10, 25, 50, and 100, with 50 as the default for invalid route values.
+
+  The new v1 routes use the returned `pagination.nextCursor` or `pagination.previousCursor` token through `cursor`. Their page size must be an integer from 1 to 100. The existing routes still accept `p` and keep their previous page-size rules.
+
+  Reject numeric cursor positions above the database integer limit with a client error.
+
+### Patch Changes
+
+- [#1113](https://github.com/Blobscan/blobscan/pull/1113) [`35dd924`](https://github.com/Blobscan/blobscan/commit/35dd9243cb66d535f64af4c73de9b816e19289d8) Thanks [@PJColombo](https://github.com/PJColombo)! - Used the address stats total for the transaction count badge and total pages. Removed the extra transaction count request from the address page.
+- Updated dependencies [[`89b569a`](https://github.com/Blobscan/blobscan/commit/89b569a1fc6e5831e8b085f90be7d77e8ff7c658)]:
+  - @blobscan/api@0.46.0
+
 ## 0.63.0
 
 ### Minor Changes
