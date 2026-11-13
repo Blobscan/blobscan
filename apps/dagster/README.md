@@ -111,7 +111,8 @@ period.
 Asset checks compare the network metrics with the source tables, each rollup
 level with the level it comes from, and the dimension rows of each hour with
 their totals. A freshness check fails when the newest aggregated block is too
-old. See [Checks](docs/operations.md#checks).
+old. The checks compare the recent periods every hour, and every period once
+a week. See [Checks](docs/operations.md#checks).
 
 For backfills, reprocessing, checks, alerts and concurrency, see
 [Operations](docs/operations.md). For the commands, see

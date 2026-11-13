@@ -121,7 +121,10 @@ class TestPartitionRange:
 class TestBuildPartitionsByAssets:
     def test_selects_every_metrics_asset_that_stores_the_rollup(self):
         graph = defs().resolve_asset_graph()
-        asset_names = {key.to_user_string() for key in graph.get_all_asset_keys()}
+        # network_metrics_history only holds checks: it is not materializable.
+        asset_names = {
+            key.to_user_string() for key in graph.materializable_asset_keys
+        }
         # The address metrics do not store the rollup, so a rollup change does
         # not change them.
         rollup_assets = {n for n in asset_names if not n.startswith("address_")}

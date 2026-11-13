@@ -13,7 +13,9 @@ The checks find metrics that are wrong although every run succeeded:
   do not add up to the global or to the ``rollup`` category row.
 
 The checks are not partitioned: each one reads the recent periods only, so its
-cost does not grow with the history. They run from their own automation
+cost does not grow with the history. The checks of the
+``network_metrics_history`` asset run the same comparisons on every period,
+once a week, and can also be executed by hand. They run from their own automation
 condition (a cron tick), so they do not run with the live, catch-up and cascade
 runs of their assets. See docs/operations.md.
 
@@ -55,6 +57,12 @@ if TYPE_CHECKING:
 CONSISTENCY_CHECKS_CRON = "20 * * * *"
 # Every 10 minutes, a few minutes after each live hourly run.
 FRESHNESS_CHECK_CRON = "7-59/10 * * * *"
+# The full-history checks run once a week, on Sundays at 04:40 UTC, a quiet
+# time away from the hourly checks at :20.
+FULL_HISTORY_CHECKS_CRON = "40 4 * * 0"
+# The first period of a full-history rollup check. It is before the first
+# partition, and a period boundary of every level.
+FULL_HISTORY_START_DATE = date(2000, 1, 1)
 
 # The hours that the source check compares, before the hours that the hourly
 # catch-up schedule still re-aggregates.
@@ -144,6 +152,20 @@ FRESHNESS_SQL = text(
         WHERE block_timestamp >= :since
       ) AS source_latest
     """,
+)
+
+
+# The full-history checks target this asset, not the metrics assets: Dagster
+# runs the checks of an asset with each backfill and Materialize run of it,
+# and these checks read the whole tables. Nothing materializes this asset.
+network_metrics_history = dg.AssetSpec(
+    "network_metrics_history",
+    deps=[hourly_metrics, daily_metrics, weekly_metrics, monthly_metrics,
+          yearly_metrics],
+    description=(
+        "The whole history of the network metrics. Its checks compare every"
+        " period once a week. Nothing materializes it."
+    ),
 )
 
 
@@ -341,13 +363,18 @@ def _period(row: Mapping[str, Any]) -> str:
 # ---------------------------------------------------------------------------
 
 
-def source_check_window(now: datetime) -> tuple[datetime, datetime]:
+def source_check_window(
+    now: datetime, *, full_history: bool = False,
+) -> tuple[datetime, datetime]:
     """Return the [start, end) hours that the source check compares.
 
     It ends before the hours that the hourly catch-up schedule re-aggregates,
-    which can still change, and starts no earlier than the partitions.
+    which can still change, and starts no earlier than the partitions. With
+    ``full_history``, it starts at the partitions.
     """
     end = _floor_hour(now) - timedelta(hours=CATCH_UP_HOURS)
+    if full_history:
+        return hourly_partitions.start, end
     start = max(end - timedelta(hours=SOURCE_CHECK_HOURS), hourly_partitions.start)
     return start, end
 
@@ -362,8 +389,10 @@ def find_source_mismatches(
     )
 
 
-def evaluate_source_check(conn: Connection, now: datetime) -> dg.AssetCheckResult:
-    start, end = source_check_window(now)
+def evaluate_source_check(
+    conn: Connection, now: datetime, *, full_history: bool = False,
+) -> dg.AssetCheckResult:
+    start, end = source_check_window(now, full_history=full_history)
     window = f"{start.isoformat()}..{end.isoformat()}"
     if start >= end:
         return dg.AssetCheckResult(
@@ -406,6 +435,22 @@ def hourly_metrics_matches_source_tables(
 ) -> dg.AssetCheckResult:
     with postgres.get_connection() as conn:
         return evaluate_source_check(conn, datetime.now(UTC))
+
+
+@dg.asset_check(
+    asset=network_metrics_history.key,
+    name="hourly_metrics_matches_source_tables",
+    description=(
+        "hourly_metrics:matches_source_tables for every hour from the first"
+        " partition, once a week."
+    ),
+    automation_condition=_on_cron(FULL_HISTORY_CHECKS_CRON),
+)
+def hourly_metrics_matches_source_tables_full_history(
+    postgres: PostgresResource,
+) -> dg.AssetCheckResult:
+    with postgres.get_connection() as conn:
+        return evaluate_source_check(conn, datetime.now(UTC), full_history=True)
 
 
 # ---------------------------------------------------------------------------
@@ -533,14 +578,20 @@ def _months_before(value: datetime, months: int) -> datetime:
     return value.replace(year=index // 12, month=index % 12 + 1)
 
 
-def rollup_check_window(trunc: str, now: datetime) -> tuple[date, date]:
+def rollup_check_window(
+    trunc: str, now: datetime, *, full_history: bool = False,
+) -> tuple[date, date]:
     """Return the [start, end) dates of the closed periods that a check compares.
+
+    With ``full_history``, every closed period is compared.
 
     The rollup tables store ``period_start`` as a DATE, so the window is
     passed as dates: comparing a DATE with a datetime would depend on the time
     zone of the database session.
     """
     end = closed_until(trunc, now)
+    if full_history:
+        return FULL_HISTORY_START_DATE, end.date()
     periods = ROLLUP_CHECK_PERIODS[trunc]
     if trunc == "day":
         start = end - timedelta(days=periods)
@@ -560,22 +611,35 @@ def find_rollup_mismatches(
 
 
 def _build_rollup_check(
-    asset: dg.AssetsDefinition, source: str, trunc: str,
+    asset: dg.AssetsDefinition,
+    source: str,
+    trunc: str,
+    *,
+    full_history: bool = False,
 ) -> dg.AssetChecksDefinition:
     target = asset.key.to_user_string()
     sql = build_rollup_check_sql(source, target, trunc)
+    periods = (
+        "every closed period" if full_history
+        else f"the last {ROLLUP_CHECK_PERIODS[trunc]} closed periods"
+    )
+    name = f"sums_match_{source}"
 
     @dg.asset_check(
-        asset=asset,
-        name=f"sums_match_{source}",
+        asset=network_metrics_history.key if full_history else asset,
+        name=f"{target}_{name}" if full_history else name,
         description=(
-            f"Each row of the last {ROLLUP_CHECK_PERIODS[trunc]} closed periods of"
-            f" {target} is the sum of the {source} rows of that period."
+            f"Each row of {periods} of {target} is the sum of the {source} rows"
+            " of that period." + (" Runs once a week." if full_history else "")
         ),
-        automation_condition=_on_cron(CONSISTENCY_CHECKS_CRON),
+        automation_condition=_on_cron(
+            FULL_HISTORY_CHECKS_CRON if full_history else CONSISTENCY_CHECKS_CRON,
+        ),
     )
     def _check(postgres: PostgresResource) -> dg.AssetCheckResult:
-        start, end = rollup_check_window(trunc, datetime.now(UTC))
+        start, end = rollup_check_window(
+            trunc, datetime.now(UTC), full_history=full_history,
+        )
         with postgres.get_connection() as conn:
             rows = find_rollup_mismatches(conn, sql, start, end)
         return rollup_check_result(target, source, rows, start, end)
@@ -626,6 +690,18 @@ monthly_metrics_sums_match = _build_rollup_check(
 yearly_metrics_sums_match = _build_rollup_check(
     yearly_metrics, "monthly_metrics", "year",
 )
+daily_metrics_sums_match_full_history = _build_rollup_check(
+    daily_metrics, "hourly_metrics", "day", full_history=True,
+)
+weekly_metrics_sums_match_full_history = _build_rollup_check(
+    weekly_metrics, "daily_metrics", "week", full_history=True,
+)
+monthly_metrics_sums_match_full_history = _build_rollup_check(
+    monthly_metrics, "daily_metrics", "month", full_history=True,
+)
+yearly_metrics_sums_match_full_history = _build_rollup_check(
+    yearly_metrics, "monthly_metrics", "year", full_history=True,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -633,8 +709,10 @@ yearly_metrics_sums_match = _build_rollup_check(
 # ---------------------------------------------------------------------------
 
 
-def dimension_check_start(now: datetime) -> datetime:
+def dimension_check_start(now: datetime, *, full_history: bool = False) -> datetime:
     """Return the first hour that the dimension check compares."""
+    if full_history:
+        return hourly_partitions.start
     return _floor_hour(now) - timedelta(hours=DIMENSION_CHECK_HOURS)
 
 
@@ -684,6 +762,33 @@ def hourly_metrics_dimensions_add_up(
     return dimension_check_result(rows)
 
 
+@dg.asset_check(
+    asset=network_metrics_history.key,
+    name="hourly_metrics_dimensions_add_up",
+    description=(
+        "hourly_metrics:dimensions_add_up for every hour from the first"
+        " partition, once a week."
+    ),
+    automation_condition=_on_cron(FULL_HISTORY_CHECKS_CRON),
+)
+def hourly_metrics_dimensions_add_up_full_history(
+    postgres: PostgresResource,
+) -> dg.AssetCheckResult:
+    start = dimension_check_start(datetime.now(UTC), full_history=True)
+    with postgres.get_connection() as conn:
+        rows = find_dimension_mismatches(conn, start)
+    return dimension_check_result(rows)
+
+
+FULL_HISTORY_CHECKS = (
+    hourly_metrics_matches_source_tables_full_history,
+    hourly_metrics_dimensions_add_up_full_history,
+    daily_metrics_sums_match_full_history,
+    weekly_metrics_sums_match_full_history,
+    monthly_metrics_sums_match_full_history,
+    yearly_metrics_sums_match_full_history,
+)
+
 METRICS_CHECKS = (
     hourly_metrics_matches_source_tables,
     hourly_metrics_data_is_fresh,
@@ -692,9 +797,13 @@ METRICS_CHECKS = (
     weekly_metrics_sums_match,
     monthly_metrics_sums_match,
     yearly_metrics_sums_match,
+    *FULL_HISTORY_CHECKS,
 )
 
 METRICS_CHECK_KEYS = tuple(key for c in METRICS_CHECKS for key in c.check_keys)
+FULL_HISTORY_CHECK_KEYS = tuple(
+    key for c in FULL_HISTORY_CHECKS for key in c.check_keys
+)
 
 FRESHNESS_CHECK_KEY = dg.AssetCheckKey(hourly_metrics.key, "data_is_fresh")
 # The checks whose failures are expected while a backfill rewrites the

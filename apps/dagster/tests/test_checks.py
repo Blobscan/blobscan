@@ -34,6 +34,9 @@ from analytics.defs.checks import (
     CONSISTENCY_CHECK_KEYS,
     DEFAULT_MAX_LAG_MINUTES,
     FRESHNESS_CHECK_KEY,
+    FULL_HISTORY_CHECK_KEYS,
+    FULL_HISTORY_CHECKS,
+    FULL_HISTORY_START_DATE,
     MAX_LAG_ENV_VAR,
     METRICS_CHECK_KEYS,
     METRICS_CHECKS,
@@ -47,6 +50,7 @@ from analytics.defs.checks import (
     find_rollup_mismatches,
     find_source_mismatches,
     max_data_lag,
+    network_metrics_history,
     rollup_check_result,
     rollup_check_window,
     source_check_window,
@@ -209,6 +213,27 @@ class TestSourceCheck:
         assert result.metadata["mismatches"].value == 1
         assert "2025-02-05T16:00" in (result.description or "")
 
+    def test_full_history_window_starts_at_the_partitions(self):
+        now = datetime(2025, 2, 5, 20, 20, tzinfo=UTC)
+        assert source_check_window(now, full_history=True) == (
+            hourly_partitions.start,
+            datetime(2025, 2, 5, 17, tzinfo=UTC),
+        )
+
+    def test_full_history_finds_an_old_mismatch(self, conn):
+        _execute(
+            conn,
+            "UPDATE hourly_metrics SET total_blobs = total_blobs + 1"
+            " WHERE period_start = :ps AND category IS NULL AND rollup IS NULL",
+            ps=NAIVE_HOUR,
+        )
+        # A week later, the hour is out of the recent window
+        now = HOUR + timedelta(days=7)
+        assert evaluate_source_check(conn, now).passed
+        result = evaluate_source_check(conn, now, full_history=True)
+        assert not result.passed
+        assert result.metadata["mismatches"].value == 1
+
     def test_passes_when_no_hour_is_closed_yet(self, conn):
         result = evaluate_source_check(conn, hourly_partitions.start)
         assert result.passed
@@ -291,6 +316,23 @@ class TestRollupChecks:
         assert window[0] > date(2025, 2, 5)
         assert self._daily_mismatches(conn, window) == []
         assert len(self._daily_mismatches(conn)) == 1
+
+    @pytest.mark.parametrize(("source", "target", "trunc"), ROLLUP_LEVELS)
+    def test_full_history_sums_match_after_aggregation(
+        self, conn, source, target, trunc,
+    ):
+        # The first week and month start before the first partition
+        sql = build_rollup_check_sql(source, target, trunc)
+        window = rollup_check_window(trunc, _utc(2030, 1, 1), full_history=True)
+        assert find_rollup_mismatches(conn, sql, *window) == []
+
+    def test_full_history_finds_an_old_mismatch(self, conn):
+        self._change_daily_row(conn)
+        now = _utc(2025, 6, 1, 12)
+        assert self._daily_mismatches(conn, rollup_check_window("day", now)) == []
+        window = rollup_check_window("day", now, full_history=True)
+        assert window == (FULL_HISTORY_START_DATE, date(2025, 6, 1))
+        assert len(self._daily_mismatches(conn, window)) == 1
 
     def test_does_not_depend_on_the_session_time_zone(self, conn):
         # Before the fix, the cutoff was an aware datetime: east of UTC, the
@@ -419,6 +461,10 @@ class TestDimensionCheck:
 
     def test_window(self):
         assert dimension_check_start(_utc(2025, 2, 5, 20, 20)) == _utc(2025, 2, 3, 20)
+        assert (
+            dimension_check_start(_utc(2025, 2, 5, 20, 20), full_history=True)
+            == hourly_partitions.start
+        )
 
     def test_result(self):
         result = dimension_check_result(
@@ -523,9 +569,19 @@ _DEFS = dg.Definitions(
         monthly_metrics,
         yearly_metrics,
         all_time_metrics,
+        network_metrics_history,
     ],
     asset_checks=list(METRICS_CHECKS),
     jobs=[
+        # Like a backfill or a Materialize from the UI: an asset with its
+        # checks
+        *(
+            dg.define_asset_job(
+                f"{asset.key.to_user_string()}_with_checks",
+                selection=dg.AssetSelection.assets(asset),
+            )
+            for asset, _ in _PARTITION_KEYS
+        ),
         hourly_metrics_job,
         daily_metrics_job,
         weekly_metrics_job,
@@ -552,6 +608,17 @@ def test_scheduled_jobs_do_not_run_the_checks(job):
     # hourly_metrics every 10 minutes.
     nodes = {node.name for node in _DEFS.resolve_job_def(job.name).graph.nodes}
     assert nodes == {job.name.removesuffix("_job")}
+
+
+@pytest.mark.parametrize(
+    "asset", [asset for asset, _ in _PARTITION_KEYS], ids=lambda a: a.key.path[0],
+)
+def test_metrics_runs_do_not_run_the_full_history_checks(asset):
+    name = asset.key.to_user_string()
+    nodes = {n.name for n in _DEFS.resolve_job_def(f"{name}_with_checks").graph.nodes}
+    # The recent checks run with the asset, the full-history checks do not
+    assert any(node.startswith(f"{name}_") for node in nodes)
+    assert not [node for node in nodes if "network_metrics_history" in node]
 
 
 class TestCheckAutomation:
@@ -593,10 +660,39 @@ class TestCheckAutomation:
         )
         assert requested == [
             set(),
-            set(CONSISTENCY_CHECK_KEYS),
+            set(CONSISTENCY_CHECK_KEYS) - set(FULL_HISTORY_CHECK_KEYS),
             {FRESHNESS_CHECK_KEY},
             set(),
         ]
+
+    def test_full_history_checks_run_once_a_week(self):
+        instance = dg.DagsterInstance.ephemeral()
+        sunday = datetime(2024, 3, 24, tzinfo=UTC)
+        requested = self._requested_checks(
+            instance,
+            [
+                sunday.replace(hour=4, minute=38),  # first evaluation: no tick
+                sunday.replace(hour=4, minute=41),  # the Sunday 04:40 tick
+                # The hourly :20 tick (and a freshness tick), not the weekly one
+                sunday.replace(hour=5, minute=21),
+            ],
+        )
+        assert requested == [
+            set(),
+            set(FULL_HISTORY_CHECK_KEYS),
+            set(METRICS_CHECK_KEYS) - set(FULL_HISTORY_CHECK_KEYS),
+        ]
+
+    def test_every_consistency_check_has_a_full_history_variant(self):
+        recent = set(CONSISTENCY_CHECK_KEYS) - set(FULL_HISTORY_CHECK_KEYS)
+        assert set(FULL_HISTORY_CHECK_KEYS) == {
+            dg.AssetCheckKey(
+                network_metrics_history.key,
+                f"{key.asset_key.to_user_string()}_{key.name}",
+            )
+            for key in recent
+        }
+        assert len(FULL_HISTORY_CHECKS) == len(recent)
 
 
 # ---------------------------------------------------------------------------

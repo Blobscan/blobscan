@@ -102,10 +102,6 @@ On a chain where an hour without blob transactions is normal (testnets,
 Gnosis), `data_is_fresh` fails in these hours. Set
 `DAGSTER_METRICS_MAX_LAG_MINUTES` higher on these deployments.
 
-The periods before the windows are not checked again. To check an older
-range, for example after you restore a backup, backfill it: the backfill
-rewrites the rollups from the levels they come from.
-
 How to fix a failure:
 
 - `matches_source_tables`: backfill `hourly_metrics` and the levels downstream
@@ -127,14 +123,38 @@ recent periods, this adds little time to each run. Their results during a backfi
 while the levels are rewritten one after the other; `metrics_check_alert`
 does not report these failures until the backfill ends.
 
+### Full-history checks
+
+The checks of the `network_metrics_history` asset run the consistency checks
+on every period, from the first partition to the end of the recent window, for
+example `network_metrics_history:hourly_metrics_matches_source_tables`. They
+find the old mismatches that the recent windows no longer cover.
+
+- They run once a week, on Sundays at 04:40 UTC, from their own automation
+  condition.
+- To run them by hand, for example after you restore a backup or backfill an
+  old range: **Assets** → `network_metrics_history` → **Checks** tab →
+  **Execute** on each check.
+- `network_metrics_history` is never materialized: it only holds these checks.
+  On the metrics assets, Dagster would run them with each backfill and
+  **Materialize** run.
+- They read the whole metrics tables, and
+  `hourly_metrics_matches_source_tables` also reads the whole `transaction`
+  and `blobs_on_transactions` tables, so they take much longer than the
+  hourly checks.
+- An old mismatch keeps a full-history check failing until you backfill the
+  periods in its `first_mismatches` metadata. `metrics_check_alert` reports it
+  once, as for the other checks.
+
 ## Alerts
 
 - `metrics_run_failure_alert`: any failed run.
 - `hourly_metrics_staleness_alert`: `hourly_metrics` not updated for 30
   minutes; alerts once when it goes stale and once when it recovers.
-- `metrics_check_alert`: a [check](#checks) fails; alerts once when it fails
-  and once when it passes again. While a backfill is in progress, it does not
-  report the new failures of the checks other than `data_is_fresh`, because a
+- `metrics_check_alert`: a [check](#checks) fails, the full-history checks
+  included; alerts once when it fails and once when it passes again. While a
+  backfill is in progress, it does not report the new failures of the checks
+  other than `data_is_fresh`, because a
   backfill rewrites the levels one after the other. It reports them after the
   backfill if they still fail.
 
