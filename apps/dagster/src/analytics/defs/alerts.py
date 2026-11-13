@@ -15,11 +15,19 @@ from dagster._core.execution.backfill import (
     BulkActionStatus,
     PartitionBackfill,
 )
+from dagster._core.storage.asset_check_execution_record import (
+    AssetCheckExecutionRecordStatus,
+)
 
 from analytics.defs.assets import hourly_metrics, hourly_partitions
+from analytics.defs.checks import CONSISTENCY_CHECK_KEYS, METRICS_CHECK_KEYS
 
 if TYPE_CHECKING:
     import logging
+
+    from dagster._core.storage.asset_check_execution_record import (
+        AssetCheckExecutionRecord,
+    )
 
 # hourly_metrics is refreshed every 10 minutes by the live schedule, so not
 # being updated for this long means the pipeline is stuck.
@@ -36,6 +44,8 @@ BACKFILL_FAILURE_STATUSES = (
     BulkActionStatus.COMPLETED_FAILED,
 )
 _BACKFILLS_PER_EVALUATION = 50
+
+_PLANNED = AssetCheckExecutionRecordStatus.PLANNED
 
 
 def send_alert(
@@ -187,3 +197,75 @@ def backfill_failure_alert(context: dg.SensorEvaluationContext):
 
     context.update_cursor(str(reported_until))
     return dg.SkipReason(f"{len(new_failures)} failed backfill(s) reported")
+
+
+def check_description(record: AssetCheckExecutionRecord) -> str | None:
+    """Return the description of the evaluation of ``record``, if any."""
+    event = record.event.dagster_event if record.event else None
+    # A record that is not PLANNED always has an ASSET_CHECK_EVALUATION event
+    if event is None or record.status == _PLANNED:
+        return None
+    return event.asset_check_evaluation_data.description
+
+
+def backfill_in_progress(instance: dg.DagsterInstance) -> bool:
+    return bool(
+        instance.get_backfills(
+            filters=BulkActionsFilter(statuses=[BulkActionStatus.REQUESTED]),
+            limit=1,
+        ),
+    )
+
+
+# Stopped by default, like hourly_metrics_staleness_alert: before the live
+# schedules run and the initial backfill completes, the checks fail.
+@dg.sensor(
+    name="metrics_check_alert",
+    minimum_interval_seconds=60,
+    default_status=dg.DefaultSensorStatus.STOPPED,
+)
+def metrics_check_alert(context: dg.SensorEvaluationContext):
+    """Alert once when a metrics check fails, and once when it passes again.
+
+    The cursor stores the last reported state of each check (JSON). A check
+    that already fails when the sensor starts is reported. While a backfill is
+    in progress, new failures of the consistency checks are not reported yet:
+    a backfill rewrites the metrics level by level, so the levels can differ
+    until it completes. They are reported after it, if they still fail.
+    """
+    reported: dict[str, str] = json.loads(context.cursor) if context.cursor else {}
+    storage = context.instance.event_log_storage
+    records = storage.get_latest_asset_check_execution_by_key(list(METRICS_CHECK_KEYS))
+    defer_consistency = backfill_in_progress(context.instance)
+
+    alerts = 0
+    for key in METRICS_CHECK_KEYS:
+        record = records.get(key)
+        # PLANNED: still running, or its run failed (metrics_run_failure_alert
+        # reports that)
+        if record is None or record.status == _PLANNED:
+            continue
+        name = key.to_user_string()
+        failed = record.status == AssetCheckExecutionRecordStatus.FAILED
+        was_failed = reported.get(name) == "failed"
+
+        if failed and not was_failed:
+            if defer_consistency and key in CONSISTENCY_CHECK_KEYS:
+                continue
+            description = check_description(record)
+            send_alert(
+                f":warning: Dagster check `{name}` failed"
+                + (f"\n{description}" if description else ""),
+                context.log,
+            )
+            alerts += 1
+        elif was_failed and not failed:
+            send_alert(
+                f":white_check_mark: Dagster check `{name}` passes again.",
+                context.log,
+            )
+            alerts += 1
+        reported[name] = "failed" if failed else "passed"
+
+    context.update_cursor(json.dumps(reported, sort_keys=True))
+    return dg.SkipReason(f"{alerts} check alert(s) sent")

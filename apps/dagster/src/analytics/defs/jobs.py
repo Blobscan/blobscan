@@ -21,6 +21,11 @@ from analytics.defs.resources.postgres import PostgresResource
 # The limit of one run per metrics table is set with a pool on each asset (see
 # assets.py and dagster.yaml), so it also applies to automation and backfill
 # runs, not only to these jobs.
+#
+# A job runs the checks of its assets unless they are removed from its
+# selection. The checks of the network metrics (checks.py) read whole ranges
+# of periods and run from their own automation condition, so the jobs that
+# the schedules start leave them out.
 
 all_time_metrics_job = dg.define_asset_job(
     name="all_time_metrics_job",
@@ -29,27 +34,27 @@ all_time_metrics_job = dg.define_asset_job(
 
 hourly_metrics_job = dg.define_asset_job(
     name="hourly_metrics_job",
-    selection=[hourly_metrics],
+    selection=dg.AssetSelection.assets(hourly_metrics).without_checks(),
 )
 
 daily_metrics_job = dg.define_asset_job(
     name="daily_metrics_job",
-    selection=[daily_metrics],
+    selection=dg.AssetSelection.assets(daily_metrics).without_checks(),
 )
 
 weekly_metrics_job = dg.define_asset_job(
     name="weekly_metrics_job",
-    selection=[weekly_metrics],
+    selection=dg.AssetSelection.assets(weekly_metrics).without_checks(),
 )
 
 monthly_metrics_job = dg.define_asset_job(
     name="monthly_metrics_job",
-    selection=[monthly_metrics],
+    selection=dg.AssetSelection.assets(monthly_metrics).without_checks(),
 )
 
 yearly_metrics_job = dg.define_asset_job(
     name="yearly_metrics_job",
-    selection=[yearly_metrics],
+    selection=dg.AssetSelection.assets(yearly_metrics).without_checks(),
 )
 
 address_hourly_metrics_job = dg.define_asset_job(
