@@ -12,6 +12,7 @@ const feeInput = {
   transactions: INPUT.transactions.map((tx, i) => ({
     ...tx,
     from: INPUT.transactions[0]!.from,
+    executionStatus: i === 0 ? ("failed" as const) : ("success" as const),
     gasUsed: "0x5208",
     effectiveGasPrice: "3000000000",
     input: i === 0 ? "0x001234" : "0x",
@@ -31,6 +32,7 @@ describe("Transaction fee ingestion and responses", () => {
     await createIndexerCaller(ctx).indexData(feeInput);
     const caller = createTransactionCaller(ctx);
     const tx = await caller.getByHash({ hash: feeInput.transactions[0]!.hash });
+    expect(tx.executionStatus).toBe("failed");
     expect(tx.gasUsed).toBe(21000n);
     expect(tx.effectiveGasPrice).toBe(3000000000n);
     expect(tx.executionFee).toBe(63000000000000n);
@@ -41,6 +43,7 @@ describe("Transaction fee ingestion and responses", () => {
     const empty = await caller.getByHash({
       hash: feeInput.transactions[1]!.hash,
     });
+    expect(empty.executionStatus).toBe("success");
     expect(empty.input).toBe("0x");
     const next = await caller.getSenderAdjacentTx({
       hash: tx.hash,
@@ -62,6 +65,7 @@ describe("Transaction fee ingestion and responses", () => {
     const caller = createTransactionCaller(ctx);
     await indexer.indexData(INPUT);
     const old = await caller.getByHash({ hash: INPUT.transactions[0]!.hash });
+    expect(old.executionStatus).toBeNull();
     expect(old.totalFee).toBeNull();
     expect(old.input).toBeNull();
     await indexer.indexData(feeInput);
@@ -69,6 +73,7 @@ describe("Transaction fee ingestion and responses", () => {
     const updated = await caller.getByHash({
       hash: INPUT.transactions[0]!.hash,
     });
+    expect(updated.executionStatus).toBe("failed");
     expect(updated.executionFee).toBe(63000000000000n);
     expect(updated.priorityFee).toBe(21000000000000n);
     expect(updated.input).toBe("0x001234");

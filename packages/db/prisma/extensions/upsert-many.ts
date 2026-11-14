@@ -233,6 +233,7 @@ export const upsertManyExtension = Prisma.defineExtension((prisma) =>
                 gasPrice,
                 gasUsed,
                 effectiveGasPrice,
+                executionStatus,
                 input,
                 blobAsCalldataGasUsed,
                 blobGasUsed,
@@ -248,6 +249,9 @@ export const upsertManyExtension = Prisma.defineExtension((prisma) =>
                 gasPrice,
                 gasUsed,
                 effectiveGasPrice,
+                executionStatus
+                  ? Prisma.sql`${executionStatus.toLowerCase()}::execution_status`
+                  : Prisma.sql`NULL`,
                 input,
                 blobAsCalldataGasUsed,
                 blobGasUsed,
@@ -270,6 +274,7 @@ export const upsertManyExtension = Prisma.defineExtension((prisma) =>
               gas_price,
               gas_used,
               effective_gas_price,
+              execution_status,
               input,
               blob_as_calldata_gas_used,
               blob_gas_used,
@@ -289,6 +294,8 @@ export const upsertManyExtension = Prisma.defineExtension((prisma) =>
                 THEN COALESCE(EXCLUDED.gas_used, "transaction".gas_used) ELSE EXCLUDED.gas_used END,
               effective_gas_price = CASE WHEN "transaction".block_hash = EXCLUDED.block_hash
                 THEN COALESCE(EXCLUDED.effective_gas_price, "transaction".effective_gas_price) ELSE EXCLUDED.effective_gas_price END,
+              execution_status = CASE WHEN "transaction".block_hash = EXCLUDED.block_hash
+                THEN COALESCE(EXCLUDED.execution_status, "transaction".execution_status) ELSE EXCLUDED.execution_status END,
               input = COALESCE(EXCLUDED.input, "transaction".input),
               blob_as_calldata_gas_used = EXCLUDED.blob_as_calldata_gas_used,
               blob_gas_used = EXCLUDED.blob_gas_used,

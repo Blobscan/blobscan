@@ -31,6 +31,7 @@ export async function backfillTransactions({
             { gasUsed: null },
             { effectiveGasPrice: null },
             { input: null },
+            { executionStatus: null },
             { block: { baseFeePerGas: null } },
           ],
         },

@@ -108,6 +108,11 @@ export async function getTransactionData(
   if (typeof tx.input !== "string" || !/^0x(?:[0-9a-f]{2})*$/i.test(tx.input)) {
     throw new RpcDataError("Invalid transaction input");
   }
+  const status = quantity(receipt.status);
+  if (status !== 0n && status !== 1n)
+    throw new RpcDataError("Invalid execution status");
+  const executionStatus =
+    status === 1n ? ("SUCCESS" as const) : ("FAILED" as const);
   const gasUsed = quantity(receipt.gasUsed);
   const effectiveGasPrice = quantity(receipt.effectiveGasPrice);
   const baseFeePerGas = quantity(block.baseFeePerGas);
@@ -120,6 +125,7 @@ export async function getTransactionData(
     throw new RpcDataError("Blob gas data does not match the database");
   }
   return {
+    executionStatus,
     gasUsed: gasUsed.toString(),
     effectiveGasPrice: effectiveGasPrice.toString(),
     input: tx.input,

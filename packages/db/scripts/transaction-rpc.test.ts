@@ -43,6 +43,7 @@ function mockRpc(data: ReturnType<typeof fixture>): RpcCall {
 
 test("reads fees for a failed transaction and keeps calldata bytes", async () => {
   assert.deepEqual(await getTransactionData(mockRpc(fixture()), stored), {
+    executionStatus: "FAILED",
     gasUsed: "21000",
     effectiveGasPrice: "3000000000",
     input: "0x001234",
@@ -175,4 +176,24 @@ test("compares large stored blob prices without exponential notation", async () 
     block: { blobGasPrice: price },
   });
   assert.equal(result.gasUsed, "21000");
+});
+
+test("reads successful execution status", async () => {
+  const data = fixture();
+  data.eth_getTransactionReceipt.status = "0x1";
+  assert.equal(
+    (await getTransactionData(mockRpc(data), stored)).executionStatus,
+    "SUCCESS"
+  );
+});
+
+test("rejects missing and invalid execution status", async () => {
+  for (const status of [undefined, null, "0x2"]) {
+    const data = fixture();
+    const rpc: RpcCall = async (method) =>
+      method === "eth_getTransactionReceipt"
+        ? { ...data.eth_getTransactionReceipt, status }
+        : data[method as keyof typeof data];
+    await assert.rejects(getTransactionData(rpc, stored));
+  }
 });

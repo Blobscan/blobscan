@@ -40,6 +40,7 @@ const transactionSelect = {
   gasPrice: true,
   gasUsed: true,
   effectiveGasPrice: true,
+  executionStatus: true,
   maxFeePerBlobGas: true,
   blockHash: true,
   blockNumber: true,

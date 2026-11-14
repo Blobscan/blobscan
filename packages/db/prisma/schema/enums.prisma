@@ -106,3 +106,10 @@ enum Rollup {
 
   @@map("rollup")
 }
+
+enum ExecutionStatus {
+  SUCCESS @map("success")
+  FAILED  @map("failed")
+
+  @@map("execution_status")
+}

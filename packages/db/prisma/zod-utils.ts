@@ -4,6 +4,7 @@ import { z } from "@blobscan/zod";
 
 import {
   BlobStorage as DBBlobStorageEnum,
+  ExecutionStatus,
   Rollup as DBRollupEnum,
 } from "./enums";
 import { Category as DBCategoryEnum } from "./enums";
@@ -242,7 +243,8 @@ export const dbCategoryCoercionSchema = z.string().transform((value, ctx) => {
 
 export const dbEnumSchema = dbCategorySchema
   .or(dbRollupSchema)
-  .or(dbBlobStorageSchema);
+  .or(dbBlobStorageSchema)
+  .or(z.enum(ExecutionStatus));
 
 export type DBEnum = z.infer<typeof dbEnumSchema>;
 

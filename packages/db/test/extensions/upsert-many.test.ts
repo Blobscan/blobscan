@@ -134,7 +134,7 @@ describe("Upsert Many Extension", () => {
                 versionedHash: blobHash,
               },
             })
-             
+
             .then((b) => omitDBTimestampFields(b!));
         });
 
@@ -281,7 +281,9 @@ describe("Upsert Many Extension", () => {
               data: { proof: PLACEHOLDER_PROOF },
             });
 
-            await prisma.blob.upsertMany([{ ...oldBlob, proof: oldBlob.proof }]);
+            await prisma.blob.upsertMany([
+              { ...oldBlob, proof: oldBlob.proof },
+            ]);
 
             expect(await findProof()).toBe(oldBlob.proof);
           });
@@ -466,11 +468,13 @@ describe("Upsert Many Extension", () => {
           {
             blobHash: newBlob.versionedHash,
             blobStorage: BlobStorage.POSTGRES,
-            dataReference: "newReference",          },
+            dataReference: "newReference",
+          },
           {
             blobHash: newBlob.versionedHash,
             blobStorage: BlobStorage.SWARM,
-            dataReference: "newReference",          },
+            dataReference: "newReference",
+          },
         ];
 
         await prisma.blob.create({
@@ -483,7 +487,8 @@ describe("Upsert Many Extension", () => {
           select: {
             blobHash: true,
             blobStorage: true,
-            dataReference: true,          },
+            dataReference: true,
+          },
           where: {
             blobHash: newBlob.versionedHash,
           },
@@ -500,19 +505,23 @@ describe("Upsert Many Extension", () => {
           {
             blobHash: "blobHash001",
             blobStorage: BlobStorage.GOOGLE,
-            dataReference: "updatedReference",          },
+            dataReference: "updatedReference",
+          },
           {
             blobHash: "blobHash001",
             blobStorage: BlobStorage.SWARM,
-            dataReference: "updatedReference",          },
+            dataReference: "updatedReference",
+          },
           {
             blobHash: "blobHash001",
             blobStorage: BlobStorage.IPFS,
-            dataReference: "updatedReference",          },
+            dataReference: "updatedReference",
+          },
           {
             blobHash: "blobHash002",
             blobStorage: BlobStorage.GOOGLE,
-            dataReference: "updatedReference",          },
+            dataReference: "updatedReference",
+          },
         ];
 
         await prisma.blobDataStorageReference.upsertMany(input);
@@ -524,7 +533,8 @@ describe("Upsert Many Extension", () => {
           select: {
             blobHash: true,
             blobStorage: true,
-            dataReference: true,          },
+            dataReference: true,
+          },
           where: {
             blobHash: {
               in: updatedBlobVersionedHashes,
@@ -554,7 +564,8 @@ describe("Upsert Many Extension", () => {
           {
             blobHash: "nonExistentBlobHash",
             blobStorage: BlobStorage.GOOGLE,
-            dataReference: "reference",          },
+            dataReference: "reference",
+          },
         ];
 
         await expect(
@@ -571,7 +582,6 @@ describe("Upsert Many Extension", () => {
         insertedAt: _,
         updatedAt: __,
         ...existingRawTx
-         
       } = fixtures.txs[0]!;
       const existingTx: WithoutTimestampFields<Transaction> = {
         ...existingRawTx,
@@ -584,43 +594,54 @@ describe("Upsert Many Extension", () => {
         gasPrice: new Prisma.Decimal(existingRawTx.gasPrice),
         gasUsed: null,
         effectiveGasPrice: null,
+        executionStatus: null,
         input: null,
         decodedFields: {},
       };
 
       it("preserves receipt fields when the same block is indexed again", async () => {
-        await prisma.transaction.upsertMany([{
-          ...existingTx,
-          gasUsed: new Prisma.Decimal(21000),
-          effectiveGasPrice: new Prisma.Decimal(3),
-          input: "0x0012",
-        }]);
+        await prisma.transaction.upsertMany([
+          {
+            ...existingTx,
+            gasUsed: new Prisma.Decimal(21000),
+            effectiveGasPrice: new Prisma.Decimal(3),
+            executionStatus: "FAILED",
+            input: "0x0012",
+          },
+        ]);
         await prisma.transaction.upsertMany([existingTx]);
         const stored = await prisma.transaction.findUniqueOrThrow({
           where: { hash: existingTx.hash },
         });
         expect(stored.gasUsed?.toString()).toBe("21000");
         expect(stored.effectiveGasPrice?.toString()).toBe("3");
+        expect(stored.executionStatus).toBe("FAILED");
         expect(stored.input).toBe("0x0012");
       });
 
       it("clears old receipt fields when the transaction moves to another block", async () => {
-        await prisma.transaction.upsertMany([{
-          ...existingTx,
-          gasUsed: new Prisma.Decimal(21000),
-          effectiveGasPrice: new Prisma.Decimal(3),
-          input: "0x0012",
-        }]);
-        await prisma.transaction.upsertMany([{
-          ...existingTx,
-          blockHash: "blockHash006",
-          blockNumber: 1006,
-        }]);
+        await prisma.transaction.upsertMany([
+          {
+            ...existingTx,
+            gasUsed: new Prisma.Decimal(21000),
+            effectiveGasPrice: new Prisma.Decimal(3),
+            executionStatus: "FAILED",
+            input: "0x0012",
+          },
+        ]);
+        await prisma.transaction.upsertMany([
+          {
+            ...existingTx,
+            blockHash: "blockHash006",
+            blockNumber: 1006,
+          },
+        ]);
         const stored = await prisma.transaction.findUniqueOrThrow({
           where: { hash: existingTx.hash },
         });
         expect(stored.gasUsed).toBeNull();
         expect(stored.effectiveGasPrice).toBeNull();
+        expect(stored.executionStatus).toBeNull();
         expect(stored.input).toBe("0x0012");
       });
 
@@ -638,6 +659,7 @@ describe("Upsert Many Extension", () => {
             gasPrice: new Prisma.Decimal(10),
             gasUsed: null,
             effectiveGasPrice: null,
+            executionStatus: null,
             input: null,
             blobAsCalldataGasUsed: new Prisma.Decimal(1000),
             blobGasUsed: new Prisma.Decimal(1000),
@@ -656,6 +678,7 @@ describe("Upsert Many Extension", () => {
             gasPrice: new Prisma.Decimal(5),
             gasUsed: null,
             effectiveGasPrice: null,
+            executionStatus: null,
             input: null,
             blobAsCalldataGasUsed: new Prisma.Decimal(500),
             blobGasUsed: new Prisma.Decimal(500),
@@ -721,6 +744,7 @@ describe("Upsert Many Extension", () => {
             gasPrice: new Prisma.Decimal(1),
             gasUsed: null,
             effectiveGasPrice: null,
+            executionStatus: null,
             input: null,
             blobAsCalldataGasUsed: new Prisma.Decimal(1),
             blobGasUsed: new Prisma.Decimal(1),
@@ -738,6 +762,7 @@ describe("Upsert Many Extension", () => {
             gasPrice: new Prisma.Decimal(999),
             gasUsed: null,
             effectiveGasPrice: null,
+            executionStatus: null,
             input: null,
             blobAsCalldataGasUsed: new Prisma.Decimal(999),
             blobGasUsed: new Prisma.Decimal(999),

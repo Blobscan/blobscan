@@ -39,6 +39,7 @@ const rawTxSchema = z.object({
   gasPrice: toBigIntSchema,
   gasUsed: optionalGasQuantitySchema,
   effectiveGasPrice: optionalGasQuantitySchema,
+  executionStatus: z.enum(["success", "failed"]).optional(),
   input: z
     .string()
     .regex(/^0x(?:[0-9a-fA-F]{2})*$/)

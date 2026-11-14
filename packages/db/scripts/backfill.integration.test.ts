@@ -69,6 +69,7 @@ const server = createServer((req, res) => {
         result = {
           ...identity,
           transactionHash: hashes[index],
+          status: index === 0 ? "0x0" : "0x1",
           gasUsed: "0x5208",
           effectiveGasPrice: "0x3",
           blobGasUsed: "0x20000",
@@ -134,6 +135,7 @@ beforeEach(async () => {
       data: {
         blockHash: blockHashes[i],
         blockNumber: 100 + i,
+        executionStatus: null,
         gasUsed: null,
         effectiveGasPrice: null,
         input: null,
@@ -234,6 +236,7 @@ test(
     });
     assert.equal(tx.gasUsed?.toString(), "21000");
     assert.equal(tx.effectiveGasPrice?.toString(), "3");
+    assert.equal(tx.executionStatus, "FAILED");
     assert.equal(tx.gasPrice.toString(), "9");
     assert.equal(tx.input, "0x0012");
     assert.equal(
@@ -303,3 +306,26 @@ test("CLI retries transient RPC failures", { skip: !enabled }, async () => {
     "21000"
   );
 });
+
+test(
+  "CLI fills missing status when fee data is complete",
+  { skip: !enabled },
+  async () => {
+    assert.equal((await run()).code, 0);
+    await prisma!.transaction.update({
+      where: { hash: hashes[1] },
+      data: { executionStatus: null },
+    });
+    requests = 0;
+    assert.equal((await run()).code, 0);
+    assert.equal(requests, 3);
+    assert.equal(
+      (
+        await prisma!.transaction.findUniqueOrThrow({
+          where: { hash: hashes[1] },
+        })
+      ).executionStatus,
+      "SUCCESS"
+    );
+  }
+);

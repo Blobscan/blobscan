@@ -29,6 +29,7 @@ function setup() {
       }) => {
         assert.deepEqual(args.where, { hash, blockHash });
         assert.deepEqual(args.data, {
+          executionStatus: "SUCCESS",
           gasUsed: "21000",
           effectiveGasPrice: "3",
           input: "0x",
@@ -57,6 +58,7 @@ function setup() {
       transactionHash: hash,
       blockHash,
       blockNumber: "0x64",
+      status: "0x1",
       gasUsed: "0x5208",
       effectiveGasPrice: "0x3",
       blobGasUsed: "0x20000",

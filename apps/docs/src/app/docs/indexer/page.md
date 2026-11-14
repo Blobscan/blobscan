@@ -129,7 +129,7 @@ For example:
 RUST_LOG=blob_indexer[span{field=value}]=level cargo run
 ```
 
-## Backfill execution fees and calldata
+## Backfill execution fees, status, and calldata
 
 The monorepo has a script that reads missing transaction fields from an execution
 node. It does not run the indexer or download blobs.
@@ -148,7 +148,7 @@ Use `--from-block` and `--to-block` for an inclusive block range. Use `--batch-s
 to set the database page size (default: 100; maximum: 1000).
 
 The script reads only stored transactions with missing execution gas, receipt gas
-price, calldata, or block base fee. It processes one transaction at a time, with
+price, execution status, calldata, or block base fee. It processes one transaction at a time, with
 three RPC requests per transaction. Each RPC request has a 30-second timeout and
 up to three attempts. It checks the transaction hash, block hash, block number,
 and blob gas values before it writes data. A database transaction keeps each
@@ -163,11 +163,13 @@ blob storage, or the existing calldata cost estimates.
 The ingestion API accepts these optional fields for new data:
 
 - Block: `baseFeePerGas`.
-- Transaction: `gasUsed`, `effectiveGasPrice`, and `input`.
+- Transaction: `gasUsed`, `effectiveGasPrice`, `executionStatus`, and `input`.
 
 Send gas quantities as decimal or hexadecimal strings. Read `gasUsed` and
 `effectiveGasPrice` from the receipt, `baseFeePerGas` from the block, and `input`
-from the transaction. Omitted fields remain unavailable. Repeated ingestion into
+from the transaction. Set `executionStatus` to `success` for receipt status `0x1`
+and `failed` for `0x0`. Missing or invalid receipt status prevents indexing
+and backfill writes. Omitted API fields remain unavailable. Repeated ingestion into
 the same block preserves values written by the backfill. If a transaction moves
 to another block, ingestion clears its old receipt fields when new values are
 not supplied.
@@ -176,6 +178,8 @@ The API and transaction page calculate the total fee as execution gas used times
 the receipt gas price, plus blob gas used times the block blob gas price. The
 priority fee and calldata costs are already part of the execution fee. Missing
 execution fields produce a null total fee. Empty calldata is stored as `0x`.
+The Status row shows block finality and execution status as separate badges.
+If execution status is missing, the page shows only the finality badge.
 
 
 Run the focused backfill tests with `pnpm --filter @blobscan/db test:backfill`.

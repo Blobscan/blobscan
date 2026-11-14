@@ -237,6 +237,7 @@ export class DataGenerator {
         gasPrice: new Prisma.Decimal(gasPrice),
         gasUsed: null,
         effectiveGasPrice: null,
+        executionStatus: null,
         input: null,
         maxFeePerBlobGas: new Prisma.Decimal(maxFeePerBlobGas),
         decodedFields: {},

@@ -7,7 +7,7 @@ import type {
   Transaction,
   WithoutTimestampFields,
 } from "@blobscan/db";
-import { Prisma } from "@blobscan/db";
+import { ExecutionStatus, Prisma } from "@blobscan/db";
 import type { RollupRegistry } from "@blobscan/rollups";
 
 import type { IndexDataFormattedInput } from "./indexData";
@@ -97,6 +97,7 @@ export function createDBTransactions(
       gasPrice,
       gasUsed,
       effectiveGasPrice,
+      executionStatus,
       input,
       hash,
       maxFeePerBlobGas,
@@ -131,6 +132,12 @@ export function createDBTransactions(
             ? null
             : bigIntToDecimal(effectiveGasPrice),
         input: input ?? null,
+        executionStatus:
+          executionStatus === undefined
+            ? null
+            : executionStatus === "success"
+            ? ExecutionStatus.SUCCESS
+            : ExecutionStatus.FAILED,
         blobGasUsed: bigIntToDecimal(
           BigInt(txBlobs.length) * params.gasPerBlob
         ),
