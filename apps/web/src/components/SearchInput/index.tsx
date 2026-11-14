@@ -1,12 +1,12 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { FormEventHandler, HTMLAttributes } from "react";
 import { useRouter } from "next/compat/router";
+import { Transition } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
 import { api } from "~/api-client";
 import { useClickOutside } from "~/hooks/useClickOutside";
 import { useDebounce } from "~/hooks/useDebounce";
-import Loading from "~/icons/loading.svg";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
 import type { SearchCategory } from "~/types";
@@ -66,11 +66,28 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
     setOutsideClicked(true);
   });
 
-  const displayResults =
-    !isDebouncing &&
+  const isLoading = isDebouncing || isSearchFetching;
+  const displayResults = Boolean(
     !outsideClicked &&
-    trimmedSearchQuery &&
-    searchData !== undefined;
+      trimmedSearchQuery &&
+      (isLoading || searchData !== undefined)
+  );
+
+  useEffect(() => {
+    if (!displayResults) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        const form = searchRef.current;
+        if (form?.contains(document.activeElement)) {
+          form.querySelector("input")?.focus();
+        }
+        setOutsideClicked(true);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [displayResults]);
 
   const handleSubmit: FormEventHandler<HTMLFormElement | HTMLButtonElement> = (
     e
@@ -129,8 +146,6 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
     <form ref={searchRef} onSubmit={handleSubmit}>
       <div
         className={`relative flex rounded-md border-border-light shadow-sm dark:border-border-dark ${className}`}
-        onClick={() => setOutsideClicked(false)}
-        aria-hidden="true"
       >
         <div className="relative flex flex-grow items-stretch focus-within:z-10">
           <Input
@@ -139,23 +154,49 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
             name="search"
             id="search"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setOutsideClicked(false);
+            }}
+            onFocus={() => setOutsideClicked(false)}
+            onClick={() => setOutsideClicked(false)}
             className={"rounded-none rounded-l-md"}
             placeholder={`Search by Hash / KZG / Proof / Block Number / Slot / Address`}
           />
         </div>
 
-        {displayResults && (
-          <ResultsModal
-            searchQuery={trimmedSearchQuery}
-            results={searchData}
-            onResultClick={handleResultClick}
-          />
-        )}
+        <Transition
+          show={displayResults}
+          enter="transition-[grid-template-rows,opacity] duration-[180ms] ease-out motion-reduce:transition-none"
+          enterFrom="grid-rows-[0fr] opacity-0"
+          enterTo="grid-rows-[1fr] opacity-100"
+          leave="pointer-events-none transition-[grid-template-rows,opacity] duration-[180ms] ease-in-out motion-reduce:transition-none"
+          leaveFrom="grid-rows-[1fr] opacity-100"
+          leaveTo="grid-rows-[0fr] opacity-0"
+          as="div"
+          className="absolute inset-x-0 top-11 z-10 grid"
+        >
+          <div
+            className="min-h-0 overflow-hidden"
+            ref={(node) => {
+              if (node) node.inert = !displayResults;
+            }}
+            aria-hidden={!displayResults || undefined}
+          >
+            <ResultsModal
+              open={displayResults}
+              searchQuery={trimmedSearchQuery}
+              results={searchData ?? null}
+              isLoading={isLoading}
+              onResultClick={handleResultClick}
+            />
+          </div>
+        </Transition>
 
         <Button
           type="submit"
           variant="primary"
+          aria-label="Search"
           onClick={handleSubmit}
           className={`
           relative
@@ -170,14 +211,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
           ring-inset
           `}
         >
-          {(isSearchFetching || isDebouncing) && trimmedSearchQuery ? (
-            <Loading className="-ml-0.5 h-5 w-5 animate-spin" />
-          ) : (
-            <MagnifyingGlassIcon
-              className="-ml-0.5 h-5 w-5"
-              aria-hidden="true"
-            />
-          )}
+          <MagnifyingGlassIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
         </Button>
       </div>
     </form>
