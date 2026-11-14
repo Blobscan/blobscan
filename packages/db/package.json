@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@blobscan/chains": "workspace:^0.6.0",
+    "@blobscan/rollups": "workspace:^0.10.2",
     "@faker-js/faker": "^10.6.0",
     "js-sha256": "^0.9.0",
     "ora": "^8.1.1",

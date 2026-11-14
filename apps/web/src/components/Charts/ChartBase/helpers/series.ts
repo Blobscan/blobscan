@@ -1,7 +1,8 @@
 import type { SeriesOption } from "echarts";
 
+import { ROLLUP_DEFINITIONS } from "@blobscan/rollups";
+
 import { CATEGORY_COLORS } from "~/defintions/categories";
-import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
 import type { Rollup, TimeseriesDimension } from "~/types";
 
 export const DEFAULT_SERIES_COLOR = "#505050";

@@ -1,10 +1,5 @@
-import type { Rollup } from "@blobscan/db/prisma/enums";
-
-import { GNOSIS_REGISTRY } from "./blob-posters/gnosis";
-import { HOODI_REGISTRY } from "./blob-posters/hoodi";
-import { MAINNET_REGISTRY } from "./blob-posters/mainnet";
-import { SEPOLIA_REGISTRY } from "./blob-posters/sepolia";
-import type { BlobPosterRegistry } from "./types";
+import { ROLLUP_DEFINITIONS } from "./generated/registry";
+import type { BlobPosterRegistry, Rollup, RollupDefinition } from "./types";
 
 export class RollupRegistry {
   public readonly registry: BlobPosterRegistry;
@@ -14,18 +9,14 @@ export class RollupRegistry {
   }
 
   static create(chainId: number) {
-    switch (chainId) {
-      case 1:
-        return new RollupRegistry(MAINNET_REGISTRY);
-      case 11155111:
-        return new RollupRegistry(SEPOLIA_REGISTRY);
-      case 560048:
-        return new RollupRegistry(HOODI_REGISTRY);
-      case 100:
-        return new RollupRegistry(GNOSIS_REGISTRY);
-      default:
-        return new RollupRegistry({});
+    const registry: BlobPosterRegistry = {};
+    for (const definition of Object.values(ROLLUP_DEFINITIONS)) {
+      const posters = (definition as RollupDefinition).blobPosters[chainId];
+      if (posters?.length) {
+        registry[definition.id.toUpperCase() as Rollup] = [...posters];
+      }
     }
+    return new RollupRegistry(registry);
   }
 
   hasRollup(rollup: Rollup) {
@@ -42,7 +33,9 @@ export class RollupRegistry {
 
   getRollup(blobPoster: string) {
     const rollup = Object.entries(this.registry).find(([_, blobPosters]) => {
-      return blobPosters.includes(blobPoster);
+      return blobPosters.some(
+        (address) => address.toLowerCase() === blobPoster.toLowerCase()
+      );
     });
 
     if (!rollup) {

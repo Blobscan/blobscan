@@ -1,7 +1,9 @@
 import React, { Fragment } from "react";
-import dynamic from "next/dynamic";
 
-import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
+import { ROLLUP_DEFINITIONS } from "@blobscan/rollups";
+import type { RollupDefinition } from "@blobscan/rollups";
+import { rollupIcons } from "@blobscan/rollups/icons";
+
 import type { Rollup } from "~/types";
 import { Icon } from "../Icon";
 import type { BadgeProps } from "./Badge";
@@ -19,12 +21,8 @@ export const RollupBadge: React.FC<RollupBadgeProps> = ({
   amount = 1,
   ...props
 }) => {
-  const {
-    color,
-    iconClassname,
-    name,
-    iconSrc = `${rollup}.svg`,
-  } = ROLLUP_DEFINITIONS[rollup];
+  const { color, iconClassname, name }: RollupDefinition =
+    ROLLUP_DEFINITIONS[rollup];
 
   const rollupIcon = (
     <div
@@ -32,11 +30,7 @@ export const RollupBadge: React.FC<RollupBadgeProps> = ({
       style={getBrandColorStyle(color)}
     >
       <Icon
-        src={
-          iconSrc.startsWith("/")
-            ? iconSrc
-            : dynamic(() => import(`~/icons/rollups/${iconSrc}`))
-        }
+        src={rollupIcons[rollup]}
         title={name}
         className={iconClassname}
         size={props.size ?? "md"}

@@ -1,5 +1,6 @@
-import { Rollup } from "../enums";
+import type { Rollup } from "../enums";
 import { Category } from "../enums";
+import { ROLLUP_ADDRESSES } from "./web3";
 
 export type SeedParams = {
   totalDays: number;
@@ -32,7 +33,7 @@ export const seedParams: SeedParams = {
       weight: 0.8,
     },
   ],
-  rollupWeights: Object.values(Rollup).map(([name]) => ({
+  rollupWeights: Object.keys(ROLLUP_ADDRESSES).map((name) => ({
     value: name as Rollup,
     weight: 0.5,
   })),

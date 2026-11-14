@@ -1,7 +1,7 @@
 import dayjs from "@blobscan/dayjs";
 import { convertWei } from "@blobscan/eth-format";
+import { ROLLUP_DEFINITIONS } from "@blobscan/rollups";
 
-import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
 import type { Rollup, TimeseriesGranularity } from "~/types";
 import {
   convertBytes,

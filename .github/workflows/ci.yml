@@ -26,6 +26,9 @@ jobs:
       - name: Setup
         uses: ./tooling/github/setup
 
+      - name: Check rollup files
+        run: pnpm rollups:sync --check
+
       - name: Lint
         run: pnpm lint
 

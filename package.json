@@ -30,7 +30,8 @@
     "svg:format": "turbo svg:format",
     "validate": "turbo lint type-check && manypkg check && pnpm test",
     "with-env": "dotenv -e .env --",
-    "with-env:test": "dotenv -e .env.test --"
+    "with-env:test": "dotenv -e .env.test --",
+    "rollups:sync": "node --import tsx packages/rollups/scripts/run-sync.ts"
   },
   "devDependencies": {
     "@blobscan/eslint-config": "workspace:^0.0.1",

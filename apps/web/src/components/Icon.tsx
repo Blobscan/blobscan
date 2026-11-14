@@ -81,7 +81,7 @@ export const Icon: FC<IconProps> = function ({
       width={width}
       height={height}
       src={IconOrSrc}
-      className={className}
+      className={`${className}${classNameProp ? ` ${classNameProp}` : ""}`}
     />
   ) : (
     <IconOrSrc

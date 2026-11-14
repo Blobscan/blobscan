@@ -5,6 +5,7 @@ import baseConfig from "@blobscan/tailwind-config";
 export default {
   content: [
     "./src/**/*.{ts,tsx}",
+    "../../packages/rollups/src/rollups/**/definition.ts",
     "../../node_modules/react-tailwindcss-datepicker/dist/index.esm.js",
   ],
   presets: [baseConfig],
