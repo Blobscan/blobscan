@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 interface ErrorIllustrationLayoutProps {
-  code: number;
+  code: number | string;
   title: string;
   description: string;
   action: ReactNode;
