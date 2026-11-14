@@ -1,0 +1,76 @@
+.panelContent {
+  min-height: 6.25rem;
+}
+
+.blobLoader {
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 64px;
+  flex: none;
+}
+
+.blobCanvas {
+  display: block;
+  width: 112px;
+  height: 112px;
+  transform: scale(0.5714285714);
+  transform-origin: 0 0;
+}
+
+.blobDeformation {
+  position: relative;
+  display: block;
+  width: 112px;
+  height: 112px;
+  transform-origin: 50% 84%;
+}
+
+.blobLayer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: currentColor;
+  mask-image: var(--blob-loader-mask);
+  mask-size: contain;
+  mask-position: center;
+  mask-repeat: no-repeat;
+}
+
+.blobBody {
+  clip-path: polygon(
+    evenodd,
+    0% 0%,
+    100% 0%,
+    100% 100%,
+    0% 100%,
+    0% 0%,
+    47% 44%,
+    72% 44%,
+    72% 62%,
+    47% 62%,
+    47% 44%,
+    0% 0%
+  );
+}
+
+.blobEyes {
+  clip-path: inset(44% 28% 38% 47%);
+  transform-origin: 60% 54%;
+  transition: opacity 300ms ease;
+}
+
+.emptyFace {
+  position: absolute;
+  inset: 0;
+  width: 112px;
+  height: 112px;
+  transition: opacity 300ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blobEyes,
+  .emptyFace {
+    transition: none;
+  }
+}
