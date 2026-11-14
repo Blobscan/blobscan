@@ -39,6 +39,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
   className,
 }: SearchInputProps) {
   const router = useRouter();
+  const utils = api.useUtils();
   const [searchQuery, setSearchQuery] = useState("");
   const [outsideClicked, setOutsideClicked] = useState(false);
   const trimmedSearchQuery = searchQuery.trim();
@@ -59,6 +60,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
     {
       enabled: Boolean(debouncedSearchQuery),
       staleTime: Infinity,
+      trpc: { abortOnUnmount: true },
     }
   );
 
@@ -98,6 +100,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
       return;
     }
 
+    void utils.search.cancel({ query: debouncedSearchQuery });
     setSearchQuery("");
 
     let route = `/search?q=${trimmedSearchQuery}`;
