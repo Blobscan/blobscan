@@ -21,6 +21,7 @@ import {
 import {
   bodyParserMiddleware,
   corsMiddleware,
+  createRepeatLimitFromEnv,
   matomoMiddleware,
   morganMiddleware,
 } from "./middlewares";
@@ -38,12 +39,17 @@ async function main() {
   const app = express();
 
   if (env.TRUSTED_PROXIES) {
-    app.set("trust proxy", env.TRUSTED_PROXIES.split(",").map((p) => p.trim()));
+    app.set(
+      "trust proxy",
+      env.TRUSTED_PROXIES.split(",").map((p) => p.trim())
+    );
   }
 
   app.use(corsMiddleware);
   app.use(bodyParserMiddleware);
   app.use(morganMiddleware);
+  // Before Matomo, so rejected requests are not tracked as page hits.
+  app.use(createRepeatLimitFromEnv());
   app.use(matomoMiddleware);
 
   app.get("/healthz", healthHandler);

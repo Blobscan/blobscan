@@ -96,6 +96,11 @@ export const env = createEnv({
         .default(`http://localhost:${process.env.BLOBSCAN_API_PORT ?? 3001}`),
       TRUSTED_PROXIES: z.string().optional(),
 
+      // API repeat-request limit: same client, same resource
+      API_REPEAT_LIMIT_MODE: z.enum(["off", "log", "enforce"]).default("off"),
+      API_REPEAT_LIMIT_POINTS: z.coerce.number().int().positive().default(6),
+      API_REPEAT_LIMIT_DURATION: z.coerce.number().int().positive().default(60),
+
       // Logging
       LOG_LEVEL: z
         .enum(["debug", "http", "info", "warn", "error"])

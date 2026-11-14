@@ -297,6 +297,9 @@ importers:
       morgan:
         specifier: ^1.12.1
         version: 1.12.1
+      rate-limiter-flexible:
+        specifier: ^7.4.0
+        version: 7.4.0
       swagger-ui-express:
         specifier: ^4.6.2
         version: 4.6.3(express@4.22.3)
@@ -506,6 +509,18 @@ importers:
       bullmq:
         specifier: ^4.13.2
         version: 4.18.3
+      command-line-args:
+        specifier: ^5.2.1
+        version: 5.2.1
+      command-line-usage:
+        specifier: ^7.0.1
+        version: 7.0.3
+
+  clis/ipfs-pin-status-cli:
+    dependencies:
+      '@blobscan/db':
+        specifier: workspace:^0.32.0
+        version: link:../../packages/db
       command-line-args:
         specifier: ^5.2.1
         version: 5.2.1
