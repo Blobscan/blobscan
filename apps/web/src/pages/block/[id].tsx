@@ -407,6 +407,7 @@ const Block: NextPage = function () {
             : undefined
         }
         fields={detailsFields}
+        skeletonRows={isMainnet ? 15 : 14}
       />
 
       <Card

@@ -422,6 +422,7 @@ const Tx: NextPage = () => {
             : undefined
         }
         fields={detailsFields}
+        skeletonRows={isMainnet ? 16 : 15}
       />
 
       {tx?.rollup === "optimism" && !!tx.decodedFields && (
