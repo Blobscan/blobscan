@@ -1,6 +1,6 @@
 import type { FC } from "react";
-import Image from "next/image";
 
+import { ConcernedBlob } from "./ConcernedBlob";
 import { ErrorViewLayout } from "./ErrorViewLayout";
 
 export interface BadRequestErrorViewProps {
@@ -16,15 +16,7 @@ export const BadRequestErrorView: FC<BadRequestErrorViewProps> = function ({
     <ErrorViewLayout
       code="422"
       image={
-        <Image
-          src="/invalid.png"
-          alt="Unprocessable Entity"
-          width={450}
-          height={450}
-          sizes="(max-width: 768px) 200px, (max-width: 1024px) 350px, 450px"
-          className="h-[200px] w-[200px] md:h-[350px] md:w-[350px] lg:h-[450px] lg:w-[450px]"
-          priority
-        />
+        <ConcernedBlob className="h-auto w-[200px] max-w-full shrink-0 md:w-[350px] lg:w-[450px]" />
       }
       title={title}
       description={description}
