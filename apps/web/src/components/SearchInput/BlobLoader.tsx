@@ -133,7 +133,6 @@ export function BlobLoader({ resting = false }: { resting?: boolean }) {
           <span
             ref={eyesRef}
             className={`${styles.blobLayer} ${styles.blobEyes}`}
-            style={{ opacity: resting ? 0 : 1 }}
           />
           <svg
             className={styles.emptyFace}
@@ -145,8 +144,6 @@ export function BlobLoader({ resting = false }: { resting?: boolean }) {
             strokeLinecap="round"
           >
             <path d="M53 49 Q57 49 59 46 M73 45 Q75 48 79 48" />
-            <circle cx="58" cy="59" r="4.5" />
-            <circle cx="75" cy="57" r="4.5" />
           </svg>
         </span>
       </span>
