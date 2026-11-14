@@ -65,7 +65,7 @@ export function RollupBadgeGroup({
                   <span className="min-w-0 flex-1">
                     {ROLLUP_DEFINITIONS[rollup as Rollup].name}
                   </span>
-                  <span className="font-semibold tabular-nums">{amount}</span>
+                  <span className="font-semibold">{amount}</span>
                 </li>
               ))}
             </ul>

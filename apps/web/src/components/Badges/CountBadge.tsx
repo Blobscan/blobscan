@@ -33,7 +33,7 @@ export function CountBadge({ count, size = "md" }: CountBadgeProps) {
         <Badge
           variant="primary"
           size={size}
-          className={`${className} font-bold tabular-nums`}
+          className={`${className} font-bold`}
         >
           {formatNumber(count)}
         </Badge>

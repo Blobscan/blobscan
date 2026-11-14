@@ -78,7 +78,7 @@ const Blobs: NextPage = function () {
           className: "w-[150px]",
         },
 
-        { item: `Blob Usage (${BYTES_UNIT})`, className: "w-[180px]" },
+        { item: `Blob Usage (${BYTES_UNIT})`, className: "w-[220px]" },
         {
           item: "Storages",
           className: "w-[86px]",

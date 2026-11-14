@@ -81,7 +81,7 @@ export const Table: FC<TableProps> = function ({
           >
             <table
               className={cn(
-                "w-full border-separate border-spacing-0 rounded tabular-nums",
+                "w-full border-separate border-spacing-0 rounded",
                 {
                   "table-fixed": fixedColumnsWidth,
                 }
