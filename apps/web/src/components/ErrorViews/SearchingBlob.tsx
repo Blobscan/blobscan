@@ -1,5 +1,6 @@
 import { useId } from "react";
 
+import Helmet from "../../../public/searching-helmet.svg";
 import { IllustrationBackground } from "./IllustrationBackground";
 import { IllustrationGround } from "./IllustrationGround";
 import styles from "./SearchingBlob.module.css";
@@ -100,13 +101,7 @@ export function SearchingBlob() {
             transform="rotate(8 809 699)"
           />
         </g>
-        <image
-          href="/searching-helmet.svg"
-          x="260"
-          y="210"
-          width="690"
-          height="420"
-        />
+        <Helmet x="260" y="210" width="690" height="420" />
       </g>
       <g transform="translate(137 94)">
         <g className={styles.lantern}>
