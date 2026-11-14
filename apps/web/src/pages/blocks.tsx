@@ -94,7 +94,7 @@ const Blocks: NextPage = function () {
         },
         {
           item: `Blob Usage (${BYTES_UNIT})`,
-          className: "w-[155px]",
+          className: "w-[220px]",
         },
         {
           item: "Blob Gas Usage",

@@ -169,7 +169,7 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
 
     return (
       <PaginatedTable
-        tableClassName="w-full min-w-[1320px]"
+        tableClassName="w-full min-w-[1380px]"
         title={
           <div className="flex items-center gap-2">
             <span>Blob Transactions</span>
@@ -202,7 +202,7 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
                     (KiB)
                   </>
                 ),
-                className: "w-[160px]",
+                className: "w-[220px]",
               },
               { item: "From", className: "w-[136px]" },
               {

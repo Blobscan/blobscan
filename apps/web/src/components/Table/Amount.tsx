@@ -42,7 +42,7 @@ export const TableAmount: FC<TableAmountProps> = ({ weiAmount }) => {
   }, [amount]);
 
   const showTooltip = amount.startsWith("<") || isTruncated;
-  const amountClassName = "block w-full truncate text-right tabular-nums";
+  const amountClassName = "block w-full truncate text-right";
 
   return (
     <div ref={containerRef}>

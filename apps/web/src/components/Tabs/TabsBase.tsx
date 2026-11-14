@@ -282,7 +282,7 @@ export function TabsBase<T extends string>({
               )}
               {label}
               {badge !== undefined && badge !== null && (
-                <span className="rounded-full bg-primary-200 px-2 py-0.5 text-xs font-medium tabular-nums text-primary-700 transition-colors group-data-[selected]:bg-accent-light group-data-[selected]:text-accentContent-light dark:bg-primary-800 dark:text-primary-300 dark:group-data-[selected]:bg-accent-dark dark:group-data-[selected]:text-accentContent-dark">
+                <span className="rounded-full bg-primary-200 px-2 py-0.5 text-xs font-medium text-primary-700 transition-colors group-data-[selected]:bg-accent-light group-data-[selected]:text-accentContent-light dark:bg-primary-800 dark:text-primary-300 dark:group-data-[selected]:bg-accent-dark dark:group-data-[selected]:text-accentContent-dark">
                   {badge}
                 </span>
               )}

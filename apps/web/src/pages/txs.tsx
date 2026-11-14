@@ -74,7 +74,7 @@ const Txs: NextPage = function () {
         { item: "Blobs", className: "w-[62px]" },
         {
           item: `Blob Usage (${BYTES_UNIT})`,
-          className: "w-[148px]",
+          className: "w-[220px]",
         },
         {
           item: "From",
