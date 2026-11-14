@@ -4,8 +4,8 @@ import { Skeleton } from "~/components/Skeleton";
 import { Badge } from "./Badge";
 
 const countBadgeSizes = {
-  sm: { className: "h-5 px-1.5 text-xs", height: 20, width: 40 },
-  md: { className: "h-6 px-2 text-sm", height: 24, width: 48 },
+  sm: { className: "h-[18px] px-1 text-[11px]", height: 18, width: 36 },
+  md: { className: "h-[22px] px-1.5 text-[13px]", height: 22, width: 44 },
 };
 
 type CountBadgeProps = {
