@@ -297,6 +297,9 @@ importers:
       morgan:
         specifier: ^1.12.1
         version: 1.12.1
+      rate-limiter-flexible:
+        specifier: ^7.0.0
+        version: 7.4.0
       swagger-ui-express:
         specifier: ^4.6.2
         version: 4.6.3(express@4.22.3)
@@ -349,6 +352,9 @@ importers:
       '@blobscan/env':
         specifier: workspace:^0.6.1
         version: link:../../packages/env
+      '@blobscan/errors':
+        specifier: workspace:^0.0.2
+        version: link:../../packages/errors
       '@blobscan/eth-format':
         specifier: workspace:^0.1.1
         version: link:../../packages/eth-format
