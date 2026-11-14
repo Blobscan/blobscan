@@ -5,15 +5,14 @@ import { twMerge } from "tailwind-merge";
 
 const badgeVariants = cva(
   `
-    h-8
     w-fit
     shrink-0
     whitespace-nowrap
     flex
     items-center
-    gap-1.5
+    gap-1
     rounded-full
-    px-2.5
+    px-2
     py-0
     leading-none
     transition-colors
@@ -31,10 +30,10 @@ const badgeVariants = cva(
         `,
       },
       size: {
-        xs: "text-xs",
-        sm: "text-sm",
-        md: "text-md",
-        lg: "text-lg",
+        xs: "h-5 text-[11px]",
+        sm: "h-6 text-[13px]",
+        md: "h-7 text-[15px]",
+        lg: "h-8 text-[17px]",
       },
     },
     defaultVariants: {
