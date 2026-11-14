@@ -3,24 +3,25 @@ import { RateLimiterMemory, RateLimiterRedis } from "rate-limiter-flexible";
 import { redis } from "./redis";
 
 /**
- * `requestsPerSecond` per client, counted in Redis so every API instance
- * shares the same counters. If Redis is unreachable it falls back to an
+ * `requests` per `durationSeconds` per key, counted in Redis so every API
+ * instance shares the same counters. If Redis is unreachable it falls back to an
  * in-memory counter per instance: a looser limit, but never none.
  */
 export function createRedisRateLimiter(
   keyPrefix: string,
-  requestsPerSecond: number
+  requests: number,
+  durationSeconds = 1
 ) {
   return new RateLimiterRedis({
     storeClient: redis,
     keyPrefix,
-    points: requestsPerSecond,
-    duration: 1,
+    points: requests,
+    duration: durationSeconds,
     rejectIfRedisNotReady: true,
     insuranceLimiter: new RateLimiterMemory({
       keyPrefix,
-      points: requestsPerSecond,
-      duration: 1,
+      points: requests,
+      duration: durationSeconds,
     }),
   });
 }

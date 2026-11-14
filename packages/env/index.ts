@@ -103,6 +103,14 @@ export const env = createEnv({
         .int()
         .positive()
         .optional(),
+      // Repeat limit: how many times one client IP may fetch the same blob,
+      // transaction or block within the window. Unset = no repeat limit.
+      RATE_LIMIT_REPEAT_REQUESTS: z.coerce.number().int().positive().optional(),
+      RATE_LIMIT_REPEAT_WINDOW_SECONDS: z.coerce
+        .number()
+        .int()
+        .positive()
+        .default(60),
       // Comma-separated CIDRs never rate limited: callers inside the cluster
       // (indexer, web, jobs) reach the API directly with private addresses.
       RATE_LIMIT_ALLOWLIST: z
@@ -334,7 +342,11 @@ export const env = createEnv({
         env.METRICS_ENABLED
       } traces=${env.TRACES_ENABLED} port=${env.BLOBSCAN_API_PORT} rateLimit=${
         env.RATE_LIMIT_REQUESTS_PER_SECOND ?? "off"
-      }rps`
+      }rps repeatLimit=${
+        env.RATE_LIMIT_REPEAT_REQUESTS
+          ? `${env.RATE_LIMIT_REPEAT_REQUESTS}/${env.RATE_LIMIT_REPEAT_WINDOW_SECONDS}s`
+          : "off"
+      }`
     );
 
     console.log(

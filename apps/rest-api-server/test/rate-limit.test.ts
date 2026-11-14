@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   buildAllowlist,
   createRateLimitMiddleware,
+  getResourcePath,
   isAllowlisted,
 } from "../src/middlewares/rate-limit";
 
@@ -12,8 +13,13 @@ const PUBLIC_IP = "203.0.113.7";
 const BLOB_DATA =
   "/blobs/0x01b92306a49494848897bfb4b88c2e2d2a99ecd125c5cc22cd3e85ea790d8e38/data";
 
-function request(ip: string, path = "/blocks") {
-  return { ip, path, socket: { remoteAddress: ip } } as unknown as Request;
+function request(ip: string, path = "/blocks", method = "GET") {
+  return {
+    ip,
+    path,
+    method,
+    socket: { remoteAddress: ip },
+  } as unknown as Request;
 }
 
 function response() {
@@ -56,8 +62,11 @@ async function run(
   return { passed, res };
 }
 
-const limiter = (points: number) =>
-  new RateLimiterMemory({ points, duration: 1 });
+const limiter = (points: number, duration = 1) =>
+  new RateLimiterMemory({ points, duration });
+
+const BLOB = BLOB_DATA.replace("/data", "");
+const OTHER_BLOB = BLOB.replace("0x01b9", "0x01aa");
 
 describe("rate limit middleware", () => {
   it("lets a client through up to the limit, then answers 429 with Retry-After", async () => {
@@ -73,6 +82,11 @@ describe("rate limit middleware", () => {
     expect(third.passed).toBe(false);
     expect(third.res.statusCode).toBe(429);
     expect(third.res.headers["Retry-After"]).toBe("1");
+    expect(third.res.body).toEqual({
+      code: "TOO_MANY_REQUESTS",
+      message:
+        "Too many requests from your address (limit: 2 per second). Retry in 1s. Need more capacity? Contact us at contact@blobscan.com",
+    });
   });
 
   it("counts each client IP separately", async () => {
@@ -125,6 +139,108 @@ describe("rate limit middleware", () => {
     const mw = createRateLimitMiddleware({ limiter: broken, allowlist: [] });
 
     expect((await run(mw, request(PUBLIC_IP))).passed).toBe(true);
+  });
+});
+
+describe("repeat limit", () => {
+  const withRepeat = (repeat: number, allowlist: string[] = []) =>
+    createRateLimitMiddleware({
+      limiter: limiter(100),
+      repeatLimiter: limiter(repeat, 60),
+      allowlist,
+    });
+
+  it("rejects the same resource requested again and again, with the shared 429 body", async () => {
+    const mw = withRepeat(2);
+
+    expect((await run(mw, request(PUBLIC_IP, BLOB))).passed).toBe(true);
+    expect((await run(mw, request(PUBLIC_IP, BLOB))).passed).toBe(true);
+
+    const third = await run(mw, request(PUBLIC_IP, BLOB));
+    expect(third.passed).toBe(false);
+    expect(third.res.statusCode).toBe(429);
+    expect(third.res.headers["Retry-After"]).toMatch(/^\d+$/);
+    expect(third.res.body).toEqual({
+      code: "TOO_MANY_REQUESTS",
+      message: expect.stringMatching(
+        /^This resource was requested more than 2 times in 60 seconds from your address\. Retry in \d+s\. Need more capacity\? Contact us at contact@blobscan\.com$/
+      ),
+    });
+  });
+
+  it("does not mind many different resources", async () => {
+    const mw = withRepeat(1);
+
+    expect((await run(mw, request(PUBLIC_IP, BLOB))).passed).toBe(true);
+    expect((await run(mw, request(PUBLIC_IP, OTHER_BLOB))).passed).toBe(true);
+    expect((await run(mw, request(PUBLIC_IP, "/blocks/123"))).passed).toBe(
+      true
+    );
+  });
+
+  it("counts clients separately", async () => {
+    const mw = withRepeat(1);
+
+    expect((await run(mw, request(PUBLIC_IP, BLOB))).passed).toBe(true);
+    expect((await run(mw, request("198.51.100.9", BLOB))).passed).toBe(true);
+    expect((await run(mw, request(PUBLIC_IP, BLOB))).passed).toBe(false);
+  });
+
+  it("ignores list endpoints and other methods", async () => {
+    const mw = withRepeat(1);
+
+    for (let i = 0; i < 3; i++) {
+      expect((await run(mw, request(PUBLIC_IP, "/blobs"))).passed).toBe(true);
+      expect((await run(mw, request(PUBLIC_IP, "/blocks/latest"))).passed).toBe(
+        true
+      );
+      expect((await run(mw, request(PUBLIC_IP, BLOB, "PUT"))).passed).toBe(
+        true
+      );
+    }
+  });
+
+  it("never limits allowlisted addresses", async () => {
+    const mw = withRepeat(1, ["10.0.0.0/8"]);
+
+    for (let i = 0; i < 5; i++) {
+      expect((await run(mw, request("10.42.1.17", BLOB))).passed).toBe(true);
+    }
+  });
+
+  it("works without the per-IP limit", async () => {
+    const mw = createRateLimitMiddleware({
+      repeatLimiter: limiter(1, 60),
+      allowlist: [],
+    });
+
+    expect((await run(mw, request(PUBLIC_IP, BLOB))).passed).toBe(true);
+    expect((await run(mw, request(PUBLIC_IP, BLOB))).passed).toBe(false);
+  });
+
+  it("serves the request when the store fails", async () => {
+    const broken = limiter(1, 60);
+    broken.consume = () => Promise.reject(new Error("store down"));
+    const mw = createRateLimitMiddleware({
+      repeatLimiter: broken,
+      allowlist: [],
+    });
+
+    expect((await run(mw, request(PUBLIC_IP, BLOB))).passed).toBe(true);
+  });
+});
+
+describe("getResourcePath", () => {
+  it("matches single-resource lookups only", () => {
+    expect(getResourcePath(request(PUBLIC_IP, BLOB))).toBe(BLOB);
+    expect(getResourcePath(request(PUBLIC_IP, BLOB_DATA))).toBe(BLOB_DATA);
+    expect(getResourcePath(request(PUBLIC_IP, "/blocks/25718181/"))).toBe(
+      "/blocks/25718181"
+    );
+    expect(getResourcePath(request(PUBLIC_IP, "/blobs"))).toBeUndefined();
+    expect(
+      getResourcePath(request(PUBLIC_IP, "/stats/overall"))
+    ).toBeUndefined();
   });
 });
 

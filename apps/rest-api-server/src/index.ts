@@ -50,13 +50,19 @@ async function main() {
   app.use(bodyParserMiddleware);
   app.use(morganMiddleware);
 
-  if (env.RATE_LIMIT_REQUESTS_PER_SECOND) {
+  if (env.RATE_LIMIT_REQUESTS_PER_SECOND || env.RATE_LIMIT_REPEAT_REQUESTS) {
     app.use(
       createRateLimitMiddleware({
-        limiter: createRedisRateLimiter(
-          "rl:api",
-          env.RATE_LIMIT_REQUESTS_PER_SECOND
-        ),
+        limiter: env.RATE_LIMIT_REQUESTS_PER_SECOND
+          ? createRedisRateLimiter("rl:api", env.RATE_LIMIT_REQUESTS_PER_SECOND)
+          : undefined,
+        repeatLimiter: env.RATE_LIMIT_REPEAT_REQUESTS
+          ? createRedisRateLimiter(
+              "rl:repeat",
+              env.RATE_LIMIT_REPEAT_REQUESTS,
+              env.RATE_LIMIT_REPEAT_WINDOW_SECONDS
+            )
+          : undefined,
         allowlist: env.RATE_LIMIT_ALLOWLIST.split(","),
       })
     );
