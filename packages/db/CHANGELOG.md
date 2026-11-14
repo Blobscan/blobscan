@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.35.1
+
+### Patch Changes
+
+- [#1123](https://github.com/Blobscan/blobscan/pull/1123) [`4c22984`](https://github.com/Blobscan/blobscan/commit/4c229847291b2e5c0282f51b3607ba110d8bc92f) Thanks [@PJColombo](https://github.com/PJColombo)! - Added rollup folders with shared metadata, icons, and poster addresses, plus a sync command that generates registry entries, icon imports, and Prisma enum entries. Updated explorer filters, database seed data, and contributor instructions to use the shared definitions.
+
 ## 0.35.0
 
 ### Minor Changes

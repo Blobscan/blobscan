@@ -1,5 +1,13 @@
 # @blobscan/docs
 
+## 0.3.7
+
+### Patch Changes
+
+- [#1123](https://github.com/Blobscan/blobscan/pull/1123) [`4c22984`](https://github.com/Blobscan/blobscan/commit/4c229847291b2e5c0282f51b3607ba110d8bc92f) Thanks [@PJColombo](https://github.com/PJColombo)! - Added rollup folders with shared metadata, icons, and poster addresses, plus a sync command that generates registry entries, icon imports, and Prisma enum entries. Updated explorer filters, database seed data, and contributor instructions to use the shared definitions.
+
+- [#1120](https://github.com/Blobscan/blobscan/pull/1120) [`d0d6d60`](https://github.com/Blobscan/blobscan/commit/d0d6d60ebe29184046b9f4827c9a7e21165df567) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed the extra page-existence query from cursor pagination for blobs, blocks, and transactions. Inferred the opposite page from the cursor direction and kept empty-page recovery cursors, so navigation requires one page lookup instead of two.
+
 ## 0.3.6
 
 ### Patch Changes
