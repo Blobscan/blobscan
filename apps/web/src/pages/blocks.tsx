@@ -168,6 +168,7 @@ const Blocks: NextPage = function () {
           cells: [
             {
               item: <RollupBadgeGroup amounts={rollupToAmount} />,
+              className: "!overflow-visible",
             },
             {
               item: (

@@ -129,6 +129,7 @@ const Txs: NextPage = function () {
             return {
               cells: [
                 {
+                  className: "px-2",
                   item:
                     category === "rollup" && rollup ? (
                       <RollupBadge rollup={rollup} compact />

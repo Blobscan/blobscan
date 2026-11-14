@@ -59,7 +59,7 @@ export function RollupBadgeGroup({
 
   return (
     <div
-      className={styles.group}
+      className={`${styles.group} before:bg-surface-light dark:before:bg-surface-dark`}
       style={
         {
           "--visible-count": visibleEntries.length,
@@ -74,7 +74,7 @@ export function RollupBadgeGroup({
       {visibleEntries.map(([rollup, amount], index) => (
         <div
           key={rollup}
-          className={`${styles.item} bg-white dark:bg-slate-900`}
+          className={styles.item}
           style={{ zIndex: entries.length - index }}
         >
           <RollupBadge rollup={rollup as Rollup} amount={amount} compact />
