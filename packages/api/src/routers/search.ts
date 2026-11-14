@@ -97,6 +97,9 @@ type TransactionPayload = Prisma.TransactionGetPayload<{
 
 const outputSchema = searchResultsSchema.nullable();
 
+// Block numbers and slots use signed 32-bit database integers.
+const searchBlockNumberSchema = blockNumberSchema.max(2_147_483_647);
+
 export type OutputSchema = z.output<typeof outputSchema>;
 
 export const search = publicProcedure
@@ -178,7 +181,8 @@ export const search = publicProcedure
 
     const isHash = hashSchema.safeParse(query).success;
     const isBlockNumber =
-      !query.startsWith("0x") && blockNumberSchema.safeParse(query).success;
+      !query.startsWith("0x") &&
+      searchBlockNumberSchema.safeParse(query).success;
 
     if (isBlockNumber || isHash) {
       const ops: [
