@@ -1,7 +1,27 @@
+model PriceFeed {
+  id          Int      @id @default(autoincrement())
+  chainId     Int      @map("chain_id")
+  address     String   @db.VarChar(42)
+  description String
+  decimals    Int
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  ethUsdPrices EthUsdPrice[]
+
+  @@unique([chainId, address])
+  @@map("price_feed")
+}
+
 model EthUsdPrice {
-  id        Int      @id @default(autoincrement())
-  price     Decimal  @db.Decimal(18, 8)
-  timestamp DateTime @unique
+  id             Int        @id @default(autoincrement())
+  price          Decimal    @db.Decimal(18, 8)
+  timestamp      DateTime   @unique
+  roundId        Decimal?   @map("round_id") @db.Decimal(25, 0)
+  roundTimestamp DateTime?  @map("round_timestamp")
+  priceFeedId    Int?       @map("price_feed_id")
+  priceFeed      PriceFeed? @relation(fields: [priceFeedId], references: [id])
+  createdAt      DateTime?  @default(now()) @map("created_at")
+  updatedAt      DateTime?  @updatedAt @map("updated_at")
 
   @@map("eth_usd_price")
 }
