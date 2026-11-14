@@ -2,7 +2,6 @@ import { useState } from "react";
 import type { FC } from "react";
 
 import dayjs from "@blobscan/dayjs";
-import { formatWei } from "@blobscan/eth-format";
 
 import { Badge } from "~/components/Badges/Badge";
 import { CountBadge } from "~/components/Badges/CountBadge";
@@ -12,6 +11,7 @@ import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import type { TableRow } from "~/components/Table";
+import { TableAmount } from "~/components/Table/Amount";
 import type { TimestampFormat } from "~/components/Toggles";
 import { TimestampToggle } from "~/components/Toggles";
 import { TransactionBlobsTable } from "~/components/TransactionBlobsTable";
@@ -114,7 +114,7 @@ function getTransactionRow(
       },
       ...[tx.blobGasBaseFee, tx.blobGasMaxFee, tx.block.blobGasPrice].map(
         (fee) => ({
-          item: formatWei(fee, { toUnit: "Gwei", hideUnit: true }),
+          item: <TableAmount weiAmount={fee} />,
         })
       ),
     ],
@@ -218,7 +218,7 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
                     (Gwei)
                   </>
                 ),
-                className: "w-[120px]",
+                className: "w-[120px] text-right",
               },
               {
                 item: (
@@ -228,7 +228,7 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
                     (Gwei)
                   </>
                 ),
-                className: "w-[120px]",
+                className: "w-[120px] text-right",
               },
               {
                 item: (
@@ -238,7 +238,7 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
                     (Gwei)
                   </>
                 ),
-                className: "w-auto",
+                className: "w-auto text-right",
               },
             ],
             className: "whitespace-nowrap px-2",

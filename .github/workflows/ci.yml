@@ -154,6 +154,9 @@ jobs:
         env:
           VITEST_MAINNET_FORK_URL: ${{ secrets.VITEST_MAINNET_FORK_URL }}
 
+      - name: Test table amounts
+        run: pnpm --dir apps/web exec vitest run --config vitest.config.ts test/table-amount.test.tsx
+
       - name: Test (dagster)
         run: pnpm test:dagster
 
