@@ -104,7 +104,6 @@ const BlobCard: FC<BlobCardProps> = ({
                     key={storage}
                     storage={storage}
                     url={url}
-                    size="md"
                     compact
                   />
                 ))}

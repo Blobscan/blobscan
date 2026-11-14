@@ -33,7 +33,7 @@ export const RollupBadge: React.FC<RollupBadgeProps> = ({
         src={rollupIcons[rollup]}
         title={name}
         className={iconClassname}
-        size={props.size ?? "md"}
+        size={props.size ?? (compact ? "md" : "sm")}
       />
       {amount > 1 && (
         <div className="absolute -bottom-2 -right-1 text-[10px] text-black dark:text-contentSecondary-dark">

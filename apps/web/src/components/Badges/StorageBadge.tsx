@@ -31,7 +31,7 @@ export const StorageBadge: FC<StorageBadgeProps> = ({
   const storageIcon = (
     <Icon
       src={dynamic(() => import(`~/icons/blob-storages/${iconSrc}`))}
-      size={props.size ?? "md"}
+      size={props.size ?? (compact ? "md" : "sm")}
       title={compact ? name : undefined}
       className={compact ? `hover:opacity-70` : ""}
     />
