@@ -385,7 +385,7 @@ const Blocks: NextPage = function () {
       <ListControlBar />
       <PaginatedTable
         emptyStateDescription="No Blocks"
-        isLoading={blocksIsLoading}
+        isLoading={!isReady || blocksIsLoading}
         headers={blockHeaders}
         rows={blocksRows}
         pagination={blocksData?.pagination}

@@ -204,7 +204,7 @@ const Blobs: NextPage = function () {
       <ListControlBar />
       <PaginatedTable
         emptyStateDescription="No Blobs"
-        isLoading={isLoading}
+        isLoading={!isReady || isLoading}
         headers={blobHeaders}
         rows={blobRows}
         pagination={blobsData?.pagination}

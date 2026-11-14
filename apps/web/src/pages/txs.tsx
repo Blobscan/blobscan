@@ -246,7 +246,7 @@ const Txs: NextPage = function () {
       <ListControlBar />
       <PaginatedTable
         emptyStateDescription="No Blob Transactions"
-        isLoading={txsIsLoading}
+        isLoading={!isReady || txsIsLoading}
         headers={transactionHeaders}
         rows={transactionRows}
         pagination={txsData?.pagination}
