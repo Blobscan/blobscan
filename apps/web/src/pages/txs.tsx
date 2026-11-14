@@ -95,7 +95,7 @@ const Txs: NextPage = function () {
         },
         {
           item: "Blob Gas Price (Gwei)",
-          className: "sm:w-full w-[140px]",
+          className: "w-[140px]",
         },
       ],
     },
