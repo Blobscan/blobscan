@@ -1,7 +1,8 @@
 import type { FC, ReactNode } from "react";
+import Link from "next/link";
 
-import { GlowableImage } from "../GlowableImage";
-import { ErrorViewLayout } from "./ErrorViewLayout";
+import { ErrorIllustrationLayout } from "./ErrorIllustrationLayout";
+import { SearchingBlob } from "./SearchingBlob";
 
 export interface NotFoundErrorViewProps {
   title: string;
@@ -15,27 +16,21 @@ export const NotFoundErrorView: FC<NotFoundErrorViewProps> = function ({
   action,
 }) {
   return (
-    <ErrorViewLayout
-      code="404"
-      image={
-        <GlowableImage
-          right="20%"
-          top="70%"
-          imageProps={{
-            src: "/not-found.png",
-            alt: "404",
-            width: 450,
-            height: 450,
-            sizes: "(max-width: 768px) 200px, (max-width: 1024px) 350px, 450px",
-            className:
-              "h-[200px] w-[200px] md:h-[350px] md:w-[350px] lg:h-[450px] lg:w-[450px]",
-            priority: true,
-          }}
-        />
-      }
+    <ErrorIllustrationLayout
+      code={404}
       title={title}
       description={description}
-      action={action}
+      image={<SearchingBlob />}
+      action={
+        action ?? (
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center rounded bg-accent-light px-5 py-3 text-sm font-semibold text-accentContent-light transition-colors hover:bg-accentHighlight-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-light dark:bg-accent-dark dark:text-accentContent-dark dark:hover:bg-accentHighlight-dark"
+          >
+            Back to homepage
+          </Link>
+        )
+      }
     />
   );
 };

@@ -14,7 +14,7 @@ const DONATION_ADDRESS = "0xfAdE78086109F1D827a5caD956cd26D10BE64510";
 export const BottomBarLayout = () => {
   return (
     <div className="flex flex-col items-center justify-center p-2 text-xs">
-      <div className="mt-4 flex flex-col items-center gap-2 sm:mt-8">
+      <div className="mt-4 flex max-w-full flex-col items-center gap-2 sm:mt-8">
         <BlobscanSocialLinks />
         <div className="max-w-lg text-center text-contentTertiary-light dark:text-contentTertiary-dark">
           Blobscan is the first open-source block explorer for the{" "}
@@ -27,7 +27,7 @@ export const BottomBarLayout = () => {
         <div className="my-2.5">
           <SyncIndicators />
         </div>
-        <div className="flex gap-1">
+        <div className="flex max-w-full gap-1 [&>div]:min-w-0 [&>div]:flex-wrap [&>div]:justify-center">
           <Indicator
             name="Support us with a donation"
             value={

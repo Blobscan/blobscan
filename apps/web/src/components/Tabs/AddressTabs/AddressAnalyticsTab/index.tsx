@@ -10,6 +10,7 @@ import {
 
 import { z } from "@blobscan/zod";
 
+import { BlobIcon } from "~/components/BlobIcon";
 import {
   DEFAULT_CHART_TIME_FRAME,
   getTimeFrameOption,
@@ -20,7 +21,6 @@ import type { FeeUnit } from "~/components/Toggles";
 import { api } from "~/api-client";
 import { useIsMainnet } from "~/hooks/useIsMainnet";
 import { useUrlState } from "~/hooks/useUrlState";
-import BlobIcon from "~/icons/blob.svg";
 import { feeUnitParamsSchema } from "~/schemas/feeUnit";
 import { timeFrameParamSchema } from "~/schemas/filters";
 import type { RenderableIcon } from "~/types/icons";

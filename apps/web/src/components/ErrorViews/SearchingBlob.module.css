@@ -1,0 +1,69 @@
+.scene {
+  --halo-color: #f5ae24;
+  --halo-opacity: 0.7;
+  --halo-min: 0.65;
+  --halo-max: 1;
+}
+:global(.dark) .scene {
+  --halo-color: #ffe37c;
+  --halo-opacity: 0.45;
+  --halo-min: 0.25;
+  --halo-max: 0.7;
+}
+.eyes {
+  animation: look 7s ease-in-out infinite;
+}
+.lantern {
+  animation: swing 7s ease-in-out infinite;
+  transform-origin: 0 0;
+}
+.lanternGlow {
+  animation: glow 2.8s ease-in-out infinite;
+}
+.lampCore {
+  animation: pulse 2.8s ease-in-out infinite;
+}
+@keyframes look {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-160px);
+  }
+}
+@keyframes swing {
+  0%,
+  100% {
+    transform: translateX(0) rotate(-5deg);
+  }
+  50% {
+    transform: translate(-65px, 10px) rotate(6deg);
+  }
+}
+@keyframes glow {
+  0%,
+  100% {
+    opacity: var(--halo-min);
+  }
+  50% {
+    opacity: var(--halo-max);
+  }
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.05;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eyes,
+  .lantern,
+  .lanternGlow,
+  .lampCore {
+    animation: none;
+  }
+}

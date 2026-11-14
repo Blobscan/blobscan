@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { ArrowsRightLeftIcon, CubeIcon } from "@heroicons/react/24/outline";
 import { useReducedMotion } from "@react-spring/web";
 
-import BlobIcon from "~/icons/blob.svg";
+import { BlobIcon } from "~/components/BlobIcon";
 import type { Rollup, SearchCategory, SearchOutput } from "~/types";
 import { capitalize, toChecksumAddress } from "~/utils";
 import { CountBadge } from "../Badges/CountBadge";
