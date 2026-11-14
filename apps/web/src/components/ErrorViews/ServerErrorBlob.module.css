@@ -1,3 +1,11 @@
+.scene {
+  --halo-color: #f58b31;
+  --halo-opacity: 0.55;
+}
+:global(.dark) .scene {
+  --halo-color: #ff9845;
+  --halo-opacity: 0.2;
+}
 .flameTips {
   animation: flameTips 1.1s linear infinite;
 }
@@ -6,8 +14,77 @@
   animation: heatRise 1.3s linear infinite;
 }
 
-.heatCore {
-  animation: heatRise 0.85s linear -0.4s infinite;
+.face {
+  animation: worriedLook 5s ease-in-out infinite;
+}
+
+.sweat {
+  opacity: 0;
+  animation: sweatDrop 5s linear infinite;
+}
+
+@keyframes worriedLook {
+  0%,
+  10%,
+  100% {
+    transform: translateX(-7px);
+  }
+  45%,
+  65% {
+    transform: translateX(7px);
+  }
+}
+
+@keyframes sweatDrop {
+  0%,
+  28% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.25);
+  }
+  40% {
+    opacity: 0.9;
+    transform: translate(0, 0) scale(0.8);
+  }
+  49% {
+    opacity: 1;
+    transform: translate(4px, 6px) rotate(-27deg) scale(1);
+  }
+  56% {
+    opacity: 1;
+    transform: translate(9px, 16px) rotate(-22deg) scale(0.94, 1.08);
+  }
+  62% {
+    opacity: 0.95;
+    transform: translate(14px, 29px) rotate(-15deg) scale(0.9, 1.12);
+  }
+  68% {
+    opacity: 0.7;
+    transform: translate(17px, 45px) rotate(-5deg) scale(0.94, 1.06);
+  }
+  73%,
+  100% {
+    opacity: 0;
+    transform: translate(18px, 65px) rotate(0deg) scale(1);
+  }
+}
+
+.fireGlow {
+  animation: fireGlow 1.7s ease-in-out infinite alternate;
+}
+
+@keyframes fireGlow {
+  0% {
+    opacity: 0.55;
+  }
+  40% {
+    opacity: 0.85;
+  }
+  65% {
+    opacity: 0.65;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .ember {
@@ -28,22 +105,12 @@
   0%,
   100% {
     d: path(
-      "M61 80C56 56 59 51 62 47C66 52 70 50 68 42C66 34 71 30 75 27C73 36 79 36 81 29C82 21 90 18 89 9C99 16 99 23 95 30C93 36 101 39 107 29C110 38 106 44 109 48C111 51 113 49 115 46C116 54 119 57 114 80L114 95H61Z"
+      "M60 95C55 76 55 64 63 52C62 63 70 64 70 52C69 39 65 30 73 18C74 33 87 40 83 54C81 64 90 67 94 57C98 47 96 40 103 32C102 48 116 54 114 68C121 78 118 87 116 95Z"
     );
   }
-  23% {
+  50% {
     d: path(
-      "M61 80C56 56 59 51 61 44C66 52 70 50 68 42C66 34 70 28 73 23C73 36 79 36 81 29C82 21 93 17 94 6C101 16 99 23 95 30C93 36 101 39 106 32C110 38 106 44 109 48C111 51 113 49 116 43C116 54 119 57 114 80L114 95H61Z"
-    );
-  }
-  51% {
-    d: path(
-      "M61 80C56 56 59 51 63 49C66 52 70 50 68 42C66 34 73 29 77 25C73 36 79 36 81 29C82 21 88 20 88 13C97 17 99 23 95 30C93 36 102 37 110 25C111 37 106 44 109 48C111 51 113 49 114 47C116 54 119 57 114 80L114 95H61Z"
-    );
-  }
-  78% {
-    d: path(
-      "M61 80C56 56 59 51 62 46C66 52 70 50 68 42C66 34 71 32 74 29C73 36 79 36 81 29C82 21 91 17 91 7C100 16 99 23 95 30C93 36 100 38 105 28C110 38 106 44 109 48C111 51 113 49 117 44C116 54 119 57 114 80L114 95H61Z"
+      "M60 95C55 76 55 64 65 49C62 63 70 64 70 52C69 39 69 27 78 15C75 34 90 42 83 54C81 64 90 67 94 57C98 47 98 37 107 29C103 48 118 56 114 68C121 78 118 87 116 95Z"
     );
   }
 }
@@ -85,8 +152,26 @@
 @media (prefers-reduced-motion: reduce) {
   .flameTips,
   .innerFlame,
-  .heatCore,
+  .fireGlow,
+  .face,
+  .sweat,
   .ember {
+    animation: none;
+  }
+}
+
+.rightFlame {
+  animation: rightFlame 1.4s ease-in-out infinite alternate;
+}
+@keyframes rightFlame {
+  to {
+    d: path(
+      "M65 95C61 79 66 67 77 59C87 51 94 43 86 34C76 23 84 9 100 4C89 16 90 24 102 30C116 39 113 53 102 63C97 69 100 74 105 72C111 69 115 65 116 60C123 72 116 85 112 95Z"
+    );
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rightFlame {
     animation: none;
   }
 }

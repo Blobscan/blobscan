@@ -1,10 +1,10 @@
 import { useId } from "react";
 
-import blobImage from "../../../public/blob-loader.webp";
-import helmetImage from "../../../public/searching-blob-helmet.webp";
+import minerImage from "../../../public/searching-blob-helmet.webp";
 import { IllustrationBackground } from "./IllustrationBackground";
 import { IllustrationGround } from "./IllustrationGround";
 import styles from "./SearchingBlob.module.css";
+import { ShadedBlobBody } from "./ShadedBlobBody";
 
 export function SearchingBlob() {
   const id = `searching-blob-${useId().replace(/:/g, "")}`;
@@ -12,68 +12,36 @@ export function SearchingBlob() {
     <svg
       viewBox="0 0 180 168"
       aria-hidden="true"
-      className="h-auto w-full text-accent-light dark:text-accent-dark"
+      className={`${styles.scene} h-auto w-full overflow-visible text-accent-light dark:text-accent-dark`}
     >
       <defs>
         <filter
-          id={`${id}-thin-outline`}
-          x="-5%"
-          y="-5%"
-          width="110%"
-          height="110%"
+          id={`${id}-shadow-soften`}
+          x="-10%"
+          y="-30%"
+          width="120%"
+          height="160%"
         >
-          <feMorphology operator="erode" radius=".25" />
+          <feGaussianBlur stdDeviation="7" />
         </filter>
         <image
-          id={`${id}-miner-art`}
-          href={helmetImage.src}
+          id={`${id}-art`}
+          href={minerImage.src}
           width="1280"
           height="1280"
         />
-        <path
-          id={`${id}-helmet-contour`}
-          d="M266 573 C262 544 288 515 303 501 C332 398 384 321 452 276 C515 216 638 221 704 277 C801 296 863 389 878 484 C926 506 943 548 929 577 L917 594 C827 531 679 504 556 520 C435 531 350 570 303 620 C281 609 270 595 266 573Z"
-        />
-        <clipPath id={`${id}-miner-hat`}>
-          <path d="M266 573 C262 544 288 515 303 501 C332 398 384 321 452 276 C515 216 638 221 704 277 C801 296 863 389 878 484 C926 506 943 548 929 573 L918 581 C827 531 679 504 556 520 C435 531 350 570 303 620 C281 609 270 595 266 573Z" />
+        <linearGradient id={`${id}-body`} x1="0" y1="0" x2="1" y2="1">
+          <stop stopColor="#d6c2f6" />
+          <stop offset=".6" stopColor="#c9afea" />
+          <stop offset="1" stopColor="#e2c9ed" />
+        </linearGradient>
+        <linearGradient id={`${id}-helmet-shadow`} x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="#432454" stopOpacity=".45" />
+          <stop offset="1" stopColor="#432454" stopOpacity="0" />
+        </linearGradient>
+        <clipPath id={`${id}-helmet`}>
+          <path d="M266 573C262 544 288 515 303 501C332 398 384 321 452 276C515 216 638 221 704 277C801 296 863 389 878 484C926 506 943 548 929 577L917 594C827 531 679 504 556 520C435 531 350 570 303 620C281 609 270 595 266 573Z" />
         </clipPath>
-
-        <mask id={`${id}-new-blob`} style={{ maskType: "alpha" }}>
-          <image href={blobImage.src} width="112" height="112" />
-        </mask>
-        <clipPath id={`${id}-blob-outline`}>
-          <path
-            clipRule="evenodd"
-            d="M0 0H112V112H0Z M52.64 49.28V69.44H80.64V49.28Z"
-          />
-        </clipPath>
-        <clipPath id={`${id}-blob-eyes`}>
-          <rect x="52.64" y="49.28" width="28" height="20.16" />
-        </clipPath>
-        <radialGradient id={`${id}-warm-glow`}>
-          <stop stopColor="#fffbd2" stopOpacity=".9" />
-          <stop offset=".4" stopColor="#ffe37c" stopOpacity=".45" />
-          <stop offset="1" stopColor="#ffc637" stopOpacity="0" />
-        </radialGradient>
-        <mask
-          id={`${id}-helmet-body-occlusion`}
-          maskUnits="userSpaceOnUse"
-          x="0"
-          y="0"
-          width="180"
-          height="168"
-          style={{ maskType: "luminance" }}
-        >
-          <rect width="180" height="168" fill="white" />
-          <use
-            href={`#${id}-helmet-contour`}
-            transform="translate(39.12 12.92) scale(.074 .0902)"
-            fill="black"
-            stroke="black"
-            strokeWidth="20"
-          />
-        </mask>
-
         <linearGradient id={`${id}-lantern-gold`} x1="0" y1="0" x2="0" y2="1">
           <stop stopColor="#fff1a0" />
           <stop offset=".45" stopColor="#f9cc58" />
@@ -86,80 +54,65 @@ export function SearchingBlob() {
           <stop offset=".82" stopColor="#f7d16c" />
           <stop offset="1" stopColor="#dfaa3e" />
         </linearGradient>
-
         <radialGradient id={`${id}-lantern-flame`}>
           <stop stopColor="#fffef0" />
           <stop offset=".6" stopColor="#fff5b1" />
           <stop offset="1" stopColor="#ffe789" stopOpacity=".3" />
         </radialGradient>
+        <radialGradient id={`${id}-warm-glow`}>
+          <stop stopColor="#fffbd2" stopOpacity=".9" />
+          <stop
+            offset=".4"
+            stopColor="var(--halo-color)"
+            stopOpacity="var(--halo-opacity)"
+          />
+          <stop offset="1" stopColor="#ffc637" stopOpacity="0" />
+        </radialGradient>
       </defs>
+      <IllustrationGround softShadow shaded wide />
       <IllustrationBackground variant="ruins" />
-      <IllustrationGround softShadow />
-      <g mask={`url(#${id}-helmet-body-occlusion)`}>
-        <g transform="translate(30 34)">
-          <g
-            clipPath={`url(#${id}-blob-outline)`}
-            filter={`url(#${id}-thin-outline)`}
-          >
-            <rect
-              width="112"
-              height="112"
-              fill="currentColor"
-              mask={`url(#${id}-new-blob)`}
-            />
-          </g>
-          <g className={styles.eyes}>
-            <g clipPath={`url(#${id}-blob-eyes)`}>
-              <rect
-                width="112"
-                height="112"
-                fill="currentColor"
-                mask={`url(#${id}-new-blob)`}
-              />
-            </g>
-          </g>
+      <g transform="translate(26 4) scale(.106)">
+        <ShadedBlobBody />
+        <path
+          d="M303 610C439 513 688 470 917 584C873 621 825 622 761 598C608 546 451 586 336 650Z"
+          fill={`url(#${id}-helmet-shadow)`}
+          filter={`url(#${id}-shadow-soften)`}
+        />
+        <g className={styles.eyes} fill="#512080">
+          <ellipse
+            cx="678"
+            cy="753"
+            rx="36"
+            ry="68"
+            transform="rotate(5 678 753)"
+          />
+          <ellipse
+            cx="817"
+            cy="722"
+            rx="34"
+            ry="60"
+            transform="rotate(6 817 722)"
+          />
+          <ellipse
+            cx="669"
+            cy="728"
+            rx="8"
+            ry="23"
+            fill="#f5eaff"
+            transform="rotate(8 669 728)"
+          />
+          <ellipse
+            cx="809"
+            cy="699"
+            rx="7"
+            ry="20"
+            fill="#f5eaff"
+            transform="rotate(8 809 699)"
+          />
         </g>
+        <use href={`#${id}-art`} clipPath={`url(#${id}-helmet)`} />
       </g>
-      <g transform="translate(39.12 12.92) scale(.074 .0902)">
-        <use href={`#${id}-miner-art`} clipPath={`url(#${id}-miner-hat)`} />
-      </g>
-      <g transform="translate(-17 8)">
-        <g
-          className={styles.questions}
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <g transform="rotate(-9 144 32)">
-            <path
-              d="M137 27C137 18 151 18 151 26C151 31 145 32 144 37"
-              strokeWidth="2.7"
-            />
-            <circle
-              cx="143.5"
-              cy="43"
-              r="1.65"
-              fill="currentColor"
-              stroke="none"
-            />
-          </g>
-          <g transform="rotate(9 160 43)" opacity=".68">
-            <path
-              d="M155 39C155 33 165 33 165 39C165 43 160 44 160 47"
-              strokeWidth="2.1"
-            />
-            <circle
-              cx="159.7"
-              cy="52"
-              r="1.3"
-              fill="currentColor"
-              stroke="none"
-            />
-          </g>
-        </g>
-      </g>
-      <g transform="translate(137 110)">
+      <g transform="translate(137 94)">
         <g className={styles.lantern}>
           <circle
             className={styles.lanternGlow}
@@ -186,9 +139,9 @@ export function SearchingBlob() {
 
             <path
               d="M964 682C943 673 945 644 967 633C992 620 1033 626 1048 646C1061 664 1052 690 1035 696C1023 700 1013 692 1015 678C1003 691 986 696 975 688C968 685 965 680 964 674"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="17"
+              fill={`url(#${id}-body)`}
+              stroke="#512080"
+              strokeWidth="12"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
