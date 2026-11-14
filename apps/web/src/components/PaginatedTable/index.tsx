@@ -1,5 +1,6 @@
 import type { FC, ReactNode } from "react";
 import Skeleton from "react-loading-skeleton";
+import { twMerge } from "tailwind-merge";
 
 import { Card } from "~/components/Cards/Card";
 import type { PaginationProps } from "~/components/Pagination";
@@ -107,7 +108,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
       ) : (
         <div className="flex flex-col gap-6">
           <Table
-            className={tableClassName}
+            className={twMerge("min-w-[1100px] xl:min-w-0", tableClassName)}
             expandableRowsMode={isExpandable}
             headers={headers}
             rows={

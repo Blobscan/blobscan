@@ -26,10 +26,10 @@ export const TransactionBlobsTable: FC<TransactionBlobsTableProps> = function ({
 
   return (
     <Table
-      className={`mb-4 mt-2 bg-primary-50 px-8 dark:bg-primary-800 ${
+      className={`mb-4 mt-2 min-w-[640px] bg-primary-50 px-8 dark:bg-primary-800 xl:min-w-0 ${
         isCard ? "rounded-b-lg" : "rounded-lg"
       }`}
-      fixedColumnsWidth={isCard}
+      fixedColumnsWidth
       size="xs"
       alignment="left"
       headers={[
@@ -37,23 +37,23 @@ export const TransactionBlobsTable: FC<TransactionBlobsTableProps> = function ({
           cells: [
             {
               item: "Position",
-              className: isCard ? "w-[40px]" : "w-[20px]",
+              className: "w-[8%]",
             },
             {
               item: isCard ? "Versioned Hash" : "Blob Versioned Hash",
-              className: isCard ? "w-[300px]" : "w-[400px]",
+              className: "w-[42%]",
             },
             {
               item: "Size (KiB)",
-              className: isCard ? "w-[100px]" : "w-[80px] border",
+              className: "w-[14%]",
             },
             {
               item: isCard ? "Usage Size (KiB)" : "Usage (KiB)",
-              className: isCard ? "w-[100px]" : "w-[140px]",
+              className: "w-[20%]",
             },
             {
               item: "Storages",
-              className: isCard ? "w-[120px]" : "w-[60px]",
+              className: "w-[16%]",
             },
           ],
           className: "dark:border-border-dark/20",

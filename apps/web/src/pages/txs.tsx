@@ -56,46 +56,46 @@ const Txs: NextPage = function () {
   const transactionHeaders = [
     {
       cells: [
-        { item: "", className: "w-[40px]" },
+        { item: "", className: "w-[2.76%]" },
         {
           item: "Hash",
-          className: "w-[150px]",
+          className: "w-[10.34%]",
         },
         {
           item: "Block number",
-          className: "w-[127px]",
+          className: "w-[8.76%]",
         },
         {
           item: (
             <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
           ),
-          className: timeFormat === "relative" ? "w-[130px]" : "w-[175px]",
+          className: "w-[8.96%]",
         },
-        { item: "Blobs", className: "w-[62px]" },
+        { item: "Blobs", className: "w-[4.27%]" },
         {
           item: `Blob Usage (${BYTES_UNIT})`,
-          className: "w-[220px]",
+          className: "w-[15.17%]",
         },
         {
           item: "From",
-          className: "w-[150px]",
+          className: "w-[10.34%]",
         },
         {
           item: "To",
-          className: "w-[148px]",
+          className: "w-[10.20%]",
         },
 
         {
           item: "Blob Base Fee (Gwei)",
-          className: "text-right w-[120px]",
+          className: "text-right w-[8.27%]",
         },
         {
           item: "Blob Max Fee (Gwei)",
-          className: "text-right w-[120px]",
+          className: "text-right w-[8.27%]",
         },
         {
           item: "Blob Gas Price (Gwei)",
-          className: "w-[140px] text-right",
+          className: "w-[9.65%] text-right",
         },
       ],
     },

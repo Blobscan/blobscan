@@ -169,7 +169,6 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
 
     return (
       <PaginatedTable
-        tableClassName="w-full min-w-[1380px]"
         title={
           <div className="flex items-center gap-2">
             <span>Blob Transactions</span>
@@ -181,9 +180,9 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
         headers={[
           {
             cells: [
-              { item: "", className: "w-[40px]" },
-              { item: "Hash", className: "w-[120px]" },
-              { item: "Block", className: "w-[88px]" },
+              { item: "", className: "w-[2.71%]" },
+              { item: "Hash", className: "w-[8.12%]" },
+              { item: "Block", className: "w-[5.96%]" },
               {
                 item: (
                   <TimestampToggle
@@ -191,9 +190,9 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
                     onChange={setTimeFormat}
                   />
                 ),
-                className: "w-[110px]",
+                className: "w-[7.44%]",
               },
-              { item: "Blobs", className: "w-[56px]" },
+              { item: "Blobs", className: "w-[3.79%]" },
               {
                 item: (
                   <>
@@ -202,14 +201,14 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
                     (KiB)
                   </>
                 ),
-                className: "w-[220px]",
+                className: "w-[14.88%]",
               },
-              { item: "From", className: "w-[136px]" },
+              { item: "From", className: "w-[9.20%]" },
               {
                 item: <span className="sr-only">Direction</span>,
-                className: "w-[48px] px-1",
+                className: "w-[3.25%] px-1",
               },
-              { item: "To", className: "w-[136px]" },
+              { item: "To", className: "w-[9.20%]" },
               {
                 item: (
                   <>
@@ -218,7 +217,7 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
                     (Gwei)
                   </>
                 ),
-                className: "w-[120px] text-right",
+                className: "w-[8.12%] text-right",
               },
               {
                 item: (
@@ -228,7 +227,7 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
                     (Gwei)
                   </>
                 ),
-                className: "w-[120px] text-right",
+                className: "w-[8.12%] text-right",
               },
               {
                 item: (
@@ -238,10 +237,10 @@ export const AddressTransactionsTab: FC<AddressTransactionsTabProps> =
                     (Gwei)
                   </>
                 ),
-                className: "w-auto text-right",
+                className: "w-[9.47%] text-right",
               },
             ],
-            className: "whitespace-nowrap px-2",
+            className: "px-2",
           },
         ]}
         rows={data?.transactions.map((tx) =>

@@ -68,46 +68,46 @@ const Blocks: NextPage = function () {
       cells: [
         {
           item: "",
-          className: "w-[80px]",
+          className: "w-[5.57%]",
         },
         {
           item: "Block number",
-          className: "w-[118px]",
+          className: "w-[8.22%]",
         },
         {
           item: (
             <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
           ),
-          className: "w-[170px]",
+          className: "w-[11.85%]",
         },
         {
           item: "Slot",
-          className: "w-[150px]",
+          className: "w-[10.45%]",
         },
         {
           item: "Txs",
-          className: "w-[66px]",
+          className: "w-[4.60%]",
         },
         {
           item: "Blobs",
-          className: "w-[83px]",
+          className: "w-[5.78%]",
         },
         {
           item: `Blob Usage (${BYTES_UNIT})`,
-          className: "w-[220px]",
+          className: "w-[15.33%]",
         },
         {
           item: "Blob Gas Usage",
-          className: "w-[175px]",
+          className: "w-[12.19%]",
         },
 
         {
           item: `Blob Base Fees (${ETHER_UNIT})`,
-          className: "text-right w-[170px]",
+          className: "text-right w-[11.85%]",
         },
         {
           item: `Blob Gas Price (${ETHER_UNIT})`,
-          className: "text-right w-[160px]",
+          className: "text-right w-[11.15%]",
         },
       ],
     },
@@ -239,29 +239,30 @@ const Blocks: NextPage = function () {
           ],
           expandItem: (
             <Table
+              fixedColumnsWidth
               className="mb-4 mt-2 max-h-[420px] rounded-lg bg-primary-50 px-8 dark:bg-primary-800"
               size="xs"
               alignment="left"
               headers={[
                 {
                   cells: [
-                    { item: "", className: "w-[70px]" },
+                    { item: "", className: "w-[6%]" },
                     {
                       item: "Tx Hash",
-                      className: "w-[200px]",
+                      className: "w-[23%]",
                     },
                     {
                       item: "Position",
-                      className: "w-[200px]",
+                      className: "w-[10%]",
                     },
                     {
                       item: "Blob Versioned Hash",
-                      className: "w-[100px]",
+                      className: "w-[25%]",
                     },
                     { item: `Usage (${BYTES_UNIT})` },
                     {
                       item: "Storages",
-                      className: "w-[200px]",
+                      className: "w-[16%]",
                     },
                   ],
                   className: "dark:border-border-dark/20",
