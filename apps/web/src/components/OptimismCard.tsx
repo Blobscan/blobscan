@@ -5,7 +5,6 @@ import type { OptimismDecodedFields } from "@blobscan/db/prisma/zod-utils";
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
-import Loading from "~/icons/loading.svg";
 import { formatTimestamp, normalizeTimestamp } from "~/utils";
 import { Card } from "./Cards/Card";
 import { Copyable } from "./Copyable";
@@ -37,10 +36,8 @@ export const OptimismCard: FC<OptimismCardProps> = ({ data, txTimestamp }) => {
 
   if (isLoading) {
     return (
-      <Card header="Loading Decoded Fields...">
-        <div className="flex h-32 items-center justify-center">
-          <Loading className="h-8 w-8 animate-spin" />
-        </div>
+      <Card header="Decoded Fields">
+        <InfoGrid skeletonRows={8} />
       </Card>
     );
   }

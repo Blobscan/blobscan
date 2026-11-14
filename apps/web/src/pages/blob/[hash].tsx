@@ -412,6 +412,7 @@ const Blob: NextPage = function () {
           </div>
         }
         fields={blob ? detailsFields : undefined}
+        skeletonRows={12}
         resource={
           blob
             ? {
