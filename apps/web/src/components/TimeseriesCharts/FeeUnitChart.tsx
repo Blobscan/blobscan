@@ -10,6 +10,8 @@ type FeeUnitChartProps = Omit<TimeseriesChartProps, "headerControls"> & {
   ethChart: TimeseriesChartComponent;
   usdChart?: TimeseriesChartComponent;
   defaultUnit: FeeUnit;
+  unit?: FeeUnit;
+  onUnitChange?: (unit: FeeUnit) => void;
   headerControls?: (unit: FeeUnit) => ReactNode;
 };
 
@@ -22,11 +24,14 @@ export function FeeUnitChart({
   ethChart: EthChart,
   usdChart: UsdChart,
   defaultUnit,
+  unit: controlledUnit,
+  onUnitChange,
   headerControls,
   isLoading,
   ...chartProps
 }: FeeUnitChartProps) {
-  const [unit, setUnit] = useState<FeeUnit>(defaultUnit);
+  const [localUnit, setLocalUnit] = useState<FeeUnit>(defaultUnit);
+  const unit = controlledUnit ?? localUnit;
 
   if (!UsdChart) {
     return (
@@ -49,7 +54,7 @@ export function FeeUnitChart({
           <FeeUnitToggle
             unit={unit}
             etherUnit={EthChart.yUnit}
-            onChange={setUnit}
+            onChange={onUnitChange ?? setLocalUnit}
           />
           {headerControls?.(unit)}
         </div>
