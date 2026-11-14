@@ -77,7 +77,13 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
     if (!displayResults) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOutsideClicked(true);
+      if (event.key === "Escape") {
+        const form = searchRef.current;
+        if (form?.contains(document.activeElement)) {
+          form.querySelector("input")?.focus();
+        }
+        setOutsideClicked(true);
+      }
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
@@ -170,7 +176,13 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
           as="div"
           className="absolute inset-x-0 top-11 z-10 grid"
         >
-          <div className="min-h-0 overflow-hidden">
+          <div
+            className="min-h-0 overflow-hidden"
+            ref={(node) => {
+              if (node) node.inert = !displayResults;
+            }}
+            aria-hidden={!displayResults || undefined}
+          >
             <ResultsModal
               open={displayResults}
               searchQuery={trimmedSearchQuery}

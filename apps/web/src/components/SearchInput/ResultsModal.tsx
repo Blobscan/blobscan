@@ -237,7 +237,7 @@ const ResultsModalContent: React.FC<ResultsModalProps> = function ({
                 <div className="flex max-h-[350px] flex-col md:max-h-[550px]">
                   {categoryResults.map(({ category, results }) => (
                     <Fragment key={category}>
-                      <div className="flex items-center gap-2 rounded-md bg-primary-200 p-2 font-semibold dark:bg-primary-900">
+                      <div className="flex items-center gap-2 rounded-md bg-primary-200 p-2 font-semibold leading-5 dark:bg-primary-900">
                         {capitalize(category)}
                         {results.length > 1 && (
                           <CountBadge count={results.length} size="sm" />

@@ -25,14 +25,11 @@ export function BlobLoader({ resting = false }: { resting?: boolean }) {
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frameId = 0;
-    let startedAt: number | undefined;
     let lastTime: number | undefined;
     let phase = 0;
     let movement = restingRef.current ? 0 : 1;
 
     const animate = (now: number) => {
-      startedAt ??= now;
-      const elapsed = now - startedAt;
       const delta = lastTime === undefined ? 0 : Math.min(now - lastTime, 50);
       lastTime = now;
       const target = restingRef.current ? 0 : 1;
@@ -41,17 +38,17 @@ export function BlobLoader({ resting = false }: { resting?: boolean }) {
       phase += (delta / 1000) * Math.PI * 2 * movement;
       const wave = Math.sin(phase);
       const swell = (1 - Math.cos(phase)) / 2;
-      const blinkPhase = elapsed % 1400;
+      const blinkPhase = ((phase / (Math.PI * 2)) % 1) * 1000;
       const blink =
-        blinkPhase > 1200 && blinkPhase < 1320
-          ? Math.max(0.12, Math.abs(blinkPhase - 1260) / 60)
+        blinkPhase > 800 && blinkPhase < 920
+          ? Math.max(0.12, Math.abs(blinkPhase - 860) / 60)
           : 1;
 
       body.style.transform = `translateY(${-swell * 5 * movement}px) scale(${
         1 + wave * 0.1 * movement
       }, ${1 - wave * 0.085 * movement}) skewX(${wave * 7 * movement}deg)`;
       displacement.setAttribute("scale", String(swell * 32 * movement));
-      const gaze = Math.sin(phase * 0.65);
+      const gaze = Math.sin(phase);
       eyes.style.transform = `translate(${gaze * 3.2 * movement}px, ${
         -gaze * 1.2 * movement
       }px) scaleY(${1 - (1 - blink) * movement})`;
@@ -63,7 +60,6 @@ export function BlobLoader({ resting = false }: { resting?: boolean }) {
 
     const updateMotion = () => {
       cancelAnimationFrame(frameId);
-      startedAt = undefined;
       lastTime = undefined;
       movement = restingRef.current ? 0 : 1;
       body.style.transform = "none";
