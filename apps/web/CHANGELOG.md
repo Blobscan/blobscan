@@ -1,5 +1,43 @@
 # @blobscan/web
 
+## 0.64.1
+
+### Patch Changes
+
+- [#1147](https://github.com/Blobscan/blobscan/pull/1147) [`801c9fe`](https://github.com/Blobscan/blobscan/commit/801c9fe5f86e8cc5cf8d1d18be92257e7c32a17d) Thanks [@PJColombo](https://github.com/PJColombo)! - Cancel the active search request before navigation when the search form is submitted.
+
+- [#1128](https://github.com/Blobscan/blobscan/pull/1128) [`b4012b1`](https://github.com/Blobscan/blobscan/commit/b4012b11477ebd7a2c7fdc73c799232f407b8a58) Thanks [@PJColombo](https://github.com/PJColombo)! - Made the smaller text badge size the default while keeping icons without text at 16 px. Restored header count badge sizes, made their text bold, and fixed the vertical alignment of their loading placeholders.
+
+- [#1123](https://github.com/Blobscan/blobscan/pull/1123) [`4c22984`](https://github.com/Blobscan/blobscan/commit/4c229847291b2e5c0282f51b3607ba110d8bc92f) Thanks [@PJColombo](https://github.com/PJColombo)! - Added rollup folders with shared metadata, icons, and poster addresses, plus a sync command that generates registry entries, icon imports, and Prisma enum entries. Updated explorer filters, database seed data, and contributor instructions to use the shared definitions.
+
+- [#1124](https://github.com/Blobscan/blobscan/pull/1124) [`9b13412`](https://github.com/Blobscan/blobscan/commit/9b13412526116d454f6e4cb1c1590a6fb82cf31d) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed a brief empty-state display on the blobs, transactions, and blocks pages before loading starts.
+
+- [#1107](https://github.com/Blobscan/blobscan/pull/1107) [`4e0a7b3`](https://github.com/Blobscan/blobscan/commit/4e0a7b32feaf05057824d5d5cf13ded94f77d945) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed excessive header height in the blob transactions table.
+
+- [#1129](https://github.com/Blobscan/blobscan/pull/1129) [`a98a850`](https://github.com/Blobscan/blobscan/commit/a98a85047772e900fcda30b7b920b21e9b3999bb) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed loading skeletons to match the expected fields on details pages and the Optimism decoded fields card.
+
+- [#1125](https://github.com/Blobscan/blobscan/pull/1125) [`0ec61c3`](https://github.com/Blobscan/blobscan/commit/0ec61c3d8c46c0b8825a6e533651d4db45b4c489) Thanks [@PJColombo](https://github.com/PJColombo)! - Reduced badge text, padding, and gaps. Set badge heights by size and reduced count badges and their loading placeholders.
+
+- [#1148](https://github.com/Blobscan/blobscan/pull/1148) [`30a11d8`](https://github.com/Blobscan/blobscan/commit/30a11d898ccc1b1604d1182fd9d490188757bb09) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed compact rollup badge backgrounds in both themes. Kept expanded badges visible above adjacent table columns without changing column widths.
+
+- [#1146](https://github.com/Blobscan/blobscan/pull/1146) [`1700ece`](https://github.com/Blobscan/blobscan/commit/1700ece18685f7056323092a9a646bf665f9c631) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved rollup icon groups with smooth expansion, clearer transaction counts, and a compact overflow list. Kept table columns fixed when groups expand.
+
+- [#1155](https://github.com/Blobscan/blobscan/pull/1155) [`19207e8`](https://github.com/Blobscan/blobscan/commit/19207e8fc380284041e9f5c8ae70fdf14afd8a9c) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated the +n rollup badge to use the shared tooltip. The tooltip shows only hidden rollups and their transaction counts, without a heading.
+
+- [#1144](https://github.com/Blobscan/blobscan/pull/1144) [`aeff8ec`](https://github.com/Blobscan/blobscan/commit/aeff8ec5e44b7f8f3be31fcf596b65ac1fddad06) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved search loading and empty states with an animated blob and smooth panel transitions. Matched their height to a single search result.
+
+- [#1149](https://github.com/Blobscan/blobscan/pull/1149) [`c741245`](https://github.com/Blobscan/blobscan/commit/c741245099eab17d133aa3d15bba56b355e87f2f) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed fee and price table amounts to use at most four decimal places. Added full-value tooltips for amounts with a less-than sign or an ellipsis.
+
+- [#1156](https://github.com/Blobscan/blobscan/pull/1156) [`6d9c1b3`](https://github.com/Blobscan/blobscan/commit/6d9c1b3370c3160b4ce19e0a291a6d255dc6d076) Thanks [@PJColombo](https://github.com/PJColombo)! - Applied equal-width digits to all tables.
+
+- [#1150](https://github.com/Blobscan/blobscan/pull/1150) [`036f071`](https://github.com/Blobscan/blobscan/commit/036f071ffd743aaa5c33a725593e90c635bfd247) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved tooltips with optional headings, outlined arrows, and entry and exit animations. Added reduced-motion support and a stronger shadow in dark mode.
+
+- [#1151](https://github.com/Blobscan/blobscan/pull/1151) [`22a4977`](https://github.com/Blobscan/blobscan/commit/22a49771f19b1480739aa5cd7040d36d2af85466) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed rollup icon alignment in block cards. Kept the icons level with the block number without moving the fields below the header.
+- Updated dependencies [[`4c22984`](https://github.com/Blobscan/blobscan/commit/4c229847291b2e5c0282f51b3607ba110d8bc92f), [`ab63265`](https://github.com/Blobscan/blobscan/commit/ab6326513ce3c066e8dc81be111753181ffb8579), [`d0d6d60`](https://github.com/Blobscan/blobscan/commit/d0d6d60ebe29184046b9f4827c9a7e21165df567)]:
+  - @blobscan/rollups@0.11.0
+  - @blobscan/db@0.35.1
+  - @blobscan/api@0.46.2
+
 ## 0.64.0
 
 ### Minor Changes
