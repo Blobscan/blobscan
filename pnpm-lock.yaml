@@ -711,6 +711,9 @@ importers:
       '@blobscan/chains':
         specifier: workspace:^0.6.0
         version: link:../chains
+      '@blobscan/rollups':
+        specifier: workspace:^0.10.2
+        version: link:../rollups
       '@faker-js/faker':
         specifier: ^10.6.0
         version: 10.6.0
@@ -814,10 +817,10 @@ importers:
         version: 2.46.1(typescript@5.9.3)(zod@4.6.7)
 
   packages/rollups:
-    dependencies:
-      '@blobscan/db':
-        specifier: workspace:^0.35.0
-        version: link:../db
+    devDependencies:
+      '@types/react':
+        specifier: ^18.3.27
+        version: 18.3.28
 
   packages/syncers:
     dependencies:

@@ -66,11 +66,16 @@ Check out the following PRs:
 
 Steps:
 
-1. Add the new rollup value to the `Rollup` enum in `packages/db/prisma/schema.prisma` and create a Prisma migration
-2. Add the sender address(es) → rollup mapping in `packages/rollups/src/index.ts` (per chain ID)
-3. Add an SVG (or PNG) icon to `apps/web/src/icons/rollups/` (or `apps/web/public/rollups/` for PNGs)
-4. Register the icon in `apps/web/src/icons/rollups/index.ts`
-5. Add the badge style (and optional label override) in the `ROLLUP_CONFIG` object in `apps/web/src/components/Badges/RollupBadge.tsx`
+1. Add a directory in `packages/rollups/src/rollups/` with the rollup ID as its name.
+2. Add `definition.ts` with the display name, theme colors, icon filename, and poster addresses for each chain. The folder name supplies the ID; do not add an `id` field. Use an existing definition as a template.
+3. Add `icon.svg`, `icon.png`, `icon.jpg`, or `icon.jpeg` in the same directory. SVG icons can use `currentColor` for theme colors.
+4. Run `pnpm rollups:sync` from the repository root. This generates the registry, icon map, and Prisma enum entries.
+5. If the enum changed, run `pnpm --filter @blobscan/db db:migrate --create-only --name add_example_rollup`. Review the migration, apply it to the development database, and run `pnpm db:generate`.
+6. Commit the definition, icon, generated files, and migration together. Apply the migration before the updated application writes the new rollup ID.
+7. Run a separate backfill if existing address records or metrics need updates.
+
+Run `pnpm rollups:sync --check` to check generated files without writing them.
+The sync command does not connect to the database or change migration files.
 
 Check out the following PRs:
 

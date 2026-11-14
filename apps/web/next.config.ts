@@ -50,6 +50,7 @@ const config: NextConfig = {
     "@blobscan/api",
     "@blobscan/auth",
     "@blobscan/db",
+    "@blobscan/rollups",
     "@blobscan/tailwind-config",
     "echarts",
     "zrender",

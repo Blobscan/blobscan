@@ -1,7 +1,5 @@
 import { useMemo } from "react";
 
-import { RollupRegistry } from "@blobscan/rollups";
-
 import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
 import { useRollupRegistry } from "~/hooks/useRollupRegistry";
 import type { Rollup } from "~/types";
@@ -16,16 +14,13 @@ export type RollupSelectorProps = Omit<
   "options" | "multiple" | "nullable" | "placeholder"
 >;
 
-export const ROLLUP_OPTIONS: RollupSelectorOption[] = RollupRegistry.create(1)
-  .geAll()
-  .map(
-    ([name]) =>
-      ({
-        value: name.toLowerCase() as Rollup,
-        label: <RollupBadge rollup={name.toLowerCase() as Rollup} size="sm" />,
-        searchText: ROLLUP_DEFINITIONS[name.toLowerCase() as Rollup].name,
-      } satisfies RollupSelectorOption)
-  );
+export const ROLLUP_OPTIONS: RollupSelectorOption[] = Object.entries(
+  ROLLUP_DEFINITIONS
+).map(([id, definition]) => ({
+  value: id as Rollup,
+  label: <RollupBadge rollup={id as Rollup} size="sm" />,
+  searchText: definition.name,
+}));
 
 export function RollupSelector(props: RollupSelectorProps) {
   const rollupRegistry = useRollupRegistry();

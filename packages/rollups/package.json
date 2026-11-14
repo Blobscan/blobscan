@@ -10,15 +10,20 @@
     "type-check": "tsc --noEmit",
     "with-env:test": "dotenv -e ../../.env.test --",
     "test": "pnpm with-env:test vitest",
-    "test:ui": "pnpm with-env:test vitest --ui"
-  },
-  "dependencies": {
-    "@blobscan/db": "workspace:^0.35.0"
+    "test:ui": "pnpm with-env:test vitest --ui",
+    "svg:format": "svgo -r ./src/rollups"
   },
   "eslintConfig": {
     "root": true,
     "extends": [
       "@blobscan/eslint-config/base"
     ]
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./icons": "./src/generated/icons.ts"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.27"
   }
 }
