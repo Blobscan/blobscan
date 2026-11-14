@@ -174,7 +174,6 @@ const Blobs: NextPage = function () {
                           key={storage}
                           storage={storage}
                           url={url}
-                          size="md"
                           compact
                         />
                       ))}

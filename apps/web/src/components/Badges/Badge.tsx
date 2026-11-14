@@ -37,7 +37,7 @@ const badgeVariants = cva(
       },
     },
     defaultVariants: {
-      size: "md",
+      size: "sm",
     },
   }
 );

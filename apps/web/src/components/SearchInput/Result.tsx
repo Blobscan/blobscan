@@ -46,7 +46,7 @@ export const Result: FC<ResultProps> = function ({
             {icon}
             {rollup && (
               <div className="absolute -bottom-1 left-[13px]">
-                <RollupBadge rollup={rollup} size="sm" compact />
+                <RollupBadge rollup={rollup} compact />
               </div>
             )}
           </div>

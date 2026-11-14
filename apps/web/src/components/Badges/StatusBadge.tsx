@@ -36,7 +36,7 @@ export const StatusBadge: FC<StatusBadgeProps> = ({
 }) => {
   const { color, icon } = STATUSES[status];
   const statusIcon = icon ? (
-    <Icon src={icon} size={props.size ?? "md"} />
+    <Icon src={icon} size={props.size ?? "sm"} />
   ) : null;
   return (
     <BrandBadge brandColor={color} {...props}>
