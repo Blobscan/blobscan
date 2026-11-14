@@ -49,6 +49,9 @@ export function ServerErrorBlob() {
         <clipPath id={`${id}-flame-silhouette`}>
           <use href={`#${id}-flame-shape`} />
         </clipPath>
+        <clipPath id={`${id}-right-silhouette`}>
+          <use href={`#${id}-right-shape`} />
+        </clipPath>
         <linearGradient id={`${id}-warning-gold`} x1="0" y1="0" x2=".7" y2="1">
           <stop stopColor="#fff1aa" />
           <stop offset=".5" stopColor="#fbd46c" />
@@ -75,7 +78,7 @@ export function ServerErrorBlob() {
               />
             </g>
           </g>
-          <g fill="#f6aa58">
+          <g fill="#ffc865">
             <circle className={styles.ember} cx="64" cy="43" r="1.2" />
             <circle
               className={`${styles.ember} ${styles.emberLate}`}
@@ -103,6 +106,7 @@ export function ServerErrorBlob() {
         />
         <g transform="translate(137 -45.5) scale(.5)">
           <path
+            id={`${id}-right-shape`}
             className={styles.rightFlame}
             d="M65 95C61 79 66 67 77 59C87 51 91 44 83 35C73 24 79 11 94 5C85 18 88 25 99 31C113 39 112 52 102 63C97 69 100 74 105 72C111 69 114 63 113 58C123 72 116 85 112 95Z"
             fill={`url(#${id}-flame)`}
@@ -111,7 +115,8 @@ export function ServerErrorBlob() {
             strokeLinejoin="round"
           />
           <path
-            className={styles.innerFlame}
+            className={styles.rightCore}
+            clipPath={`url(#${id}-right-silhouette)`}
             d="M76 95C70 82 77 73 86 67C94 61 97 55 94 47C106 58 96 70 96 78C103 77 107 85 104 95Z"
             fill={`url(#${id}-core)`}
           />
@@ -120,11 +125,63 @@ export function ServerErrorBlob() {
             cx="101"
             cy="30"
             r="1.1"
-            fill="#f6aa58"
+            fill="#ffc865"
           />
         </g>
       </g>
       <OfficeFloor />
+      <g className={styles.fireGlow} fill={`url(#${id}-fire-glow)`}>
+        <ellipse cx="78" cy="20" rx="28" ry="32" />
+        <ellipse cx="126" cy="18" rx="31" ry="35" />
+      </g>
+      <g>
+        <use
+          href={`#${id}-server-fire`}
+          transform="translate(26 -17) scale(.6)"
+          className={styles.rearLeftFire}
+        />
+        <use
+          href={`#${id}-server-fire`}
+          transform="translate(150 -7.5) scale(-.5 .5)"
+          className={styles.rearMiddleFire}
+        />
+        <use
+          href={`#${id}-server-fire`}
+          transform="translate(65 -24.6) scale(.68)"
+          className={styles.rearRightFire}
+        />
+      </g>
+      <g stroke="#634883" strokeWidth=".8" strokeLinejoin="round">
+        <ellipse
+          cx="100"
+          cy="73"
+          rx="53"
+          ry="4"
+          fill="#634883"
+          opacity=".12"
+          stroke="none"
+        />
+        <path d="M48 44L55 40H148L155 44V66L148 71H48Z" fill="#8c75a6" />
+        <path d="M48 44L55 40H148L155 44Z" fill="#c9b8de" />
+        <rect x="48" y="44" width="100" height="27" rx="2" fill="#aa92c4" />
+        <path
+          d="M151 47V64L148 67M51 47H145M51 68H145"
+          fill="none"
+          strokeWidth=".5"
+        />
+        {[0, 1, 2, 3, 4].map((slot) => (
+          <g key={slot} transform={`translate(${53 + slot * 18} 49)`}>
+            <rect width="14" height="17" rx="1.3" fill="#d9c8eb" />
+            <circle cx="4" cy="4" r=".8" fill="#80659f" stroke="none" />
+            <path d="M4 8H10M4 10H10M4 12H10M4 14H10" strokeWidth=".5" />
+            <path d="M10 2H12M2 15V13" fill="none" strokeWidth=".5" />
+          </g>
+        ))}
+        <path
+          d="M72 40L77 44L74 49L80 54M77 44L84 43M135 71L132 65L136 61L131 56"
+          fill="none"
+        />
+      </g>
       <IllustrationBackground variant="server-room" />
       <g transform="translate(39 4) scale(.106)">
         <ShadedBlobBody />
