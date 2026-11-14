@@ -1,13 +1,80 @@
+import * as echarts from "echarts";
 import { describe, expect, it } from "vitest";
 
 import {
   getBinaryAxisScale,
+  getEndpointAxisScale,
+  createEndpointXAxisOptions,
+  createYAxisOptions,
   getLeftAxisMax,
 } from "~/components/Charts/ChartBase/helpers/axis";
 import { formatBytesValue } from "~/components/Charts/ChartBase/helpers/formatters";
 
 const KIB = 1024;
 const MIB = 1024 * KIB;
+
+describe("getEndpointAxisScale", () => {
+  it.each([
+    [0, 1],
+    [184_200, 200_000],
+    [350_000, 500_000],
+    [18_000_000, 20_000_000],
+    [0.018, 0.02],
+    [50, 50],
+  ])("should show zero and an upper limit for %s", (value, upperLimit) => {
+    const scale = getEndpointAxisScale(value);
+
+    expect(scale.min).toBe(0);
+    expect(scale.max).toBe(upperLimit);
+    expect(scale.max).toBeGreaterThanOrEqual(value);
+    expect((scale.max - scale.min) / scale.interval).toBe(1);
+  });
+});
+
+describe("summary chart labels", () => {
+  it.each([1, 2, 30])(
+    "should show only the axis end labels for %s days",
+    (days) => {
+      const chart = echarts.init(null, undefined, {
+        renderer: "svg",
+        ssr: true,
+        width: 600,
+        height: 240,
+      });
+      const dates = Array.from(
+        { length: days },
+        (_, i) => `2026-11-${String(i + 1).padStart(2, "0")}`
+      );
+
+      try {
+        chart.setOption({
+          animation: false,
+          xAxis: createEndpointXAxisOptions({ type: "time" }, days),
+          yAxis: createYAxisOptions(
+            { type: "count" },
+            true,
+            getEndpointAxisScale(184_200)
+          ),
+          series: [{ type: "bar", data: dates.map((date) => [date, 184_200]) }],
+        });
+
+        const svg = chart.renderToSVGString();
+        const dateLabels = svg.match(/Nov \d\d/g) ?? [];
+
+        expect(dateLabels).toEqual(
+          days === 1
+            ? ["Nov 01"]
+            : ["Nov 01", `Nov ${String(days).padStart(2, "0")}`]
+        );
+        expect(svg).toContain(">0</text>");
+        expect(svg).toContain(">200K</text>");
+        expect(svg).not.toContain(">100K</text>");
+      } finally {
+        chart.dispose();
+      }
+    }
+  );
+});
 
 describe("getBinaryAxisScale", () => {
   it("should return a power of 2 interval that gives about 5 ticks", () => {
