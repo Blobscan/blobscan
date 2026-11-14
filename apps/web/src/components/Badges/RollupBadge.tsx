@@ -1,9 +1,9 @@
 import React, { Fragment } from "react";
 
+import { ROLLUP_DEFINITIONS } from "@blobscan/rollups";
 import type { RollupDefinition } from "@blobscan/rollups";
 import { rollupIcons } from "@blobscan/rollups/icons";
 
-import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
 import type { Rollup } from "~/types";
 import { Icon } from "../Icon";
 import type { BadgeProps } from "./Badge";

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
-import { ROLLUP_DEFINITIONS } from "~/defintions/rollups";
+import { ROLLUP_DEFINITIONS } from "@blobscan/rollups";
+
 import { useRollupRegistry } from "~/hooks/useRollupRegistry";
 import type { Rollup } from "~/types";
 import { RollupBadge } from "../Badges/RollupBadge";
