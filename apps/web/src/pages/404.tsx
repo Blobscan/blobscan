@@ -9,9 +9,9 @@ export default function Custom404() {
         description="The page you are looking for could not be found."
       />
       <NotFoundErrorView
-      title="Page Not Found"
-      description="Sorry, we couldn&rsquo;t find the page you&rsquo;re looking for."
-    />
+        title={"This page\nis missing"}
+        description="We could not find a page at this address. Check the address or return to the homepage."
+      />
     </>
   );
 }

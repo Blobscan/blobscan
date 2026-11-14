@@ -1,0 +1,84 @@
+.eyes {
+  animation: look 4s ease-in-out infinite;
+}
+
+.lantern {
+  animation: swing 4s ease-in-out infinite;
+  transform-origin: 0 0;
+}
+
+.lanternGlow {
+  animation: glow 2.8s ease-in-out infinite;
+  transform-origin: 0 28px;
+}
+
+.lampCore {
+  animation: pulse 2.8s ease-in-out infinite;
+}
+
+.questions {
+  animation: question 3.4s ease-in-out infinite;
+  transform-origin: 150px 38px;
+}
+
+@keyframes look {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-23px);
+  }
+}
+
+@keyframes swing {
+  0%,
+  100% {
+    transform: translateX(0) rotate(-10deg);
+  }
+  50% {
+    transform: translateX(-82px) rotate(10deg);
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.05;
+  }
+  50% {
+    opacity: 0.65;
+  }
+}
+
+@keyframes question {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(-4deg);
+  }
+  50% {
+    transform: translate(2px, -6px) rotate(5deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyes,
+  .lantern,
+  .lanternGlow,
+  .lampCore,
+  .questions {
+    animation: none;
+  }
+}
