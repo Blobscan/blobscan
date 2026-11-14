@@ -147,7 +147,6 @@ export function BlobLoader({ resting = false }: { resting?: boolean }) {
             <path d="M53 49 Q57 49 59 46 M73 45 Q75 48 79 48" />
             <circle cx="58" cy="59" r="4.5" />
             <circle cx="75" cy="57" r="4.5" />
-            <ellipse cx="67" cy="71" rx="3.5" ry="2.5" />
           </svg>
         </span>
       </span>
