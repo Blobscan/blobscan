@@ -1,6 +1,5 @@
 import "../styles/globals.css";
 import type { AppProps as NextAppProps } from "next/app";
-import Head from "next/head";
 import { ThemeProvider, useTheme } from "next-themes";
 
 import "@fontsource/inter/400.css";
@@ -20,7 +19,6 @@ import { useIsMounted } from "~/hooks/useIsMounted";
 import { AppStateProvider } from "~/providers/AppState";
 import { BlobDecoderWorkerProvider } from "~/providers/BlobDecoderWorker";
 import { EnvProvider, useEnv } from "~/providers/Env";
-import emptyImage from "../../public/empty.webp";
 
 declare global {
   interface Window {
@@ -76,9 +74,6 @@ function App({ Component, pageProps }: NextAppProps) {
 function AppWrapper(props: NextAppProps) {
   return (
     <ErrorBoundary>
-      <Head>
-        <link rel="preload" as="image" href={emptyImage.src} />
-      </Head>
       <ThemeProvider attribute="class">
         <BlobDecoderWorkerProvider>
           <EnvProvider>

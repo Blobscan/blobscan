@@ -7,9 +7,9 @@ import Skeleton from "react-loading-skeleton";
 import dayjs from "@blobscan/dayjs";
 import { convertWei, prettyFormatWei } from "@blobscan/eth-format";
 
+import { BlobIcon } from "~/components/BlobIcon";
 import { useChain } from "~/hooks/useChain";
 import { useIsMainnet } from "~/hooks/useIsMainnet";
-import BlobIcon from "~/icons/blob.svg";
 import EthereumIcon from "~/icons/ethereum.svg";
 import GasIcon from "~/icons/gas.svg";
 import { useAppState } from "~/providers/AppState";
@@ -167,7 +167,7 @@ export function NetworkIndicators() {
     },
     {
       name: "Blob Price",
-      icon: <Icon src={BlobIcon} />,
+      icon: <BlobIcon className="h-[18px] w-[18px]" width={18} height={18} />,
       value: blobPrice && (
         <span>
           {prettyFormatWei(blobPrice, {

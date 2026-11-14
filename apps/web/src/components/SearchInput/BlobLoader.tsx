@@ -1,7 +1,6 @@
 import { useEffect, useId, useRef } from "react";
-import type { CSSProperties } from "react";
 
-import blobLoader from "../../../public/blob-loader.webp";
+import { ShadedBlobBody } from "../ErrorViews/ShadedBlobBody";
 import styles from "./SearchInput.module.css";
 
 export function BlobLoader({ resting = false }: { resting?: boolean }) {
@@ -86,13 +85,19 @@ export function BlobLoader({ resting = false }: { resting?: boolean }) {
   return (
     <span
       aria-hidden="true"
-      className={`${styles.blobLoader} text-accent-light dark:text-accent-dark`}
-      style={
-        { "--blob-loader-mask": `url(${blobLoader.src})` } as CSSProperties
-      }
+      className={`${styles.blobLoader} text-contentTertiary-light opacity-50 dark:text-contentTertiary-dark`}
     >
       <svg width="0" height="0" className="absolute" focusable="false">
         <defs>
+          <filter id={`${filterId}-color`} colorInterpolationFilters="sRGB">
+            <feColorMatrix
+              type="matrix"
+              values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -0.213 -0.715 -0.072 1 0"
+              result="shading"
+            />
+            <feFlood floodColor="currentColor" />
+            <feComposite in2="shading" operator="in" />
+          </filter>
           <filter
             id={filterId}
             x="-35%"
@@ -125,11 +130,20 @@ export function BlobLoader({ resting = false }: { resting?: boolean }) {
           className={styles.blobDeformation}
           style={{ filter: `url(#${filterId})` }}
         >
-          <span className={`${styles.blobLayer} ${styles.blobBody}`} />
+          <svg className={styles.blobLayer} viewBox="0 0 1280 1280">
+            <g filter={`url(#${filterId}-color)`}>
+              <ShadedBlobBody />
+            </g>
+          </svg>
           <span
             ref={eyesRef}
             className={`${styles.blobLayer} ${styles.blobEyes}`}
-          />
+          >
+            <svg viewBox="0 0 1280 1280" fill="currentColor">
+              <ellipse cx="614" cy="750" rx="30" ry="54" />
+              <ellipse cx="779" cy="736" rx="29" ry="50" />
+            </svg>
+          </span>
           <svg
             className={styles.emptyFace}
             viewBox="0 0 112 112"
@@ -139,7 +153,7 @@ export function BlobLoader({ resting = false }: { resting?: boolean }) {
             strokeWidth="2"
             strokeLinecap="round"
           >
-            <path d="M53 49 Q57 49 59 46 M73 45 Q75 48 79 48" />
+            <path d="M49 59Q53 58 55 55M66 54Q70 57 74 57" />
           </svg>
         </span>
       </span>

@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { ArrowsRightLeftIcon, CubeIcon } from "@heroicons/react/24/outline";
 import { useReducedMotion } from "@react-spring/web";
 
-import BlobIcon from "~/icons/blob.svg";
+import { BlobIcon } from "~/components/BlobIcon";
 import type { Rollup, SearchCategory, SearchOutput } from "~/types";
 import { capitalize, toChecksumAddress } from "~/utils";
 import { CountBadge } from "../Badges/CountBadge";
@@ -201,13 +201,13 @@ const ResultsModalContent: React.FC<ResultsModalProps> = function ({
           {isLoading || !categoryResults.length ? (
             <div
               key="status"
-              className={`${styles.panelContent} flex items-center justify-center gap-3 text-sm text-contentSecondary-light dark:text-contentSecondary-dark`}
+              className={`${styles.panelContent} flex items-center justify-center gap-1 text-sm text-contentTertiary-light dark:text-contentTertiary-dark`}
               role="status"
             >
               <BlobLoader resting={!isLoading} />
-              <div className="grid">
+              <div className="grid opacity-50">
                 <span
-                  className={`col-start-1 row-start-1 transition-opacity duration-300 motion-reduce:transition-none ${
+                  className={`col-start-1 row-start-1 transition-opacity duration-[450ms] motion-reduce:transition-none ${
                     isLoading ? "opacity-100" : "opacity-0"
                   }`}
                   aria-hidden={!isLoading}
@@ -215,7 +215,7 @@ const ResultsModalContent: React.FC<ResultsModalProps> = function ({
                   Searching…
                 </span>
                 <span
-                  className={`col-start-1 row-start-1 transition-opacity duration-300 motion-reduce:transition-none ${
+                  className={`col-start-1 row-start-1 transition-opacity duration-[450ms] motion-reduce:transition-none ${
                     isLoading ? "opacity-0" : "opacity-100"
                   }`}
                   aria-hidden={isLoading}
