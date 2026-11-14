@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import type { NextPage } from "next";
 
 import { z } from "@blobscan/zod";
@@ -10,21 +10,11 @@ import type { MetricCardProps } from "~/components/Cards/MetricCard";
 import type { ChartBaseProps } from "~/components/Charts/ChartBase";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
-import { Scrollable } from "~/components/Scrollable";
-import { RollupSelector } from "~/components/Selectors";
-import type { RollupSelectorOption } from "~/components/Selectors";
-import type {
-  SectionName,
-  SectionOption,
-} from "~/components/Selectors/StatsSectionSelector";
-import {
-  DEFAULT_SECTION,
-  SECTION_NAMES,
-  SECTION_OPTIONS,
-  StatsSectionSelector,
-} from "~/components/Selectors/StatsSectionSelector";
+import { RollupSelector, TIME_FRAME_OPTIONS } from "~/components/Selectors";
+import { ROLLUP_OPTIONS } from "~/components/Selectors/RollupSelector";
+import { Listbox } from "~/components/Selects";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
-import { SubHeader } from "~/components/SubHeader";
+import { TabsBase } from "~/components/Tabs/TabsBase";
 import { AvgBlobBaseFeeChart } from "~/components/TimeseriesCharts/AvgBlobBaseFeeChart";
 import { AvgBlobBaseFeeUsdChart } from "~/components/TimeseriesCharts/AvgBlobBaseFeeUsdChart";
 import { BlobGasPriceChart } from "~/components/TimeseriesCharts/BlobGasPriceChart";
@@ -49,20 +39,13 @@ import { useTimeseriesQuery } from "~/hooks/useTimeseriesQuery";
 import { useUrlState } from "~/hooks/useUrlState";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
-import { categoriesParamSchema, rollupsSchema } from "~/schemas/filters";
+import { feeUnitSchema } from "~/schemas/feeUnit";
+import {
+  categoriesParamSchema,
+  rollupsSchema,
+  chartTimeFrameSchema,
+} from "~/schemas/filters";
 import { calculatePercentage } from "~/utils";
-
-function buildViewLink(metricName: string, unit?: FeeUnit) {
-  return (
-    <Link
-      href={`${routes.stat(metricName)}${
-        unit && unit !== "eth" ? `?unit=${unit}` : ""
-      }`}
-    >
-      <span className="text-sm">Full View</span>
-    </Link>
-  );
-}
 
 const SKELETON_OPTS: ChartBaseProps["skeletonOpts"] = {
   chart: {
@@ -70,29 +53,92 @@ const SKELETON_OPTS: ChartBaseProps["skeletonOpts"] = {
   },
 };
 
+const STATS_TABS = [
+  "blob",
+  "block",
+  "transaction",
+  "address",
+  "gas",
+  "fee",
+  "price",
+] as const;
+type StatsTab = (typeof STATS_TABS)[number];
+const TAB_LABELS: Record<StatsTab, string> = {
+  blob: "Blobs",
+  block: "Blocks",
+  transaction: "Transactions",
+  address: "Addresses",
+  gas: "Gas",
+  fee: "Fees",
+  price: "ETH Price",
+};
 const statsSectionSchema = z.object({
-  section: z.enum(SECTION_NAMES).default("all"),
+  section: z.enum(["all", ...STATS_TABS]).catch("blob"),
 });
 
-const controlQueryParamsSchema = statsSectionSchema
-  .merge(categoriesParamSchema)
-  .merge(rollupsSchema);
+const controlQueryParamsSchema = statsSectionSchema.extend({
+  timeFrame: z.enum(["15d", ...chartTimeFrameSchema.options]).catch("15d"),
+  unit: feeUnitSchema.catch("usd"),
+  categories: categoriesParamSchema.shape.categories.catch(undefined),
+  rollups: rollupsSchema.shape.rollups.catch(undefined),
+});
+const TIME_FRAME_OPTIONS_WITH_DEFAULT = [
+  ...TIME_FRAME_OPTIONS.slice(0, 2),
+  { value: "15d" as const, label: "15D" },
+  ...TIME_FRAME_OPTIONS.slice(2),
+];
+
+function NetworkChart({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex min-w-0 flex-col gap-2">
+      <p className="text-xs">Network-wide · Rollup filter does not apply</p>
+      {children}
+    </div>
+  );
+}
 
 const Stats: NextPage = function () {
   const chain = useChain();
   const isMainnet = useIsMainnet();
-  const { state, updateState } = useUrlState(controlQueryParamsSchema);
-  const { categories, rollups } =
-    state?.categories?.length && state?.rollups?.length
-      ? { categories: state.categories, rollups: state.rollups }
-      : { categories: ["other" as const], rollups: ["all" as const] };
+  const { state, updateState, isReady } = useUrlState(controlQueryParamsSchema);
+  const timeFrame = state?.timeFrame ?? "15d";
+  const unit = state?.unit ?? "usd";
+  const selectedRollups = useMemo(
+    () =>
+      ROLLUP_OPTIONS.filter((option) => state?.rollups?.includes(option.value)),
+    [state?.rollups]
+  );
+  const rollups = state?.rollups ?? ["all" as const];
+  const categories =
+    state?.categories ?? (selectedRollups.length ? [] : ["other" as const]);
+  const buildViewLink = useCallback(
+    (metricName: string, feeUnit?: FeeUnit, networkWide = false) => {
+      // Full View pages do not support the overview's 15-day range.
+      const query = new URLSearchParams(
+        timeFrame === "15d" ? {} : { timeFrame }
+      );
+      if (!networkWide) {
+        if (state?.rollups?.length)
+          query.set("rollups", state.rollups.join(","));
+        if (state?.categories?.length)
+          query.set("categories", state.categories.join(","));
+      }
+      if (feeUnit) query.set("unit", feeUnit);
+      return (
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href={`${routes.stat(metricName)}${
+              query.size ? `?${query.toString()}` : ""
+            }`}
+          >
+            <span className="text-sm">Full View</span>
+          </Link>
+        </div>
+      );
+    },
+    [timeFrame, state?.rollups, state?.categories]
+  );
 
-  const [selectedSection, setSelectedSection] =
-    useState<SectionOption>(DEFAULT_SECTION);
-
-  const [selectedRollups, setSelectedRollups] = useState<
-    RollupSelectorOption[]
-  >([]);
   const {
     data: categorizedChartDatasets,
     isLoading: categorizedDatasetsLoading,
@@ -112,7 +158,7 @@ const Stats: NextPage = function () {
     ],
     categories,
     rollups,
-    timeFrame: "15d",
+    timeFrame,
   });
   const {
     data: globalChartDatasets,
@@ -137,7 +183,7 @@ const Stats: NextPage = function () {
         ? (["maxEthPrice", "avgEthPrice", "minEthPrice"] as const)
         : []),
     ],
-    timeFrame: "15d",
+    timeFrame,
   });
   const { data: allOverallStats, error: overallStatsError } =
     api.stats.getOverall.useQuery(undefined, {
@@ -170,8 +216,7 @@ const Stats: NextPage = function () {
 
   const sections = useMemo<
     {
-      id: SectionName;
-      title: string;
+      id: StatsTab;
       metrics: MetricCardProps[];
       charts: ReactNode[];
     }[]
@@ -179,7 +224,6 @@ const Stats: NextPage = function () {
     () => [
       {
         id: "blob",
-        title: "Blob Charts",
         metrics: [
           {
             name: "Total Blobs",
@@ -276,7 +320,6 @@ const Stats: NextPage = function () {
       },
       {
         id: "block",
-        title: "Block Charts",
         metrics: [
           {
             name: "Total Blocks",
@@ -289,19 +332,19 @@ const Stats: NextPage = function () {
           },
         ],
         charts: [
-          <TotalBlocksChart
-            key="total-blocks"
-            dataset={globalChartDatasets}
-            headerControls={buildViewLink("total-blocks")}
-            isLoading={globalDatasetsLoading}
-            skeletonOpts={SKELETON_OPTS}
-            compact
-          />,
+          <NetworkChart key="total-blocks">
+            <TotalBlocksChart
+              dataset={globalChartDatasets}
+              headerControls={buildViewLink("total-blocks", undefined, true)}
+              isLoading={globalDatasetsLoading}
+              skeletonOpts={SKELETON_OPTS}
+              compact
+            />
+          </NetworkChart>,
         ],
       },
       {
         id: "gas",
-        title: "Gas Charts",
         metrics: [
           {
             name: "Total Blob Gas Used",
@@ -341,6 +384,34 @@ const Stats: NextPage = function () {
             //     : undefined
             // }
           },
+        ],
+        charts: [
+          <TotalBlobGasUsedChart
+            key="total-blob-gas-used"
+            dataset={selectedCategorizedChartDatasets}
+            headerControls={buildViewLink("total-blob-gas-used")}
+            isLoading={categorizedDatasetsLoading}
+            skeletonOpts={SKELETON_OPTS}
+            compact
+          />,
+          <NetworkChart key="total-blob-gas-used-comparison">
+            <TotalBlobGasComparisonChart
+              dataset={globalChartDatasets}
+              headerControls={buildViewLink(
+                "total-blob-gas-used-comparison",
+                undefined,
+                true
+              )}
+              isLoading={globalDatasetsLoading}
+              skeletonOpts={SKELETON_OPTS}
+              compact
+            />
+          </NetworkChart>,
+        ],
+      },
+      {
+        id: "fee",
+        metrics: [
           {
             name: "Max. Blob Gas Price",
             description:
@@ -382,38 +453,6 @@ const Stats: NextPage = function () {
               },
             },
           },
-        ],
-        charts: [
-          <TotalBlobGasUsedChart
-            key="total-blob-gas-used"
-            dataset={selectedCategorizedChartDatasets}
-            headerControls={buildViewLink("total-blob-gas-used")}
-            isLoading={categorizedDatasetsLoading}
-            skeletonOpts={SKELETON_OPTS}
-            compact
-          />,
-          <BlobGasPriceChart
-            key="blob-gas-price"
-            dataset={globalChartDatasets}
-            headerControls={buildViewLink("blob-gas-price")}
-            isLoading={globalDatasetsLoading}
-            skeletonOpts={SKELETON_OPTS}
-            compact
-          />,
-          <TotalBlobGasComparisonChart
-            key="total-blob-gas-used-comparison"
-            dataset={globalChartDatasets}
-            headerControls={buildViewLink("total-blob-gas-used-comparison")}
-            isLoading={globalDatasetsLoading}
-            skeletonOpts={SKELETON_OPTS}
-            compact
-          />,
-        ],
-      },
-      {
-        id: "fee",
-        title: "Blob Fee Charts",
-        metrics: [
           {
             name: "Total Blob Fees",
             description:
@@ -490,11 +529,22 @@ const Stats: NextPage = function () {
           },
         ],
         charts: [
+          <NetworkChart key="blob-gas-price">
+            <BlobGasPriceChart
+              dataset={globalChartDatasets}
+              headerControls={buildViewLink("blob-gas-price", undefined, true)}
+              isLoading={globalDatasetsLoading}
+              skeletonOpts={SKELETON_OPTS}
+              compact
+            />
+          </NetworkChart>,
           <FeeUnitChart
             key="total-blob-base-fees"
             ethChart={TotalBlobBaseFeesChart}
             usdChart={isMainnet ? TotalBlobBaseFeesUsdChart : undefined}
             defaultUnit="usd"
+            unit={unit}
+            onUnitChange={(unit) => updateState({ unit })}
             dataset={selectedCategorizedChartDatasets}
             headerControls={(unit) =>
               buildViewLink("total-blob-base-fees", unit)
@@ -503,22 +553,26 @@ const Stats: NextPage = function () {
             skeletonOpts={SKELETON_OPTS}
             compact
           />,
-          <FeeUnitChart
-            key="avg-blob-base-fee"
-            ethChart={AvgBlobBaseFeeChart}
-            usdChart={isMainnet ? AvgBlobBaseFeeUsdChart : undefined}
-            defaultUnit="usd"
-            dataset={globalChartDatasets}
-            headerControls={(unit) => buildViewLink("avg-blob-base-fee", unit)}
-            isLoading={globalDatasetsLoading}
-            skeletonOpts={SKELETON_OPTS}
-            compact
-          />,
+          <NetworkChart key="avg-blob-base-fee">
+            <FeeUnitChart
+              ethChart={AvgBlobBaseFeeChart}
+              usdChart={isMainnet ? AvgBlobBaseFeeUsdChart : undefined}
+              defaultUnit="usd"
+              unit={unit}
+              onUnitChange={(unit) => updateState({ unit })}
+              dataset={globalChartDatasets}
+              headerControls={(unit) =>
+                buildViewLink("avg-blob-base-fee", unit, true)
+              }
+              isLoading={globalDatasetsLoading}
+              skeletonOpts={SKELETON_OPTS}
+              compact
+            />
+          </NetworkChart>,
         ],
       },
       {
         id: "transaction",
-        title: "Transaction Charts",
         metrics: [
           {
             name: "Total Transactions",
@@ -529,6 +583,21 @@ const Stats: NextPage = function () {
               },
             },
           },
+        ],
+        charts: [
+          <TotalTransactionsChart
+            key="total-transactions"
+            dataset={selectedCategorizedChartDatasets}
+            headerControls={buildViewLink("total-transactions")}
+            isLoading={categorizedDatasetsLoading}
+            skeletonOpts={SKELETON_OPTS}
+            compact
+          />,
+        ],
+      },
+      {
+        id: "address",
+        metrics: [
           {
             name: "Total Unique Receivers",
             description:
@@ -551,27 +620,23 @@ const Stats: NextPage = function () {
           },
         ],
         charts: [
-          <TotalTransactionsChart
-            key="total-transactions"
-            dataset={selectedCategorizedChartDatasets}
-            headerControls={buildViewLink("total-transactions")}
-            isLoading={categorizedDatasetsLoading}
-            skeletonOpts={SKELETON_OPTS}
-            compact
-          />,
-          <TotalUniqueAddressesChart
-            key="total-unique-addresses"
-            dataset={globalChartDatasets}
-            headerControls={buildViewLink("total-unique-addresses")}
-            isLoading={globalDatasetsLoading}
-            skeletonOpts={SKELETON_OPTS}
-            compact
-          />,
+          <NetworkChart key="total-unique-addresses">
+            <TotalUniqueAddressesChart
+              dataset={globalChartDatasets}
+              headerControls={buildViewLink(
+                "total-unique-addresses",
+                undefined,
+                true
+              )}
+              isLoading={globalDatasetsLoading}
+              skeletonOpts={SKELETON_OPTS}
+              compact
+            />
+          </NetworkChart>,
         ],
       },
       {
         id: "price",
-        title: "ETH Price Charts",
         metrics: [
           {
             name: "Max. ETH Price",
@@ -605,19 +670,23 @@ const Stats: NextPage = function () {
           },
         ],
         charts: [
-          <EthPriceChart
-            key="eth-price"
-            dataset={globalChartDatasets}
-            headerControls={buildViewLink("eth-price")}
-            isLoading={globalDatasetsLoading}
-            skeletonOpts={SKELETON_OPTS}
-            compact
-          />,
+          <NetworkChart key="eth-price">
+            <EthPriceChart
+              dataset={globalChartDatasets}
+              headerControls={buildViewLink("eth-price", undefined, true)}
+              isLoading={globalDatasetsLoading}
+              skeletonOpts={SKELETON_OPTS}
+              compact
+            />
+          </NetworkChart>,
         ],
       },
     ],
     [
       aggregatedMetrics,
+      buildViewLink,
+      unit,
+      updateState,
       blobSize,
       isMainnet,
       selectedCategorizedChartDatasets,
@@ -630,40 +699,21 @@ const Stats: NextPage = function () {
   const error =
     categorizedChartsError || globalChartsError || overallStatsError;
 
-  const currentSectionOption =
-    selectedSection.value === "price" && !isMainnet
-      ? "all"
-      : selectedSection.value;
-  const availableSections = sections.filter(
-    (section) => section.id !== "price" || isMainnet === true
+  const selectedTab =
+    !state ||
+    state.section === "all" ||
+    (state.section === "price" && !isMainnet)
+      ? "blob"
+      : state.section;
+  const availableTabs = STATS_TABS.filter(
+    (tab) => tab !== "price" || isMainnet === true
   );
-  const displayedSections =
-    currentSectionOption === "all"
-      ? availableSections
-      : availableSections.filter((s) => s.id === currentSectionOption);
-
-  const handleSectionChange = useCallback(
-    (option: SectionOption) => {
-      updateState({
-        section: option !== DEFAULT_SECTION ? option.value : undefined,
-      });
-    },
-    [updateState]
-  );
-
-  useEffect(() => {
-    setSelectedSection(
-      SECTION_OPTIONS.find(
-        (s) =>
-          s.value === state?.section &&
-          (s.value !== "price" || isMainnet === true)
-      ) ?? DEFAULT_SECTION
-    );
-  }, [state?.section, isMainnet]);
 
   if (error) {
     return <ErrorPage error={error} />;
   }
+
+  if (!isReady) return null;
 
   return (
     <>
@@ -673,59 +723,68 @@ const Stats: NextPage = function () {
       />
       <div className="flex flex-col gap-8">
         <Header>Stats Overview</Header>
-        <Card>
-          <div className="flex w-full flex-wrap items-center justify-start gap-4">
-            <div className="w-36">
-              <StatsSectionSelector
-                options={SECTION_OPTIONS.filter(
-                  (option) => option.value !== "price" || isMainnet === true
-                )}
-                selected={selectedSection}
-                onChange={handleSectionChange}
-              />
-            </div>
-            <div className="w-64">
-              <RollupSelector
-                selected={selectedRollups}
-                onChange={(newRollups) => setSelectedRollups(newRollups ?? [])}
-              />
-            </div>
-          </div>
-        </Card>
-        <div className="flex flex-col gap-8">
-          <SubHeader>Overall Metrics</SubHeader>
-          <Scrollable displayScrollbar>
-            <div
-              className={
-                currentSectionOption === "all"
-                  ? "grid grid-flow-col grid-rows-3 gap-6"
-                  : "flex flex-wrap gap-6"
-              }
-            >
-              {displayedSections
-                .flatMap((s) => s.metrics)
-                .map((p) => (
-                  <div key={p.name} className="w-screen sm:w-[260px]">
-                    <MetricCard {...p} />
+        <TabsBase
+          fullWidth
+          selected={selectedTab}
+          onChange={(section) => updateState({ section })}
+          tabs={availableTabs.map((value) => {
+            const section = sections.find((section) => section.id === value)!;
+            return {
+              value,
+              label: TAB_LABELS[value],
+              content: (
+                <div className="flex flex-col gap-8">
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                    {section.metrics.map((metric) => (
+                      <MetricCard
+                        key={metric.name}
+                        {...metric}
+                        name={`${metric.name} (All-time)`}
+                      />
+                    ))}
                   </div>
-                ))}
-            </div>
-          </Scrollable>
-        </div>
-        <div className="mt-4 flex flex-col gap-8">
-          {displayedSections.map(({ title: section, charts }) => (
-            <div key={section} className="flex flex-col gap-8">
-              <SubHeader>{section}</SubHeader>
-              <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 [&>div]:w-full">
-                {charts.map((chart, index) => (
-                  <div key={index} className="h-full">
-                    {chart}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+                  <Card>
+                    <div className="flex flex-col gap-10">
+                      <div className="flex flex-wrap items-center gap-4">
+                        <div className="w-24">
+                          <Listbox
+                            options={TIME_FRAME_OPTIONS_WITH_DEFAULT}
+                            selected={
+                              TIME_FRAME_OPTIONS_WITH_DEFAULT.find(
+                                (option) => option.value === timeFrame
+                              )!
+                            }
+                            onChange={({ value }) =>
+                              updateState({ timeFrame: value })
+                            }
+                          />
+                        </div>
+                        <div className="w-64 max-w-full">
+                          <RollupSelector
+                            selected={selectedRollups}
+                            onChange={(rollups) =>
+                              updateState({
+                                rollups: rollups?.length
+                                  ? rollups.map((r) => r.value)
+                                  : undefined,
+                                categories: undefined,
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 [&>div]:min-w-0">
+                        {section.charts.map((chart, index) => (
+                          <div key={index}>{chart}</div>
+                        ))}
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              ),
+            };
+          })}
+        />
       </div>
     </>
   );
