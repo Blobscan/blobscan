@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
-import { Prisma } from "@blobscan/db";
+import { calculateTransactionFees, Prisma } from "@blobscan/db";
 import type {
   BlobscanPrismaClient,
   EthUsdPrice,
@@ -38,6 +38,8 @@ const transactionSelect = {
   blobAsCalldataGasFee: true,
   blobAsCalldataGasUsed: true,
   gasPrice: true,
+  gasUsed: true,
+  effectiveGasPrice: true,
   maxFeePerBlobGas: true,
   blockHash: true,
   blockNumber: true,
@@ -66,9 +68,11 @@ export type ExtendedPrismaTransaction = NonNullable<
 export type CompletedPrismaTransaction = Prettify<
   ExtendedPrismaTransaction & {
     decodedFields: NonNullable<ExtendedPrismaTransaction["decodedFields"]>;
+    input?: string | null;
     block: Prettify<
       Partial<ExpandedBlock> & {
         blobGasPrice: ExpandedBlock["blobGasPrice"];
+        baseFeePerGas?: Prisma.Decimal | null;
       }
     >;
     blobs: Prettify<
@@ -97,16 +101,21 @@ export function createTransactionListWhere({
   };
 }
 
-export function createTransactionSelect(expands: Expands) {
+export function createTransactionSelect(
+  expands: Expands,
+  includeInput = false
+) {
   const blockExpand = expands.block?.select;
   const blobExpand = expands.blob?.select;
 
   return {
     ...transactionSelect,
+    input: includeInput,
     block: {
       select: {
         ...(blockExpand ?? {}),
         blobGasPrice: true,
+        baseFeePerGas: true,
       },
     },
     blobs: {
@@ -126,6 +135,8 @@ export function createTransactionSelect(expands: Expands) {
   } satisfies Prisma.TransactionSelect;
 }
 
+const feeAmountSchema = baseBlockSchema.shape.blobGasPrice.nullable();
+
 export const responseTransactionSchema = baseTransactionSchema.extend({
   block: baseBlockSchema
     .omit({
@@ -139,6 +150,10 @@ export const responseTransactionSchema = baseTransactionSchema.extend({
     }),
   blobs: z.array(baseBlobSchema.partial().required({ versionedHash: true })),
   ethUsdPrice: z.number().optional(),
+  executionFee: feeAmountSchema,
+  totalFee: feeAmountSchema,
+  executionBaseFee: feeAmountSchema,
+  priorityFee: feeAmountSchema,
 });
 
 export type ResponseTransaction = z.input<typeof responseTransactionSchema>;
@@ -186,8 +201,22 @@ export function toResponseTransaction(
     })
   );
 
+  const fees = calculateTransactionFees({
+    gasUsed: restTx.gasUsed,
+    effectiveGasPrice: restTx.effectiveGasPrice,
+    blobGasUsed: restTx.blobGasUsed,
+    blobGasPrice: block.blobGasPrice,
+    baseFeePerGas: block.baseFeePerGas,
+  });
+  const toDecimal = (value: string | null) =>
+    value === null ? null : new Prisma.Decimal(value);
+
   return {
     ...restTx,
+    executionFee: toDecimal(fees.executionFee),
+    totalFee: toDecimal(fees.totalFee),
+    executionBaseFee: toDecimal(fees.executionBaseFee),
+    priorityFee: toDecimal(fees.priorityFee),
     ...normalizedTxFields,
     ...(txFeeUsdFields ?? {}),
     blobGasBaseFee,
@@ -220,7 +249,7 @@ export async function getResponseTransaction(
 ): Promise<ResponseTransaction> {
   const [prismaTx, ethUsdPrice] = await Promise.all([
     prisma.transaction.findUnique({
-      select: createTransactionSelect(expands),
+      select: createTransactionSelect(expands, true),
       where: { hash },
     }) as unknown as Promise<CompletedPrismaTransaction | null>,
     prisma.transaction.findEthUsdPrice(hash),

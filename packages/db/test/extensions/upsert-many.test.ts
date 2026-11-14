@@ -582,8 +582,47 @@ describe("Upsert Many Extension", () => {
         blobGasUsed: new Prisma.Decimal(existingRawTx.blobGasUsed),
         maxFeePerBlobGas: new Prisma.Decimal(existingRawTx.maxFeePerBlobGas),
         gasPrice: new Prisma.Decimal(existingRawTx.gasPrice),
+        gasUsed: null,
+        effectiveGasPrice: null,
+        input: null,
         decodedFields: {},
       };
+
+      it("preserves receipt fields when the same block is indexed again", async () => {
+        await prisma.transaction.upsertMany([{
+          ...existingTx,
+          gasUsed: new Prisma.Decimal(21000),
+          effectiveGasPrice: new Prisma.Decimal(3),
+          input: "0x0012",
+        }]);
+        await prisma.transaction.upsertMany([existingTx]);
+        const stored = await prisma.transaction.findUniqueOrThrow({
+          where: { hash: existingTx.hash },
+        });
+        expect(stored.gasUsed?.toString()).toBe("21000");
+        expect(stored.effectiveGasPrice?.toString()).toBe("3");
+        expect(stored.input).toBe("0x0012");
+      });
+
+      it("clears old receipt fields when the transaction moves to another block", async () => {
+        await prisma.transaction.upsertMany([{
+          ...existingTx,
+          gasUsed: new Prisma.Decimal(21000),
+          effectiveGasPrice: new Prisma.Decimal(3),
+          input: "0x0012",
+        }]);
+        await prisma.transaction.upsertMany([{
+          ...existingTx,
+          blockHash: "blockHash006",
+          blockNumber: 1006,
+        }]);
+        const stored = await prisma.transaction.findUniqueOrThrow({
+          where: { hash: existingTx.hash },
+        });
+        expect(stored.gasUsed).toBeNull();
+        expect(stored.effectiveGasPrice).toBeNull();
+        expect(stored.input).toBe("0x0012");
+      });
 
       it("should insert multiple transactions correctly", async () => {
         input = [
@@ -597,6 +636,9 @@ describe("Upsert Many Extension", () => {
             index: 0,
             maxFeePerBlobGas: new Prisma.Decimal(100),
             gasPrice: new Prisma.Decimal(10),
+            gasUsed: null,
+            effectiveGasPrice: null,
+            input: null,
             blobAsCalldataGasUsed: new Prisma.Decimal(1000),
             blobGasUsed: new Prisma.Decimal(1000),
             decodedFields: {},
@@ -612,6 +654,9 @@ describe("Upsert Many Extension", () => {
             blockTimestamp: new Date("2022-10-16T12:00:00Z"),
             maxFeePerBlobGas: new Prisma.Decimal(120),
             gasPrice: new Prisma.Decimal(5),
+            gasUsed: null,
+            effectiveGasPrice: null,
+            input: null,
             blobAsCalldataGasUsed: new Prisma.Decimal(500),
             blobGasUsed: new Prisma.Decimal(500),
             decodedFields: {},
@@ -674,6 +719,9 @@ describe("Upsert Many Extension", () => {
             blockTimestamp: new Date("2023-08-31T12:00:00Z"),
             maxFeePerBlobGas: new Prisma.Decimal(1),
             gasPrice: new Prisma.Decimal(1),
+            gasUsed: null,
+            effectiveGasPrice: null,
+            input: null,
             blobAsCalldataGasUsed: new Prisma.Decimal(1),
             blobGasUsed: new Prisma.Decimal(1),
             decodedFields: {},
@@ -688,6 +736,9 @@ describe("Upsert Many Extension", () => {
             blockTimestamp: new Date("2023-08-31T12:00:00Z"),
             maxFeePerBlobGas: new Prisma.Decimal(999),
             gasPrice: new Prisma.Decimal(999),
+            gasUsed: null,
+            effectiveGasPrice: null,
+            input: null,
             blobAsCalldataGasUsed: new Prisma.Decimal(999),
             blobGasUsed: new Prisma.Decimal(999),
             decodedFields: {},

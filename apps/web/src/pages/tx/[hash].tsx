@@ -21,6 +21,7 @@ import type { NavArrowProps } from "~/components/NavArrow";
 import { OptimismCard } from "~/components/OptimismCard";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Separator } from "~/components/Separator";
+import { TransactionCalldata } from "~/components/TransactionCalldata";
 import { api } from "~/api-client";
 import { useIsMainnet } from "~/hooks/useIsMainnet";
 import ErrorPage from "~/pages/_error";
@@ -248,6 +249,58 @@ const Tx: NextPage = () => {
 
     detailsFields.push(
       {
+        name: "Total Fee",
+        helpText:
+          "The execution fee plus the blob fee paid by this transaction.",
+        value:
+          tx.totalFee != null ? (
+            <EtherDisplay weiAmount={tx.totalFee} />
+          ) : (
+            "Unavailable"
+          ),
+      },
+      {
+        name: "Execution Fee",
+        helpText:
+          "The execution fee paid, including calldata and the priority fee.",
+        value:
+          tx.executionFee != null ? (
+            <EtherDisplay weiAmount={tx.executionFee} />
+          ) : (
+            "Unavailable"
+          ),
+      },
+      {
+        name: "Priority Fee",
+        helpText:
+          "The priority fee paid. This amount is already part of the execution fee.",
+        value:
+          tx.priorityFee != null ? (
+            <EtherDisplay weiAmount={tx.priorityFee} />
+          ) : (
+            "Unavailable"
+          ),
+      },
+      {
+        name: "Execution Gas Used",
+        helpText: "The execution gas charged for this transaction.",
+        value: tx.gasUsed != null ? formatNumber(tx.gasUsed) : "Unavailable",
+      },
+      {
+        name: "Effective Gas Price",
+        helpText:
+          "The actual price per unit of execution gas, including the priority fee.",
+        value:
+          tx.effectiveGasPrice != null ? (
+            <EtherDisplay
+              weiAmount={tx.effectiveGasPrice}
+              opts={{ toUnit: "Gwei" }}
+            />
+          ) : (
+            "Unavailable"
+          ),
+      },
+      {
         name: "Blob Size",
         helpText:
           "The total size of blobs in this transaction, including padding bytes.",
@@ -422,8 +475,10 @@ const Tx: NextPage = () => {
             : undefined
         }
         fields={detailsFields}
-        skeletonRows={isMainnet ? 16 : 15}
+        skeletonRows={isMainnet ? 21 : 20}
       />
+
+      {tx && <TransactionCalldata input={tx.input} />}
 
       {tx?.rollup === "optimism" && !!tx.decodedFields && (
         <OptimismCard

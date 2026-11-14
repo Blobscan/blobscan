@@ -17,6 +17,11 @@ model Transaction {
   gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
   /// @zod.custom.use(nonNegativeDecimalSchema)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  gasUsed               Decimal? @map("gas_used") @db.Decimal(100, 0)
+  /// @zod.custom.use(nonNegativeDecimalSchema)
+  effectiveGasPrice     Decimal? @map("effective_gas_price") @db.Decimal(100, 0)
+  input                 String?  @db.Text
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
   /// @zod.custom.use(decodedFieldsSchema)

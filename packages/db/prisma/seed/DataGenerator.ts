@@ -166,6 +166,7 @@ export class DataGenerator {
       blobGasUsed: new Prisma.Decimal(blobGasUsed.toString()),
       blobGasPrice: new Prisma.Decimal(blobGasPrice),
       excessBlobGas: new Prisma.Decimal(excessBlobGas),
+      baseFeePerGas: null,
       insertedAt: now,
       updatedAt: now,
     };
@@ -234,6 +235,9 @@ export class DataGenerator {
         blobAsCalldataGasUsed: new Prisma.Decimal(0),
         blobGasUsed: new Prisma.Decimal(blobGasUsed),
         gasPrice: new Prisma.Decimal(gasPrice),
+        gasUsed: null,
+        effectiveGasPrice: null,
+        input: null,
         maxFeePerBlobGas: new Prisma.Decimal(maxFeePerBlobGas),
         decodedFields: {},
         insertedAt: now,

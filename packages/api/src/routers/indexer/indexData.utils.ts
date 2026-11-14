@@ -92,7 +92,17 @@ export function createDBTransactions(
   params: ChainBlobParams
 ): WithoutTimestampFields<Transaction>[] {
   return transactions.map<WithoutTimestampFields<Transaction>>(
-    ({ from, gasPrice, hash, maxFeePerBlobGas, to, index }) => {
+    ({
+      from,
+      gasPrice,
+      gasUsed,
+      effectiveGasPrice,
+      input,
+      hash,
+      maxFeePerBlobGas,
+      to,
+      index,
+    }) => {
       const txBlobs = blobs.filter((b) => b.txHash === hash);
 
       if (txBlobs.length === 0) {
@@ -115,6 +125,12 @@ export function createDBTransactions(
         toId: to,
         index,
         gasPrice: bigIntToDecimal(gasPrice),
+        gasUsed: gasUsed === undefined ? null : bigIntToDecimal(gasUsed),
+        effectiveGasPrice:
+          effectiveGasPrice === undefined
+            ? null
+            : bigIntToDecimal(effectiveGasPrice),
+        input: input ?? null,
         blobGasUsed: bigIntToDecimal(
           BigInt(txBlobs.length) * params.gasPerBlob
         ),
@@ -129,7 +145,15 @@ export function createDBTransactions(
 
 export function createDBBlock(
   {
-    block: { blobGasUsed, excessBlobGas, hash, number, slot, timestamp },
+    block: {
+      blobGasUsed,
+      excessBlobGas,
+      hash,
+      number,
+      slot,
+      timestamp,
+      baseFeePerGas,
+    },
   }: IndexDataFormattedInput,
   dbTxs: Pick<Transaction, "blobAsCalldataGasUsed">[],
   params: ChainBlobParams,
@@ -147,6 +171,8 @@ export function createDBBlock(
     timestamp: timestampToDate(timestamp),
     slot,
     epoch,
+    baseFeePerGas:
+      baseFeePerGas === undefined ? null : bigIntToDecimal(baseFeePerGas),
     blobGasUsed: bigIntToDecimal(blobGasUsed),
     blobGasPrice: bigIntToDecimal(blobGasPrice),
     excessBlobGas: bigIntToDecimal(excessBlobGas),
