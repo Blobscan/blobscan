@@ -1,6 +1,6 @@
 import { useId } from "react";
 
-import minerImage from "../../../public/searching-blob-helmet.webp";
+import helmetImage from "../../../public/searching-helmet.webp";
 import { IllustrationBackground } from "./IllustrationBackground";
 import { IllustrationGround } from "./IllustrationGround";
 import styles from "./SearchingBlob.module.css";
@@ -24,12 +24,6 @@ export function SearchingBlob() {
         >
           <feGaussianBlur stdDeviation="7" />
         </filter>
-        <image
-          id={`${id}-art`}
-          href={minerImage.src}
-          width="1280"
-          height="1280"
-        />
         <linearGradient id={`${id}-body`} x1="0" y1="0" x2="1" y2="1">
           <stop stopColor="#d6c2f6" />
           <stop offset=".6" stopColor="#c9afea" />
@@ -39,9 +33,6 @@ export function SearchingBlob() {
           <stop stopColor="#432454" stopOpacity=".45" />
           <stop offset="1" stopColor="#432454" stopOpacity="0" />
         </linearGradient>
-        <clipPath id={`${id}-helmet`}>
-          <path d="M266 573C262 544 288 515 303 501C332 398 384 321 452 276C515 216 638 221 704 277C801 296 863 389 878 484C926 506 943 548 929 577L917 594C827 531 679 504 556 520C435 531 350 570 303 620C281 609 270 595 266 573Z" />
-        </clipPath>
         <linearGradient id={`${id}-lantern-gold`} x1="0" y1="0" x2="0" y2="1">
           <stop stopColor="#fff1a0" />
           <stop offset=".45" stopColor="#f9cc58" />
@@ -110,7 +101,13 @@ export function SearchingBlob() {
             transform="rotate(8 809 699)"
           />
         </g>
-        <use href={`#${id}-art`} clipPath={`url(#${id}-helmet)`} />
+        <image
+          href={helmetImage.src}
+          x="260"
+          y="210"
+          width="690"
+          height="420"
+        />
       </g>
       <g transform="translate(137 94)">
         <g className={styles.lantern}>
