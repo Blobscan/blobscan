@@ -238,7 +238,7 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.46.0
+        specifier: workspace:^0.46.2
         version: link:../../packages/api
       '@blobscan/blob-propagator':
         specifier: workspace:^0.11.6
@@ -250,7 +250,7 @@ importers:
         specifier: workspace:^0.6.0
         version: link:../../packages/chains
       '@blobscan/db':
-        specifier: workspace:^0.35.0
+        specifier: workspace:^0.35.1
         version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.6.1
@@ -268,7 +268,7 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../../packages/price-feed
       '@blobscan/rollups':
-        specifier: workspace:^0.10.2
+        specifier: workspace:^0.11.0
         version: link:../../packages/rollups
       '@blobscan/syncers':
         specifier: workspace:^0.8.4
@@ -329,7 +329,7 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.46.0
+        specifier: workspace:^0.46.2
         version: link:../../packages/api
       '@blobscan/blob-decoder':
         specifier: workspace:^0.2.4
@@ -344,7 +344,7 @@ importers:
         specifier: workspace:^0.1.1
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.35.0
+        specifier: workspace:^0.35.1
         version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.6.1
@@ -359,7 +359,7 @@ importers:
         specifier: workspace:^0.0.12
         version: link:../../packages/open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^0.10.2
+        specifier: workspace:^0.11.0
         version: link:../../packages/rollups
       '@blobscan/zod':
         specifier: workspace:^0.2.0
@@ -528,7 +528,7 @@ importers:
         specifier: workspace:^0.1.1
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.35.0
+        specifier: workspace:^0.35.1
         version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.6.1
@@ -540,7 +540,7 @@ importers:
         specifier: workspace:^0.0.12
         version: link:../open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^0.10.2
+        specifier: workspace:^0.11.0
         version: link:../rollups
       '@blobscan/zod':
         specifier: workspace:^0.2.0
@@ -715,7 +715,7 @@ importers:
         specifier: workspace:^0.6.0
         version: link:../chains
       '@blobscan/rollups':
-        specifier: workspace:^0.10.2
+        specifier: workspace:^0.11.0
         version: link:../rollups
       '@faker-js/faker':
         specifier: ^10.6.0
