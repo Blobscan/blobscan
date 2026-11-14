@@ -3,7 +3,7 @@ import type { FC } from "react";
 
 import { formatWei } from "@blobscan/eth-format";
 
-import { RollupBadge } from "~/components/Badges/RollupBadge";
+import { RollupBadgeGroup } from "~/components/Badges/RollupBadgeGroup";
 import { ContentReveal } from "~/components/ContentReveal";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Separator } from "~/components/Separator";
@@ -44,18 +44,18 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
     .reduce((acc, { usageSize }) => acc + (usageSize ?? 0), 0);
   const rollupToAmount =
     transactions?.reduce<Partial<Record<Rollup, number>>>(
-      (amounts, { blobs, rollup }) => {
+      (amounts, { rollup }) => {
         if (!rollup) {
           return amounts;
         }
         const amount = amounts[rollup] ?? 0;
 
-        amounts[rollup] = amount + blobs.length;
+        amounts[rollup] = amount + 1;
 
         return amounts;
       },
       {} as Partial<Record<Rollup, number>>
-    ) ?? [];
+    ) ?? {};
 
   return (
     <SurfaceCardBase className={className}>
@@ -71,16 +71,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
             )}
           </ContentReveal>
         </div>
-        <div className="flex items-center gap-2">
-          {Object.entries(rollupToAmount).map(([rollup, amount], i) => (
-            <RollupBadge
-              key={i}
-              rollup={rollup as Rollup}
-              amount={amount}
-              compact
-            />
-          ))}
-        </div>
+        <RollupBadgeGroup amounts={rollupToAmount} />
       </div>
       <ContentReveal isLoading={!timestamp}>
         {timestamp ? (
