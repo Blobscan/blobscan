@@ -23,14 +23,17 @@ export const RollupBadge: React.FC<RollupBadgeProps> = ({
 }) => {
   const { color, iconClassname, name }: RollupDefinition =
     ROLLUP_DEFINITIONS[rollup];
-
   const countLabel = `${name}: ${amount} ${
     amount === 1 ? "transaction" : "transactions"
   }`;
 
   const rollupIcon = (
     <div
-      className="relative text-[var(--brand-color-light)] dark:text-[var(--brand-color-dark)]"
+      className={`relative text-[var(--brand-color-light)] dark:text-[var(--brand-color-dark)]${
+        compact
+          ? " flex shrink-0 items-center justify-center rounded-full bg-slate-100 p-1 dark:bg-slate-800"
+          : ""
+      }`}
       style={getBrandColorStyle(color)}
     >
       <Icon
