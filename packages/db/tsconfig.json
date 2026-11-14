@@ -5,6 +5,7 @@
     "prisma.config.ts",
     "prisma/**/*.ts",
     "test/**/*.ts",
+    "scripts/**/*.ts",
     "vitest.config.ts"
   ]
 }

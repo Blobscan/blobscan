@@ -29,3 +29,5 @@ export type {
   TransactionComputedFeeFields,
   TransactionAllComputedUsdFields,
 } from "./prisma/extensions/computed-fields";
+
+export { calculateTransactionFees } from "./prisma/transaction-fees";
