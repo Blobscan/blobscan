@@ -1,6 +1,5 @@
 import { useId } from "react";
 
-import helmetImage from "../../../public/searching-helmet.webp";
 import { IllustrationBackground } from "./IllustrationBackground";
 import { IllustrationGround } from "./IllustrationGround";
 import styles from "./SearchingBlob.module.css";
@@ -102,7 +101,7 @@ export function SearchingBlob() {
           />
         </g>
         <image
-          href={helmetImage.src}
+          href="/searching-helmet.svg"
           x="260"
           y="210"
           width="690"
