@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 
 import dayjs from "@blobscan/dayjs";
-import { formatWei } from "@blobscan/eth-format";
 
 import { CountBadge } from "~/components/Badges/CountBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
@@ -13,6 +12,7 @@ import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
+import { TableAmount } from "~/components/Table/Amount";
 import type { TimestampFormat } from "~/components/Toggles";
 import { TimestampToggle } from "~/components/Toggles";
 import { TransactionBlobsTable } from "~/components/TransactionBlobsTable";
@@ -87,15 +87,15 @@ const Txs: NextPage = function () {
 
         {
           item: "Blob Base Fee (Gwei)",
-          className: "w-[120px]",
+          className: "text-right w-[120px]",
         },
         {
           item: "Blob Max Fee (Gwei)",
-          className: "w-[120px]",
+          className: "text-right w-[120px]",
         },
         {
           item: "Blob Gas Price (Gwei)",
-          className: "w-[140px]",
+          className: "w-[140px] text-right",
         },
       ],
     },
@@ -191,34 +191,13 @@ const Txs: NextPage = function () {
                   ),
                 },
                 {
-                  item: (
-                    <div className="truncate">
-                      {formatWei(blobGasBaseFee, {
-                        toUnit: "Gwei",
-                        hideUnit: true,
-                      })}
-                    </div>
-                  ),
+                  item: <TableAmount weiAmount={blobGasBaseFee} />,
                 },
                 {
-                  item: (
-                    <div className="truncate">
-                      {formatWei(blobGasMaxFee, {
-                        toUnit: "Gwei",
-                        hideUnit: true,
-                      })}
-                    </div>
-                  ),
+                  item: <TableAmount weiAmount={blobGasMaxFee} />,
                 },
                 {
-                  item: (
-                    <div className="truncate">
-                      {formatWei(block.blobGasPrice, {
-                        toUnit: "Gwei",
-                        hideUnit: true,
-                      })}
-                    </div>
-                  ),
+                  item: <TableAmount weiAmount={block.blobGasPrice} />,
                 },
               ],
               expandItem: <TransactionBlobsTable blobs={blobs} txHash={hash} />,

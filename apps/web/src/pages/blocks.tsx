@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 
 import type { EtherUnit } from "@blobscan/eth-format";
-import { formatWei } from "@blobscan/eth-format";
 
 import { CountBadge } from "~/components/Badges/CountBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
@@ -17,6 +16,7 @@ import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Table } from "~/components/Table";
+import { TableAmount } from "~/components/Table/Amount";
 import type { TimestampFormat } from "~/components/Toggles";
 import { TimestampToggle } from "~/components/Toggles";
 import { api } from "~/api-client";
@@ -101,10 +101,13 @@ const Blocks: NextPage = function () {
           className: "w-[175px]",
         },
 
-        { item: `Blob Base Fees (${ETHER_UNIT})`, className: "w-[170px]" },
+        {
+          item: `Blob Base Fees (${ETHER_UNIT})`,
+          className: "text-right w-[170px]",
+        },
         {
           item: `Blob Gas Price (${ETHER_UNIT})`,
-          className: "w-[160px]",
+          className: "text-right w-[160px]",
         },
       ],
     },
@@ -228,13 +231,10 @@ const Blocks: NextPage = function () {
               ),
             },
             {
-              item: formatWei(blobGasBaseFee, {
-                toUnit: "Gwei",
-                hideUnit: true,
-              }),
+              item: <TableAmount weiAmount={blobGasBaseFee} />,
             },
             {
-              item: formatWei(blobGasPrice, { toUnit: "Gwei", hideUnit: true }),
+              item: <TableAmount weiAmount={blobGasPrice} />,
             },
           ],
           expandItem: (
