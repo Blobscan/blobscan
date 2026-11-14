@@ -31,7 +31,7 @@ export const RollupBadge: React.FC<RollupBadgeProps> = ({
     <div
       className={`relative text-[var(--brand-color-light)] dark:text-[var(--brand-color-dark)]${
         compact
-          ? " flex shrink-0 items-center justify-center rounded-full bg-slate-100 p-1 dark:bg-slate-800"
+          ? " flex w-max shrink-0 items-center justify-center rounded-full bg-slate-100 p-1 dark:bg-slate-800"
           : ""
       }`}
       style={getBrandColorStyle(color)}
