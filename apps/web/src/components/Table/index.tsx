@@ -77,15 +77,15 @@ export const Table: FC<TableProps> = function ({
       <div className="flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div
-            className={`inline-block min-w-full py-2 align-middle ${className}`}
+            className={twMerge(
+              "inline-block w-full min-w-0 py-2 align-middle",
+              className
+            )}
           >
             <table
-              className={cn(
-                "w-full border-separate border-spacing-0 rounded",
-                {
-                  "table-fixed": fixedColumnsWidth,
-                }
-              )}
+              className={cn("w-full border-separate border-spacing-0 rounded", {
+                "table-fixed": fixedColumnsWidth,
+              })}
             >
               {headers && (
                 <thead>
@@ -107,7 +107,7 @@ export const Table: FC<TableProps> = function ({
                           ) => (
                             <Fragment key={i}>
                               {Boolean(expandableRowsMode && i === 0) && (
-                                <TableHeader className="sr-only w-12" />
+                                <TableHeader className="w-[3%] px-1" />
                               )}
                               <TableHeader
                                 className={twMerge(

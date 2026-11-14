@@ -29,7 +29,7 @@ export const sizeStyles = (size: Size) =>
   cn({
     "px-1 py-2": size === "xs",
     "px-2 py-3": size === "sm",
-    "px-3 py-4": size === "md",
+    "px-2 py-4": size === "md",
     "px-4 py-5": size === "lg",
   });
 
