@@ -6,6 +6,7 @@ import { formatWei } from "@blobscan/eth-format";
 
 import { CountBadge } from "~/components/Badges/CountBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
+import { RollupBadgeGroup } from "~/components/Badges/RollupBadgeGroup";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
@@ -150,36 +151,23 @@ const Blocks: NextPage = function () {
             })
           )
         );
-        const rollupToAmount = txsBlobs.reduce<Partial<Record<Rollup, number>>>(
-          (amounts, { rollup }) => {
-            if (!rollup) {
-              return amounts;
-            }
-            const amount = amounts[rollup] ?? 0;
-
-            amounts[rollup] = amount + 1;
-
+        const rollupToAmount = transactions.reduce<
+          Partial<Record<Rollup, number>>
+        >((amounts, { rollup }) => {
+          if (!rollup) {
             return amounts;
-          },
-          {} as Partial<Record<Rollup, number>>
-        );
+          }
+          const amount = amounts[rollup] ?? 0;
+
+          amounts[rollup] = amount + 1;
+
+          return amounts;
+        }, {} as Partial<Record<Rollup, number>>);
 
         return {
           cells: [
             {
-              item: (
-                <div className="relative flex gap-1">
-                  {Object.entries(rollupToAmount).map(([rollup, amount]) => (
-                    <div key={rollup} className="-ml-0.5">
-                      <RollupBadge
-                        amount={amount}
-                        rollup={rollup as Rollup}
-                        compact
-                      />
-                    </div>
-                  ))}
-                </div>
-              ),
+              item: <RollupBadgeGroup amounts={rollupToAmount} />,
             },
             {
               item: (
