@@ -352,6 +352,9 @@ importers:
       '@blobscan/env':
         specifier: workspace:^0.6.1
         version: link:../../packages/env
+      '@blobscan/errors':
+        specifier: workspace:^0.0.2
+        version: link:../../packages/errors
       '@blobscan/eth-format':
         specifier: workspace:^0.1.1
         version: link:../../packages/eth-format
