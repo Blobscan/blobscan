@@ -1,16 +1,18 @@
 # Rollups
 
 Each directory in `src/rollups` contains one rollup definition and its icon.
-The directory name supplies the ID. The definition supplies the display name, theme colors, icon classes, and poster
-addresses for each chain. Chain IDs refer to the chains where blobs are posted.
+The sync command uses the directory name as the rollup ID. You do not set an
+`id` field in `definition.ts`. The definition supplies the display name, theme
+colors, icon classes, and poster addresses for each chain. Chain IDs refer to
+the chains where blobs are posted.
 
 ## Add a rollup
 
 1. Copy an existing rollup directory, such as `src/rollups/base`.
-2. Set the directory name to the lowercase ID. Use letters and digits, with a
-   letter first. The sync command derives the ID from this name. Do not add an
-   `id` field to the definition. Keep the directory name stable after the ID is
-   stored in the database.
+2. Rename the directory for the new rollup, for example `src/rollups/example`.
+   Use lowercase letters and digits, with a letter first. `pnpm rollups:sync`
+   uses `example` as the ID in the registry and Prisma enum. Keep the directory
+   name unchanged after the ID is stored in the database.
 3. Set the name, colors, and poster addresses in `definition.ts`. Use an empty
    `blobPosters` object if there are no known posters. Omit chains with no posters.
 4. Add `icon.svg`, `icon.png`, `icon.jpg`, or `icon.jpeg`. Set `icon` to that filename.
