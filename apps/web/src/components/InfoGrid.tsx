@@ -10,6 +10,7 @@ import { InfoField } from "./InfoField";
 
 export type InfoGridProps = {
   skeletonRows?: number;
+  isLoading?: boolean;
   fields?: {
     name: ReactNode;
     value: ReactNode;
@@ -20,6 +21,7 @@ export type InfoGridProps = {
 export const InfoGrid: React.FC<InfoGridProps> = function ({
   fields,
   skeletonRows,
+  isLoading = false,
 }) {
   const breakpoint = useBreakpoint();
   const isCompact = breakpoint === "default";
@@ -44,6 +46,7 @@ export const InfoGrid: React.FC<InfoGridProps> = function ({
         : fields.map(({ name, value, helpText }, i) => (
             <Fragment key={i}>
               <ContentReveal
+                isLoading={isLoading}
                 index={i}
                 className="col-span-4 font-semibold text-contentSecondary-light dark:text-coolGray-400 md:col-span-1"
               >
@@ -54,6 +57,7 @@ export const InfoGrid: React.FC<InfoGridProps> = function ({
                 )}
               </ContentReveal>
               <ContentReveal
+                isLoading={isLoading}
                 index={i}
                 className="col-span-4 break-words text-sm md:col-span-3"
               >

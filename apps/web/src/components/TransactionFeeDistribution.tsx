@@ -49,8 +49,8 @@ export function TransactionFeeDistribution({
       label: "Blob fee",
       legend: "Blob",
       amount: blobFee,
-      color: "bg-contentTertiary-light dark:bg-contentTertiary-dark",
-      activeColor: "text-contentTertiary-light dark:text-contentTertiary-dark",
+      color: "bg-orange-500 dark:bg-orange-400",
+      activeColor: "text-orange-600 dark:text-orange-400",
       destination: "Burned",
     },
   ].map((segment) => ({
