@@ -3,13 +3,19 @@ import cn from "classnames";
 
 import type { ChainBlobParams } from "@blobscan/chains";
 
-import { calculatePercentage, formatNumber, performDiv } from "~/utils";
+import {
+  calculatePercentage,
+  formatNumber,
+  performDiv,
+  pluralize,
+} from "~/utils";
 import { PercentageBar } from "../PercentageBar";
 
 type BlobGasUsageDisplayProps = {
   blobParams: ChainBlobParams;
   blobGasUsed: bigint;
   width?: number | "full";
+  showTotal?: boolean;
   variant?: "detailed" | "minimal";
 };
 
@@ -46,11 +52,13 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
   blobParams,
   blobGasUsed,
   width,
+  showTotal = false,
   variant = "detailed",
 }) {
   const {
     gasPerBlob,
     blobGasLimit,
+    maxBlobsPerBlock,
     targetBlobsPerBlock,
     targetBlobGasPerBlock,
   } = blobParams;
@@ -67,8 +75,17 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
 
   return (
     <div className="relative flex flex-col">
-      <div className="flex items-center gap-1">
+      <div className="flex flex-wrap items-center gap-1">
         {formatNumber(blobGasUsed)}{" "}
+        {showTotal && (
+          <>
+            <span>/ {formatNumber(blobGasLimit)}</span>
+            <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+              ({formatNumber(maxBlobsPerBlock)}{" "}
+              {pluralize("blob", maxBlobsPerBlock)} per block)
+            </span>
+          </>
+        )}
         {!isDetailedMode && (
           <span className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
             ({calculatePercentage(blobGasUsed, blobGasLimit)}%)
@@ -77,10 +94,11 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
       </div>
       <div
         className={cn("flex gap-1", {
-          "w-full max-w-xs flex-col items-start": width === "full",
+          "mt-2": showTotal,
+          "w-full items-start gap-3": width === "full",
           "items-center": width !== "full",
-          "absolute top-4": !isDetailedMode,
-          "gap-1": !isZero,
+          "absolute top-4": !isDetailedMode && !showTotal,
+          "gap-1": !isZero && width !== "full",
           "gap-3": isZero,
         })}
       >
@@ -95,6 +113,10 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
         <div
           title={isDetailedMode ? "Blob Gas Target" : undefined}
           className={cn({
+            "relative shrink-0 -translate-y-1/2 whitespace-nowrap leading-none":
+              width === "full",
+            "top-0.5": width === "full" && isDetailedMode,
+            "top-px": width === "full" && !isDetailedMode,
             "text-positive-light dark:text-positive-dark": isPositive,
             "text-negative-light dark:text-negative-dark": isNegative,
             "text-contentTertiary-light dark:text-contentTertiary-dark": isZero,

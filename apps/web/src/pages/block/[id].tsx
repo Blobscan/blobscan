@@ -27,13 +27,7 @@ import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
 import { hashSchema } from "~/schemas/utils";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
-import {
-  formatBytes,
-  formatNumber,
-  formatTimestamp,
-  performDiv,
-  pluralize,
-} from "~/utils";
+import { formatNumber, formatTimestamp, performDiv, pluralize } from "~/utils";
 
 const EXPAND_QUERY_PARAM = "transaction,blob";
 
@@ -156,8 +150,6 @@ const Block: NextPage = function () {
     const {
       bytesPerFieldElement,
       fieldElementsPerBlob,
-      blobGasLimit,
-      maxBlobsPerBlock,
       targetBlobGasPerBlock,
     } = activeFork.blobParams;
     const blobSize = bytesPerFieldElement * fieldElementsPerBlob;
@@ -182,9 +174,18 @@ const Block: NextPage = function () {
       },
       0
     );
-    const blobCount = totalBlobSize / blobSize;
 
     detailsFields = [
+      {
+        name: "Hash",
+        helpText: "The hash of the block header.",
+        value: <Copyable value={blockData.hash} tooltipText="Copy Hash" />,
+      },
+      {
+        name: "Status",
+        helpText: "The finality status of the block.",
+        value: <BlockStatusBadge blockNumber={blockData.number} />,
+      },
       {
         name: "Block Height",
         helpText:
@@ -194,16 +195,6 @@ const Block: NextPage = function () {
             {blockData.number}
           </div>
         ),
-      },
-      {
-        name: "Status",
-        helpText: "The finality status of the block.",
-        value: <BlockStatusBadge blockNumber={blockData.number} />,
-      },
-      {
-        name: "Hash",
-        helpText: "The hash of the block header.",
-        value: <Copyable value={blockData.hash} tooltipText="Copy Hash" />,
       },
       {
         name: "Timestamp",
@@ -249,62 +240,9 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Blob Size",
-        helpText: "The total amount of blob data in this block.",
-        value: (
-          <span>
-            {formatBytes(totalBlobSize)}
-            <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-              ({formatNumber(blobCount)} {pluralize("blob", blobCount)})
-            </span>
-          </span>
-        ),
-      },
-      {
-        name: "Blob Usage",
+        name: "Fees",
         helpText:
-          "The actual amount of blob data in this block that contains meaningful, non-zero content.",
-        value: (
-          <BlobUsageDisplay
-            blobSize={totalBlobSize}
-            blobUsage={totalBlobUsageSize}
-            variant="minimal"
-            width="full"
-          />
-        ),
-      },
-      {
-        name: "Blob Gas Used",
-        helpText: `The total blob gas used by transactions in this block, along with its percentage relative to both the total blob gas limit and the blob gas target (${
-          targetBlobGasPerBlock / BigInt(1024)
-        } KB).`,
-        value: (
-          <BlobGasUsageDisplay
-            blobParams={activeFork.blobParams}
-            width="full"
-            blobGasUsed={blockData.blobGasUsed}
-            variant={isCompact ? "minimal" : "detailed"}
-          />
-        ),
-      },
-      {
-        name: "Excess Blob Gas",
-        helpText:
-          "The total amount of blob gas consumed in excess of the target, prior to the current block",
-        value: (
-          <div>
-            {blockData.excessBlobGas.toString()}
-            <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-              ({formatNumber(Number(blockData.excessBlobGas) / blobSize)}{" "}
-              {pluralize("blob", Number(blockData.excessBlobGas) / blobSize)})
-            </span>
-          </div>
-        ),
-      },
-      {
-        name: "Total Fees for Blob Transactions",
-        helpText:
-          "Execution base fees, priority fees, and blob fees paid by all blob transactions in this block. Ordinary transactions are excluded. All required fee data must be available.",
+          "Total execution base, priority, and blob fees paid by blob transactions in this block. Excludes ordinary transactions. Unavailable when fee data is incomplete.",
         value:
           blobTransactionFees === undefined ? (
             blobTransactionFeesError ? (
@@ -329,54 +267,75 @@ const Block: NextPage = function () {
           ),
       },
       {
-        name: "Execution Base Fee",
-        helpText:
-          "The base price per unit of execution gas for this block, not the total execution fee. This fee is burned and excludes priority fees.",
-        value:
-          blockData.baseFeePerGas != null ? (
-            <EtherDisplay
-              weiAmount={blockData.baseFeePerGas}
-              opts={{ toUnit: "Gwei" }}
-            />
-          ) : (
-            "Unavailable"
-          ),
-      },
-      {
-        name: "Blob Gas Price",
-        helpText:
-          "The cost per unit of blob gas used by the blobs in this block.",
+        name: "Blob Gas Used",
+        helpText: `The total blob gas used by transactions in this block, along with its percentage relative to both the total blob gas limit and the blob gas target (${
+          targetBlobGasPerBlock / BigInt(1024)
+        } KB).`,
         value: (
-          <EtherDisplay
-            weiAmount={blockData.blobGasPrice}
-            usdAmount={blockData.blobGasUsdPrice}
-            opts={{
-              toUnit: "Gwei",
-            }}
-          />
-        ),
-      },
-
-      {
-        name: "Blob Base Fees",
-        helpText:
-          "The total blob fee paid by all transactions in this block. This equals the block blob gas used multiplied by its blob gas price. Execution fees are excluded.",
-        value: (
-          <EtherDisplay
-            weiAmount={blockData.blobGasBaseFee}
-            usdAmount={blockData.blobGasBaseUsdFee}
+          <BlobGasUsageDisplay
+            blobParams={activeFork.blobParams}
+            showTotal
+            width="full"
+            blobGasUsed={blockData.blobGasUsed}
+            variant={isCompact ? "minimal" : "detailed"}
           />
         ),
       },
       {
-        name: "Blob Gas Limit",
-        helpText: "The maximum blob gas limit for this block.",
+        name: "Base Fee",
+        helpText:
+          "Base prices per unit of execution gas and blob gas. Both are burned. Priority fees are excluded.",
+        value: (
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-1">
+              <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                Execution:
+              </div>
+              {blockData.baseFeePerGas != null ? (
+                <EtherDisplay
+                  weiAmount={blockData.baseFeePerGas}
+                  opts={{ toUnit: "Gwei" }}
+                />
+              ) : (
+                "Unavailable"
+              )}
+            </div>
+            <div className="flex gap-1">
+              <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                Blob:
+              </div>
+              <EtherDisplay
+                weiAmount={blockData.blobGasPrice}
+                usdAmount={blockData.blobGasUsdPrice}
+                opts={{ toUnit: "Gwei" }}
+              />
+            </div>
+          </div>
+        ),
+      },
+      {
+        name: "Blob Usage",
+        helpText: "Used blob data and total blob size for this block.",
+        value: (
+          <BlobUsageDisplay
+            blobSize={totalBlobSize}
+            blobUsage={totalBlobUsageSize}
+            showTotal
+            variant="minimal"
+            width="full"
+          />
+        ),
+      },
+      {
+        name: "Excess Blob Gas",
+        helpText:
+          "The total amount of blob gas consumed in excess of the target, prior to the current block",
         value: (
           <div>
-            {formatNumber(blobGasLimit)}
+            {blockData.excessBlobGas.toString()}
             <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-              ({formatNumber(maxBlobsPerBlock)}{" "}
-              {pluralize("blob", maxBlobsPerBlock)} per block)
+              ({formatNumber(Number(blockData.excessBlobGas) / blobSize)}{" "}
+              {pluralize("blob", Number(blockData.excessBlobGas) / blobSize)})
             </span>
           </div>
         ),
@@ -456,7 +415,7 @@ const Block: NextPage = function () {
             : undefined
         }
         fields={detailsFields}
-        skeletonRows={isMainnet ? 17 : 16}
+        skeletonRows={isMainnet ? 13 : 12}
       />
 
       <Card
