@@ -1,107 +1,87 @@
-import { useState } from "react";
-import { formatEther } from "viem";
+import { animated } from "@react-spring/web";
+import cn from "classnames";
+
+import { useAnimatedPercentage } from "~/hooks/useAnimatedPercentage";
+import type { Numerish } from "~/utils";
+
+export type DistributionSegment = {
+  id: string;
+  label: string;
+  value: Numerish;
+  color: string;
+};
+
+function Segment({
+  segment,
+  total,
+  onActiveSegmentChange,
+}: {
+  segment: DistributionSegment;
+  total: bigint;
+  onActiveSegmentChange?: (id: string | null) => void;
+}) {
+  const animation = useAnimatedPercentage(toUnits(segment.value), total);
+  const props = {
+    className: `h-full shrink-0 ${segment.color}`,
+    style: { width: animation.value.to((value) => `${value * 100}%`) },
+    "aria-label": segment.label,
+  };
+  return onActiveSegmentChange ? (
+    <animated.button
+      {...props}
+      type="button"
+      onMouseEnter={() => onActiveSegmentChange(segment.id)}
+      onMouseLeave={() => onActiveSegmentChange(null)}
+      onFocus={() => onActiveSegmentChange(segment.id)}
+      onBlur={() => onActiveSegmentChange(null)}
+    />
+  ) : (
+    <animated.div {...props} />
+  );
+}
+
+function toUnits(value: Numerish): bigint {
+  if (typeof value === "bigint") return value > 0n ? value * 1000000n : 0n;
+  if (typeof value === "string" && /^\d+$/.test(value))
+    return BigInt(value) * 1000000n;
+  const number = Number(value);
+  return Number.isFinite(number) && number > 0
+    ? BigInt(Math.round(number * 1000000))
+    : 0n;
+}
 
 export function DistributionBar({
-  executionBaseFee,
-  priorityFee,
-  blobFee,
+  segments,
+  label,
+  compact = false,
+  onActiveSegmentChange,
 }: {
-  executionBaseFee: bigint | null | undefined;
-  priorityFee: bigint | null | undefined;
-  blobFee: bigint | null | undefined;
+  segments: DistributionSegment[];
+  label: string;
+  compact?: boolean;
+  onActiveSegmentChange?: (id: string | null) => void;
 }) {
-  const [activeSegment, setActiveSegment] = useState<string | null>(null);
-
-  if (
-    executionBaseFee == null ||
-    priorityFee == null ||
-    blobFee == null ||
-    executionBaseFee < 0n ||
-    priorityFee < 0n ||
-    blobFee < 0n
-  ) {
-    return null;
-  }
-
-  const total = executionBaseFee + priorityFee + blobFee;
-  if (total === 0n) return null;
-
-  const segments = [
-    {
-      label: "Execution base fee",
-      legend: "Execution base",
-      amount: executionBaseFee,
-      color: "bg-violet-500",
-      activeColor: "text-violet-700 dark:text-violet-400",
-      destination: "Burned",
-    },
-    {
-      label: "Priority fee",
-      legend: "Priority",
-      amount: priorityFee,
-      color: "bg-amber-500",
-      activeColor: "text-amber-700 dark:text-amber-400",
-      destination: "Paid to the block proposer",
-    },
-    {
-      label: "Blob fee",
-      legend: "Blob",
-      amount: blobFee,
-      color: "bg-cyan-500",
-      activeColor: "text-cyan-700 dark:text-cyan-400",
-      destination: "Burned",
-    },
-  ].map((segment) => ({
-    ...segment,
-    percentage: Number((segment.amount * 1000000n) / total) / 10000,
-  }));
-
+  const total = segments.reduce(
+    (sum, segment) => sum + toUnits(segment.value),
+    0n
+  );
   return (
     <div
-      className="mt-2 w-full max-w-sm"
       role="group"
-      aria-label="Fee distribution"
+      aria-label={label}
+      className={cn(
+        "flex w-full overflow-hidden rounded-md bg-primary-200 dark:bg-primary-800",
+        compact ? "h-0.5" : "h-1"
+      )}
     >
-      <div className="flex h-1 w-full overflow-hidden rounded-full">
-        {segments
-          .filter(({ amount }) => amount > 0n)
-          .map(({ label, amount, color, destination, percentage }) => {
-            const description = `${label}: ${formatEther(
-              amount
-            )} ETH. ${destination}.`;
-            return (
-              <button
-                key={label}
-                type="button"
-                aria-label={description}
-                onMouseEnter={() => setActiveSegment(label)}
-                onMouseLeave={() => setActiveSegment(null)}
-                onFocus={() => setActiveSegment(label)}
-                onBlur={() => setActiveSegment(null)}
-                className={`h-full ${color} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2`}
-                style={{ width: `${percentage}%` }}
-              >
-                <span className="sr-only">{label}</span>
-              </button>
-            );
-          })}
-      </div>
-      <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-contentSecondary-light dark:text-contentSecondary-dark">
-        {segments.map(({ label, legend, color, activeColor, percentage }) => (
-          <span
-            key={label}
-            className={`inline-flex items-center gap-1 transition-colors ${
-              activeSegment === label ? activeColor : ""
-            }`}
-          >
-            <span
-              className={`h-1.5 w-1.5 rounded-full ${color}`}
-              aria-hidden="true"
-            />
-            {legend} {percentage.toFixed(2)}%
-          </span>
-        ))}
-      </div>
+      {segments.map((segment) => (
+        <Segment
+          key={segment.id}
+          segment={segment}
+          total={total}
+          onActiveSegmentChange={onActiveSegmentChange}
+        />
+      ))}
     </div>
   );
 }
