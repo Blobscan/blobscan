@@ -10,10 +10,12 @@ import { CountBadge } from "~/components/Badges/CountBadge";
 import { TransactionStatusBadges } from "~/components/Badges/TransactionStatusBadges";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
+import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { Copyable } from "~/components/Copyable";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { EtherDisplay } from "~/components/Displays/EtherDisplay";
 import { FiatDisplay } from "~/components/Displays/FiatDisplay";
+import { Textarea } from "~/components/Inputs/Textarea";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -22,7 +24,6 @@ import type { NavArrowProps } from "~/components/NavArrow";
 import { OptimismCard } from "~/components/OptimismCard";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Separator } from "~/components/Separator";
-import { TransactionCalldata } from "~/components/TransactionCalldata";
 import { TransactionFeeDistribution } from "~/components/TransactionFeeDistribution";
 import { api } from "~/api-client";
 import { useIsMainnet } from "~/hooks/useIsMainnet";
@@ -494,7 +495,29 @@ const Tx: NextPage = () => {
       name: "Raw Input",
       helpText:
         "The transaction input bytes in hexadecimal format. This is calldata, separate from the data stored in blobs.",
-      value: <TransactionCalldata input={tx.input} />,
+      value:
+        tx.input == null ? (
+          "Unavailable"
+        ) : (
+          <Textarea
+            aria-label="Raw Input"
+            readOnly
+            value={tx.input}
+            spellCheck={false}
+            className="font-mono"
+            footer={
+              <>
+                <span className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+                  {(tx.input.length - 2) / 2} bytes
+                </span>
+                <CopyToClipboard
+                  value={tx.input}
+                  tooltipText="Copy raw input"
+                />
+              </>
+            }
+          />
+        ),
     });
   }
 
