@@ -464,6 +464,10 @@ const Tx: NextPage = () => {
         value: <FiatDisplay amount={ethUsdPrice} />,
       });
     }
+    detailsFields.push({
+      name: "Input Data",
+      value: <TransactionCalldata input={tx.input} />,
+    });
   }
 
   return (
@@ -508,10 +512,8 @@ const Tx: NextPage = () => {
             : undefined
         }
         fields={detailsFields}
-        skeletonRows={isMainnet ? 18 : 17}
+        skeletonRows={isMainnet ? 19 : 18}
       />
-
-      {tx && <TransactionCalldata input={tx.input} />}
 
       {tx?.rollup === "optimism" && !!tx.decodedFields && (
         <OptimismCard

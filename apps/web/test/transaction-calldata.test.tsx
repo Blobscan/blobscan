@@ -24,8 +24,10 @@ describe("Transaction calldata", () => {
       <TransactionCalldata input="0x001234" />
     );
     expect(markup).toContain("3 bytes");
+    expect(markup).toContain('aria-label="Input Data"');
+    expect(markup).toContain('readonly=""');
     expect(markup).toContain('data-copy="0x001234"');
-    expect(markup).toContain("0x001234</pre>");
+    expect(markup).toContain("0x001234</textarea>");
   });
 
   it("keeps large calldata complete and in a bounded display", () => {
@@ -33,6 +35,6 @@ describe("Transaction calldata", () => {
     const markup = renderToStaticMarkup(<TransactionCalldata input={input} />);
     expect(markup).toContain("100000 bytes");
     expect(markup).toContain('data-copy="' + input + '"');
-    expect(markup).toContain("max-h-80 overflow-auto");
+    expect(markup).toContain("max-h-80");
   });
 });
