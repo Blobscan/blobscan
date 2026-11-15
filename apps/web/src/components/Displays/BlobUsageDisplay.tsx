@@ -12,6 +12,7 @@ export interface BlobUsageDisplayProps {
   width?: number;
   variant?: "minimal" | "inline" | "detailed";
   hideUnit?: boolean;
+  showTotal?: boolean;
 }
 
 export const BlobUsageDisplay: FC<BlobUsageDisplayProps> = function ({
@@ -21,6 +22,7 @@ export const BlobUsageDisplay: FC<BlobUsageDisplayProps> = function ({
   width,
   variant = "detailed",
   hideUnit,
+  showTotal = false,
 }) {
   const isDetailed = variant === "detailed";
   const isMinimal = variant === "minimal";
@@ -40,19 +42,21 @@ export const BlobUsageDisplay: FC<BlobUsageDisplayProps> = function ({
             displayAllDecimals: isMinimal,
           })}
         </span>
-        {!isMinimal && (
+        {(!isMinimal || showTotal) && (
           <>
-            /
+            {" / "}
             <span>
               {formatBytes(blobSize, {
                 hideUnit,
                 unit: byteUnit,
               })}
             </span>
-            <span className="text-xs dark:text-contentTertiary-dark">
-              {" "}
-              ({calculatePercentage(blobUsage, blobSize)}%)
-            </span>
+            {!isMinimal && (
+              <span className="text-xs dark:text-contentTertiary-dark">
+                {" "}
+                ({calculatePercentage(blobUsage, blobSize)}%)
+              </span>
+            )}
           </>
         )}
       </span>

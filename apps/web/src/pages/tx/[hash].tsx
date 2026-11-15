@@ -34,10 +34,8 @@ import type {
 } from "~/types";
 import {
   formatTimestamp,
-  formatBytes,
   formatNumber,
   performDiv,
-  pluralize,
   toChecksumAddress,
 } from "~/utils";
 
@@ -331,19 +329,6 @@ const Tx: NextPage = () => {
           ),
       },
       {
-        name: "Blob Size",
-        helpText:
-          "The total size of blobs in this transaction, including padding bytes.",
-        value: (
-          <span>
-            {formatBytes(totalBlobSize)}{" "}
-            <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-              ({blobs.length} {pluralize("blob", blobs.length)})
-            </span>
-          </span>
-        ),
-      },
-      {
         name: "Blob Usage",
 
         helpText:
@@ -354,6 +339,7 @@ const Tx: NextPage = () => {
             blobSize={totalBlobSize}
             blobUsage={totalBlobUsageSize}
             variant="minimal"
+            showTotal
           />
         ),
       },
@@ -506,7 +492,7 @@ const Tx: NextPage = () => {
             : undefined
         }
         fields={detailsFields}
-        skeletonRows={isMainnet ? 19 : 18}
+        skeletonRows={isMainnet ? 18 : 17}
       />
 
       {tx && <TransactionCalldata input={tx.input} />}
