@@ -357,7 +357,7 @@ const Tx: NextPage = () => {
             blobSize={totalBlobSize}
             blobUsage={totalBlobUsageSize}
             variant="minimal"
-            width="full"
+            width={140}
             showTotal
           />
         ),

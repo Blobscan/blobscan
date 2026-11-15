@@ -27,16 +27,16 @@ it("highlights the matching legend on hover and keyboard focus", async () => {
     await act(async () =>
       trigger.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }))
     );
-    expect(legend.className).toContain("text-amber-700");
+    expect(legend.className).toContain("text-positive-light");
     await act(async () =>
       trigger.dispatchEvent(new MouseEvent("mouseout", { bubbles: true }))
     );
-    expect(legend.className).not.toContain("text-amber-700");
+    expect(legend.className).not.toContain("text-positive-light");
     await act(async () => trigger.focus());
-    expect(legend.className).toContain("text-amber-700");
+    expect(legend.className).toContain("text-positive-light");
     expect(document.querySelector('[role="tooltip"]')).toBeNull();
     await act(async () => trigger.blur());
-    expect(legend.className).not.toContain("text-amber-700");
+    expect(legend.className).not.toContain("text-positive-light");
   } finally {
     act(() => root.unmount());
     container.remove();

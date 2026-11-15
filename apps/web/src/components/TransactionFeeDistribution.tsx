@@ -33,24 +33,24 @@ export function TransactionFeeDistribution({
       label: "Execution base fee",
       legend: "Execution base",
       amount: executionBaseFee,
-      color: "bg-violet-500",
-      activeColor: "text-violet-700 dark:text-violet-400",
+      color: "bg-primary-700 dark:bg-primary-500",
+      activeColor: "text-primary-700 dark:text-primary-400",
       destination: "Burned",
     },
     {
       label: "Priority fee",
       legend: "Priority",
       amount: priorityFee,
-      color: "bg-amber-500",
-      activeColor: "text-amber-700 dark:text-amber-400",
+      color: "bg-positive-light dark:bg-positive-dark",
+      activeColor: "text-positive-light dark:text-positive-dark",
       destination: "Paid to the block proposer",
     },
     {
       label: "Blob fee",
       legend: "Blob",
       amount: blobFee,
-      color: "bg-cyan-500",
-      activeColor: "text-cyan-700 dark:text-cyan-400",
+      color: "bg-contentTertiary-light dark:bg-contentTertiary-dark",
+      activeColor: "text-contentTertiary-light dark:text-contentTertiary-dark",
       destination: "Burned",
     },
   ].map((segment) => ({
@@ -64,18 +64,20 @@ export function TransactionFeeDistribution({
       role="group"
       aria-label="Fee distribution"
     >
-      <DistributionBar
-        label="Fee segments"
-        onActiveSegmentChange={setActiveSegment}
-        segments={segments
-          .filter(({ amount }) => amount > 0n)
-          .map(({ label, amount, color, destination }) => ({
-            id: label,
-            label: `${label}: ${formatEther(amount)} ETH. ${destination}.`,
-            value: amount,
-            color,
-          }))}
-      />
+      <div className="w-[140px] max-w-full">
+        <DistributionBar
+          label="Fee segments"
+          onActiveSegmentChange={setActiveSegment}
+          segments={segments
+            .filter(({ amount }) => amount > 0n)
+            .map(({ label, amount, color, destination }) => ({
+              id: label,
+              label: `${label}: ${formatEther(amount)} ETH. ${destination}.`,
+              value: amount,
+              color,
+            }))}
+        />
+      </div>
       <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-contentSecondary-light dark:text-contentSecondary-dark">
         {segments.map(({ label, legend, color, activeColor, percentage }) => (
           <span
