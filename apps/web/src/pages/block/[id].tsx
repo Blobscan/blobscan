@@ -294,6 +294,20 @@ const Block: NextPage = function () {
         ),
       },
       {
+        name: "Execution Base Fee",
+        helpText:
+          "Base fee per unit of execution gas. This fee is burned and excludes the priority fee.",
+        value:
+          blockData.baseFeePerGas != null ? (
+            <EtherDisplay
+              weiAmount={blockData.baseFeePerGas}
+              opts={{ toUnit: "Gwei" }}
+            />
+          ) : (
+            "Unavailable"
+          ),
+      },
+      {
         name: "Blob Gas Price",
         helpText:
           "The cost per unit of blob gas used by the blobs in this block.",
@@ -407,7 +421,7 @@ const Block: NextPage = function () {
             : undefined
         }
         fields={detailsFields}
-        skeletonRows={isMainnet ? 15 : 14}
+        skeletonRows={isMainnet ? 16 : 15}
       />
 
       <Card

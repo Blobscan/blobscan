@@ -34,6 +34,7 @@ exports[`getBySlot > should fail when trying to get a reorged block by slot 1`] 
 
 exports[`getBySlot > should get a block by slot 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": 2042780n,
   "blobGasBaseFee": 17301504n,
   "blobGasPrice": 22n,

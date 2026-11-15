@@ -6,6 +6,7 @@ exports[`getAdjacentBlock > should fail when no adjacent block was found 2`] = `
 
 exports[`getAdjacentBlock > should get a next block 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": 250000n,
   "blobGasBaseFee": 100000000n,
   "blobGasPrice": 20n,
@@ -102,6 +103,7 @@ exports[`getAdjacentBlock > should get a next block 1`] = `
 
 exports[`getAdjacentBlock > should get a previous block 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": 255000n,
   "blobGasBaseFee": 121000000n,
   "blobGasPrice": 22n,
@@ -216,6 +218,7 @@ exports[`getAdjacentBlock > should get a previous block 1`] = `
 
 exports[`getAdjacentBlock > when getting expanded block results > should return the correct expanded blob 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": 250000n,
   "blobGasBaseFee": 100000000n,
   "blobGasPrice": 20n,
@@ -328,6 +331,7 @@ exports[`getAdjacentBlock > when getting expanded block results > should return 
 
 exports[`getAdjacentBlock > when getting expanded block results > should return the correct expanded results when multiple expands are requested 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": 250000n,
   "blobGasBaseFee": 100000000n,
   "blobGasPrice": 20n,
@@ -464,6 +468,7 @@ exports[`getAdjacentBlock > when getting expanded block results > should return 
 
 exports[`getAdjacentBlock > when getting expanded block results > should return the correct expanded transaction 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": 250000n,
   "blobGasBaseFee": 100000000n,
   "blobGasPrice": 20n,
