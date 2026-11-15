@@ -285,24 +285,31 @@ const Tx: NextPage = () => {
       {
         name: "Execution Fee",
         helpText:
-          "The execution fee paid, including calldata and the priority fee.",
-        value:
-          tx.executionFee != null ? (
-            <EtherDisplay weiAmount={tx.executionFee} />
-          ) : (
-            "Unavailable"
-          ),
-      },
-      {
-        name: "Priority Fee",
-        helpText:
-          "The priority fee paid. This amount is already part of the execution fee.",
-        value:
-          tx.priorityFee != null ? (
-            <EtherDisplay weiAmount={tx.priorityFee} />
-          ) : (
-            "Unavailable"
-          ),
+          "Base is the execution fee burned. Priority is the fee paid to the block proposer. Their sum is the execution fee, including calldata.",
+        value: (
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-1">
+              <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                Base:
+              </div>
+              {tx.executionBaseFee != null ? (
+                <EtherDisplay weiAmount={tx.executionBaseFee} />
+              ) : (
+                "Unavailable"
+              )}
+            </div>
+            <div className="flex gap-1">
+              <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                Priority:
+              </div>
+              {tx.priorityFee != null ? (
+                <EtherDisplay weiAmount={tx.priorityFee} />
+              ) : (
+                "Unavailable"
+              )}
+            </div>
+          </div>
+        ),
       },
       {
         name: "Execution Gas Used",
@@ -498,7 +505,7 @@ const Tx: NextPage = () => {
             : undefined
         }
         fields={detailsFields}
-        skeletonRows={isMainnet ? 21 : 20}
+        skeletonRows={isMainnet ? 20 : 19}
       />
 
       {tx && <TransactionCalldata input={tx.input} />}
