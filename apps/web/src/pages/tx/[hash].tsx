@@ -328,23 +328,57 @@ const Tx: NextPage = () => {
         ),
       },
       {
-        name: "Execution Gas Used",
-        helpText: "The execution gas charged for this transaction.",
-        value: tx.gasUsed != null ? formatNumber(tx.gasUsed) : "Unavailable",
+        name: "Gas Used",
+        helpText:
+          "Execution gas and blob gas charged for this transaction. These are separate gas units.",
+        value: (
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-1">
+              <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                Execution:
+              </span>
+              {tx.gasUsed != null ? formatNumber(tx.gasUsed) : "Unavailable"}
+            </div>
+            <div className="flex gap-1">
+              <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                Blob:
+              </span>
+              {formatNumber(blobGasUsed)}
+            </div>
+          </div>
+        ),
       },
       {
-        name: "Effective Gas Price",
+        name: "Gas Price",
         helpText:
-          "The actual price per unit of execution gas, including the priority fee.",
-        value:
-          tx.effectiveGasPrice != null ? (
-            <EtherDisplay
-              weiAmount={tx.effectiveGasPrice}
-              opts={{ toUnit: "Gwei" }}
-            />
-          ) : (
-            "Unavailable"
-          ),
+          "The price per gas unit. Execution includes the priority fee. Blob is the block's blob gas price.",
+        value: (
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-1">
+              <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                Execution:
+              </span>
+              {tx.effectiveGasPrice != null ? (
+                <EtherDisplay
+                  weiAmount={tx.effectiveGasPrice}
+                  opts={{ toUnit: "Gwei" }}
+                />
+              ) : (
+                "Unavailable"
+              )}
+            </div>
+            <div className="flex gap-1">
+              <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                Blob:
+              </span>
+              <EtherDisplay
+                weiAmount={block.blobGasPrice}
+                usdAmount={blobGasUsdPrice}
+                opts={{ toUnit: "Gwei" }}
+              />
+            </div>
+          </div>
+        ),
       },
       {
         name: "Blob Usage",
@@ -363,19 +397,6 @@ const Tx: NextPage = () => {
         ),
       },
 
-      {
-        name: "Blob Gas Price",
-        helpText: "The price per unit of blob gas in this block.",
-        value: (
-          <EtherDisplay
-            weiAmount={block.blobGasPrice}
-            usdAmount={blobGasUsdPrice}
-            opts={{
-              toUnit: "Gwei",
-            }}
-          />
-        ),
-      },
       {
         name: "Blob Fee",
         helpText:
@@ -404,12 +425,6 @@ const Tx: NextPage = () => {
             </div>
           </div>
         ),
-      },
-      {
-        name: "Blob Gas Used",
-        helpText:
-          "The total blob gas used by this transaction. Blob gas is separate from execution gas.",
-        value: formatNumber(blobGasUsed),
       },
       {
         name: "Blob As Calldata",
@@ -517,7 +532,7 @@ const Tx: NextPage = () => {
             : undefined
         }
         fields={detailsFields}
-        skeletonRows={isMainnet ? 19 : 18}
+        skeletonRows={isMainnet ? 17 : 16}
       />
 
       {tx?.rollup === "optimism" && !!tx.decodedFields && (

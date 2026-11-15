@@ -60,7 +60,7 @@ export function TransactionFeeDistribution({
 
   return (
     <div
-      className="mt-2 w-full max-w-sm"
+      className="mt-2 w-full max-w-xs"
       role="group"
       aria-label="Fee distribution"
     >

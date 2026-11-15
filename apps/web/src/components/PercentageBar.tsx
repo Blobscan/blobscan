@@ -33,7 +33,7 @@ export const PercentageBar: FC<PercentageBarProps> = function ({
       className={cn(
         "flex",
         width === "full"
-          ? "w-full max-w-sm flex-col items-start gap-1.5"
+          ? "w-full max-w-xs flex-col items-start gap-1.5"
           : "items-center gap-1.5"
       )}
     >
