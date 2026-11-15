@@ -30,7 +30,7 @@ const STATUSES: Record<Status, StatusConfig> = {
   },
   finalized: {
     icon: CheckCircleIcon,
-    color: { light: "#16A34A", dark: "#4ADE80" },
+    color: { light: "#6B7280", dark: "#9CA3AF" },
   },
   unfinalized: {
     icon: ClockIcon,
