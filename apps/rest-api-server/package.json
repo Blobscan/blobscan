@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/rest-api-server",
-  "version": "0.18.9",
+  "version": "0.18.10",
   "private": true,
   "scripts": {
     "build": "rm -rf dist && esbuild src/index.ts --bundle --platform=node --target=node24 --format=cjs --minify --sourcemap --conditions=require --define:import.meta.url=__importMetaUrl \"--banner:js=const __importMetaUrl=require('node:url').pathToFileURL(__filename).href;\" --outfile=dist/index.js --log-level=warning",

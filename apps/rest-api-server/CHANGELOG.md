@@ -1,5 +1,11 @@
 # @blobscan/rest-api-server
 
+## 0.18.10
+
+### Patch Changes
+
+- [#1163](https://github.com/Blobscan/blobscan/pull/1163) [`328708b`](https://github.com/Blobscan/blobscan/commit/328708ba23e7bf627af9960b0911a16ea5fe8746) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed API startup failures from transformed response schemas when NODE_ENV is not production.
+
 ## 0.18.9
 
 ### Patch Changes
