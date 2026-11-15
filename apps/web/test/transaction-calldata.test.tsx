@@ -15,16 +15,14 @@ describe("Transaction calldata", () => {
     const empty = renderToStaticMarkup(<TransactionCalldata input="0x" />);
     expect(missing).toContain("Unavailable");
     expect(missing).not.toContain("Copy calldata");
-    expect(empty).toContain("0 bytes");
     expect(empty).toContain('data-copy="0x"');
   });
 
-  it("shows the byte count and preserves leading zero bytes", () => {
+  it("preserves leading zero bytes in the read-only text area", () => {
     const markup = renderToStaticMarkup(
       <TransactionCalldata input="0x001234" />
     );
-    expect(markup).toContain("3 bytes");
-    expect(markup).toContain('aria-label="Input Data"');
+    expect(markup).toContain('aria-label="Raw Input"');
     expect(markup).toContain('readonly=""');
     expect(markup).toContain('data-copy="0x001234"');
     expect(markup).toContain("0x001234</textarea>");
@@ -33,7 +31,6 @@ describe("Transaction calldata", () => {
   it("keeps large calldata complete and in a bounded display", () => {
     const input = `0x${"ab".repeat(100000)}`;
     const markup = renderToStaticMarkup(<TransactionCalldata input={input} />);
-    expect(markup).toContain("100000 bytes");
     expect(markup).toContain('data-copy="' + input + '"');
     expect(markup).toContain("max-h-80");
   });
