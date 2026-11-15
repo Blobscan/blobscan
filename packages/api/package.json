@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/api",
-  "version": "0.46.2",
+  "version": "0.47.0",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -15,10 +15,10 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
-    "@blobscan/blob-storage-manager": "workspace:^0.15.5",
+    "@blobscan/blob-storage-manager": "workspace:^0.15.6",
     "@blobscan/chains": "workspace:^0.6.0",
     "@blobscan/dayjs": "workspace:^0.1.1",
-    "@blobscan/db": "workspace:^0.35.1",
+    "@blobscan/db": "workspace:^0.36.0",
     "@blobscan/env": "workspace:^0.6.1",
     "@blobscan/logger": "workspace:^0.1.6",
     "@blobscan/open-telemetry": "workspace:^0.0.12",
@@ -34,7 +34,7 @@
     "zod-openapi": "^5.4.6"
   },
   "devDependencies": {
-    "@blobscan/blob-propagator": "workspace:^0.11.6",
+    "@blobscan/blob-propagator": "workspace:^0.11.7",
     "@types/jsonwebtoken": "^9.0.2"
   },
   "eslintConfig": {
