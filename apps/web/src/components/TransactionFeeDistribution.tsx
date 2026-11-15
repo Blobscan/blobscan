@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { formatEther } from "viem";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
@@ -11,6 +12,8 @@ export function TransactionFeeDistribution({
   priorityFee: bigint | null | undefined;
   blobFee: bigint | null | undefined;
 }) {
+  const [activeSegment, setActiveSegment] = useState<string | null>(null);
+
   if (
     executionBaseFee == null ||
     priorityFee == null ||
@@ -30,18 +33,21 @@ export function TransactionFeeDistribution({
       label: "Execution base fee",
       amount: executionBaseFee,
       color: "bg-violet-500",
+      activeColor: "text-violet-700 dark:text-violet-400",
       destination: "Burned",
     },
     {
       label: "Priority fee",
       amount: priorityFee,
       color: "bg-amber-500",
+      activeColor: "text-amber-700 dark:text-amber-400",
       destination: "Paid to the block proposer",
     },
     {
       label: "Blob fee",
       amount: blobFee,
       color: "bg-cyan-500",
+      activeColor: "text-cyan-700 dark:text-cyan-400",
       destination: "Burned",
     },
   ].map((segment) => ({
@@ -61,11 +67,15 @@ export function TransactionFeeDistribution({
           .map(({ label, amount, color, destination, percentage }) => {
             const description = `${label}: ${formatEther(
               amount
-            )} ETH (${percentage.toFixed(2)}%). ${destination}.`;
+            )} ETH. ${destination}.`;
             return (
               <Tooltip key={label}>
                 <TooltipTrigger
                   aria-label={description}
+                  onMouseEnter={() => setActiveSegment(label)}
+                  onMouseLeave={() => setActiveSegment(null)}
+                  onFocus={() => setActiveSegment(label)}
+                  onBlur={() => setActiveSegment(null)}
                   className={`h-full ${color} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2`}
                   style={{ width: `${percentage}%` }}
                 >
@@ -77,8 +87,13 @@ export function TransactionFeeDistribution({
           })}
       </div>
       <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-contentSecondary-light dark:text-contentSecondary-dark">
-        {segments.map(({ label, color, percentage }) => (
-          <span key={label} className="inline-flex items-center gap-1">
+        {segments.map(({ label, color, activeColor, percentage }) => (
+          <span
+            key={label}
+            className={`inline-flex items-center gap-1 transition-colors ${
+              activeSegment === label ? activeColor : ""
+            }`}
+          >
             <span
               className={`h-1.5 w-1.5 rounded-full ${color}`}
               aria-hidden="true"

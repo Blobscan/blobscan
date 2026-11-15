@@ -12,9 +12,11 @@ describe("Transaction fee distribution", () => {
         blobFee={1327174254592n}
       />
     );
-    expect(markup).toContain("0.000003603503358 ETH (7.68%)");
-    expect(markup).toContain("0.000042 ETH (89.49%)");
-    expect(markup).toContain("0.000001327174254592 ETH (2.83%)");
+    expect(markup).toContain("0.000003603503358 ETH");
+    expect(markup).toContain("0.000042 ETH");
+    expect(markup).toContain("89.49");
+    expect(markup).not.toMatch(/aria-label="[^"]*%/);
+    expect(markup).toContain("0.000001327174254592 ETH");
   });
 
   it("omits missing and zero total fees", () => {
@@ -39,7 +41,7 @@ describe("Transaction fee distribution", () => {
         blobFee={10n ** 30n}
       />
     );
-    expect(markup).toContain("1000000000000 ETH (50.00%)");
+    expect(markup).toContain("1000000000000 ETH");
     expect(markup).not.toContain("NaN");
     expect(markup).not.toContain("Infinity");
   });
