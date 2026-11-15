@@ -255,8 +255,6 @@ const Tx: NextPage = () => {
     detailsFields.push(
       {
         name: "Total Fee",
-        helpText:
-          "The execution fee plus the blob fee paid by this transaction.",
         value:
           tx.totalFee != null ? (
             <div className="w-full">
