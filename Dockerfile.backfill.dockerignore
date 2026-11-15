@@ -1,0 +1,15 @@
+**
+!docker/
+!docker/backfill/
+!docker/backfill/package.json
+!docker/backfill/package-lock.json
+!packages/
+!packages/db/
+!packages/db/prisma/
+!packages/db/prisma/schema/
+!packages/db/prisma/schema/**
+!packages/db/scripts/
+!packages/db/scripts/backfill-transactions.ts
+!packages/db/scripts/backfill.ts
+!packages/db/scripts/transaction-rpc.ts
+!packages/db/scripts/write-transaction-batch.ts

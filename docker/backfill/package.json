@@ -1,0 +1,12 @@
+{
+  "name": "blobscan-backfill-runtime",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "@prisma/client": "6.19.3",
+    "tsx": "4.23.15"
+  },
+  "devDependencies": {
+    "prisma": "6.19.3"
+  }
+}

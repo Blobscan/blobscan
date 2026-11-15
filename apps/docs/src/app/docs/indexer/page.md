@@ -145,14 +145,26 @@ pnpm --filter @blobscan/db backfill:transactions --rpc-url https://your-node
 
 Set `EXECUTION_RPC_URL` instead of `--rpc-url` to keep the URL out of shell history.
 Use `--from-block` and `--to-block` for an inclusive block range. Use `--batch-size`
-to set the database page size (default: 100; maximum: 1000).
+to set the transaction processing and write batch size (default: 100; maximum: 1000).
+Use `--block-range-size` for the number of blocks per database read (default: 100;
+maximum: 10000). Reads use consecutive inclusive ranges without a transaction
+cursor or offset. Empty ranges do not stop the scan. When bounds are omitted,
+the first and last stored transaction blocks are read once at startup.
 
-The script reads only stored transactions with missing execution gas, receipt gas
-price, execution status, calldata, or block base fee. It processes one transaction at a time, with
-three RPC requests per transaction. Each RPC request has a 30-second timeout and
-up to three attempts. It checks the transaction hash, block hash, block number,
-and blob gas values before it writes data. A database transaction keeps each
-update atomic. It skips records that fail validation and exits with a nonzero
+The script reads stored transactions in block order within the requested range.
+It checks execution gas, receipt gas price, execution status, calldata, and block
+base fee in memory, and skips complete records without RPC calls. It does not
+filter by missing fields in the database query. It prints a startup message,
+batch fetch messages, and progress for each transaction. Transaction and receipt
+reads use JSON-RPC batches. Block headers are fetched once per database batch.
+Use `--rpc-batch-size` to set the maximum calls per HTTP request (default: 20;
+maximum: 100). Requests are sent one batch at a time. Failed calls are retried
+up to five total attempts with exponential backoff and jitter. HTTP rate limits
+honor `Retry-After`. Successful calls are not repeated after a partial batch
+failure. Each HTTP request has a 30-second timeout. Validated records are written with one bulk transaction update and one bulk
+block update per database batch, in one database transaction. It checks the transaction hash, block hash, block number,
+and blob gas values before it writes data. If a stored transaction moves blocks before the write, the whole write batch
+is rolled back. It skips records that fail validation and exits with a nonzero
 status if any record fails. Reorged records can fail the canonical block check.
 
 Run the same command again after an interruption. Completed records are skipped.
@@ -191,3 +203,7 @@ live Ethereum node.
 Deploy the database migration and compatible API before the updated Rust indexer.
 The indexer sends receipt values for new transactions. Use the backfill command
 for records indexed before that deployment.
+
+For a long run in Kubernetes, use the dedicated `Dockerfile.backfill` image and
+the Job in `deploy/kubernetes/backfill-job.yaml`. Build, secret, and restart
+instructions are in `deploy/kubernetes/README.md`.

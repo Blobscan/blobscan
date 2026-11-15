@@ -27,57 +27,68 @@ const server = createServer((req, res) => {
     try {
       let body = "";
       for await (const chunk of req) body += String(chunk);
-      const { id, method, params } = JSON.parse(body) as {
+      const payload = JSON.parse(body);
+      if (transientFailures > 0) {
+        requests++;
+        transientFailures--;
+        res.writeHead(429, { "Retry-After": "0" }).end();
+        return;
+      }
+      const handle = async ({
+        id,
+        method,
+        params,
+      }: {
         id: number;
         method: string;
         params: string[];
-      };
-      requests++;
-      if (transientFailures > 0) {
-        transientFailures--;
-        res.writeHead(429).end();
-        return;
-      }
-      const index =
-        method === "eth_getBlockByNumber"
-          ? Number(BigInt(params[0]!)) - 100
-          : hashes.indexOf(params[0]!);
-      assert.ok(index >= 0 && index < hashes.length);
-      const blockNumber = `0x${(100 + index).toString(16)}`;
-      const identity = { blockHash: blockHashes[index], blockNumber };
-      let result: unknown;
-      if (method === "eth_getBlockByNumber") {
-        result = {
-          hash: blockHashes[index],
-          number: blockNumber,
-          baseFeePerGas: "0x2",
-        };
-      } else if (method === "eth_getTransactionByHash") {
-        result = {
-          ...identity,
-          hash: hashes[index],
-          input: index === 0 ? "0x0012" : "0x",
-        };
-      } else {
-        assert.equal(method, "eth_getTransactionReceipt");
-        if (moveTransaction && index === 0) {
-          await prisma!.transaction.update({
-            where: { hash: hashes[0] },
-            data: { blockHash: blockHashes[1], blockNumber: 101 },
-          });
+      }) => {
+        requests++;
+        const index =
+          method === "eth_getBlockByNumber"
+            ? Number(BigInt(params[0]!)) - 100
+            : hashes.indexOf(params[0]!);
+        assert.ok(index >= 0 && index < hashes.length);
+        const blockNumber = `0x${(100 + index).toString(16)}`;
+        const identity = { blockHash: blockHashes[index], blockNumber };
+        let result: unknown;
+        if (method === "eth_getBlockByNumber") {
+          result = {
+            hash: blockHashes[index],
+            number: blockNumber,
+            baseFeePerGas: "0x2",
+          };
+        } else if (method === "eth_getTransactionByHash") {
+          result = {
+            ...identity,
+            hash: hashes[index],
+            input: index === 0 ? "0x0012" : "0x",
+          };
+        } else {
+          assert.equal(method, "eth_getTransactionReceipt");
+          if (moveTransaction && index === 0) {
+            await prisma!.transaction.update({
+              where: { hash: hashes[0] },
+              data: { blockHash: blockHashes[1], blockNumber: 101 },
+            });
+          }
+          result = {
+            ...identity,
+            transactionHash: hashes[index],
+            status: index === 0 ? "0x0" : "0x1",
+            gasUsed: "0x5208",
+            effectiveGasPrice: "0x3",
+            blobGasUsed: "0x20000",
+            blobGasPrice: invalidReceipt && index === 0 ? "0x9" : "0x1",
+          };
         }
-        result = {
-          ...identity,
-          transactionHash: hashes[index],
-          status: index === 0 ? "0x0" : "0x1",
-          gasUsed: "0x5208",
-          effectiveGasPrice: "0x3",
-          blobGasUsed: "0x20000",
-          blobGasPrice: invalidReceipt && index === 0 ? "0x9" : "0x1",
-        };
-      }
+        return { jsonrpc: "2.0", id, result };
+      };
+      const result = Array.isArray(payload)
+        ? (await Promise.all(payload.map(handle))).reverse()
+        : await handle(payload);
       res.setHeader("content-type", "application/json");
-      res.end(JSON.stringify({ jsonrpc: "2.0", id, result }));
+      res.end(JSON.stringify(result));
     } catch {
       res.writeHead(500).end();
     }
@@ -230,6 +241,10 @@ test(
     ];
     const result = await run(...args);
     assert.equal(result.code, 0, result.stderr);
+    assert.match(result.stdout, /Starting backfill/);
+    assert.match(result.stdout, /Blocks 100–101: fetching transactions/);
+    assert.match(result.stdout, /Batch 1, transaction 1\/1, block 100/);
+    assert.match(result.stdout, /Batch 2, transaction 1\/1, block 101/);
     assert.equal(requests, 6);
     const tx = await prisma!.transaction.findUniqueOrThrow({
       where: { hash: hashes[0] },
@@ -327,5 +342,35 @@ test(
       ).executionStatus,
       "SUCCESS"
     );
+  }
+);
+
+test(
+  "CLI rolls back the whole write batch if one transaction moves blocks",
+  { skip: !enabled },
+  async () => {
+    moveTransaction = true;
+    const result = await run(
+      "--from-block",
+      "100",
+      "--to-block",
+      "101",
+      "--batch-size",
+      "100"
+    );
+    assert.equal(result.code, 1);
+    assert.match(result.stderr, /all 2 updates were rolled back/);
+    for (const hash of hashes.slice(0, 2)) {
+      const tx = await prisma!.transaction.findUniqueOrThrow({
+        where: { hash },
+      });
+      assert.equal(tx.gasUsed, null);
+      assert.equal(tx.input, null);
+      assert.equal(tx.executionStatus, null);
+    }
+    for (const hash of blockHashes.slice(0, 2)) {
+      const block = await prisma!.block.findUniqueOrThrow({ where: { hash } });
+      assert.equal(block.baseFeePerGas, null);
+    }
   }
 );

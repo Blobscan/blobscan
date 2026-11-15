@@ -2,42 +2,130 @@ export class RpcDataError extends Error {}
 
 export type RpcCall = (method: string, params: unknown[]) => Promise<unknown>;
 
-export function createRpc(url: string, attempts = 3): RpcCall {
+type PendingCall = {
+  id: number;
+  method: string;
+  params: unknown[];
+  resolve: (value: unknown) => void;
+  reject: (error: Error) => void;
+};
+
+export function createRpc(url: string, attempts = 5, batchSize = 20): RpcCall {
+  if (attempts < 1 || batchSize < 1)
+    throw new Error("Invalid RPC batch options");
   let id = 0;
-  return async (method, params) => {
-    for (let attempt = 1; attempt <= attempts; attempt++) {
+  const queue: PendingCall[] = [];
+  let running = false;
+
+  async function send(calls: PendingCall[]) {
+    let pending = calls;
+    for (let attempt = 1; pending.length && attempt <= attempts; attempt++) {
+      let retryAfter = 0;
+      let reason = "RPC request failed";
       try {
-        const requestId = ++id;
+        console.log(
+          `RPC batch: ${pending.length} calls; attempt ${attempt}/${attempts}.`
+        );
         const response = await fetch(url, {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            jsonrpc: "2.0",
-            id: requestId,
-            method,
-            params,
-          }),
+          body: JSON.stringify(
+            pending.map(({ id, method, params }) => ({
+              jsonrpc: "2.0",
+              id,
+              method,
+              params,
+            }))
+          ),
           signal: AbortSignal.timeout(30_000),
         });
-        if (!response.ok) throw new RpcDataError("HTTP error");
-        const body = (await response.json()) as {
-          id?: number;
-          error?: unknown;
-          result?: unknown;
-        };
-        if (body.id !== requestId || body.error || body.result === undefined) {
-          throw new RpcDataError("Invalid RPC response");
+        const retryHeader = response.headers.get("retry-after");
+        if (retryHeader) {
+          retryAfter = /^\d+(?:\.\d+)?$/.test(retryHeader)
+            ? Number(retryHeader) * 1000
+            : Math.max(0, Date.parse(retryHeader) - Date.now());
+          if (!Number.isFinite(retryAfter)) retryAfter = 0;
         }
-        return body.result;
+        if (response.status === 429) reason = "Rate limit";
+        if (!response.ok) throw new RpcDataError(reason);
+        const body: unknown = await response.json();
+        if (!Array.isArray(body)) {
+          const error = object(body).error;
+          if (
+            error &&
+            /rate|limit|too many/i.test(String(object(error).message))
+          )
+            reason = "Rate limit";
+          throw new RpcDataError(reason);
+        }
+        const responses = new Map<number, Record<string, unknown>>();
+        const expected = new Set(pending.map((call) => call.id));
+        for (const raw of body) {
+          const item = object(raw);
+          if (
+            typeof item.id !== "number" ||
+            !expected.has(item.id) ||
+            responses.has(item.id)
+          ) {
+            throw new RpcDataError("Invalid RPC response IDs");
+          }
+          responses.set(item.id, item);
+        }
+        const retry: PendingCall[] = [];
+        for (const call of pending) {
+          const item = responses.get(call.id);
+          if (item && !item.error && item.result !== undefined) {
+            call.resolve(item.result);
+          } else {
+            if (
+              item?.error &&
+              /rate|limit|too many/i.test(String(object(item.error).message))
+            )
+              reason = "Rate limit";
+            retry.push(call);
+          }
+        }
+        pending = retry;
       } catch {
-        // Do not print the URL. It can contain credentials.
-        if (attempt === attempts)
-          throw new RpcDataError(`${method} failed after ${attempts} attempts`);
-        await new Promise((resolve) => setTimeout(resolve, attempt * 500));
+        // Do not print the URL or response body. They can contain credentials.
       }
+      if (!pending.length) break;
+      if (attempt === attempts) {
+        for (const call of pending)
+          call.reject(
+            new RpcDataError(`${call.method} failed after ${attempts} attempts`)
+          );
+        break;
+      }
+      const delay = Math.max(
+        retryAfter,
+        Math.min(30_000, 1000 * 2 ** (attempt - 1)) +
+          Math.floor(Math.random() * 250)
+      );
+      console.warn(
+        `${reason}; retrying ${pending.length} RPC calls in ${Math.ceil(
+          delay / 1000
+        )}s.`
+      );
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
-    throw new RpcDataError("RPC request failed");
-  };
+  }
+
+  async function drain() {
+    while (queue.length) await send(queue.splice(0, batchSize));
+    running = false;
+  }
+
+  return (method, params) =>
+    new Promise((resolve, reject) => {
+      queue.push({ id: ++id, method, params, resolve, reject });
+      if (!running) {
+        running = true;
+        queueMicrotask(() => {
+          void drain();
+        });
+      }
+    });
 }
 
 function object(value: unknown): Record<string, unknown> {
