@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
 import { CategoryBadge } from "~/components/Badges/CategoryBadge";
+import { ContentReveal } from "~/components/ContentReveal";
 import { Copyable } from "~/components/Copyable";
 import { DetailsValueSkeleton } from "~/components/DetailsValueSkeleton";
 import { EthIdenticon } from "~/components/EthIdenticon";
@@ -22,6 +23,14 @@ import {
   TIMESTAMP_FORMAT,
   toChecksumAddress,
 } from "~/utils";
+
+const FIELD_HELP = {
+  Address: "The Ethereum address of this page.",
+  Category:
+    "Rollup when the address posts blobs for a known rollup, with the badge of that rollup. Other when it does not.",
+  "Blob Txs":
+    "The first and the last blob transaction that this address sent or received.",
+};
 
 type TransactionRef = { hash: string; blockTimestamp: Date } | null;
 
@@ -56,22 +65,24 @@ function TransactionRefLine({
     // The hash is truncated when the row is too narrow. The label and the
     // date stay complete.
     <SubfieldLine label={label}>
-      {tx && timestamp ? (
-        <>
-          <div className="min-w-0">
-            <Link href={routes.tx(tx.hash)}>{shortenHash(tx.hash, 8)}</Link>
-          </div>
-          {/* The full date shows on hover. */}
-          <span
-            className="shrink-0 whitespace-nowrap text-sm text-contentTertiary-light dark:text-contentTertiary-dark"
-            title={timestamp.format(TIMESTAMP_FORMAT)}
-          >
-            ({timestamp.fromNow()})
-          </span>
-        </>
-      ) : (
-        <span>-</span>
-      )}
+      <ContentReveal className="flex min-w-0 items-center gap-2">
+        {tx && timestamp ? (
+          <>
+            <div className="min-w-0">
+              <Link href={routes.tx(tx.hash)}>{shortenHash(tx.hash, 8)}</Link>
+            </div>
+            {/* The full date shows on hover. */}
+            <span
+              className="shrink-0 whitespace-nowrap text-sm text-contentTertiary-light dark:text-contentTertiary-dark"
+              title={timestamp.format(TIMESTAMP_FORMAT)}
+            >
+              ({timestamp.fromNow()})
+            </span>
+          </>
+        ) : (
+          <span>-</span>
+        )}
+      </ContentReveal>
     </SubfieldLine>
   );
 }
@@ -116,7 +127,6 @@ const Address: NextPage = () => {
     detailsFields = [
       {
         name: "Address",
-        helpText: "The Ethereum address of this page.",
         value: (
           // On a narrow screen, the address is truncated. The identicon and
           // the copy button stay complete.
@@ -137,8 +147,6 @@ const Address: NextPage = () => {
         ? [
             {
               name: "Category",
-              helpText:
-                "Rollup when the address posts blobs for a known rollup, with the badge of that rollup. Other when it does not.",
               value: (
                 <CategoryBadge
                   category={overall.category as Category}
@@ -150,8 +158,7 @@ const Address: NextPage = () => {
         : []),
       {
         name: "Blob Txs",
-        helpText:
-          "The first and the last blob transaction that this address sent or received.",
+        revealValue: false,
         value: (
           // One line on wide screens. On narrow screens, Last goes under
           // First.
@@ -179,6 +186,7 @@ const Address: NextPage = () => {
           value: checksumAddress,
         }}
         fields={detailsFields}
+        fieldHelp={FIELD_HELP}
         loadingFields={[
           "Address",
           { name: "Category", value: <DetailsValueSkeleton variant="badge" /> },

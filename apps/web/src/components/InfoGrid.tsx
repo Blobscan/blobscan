@@ -15,6 +15,7 @@ export type InfoGridProps = {
     name: ReactNode;
     value: ReactNode;
     helpText?: ReactNode;
+    revealValue?: boolean;
   }[];
 };
 
@@ -43,21 +44,17 @@ export const InfoGrid: React.FC<InfoGridProps> = function ({
               </div>
             </Fragment>
           ))
-        : fields.map(({ name, value, helpText }, i) => (
-            <Fragment key={i}>
-              <ContentReveal
-                isLoading={isLoading}
-                index={i}
-                className="col-span-4 font-semibold text-contentSecondary-light dark:text-coolGray-400 md:col-span-1"
-              >
+        : fields.map(({ name, value, helpText, revealValue = true }, i) => (
+            <Fragment key={typeof name === "string" ? name : i}>
+              <div className="col-span-4 font-semibold text-contentSecondary-light dark:text-coolGray-400 md:col-span-1">
                 {helpText ? (
                   <InfoField description={helpText}>{name}</InfoField>
                 ) : (
                   name
                 )}
-              </ContentReveal>
+              </div>
               <ContentReveal
-                isLoading={isLoading}
+                isLoading={isLoading || !revealValue}
                 index={i}
                 className="col-span-4 break-words text-sm md:col-span-3"
               >

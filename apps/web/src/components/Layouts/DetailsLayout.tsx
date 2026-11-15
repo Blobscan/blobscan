@@ -16,12 +16,14 @@ export type DetailsLayoutProps = {
   fields: InfoGridProps["fields"];
   loadingFields: (string | { name: string; value: ReactNode })[];
   resource?: ExplorerResource;
+  fieldHelp?: Record<string, ReactNode>;
 };
 
 export const DetailsLayout: FC<DetailsLayoutProps> = function ({
   header,
   fields,
   loadingFields,
+  fieldHelp = {},
   resource,
 }) {
   const { buildResourceUrl, explorers } = useExternalExplorers("execution");
@@ -62,14 +64,22 @@ export const DetailsLayout: FC<DetailsLayoutProps> = function ({
       >
         <InfoGrid
           isLoading={!fields}
-          fields={
+          fields={(
             fields ??
-            loadingFields.map((field) =>
-              typeof field === "string"
-                ? { name: field, value: <Skeleton width="50%" height={15} /> }
-                : field
+            loadingFields.map<NonNullable<InfoGridProps["fields"]>[number]>(
+              (field) =>
+                typeof field === "string"
+                  ? { name: field, value: <Skeleton width="50%" height={15} /> }
+                  : field
             )
-          }
+          ).map((field) => ({
+            ...field,
+            helpText:
+              field.helpText ??
+              (typeof field.name === "string"
+                ? fieldHelp[field.name]
+                : undefined),
+          }))}
         />
       </Card>
     </>
