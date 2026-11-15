@@ -2,6 +2,7 @@ import type { FC } from "react";
 import {
   CheckCircleIcon,
   ClockIcon,
+  LockClosedIcon,
   XCircleIcon,
 } from "@heroicons/react/24/solid";
 
@@ -29,7 +30,7 @@ const STATUSES: Record<Status, StatusConfig> = {
     color: { light: "#DC2626", dark: "#F87171" },
   },
   finalized: {
-    icon: CheckCircleIcon,
+    icon: LockClosedIcon,
     color: { light: "#6B7280", dark: "#9CA3AF" },
   },
   unfinalized: {
