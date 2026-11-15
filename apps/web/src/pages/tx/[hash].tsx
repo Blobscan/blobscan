@@ -407,48 +407,49 @@ const Tx: NextPage = () => {
         value: formatNumber(blobGasUsed),
       },
       {
-        name: "Blob As Calldata Gas Used",
+        name: "Blob As Calldata",
         helpText:
-          "The estimated execution gas needed to send the same blob data as calldata.",
+          "The estimated gas used and fee to send the same blob data as calldata. These estimates are not additional transaction fees.",
         value: (
-          <div>
-            {formatNumber(blobAsCalldataGasUsed)}{" "}
-            <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-              (
-              <strong>
-                {formatNumber(
-                  performDiv(blobAsCalldataGasUsed, blobGasUsed),
-                  "compact",
-                  {
-                    maximumFractionDigits: 2,
-                  }
-                )}
-              </strong>{" "}
-              times larger)
-            </span>
-          </div>
-        ),
-      },
-      {
-        name: "Blob As Calldata Gas Fee",
-        helpText:
-          "The estimated fee to send the same blob data as calldata at the execution gas price of this transaction.",
-        value: (
-          <div className="display flex gap-1">
-            <EtherDisplay weiAmount={blobAsCalldataGasFee} />
-            <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-              <Separator />
-              <strong>
-                {formatNumber(
-                  performDiv(blobAsCalldataGasFee, blobGasBaseFee),
-                  "compact",
-                  {
-                    maximumFractionDigits: 2,
-                  }
-                )}
-              </strong>{" "}
-              times more expensive
-            </span>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-wrap items-center gap-1">
+              <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                Gas Used:
+              </span>
+              {formatNumber(blobAsCalldataGasUsed)}{" "}
+              <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                (
+                <strong>
+                  {formatNumber(
+                    performDiv(blobAsCalldataGasUsed, blobGasUsed),
+                    "compact",
+                    {
+                      maximumFractionDigits: 2,
+                    }
+                  )}
+                </strong>{" "}
+                times larger)
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center gap-1">
+              <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                Fee:
+              </span>
+              <EtherDisplay weiAmount={blobAsCalldataGasFee} />
+              <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                <Separator />
+                <strong>
+                  {formatNumber(
+                    performDiv(blobAsCalldataGasFee, blobGasBaseFee),
+                    "compact",
+                    {
+                      maximumFractionDigits: 2,
+                    }
+                  )}
+                </strong>{" "}
+                times more expensive
+              </span>
+            </div>
           </div>
         ),
       }
@@ -505,7 +506,7 @@ const Tx: NextPage = () => {
             : undefined
         }
         fields={detailsFields}
-        skeletonRows={isMainnet ? 20 : 19}
+        skeletonRows={isMainnet ? 19 : 18}
       />
 
       {tx && <TransactionCalldata input={tx.input} />}
