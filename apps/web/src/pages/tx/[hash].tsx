@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 import { skipToken, useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
+import { formatEther } from "viem";
 
 import { CategoryBadge } from "~/components/Badges/CategoryBadge";
 import { CountBadge } from "~/components/Badges/CountBadge";
@@ -261,7 +262,16 @@ const Tx: NextPage = () => {
         value:
           tx.totalFee != null ? (
             <div className="w-full">
-              <EtherDisplay weiAmount={tx.totalFee} />
+              <EtherDisplay
+                weiAmount={tx.totalFee}
+                usdAmount={
+                  ethUsdPrice != null
+                    ? (
+                        Number(formatEther(tx.totalFee)) * ethUsdPrice
+                      ).toString()
+                    : undefined
+                }
+              />
               <TransactionFeeDistribution
                 executionBaseFee={tx.executionBaseFee}
                 priorityFee={tx.priorityFee}
