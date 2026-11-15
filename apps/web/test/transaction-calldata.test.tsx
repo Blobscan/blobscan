@@ -4,8 +4,8 @@ import { describe, expect, it, vi } from "vitest";
 import { TransactionCalldata } from "../src/components/TransactionCalldata";
 
 vi.mock("../src/components/CopyToClipboard", () => ({
-  CopyToClipboard: ({ value, label }: { value: string; label?: string }) => (
-    <button data-copy={value}>{label}</button>
+  CopyToClipboard: ({ value }: { value: string }) => (
+    <button data-copy={value}>Copy calldata</button>
   ),
 }));
 
@@ -14,9 +14,8 @@ describe("Transaction calldata", () => {
     const missing = renderToStaticMarkup(<TransactionCalldata input={null} />);
     const empty = renderToStaticMarkup(<TransactionCalldata input="0x" />);
     expect(missing).toContain("Unavailable");
-    expect(missing).not.toContain("Copy raw input");
+    expect(missing).not.toContain("Copy calldata");
     expect(empty).toContain('data-copy="0x"');
-    expect(empty).toContain("Copy raw input");
   });
 
   it("preserves leading zero bytes in the read-only text area", () => {

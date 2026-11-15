@@ -11,7 +11,7 @@ export function TransactionCalldata({ input }: { input?: string | null }) {
             <span className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
               {(input.length - 2) / 2} bytes
             </span>
-            <CopyToClipboard value={input} label="Copy raw input" />
+            <CopyToClipboard value={input} tooltipText="Copy raw input" />
           </div>
           <textarea
             aria-label="Raw Input"
