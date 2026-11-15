@@ -17,7 +17,7 @@ export function TransactionCalldata({ input }: { input?: string | null }) {
             value={input}
             rows={4}
             spellCheck={false}
-            className="max-h-80 w-full resize-y overflow-auto rounded-md border border-primary-200 bg-transparent p-3 font-mono text-sm dark:border-primary-700"
+            className="max-h-80 w-full resize-y overflow-auto rounded-md border border-border-light bg-controlBackground-light p-3 font-mono text-sm text-content-light focus:border-border-light focus:ring-1 focus:ring-border-light dark:border-border-dark dark:bg-background-dark dark:text-content-dark dark:focus:border-border-dark dark:focus:ring-border-dark"
           />
         </div>
       )}
