@@ -10,6 +10,7 @@ import { CountBadge } from "~/components/Badges/CountBadge";
 import { StatusBadge } from "~/components/Badges/StatusBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
+import { ContentReveal } from "~/components/ContentReveal";
 import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { Copyable } from "~/components/Copyable";
 import { DetailsValueSkeleton } from "~/components/DetailsValueSkeleton";
@@ -40,6 +41,36 @@ import {
   performDiv,
   toChecksumAddress,
 } from "~/utils";
+
+const FIELD_HELP = {
+  Hash: "The unique hash of this transaction.",
+  Status: "The block finality and transaction execution status.",
+  Block: "The block that contains this item.",
+  Timestamp: "The time of the block that contains this item.",
+  "Position In Block":
+    "The position of this transaction in the block, starting from zero.",
+  From: "The address that sent this transaction.",
+  To: "The destination address of this transaction.",
+  Category:
+    "Rollup when the transaction posts blobs for a known rollup. Other when it does not.",
+  "Blob Usage":
+    "The total size of blob data after trailing zero bytes are removed. The percentage compares this size with the full blob size.",
+  "Total Fee":
+    "The execution base fee, priority fee, and blob fee paid by this transaction.",
+  "Execution Fee":
+    "Base is the execution fee burned. Priority is the fee paid to the block proposer. Their sum is the execution fee, including calldata.",
+  "Blob Fee":
+    "Base is the blob fee paid. Max is the maximum total blob fee allowed by the sender. These amounts exclude execution gas fees.",
+  "Gas Used":
+    "Execution gas and blob gas charged for this transaction. These are separate gas units.",
+  "Gas Price":
+    "The price per gas unit. Execution includes the priority fee. Blob is the block's blob gas price.",
+  "Blob As Calldata":
+    "The estimated gas used and fee to send the same blob data as calldata. These estimates are not additional transaction fees.",
+  "ETH Price": "The price of one ETH in USD at the time of this block.",
+  "Raw Input":
+    "The transaction input bytes in hexadecimal format. This is calldata, separate from the data stored in blobs.",
+};
 
 const TX_EXPAND = "block,blob";
 // The signed storage URLs in a transaction response expire after one hour.
@@ -191,12 +222,10 @@ const Tx: NextPage = () => {
     detailsFields = [
       {
         name: "Hash",
-        helpText: "The unique hash of this transaction.",
         value: <Copyable value={hash} tooltipText="Copy Hash" />,
       },
       {
         name: "Status",
-        helpText: "The block finality and transaction execution status.",
         value: (
           <div className="flex flex-wrap items-center gap-2">
             <BlockStatusBadge blockNumber={blockNumber} />
@@ -206,12 +235,10 @@ const Tx: NextPage = () => {
       },
       {
         name: "Block",
-        helpText: "The block that contains this item.",
         value: <Link href={routes.block(blockNumber)}>{blockNumber}</Link>,
       },
       {
         name: "Timestamp",
-        helpText: "The time of the block that contains this item.",
         value: (
           <div className="whitespace-break-spaces">
             {formatTimestamp(blockTimestamp)}
@@ -220,13 +247,10 @@ const Tx: NextPage = () => {
       },
       {
         name: "Position In Block",
-        helpText:
-          "The position of this transaction in the block, starting from zero.",
         value: tx.index,
       },
       {
         name: "From",
-        helpText: "The address that sent this transaction.",
         value: (
           <Copyable value={checksumFrom} tooltipText="Copy from address">
             <Link href={routes.address(from)}>{checksumFrom}</Link>
@@ -235,7 +259,6 @@ const Tx: NextPage = () => {
       },
       {
         name: "To",
-        helpText: "The destination address of this transaction.",
         value: (
           <Copyable value={checksumTo} tooltipText="Copy to address">
             <Link href={routes.address(to)}>{checksumTo}</Link>
@@ -246,8 +269,6 @@ const Tx: NextPage = () => {
 
     detailsFields.push({
       name: "Category",
-      helpText:
-        "Rollup when the transaction posts blobs for a known rollup. Other when it does not.",
       value: <CategoryBadge category={category} rollup={rollup ?? undefined} />,
     });
 
@@ -257,9 +278,6 @@ const Tx: NextPage = () => {
     detailsFields.push(
       {
         name: "Blob Usage",
-
-        helpText:
-          "The total size of blob data after trailing zero bytes are removed. The percentage compares this size with the full blob size.",
 
         value: (
           <BlobUsageDisplay
@@ -274,8 +292,6 @@ const Tx: NextPage = () => {
 
       {
         name: "Total Fee",
-        helpText:
-          "The execution base fee, priority fee, and blob fee paid by this transaction.",
         value:
           tx.totalFee != null ? (
             <div className="w-full">
@@ -292,43 +308,45 @@ const Tx: NextPage = () => {
       },
       {
         name: "Execution Fee",
-        helpText:
-          "Base is the execution fee burned. Priority is the fee paid to the block proposer. Their sum is the execution fee, including calldata.",
+        revealValue: false,
         value: (
           <div className="flex flex-col gap-4">
             <div className="flex gap-1">
               <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Base:
               </div>
-              {tx.executionBaseFee != null ? (
-                <EtherDisplay
-                  weiAmount={tx.executionBaseFee}
-                  ethUsdPrice={ethUsdPrice}
-                />
-              ) : (
-                "Unavailable"
-              )}
+              <ContentReveal className="flex flex-wrap items-center gap-1">
+                {tx.executionBaseFee != null ? (
+                  <EtherDisplay
+                    weiAmount={tx.executionBaseFee}
+                    ethUsdPrice={ethUsdPrice}
+                  />
+                ) : (
+                  "Unavailable"
+                )}
+              </ContentReveal>
             </div>
             <div className="flex gap-1">
               <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Priority:
               </div>
-              {tx.priorityFee != null ? (
-                <EtherDisplay
-                  weiAmount={tx.priorityFee}
-                  ethUsdPrice={ethUsdPrice}
-                />
-              ) : (
-                "Unavailable"
-              )}
+              <ContentReveal className="flex flex-wrap items-center gap-1">
+                {tx.priorityFee != null ? (
+                  <EtherDisplay
+                    weiAmount={tx.priorityFee}
+                    ethUsdPrice={ethUsdPrice}
+                  />
+                ) : (
+                  "Unavailable"
+                )}
+              </ContentReveal>
             </div>
           </div>
         ),
       },
       {
         name: "Blob Fee",
-        helpText:
-          "Base is the blob fee paid. Max is the maximum total blob fee allowed by the sender. These amounts exclude execution gas fees.",
+        revealValue: false,
         value: (
           <div className="flex flex-col gap-4">
             {blobGasBaseFee ? (
@@ -336,121 +354,134 @@ const Tx: NextPage = () => {
                 <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                   Base:
                 </div>
-                <EtherDisplay
-                  weiAmount={blobGasBaseFee}
-                  usdAmount={blobGasBaseUsdFee}
-                />
+                <ContentReveal className="flex flex-wrap items-center gap-1">
+                  <EtherDisplay
+                    weiAmount={blobGasBaseFee}
+                    usdAmount={blobGasBaseUsdFee}
+                  />
+                </ContentReveal>
               </div>
             ) : null}
             <div className=" flex gap-1">
               <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Max:
               </div>
-              <EtherDisplay
-                weiAmount={blobGasMaxFee}
-                usdAmount={blobGasMaxUsdFee}
-              />
+              <ContentReveal className="flex flex-wrap items-center gap-1">
+                <EtherDisplay
+                  weiAmount={blobGasMaxFee}
+                  usdAmount={blobGasMaxUsdFee}
+                />
+              </ContentReveal>
             </div>
           </div>
         ),
       },
       {
         name: "Gas Used",
-        helpText:
-          "Execution gas and blob gas charged for this transaction. These are separate gas units.",
+        revealValue: false,
         value: (
           <div className="flex flex-col gap-4">
             <div className="flex gap-1">
               <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Execution:
               </span>
-              {tx.gasUsed != null ? formatNumber(tx.gasUsed) : "Unavailable"}
+              <ContentReveal className="flex flex-wrap items-center gap-1">
+                {tx.gasUsed != null ? formatNumber(tx.gasUsed) : "Unavailable"}
+              </ContentReveal>
             </div>
             <div className="flex gap-1">
               <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Blob:
               </span>
-              {formatNumber(blobGasUsed)}
+              <ContentReveal className="flex flex-wrap items-center gap-1">
+                {formatNumber(blobGasUsed)}
+              </ContentReveal>
             </div>
           </div>
         ),
       },
       {
         name: "Gas Price",
-        helpText:
-          "The price per gas unit. Execution includes the priority fee. Blob is the block's blob gas price.",
+        revealValue: false,
         value: (
           <div className="flex flex-col gap-4">
             <div className="flex gap-1">
               <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Execution:
               </span>
-              {tx.effectiveGasPrice != null ? (
-                <EtherDisplay
-                  weiAmount={tx.effectiveGasPrice}
-                  ethUsdPrice={ethUsdPrice}
-                  opts={{ toUnit: "Gwei" }}
-                />
-              ) : (
-                "Unavailable"
-              )}
+              <ContentReveal className="flex flex-wrap items-center gap-1">
+                {tx.effectiveGasPrice != null ? (
+                  <EtherDisplay
+                    weiAmount={tx.effectiveGasPrice}
+                    ethUsdPrice={ethUsdPrice}
+                    opts={{ toUnit: "Gwei" }}
+                  />
+                ) : (
+                  "Unavailable"
+                )}
+              </ContentReveal>
             </div>
             <div className="flex gap-1">
               <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Blob:
               </span>
-              <EtherDisplay
-                weiAmount={block.blobGasPrice}
-                usdAmount={blobGasUsdPrice}
-                opts={{ toUnit: "Gwei" }}
-              />
+              <ContentReveal className="flex flex-wrap items-center gap-1">
+                <EtherDisplay
+                  weiAmount={block.blobGasPrice}
+                  usdAmount={blobGasUsdPrice}
+                  opts={{ toUnit: "Gwei" }}
+                />
+              </ContentReveal>
             </div>
           </div>
         ),
       },
       {
         name: "Blob As Calldata",
-        helpText:
-          "The estimated gas used and fee to send the same blob data as calldata. These estimates are not additional transaction fees.",
+        revealValue: false,
         value: (
           <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center gap-1">
               <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Gas Used:
               </span>
-              {formatNumber(blobAsCalldataGasUsed)}{" "}
-              <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                (
-                <strong>
-                  {formatNumber(
-                    performDiv(blobAsCalldataGasUsed, blobGasUsed),
-                    "compact",
-                    {
-                      maximumFractionDigits: 2,
-                    }
-                  )}
-                </strong>
-                × gas)
-              </span>
+              <ContentReveal className="flex flex-wrap items-center gap-1">
+                {formatNumber(blobAsCalldataGasUsed)}{" "}
+                <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                  (
+                  <strong>
+                    {formatNumber(
+                      performDiv(blobAsCalldataGasUsed, blobGasUsed),
+                      "compact",
+                      {
+                        maximumFractionDigits: 2,
+                      }
+                    )}
+                  </strong>
+                  × gas)
+                </span>
+              </ContentReveal>
             </div>
             <div className="flex flex-wrap items-center gap-1">
               <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Fee:
               </span>
-              <EtherDisplay weiAmount={blobAsCalldataGasFee} />
-              <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                <Separator />
-                <strong>
-                  {formatNumber(
-                    performDiv(blobAsCalldataGasFee, blobGasBaseFee),
-                    "compact",
-                    {
-                      maximumFractionDigits: 2,
-                    }
-                  )}
-                </strong>
-                × cost
-              </span>
+              <ContentReveal className="flex flex-wrap items-center gap-1">
+                <EtherDisplay weiAmount={blobAsCalldataGasFee} />
+                <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                  <Separator />
+                  <strong>
+                    {formatNumber(
+                      performDiv(blobAsCalldataGasFee, blobGasBaseFee),
+                      "compact",
+                      {
+                        maximumFractionDigits: 2,
+                      }
+                    )}
+                  </strong>
+                  × cost
+                </span>
+              </ContentReveal>
             </div>
           </div>
         ),
@@ -460,14 +491,11 @@ const Tx: NextPage = () => {
     if (isMainnet && ethUsdPrice) {
       detailsFields.push({
         name: "ETH Price",
-        helpText: "The price of one ETH in USD at the time of this block.",
         value: <FiatDisplay amount={ethUsdPrice} />,
       });
     }
     detailsFields.push({
       name: "Raw Input",
-      helpText:
-        "The transaction input bytes in hexadecimal format. This is calldata, separate from the data stored in blobs.",
       value:
         tx.input == null ? (
           "Unavailable"
@@ -536,6 +564,7 @@ const Tx: NextPage = () => {
             : undefined
         }
         fields={detailsFields}
+        fieldHelp={FIELD_HELP}
         loadingFields={[
           "Hash",
           {

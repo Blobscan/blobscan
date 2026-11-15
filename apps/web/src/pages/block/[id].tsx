@@ -7,6 +7,7 @@ import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { CountBadge } from "~/components/Badges/CountBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
+import { ContentReveal } from "~/components/ContentReveal";
 import { Copyable } from "~/components/Copyable";
 import { DetailsValueSkeleton } from "~/components/DetailsValueSkeleton";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
@@ -30,6 +31,28 @@ import { routes } from "~/routes";
 import { hashSchema } from "~/schemas/utils";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import { formatNumber, formatTimestamp, performDiv, pluralize } from "~/utils";
+
+const FIELD_HELP = {
+  Hash: "The hash of the block header.",
+  Status: "The finality status of the block.",
+  "Block Height":
+    "Also referred to as the Block Number, the block height represents the length of the blockchain and increases with each newly added block.",
+  Timestamp: "The time at which the block was created.",
+  Slot: "The slot number of the block.",
+  Epoch: "The consensus layer epoch the block's slot belongs to.",
+  "Blob Usage": "Used blob data and total blob size for this block.",
+  "Blob Transaction Fees":
+    "Total execution base, priority, and blob fees paid by blob transactions in this block. Excludes ordinary transactions. Unavailable when fee data is incomplete.",
+  "Base Fee":
+    "Base prices per unit of execution gas and blob gas. Both are burned. Priority fees are excluded.",
+  "Excess Blob Gas":
+    "The total amount of blob gas consumed in excess of the target, prior to the current block",
+  "Blob As Calldata Gas":
+    "The estimated gas to send the same blob data as calldata. This is not additional gas charged to the block.",
+  "ETH Price": "The price of 1 ETH in USD at the time this block was produced.",
+  "Blob Gas Used":
+    "The total blob gas used by transactions in this block, compared with the blob gas limit and target.",
+};
 
 const EXPAND_QUERY_PARAM = "transaction,blob";
 
@@ -176,18 +199,14 @@ const Block: NextPage = function () {
     detailsFields = [
       {
         name: "Hash",
-        helpText: "The hash of the block header.",
         value: <Copyable value={blockData.hash} tooltipText="Copy Hash" />,
       },
       {
         name: "Status",
-        helpText: "The finality status of the block.",
         value: <BlockStatusBadge blockNumber={blockData.number} />,
       },
       {
         name: "Block Height",
-        helpText:
-          "Also referred to as the Block Number, the block height represents the length of the blockchain and increases with each newly added block.",
         value: (
           <div className="flex items-center justify-start gap-4">
             {blockData.number}
@@ -196,7 +215,6 @@ const Block: NextPage = function () {
       },
       {
         name: "Timestamp",
-        helpText: "The time at which the block was created.",
         value: (
           <div className="whitespace-break-spaces">
             {formatTimestamp(blockData.timestamp)}
@@ -205,7 +223,6 @@ const Block: NextPage = function () {
       },
       {
         name: "Slot",
-        helpText: "The slot number of the block.",
         value: (
           <Copyable value={blockData.slot.toString()} tooltipText="Copy Slot">
             <Link
@@ -222,7 +239,6 @@ const Block: NextPage = function () {
       },
       {
         name: "Epoch",
-        helpText: "The consensus layer epoch the block's slot belongs to.",
         value: (
           <Copyable value={epoch.toString()} tooltipText="Copy Epoch">
             <Link
@@ -239,7 +255,6 @@ const Block: NextPage = function () {
       },
       {
         name: "Blob Usage",
-        helpText: "Used blob data and total blob size for this block.",
         value: (
           <BlobUsageDisplay
             blobSize={totalBlobSize}
@@ -252,8 +267,6 @@ const Block: NextPage = function () {
       },
       {
         name: "Blob Transaction Fees",
-        helpText:
-          "Total execution base, priority, and blob fees paid by blob transactions in this block. Excludes ordinary transactions. Unavailable when fee data is incomplete.",
         value:
           blobTransactionFees == null ? (
             "Unavailable"
@@ -273,33 +286,36 @@ const Block: NextPage = function () {
       },
       {
         name: "Base Fee",
-        helpText:
-          "Base prices per unit of execution gas and blob gas. Both are burned. Priority fees are excluded.",
+        revealValue: false,
         value: (
           <div className="flex flex-col gap-4">
             <div className="flex gap-1">
               <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Execution:
               </div>
-              {blockData.baseFeePerGas != null ? (
-                <EtherDisplay
-                  weiAmount={blockData.baseFeePerGas}
-                  ethUsdPrice={blockData.ethUsdPrice}
-                  opts={{ toUnit: "Gwei" }}
-                />
-              ) : (
-                "Unavailable"
-              )}
+              <ContentReveal className="flex flex-wrap items-center gap-1">
+                {blockData.baseFeePerGas != null ? (
+                  <EtherDisplay
+                    weiAmount={blockData.baseFeePerGas}
+                    ethUsdPrice={blockData.ethUsdPrice}
+                    opts={{ toUnit: "Gwei" }}
+                  />
+                ) : (
+                  "Unavailable"
+                )}
+              </ContentReveal>
             </div>
             <div className="flex gap-1">
               <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Blob:
               </div>
-              <EtherDisplay
-                weiAmount={blockData.blobGasPrice}
-                usdAmount={blockData.blobGasUsdPrice}
-                opts={{ toUnit: "Gwei" }}
-              />
+              <ContentReveal className="flex flex-wrap items-center gap-1">
+                <EtherDisplay
+                  weiAmount={blockData.blobGasPrice}
+                  usdAmount={blockData.blobGasUsdPrice}
+                  opts={{ toUnit: "Gwei" }}
+                />
+              </ContentReveal>
             </div>
           </div>
         ),
@@ -321,8 +337,6 @@ const Block: NextPage = function () {
       },
       {
         name: "Excess Blob Gas",
-        helpText:
-          "The total amount of blob gas consumed in excess of the target, prior to the current block",
         value: (
           <div>
             {blockData.excessBlobGas.toString()}
@@ -335,8 +349,6 @@ const Block: NextPage = function () {
       },
       {
         name: "Blob As Calldata Gas",
-        helpText:
-          "The estimated gas to send the same blob data as calldata. This is not additional gas charged to the block.",
         value: (
           <div className="flex flex-wrap items-center gap-1">
             {formatNumber(blockData.blobAsCalldataGasUsed)}
@@ -362,8 +374,6 @@ const Block: NextPage = function () {
     if (isMainnet && blockData.ethUsdPrice) {
       detailsFields.push({
         name: "ETH Price",
-        helpText:
-          "The price of 1 ETH in USD at the time this block was produced.",
         value: <FiatDisplay amount={blockData.ethUsdPrice} />,
       });
     }
@@ -408,6 +418,7 @@ const Block: NextPage = function () {
             : undefined
         }
         fields={detailsFields}
+        fieldHelp={FIELD_HELP}
         loadingFields={[
           "Hash",
           { name: "Status", value: <DetailsValueSkeleton variant="badge" /> },
