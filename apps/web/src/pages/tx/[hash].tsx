@@ -22,6 +22,7 @@ import { OptimismCard } from "~/components/OptimismCard";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Separator } from "~/components/Separator";
 import { TransactionCalldata } from "~/components/TransactionCalldata";
+import { TransactionFeeDistribution } from "~/components/TransactionFeeDistribution";
 import { api } from "~/api-client";
 import { useIsMainnet } from "~/hooks/useIsMainnet";
 import ErrorPage from "~/pages/_error";
@@ -259,7 +260,14 @@ const Tx: NextPage = () => {
           "The execution fee plus the blob fee paid by this transaction.",
         value:
           tx.totalFee != null ? (
-            <EtherDisplay weiAmount={tx.totalFee} />
+            <div className="w-full">
+              <EtherDisplay weiAmount={tx.totalFee} />
+              <TransactionFeeDistribution
+                executionBaseFee={tx.executionBaseFee}
+                priorityFee={tx.priorityFee}
+                blobFee={tx.blobGasBaseFee}
+              />
+            </div>
           ) : (
             "Unavailable"
           ),
