@@ -291,7 +291,16 @@ const Tx: NextPage = () => {
                 Base:
               </div>
               {tx.executionBaseFee != null ? (
-                <EtherDisplay weiAmount={tx.executionBaseFee} />
+                <EtherDisplay
+                  weiAmount={tx.executionBaseFee}
+                  usdAmount={
+                    ethUsdPrice != null
+                      ? (
+                          Number(formatEther(tx.executionBaseFee)) * ethUsdPrice
+                        ).toString()
+                      : undefined
+                  }
+                />
               ) : (
                 "Unavailable"
               )}
@@ -301,7 +310,16 @@ const Tx: NextPage = () => {
                 Priority:
               </div>
               {tx.priorityFee != null ? (
-                <EtherDisplay weiAmount={tx.priorityFee} />
+                <EtherDisplay
+                  weiAmount={tx.priorityFee}
+                  usdAmount={
+                    ethUsdPrice != null
+                      ? (
+                          Number(formatEther(tx.priorityFee)) * ethUsdPrice
+                        ).toString()
+                      : undefined
+                  }
+                />
               ) : (
                 "Unavailable"
               )}
