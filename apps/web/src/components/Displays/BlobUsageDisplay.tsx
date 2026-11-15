@@ -64,6 +64,7 @@ export const BlobUsageDisplay: FC<BlobUsageDisplayProps> = function ({
         <div
           className={cn({
             "absolute -bottom-2 w-full": isDetailed,
+            "mt-2": isMinimal && (showTotal || width === "full"),
           })}
         >
           <PercentageBar

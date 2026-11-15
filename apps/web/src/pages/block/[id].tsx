@@ -294,6 +294,7 @@ const Block: NextPage = function () {
               {blockData.baseFeePerGas != null ? (
                 <EtherDisplay
                   weiAmount={blockData.baseFeePerGas}
+                  ethUsdPrice={blockData.ethUsdPrice}
                   opts={{ toUnit: "Gwei" }}
                 />
               ) : (
@@ -343,11 +344,11 @@ const Block: NextPage = function () {
       {
         name: "Blob As Calldata Gas",
         helpText:
-          "The total gas that would have been used in this block if the blobs were sent as calldata.",
+          "The estimated gas to send the same blob data as calldata. This is not additional gas charged to the block.",
         value: (
-          <div>
+          <div className="flex flex-wrap items-center gap-1">
             {formatNumber(blockData.blobAsCalldataGasUsed)}
-            <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
+            <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
               (
               <strong>
                 {formatNumber(
@@ -355,11 +356,11 @@ const Block: NextPage = function () {
                     blockData.blobAsCalldataGasUsed,
                     blockData.blobGasUsed
                   ),
-                  "standard",
+                  "compact",
                   { maximumFractionDigits: 2 }
                 )}
-              </strong>{" "}
-              times more expensive)
+              </strong>
+              × gas)
             </span>
           </div>
         ),
