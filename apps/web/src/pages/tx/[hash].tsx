@@ -361,6 +361,14 @@ const Tx: NextPage = () => {
               {tx.effectiveGasPrice != null ? (
                 <EtherDisplay
                   weiAmount={tx.effectiveGasPrice}
+                  usdAmount={
+                    ethUsdPrice != null
+                      ? (
+                          Number(formatEther(tx.effectiveGasPrice)) *
+                          ethUsdPrice
+                        ).toString()
+                      : undefined
+                  }
                   opts={{ toUnit: "Gwei" }}
                 />
               ) : (
