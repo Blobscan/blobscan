@@ -9,18 +9,19 @@ import { Card } from "../Cards/Card";
 import { Icon } from "../Icon";
 import { Link } from "../Link";
 import { Separator } from "../Separator";
+import { Skeleton } from "../Skeleton";
 
 export type DetailsLayoutProps = {
   header: ReactNode;
   fields: InfoGridProps["fields"];
-  skeletonRows?: InfoGridProps["skeletonRows"];
+  loadingFields: (string | { name: string; value: ReactNode })[];
   resource?: ExplorerResource;
 };
 
 export const DetailsLayout: FC<DetailsLayoutProps> = function ({
   header,
   fields,
-  skeletonRows,
+  loadingFields,
   resource,
 }) {
   const { buildResourceUrl, explorers } = useExternalExplorers("execution");
@@ -59,7 +60,16 @@ export const DetailsLayout: FC<DetailsLayoutProps> = function ({
           </div>
         }
       >
-        <InfoGrid fields={fields} skeletonRows={skeletonRows} />
+        <InfoGrid
+          fields={
+            fields ??
+            loadingFields.map((field) =>
+              typeof field === "string"
+                ? { name: field, value: <Skeleton width="50%" height={15} /> }
+                : field
+            )
+          }
+        />
       </Card>
     </>
   );

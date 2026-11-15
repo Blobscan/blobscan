@@ -2,6 +2,7 @@
 
 exports[`getByBlockId > should get a block by block number 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": 255000n,
   "blobGasBaseFee": 121000000n,
   "blobGasPrice": 22n,
@@ -52,6 +53,7 @@ exports[`getByBlockId > should get a block by block number 1`] = `
 
 exports[`getByBlockId > should get a block by hash 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": 255000n,
   "blobGasBaseFee": 55000000n,
   "blobGasPrice": 22n,
@@ -84,6 +86,7 @@ exports[`getByBlockId > should get a block by hash 1`] = `
 
 exports[`getByBlockId > should get a reorged block by block number 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": 255000n,
   "blobGasBaseFee": 55000000n,
   "blobGasPrice": 22n,
@@ -116,6 +119,7 @@ exports[`getByBlockId > should get a reorged block by block number 1`] = `
 
 exports[`getByBlockId > should get latest block 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": 255000n,
   "blobGasBaseFee": 121000000n,
   "blobGasPrice": 22n,
@@ -148,6 +152,7 @@ exports[`getByBlockId > should get latest block 1`] = `
 
 exports[`getByBlockId > should get oldest block 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": 2042780n,
   "blobGasBaseFee": 17301504n,
   "blobGasPrice": 22n,
@@ -263,6 +268,7 @@ exports[`getByBlockId > should get oldest block 1`] = `
 
 exports[`getByBlockId > should get the canonical block when providing a block number matching a reorged block 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": 255000n,
   "blobGasBaseFee": 121000000n,
   "blobGasPrice": 22n,
@@ -295,6 +301,7 @@ exports[`getByBlockId > should get the canonical block when providing a block nu
 
 exports[`getByBlockId > when getting expanded block results > should return the correct expanded blob 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": 255000n,
   "blobGasBaseFee": 121000000n,
   "blobGasPrice": 22n,
@@ -357,6 +364,7 @@ exports[`getByBlockId > when getting expanded block results > should return the 
 
 exports[`getByBlockId > when getting expanded block results > should return the correct expanded results when multiple expands are requested 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": 255000n,
   "blobGasBaseFee": 121000000n,
   "blobGasPrice": 22n,
@@ -418,7 +426,9 @@ exports[`getByBlockId > when getting expanded block results > should return the 
       ],
       "category": "rollup",
       "decodedFields": null,
+      "effectiveGasPrice": null,
       "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
+      "gasUsed": null,
       "hash": "txHash004",
       "index": 0,
       "maxFeePerBlobGas": 100n,
@@ -431,6 +441,7 @@ exports[`getByBlockId > when getting expanded block results > should return the 
 
 exports[`getByBlockId > when getting expanded block results > should return the correct expanded transaction 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": 255000n,
   "blobGasBaseFee": 121000000n,
   "blobGasPrice": 22n,
@@ -480,7 +491,9 @@ exports[`getByBlockId > when getting expanded block results > should return the 
       ],
       "category": "rollup",
       "decodedFields": null,
+      "effectiveGasPrice": null,
       "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
+      "gasUsed": null,
       "hash": "txHash004",
       "index": 0,
       "maxFeePerBlobGas": 100n,

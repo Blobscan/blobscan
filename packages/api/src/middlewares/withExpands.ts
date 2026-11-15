@@ -14,6 +14,8 @@ const zodExpandEnums = ["blob", "block", "transaction"] as const;
 export type ZodExpandEnum = (typeof zodExpandEnums)[number];
 
 const expandedTransactionSelect = {
+  gasUsed: true,
+  effectiveGasPrice: true,
   blobAsCalldataGasFee: true,
   blobAsCalldataGasUsed: true,
   blobGasUsed: true,

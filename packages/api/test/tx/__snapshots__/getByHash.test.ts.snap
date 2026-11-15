@@ -52,6 +52,7 @@ exports[`getByHash > should get a transaction by hash correctly 1`] = `
     },
   ],
   "block": {
+    "baseFeePerGas": null,
     "blobGasPrice": 22n,
   },
   "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
@@ -59,13 +60,21 @@ exports[`getByHash > should get a transaction by hash correctly 1`] = `
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
   "decodedFields": null,
+  "effectiveGasPrice": null,
   "ethUsdPrice": undefined,
+  "executionBaseFee": null,
+  "executionFee": null,
+  "executionStatus": null,
   "from": "address1",
+  "gasUsed": null,
   "hash": "txHash001",
   "index": 0,
+  "input": null,
   "maxFeePerBlobGas": 100n,
+  "priorityFee": null,
   "rollup": null,
   "to": "address2",
+  "totalFee": null,
 }
 `;
 
@@ -131,6 +140,7 @@ exports[`getByHash > when getting expanded transaction results > should return t
     },
   ],
   "block": {
+    "baseFeePerGas": null,
     "blobGasPrice": 22n,
   },
   "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
@@ -138,13 +148,21 @@ exports[`getByHash > when getting expanded transaction results > should return t
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
   "decodedFields": null,
+  "effectiveGasPrice": null,
   "ethUsdPrice": undefined,
+  "executionBaseFee": null,
+  "executionFee": null,
+  "executionStatus": null,
   "from": "address1",
+  "gasUsed": null,
   "hash": "txHash001",
   "index": 0,
+  "input": null,
   "maxFeePerBlobGas": 100n,
+  "priorityFee": null,
   "rollup": null,
   "to": "address2",
+  "totalFee": null,
 }
 `;
 
@@ -198,6 +216,7 @@ exports[`getByHash > when getting expanded transaction results > should return t
     },
   ],
   "block": {
+    "baseFeePerGas": null,
     "blobAsCalldataGasUsed": 2042780n,
     "blobGasBaseFee": 17301504n,
     "blobGasPrice": 22n,
@@ -210,13 +229,21 @@ exports[`getByHash > when getting expanded transaction results > should return t
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
   "decodedFields": null,
+  "effectiveGasPrice": null,
   "ethUsdPrice": undefined,
+  "executionBaseFee": null,
+  "executionFee": null,
+  "executionStatus": null,
   "from": "address1",
+  "gasUsed": null,
   "hash": "txHash001",
   "index": 0,
+  "input": null,
   "maxFeePerBlobGas": 100n,
+  "priorityFee": null,
   "rollup": null,
   "to": "address2",
+  "totalFee": null,
 }
 `;
 
@@ -282,6 +309,7 @@ exports[`getByHash > when getting expanded transaction results > should return t
     },
   ],
   "block": {
+    "baseFeePerGas": null,
     "blobAsCalldataGasUsed": 2042780n,
     "blobGasBaseFee": 17301504n,
     "blobGasPrice": 22n,
@@ -294,12 +322,20 @@ exports[`getByHash > when getting expanded transaction results > should return t
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
   "decodedFields": null,
+  "effectiveGasPrice": null,
   "ethUsdPrice": undefined,
+  "executionBaseFee": null,
+  "executionFee": null,
+  "executionStatus": null,
   "from": "address1",
+  "gasUsed": null,
   "hash": "txHash001",
   "index": 0,
+  "input": null,
   "maxFeePerBlobGas": 100n,
+  "priorityFee": null,
   "rollup": null,
   "to": "address2",
+  "totalFee": null,
 }
 `;

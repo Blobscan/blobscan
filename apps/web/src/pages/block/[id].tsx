@@ -2,11 +2,13 @@ import { useCallback, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
+import { getBlockBlobTransactionFees } from "~/utils/block-fees";
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { CountBadge } from "~/components/Badges/CountBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
+import { DetailsValueSkeleton } from "~/components/DetailsValueSkeleton";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { EtherDisplay } from "~/components/Displays/EtherDisplay";
@@ -17,6 +19,7 @@ import { Link } from "~/components/Link";
 import { NavArrow } from "~/components/NavArrow";
 import type { NavArrowProps } from "~/components/NavArrow";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
+import { TransactionFeeDistribution } from "~/components/TransactionFeeDistribution";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { useChain } from "~/hooks/useChain";
@@ -26,13 +29,7 @@ import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
 import { hashSchema } from "~/schemas/utils";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
-import {
-  formatBytes,
-  formatNumber,
-  formatTimestamp,
-  performDiv,
-  pluralize,
-} from "~/utils";
+import { formatNumber, formatTimestamp, performDiv, pluralize } from "~/utils";
 
 const EXPAND_QUERY_PARAM = "transaction,blob";
 
@@ -146,12 +143,11 @@ const Block: NextPage = function () {
   let detailsFields: DetailsLayoutProps["fields"] | undefined;
 
   if (blockData && chain) {
+    const blobTransactionFees = getBlockBlobTransactionFees(blockData);
     const activeFork = chain.getActiveForkBySlot(blockData.slot);
     const {
       bytesPerFieldElement,
       fieldElementsPerBlob,
-      blobGasLimit,
-      maxBlobsPerBlock,
       targetBlobGasPerBlock,
     } = activeFork.blobParams;
     const blobSize = bytesPerFieldElement * fieldElementsPerBlob;
@@ -176,9 +172,18 @@ const Block: NextPage = function () {
       },
       0
     );
-    const blobCount = totalBlobSize / blobSize;
 
     detailsFields = [
+      {
+        name: "Hash",
+        helpText: "The hash of the block header.",
+        value: <Copyable value={blockData.hash} tooltipText="Copy Hash" />,
+      },
+      {
+        name: "Status",
+        helpText: "The finality status of the block.",
+        value: <BlockStatusBadge blockNumber={blockData.number} />,
+      },
       {
         name: "Block Height",
         helpText:
@@ -188,16 +193,6 @@ const Block: NextPage = function () {
             {blockData.number}
           </div>
         ),
-      },
-      {
-        name: "Status",
-        helpText: "The finality status of the block.",
-        value: <BlockStatusBadge blockNumber={blockData.number} />,
-      },
-      {
-        name: "Hash",
-        helpText: "The hash of the block header.",
-        value: <Copyable value={blockData.hash} tooltipText="Copy Hash" />,
       },
       {
         name: "Timestamp",
@@ -243,27 +238,70 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Blob Size",
-        helpText: "The total amount of blob data in this block.",
-        value: (
-          <span>
-            {formatBytes(totalBlobSize)}
-            <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-              ({formatNumber(blobCount)} {pluralize("blob", blobCount)})
-            </span>
-          </span>
-        ),
-      },
-      {
         name: "Blob Usage",
-        helpText:
-          "The actual amount of blob data in this block that contains meaningful, non-zero content.",
+        helpText: "Used blob data and total blob size for this block.",
         value: (
           <BlobUsageDisplay
             blobSize={totalBlobSize}
             blobUsage={totalBlobUsageSize}
+            showTotal
             variant="minimal"
+            width="full"
           />
+        ),
+      },
+      {
+        name: "Blob Transaction Fees",
+        helpText:
+          "Total execution base, priority, and blob fees paid by blob transactions in this block. Excludes ordinary transactions. Unavailable when fee data is incomplete.",
+        value:
+          blobTransactionFees == null ? (
+            "Unavailable"
+          ) : (
+            <div className="w-full">
+              <EtherDisplay
+                weiAmount={blobTransactionFees.totalFee}
+                ethUsdPrice={blockData.ethUsdPrice}
+              />
+              <TransactionFeeDistribution
+                executionBaseFee={blobTransactionFees.executionBaseFee}
+                priorityFee={blobTransactionFees.priorityFee}
+                blobFee={blobTransactionFees.blobFee}
+              />
+            </div>
+          ),
+      },
+      {
+        name: "Base Fee",
+        helpText:
+          "Base prices per unit of execution gas and blob gas. Both are burned. Priority fees are excluded.",
+        value: (
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-1">
+              <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                Execution:
+              </div>
+              {blockData.baseFeePerGas != null ? (
+                <EtherDisplay
+                  weiAmount={blockData.baseFeePerGas}
+                  ethUsdPrice={blockData.ethUsdPrice}
+                  opts={{ toUnit: "Gwei" }}
+                />
+              ) : (
+                "Unavailable"
+              )}
+            </div>
+            <div className="flex gap-1">
+              <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                Blob:
+              </div>
+              <EtherDisplay
+                weiAmount={blockData.blobGasPrice}
+                usdAmount={blockData.blobGasUsdPrice}
+                opts={{ toUnit: "Gwei" }}
+              />
+            </div>
+          </div>
         ),
       },
       {
@@ -274,6 +312,8 @@ const Block: NextPage = function () {
         value: (
           <BlobGasUsageDisplay
             blobParams={activeFork.blobParams}
+            showTotal
+            width="full"
             blobGasUsed={blockData.blobGasUsed}
             variant={isCompact ? "minimal" : "detailed"}
           />
@@ -294,52 +334,13 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Blob Gas Price",
-        helpText:
-          "The cost per unit of blob gas used by the blobs in this block.",
-        value: (
-          <EtherDisplay
-            weiAmount={blockData.blobGasPrice}
-            usdAmount={blockData.blobGasUsdPrice}
-            opts={{
-              toUnit: "Gwei",
-            }}
-          />
-        ),
-      },
-
-      {
-        name: "Blob Base Fees",
-        helpText:
-          "The total blob gas base fees spent on all transactions included in this block.",
-        value: (
-          <EtherDisplay
-            weiAmount={blockData.blobGasBaseFee}
-            usdAmount={blockData.blobGasBaseUsdFee}
-          />
-        ),
-      },
-      {
-        name: "Blob Gas Limit",
-        helpText: "The maximum blob gas limit for this block.",
-        value: (
-          <div>
-            {formatNumber(blobGasLimit)}
-            <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-              ({formatNumber(maxBlobsPerBlock)}{" "}
-              {pluralize("blob", maxBlobsPerBlock)} per block)
-            </span>
-          </div>
-        ),
-      },
-      {
         name: "Blob As Calldata Gas",
         helpText:
-          "The total gas that would have been used in this block if the blobs were sent as calldata.",
+          "The estimated gas to send the same blob data as calldata. This is not additional gas charged to the block.",
         value: (
-          <div>
+          <div className="flex flex-wrap items-center gap-1">
             {formatNumber(blockData.blobAsCalldataGasUsed)}
-            <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
+            <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
               (
               <strong>
                 {formatNumber(
@@ -347,11 +348,11 @@ const Block: NextPage = function () {
                     blockData.blobAsCalldataGasUsed,
                     blockData.blobGasUsed
                   ),
-                  "standard",
+                  "compact",
                   { maximumFractionDigits: 2 }
                 )}
-              </strong>{" "}
-              times more expensive)
+              </strong>
+              × gas)
             </span>
           </div>
         ),
@@ -407,7 +408,35 @@ const Block: NextPage = function () {
             : undefined
         }
         fields={detailsFields}
-        skeletonRows={isMainnet ? 15 : 14}
+        loadingFields={[
+          "Hash",
+          { name: "Status", value: <DetailsValueSkeleton variant="badge" /> },
+          "Block Height",
+          "Timestamp",
+          "Slot",
+          "Epoch",
+          { name: "Blob Usage", value: <DetailsValueSkeleton variant="bar" /> },
+          {
+            name: "Blob Transaction Fees",
+            value: <DetailsValueSkeleton variant="distribution" />,
+          },
+          {
+            name: "Base Fee",
+            value: (
+              <DetailsValueSkeleton
+                variant="subfields"
+                labels={["Execution", "Blob"]}
+              />
+            ),
+          },
+          {
+            name: "Blob Gas Used",
+            value: <DetailsValueSkeleton variant="bar" />,
+          },
+          "Excess Blob Gas",
+          "Blob As Calldata Gas",
+          ...(isMainnet ? ["ETH Price"] : []),
+        ]}
       />
 
       <Card

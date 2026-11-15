@@ -9,9 +9,10 @@ export interface BlobUsageDisplayProps {
   blobSize: number;
   blobUsage: number;
   byteUnit?: ByteUnit;
-  width?: number;
+  width?: number | "full";
   variant?: "minimal" | "inline" | "detailed";
   hideUnit?: boolean;
+  showTotal?: boolean;
 }
 
 export const BlobUsageDisplay: FC<BlobUsageDisplayProps> = function ({
@@ -21,6 +22,7 @@ export const BlobUsageDisplay: FC<BlobUsageDisplayProps> = function ({
   width,
   variant = "detailed",
   hideUnit,
+  showTotal = false,
 }) {
   const isDetailed = variant === "detailed";
   const isMinimal = variant === "minimal";
@@ -40,19 +42,21 @@ export const BlobUsageDisplay: FC<BlobUsageDisplayProps> = function ({
             displayAllDecimals: isMinimal,
           })}
         </span>
-        {!isMinimal && (
+        {(!isMinimal || showTotal) && (
           <>
-            /
+            {" / "}
             <span>
               {formatBytes(blobSize, {
                 hideUnit,
                 unit: byteUnit,
               })}
             </span>
-            <span className="text-xs dark:text-contentTertiary-dark">
-              {" "}
-              ({calculatePercentage(blobUsage, blobSize)}%)
-            </span>
+            {!isMinimal && (
+              <span className="text-xs dark:text-contentTertiary-dark">
+                {" "}
+                ({calculatePercentage(blobUsage, blobSize)}%)
+              </span>
+            )}
           </>
         )}
       </span>
@@ -60,6 +64,7 @@ export const BlobUsageDisplay: FC<BlobUsageDisplayProps> = function ({
         <div
           className={cn({
             "absolute -bottom-2 w-full": isDetailed,
+            "mt-2": isMinimal && (showTotal || width === "full"),
           })}
         >
           <PercentageBar

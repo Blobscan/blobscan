@@ -2,6 +2,7 @@
 
 exports[`Helpers Extension > Block model > findLatest() > should find the latest block correctly 1`] = `
 {
+  "baseFeePerGas": null,
   "blobAsCalldataGasUsed": "255000",
   "blobGasPrice": "22",
   "blobGasUsed": "5500000",

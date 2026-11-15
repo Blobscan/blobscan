@@ -4,6 +4,8 @@ import cn from "classnames";
 
 import { useAnimatedPercentage } from "~/hooks/useAnimatedPercentage";
 import type { Numerish } from "~/utils";
+import { calculatePercentage } from "~/utils";
+import { DistributionBar } from "./DistributionBar";
 
 export type Color = "green" | "red" | "purple" | "grey";
 
@@ -12,7 +14,7 @@ export type PercentageBarProps = {
   total: Numerish;
   compact?: boolean;
   color?: Color;
-  width?: number;
+  width?: number | "full";
   hidePercentage?: boolean;
 };
 
@@ -27,30 +29,42 @@ export const PercentageBar: FC<PercentageBarProps> = function ({
   const barPercentageProps = useAnimatedPercentage(value, total);
 
   return (
-    <div className="flex items-center gap-1.5">
-      <div className="relative min-w-0 max-w-full" style={{ width }}>
-        <div
-          className={cn(
-            "w-full rounded-md bg-primary-200 dark:bg-primary-800",
+    <div
+      className={cn(
+        "flex",
+        width === "full"
+          ? "w-full max-w-xs flex-col items-start gap-1.5"
+          : "items-center gap-1.5"
+      )}
+    >
+      <div
+        className="relative min-w-0 max-w-full"
+        style={{ width: width === "full" ? "100%" : width }}
+      >
+        <DistributionBar
+          label="Usage"
+          compact={compact}
+          segments={[
             {
-              "h-0.5 ": compact,
-              "h-1": !compact,
-            }
-          )}
-        />
-        <animated.div
-          className={cn("absolute top-0 max-w-full rounded-md", {
-            "h-1": !compact,
-            "h-0.5": compact,
-            "bg-positive-light dark:bg-positive-dark": color === "green",
-            "bg-contentTertiary-light dark:bg-contentTertiary-dark":
-              color === "grey",
-            "bg-primary-700 dark:bg-primary-500": color === "purple",
-            "bg-negative-light dark:bg-negative-dark": color === "red",
-          })}
-          style={{
-            width: barPercentageProps.value.to((x) => `${x * 100}%`),
-          }}
+              id: "used",
+              label: "Used",
+              value: calculatePercentage(value, total, { asFraction: true }),
+              color: cn({
+                "bg-positive-light dark:bg-positive-dark": color === "green",
+                "bg-contentTertiary-light dark:bg-contentTertiary-dark":
+                  color === "grey",
+                "bg-primary-700 dark:bg-primary-500": color === "purple",
+                "bg-negative-light dark:bg-negative-dark": color === "red",
+              }),
+            },
+            {
+              id: "unused",
+              label: "Unused",
+              value:
+                1 - calculatePercentage(value, total, { asFraction: true }),
+              color: "bg-primary-200 dark:bg-primary-800",
+            },
+          ]}
         />
       </div>
       {!hidePercentage && (

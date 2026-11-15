@@ -1,5 +1,10 @@
 import type { FC } from "react";
-import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
+import {
+  CheckCircleIcon,
+  LockOpenIcon,
+  LockClosedIcon,
+  XCircleIcon,
+} from "@heroicons/react/24/solid";
 
 import type { ResourceDefinition } from "~/types/definition";
 import type { RenderableIcon } from "~/types/icons";
@@ -8,7 +13,7 @@ import { Icon } from "../Icon";
 import type { BadgeProps } from "./Badge";
 import { BrandBadge } from "./BrandBadge";
 
-export type Status = "finalized" | "unfinalized";
+export type Status = "finalized" | "unfinalized" | "success" | "failed";
 
 type StatusConfig = {
   icon?: RenderableIcon;
@@ -16,12 +21,20 @@ type StatusConfig = {
 };
 
 const STATUSES: Record<Status, StatusConfig> = {
-  finalized: {
+  success: {
     icon: CheckCircleIcon,
     color: { light: "#16A34A", dark: "#4ADE80" },
   },
+  failed: {
+    icon: XCircleIcon,
+    color: { light: "#DC2626", dark: "#F87171" },
+  },
+  finalized: {
+    icon: LockClosedIcon,
+    color: { light: "#5D25D4", dark: "#AE8CF5" },
+  },
   unfinalized: {
-    icon: ClockIcon,
+    icon: LockOpenIcon,
     color: { light: "#6B7280", dark: "#9CA3AF" },
   },
 };

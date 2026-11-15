@@ -37,6 +37,7 @@ const prismaBlockSelect = {
   blobGasUsed: true,
   blobAsCalldataGasUsed: true,
   blobGasPrice: true,
+  baseFeePerGas: true,
   excessBlobGas: true,
   computeUsdFields: true,
 } satisfies ExtendedBlockSelect;

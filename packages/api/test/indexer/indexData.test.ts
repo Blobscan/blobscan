@@ -90,19 +90,20 @@ describe("indexData", () => {
         expectedBlobGasPrice.toString()
       );
       expect(remainingParams).toMatchInlineSnapshot(`
-          {
-            "blobGasBaseFee": "10000",
-            "blobGasUsed": "10000",
-            "computeUsdFields": [Function],
-            "epoch": 4,
-            "excessBlobGas": "5000",
-            "hash": "blockHash2010",
-            "number": 2010,
-            "slot": 130,
-            "timestamp": 2023-09-01T13:50:21.000Z,
-            Symbol(nodejs.util.inspect.custom): [Function],
-          }
-        `);
+        {
+          "baseFeePerGas": null,
+          "blobGasBaseFee": "10000",
+          "blobGasUsed": "10000",
+          "computeUsdFields": [Function],
+          "epoch": 4,
+          "excessBlobGas": "5000",
+          "hash": "blockHash2010",
+          "number": 2010,
+          "slot": 130,
+          "timestamp": 2023-09-01T13:50:21.000Z,
+          Symbol(nodejs.util.inspect.custom): [Function],
+        }
+      `);
     });
 
     describe("when indexing transactions", () => {
@@ -149,37 +150,45 @@ describe("indexData", () => {
         //   "Transactions' blob as calldata gas used mismatch"
         // ).toEqual(expectedBlobAsCalldataGasUsed);
         expect(remainingParams).toMatchInlineSnapshot(`
-            [
-              {
-                "blobGasUsed": "131072",
-                "blockHash": "blockHash2010",
-                "blockNumber": 2010,
-                "blockTimestamp": 2023-09-01T13:50:21.000Z,
-                "decodedFields": {},
-                "fromId": "address9",
-                "gasPrice": "10000",
-                "hash": "txHash999",
-                "index": 0,
-                "maxFeePerBlobGas": "1800",
-                "toId": "address10",
-                Symbol(nodejs.util.inspect.custom): [Function],
-              },
-              {
-                "blobGasUsed": "262144",
-                "blockHash": "blockHash2010",
-                "blockNumber": 2010,
-                "blockTimestamp": 2023-09-01T13:50:21.000Z,
-                "decodedFields": {},
-                "fromId": "address7",
-                "gasPrice": "3000000",
-                "hash": "txHash1000",
-                "index": 1,
-                "maxFeePerBlobGas": "20000",
-                "toId": "address2",
-                Symbol(nodejs.util.inspect.custom): [Function],
-              },
-            ]
-          `);
+          [
+            {
+              "blobGasUsed": "131072",
+              "blockHash": "blockHash2010",
+              "blockNumber": 2010,
+              "blockTimestamp": 2023-09-01T13:50:21.000Z,
+              "decodedFields": {},
+              "effectiveGasPrice": null,
+              "executionStatus": null,
+              "fromId": "address9",
+              "gasPrice": "10000",
+              "gasUsed": null,
+              "hash": "txHash999",
+              "index": 0,
+              "input": null,
+              "maxFeePerBlobGas": "1800",
+              "toId": "address10",
+              Symbol(nodejs.util.inspect.custom): [Function],
+            },
+            {
+              "blobGasUsed": "262144",
+              "blockHash": "blockHash2010",
+              "blockNumber": 2010,
+              "blockTimestamp": 2023-09-01T13:50:21.000Z,
+              "decodedFields": {},
+              "effectiveGasPrice": null,
+              "executionStatus": null,
+              "fromId": "address7",
+              "gasPrice": "3000000",
+              "gasUsed": null,
+              "hash": "txHash1000",
+              "index": 1,
+              "input": null,
+              "maxFeePerBlobGas": "20000",
+              "toId": "address2",
+              Symbol(nodejs.util.inspect.custom): [Function],
+            },
+          ]
+        `);
       });
 
       it("should identify rollup transactions correctly", async () => {

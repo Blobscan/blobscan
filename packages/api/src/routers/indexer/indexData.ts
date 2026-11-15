@@ -14,6 +14,12 @@ import {
   createDBTransactions,
 } from "./indexData.utils";
 
+const optionalGasQuantitySchema = z
+  .string()
+  .regex(/^(?:[0-9]+|0x[0-9a-fA-F]+)$/)
+  .transform((value) => BigInt(value))
+  .optional();
+
 const rawBlockSchema = z.object({
   number: z.coerce.number(),
   hash: z.string(),
@@ -21,6 +27,7 @@ const rawBlockSchema = z.object({
   slot: z.coerce.number(),
   blobGasUsed: toBigIntSchema,
   excessBlobGas: toBigIntSchema,
+  baseFeePerGas: optionalGasQuantitySchema,
 });
 
 const rawTxSchema = z.object({
@@ -30,6 +37,13 @@ const rawTxSchema = z.object({
   index: z.coerce.number(),
   blockNumber: z.coerce.number(),
   gasPrice: toBigIntSchema,
+  gasUsed: optionalGasQuantitySchema,
+  effectiveGasPrice: optionalGasQuantitySchema,
+  executionStatus: z.enum(["success", "failed"]).optional(),
+  input: z
+    .string()
+    .regex(/^0x(?:[0-9a-fA-F]{2})*$/)
+    .optional(),
   maxFeePerBlobGas: toBigIntSchema,
 });
 
@@ -119,6 +133,7 @@ export const indexData = createAuthedProcedure("indexer")
           },
           update: {
             ...dbBlock,
+            baseFeePerGas: dbBlock.baseFeePerGas ?? undefined,
             updatedAt: now,
           },
         }),

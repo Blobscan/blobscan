@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
+import { DetailsValueSkeleton } from "~/components/DetailsValueSkeleton";
 import ErrorPage from "~/pages/_error";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useQuery } from "@tanstack/react-query";
@@ -296,6 +297,7 @@ const Blob: NextPage = function () {
             blobSize={blob.size}
             blobUsage={blob.usageSize}
             variant="minimal"
+            width="full"
           />
         ),
       }
@@ -412,7 +414,20 @@ const Blob: NextPage = function () {
           </div>
         }
         fields={blob ? detailsFields : undefined}
-        skeletonRows={12}
+        loadingFields={[
+          "Versioned Hash",
+          { name: "Status", value: <DetailsValueSkeleton variant="badge" /> },
+          "Block",
+          "Transaction",
+          "Timestamp",
+          { name: "Category", value: <DetailsValueSkeleton variant="badge" /> },
+          "Position In Transaction",
+          "Commitment",
+          "Proof",
+          "Size",
+          { name: "Usage", value: <DetailsValueSkeleton variant="bar" /> },
+          { name: "Storages", value: <DetailsValueSkeleton variant="badge" /> },
+        ]}
         resource={
           blob
             ? {

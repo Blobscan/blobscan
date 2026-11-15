@@ -2,6 +2,14 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env"],
   "tasks": {
+    "test:backfill": {
+      "cache": false,
+      "env": ["TEST_DATABASE_URL"]
+    },
+    "backfill:transactions": {
+      "cache": false,
+      "env": ["EXECUTION_RPC_URL"]
+    },
     "db:generate": {
       "inputs": ["prisma/schema/**"],
       "cache": false
