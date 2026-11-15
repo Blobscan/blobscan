@@ -465,16 +465,7 @@ const Tx: NextPage = () => {
       });
     }
     detailsFields.push({
-      name: (
-        <span className="inline-flex flex-wrap items-center gap-2">
-          Raw Input
-          {tx.input != null && (
-            <span className="text-xs font-normal text-contentTertiary-light dark:text-contentTertiary-dark">
-              {(tx.input.length - 2) / 2} bytes
-            </span>
-          )}
-        </span>
-      ),
+      name: "Raw Input",
       helpText:
         "The transaction input bytes in hexadecimal format. This is calldata, separate from the data stored in blobs.",
       value: <TransactionCalldata input={tx.input} />,
