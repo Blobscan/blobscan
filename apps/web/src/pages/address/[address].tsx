@@ -4,11 +4,13 @@ import { useRouter } from "next/compat/router";
 
 import { CategoryBadge } from "~/components/Badges/CategoryBadge";
 import { Copyable } from "~/components/Copyable";
+import { DetailsValueSkeleton } from "~/components/DetailsValueSkeleton";
 import { EthIdenticon } from "~/components/EthIdenticon";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
+import { Skeleton } from "~/components/Skeleton";
 import { AddressTabs } from "~/components/Tabs/AddressTabs";
 import { api } from "~/api-client";
 import ErrorPage from "~/pages/_error";
@@ -177,7 +179,22 @@ const Address: NextPage = () => {
           value: checksumAddress,
         }}
         fields={detailsFields}
-        skeletonRows={3}
+        loadingFields={[
+          "Address",
+          { name: "Category", value: <DetailsValueSkeleton variant="badge" /> },
+          {
+            name: "Blob Txs",
+            value: (
+              <div className="flex min-w-0 flex-col gap-1 md:flex-row md:items-center md:gap-8">
+                {["First", "Last"].map((label) => (
+                  <SubfieldLine key={label} label={label}>
+                    <Skeleton width={160} height={15} />
+                  </SubfieldLine>
+                ))}
+              </div>
+            ),
+          },
+        ]}
       />
       <AddressTabs
         address={address}

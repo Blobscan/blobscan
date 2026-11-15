@@ -12,6 +12,7 @@ import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { Copyable } from "~/components/Copyable";
+import { DetailsValueSkeleton } from "~/components/DetailsValueSkeleton";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { EtherDisplay } from "~/components/Displays/EtherDisplay";
 import { FiatDisplay } from "~/components/Displays/FiatDisplay";
@@ -255,6 +256,23 @@ const Tx: NextPage = () => {
 
     detailsFields.push(
       {
+        name: "Blob Usage",
+
+        helpText:
+          "The total size of blob data after trailing zero bytes are removed. The percentage compares this size with the full blob size.",
+
+        value: (
+          <BlobUsageDisplay
+            blobSize={totalBlobSize}
+            blobUsage={totalBlobUsageSize}
+            variant="minimal"
+            width="full"
+            showTotal
+          />
+        ),
+      },
+
+      {
         name: "Total Fee",
         helpText:
           "The execution base fee, priority fee, and blob fee paid by this transaction.",
@@ -308,6 +326,35 @@ const Tx: NextPage = () => {
         ),
       },
       {
+        name: "Blob Fee",
+        helpText:
+          "Base is the blob fee paid. Max is the maximum total blob fee allowed by the sender. These amounts exclude execution gas fees.",
+        value: (
+          <div className="flex flex-col gap-4">
+            {blobGasBaseFee ? (
+              <div className="flex gap-1">
+                <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                  Base:
+                </div>
+                <EtherDisplay
+                  weiAmount={blobGasBaseFee}
+                  usdAmount={blobGasBaseUsdFee}
+                />
+              </div>
+            ) : null}
+            <div className=" flex gap-1">
+              <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                Max:
+              </div>
+              <EtherDisplay
+                weiAmount={blobGasMaxFee}
+                usdAmount={blobGasMaxUsdFee}
+              />
+            </div>
+          </div>
+        ),
+      },
+      {
         name: "Gas Used",
         helpText:
           "Execution gas and blob gas charged for this transaction. These are separate gas units.",
@@ -356,52 +403,6 @@ const Tx: NextPage = () => {
                 weiAmount={block.blobGasPrice}
                 usdAmount={blobGasUsdPrice}
                 opts={{ toUnit: "Gwei" }}
-              />
-            </div>
-          </div>
-        ),
-      },
-      {
-        name: "Blob Usage",
-
-        helpText:
-          "The total size of blob data after trailing zero bytes are removed. The percentage compares this size with the full blob size.",
-
-        value: (
-          <BlobUsageDisplay
-            blobSize={totalBlobSize}
-            blobUsage={totalBlobUsageSize}
-            variant="minimal"
-            width="full"
-            showTotal
-          />
-        ),
-      },
-
-      {
-        name: "Blob Fee",
-        helpText:
-          "Base is the blob fee paid. Max is the maximum total blob fee allowed by the sender. These amounts exclude execution gas fees.",
-        value: (
-          <div className="flex flex-col gap-4">
-            {blobGasBaseFee ? (
-              <div className="flex gap-1">
-                <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
-                  Base:
-                </div>
-                <EtherDisplay
-                  weiAmount={blobGasBaseFee}
-                  usdAmount={blobGasBaseUsdFee}
-                />
-              </div>
-            ) : null}
-            <div className=" flex gap-1">
-              <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
-                Max:
-              </div>
-              <EtherDisplay
-                weiAmount={blobGasMaxFee}
-                usdAmount={blobGasMaxUsdFee}
               />
             </div>
           </div>
@@ -535,7 +536,71 @@ const Tx: NextPage = () => {
             : undefined
         }
         fields={detailsFields}
-        skeletonRows={isMainnet ? 17 : 16}
+        loadingFields={[
+          "Hash",
+          {
+            name: "Status",
+            value: <DetailsValueSkeleton variant="badge" count={2} />,
+          },
+          "Block",
+          "Timestamp",
+          "Position In Block",
+          "From",
+          "To",
+          { name: "Category", value: <DetailsValueSkeleton variant="badge" /> },
+          { name: "Blob Usage", value: <DetailsValueSkeleton variant="bar" /> },
+          {
+            name: "Total Fee",
+            value: <DetailsValueSkeleton variant="distribution" />,
+          },
+          {
+            name: "Execution Fee",
+            value: (
+              <DetailsValueSkeleton
+                variant="subfields"
+                labels={["Base", "Priority"]}
+              />
+            ),
+          },
+          {
+            name: "Blob Fee",
+            value: (
+              <DetailsValueSkeleton
+                variant="subfields"
+                labels={["Base", "Max"]}
+              />
+            ),
+          },
+          {
+            name: "Gas Used",
+            value: (
+              <DetailsValueSkeleton
+                variant="subfields"
+                labels={["Execution", "Blob"]}
+              />
+            ),
+          },
+          {
+            name: "Gas Price",
+            value: (
+              <DetailsValueSkeleton
+                variant="subfields"
+                labels={["Execution", "Blob"]}
+              />
+            ),
+          },
+          {
+            name: "Blob As Calldata",
+            value: (
+              <DetailsValueSkeleton
+                variant="subfields"
+                labels={["Gas Used", "Fee"]}
+              />
+            ),
+          },
+          ...(isMainnet ? ["ETH Price"] : []),
+          "Raw Input",
+        ]}
       />
 
       {tx?.rollup === "optimism" && !!tx.decodedFields && (

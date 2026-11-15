@@ -8,6 +8,7 @@ import { CountBadge } from "~/components/Badges/CountBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
+import { DetailsValueSkeleton } from "~/components/DetailsValueSkeleton";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { EtherDisplay } from "~/components/Displays/EtherDisplay";
@@ -237,7 +238,20 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Fees",
+        name: "Blob Usage",
+        helpText: "Used blob data and total blob size for this block.",
+        value: (
+          <BlobUsageDisplay
+            blobSize={totalBlobSize}
+            blobUsage={totalBlobUsageSize}
+            showTotal
+            variant="minimal"
+            width="full"
+          />
+        ),
+      },
+      {
+        name: "Blob Transaction Fees",
         helpText:
           "Total execution base, priority, and blob fees paid by blob transactions in this block. Excludes ordinary transactions. Unavailable when fee data is incomplete.",
         value:
@@ -256,21 +270,6 @@ const Block: NextPage = function () {
               />
             </div>
           ),
-      },
-      {
-        name: "Blob Gas Used",
-        helpText: `The total blob gas used by transactions in this block, along with its percentage relative to both the total blob gas limit and the blob gas target (${
-          targetBlobGasPerBlock / BigInt(1024)
-        } KB).`,
-        value: (
-          <BlobGasUsageDisplay
-            blobParams={activeFork.blobParams}
-            showTotal
-            width="full"
-            blobGasUsed={blockData.blobGasUsed}
-            variant={isCompact ? "minimal" : "detailed"}
-          />
-        ),
       },
       {
         name: "Base Fee",
@@ -306,15 +305,17 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Blob Usage",
-        helpText: "Used blob data and total blob size for this block.",
+        name: "Blob Gas Used",
+        helpText: `The total blob gas used by transactions in this block, along with its percentage relative to both the total blob gas limit and the blob gas target (${
+          targetBlobGasPerBlock / BigInt(1024)
+        } KB).`,
         value: (
-          <BlobUsageDisplay
-            blobSize={totalBlobSize}
-            blobUsage={totalBlobUsageSize}
+          <BlobGasUsageDisplay
+            blobParams={activeFork.blobParams}
             showTotal
-            variant="minimal"
             width="full"
+            blobGasUsed={blockData.blobGasUsed}
+            variant={isCompact ? "minimal" : "detailed"}
           />
         ),
       },
@@ -407,7 +408,35 @@ const Block: NextPage = function () {
             : undefined
         }
         fields={detailsFields}
-        skeletonRows={isMainnet ? 13 : 12}
+        loadingFields={[
+          "Hash",
+          { name: "Status", value: <DetailsValueSkeleton variant="badge" /> },
+          "Block Height",
+          "Timestamp",
+          "Slot",
+          "Epoch",
+          { name: "Blob Usage", value: <DetailsValueSkeleton variant="bar" /> },
+          {
+            name: "Blob Transaction Fees",
+            value: <DetailsValueSkeleton variant="distribution" />,
+          },
+          {
+            name: "Base Fee",
+            value: (
+              <DetailsValueSkeleton
+                variant="subfields"
+                labels={["Execution", "Blob"]}
+              />
+            ),
+          },
+          {
+            name: "Blob Gas Used",
+            value: <DetailsValueSkeleton variant="bar" />,
+          },
+          "Excess Blob Gas",
+          "Blob As Calldata Gas",
+          ...(isMainnet ? ["ETH Price"] : []),
+        ]}
       />
 
       <Card
