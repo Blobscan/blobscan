@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { formatEther } from "viem";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
-
 export function TransactionFeeDistribution({
   executionBaseFee,
   priorityFee,
@@ -72,20 +70,19 @@ export function TransactionFeeDistribution({
               amount
             )} ETH. ${destination}.`;
             return (
-              <Tooltip key={label}>
-                <TooltipTrigger
-                  aria-label={description}
-                  onMouseEnter={() => setActiveSegment(label)}
-                  onMouseLeave={() => setActiveSegment(null)}
-                  onFocus={() => setActiveSegment(label)}
-                  onBlur={() => setActiveSegment(null)}
-                  className={`h-full ${color} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2`}
-                  style={{ width: `${percentage}%` }}
-                >
-                  <span className="sr-only">{label}</span>
-                </TooltipTrigger>
-                <TooltipContent>{description}</TooltipContent>
-              </Tooltip>
+              <button
+                key={label}
+                type="button"
+                aria-label={description}
+                onMouseEnter={() => setActiveSegment(label)}
+                onMouseLeave={() => setActiveSegment(null)}
+                onFocus={() => setActiveSegment(label)}
+                onBlur={() => setActiveSegment(null)}
+                className={`h-full ${color} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2`}
+                style={{ width: `${percentage}%` }}
+              >
+                <span className="sr-only">{label}</span>
+              </button>
             );
           })}
       </div>

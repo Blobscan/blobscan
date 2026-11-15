@@ -34,9 +34,7 @@ it("highlights the matching legend on hover and keyboard focus", async () => {
     expect(legend.className).not.toContain("text-amber-700");
     await act(async () => trigger.focus());
     expect(legend.className).toContain("text-amber-700");
-    expect(
-      document.querySelector('[role="tooltip"]')?.textContent
-    ).not.toContain("%");
+    expect(document.querySelector('[role="tooltip"]')).toBeNull();
     await act(async () => trigger.blur());
     expect(legend.className).not.toContain("text-amber-700");
   } finally {
