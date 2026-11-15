@@ -1,12 +1,12 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { TransactionFeeDistribution } from "../src/components/TransactionFeeDistribution";
+import { DistributionBar } from "../src/components/DistributionBar";
 
 describe("Transaction fee distribution", () => {
   it("splits total fees without counting the priority fee twice", () => {
     const markup = renderToStaticMarkup(
-      <TransactionFeeDistribution
+      <DistributionBar
         executionBaseFee={3603503358000n}
         priorityFee={42000000000000n}
         blobFee={1327174254592n}
@@ -23,7 +23,7 @@ describe("Transaction fee distribution", () => {
     for (const executionBaseFee of [null, undefined, 0n]) {
       expect(
         renderToStaticMarkup(
-          <TransactionFeeDistribution
+          <DistributionBar
             executionBaseFee={executionBaseFee}
             priorityFee={0n}
             blobFee={0n}
@@ -35,7 +35,7 @@ describe("Transaction fee distribution", () => {
 
   it("keeps large amounts exact and accepts zero segments", () => {
     const markup = renderToStaticMarkup(
-      <TransactionFeeDistribution
+      <DistributionBar
         executionBaseFee={10n ** 30n}
         priorityFee={0n}
         blobFee={10n ** 30n}

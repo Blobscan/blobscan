@@ -23,7 +23,7 @@ import { OptimismCard } from "~/components/OptimismCard";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Separator } from "~/components/Separator";
 import { TransactionCalldata } from "~/components/TransactionCalldata";
-import { TransactionFeeDistribution } from "~/components/TransactionFeeDistribution";
+import { DistributionBar } from "~/components/DistributionBar";
 import { api } from "~/api-client";
 import { useIsMainnet } from "~/hooks/useIsMainnet";
 import ErrorPage from "~/pages/_error";
@@ -270,7 +270,7 @@ const Tx: NextPage = () => {
                     : undefined
                 }
               />
-              <TransactionFeeDistribution
+              <DistributionBar
                 executionBaseFee={tx.executionBaseFee}
                 priorityFee={tx.priorityFee}
                 blobFee={tx.blobGasBaseFee}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { formatEther } from "viem";
 
-export function TransactionFeeDistribution({
+export function DistributionBar({
   executionBaseFee,
   priorityFee,
   blobFee,

@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { act } from "react-dom/test-utils";
 import { expect, it, vi } from "vitest";
 
-import { TransactionFeeDistribution } from "../src/components/TransactionFeeDistribution";
+import { DistributionBar } from "../src/components/DistributionBar";
 
 it("highlights the matching legend on hover and keyboard focus", async () => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
@@ -13,7 +13,7 @@ it("highlights the matching legend on hover and keyboard focus", async () => {
   try {
     act(() =>
       root.render(
-        <TransactionFeeDistribution
+        <DistributionBar
           executionBaseFee={8n}
           priorityFee={1n}
           blobFee={1n}
