@@ -64,7 +64,7 @@ export function TransactionFeeDistribution({
       role="group"
       aria-label="Fee distribution"
     >
-      <div className="w-[140px] max-w-full">
+      <div className="w-[240px] max-w-full">
         <DistributionBar
           label="Fee segments"
           onActiveSegmentChange={setActiveSegment}
