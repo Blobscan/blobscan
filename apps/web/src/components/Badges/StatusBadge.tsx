@@ -31,7 +31,7 @@ const STATUSES: Record<Status, StatusConfig> = {
   },
   finalized: {
     icon: LockClosedIcon,
-    color: { light: "#6B7280", dark: "#9CA3AF" },
+    color: { light: "#5D25D4", dark: "#AE8CF5" },
   },
   unfinalized: {
     icon: ClockIcon,
