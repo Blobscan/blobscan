@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import { calculateTransactionFees } from "../prisma/transaction-fees";
-import { getTransactionData } from "./transaction-rpc";
+import { createRpc, getTransactionData } from "./transaction-rpc";
 import type { RpcCall } from "./transaction-rpc";
 
 const stored = {
@@ -196,4 +196,120 @@ test("rejects missing and invalid execution status", async () => {
         : data[method as keyof typeof data];
     await assert.rejects(getTransactionData(rpc, stored));
   }
+});
+
+test("RPC batches respect the limit and match unordered response IDs", async (t) => {
+  const sizes: number[] = [];
+  t.mock.method(
+    globalThis,
+    "fetch",
+    async (_url: unknown, init: RequestInit) => {
+      const calls = JSON.parse(String(init.body)) as {
+        id: number;
+        params: string[];
+      }[];
+      sizes.push(calls.length);
+      return new Response(
+        JSON.stringify(
+          calls
+            .map((call) => ({
+              jsonrpc: "2.0",
+              id: call.id,
+              result: call.params[0],
+            }))
+            .reverse()
+        )
+      );
+    }
+  );
+  const rpc = createRpc("https://rpc.invalid", 1, 2);
+  assert.deepEqual(
+    await Promise.all(
+      ["a", "b", "c", "d", "e"].map((hash) =>
+        rpc("eth_getTransactionReceipt", [hash])
+      )
+    ),
+    ["a", "b", "c", "d", "e"]
+  );
+  assert.deepEqual(sizes, [2, 2, 1]);
+});
+
+test("RPC retries only rate-limited items in a partial batch", async (t) => {
+  const batches: number[][] = [];
+  t.mock.method(
+    globalThis,
+    "fetch",
+    async (_url: unknown, init: RequestInit) => {
+      const calls = JSON.parse(String(init.body)) as { id: number }[];
+      batches.push(calls.map((call) => call.id));
+      return new Response(
+        JSON.stringify(
+          calls.map((call) =>
+            batches.length === 1 && call.id === 2
+              ? {
+                  id: call.id,
+                  error: { code: -32005, message: "Rate limit exceeded" },
+                }
+              : { id: call.id, result: call.id }
+          )
+        )
+      );
+    }
+  );
+  const rpc = createRpc("https://rpc.invalid", 2);
+  assert.deepEqual(await Promise.all([rpc("a", []), rpc("b", [])]), [1, 2]);
+  assert.deepEqual(batches, [[1, 2], [2]]);
+});
+
+test("RPC honors Retry-After on HTTP rate limits", async (t) => {
+  let calls = 0;
+  const started = Date.now();
+  t.mock.method(
+    globalThis,
+    "fetch",
+    async (_url: unknown, init: RequestInit) => {
+      calls++;
+      if (calls === 1)
+        return new Response("", {
+          status: 429,
+          headers: { "Retry-After": "1.5" },
+        });
+      const batch = JSON.parse(String(init.body)) as { id: number }[];
+      return new Response(
+        JSON.stringify(batch.map((call) => ({ id: call.id, result: "ok" })))
+      );
+    }
+  );
+  assert.equal(await createRpc("https://rpc.invalid", 2)("a", []), "ok");
+  assert.equal(calls, 2);
+  assert.ok(Date.now() - started >= 1500);
+});
+
+test("RPC rejects duplicate IDs without leaking endpoint secrets", async (t) => {
+  t.mock.method(
+    globalThis,
+    "fetch",
+    async () =>
+      new Response(
+        JSON.stringify([
+          { id: 1, result: "a" },
+          { id: 1, result: "b" },
+        ])
+      )
+  );
+  const rpc = createRpc("https://rpc.invalid/secret", 1);
+  const results = await Promise.allSettled([rpc("a", []), rpc("b", [])]);
+  for (const result of results) {
+    assert.equal(result.status, "rejected");
+    if (result.status === "rejected")
+      assert.doesNotMatch(String(result.reason), /secret/);
+  }
+});
+
+test("RPC rejects a missing response after the attempt limit", async (t) => {
+  t.mock.method(globalThis, "fetch", async () => new Response("[]"));
+  await assert.rejects(
+    createRpc("https://rpc.invalid", 1)("a", []),
+    /failed after 1 attempts/
+  );
 });

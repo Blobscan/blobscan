@@ -1,0 +1,26 @@
+FROM node:24-alpine AS builder
+RUN apk add --no-cache openssl
+WORKDIR /app
+
+# Keep runtime dependencies separate from the application workspace.
+COPY docker/backfill/package.json docker/backfill/package-lock.json ./
+RUN npm ci
+COPY packages/db/prisma/schema ./prisma/schema
+RUN DATABASE_URL=postgresql://build:build@localhost:5432/build \
+    DIRECT_URL=postgresql://build:build@localhost:5432/build \
+    ./node_modules/.bin/prisma generate --schema ./prisma/schema --generator client
+RUN npm prune --omit=dev
+
+FROM node:24-alpine AS runtime
+RUN apk add --no-cache openssl
+WORKDIR /app
+ENV NODE_ENV=production
+ENV TSX_DISABLE_CACHE=1
+COPY --from=builder --chown=node:node /app/node_modules ./node_modules
+COPY --chown=node:node packages/db/scripts/backfill-transactions.ts \
+    packages/db/scripts/backfill.ts \
+    packages/db/scripts/transaction-rpc.ts \
+    packages/db/scripts/write-transaction-batch.ts ./scripts/
+USER node
+ENTRYPOINT ["node", "--import", "tsx", "scripts/backfill-transactions.ts"]
+CMD ["--help"]

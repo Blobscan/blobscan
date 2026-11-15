@@ -11,6 +11,8 @@ async function main() {
       "from-block": { type: "string" },
       "to-block": { type: "string" },
       "batch-size": { type: "string", default: "100" },
+      "block-range-size": { type: "string", default: "100" },
+      "rpc-batch-size": { type: "string", default: "20" },
       "dry-run": { type: "boolean", default: false },
       help: { type: "boolean", default: false },
     },
@@ -24,7 +26,9 @@ Options:
   --rpc-url <url>      HTTP RPC URL (or EXECUTION_RPC_URL)
   --from-block <n>     First block, inclusive
   --to-block <n>       Last block, inclusive
-  --batch-size <n>     Database page size (default: 100)
+  --batch-size <n>     Transactions per processing/write batch (default: 100)
+  --block-range-size <n> Blocks per database read (default: 100; maximum: 10000)
+  --rpc-batch-size <n> RPC calls per HTTP request (default: 20; maximum: 100)
   --dry-run           Read and validate RPC data without database writes
 
 Requires DATABASE_URL. Apply database migrations first.
@@ -51,7 +55,13 @@ Completed records are skipped. Run the command again to resume.`);
     throw new Error("Batch size must be between 1 and 1000");
   if (from !== undefined && to !== undefined && from > to)
     throw new Error("Invalid block range");
-  const rpc = createRpc(rpcUrl);
+  const blockRangeSize = parseNumber(values["block-range-size"])!;
+  if (blockRangeSize < 1 || blockRangeSize > 10000)
+    throw new Error("Block range size must be between 1 and 10000");
+  const rpcBatchSize = parseNumber(values["rpc-batch-size"])!;
+  if (rpcBatchSize < 1 || rpcBatchSize > 100)
+    throw new Error("RPC batch size must be between 1 and 100");
+  const rpc = createRpc(rpcUrl, 5, rpcBatchSize);
   const prisma = new PrismaClient();
   await backfillTransactions({
     prisma,
@@ -59,6 +69,7 @@ Completed records are skipped. Run the command again to resume.`);
     from,
     to,
     batchSize,
+    blockRangeSize,
     dryRun: values["dry-run"],
   });
 }

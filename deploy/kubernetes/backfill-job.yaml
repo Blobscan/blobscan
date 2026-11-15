@@ -1,0 +1,61 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: blobscan-transaction-backfill
+  labels:
+    app.kubernetes.io/name: blobscan-backfill
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: blobscan-backfill
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: backfill
+          image: blossomlabs/blobscan-backfill:REPLACE_WITH_COMMIT_SHA
+          args:
+            - --from-block
+            - "24000000"
+            - --to-block
+            - "24010000"
+            - --block-range-size
+            - "100"
+            - --batch-size
+            - "100"
+            - --rpc-batch-size
+            - "20"
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: blobscan-backfill
+                  key: DATABASE_URL
+            - name: EXECUTION_RPC_URL
+              valueFrom:
+                secretKeyRef:
+                  name: blobscan-backfill
+                  key: EXECUTION_RPC_URL
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
