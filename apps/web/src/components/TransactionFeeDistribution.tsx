@@ -31,6 +31,7 @@ export function TransactionFeeDistribution({
   const segments = [
     {
       label: "Execution base fee",
+      legend: "Execution base",
       amount: executionBaseFee,
       color: "bg-violet-500",
       activeColor: "text-violet-700 dark:text-violet-400",
@@ -38,6 +39,7 @@ export function TransactionFeeDistribution({
     },
     {
       label: "Priority fee",
+      legend: "Priority",
       amount: priorityFee,
       color: "bg-amber-500",
       activeColor: "text-amber-700 dark:text-amber-400",
@@ -45,6 +47,7 @@ export function TransactionFeeDistribution({
     },
     {
       label: "Blob fee",
+      legend: "Blob",
       amount: blobFee,
       color: "bg-cyan-500",
       activeColor: "text-cyan-700 dark:text-cyan-400",
@@ -87,7 +90,7 @@ export function TransactionFeeDistribution({
           })}
       </div>
       <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-contentSecondary-light dark:text-contentSecondary-dark">
-        {segments.map(({ label, color, activeColor, percentage }) => (
+        {segments.map(({ label, legend, color, activeColor, percentage }) => (
           <span
             key={label}
             className={`inline-flex items-center gap-1 transition-colors ${
@@ -98,7 +101,7 @@ export function TransactionFeeDistribution({
               className={`h-1.5 w-1.5 rounded-full ${color}`}
               aria-hidden="true"
             />
-            {label} {percentage.toFixed(2)}%
+            {legend} {percentage.toFixed(2)}%
           </span>
         ))}
       </div>

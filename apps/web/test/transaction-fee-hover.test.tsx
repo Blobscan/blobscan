@@ -22,7 +22,7 @@ it("highlights the matching legend on hover and keyboard focus", async () => {
     );
     const trigger = container.querySelectorAll("button")[1]!;
     const legend = Array.from(container.querySelectorAll("span")).find(
-      (element) => element.textContent === "Priority fee 10.00%"
+      (element) => element.textContent === "Priority 10.00%"
     )!;
     await act(async () =>
       trigger.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }))

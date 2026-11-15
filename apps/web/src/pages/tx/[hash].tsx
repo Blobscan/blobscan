@@ -431,8 +431,8 @@ const Tx: NextPage = () => {
                       maximumFractionDigits: 2,
                     }
                   )}
-                </strong>{" "}
-                times larger)
+                </strong>
+                × gas)
               </span>
             </div>
             <div className="flex flex-wrap items-center gap-1">
@@ -450,8 +450,8 @@ const Tx: NextPage = () => {
                       maximumFractionDigits: 2,
                     }
                   )}
-                </strong>{" "}
-                times more expensive
+                </strong>
+                × cost
               </span>
             </div>
           </div>
