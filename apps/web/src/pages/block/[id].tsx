@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
+import { getBlockBlobTransactionFees } from "~/utils/block-fees";
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { CountBadge } from "~/components/Badges/CountBadge";
 import { Card } from "~/components/Cards/Card";
@@ -60,11 +61,6 @@ const Block: NextPage = function () {
       retry: false,
     }
   );
-  const { data: blobTransactionFees, isError: blobTransactionFeesError } =
-    api.block.getBlobTransactionFees.useQuery(
-      { hash: blockData?.hash ?? "" },
-      { enabled: Boolean(blockData?.hash) }
-    );
   const blockNumber = blockData?.number;
   const chain = useChain();
   const breakpoint = useBreakpoint();
@@ -146,6 +142,7 @@ const Block: NextPage = function () {
   let detailsFields: DetailsLayoutProps["fields"] | undefined;
 
   if (blockData && chain) {
+    const blobTransactionFees = getBlockBlobTransactionFees(blockData);
     const activeFork = chain.getActiveForkBySlot(blockData.slot);
     const {
       bytesPerFieldElement,
@@ -244,13 +241,7 @@ const Block: NextPage = function () {
         helpText:
           "Total execution base, priority, and blob fees paid by blob transactions in this block. Excludes ordinary transactions. Unavailable when fee data is incomplete.",
         value:
-          blobTransactionFees === undefined ? (
-            blobTransactionFeesError ? (
-              "Unavailable"
-            ) : (
-              "Loading…"
-            )
-          ) : blobTransactionFees.totalFee == null ? (
+          blobTransactionFees == null ? (
             "Unavailable"
           ) : (
             <div className="w-full">

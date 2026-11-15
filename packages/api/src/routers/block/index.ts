@@ -3,14 +3,12 @@ import { checkBlockExists } from "./checkBlobExists";
 import { getAdjacentBlock } from "./getAdjacentBlock";
 import { getAll } from "./getAll";
 import { getAllByCursor } from "./getAllByCursor";
-import { getBlobTransactionFees } from "./getBlobTransactionFees";
 import { getByBlockId } from "./getByBlockId";
 import { getBySlot } from "./getBySlot";
 import { getCount } from "./getCount";
 import { getLatest } from "./getLatest";
 
 export const blockRouter = t.router({
-  getBlobTransactionFees,
   checkBlockExists,
   getAdjacentBlock,
   getAll,

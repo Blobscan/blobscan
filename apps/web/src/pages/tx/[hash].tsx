@@ -4,9 +4,10 @@ import { useRouter } from "next/compat/router";
 import { skipToken, useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
 
+import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { CategoryBadge } from "~/components/Badges/CategoryBadge";
 import { CountBadge } from "~/components/Badges/CountBadge";
-import { TransactionStatusBadges } from "~/components/Badges/TransactionStatusBadges";
+import { StatusBadge } from "~/components/Badges/StatusBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { CopyToClipboard } from "~/components/CopyToClipboard";
@@ -196,10 +197,10 @@ const Tx: NextPage = () => {
         name: "Status",
         helpText: "The block finality and transaction execution status.",
         value: (
-          <TransactionStatusBadges
-            blockNumber={blockNumber}
-            executionStatus={tx.executionStatus}
-          />
+          <div className="flex flex-wrap items-center gap-2">
+            <BlockStatusBadge blockNumber={blockNumber} />
+            {tx.executionStatus && <StatusBadge status={tx.executionStatus} />}
+          </div>
         ),
       },
       {

@@ -1,7 +1,8 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
-import { TransactionStatusBadges } from "../src/components/Badges/TransactionStatusBadges";
+import { BlockStatusBadge } from "../src/components/Badges/BlockStatusBadge";
+import { StatusBadge } from "../src/components/Badges/StatusBadge";
 
 vi.mock("~/api-client", () => ({
   api: {
@@ -15,31 +16,22 @@ vi.mock("~/api-client", () => ({
   },
 }));
 
-describe("Transaction status badges", () => {
+describe("Status badges", () => {
   it.each([
-    [100, "success", "Finalized", "Success"],
-    [101, "failed", "Unfinalized", "Failed"],
-    [100, "failed", "Finalized", "Failed"],
-    [101, "success", "Unfinalized", "Success"],
-  ] as const)(
-    "shows finality and execution for block %s and %s",
-    (blockNumber, executionStatus, finality, execution) => {
-      const markup = renderToStaticMarkup(
-        <TransactionStatusBadges
-          blockNumber={blockNumber}
-          executionStatus={executionStatus}
-        />
-      );
-      expect(markup).toContain(finality);
-      expect(markup).toContain(execution);
-    }
-  );
-
-  it("omits the execution badge when status is missing", () => {
+    [100, "Finalized"],
+    [101, "Unfinalized"],
+  ] as const)("shows finality for block %s", (blockNumber, finality) => {
     const markup = renderToStaticMarkup(
-      <TransactionStatusBadges blockNumber={100} executionStatus={null} />
+      <BlockStatusBadge blockNumber={blockNumber} />
     );
-    expect(markup).toContain("Finalized");
-    expect(markup).not.toMatch(/Unknown|Success|Failed/);
+    expect(markup).toContain(finality);
+  });
+
+  it.each([
+    ["success", "Success"],
+    ["failed", "Failed"],
+  ] as const)("shows execution status %s", (status, label) => {
+    const markup = renderToStaticMarkup(<StatusBadge status={status} />);
+    expect(markup).toContain(label);
   });
 });
