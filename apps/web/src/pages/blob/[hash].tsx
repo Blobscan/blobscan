@@ -296,6 +296,7 @@ const Blob: NextPage = function () {
             blobSize={blob.size}
             blobUsage={blob.usageSize}
             variant="minimal"
+            width="full"
           />
         ),
       }

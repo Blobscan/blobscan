@@ -9,7 +9,7 @@ import { PercentageBar } from "../PercentageBar";
 type BlobGasUsageDisplayProps = {
   blobParams: ChainBlobParams;
   blobGasUsed: bigint;
-  width?: number;
+  width?: number | "full";
   variant?: "detailed" | "minimal";
 };
 
@@ -76,7 +76,9 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
         )}
       </div>
       <div
-        className={cn("flex items-center gap-1", {
+        className={cn("flex gap-1", {
+          "w-full max-w-xs flex-col items-start": width === "full",
+          "items-center": width !== "full",
           "absolute top-4": !isDetailedMode,
           "gap-1": !isZero,
           "gap-3": isZero,

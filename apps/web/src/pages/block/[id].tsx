@@ -17,6 +17,7 @@ import { Link } from "~/components/Link";
 import { NavArrow } from "~/components/NavArrow";
 import type { NavArrowProps } from "~/components/NavArrow";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
+import { TransactionFeeDistribution } from "~/components/TransactionFeeDistribution";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { useChain } from "~/hooks/useChain";
@@ -65,6 +66,11 @@ const Block: NextPage = function () {
       retry: false,
     }
   );
+  const { data: blobTransactionFees, isError: blobTransactionFeesError } =
+    api.block.getBlobTransactionFees.useQuery(
+      { hash: blockData?.hash ?? "" },
+      { enabled: Boolean(blockData?.hash) }
+    );
   const blockNumber = blockData?.number;
   const chain = useChain();
   const breakpoint = useBreakpoint();
@@ -263,6 +269,7 @@ const Block: NextPage = function () {
             blobSize={totalBlobSize}
             blobUsage={totalBlobUsageSize}
             variant="minimal"
+            width="full"
           />
         ),
       },
@@ -274,6 +281,7 @@ const Block: NextPage = function () {
         value: (
           <BlobGasUsageDisplay
             blobParams={activeFork.blobParams}
+            width="full"
             blobGasUsed={blockData.blobGasUsed}
             variant={isCompact ? "minimal" : "detailed"}
           />
@@ -292,6 +300,33 @@ const Block: NextPage = function () {
             </span>
           </div>
         ),
+      },
+      {
+        name: "Total Fees for Blob Transactions",
+        helpText:
+          "Execution base fees, priority fees, and blob fees paid by all blob transactions in this block. Ordinary transactions are excluded. All required fee data must be available.",
+        value:
+          blobTransactionFees === undefined ? (
+            blobTransactionFeesError ? (
+              "Unavailable"
+            ) : (
+              "Loading…"
+            )
+          ) : blobTransactionFees.totalFee == null ? (
+            "Unavailable"
+          ) : (
+            <div className="w-full">
+              <EtherDisplay
+                weiAmount={blobTransactionFees.totalFee}
+                ethUsdPrice={blockData.ethUsdPrice}
+              />
+              <TransactionFeeDistribution
+                executionBaseFee={blobTransactionFees.executionBaseFee}
+                priorityFee={blobTransactionFees.priorityFee}
+                blobFee={blobTransactionFees.blobFee}
+              />
+            </div>
+          ),
       },
       {
         name: "Execution Base Fee",
@@ -421,7 +456,7 @@ const Block: NextPage = function () {
             : undefined
         }
         fields={detailsFields}
-        skeletonRows={isMainnet ? 16 : 15}
+        skeletonRows={isMainnet ? 17 : 16}
       />
 
       <Card

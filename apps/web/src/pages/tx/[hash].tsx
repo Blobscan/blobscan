@@ -3,7 +3,6 @@ import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 import { skipToken, useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
-import { formatEther } from "viem";
 
 import { CategoryBadge } from "~/components/Badges/CategoryBadge";
 import { CountBadge } from "~/components/Badges/CountBadge";
@@ -261,16 +260,7 @@ const Tx: NextPage = () => {
         value:
           tx.totalFee != null ? (
             <div className="w-full">
-              <EtherDisplay
-                weiAmount={tx.totalFee}
-                usdAmount={
-                  ethUsdPrice != null
-                    ? (
-                        Number(formatEther(tx.totalFee)) * ethUsdPrice
-                      ).toString()
-                    : undefined
-                }
-              />
+              <EtherDisplay weiAmount={tx.totalFee} ethUsdPrice={ethUsdPrice} />
               <TransactionFeeDistribution
                 executionBaseFee={tx.executionBaseFee}
                 priorityFee={tx.priorityFee}
@@ -294,13 +284,7 @@ const Tx: NextPage = () => {
               {tx.executionBaseFee != null ? (
                 <EtherDisplay
                   weiAmount={tx.executionBaseFee}
-                  usdAmount={
-                    ethUsdPrice != null
-                      ? (
-                          Number(formatEther(tx.executionBaseFee)) * ethUsdPrice
-                        ).toString()
-                      : undefined
-                  }
+                  ethUsdPrice={ethUsdPrice}
                 />
               ) : (
                 "Unavailable"
@@ -313,13 +297,7 @@ const Tx: NextPage = () => {
               {tx.priorityFee != null ? (
                 <EtherDisplay
                   weiAmount={tx.priorityFee}
-                  usdAmount={
-                    ethUsdPrice != null
-                      ? (
-                          Number(formatEther(tx.priorityFee)) * ethUsdPrice
-                        ).toString()
-                      : undefined
-                  }
+                  ethUsdPrice={ethUsdPrice}
                 />
               ) : (
                 "Unavailable"
@@ -362,14 +340,7 @@ const Tx: NextPage = () => {
               {tx.effectiveGasPrice != null ? (
                 <EtherDisplay
                   weiAmount={tx.effectiveGasPrice}
-                  usdAmount={
-                    ethUsdPrice != null
-                      ? (
-                          Number(formatEther(tx.effectiveGasPrice)) *
-                          ethUsdPrice
-                        ).toString()
-                      : undefined
-                  }
+                  ethUsdPrice={ethUsdPrice}
                   opts={{ toUnit: "Gwei" }}
                 />
               ) : (
