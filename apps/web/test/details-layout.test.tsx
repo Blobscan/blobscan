@@ -22,6 +22,8 @@ describe("DetailsLayout loading values", () => {
     expect(markup).toContain(">Blob Usage<");
     expect(markup).toContain(">Blob Transaction Fees<");
     expect(markup.match(/class="react-loading-skeleton"/g)).toHaveLength(3);
+    expect(markup).not.toContain("content-reveal");
+    expect(markup).not.toContain("animation-delay");
   });
 
   it("uses badge and bar shapes for configured values", () => {
@@ -68,5 +70,6 @@ describe("DetailsLayout loading values", () => {
     expect(markup).toContain(">0<");
     expect(markup).not.toContain("react-loading-skeleton");
     expect(markup).not.toContain(">Hash<");
+    expect(markup).toContain("content-reveal");
   });
 });

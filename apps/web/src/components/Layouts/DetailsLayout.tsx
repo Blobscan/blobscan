@@ -61,6 +61,7 @@ export const DetailsLayout: FC<DetailsLayoutProps> = function ({
         }
       >
         <InfoGrid
+          isLoading={!fields}
           fields={
             fields ??
             loadingFields.map((field) =>
