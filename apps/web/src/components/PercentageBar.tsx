@@ -14,7 +14,7 @@ export type PercentageBarProps = {
   total: Numerish;
   compact?: boolean;
   color?: Color;
-  width?: number;
+  width?: number | "full";
   hidePercentage?: boolean;
 };
 
@@ -29,8 +29,18 @@ export const PercentageBar: FC<PercentageBarProps> = function ({
   const barPercentageProps = useAnimatedPercentage(value, total);
 
   return (
-    <div className="flex items-center gap-1.5">
-      <div className="relative min-w-0 max-w-full" style={{ width }}>
+    <div
+      className={cn(
+        "flex",
+        width === "full"
+          ? "w-full max-w-sm flex-col items-start gap-1.5"
+          : "items-center gap-1.5"
+      )}
+    >
+      <div
+        className="relative min-w-0 max-w-full"
+        style={{ width: width === "full" ? "100%" : width }}
+      >
         <DistributionBar
           label="Usage"
           compact={compact}

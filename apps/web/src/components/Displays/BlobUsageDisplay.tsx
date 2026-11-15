@@ -9,7 +9,7 @@ export interface BlobUsageDisplayProps {
   blobSize: number;
   blobUsage: number;
   byteUnit?: ByteUnit;
-  width?: number;
+  width?: number | "full";
   variant?: "minimal" | "inline" | "detailed";
   hideUnit?: boolean;
   showTotal?: boolean;
