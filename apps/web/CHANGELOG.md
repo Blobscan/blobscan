@@ -1,5 +1,18 @@
 # @blobscan/web
 
+## 0.65.0
+
+### Minor Changes
+
+- [#1143](https://github.com/Blobscan/blobscan/pull/1143) [`1a47029`](https://github.com/Blobscan/blobscan/commit/1a47029397840460352f82ef880e2245e8833efc) Thanks [@PJColombo](https://github.com/PJColombo)! - Added receipt-based transaction fees, execution status, raw input, and an RPC backfill command. Added fee breakdowns, historical USD values, block fee totals, and value-shaped loading skeletons. Updated indexer documentation.
+
+### Patch Changes
+
+- Updated dependencies [[`1a47029`](https://github.com/Blobscan/blobscan/commit/1a47029397840460352f82ef880e2245e8833efc)]:
+  - @blobscan/api@0.47.0
+  - @blobscan/db@0.36.0
+  - @blobscan/blob-storage-manager@0.15.6
+
 ## 0.64.1
 
 ### Patch Changes
