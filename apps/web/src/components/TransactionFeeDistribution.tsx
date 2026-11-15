@@ -55,7 +55,7 @@ export function TransactionFeeDistribution({
       role="group"
       aria-label="Fee distribution"
     >
-      <div className="flex h-2 w-full overflow-hidden rounded-full">
+      <div className="flex h-1 w-full overflow-hidden rounded-full">
         {segments
           .filter(({ amount }) => amount > 0n)
           .map(({ label, amount, color, destination, percentage }) => {
