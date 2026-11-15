@@ -6,7 +6,7 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/24/solid";
 
-import BlobIcon from "~/icons/blob.svg";
+import { BlobIcon } from "~/components/BlobIcon";
 import EthereumIcon from "~/icons/ethereum.svg";
 import { routes } from "~/routes";
 import { BLOBSCAN_EXPLORERS } from "./explorers";

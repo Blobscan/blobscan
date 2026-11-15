@@ -52,6 +52,7 @@ ARG DIRECT_URL
 
 ENV NEXT_BUILD_OUTPUT=standalone
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA=$GIT_COMMIT
 
 COPY --from=deps /prepare/web/json .
 COPY --from=deps /prepare/web/pnpm-lock.yaml .

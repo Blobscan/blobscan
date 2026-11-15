@@ -18,15 +18,22 @@ type RollupBadgeProps = BadgeProps & {
 export const RollupBadge: React.FC<RollupBadgeProps> = ({
   compact = false,
   rollup,
-  amount = 1,
+  amount,
   ...props
 }) => {
   const { color, iconClassname, name }: RollupDefinition =
     ROLLUP_DEFINITIONS[rollup];
+  const countLabel = `${name}: ${amount} ${
+    amount === 1 ? "transaction" : "transactions"
+  }`;
 
   const rollupIcon = (
     <div
-      className="relative text-[var(--brand-color-light)] dark:text-[var(--brand-color-dark)]"
+      className={`relative text-[var(--brand-color-light)] dark:text-[var(--brand-color-dark)]${
+        compact
+          ? " flex w-max shrink-0 items-center justify-center rounded-full bg-slate-100 p-1 dark:bg-slate-800"
+          : ""
+      }`}
       style={getBrandColorStyle(color)}
     >
       <Icon
@@ -35,8 +42,12 @@ export const RollupBadge: React.FC<RollupBadgeProps> = ({
         className={iconClassname}
         size={props.size ?? (compact ? "md" : "sm")}
       />
-      {amount > 1 && (
-        <div className="absolute -bottom-2 -right-1 text-[10px] text-black dark:text-contentSecondary-dark">
+      {amount !== undefined && amount > 0 && (
+        <div
+          className="absolute -bottom-1 -right-1 flex h-[11px] min-w-[11px] items-center justify-center rounded-full bg-slate-900 px-0.5 text-[8px] font-bold leading-none text-white shadow-sm ring-1 ring-white dark:bg-slate-100 dark:text-slate-950 dark:ring-slate-900"
+          aria-label={countLabel}
+          title={countLabel}
+        >
           {amount}
         </div>
       )}

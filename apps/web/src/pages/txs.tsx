@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 
 import dayjs from "@blobscan/dayjs";
-import { formatWei } from "@blobscan/eth-format";
 
 import { CountBadge } from "~/components/Badges/CountBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
@@ -13,6 +12,7 @@ import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
+import { TableAmount } from "~/components/Table/Amount";
 import type { TimestampFormat } from "~/components/Toggles";
 import { TimestampToggle } from "~/components/Toggles";
 import { TransactionBlobsTable } from "~/components/TransactionBlobsTable";
@@ -56,46 +56,46 @@ const Txs: NextPage = function () {
   const transactionHeaders = [
     {
       cells: [
-        { item: "", className: "w-[40px]" },
+        { item: "", className: "w-[2.76%]" },
         {
           item: "Hash",
-          className: "w-[150px]",
+          className: "w-[10.34%]",
         },
         {
           item: "Block number",
-          className: "w-[127px]",
+          className: "w-[8.76%]",
         },
         {
           item: (
             <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
           ),
-          className: timeFormat === "relative" ? "w-[130px]" : "w-[175px]",
+          className: "w-[8.96%]",
         },
-        { item: "Blobs", className: "w-[62px]" },
+        { item: "Blobs", className: "w-[4.27%]" },
         {
           item: `Blob Usage (${BYTES_UNIT})`,
-          className: "w-[148px]",
+          className: "w-[15.17%]",
         },
         {
           item: "From",
-          className: "w-[150px]",
+          className: "w-[10.34%]",
         },
         {
           item: "To",
-          className: "w-[148px]",
+          className: "w-[10.20%]",
         },
 
         {
           item: "Blob Base Fee (Gwei)",
-          className: "w-[120px]",
+          className: "text-right w-[8.27%]",
         },
         {
           item: "Blob Max Fee (Gwei)",
-          className: "w-[120px]",
+          className: "text-right w-[8.27%]",
         },
         {
           item: "Blob Gas Price (Gwei)",
-          className: "w-[140px]",
+          className: "w-[9.65%] text-right",
         },
       ],
     },
@@ -129,6 +129,7 @@ const Txs: NextPage = function () {
             return {
               cells: [
                 {
+                  className: "px-2",
                   item:
                     category === "rollup" && rollup ? (
                       <RollupBadge rollup={rollup} compact />
@@ -190,34 +191,13 @@ const Txs: NextPage = function () {
                   ),
                 },
                 {
-                  item: (
-                    <div className="truncate">
-                      {formatWei(blobGasBaseFee, {
-                        toUnit: "Gwei",
-                        hideUnit: true,
-                      })}
-                    </div>
-                  ),
+                  item: <TableAmount weiAmount={blobGasBaseFee} />,
                 },
                 {
-                  item: (
-                    <div className="truncate">
-                      {formatWei(blobGasMaxFee, {
-                        toUnit: "Gwei",
-                        hideUnit: true,
-                      })}
-                    </div>
-                  ),
+                  item: <TableAmount weiAmount={blobGasMaxFee} />,
                 },
                 {
-                  item: (
-                    <div className="truncate">
-                      {formatWei(block.blobGasPrice, {
-                        toUnit: "Gwei",
-                        hideUnit: true,
-                      })}
-                    </div>
-                  ),
+                  item: <TableAmount weiAmount={block.blobGasPrice} />,
                 },
               ],
               expandItem: <TransactionBlobsTable blobs={blobs} txHash={hash} />,

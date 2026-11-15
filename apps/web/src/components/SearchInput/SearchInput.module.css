@@ -1,0 +1,55 @@
+.panelContent {
+  min-height: 6.25rem;
+}
+
+.blobLoader {
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 64px;
+  flex: none;
+}
+
+.blobCanvas {
+  display: block;
+  width: 112px;
+  height: 112px;
+  transform: translateY(-7px) scale(0.5714285714);
+  transform-origin: 0 0;
+}
+
+.blobDeformation {
+  position: relative;
+  display: block;
+  width: 112px;
+  height: 112px;
+  transform-origin: 50% 84%;
+}
+
+.blobLayer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 112px;
+  height: 112px;
+}
+
+.blobEyes {
+  transform-origin: 60% 54%;
+  transition: opacity 300ms ease;
+}
+
+.emptyFace {
+  position: absolute;
+  inset: 0;
+  width: 112px;
+  height: 112px;
+  transition: opacity 300ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blobEyes,
+  .emptyFace {
+    transition: none;
+  }
+}

@@ -118,6 +118,13 @@ describe("Search procedure", async () => {
   });
 
   describe("when searching blocks", () => {
+    it.each(["2342134123213123", "2147483648", "9007199254740992"])(
+      "should return null for a number above the database limit: %s",
+      async (query) => {
+        await expect(searchCaller.search({ query })).resolves.toBeNull();
+      }
+    );
+
     const block = fixtures.blocks.find(
       (b) =>
         b.hash ===

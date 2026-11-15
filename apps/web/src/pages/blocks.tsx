@@ -2,10 +2,10 @@ import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 
 import type { EtherUnit } from "@blobscan/eth-format";
-import { formatWei } from "@blobscan/eth-format";
 
 import { CountBadge } from "~/components/Badges/CountBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
+import { RollupBadgeGroup } from "~/components/Badges/RollupBadgeGroup";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { ListControlBar } from "~/components/ControlBars/ListControlBar";
 import { Copyable } from "~/components/Copyable";
@@ -16,6 +16,7 @@ import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Table } from "~/components/Table";
+import { TableAmount } from "~/components/Table/Amount";
 import type { TimestampFormat } from "~/components/Toggles";
 import { TimestampToggle } from "~/components/Toggles";
 import { api } from "~/api-client";
@@ -67,43 +68,46 @@ const Blocks: NextPage = function () {
       cells: [
         {
           item: "",
-          className: "w-[80px]",
+          className: "w-[5.57%]",
         },
         {
           item: "Block number",
-          className: "w-[118px]",
+          className: "w-[8.22%]",
         },
         {
           item: (
             <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
           ),
-          className: "w-[170px]",
+          className: "w-[11.85%]",
         },
         {
           item: "Slot",
-          className: "w-[150px]",
+          className: "w-[10.45%]",
         },
         {
           item: "Txs",
-          className: "w-[66px]",
+          className: "w-[4.60%]",
         },
         {
           item: "Blobs",
-          className: "w-[83px]",
+          className: "w-[5.78%]",
         },
         {
           item: `Blob Usage (${BYTES_UNIT})`,
-          className: "w-[155px]",
+          className: "w-[15.33%]",
         },
         {
           item: "Blob Gas Usage",
-          className: "w-[175px]",
+          className: "w-[12.19%]",
         },
 
-        { item: `Blob Base Fees (${ETHER_UNIT})`, className: "w-[170px]" },
+        {
+          item: `Blob Base Fees (${ETHER_UNIT})`,
+          className: "text-right w-[11.85%]",
+        },
         {
           item: `Blob Gas Price (${ETHER_UNIT})`,
-          className: "w-[160px]",
+          className: "text-right w-[11.15%]",
         },
       ],
     },
@@ -150,36 +154,24 @@ const Blocks: NextPage = function () {
             })
           )
         );
-        const rollupToAmount = txsBlobs.reduce<Partial<Record<Rollup, number>>>(
-          (amounts, { rollup }) => {
-            if (!rollup) {
-              return amounts;
-            }
-            const amount = amounts[rollup] ?? 0;
-
-            amounts[rollup] = amount + 1;
-
+        const rollupToAmount = transactions.reduce<
+          Partial<Record<Rollup, number>>
+        >((amounts, { rollup }) => {
+          if (!rollup) {
             return amounts;
-          },
-          {} as Partial<Record<Rollup, number>>
-        );
+          }
+          const amount = amounts[rollup] ?? 0;
+
+          amounts[rollup] = amount + 1;
+
+          return amounts;
+        }, {} as Partial<Record<Rollup, number>>);
 
         return {
           cells: [
             {
-              item: (
-                <div className="relative flex gap-1">
-                  {Object.entries(rollupToAmount).map(([rollup, amount]) => (
-                    <div key={rollup} className="-ml-0.5">
-                      <RollupBadge
-                        amount={amount}
-                        rollup={rollup as Rollup}
-                        compact
-                      />
-                    </div>
-                  ))}
-                </div>
-              ),
+              item: <RollupBadgeGroup amounts={rollupToAmount} />,
+              className: "!overflow-visible",
             },
             {
               item: (
@@ -239,40 +231,38 @@ const Blocks: NextPage = function () {
               ),
             },
             {
-              item: formatWei(blobGasBaseFee, {
-                toUnit: "Gwei",
-                hideUnit: true,
-              }),
+              item: <TableAmount weiAmount={blobGasBaseFee} />,
             },
             {
-              item: formatWei(blobGasPrice, { toUnit: "Gwei", hideUnit: true }),
+              item: <TableAmount weiAmount={blobGasPrice} />,
             },
           ],
           expandItem: (
             <Table
+              fixedColumnsWidth
               className="mb-4 mt-2 max-h-[420px] rounded-lg bg-primary-50 px-8 dark:bg-primary-800"
               size="xs"
               alignment="left"
               headers={[
                 {
                   cells: [
-                    { item: "", className: "w-[70px]" },
+                    { item: "", className: "w-[6%]" },
                     {
                       item: "Tx Hash",
-                      className: "w-[200px]",
+                      className: "w-[23%]",
                     },
                     {
                       item: "Position",
-                      className: "w-[200px]",
+                      className: "w-[10%]",
                     },
                     {
                       item: "Blob Versioned Hash",
-                      className: "w-[100px]",
+                      className: "w-[25%]",
                     },
                     { item: `Usage (${BYTES_UNIT})` },
                     {
                       item: "Storages",
-                      className: "w-[200px]",
+                      className: "w-[16%]",
                     },
                   ],
                   className: "dark:border-border-dark/20",

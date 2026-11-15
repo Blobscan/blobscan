@@ -57,31 +57,31 @@ const Blobs: NextPage = function () {
       cells: [
         {
           item: "",
-          className: "w-[40px]",
+          className: "w-[4.18%]",
         },
         {
           item: "Versioned Hash",
-          className: "w-[170px]",
+          className: "w-[17.75%]",
         },
         {
           item: "Transaction Hash",
-          className: "w-[172px]",
+          className: "w-[17.95%]",
         },
         {
           item: "Block Number",
-          className: "w-[120px]",
+          className: "w-[12.53%]",
         },
         {
           item: (
             <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
           ),
-          className: "w-[150px]",
+          className: "w-[15.66%]",
         },
 
-        { item: `Blob Usage (${BYTES_UNIT})`, className: "w-[180px]" },
+        { item: `Blob Usage (${BYTES_UNIT})`, className: "w-[22.96%]" },
         {
           item: "Storages",
-          className: "w-[86px]",
+          className: "w-[8.98%]",
         },
       ],
     },

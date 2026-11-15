@@ -28,11 +28,11 @@ export const BlobUsageDisplay: FC<BlobUsageDisplayProps> = function ({
 
   return (
     <div
-      className={cn("flex flex-col", {
+      className={cn("flex min-w-0 flex-col", {
         relative: isDetailed,
       })}
     >
-      <span>
+      <span className="whitespace-normal">
         <span>
           {formatBytes(blobUsage, {
             hideUnit: hideUnit,
@@ -59,7 +59,7 @@ export const BlobUsageDisplay: FC<BlobUsageDisplayProps> = function ({
       {!isInline && (
         <div
           className={cn({
-            "absolute -bottom-2": isDetailed,
+            "absolute -bottom-2 w-full": isDetailed,
           })}
         >
           <PercentageBar

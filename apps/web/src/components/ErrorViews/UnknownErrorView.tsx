@@ -1,6 +1,6 @@
 import type { FC } from "react";
 
-import { GlowableImage } from "../GlowableImage";
+import { BlobIcon } from "../BlobIcon";
 import { ReloadButton } from "../ReloadButton";
 import { ErrorViewLayout } from "./ErrorViewLayout";
 
@@ -12,18 +12,9 @@ export const UnknownErrorView: FC<UnknownErrorViewProps> = ({ code }) => {
   return (
     <ErrorViewLayout
       image={
-        <GlowableImage
-          right="50%"
-          top="25%"
-          imageProps={{
-            src: "/internal-error.png",
-            alt: "Internal Server Error",
-            width: 390,
-            height: 480,
-            sizes: "(max-width: 768px) 200px, (max-width: 1024px) 350px, 450px",
-            className: "h-[240px] w-[200px] md:h-[480px] md:w-[390px]",
-            priority: true,
-          }}
+        <BlobIcon
+          variant="illustration"
+          className="h-[200px] w-[200px] shrink-0 text-accent-light dark:text-accent-dark md:h-[350px] md:w-[350px] lg:h-[450px] lg:w-[450px]"
         />
       }
       code={code ?? "Error"}
