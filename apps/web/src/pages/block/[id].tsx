@@ -296,7 +296,7 @@ const Block: NextPage = function () {
       {
         name: "Execution Base Fee",
         helpText:
-          "Base fee per unit of execution gas. This fee is burned and excludes the priority fee.",
+          "The base price per unit of execution gas for this block, not the total execution fee. This fee is burned and excludes priority fees.",
         value:
           blockData.baseFeePerGas != null ? (
             <EtherDisplay
@@ -325,7 +325,7 @@ const Block: NextPage = function () {
       {
         name: "Blob Base Fees",
         helpText:
-          "The total blob gas base fees spent on all transactions included in this block.",
+          "The total blob fee paid by all transactions in this block. This equals the block blob gas used multiplied by its blob gas price. Execution fees are excluded.",
         value: (
           <EtherDisplay
             weiAmount={blockData.blobGasBaseFee}
