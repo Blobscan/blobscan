@@ -58,8 +58,12 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
         method: "GET",
         path: "/blobs/{id}/data",
         tags: ["blobs"],
-        summary: "Retrieves blob data for given blob id.",
-        enabled: isEnabled,
+        summary: isEnabled
+          ? "Retrieves blob data for given blob id."
+          : "Disabled on this instance: use GET /blobs/{id} and download the data from the IPFS link instead.",
+        // Always registered: trpc-openapi turns a disabled route into a
+        // generic 404, so the handler returns the explanatory 403 instead.
+        enabled: true,
         protect: isProtected,
       },
     })
@@ -70,7 +74,7 @@ export function createBlobDataByBlobIdProcedure(config?: ProcedureConfig) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message:
-            "This endpoint is disabled. You must retrieve blob data from any of the storages directly.",
+            "This endpoint is disabled. To get blob data, call GET /blobs/{id} (or GET /blobs) and download it from the link in `dataStorageReferences`. For bulk data access, please contact us at contact@blobscan.com.",
         });
       }
 

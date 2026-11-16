@@ -1,6 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { env } from "~/env";
+import { rateLimited } from "~/rate-limit";
+import handler from "../../src/pages/api/feedback/index";
+
 vi.mock("~/env", () => ({
   env: {
     FEEDBACK_WEBHOOK_URL: "https://hooks.example.com/feedback",
@@ -23,10 +27,6 @@ vi.mock("@blobscan/open-telemetry", () => ({
     ValueType: { INT: 0 },
   },
 }));
-
-import handler from "../../src/pages/api/feedback/index";
-import { rateLimited } from "~/rate-limit";
-import { env } from "~/env";
 
 const WEBHOOK_URL = "https://hooks.example.com/feedback";
 
@@ -71,10 +71,7 @@ describe("POST /api/feedback", () => {
     vi.mocked(rateLimited).mockResolvedValue(false);
     (env as unknown as { FEEDBACK_WEBHOOK_URL: string }).FEEDBACK_WEBHOOK_URL =
       WEBHOOK_URL;
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({ ok: true })
-    );
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true }));
   });
 
   it("should return 200 on successful submission", async () => {
@@ -101,7 +98,11 @@ describe("POST /api/feedback", () => {
   });
 
   it("should return 429 when rate limited", async () => {
-    vi.mocked(rateLimited).mockResolvedValue(true);
+    vi.mocked(rateLimited).mockResolvedValue({
+      retryAfterSeconds: 7,
+      points: 2,
+      durationSeconds: 10,
+    });
 
     const req = createMockReq();
     const res = createMockRes();
@@ -109,11 +110,17 @@ describe("POST /api/feedback", () => {
     await handler(req, res);
 
     expect(res.statusCode).toBe(429);
-    expect(res.body).toEqual({ message: "Rate limit exceeded" });
+    expect(res.setHeader).toHaveBeenCalledWith("Retry-After", "7");
+    expect(res.body).toEqual({
+      code: "TOO_MANY_REQUESTS",
+      message:
+        "Too many requests from your address (limit: 2 per 10 seconds). Retry in 7s. Need more capacity? Contact us at contact@blobscan.com",
+    });
   });
 
   it("should return 500 when feedback is not enabled", async () => {
-    (env as unknown as { FEEDBACK_WEBHOOK_URL: string }).FEEDBACK_WEBHOOK_URL = "";
+    (env as unknown as { FEEDBACK_WEBHOOK_URL: string }).FEEDBACK_WEBHOOK_URL =
+      "";
 
     const req = createMockReq();
     const res = createMockRes();

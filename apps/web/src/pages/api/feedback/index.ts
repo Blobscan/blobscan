@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import { createTooManyRequestsBody } from "@blobscan/errors";
 import { api } from "@blobscan/open-telemetry";
 
 import { env } from "~/env";
@@ -16,8 +17,17 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   const { message, rate, metadata } = req.body;
   const method = req.method;
 
-  if (await rateLimited(req)) {
-    return res.status(429).json({ message: "Rate limit exceeded" });
+  const limit = await rateLimited(req);
+
+  if (limit) {
+    res.setHeader("Retry-After", String(limit.retryAfterSeconds));
+
+    return res.status(429).json(
+      createTooManyRequestsBody({
+        reason: `Too many requests from your address (limit: ${limit.points} per ${limit.durationSeconds} seconds).`,
+        retryAfterSeconds: limit.retryAfterSeconds,
+      })
+    );
   }
 
   if (!env.FEEDBACK_WEBHOOK_URL) {
@@ -47,17 +57,14 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     });
 
     if (!webhookRes.ok) {
-      return res
-        .status(502)
-        .json({ message: "Failed to deliver feedback" });
+      return res.status(502).json({ message: "Failed to deliver feedback" });
     }
 
     feedbackMessagesTotalCounter.add(1);
 
     return res.status(200).json({ message: "success" });
   } catch (err) {
-    const errorMessage =
-      err instanceof Error ? err.message : "Unknown error";
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
 
     return res.status(500).json({ message: errorMessage });
   }

@@ -96,6 +96,29 @@ export const env = createEnv({
         .default(`http://localhost:${process.env.BLOBSCAN_API_PORT ?? 3001}`),
       TRUSTED_PROXIES: z.string().optional(),
 
+      // Rate limiting, per client IP and shared by every instance through
+      // Redis. Unset = no limit.
+      RATE_LIMIT_REQUESTS_PER_SECOND: z.coerce
+        .number()
+        .int()
+        .positive()
+        .optional(),
+      // Repeat limit: how many times one client IP may fetch the same blob,
+      // transaction or block within the window. Unset = no repeat limit.
+      RATE_LIMIT_REPEAT_REQUESTS: z.coerce.number().int().positive().optional(),
+      RATE_LIMIT_REPEAT_WINDOW_SECONDS: z.coerce
+        .number()
+        .int()
+        .positive()
+        .default(60),
+      // Comma-separated CIDRs never rate limited: callers inside the cluster
+      // (indexer, web, jobs) reach the API directly with private addresses.
+      RATE_LIMIT_ALLOWLIST: z
+        .string()
+        .default(
+          "127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,::1/128,fc00::/7"
+        ),
+
       // Logging
       LOG_LEVEL: z
         .enum(["debug", "http", "info", "warn", "error"])
@@ -317,7 +340,13 @@ export const env = createEnv({
         env.NETWORK_NAME
       } sentryEnabled=${!!env.SENTRY_DSN_API} metrics=${
         env.METRICS_ENABLED
-      } traces=${env.TRACES_ENABLED} port=${env.BLOBSCAN_API_PORT}`
+      } traces=${env.TRACES_ENABLED} port=${env.BLOBSCAN_API_PORT} rateLimit=${
+        env.RATE_LIMIT_REQUESTS_PER_SECOND ?? "off"
+      }rps repeatLimit=${
+        env.RATE_LIMIT_REPEAT_REQUESTS
+          ? `${env.RATE_LIMIT_REPEAT_REQUESTS}/${env.RATE_LIMIT_REPEAT_WINDOW_SECONDS}s`
+          : "off"
+      }`
     );
 
     console.log(

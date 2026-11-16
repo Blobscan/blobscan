@@ -1,14 +1,23 @@
 import type { NextApiRequest } from "next";
-import { RateLimiterRedis } from "rate-limiter-flexible";
+import { RateLimiterRedis, RateLimiterRes } from "rate-limiter-flexible";
 
 import { env } from "./env";
 import { redis } from "./redis";
 
+const POINTS = 2;
+const DURATION_SECONDS = 10;
+
 const ratelimit = new RateLimiterRedis({
   storeClient: redis,
-  points: 2,
-  duration: 10,
+  points: POINTS,
+  duration: DURATION_SECONDS,
 });
+
+export type RateLimitInfo = {
+  retryAfterSeconds: number;
+  points: number;
+  durationSeconds: number;
+};
 
 /**
  * Resolves the real client IP from an incoming request.
@@ -48,7 +57,13 @@ export function getClientIp(request: NextApiRequest): string | undefined {
   return request.socket.remoteAddress ?? undefined;
 }
 
-export async function rateLimited(request: NextApiRequest): Promise<boolean> {
+/**
+ * Returns the details of the limit that was hit, or `false` if the request may
+ * go through.
+ */
+export async function rateLimited(
+  request: NextApiRequest
+): Promise<RateLimitInfo | false> {
   if (redis.status !== "ready") {
     console.warn("Skipping rate limit check, Redis is not available");
     return false;
@@ -63,7 +78,14 @@ export async function rateLimited(request: NextApiRequest): Promise<boolean> {
   try {
     await ratelimit.consume(ip);
     return false;
-  } catch {
-    return true;
+  } catch (error) {
+    return {
+      retryAfterSeconds:
+        error instanceof RateLimiterRes
+          ? Math.max(1, Math.ceil(error.msBeforeNext / 1000))
+          : DURATION_SECONDS,
+      points: POINTS,
+      durationSeconds: DURATION_SECONDS,
+    };
   }
 }
