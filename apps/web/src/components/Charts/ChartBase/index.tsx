@@ -17,11 +17,13 @@ import type { LegendItemData, LegendPosition, LegendProps } from "./Legend";
 import {
   addCurrentPeriodColumns,
   createXAxisOptions,
+  createEndpointXAxisOptions,
   createBaseToolboxOptions,
   createBaseTooltipOptions,
   createCurrentPeriodSeries,
   createYAxisOptions,
   getBinaryAxisScale,
+  getEndpointAxisScale,
   getLeftAxisMax,
   DEFAULT_SERIES_COLOR,
   createBaseSeriesOptions,
@@ -33,6 +35,7 @@ import {
   hasCurrentPeriodValue,
   hasValueUnits,
   isCurrentPeriodSeries,
+  isColumnSource,
 } from "./helpers";
 import type { ChartDataset, ChartSeries, TooltipTotalOptions } from "./helpers";
 import type { SkeletonChartOptions } from "./helpers/skeleton";
@@ -57,6 +60,8 @@ export interface ChartBaseProps {
   series?: SeriesOption[];
   axes: Axes;
   compact?: boolean;
+  /** Show only the end labels of each axis and one plain series style. */
+  minimal?: boolean;
   /** Where the legend goes. The default is "right". */
   legendPosition?: LegendPosition;
   /**
@@ -76,17 +81,27 @@ function ChartHeader({
   dataUnit,
   controls,
   isLoading,
+  minimal,
 }: {
   title: ReactNode;
   description?: ReactNode;
   dataUnit?: string;
   controls?: ReactNode;
   isLoading?: boolean;
+  minimal?: boolean;
 }) {
   return (
-    <div className="flex w-full justify-between p-1">
+    <div
+      className={cn("flex w-full justify-between p-1", {
+        "flex-wrap gap-x-3 gap-y-2": minimal,
+      })}
+    >
       {title && (
-        <div className="flex-start -mb-2 flex items-center gap-1.5 font-semibold">
+        <div
+          className={cn("flex-start flex items-center gap-1.5 font-semibold", {
+            "-mb-2": !minimal,
+          })}
+        >
           {`${title}${dataUnit ? ` (${dataUnit})` : ""}`}
           {description && <HelpIcon description={description} />}
         </div>
@@ -112,6 +127,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   tooltipOpts,
   series: seriesProp,
   compact,
+  minimal = false,
   legendPosition = "right",
   sortSeries = true,
   isLoading,
@@ -180,12 +196,15 @@ export const ChartBase: FC<ChartBaseProps> = function ({
               color: color ?? baseSeriesOptions.itemStyle.color,
             },
             ...restSeries,
+            ...(minimal && restSeries.type === "line"
+              ? { symbol: "none", smooth: false, areaStyle: undefined }
+              : {}),
           };
         })
         ?.sort((a, b) =>
           sortSeries ? String(a.name).localeCompare(String(b.name)) : 0
         ),
-    [seriesProp, themeMode, sortSeries]
+    [seriesProp, themeMode, sortSeries, minimal]
   );
   const currentPeriod = useMemo(
     () =>
@@ -274,13 +293,23 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   // example 256 KiB, 512 KiB and 768 KiB.
   const yScale = useMemo(
     () =>
-      hasValueUnits(axes.y) && seriesProp && dataset
-        ? getBinaryAxisScale(
-            getLeftAxisMax(seriesProp as ChartSeries[], dataset)
-          )
+      seriesProp && dataset
+        ? minimal
+          ? getEndpointAxisScale(
+              getLeftAxisMax(seriesProp as ChartSeries[], dataset)
+            )
+          : hasValueUnits(axes.y)
+          ? getBinaryAxisScale(
+              getLeftAxisMax(seriesProp as ChartSeries[], dataset)
+            )
+          : undefined
         : undefined,
-    [axes.y, seriesProp, dataset]
+    [axes.y, seriesProp, dataset, minimal]
   );
+  const firstDataset = Array.isArray(dataset) ? dataset[0] : dataset;
+  const pointCount = isColumnSource(firstDataset?.source)
+    ? firstDataset.source.timestamp.length
+    : 0;
   const baseOptions = useMemo(
     () =>
       ({
@@ -296,11 +325,13 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           // The top label of the right y-axis must be below the toolbox.
           top: axes.y2 ? 44 : 27,
           // The right y-axis needs space for its labels.
-          right: axes.y2 ? 40 : 10,
+          right: axes.y2 ? 40 : minimal ? 28 : 10,
           bottom: compact ? 22 : 82,
           left: 40,
         },
-        xAxis: createXAxisOptions(axes.x, compact),
+        xAxis: minimal
+          ? createEndpointXAxisOptions(axes.x, pointCount)
+          : createXAxisOptions(axes.x, compact),
         yAxis: axes.y2
           ? [
               createYAxisOptions(axes.y, compact, yScale),
@@ -326,6 +357,8 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       } satisfies EChartsOption),
     [
       compact,
+      minimal,
+      pointCount,
       axes,
       yScale,
       tooltipOpts,
@@ -568,6 +601,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         dataUnit={yUnit}
         controls={shouldRenderChart ? headerControls : undefined}
         isLoading={isLoading}
+        minimal={minimal}
       />
       <ContentReveal
         isLoading={isLoading}
