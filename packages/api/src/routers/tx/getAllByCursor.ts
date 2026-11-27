@@ -38,8 +38,8 @@ export const getAllByCursor = publicProcedure
   .meta({
     openapi: {
       method: "GET",
-      path: "/v1/transactions",
-      tags: ["transactions"],
+      path: "/v2/transactions",
+      tags: ["beta"],
       summary: "retrieves all blob transactions.",
     },
   })

@@ -254,7 +254,7 @@ describe("cursor pagination", () => {
         baseUrl,
         options: { override: openApiOverride },
       });
-      for (const path of ["/v1/blocks", "/v1/transactions", "/v1/blobs"]) {
+      for (const path of ["/v2/blocks", "/v2/transactions", "/v2/blobs"]) {
         const parameters = document.paths![path]!.get!.parameters;
         expect(parameters).toEqual(
           expect.arrayContaining([
@@ -322,9 +322,9 @@ describe("cursor pagination", () => {
     );
 
     it.each(["blocks", "transactions", "blobs"])(
-      "rejects cursor positions above the database range for /v1/%s",
+      "rejects cursor positions above the database range for /v2/%s",
       async (resource) => {
-        const response = await fetch(`${baseUrl}/v1/${resource}?ps=1`);
+        const response = await fetch(`${baseUrl}/v2/${resource}?ps=1`);
         expect(response.status).toBe(200);
         const first = await response.json();
         const token = JSON.parse(
@@ -346,7 +346,7 @@ describe("cursor pagination", () => {
               JSON.stringify({ ...token, position })
             ).toString("base64url");
             const result = await fetch(
-              `${baseUrl}/v1/${resource}?ps=1&cursor=${cursor}`
+              `${baseUrl}/v2/${resource}?ps=1&cursor=${cursor}`
             );
             expect(result.status).toBe(status);
             if (status === 400) {
@@ -375,7 +375,7 @@ describe("cursor pagination", () => {
             ...filters,
           }).toString();
           const legacy = await fetch(`${baseUrl}/${resource}?${query}`);
-          const cursor = await fetch(`${baseUrl}/v1/${resource}?${query}`);
+          const cursor = await fetch(`${baseUrl}/v2/${resource}?${query}`);
           expect(legacy.status).toBe(200);
           expect(cursor.status).toBe(200);
           expect((await legacy.json())[resource]).toEqual(
@@ -388,22 +388,22 @@ describe("cursor pagination", () => {
     it.each(["blocks", "transactions", "blobs"])(
       "paginates /%s and rejects page numbers",
       async (resource) => {
-        const response = await fetch(`${baseUrl}/v1/${resource}?ps=1`);
+        const response = await fetch(`${baseUrl}/v2/${resource}?ps=1`);
         expect(response.status).toBe(200);
         const first = await response.json();
         expect(first.pagination.previousCursor).toBeNull();
         expect(first.pagination.nextCursor).toEqual(expect.any(String));
         const next = await fetch(
-          `${baseUrl}/v1/${resource}?ps=1&cursor=${first.pagination.nextCursor}`
+          `${baseUrl}/v2/${resource}?ps=1&cursor=${first.pagination.nextCursor}`
         );
         expect(next.status).toBe(200);
         const second = await next.json();
         expect(second[resource]).not.toEqual(first[resource]);
         const previous = await fetch(
-          `${baseUrl}/v1/${resource}?ps=1&cursor=${second.pagination.previousCursor}`
+          `${baseUrl}/v2/${resource}?ps=1&cursor=${second.pagination.previousCursor}`
         );
         expect((await previous.json())[resource]).toEqual(first[resource]);
-        const legacy = await fetch(`${baseUrl}/v1/${resource}?p=1`);
+        const legacy = await fetch(`${baseUrl}/v2/${resource}?p=1`);
         expect(legacy.status).toBe(400);
         expect((await legacy.json()).message).toContain("p parameter");
       }

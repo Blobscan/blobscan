@@ -10,7 +10,7 @@ import {
   normalize,
 } from "../../utils";
 import { senderAdjacentTxSql } from "../tx/helpers";
-import { findResponseBlobV1, responseBlobV1Schema } from "./helpers";
+import { findResponseBlobV2, responseBlobV2Schema } from "./helpers";
 
 const blobPositionSchema = z.object({
   txHash: z.string(),
@@ -23,7 +23,7 @@ const inputSchema = blobPositionSchema.extend({
 
 const outputSchema = blobPositionSchema
   .extend({
-    blob: responseBlobV1Schema.transform(normalize),
+    blob: responseBlobV2Schema.transform(normalize),
   })
   .nullable();
 
@@ -44,9 +44,9 @@ type AdjacentBlobRow = {
  * transactions of reorged blocks. Returns `null` if there is no blob in that
  * direction.
  *
- * The blob has the format of `blob.getByBlobIdV1`, so the client can put it in
+ * The blob has the format of `blob.getByBlobIdV2`, so the client can put it in
  * that cache and the page of the blob does not request it again. The page gets
- * the transactions of the blob from `blob.getAllByCursor`.
+ * the transactions of the blob from `blob.getTransactionsByBlobId`.
  *
  * One statement gets the adjacent position in the requested direction. Each
  * `LATERAL` subquery gets the values of the current position as parameters,
@@ -116,7 +116,7 @@ export const getAdjacentBlob = publicProcedure
       return null;
     }
 
-    const blob = await findResponseBlobV1(prisma, adjacent.versionedHash);
+    const blob = await findResponseBlobV2(prisma, adjacent.versionedHash);
 
     if (!blob) {
       throw new TRPCError({

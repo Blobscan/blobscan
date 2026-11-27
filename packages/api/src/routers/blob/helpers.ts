@@ -104,13 +104,11 @@ export type CompletedPrismaBlobOnTransaction = Prettify<
 >;
 
 export function createBlobListWhere({
-  blobHash,
   blockFilters = {},
   blockType,
   transactionFilters,
 }: Filters): Prisma.BlobsOnTransactionsWhereInput {
   return {
-    blobHash,
     blockNumber: blockFilters.number,
     blockTimestamp: blockFilters.timestamp,
     block: {
@@ -125,8 +123,8 @@ export function createBlobListWhere({
  * How many transactions `blob.getByBlobId` returns. A blob is normally in one
  * transaction, but a blob can be posted again: mainnet has 2024 blobs in tens
  * of thousands of transactions (0x01f3ee17...: 38,624, a 54 MB response that
- * took 77 s and ~800 MiB to build). `transactionCount` has the total; the
- * others are in `blob.getAllByCursor` (`GET /v1/blobs?blob=<versioned hash>`).
+ * took 77 s and ~800 MiB to build). `transactionCount` has the total; all of
+ * them are in `blob.getTransactionsByBlobId` (`GET /v2/blobs/{id}/transactions`).
  */
 export const DEFAULT_BLOB_TRANSACTIONS_LIMIT = 100;
 export const MAX_BLOB_TRANSACTIONS_LIMIT = 1000;
@@ -140,10 +138,12 @@ export const blobTransactionsLimitSchema = z.object({
     .default(DEFAULT_BLOB_TRANSACTIONS_LIMIT),
 });
 
-export function createBlobSelect(
-  expands: Expands,
-  transactionsLimit: number = DEFAULT_BLOB_TRANSACTIONS_LIMIT
-) {
+/**
+ * A transaction of a blob (its position, and the expanded block and
+ * transaction), without the blob: the rows of `getByBlobId`'s `transactions`
+ * and of `getTransactionsByBlobId`.
+ */
+export function createBlobTransactionSelect(expands: Expands) {
   const blockExpand = expands.block ? { block: expands.block } : {};
   const txExpand = expands.transaction
     ? {
@@ -161,14 +161,21 @@ export function createBlobSelect(
     : {};
 
   return {
+    ...baseBlobOnTransactionSelect,
+    ...blockExpand,
+    ...txExpand,
+  } satisfies Prisma.BlobsOnTransactionsSelect;
+}
+
+export function createBlobSelect(
+  expands: Expands,
+  transactionsLimit: number = DEFAULT_BLOB_TRANSACTIONS_LIMIT
+) {
+  return {
     ...baseBlobSelect,
     dataStorageReferences: extendedBlobDataStorageReferenceArgs,
     transactions: {
-      select: {
-        ...baseBlobOnTransactionSelect,
-        ...blockExpand,
-        ...txExpand,
-      },
+      select: createBlobTransactionSelect(expands),
       // Newest first. The other keys make the order total, so that the same
       // transactions are returned every time.
       orderBy: [
@@ -226,36 +233,36 @@ const responseBlobOnTxSchema = prismaBlobOnTransactionSchema
     txIndex: true,
   });
 
+export const responseBlobTransactionSchema = responseBlobOnTxSchema
+  .merge(
+    baseTransactionSchema
+      .omit({
+        hash: true,
+        blockNumber: true,
+        blockTimestamp: true,
+        blockHash: true,
+      })
+      .partial()
+  )
+  .extend({
+    block: baseBlockSchema
+      .omit({
+        hash: true,
+        number: true,
+        timestamp: true,
+      })
+      .partial({
+        blobGasBaseUsdFee: true,
+        blobGasUsdPrice: true,
+      })
+      .optional(),
+    ethUsdPrice: z.number().optional(),
+  });
+
 export const responseBlobSchema = baseBlobSchema.extend({
   // All the transactions of the blob, also those not in `transactions`.
   transactionCount: z.number().int().nonnegative(),
-  transactions: z.array(
-    responseBlobOnTxSchema
-      .merge(
-        baseTransactionSchema
-          .omit({
-            hash: true,
-            blockNumber: true,
-            blockTimestamp: true,
-            blockHash: true,
-          })
-          .partial()
-      )
-      .extend({
-        block: baseBlockSchema
-          .omit({
-            hash: true,
-            number: true,
-            timestamp: true,
-          })
-          .partial({
-            blobGasBaseUsdFee: true,
-            blobGasUsdPrice: true,
-          })
-          .optional(),
-        ethUsdPrice: z.number().optional(),
-      })
-  ),
+  transactions: z.array(responseBlobTransactionSchema),
 });
 
 export const responseBlobOnTransactionSchema = responseBlobOnTxSchema
@@ -279,9 +286,74 @@ export const responseBlobOnTransactionSchema = responseBlobOnTxSchema
   });
 
 export type ResponseBlob = z.input<typeof responseBlobSchema>;
+export type ResponseBlobTransaction = z.input<
+  typeof responseBlobTransactionSchema
+>;
+export type CompletedPrismaBlobTransaction =
+  CompletedPrismaBlob["transactions"][number];
 export type ResponseBlobOnTransaction = z.input<
   typeof responseBlobOnTransactionSchema
 >;
+
+/**
+ * @param ethUsdPrice The ETH/USD price at the minute of the transaction's block,
+ * if there is one.
+ */
+export function toResponseBlobTransaction(
+  { block, transaction, ...restBlobOnTx }: CompletedPrismaBlobTransaction,
+  ethUsdPrice: EthUsdPrice["price"] | undefined
+): ResponseBlobTransaction {
+  // `block` and `transaction` are there only when expanded.
+  const { computeUsdFields, ...restBlock }: Partial<NonNullable<typeof block>> =
+    block ?? {};
+  const prismaTx: Partial<NonNullable<typeof transaction>> = transaction ?? {};
+  const blockUsdFields =
+    ethUsdPrice && computeUsdFields ? computeUsdFields(ethUsdPrice) : undefined;
+  const txBlock = {
+    ...restBlock,
+    ...(blockUsdFields ?? {}),
+  };
+
+  let responseBlobTx: ResponseBlobTransaction = {
+    ...restBlobOnTx,
+    ...txBlock,
+    ethUsdPrice: ethUsdPrice?.toNumber(),
+  };
+
+  if (isFullyDefined(prismaTx)) {
+    const {
+      block,
+      decodedFields,
+      from,
+      fromId,
+      toId,
+      computeBlobGasBaseFee,
+      computeUsdFields,
+      index: _,
+      ...restPrismaTx
+    } = prismaTx;
+
+    responseBlobTx = {
+      ...restPrismaTx,
+      ...responseBlobTx,
+      ...normalizePrismaTransactionFields({
+        decodedFields,
+        from,
+        fromId,
+        toId,
+      }),
+      blobGasBaseFee: computeBlobGasBaseFee(block.blobGasPrice),
+      ...(ethUsdPrice
+        ? computeUsdFields({
+            blobGasPrice: block.blobGasPrice,
+            ethUsdPrice,
+          })
+        : {}),
+    };
+  }
+
+  return responseBlobTx;
+}
 
 /**
  * @param ethUsdPrices The ETH/USD price of each transaction, in the order of
@@ -296,76 +368,16 @@ export function toResponseBlob(
   }: CompletedPrismaBlob,
   ethUsdPrices: (EthUsdPrice["price"] | undefined)[]
 ): ResponseBlob {
-  const responseBlob: ResponseBlob = {
+  return {
     ...prismaBlob,
     transactionCount: _count.transactions,
     dataStorageReferences: normalizePrismaBlobDataStorageReferencesFields(
       dataStorageReferences
     ),
-    transactions: blobOnTxs.map(
-      (
-        {
-          block: { computeUsdFields, ...restBlock } = {},
-          transaction: prismaTx = {},
-          ...restBlobOnTx
-        },
-        i
-      ) => {
-        const txEthUsdPrice = ethUsdPrices[i];
-
-        const blockUsdFields =
-          txEthUsdPrice && computeUsdFields
-            ? computeUsdFields(txEthUsdPrice)
-            : undefined;
-        const txBlock = {
-          ...restBlock,
-          ...(blockUsdFields ?? {}),
-        };
-
-        let responseBlobOnTx: ResponseBlob["transactions"][number] = {
-          ...restBlobOnTx,
-          ...txBlock,
-          ethUsdPrice: txEthUsdPrice?.toNumber(),
-        };
-
-        if (isFullyDefined(prismaTx)) {
-          const {
-            block,
-            decodedFields,
-            from,
-            fromId,
-            toId,
-            computeBlobGasBaseFee,
-            computeUsdFields,
-            index: _,
-            ...restPrismaTx
-          } = prismaTx;
-
-          responseBlobOnTx = {
-            ...restPrismaTx,
-            ...responseBlobOnTx,
-            ...normalizePrismaTransactionFields({
-              decodedFields,
-              from,
-              fromId,
-              toId,
-            }),
-            blobGasBaseFee: computeBlobGasBaseFee(block.blobGasPrice),
-            ...(txEthUsdPrice
-              ? computeUsdFields({
-                  blobGasPrice: block.blobGasPrice,
-                  ethUsdPrice: txEthUsdPrice,
-                })
-              : {}),
-          };
-        }
-
-        return responseBlobOnTx;
-      }
+    transactions: blobOnTxs.map((blobOnTx, i) =>
+      toResponseBlobTransaction(blobOnTx, ethUsdPrices[i])
     ),
   };
-
-  return responseBlob;
 }
 
 export function toResponseBlobOnTransaction(
@@ -465,27 +477,27 @@ export async function findResponseBlob(
 }
 
 /**
- * The blob of `GET /v1/blobs/{id}`: no transactions, only how many there are.
- * They are listed, with cursor pagination, by `blob.getAllByCursor`
- * (`GET /v1/blobs?blob=<versioned hash>`), so the size of the response does
- * not depend on the blob.
+ * The blob of `GET /v2/blobs/{id}`: no transactions, only how many there are.
+ * They are listed, with cursor pagination, by `blob.getTransactionsByBlobId`
+ * (`GET /v2/blobs/{id}/transactions`), so the size of the response does not
+ * depend on the blob.
  */
-export const responseBlobV1Schema = baseBlobSchema.extend({
-  // Transactions in canonical blocks, as `GET /v1/blobs?blob=` lists by
-  // default (`type=canonical`).
+export const responseBlobV2Schema = baseBlobSchema.extend({
+  // Transactions in canonical blocks, as `GET /v2/blobs/{id}/transactions`
+  // lists by default (`type=canonical`).
   transactionCount: z.number().int().nonnegative(),
 });
 
-export type ResponseBlobV1 = z.input<typeof responseBlobV1Schema>;
+export type ResponseBlobV2 = z.input<typeof responseBlobV2Schema>;
 
 /**
  * Gets a blob by its versioned hash or KZG commitment, in the response format
- * of `blob.getByBlobIdV1`. Returns `null` if the blob does not exist.
+ * of `blob.getByBlobIdV2`. Returns `null` if the blob does not exist.
  */
-export async function findResponseBlobV1(
+export async function findResponseBlobV2(
   prisma: BlobscanPrismaClient,
   id: string
-): Promise<ResponseBlobV1 | null> {
+): Promise<ResponseBlobV2 | null> {
   const prismaBlob = await prisma.blob.findFirst({
     select: {
       ...baseBlobSelect,
@@ -528,7 +540,7 @@ export async function findResponseBlobV1(
  * moved the price of every later transaction to its neighbour, and it never
  * found a price for a blob looked up by KZG commitment.
  */
-async function findTransactionsEthUsdPrices(
+export async function findTransactionsEthUsdPrices(
   prisma: BlobscanPrismaClient,
   transactions: { blockTimestamp: Date }[]
 ): Promise<(EthUsdPrice["price"] | undefined)[]> {

@@ -12,7 +12,6 @@ import {
 } from "../../middlewares/withExpands";
 import {
   withAllFiltersSchema,
-  withBlobFilterSchema,
   withFilters,
 } from "../../middlewares/withFilters";
 import { paginate, paginationResponseSchema } from "../../pagination";
@@ -39,14 +38,14 @@ export const getAllByCursor = publicProcedure
   .meta({
     openapi: {
       method: "GET",
-      path: "/v1/blobs",
-      tags: ["blobs"],
+      path: "/v2/blobs",
+      tags: ["beta"],
       summary: "retrieves all blobs.",
     },
   })
   .input(withCursorPaginationSchema)
   .use(withCursorPagination)
-  .input(withAllFiltersSchema.merge(withBlobFilterSchema))
+  .input(withAllFiltersSchema)
   .use(withFilters)
   .input(createExpandsSchema(["transaction", "block"]))
   .use(withExpands)

@@ -190,13 +190,13 @@ describe("getAdjacentBlob", () => {
   });
 
   describe("when the blob is returned", () => {
-    it("should return the blob in the same format as getByBlobIdV1", async () => {
+    it("should return the blob in the same format as getByBlobIdV2", async () => {
       const result = await blobCaller.getAdjacentBlob({
         txHash: "txHash001",
         index: 1,
         direction: "next",
       });
-      const blob = await blobCaller.getByBlobIdV1({ id: "blobHash003" });
+      const blob = await blobCaller.getByBlobIdV2({ id: "blobHash003" });
 
       expect(result?.blob).toEqual(blob);
     });

@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`getByBlobIdV1 > should return the blob without its transactions, with their count 1`] = `
+exports[`getByBlobIdV2 > should return the blob without its transactions, with their count 1`] = `
 {
   "commitment": "commitment001",
   "dataStorageReferences": [

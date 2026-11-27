@@ -18,9 +18,9 @@ export type Category = Lowercase<CategoryEnum>;
 
 export type Blob = AppRouterOutputs["blob"]["getByBlobId"];
 
-// `GET /v1/blobs/{id}`: no transactions, only their count. The blob page lists
-// them with `blob.getAllByCursor`.
-export type BlobV1 = AppRouterOutputs["blob"]["getByBlobIdV1"];
+// `GET /v2/blobs/{id}`: no transactions, only their count. The blob page lists
+// them with `blob.getTransactionsByBlobId` (`GET /v2/blobs/{id}/transactions`).
+export type BlobV2 = AppRouterOutputs["blob"]["getByBlobIdV2"];
 
 export type BlobOnTransaction =
   AppRouterOutputs["blob"]["getAll"]["blobs"][number];

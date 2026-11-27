@@ -84,7 +84,7 @@ const Blob: NextPage = function () {
     dataUpdatedAt: blobUpdatedAt,
     isFetching: blobFetching,
     error,
-  } = api.blob.getByBlobIdV1.useQuery(toBlobPageQueryInput(id), {
+  } = api.blob.getByBlobIdV2.useQuery(toBlobPageQueryInput(id), {
     enabled: router?.isReady,
     staleTime: BLOB_STALE_TIME,
     retry: false,
@@ -92,24 +92,19 @@ const Blob: NextPage = function () {
     refetchOnWindowFocus: false,
   });
   // The transactions of the blob, BLOB_TRANSACTIONS_PAGE_SIZE at a time, newest
-  // first. `blob.transactionCount` has the total. The list filters by versioned
-  // hash: when the URL has one, the list starts with the blob request; when it
-  // has a KZG commitment, after it.
-  const listBlobHash =
-    blob?.versionedHash ??
-    (router?.isReady && versionedHashSchema.safeParse(id).success
-      ? id
-      : undefined);
+  // first. `blob.transactionCount` has the total. The endpoint takes the same
+  // id as the blob (versioned hash or KZG commitment), so both requests start
+  // together.
   const {
     data: transactionPages,
     error: transactionsError,
     fetchNextPage: fetchMoreTransactions,
     hasNextPage: hasMoreTransactions,
     isFetchingNextPage: moreTransactionsLoading,
-  } = api.blob.getAllByCursor.useInfiniteQuery(
-    listBlobHash
+  } = api.blob.getTransactionsByBlobId.useInfiniteQuery(
+    router?.isReady
       ? {
-          blob: listBlobHash,
+          id,
           expand: BLOB_EXPAND,
           ps: BLOB_TRANSACTIONS_PAGE_SIZE,
         }
@@ -124,17 +119,8 @@ const Blob: NextPage = function () {
   );
   const transactions = useMemo(
     () =>
-      (transactionPages?.pages ?? []).flatMap(({ blobs }) =>
-        blobs.map(
-          ({ txHash, index, blockNumber, blockTimestamp, transaction }) => ({
-            txHash,
-            index,
-            blockNumber,
-            blockTimestamp,
-            rollup: transaction?.rollup,
-            category: transaction?.category,
-          })
-        )
+      (transactionPages?.pages ?? []).flatMap(
+        ({ transactions }) => transactions
       ),
     [transactionPages]
   );

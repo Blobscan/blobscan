@@ -7,8 +7,9 @@ import { getAll } from "./getAll";
 import { getAllByCursor } from "./getAllByCursor";
 import { createBlobDataByBlobIdProcedure } from "./getBlobDataByBlobId";
 import { getByBlobId } from "./getByBlobId";
-import { getByBlobIdV1 } from "./getByBlobIdV1";
+import { getByBlobIdV2 } from "./getByBlobIdV2";
 import { getCount } from "./getCount";
+import { getTransactionsByBlobId } from "./getTransactionsByBlobId";
 
 export type BlobRouterConfig = {
   blobDataProcedure: ProcedureConfig;
@@ -22,8 +23,9 @@ export function createBlobRouter(config?: BlobRouterConfig) {
     getAll,
     getAllByCursor,
     getByBlobId,
-    getByBlobIdV1,
+    getByBlobIdV2,
     getCount,
+    getTransactionsByBlobId,
     getBlobDataByBlobId: createBlobDataByBlobIdProcedure(
       config?.blobDataProcedure
     ),

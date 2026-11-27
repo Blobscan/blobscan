@@ -18,7 +18,7 @@ import type { Filters } from "../middlewares/withFilters";
  * @returns A boolean indicating if a direct count is required.
  */
 export function requiresDirectCount(
-  { blobHash, blockFilters = {}, blockType, transactionFilters = {} }: Filters,
+  { blockFilters = {}, blockType, transactionFilters = {} }: Filters,
   rollupRegistry: RollupRegistry
 ) {
   const blockNumberRangeFilterEnabled = !!blockFilters?.number;
@@ -29,8 +29,6 @@ export function requiresDirectCount(
     .some((r) => !r);
 
   return (
-    // The metrics tables have no per-blob counts.
-    !!blobHash ||
     blockNumberRangeFilterEnabled ||
     slotRangeFilterEnabled ||
     reorgedFilterEnabled ||

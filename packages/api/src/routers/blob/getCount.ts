@@ -33,17 +33,11 @@ export async function countBlobs(
   rollupRegistry: RollupRegistry,
   filters: Filters
 ) {
-  const {
-    blobHash,
-    blockFilters = {},
-    transactionFilters,
-    blockType,
-  } = filters;
+  const { blockFilters = {}, transactionFilters, blockType } = filters;
 
   if (requiresDirectCount(filters, rollupRegistry)) {
     return prisma.blobsOnTransactions.count({
       where: {
-        blobHash,
         blockNumber: blockFilters.number,
         blockTimestamp: blockFilters.timestamp,
         block: {

@@ -5,11 +5,11 @@ import { getQueryKey } from "@trpc/react-query";
 
 import { api } from "~/api-client";
 import { routes } from "~/routes";
-import type { BlobPosition, BlobV1, GetAdjacentBlobInput } from "~/types";
+import type { BlobPosition, BlobV2, GetAdjacentBlobInput } from "~/types";
 
 export const BLOB_EXPAND = "transaction";
 // The blob page lists the transactions of the blob with cursor pagination
-// (`/v1/blobs?blob=`), this many at a time (the maximum of `ps`). Some blobs
+// (`/v2/blobs/{id}/transactions`), this many at a time (the maximum of `ps`). Some blobs
 // are in tens of thousands of transactions; the page with all of them was a
 // 54 MB response.
 export const BLOB_TRANSACTIONS_PAGE_SIZE = 100;
@@ -20,7 +20,7 @@ export const BLOB_STALE_TIME = 5 * 60 * 1000;
 type Direction = GetAdjacentBlobInput["direction"];
 
 /**
- * The input of the `getByBlobIdV1` query of the blob page. `getAdjacentBlob`
+ * The input of the `getByBlobIdV2` query of the blob page. `getAdjacentBlob`
  * returns the blob in the same format, so its result goes in the cache entry
  * of this input.
  */
@@ -49,7 +49,7 @@ export function useAdjacentBlobNavigation({
   blobUpdatedAt,
   position,
 }: {
-  blob: BlobV1 | undefined;
+  blob: BlobV2 | undefined;
   blobUpdatedAt: number;
   position: BlobPosition | undefined;
 }) {
@@ -96,7 +96,7 @@ export function useAdjacentBlobNavigation({
           getQueryKey(api.blob.getAdjacentBlob, adjacentInput, "query")
         )?.dataUpdatedAt;
 
-        utils.blob.getByBlobIdV1.setData(
+        utils.blob.getByBlobIdV2.setData(
           toBlobPageQueryInput(adjacent.blob.versionedHash),
           adjacent.blob,
           { updatedAt: adjacentUpdatedAt }

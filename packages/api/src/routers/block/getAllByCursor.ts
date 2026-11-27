@@ -38,8 +38,8 @@ export const getAllByCursor = publicProcedure
   .meta({
     openapi: {
       method: "GET",
-      path: "/v1/blocks",
-      tags: ["blocks"],
+      path: "/v2/blocks",
+      tags: ["beta"],
       summary: "retrieves all blocks.",
     },
   })

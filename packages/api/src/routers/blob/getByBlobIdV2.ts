@@ -5,29 +5,29 @@ import { z } from "@blobscan/zod";
 import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
-import { findResponseBlobV1, responseBlobV1Schema } from "./helpers";
+import { findResponseBlobV2, responseBlobV2Schema } from "./helpers";
 
 const inputSchema = z.object({
   id: z.string(),
 });
 
-const outputSchema = responseBlobV1Schema.transform(normalize);
+const outputSchema = responseBlobV2Schema.transform(normalize);
 
-export const getByBlobIdV1 = publicProcedure
+export const getByBlobIdV2 = publicProcedure
   .meta({
     openapi: {
       method: "GET",
-      path: "/v1/blobs/{id}",
-      tags: ["blobs"],
+      path: "/v2/blobs/{id}",
+      tags: ["beta"],
       summary:
-        "retrieves blob details for given versioned hash or kzg commitment, with the number of its transactions. List them with /v1/blobs?blob=<versioned hash>.",
+        "retrieves blob details for given versioned hash or kzg commitment, with the number of its transactions. List them with /v2/blobs/{id}/transactions.",
     },
   })
   .input(inputSchema)
   .output(outputSchema)
   .use(withBlobSignedUrls)
   .query(async ({ ctx: { prisma }, input: { id } }) => {
-    const blob = await findResponseBlobV1(prisma, id);
+    const blob = await findResponseBlobV2(prisma, id);
 
     if (!blob) {
       throw new TRPCError({
