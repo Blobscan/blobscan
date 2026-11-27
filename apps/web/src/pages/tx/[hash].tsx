@@ -27,6 +27,7 @@ import { OptimismCard } from "~/components/OptimismCard";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Separator } from "~/components/Separator";
 import { TransactionFeeDistribution } from "~/components/TransactionFeeDistribution";
+import { captureNavArrowClick } from "~/analytics";
 import { api } from "~/api-client";
 import { useIsMainnet } from "~/hooks/useIsMainnet";
 import ErrorPage from "~/pages/_error";
@@ -129,6 +130,8 @@ const Tx: NextPage = () => {
       setAdjacentTxLoading(true);
       setAdjacentTxError(undefined);
 
+      const startedAt = performance.now();
+
       try {
         const adjacentInput = toSenderAdjacentTxInput(hash, direction);
         const adjacentTx = await utils.tx.getSenderAdjacentTx.ensureData(
@@ -137,6 +140,13 @@ const Tx: NextPage = () => {
         );
 
         if (!adjacentTx) {
+          captureNavArrowClick({
+            page: "tx",
+            direction,
+            outcome: "none",
+            startedAt,
+          });
+
           return;
         }
 
@@ -160,7 +170,20 @@ const Tx: NextPage = () => {
         );
 
         await router?.push(routes.tx(adjacentTx.hash));
+
+        captureNavArrowClick({
+          page: "tx",
+          direction,
+          outcome: "navigated",
+          startedAt,
+        });
       } catch (err) {
+        captureNavArrowClick({
+          page: "tx",
+          direction,
+          outcome: "error",
+          startedAt,
+        });
         setAdjacentTxError(
           err instanceof Error
             ? err

@@ -3,6 +3,7 @@ import { useRouter } from "next/compat/router";
 import { skipToken, useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
 
+import { captureNavArrowClick } from "~/analytics";
 import { api } from "~/api-client";
 import { routes } from "~/routes";
 import type { BlobPosition, BlobV2, GetAdjacentBlobInput } from "~/types";
@@ -76,6 +77,8 @@ export function useAdjacentBlobNavigation({
       setLoading(true);
       setError(undefined);
 
+      const startedAt = performance.now();
+
       try {
         const adjacentInput = toAdjacentBlobInput(position, direction);
         // `fetch` sends a request if the cached result is older than
@@ -86,6 +89,13 @@ export function useAdjacentBlobNavigation({
         });
 
         if (!adjacent) {
+          captureNavArrowClick({
+            page: "blob",
+            direction,
+            outcome: "none",
+            startedAt,
+          });
+
           return;
         }
 
@@ -117,7 +127,26 @@ export function useAdjacentBlobNavigation({
         }
 
         await router?.push(routes.blob(adjacent.blob.versionedHash, adjacent));
+
+        captureNavArrowClick({
+          page: "blob",
+          direction,
+          outcome: "navigated",
+          startedAt,
+          properties: {
+            // Within the transaction, or to another transaction of the sender.
+            same_transaction: adjacent.txHash === position.txHash,
+            // How many transactions carry the blob the user leaves.
+            blob_transaction_count: blob.transactions.length,
+          },
+        });
       } catch (err) {
+        captureNavArrowClick({
+          page: "blob",
+          direction,
+          outcome: "error",
+          startedAt,
+        });
         setError(
           err instanceof Error ? err : new Error("Could not get the blob")
         );

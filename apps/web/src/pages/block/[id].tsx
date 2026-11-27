@@ -21,6 +21,7 @@ import { NavArrow } from "~/components/NavArrow";
 import type { NavArrowProps } from "~/components/NavArrow";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { TransactionFeeDistribution } from "~/components/TransactionFeeDistribution";
+import { captureNavArrowClick } from "~/analytics";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { useChain } from "~/hooks/useChain";
@@ -103,6 +104,8 @@ const Block: NextPage = function () {
       setAdjacentBlockLoading(true);
 
       const currentBlockNumber = blockData.number;
+      const startedAt = performance.now();
+
       try {
         const adjacentBlock = await utils.block.getAdjacentBlock.ensureData(
           {
@@ -133,6 +136,22 @@ const Block: NextPage = function () {
         );
 
         router?.push(routes.block(adjacentBlock.number));
+
+        captureNavArrowClick({
+          page: "block",
+          direction,
+          outcome: "navigated",
+          startedAt,
+        });
+      } catch (err) {
+        captureNavArrowClick({
+          page: "block",
+          direction,
+          outcome: "error",
+          startedAt,
+        });
+
+        throw err;
       } finally {
         setAdjacentBlockLoading(false);
       }

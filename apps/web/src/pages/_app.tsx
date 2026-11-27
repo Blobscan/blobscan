@@ -13,6 +13,7 @@ import { SkeletonTheme } from "react-loading-skeleton";
 import AppLayout from "~/components/AppLayout/AppLayout";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { FeedbackWidget } from "~/components/FeedbackWidget/FeedbackWidget";
+import { initAnalytics } from "~/analytics";
 import { api } from "~/api-client";
 import { useIsMainnet } from "~/hooks/useIsMainnet";
 import { useIsMounted } from "~/hooks/useIsMounted";
@@ -33,6 +34,14 @@ function App({ Component, pageProps }: NextAppProps) {
   const isMainnet = useIsMainnet();
   const router = useRouter();
   const { env } = useEnv();
+
+  useEffect(() => {
+    if (!env?.PUBLIC_POSTHOG_ID) {
+      return;
+    }
+
+    initAnalytics({ id: env.PUBLIC_POSTHOG_ID, host: env.PUBLIC_POSTHOG_HOST });
+  }, [env?.PUBLIC_POSTHOG_ID, env?.PUBLIC_POSTHOG_HOST]);
 
   useEffect(() => {
     if (!env?.PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL) {
