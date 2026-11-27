@@ -27,6 +27,7 @@ nextjs:
 | `TRACES_ENABLED`                       | Enable instrumentation of functions and sending traces to a collector                       | No       | `false`                    |
 | `PUBLIC_POSTHOG_ID`                    | PostHog project API key used for tracking events and analytics                              | No       | (empty)                    |
 | `PUBLIC_POSTHOG_HOST`                  | Host URL for the PostHog instance used for analytics tracking                               | No       | `https://us.i.posthog.com` |
+| `PUBLIC_POSTHOG_PROXY_ENABLED`         | Send PostHog requests through `/api/relay` on this site instead of directly to the host     | No       | `true`                     |
 
 ## Blobscan API
 

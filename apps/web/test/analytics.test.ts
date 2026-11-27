@@ -8,7 +8,11 @@ const posthog = vi.hoisted(() => ({
 
 vi.mock("posthog-js", () => ({ default: posthog }));
 
-const CONFIG = { id: "phc_test", host: "https://posthog.example" };
+const CONFIG = {
+  id: "phc_test",
+  host: "https://posthog.example",
+  proxy: false,
+};
 
 function navEvent(durationMs: number) {
   return {
@@ -63,7 +67,7 @@ describe("analytics", () => {
     const { initAnalytics } = await importAnalytics();
 
     await initAnalytics(CONFIG);
-    await initAnalytics({ id: "other", host: "https://other.example" });
+    await initAnalytics({ ...CONFIG, id: "other" });
 
     expect(posthog.init).toHaveBeenCalledTimes(1);
     expect(posthog.init).toHaveBeenCalledWith(
@@ -74,6 +78,24 @@ describe("analytics", () => {
         persistence: "localStorage",
         autocapture: false,
         disable_session_recording: true,
+      })
+    );
+  });
+
+  it("sends the requests through the relay when the proxy is enabled", async () => {
+    const { initAnalytics } = await importAnalytics();
+
+    await initAnalytics({
+      ...CONFIG,
+      host: "https://eu.i.posthog.com",
+      proxy: true,
+    });
+
+    expect(posthog.init).toHaveBeenCalledWith(
+      CONFIG.id,
+      expect.objectContaining({
+        api_host: "/api/relay",
+        ui_host: "https://eu.posthog.com",
       })
     );
   });

@@ -40,8 +40,16 @@ function App({ Component, pageProps }: NextAppProps) {
       return;
     }
 
-    initAnalytics({ id: env.PUBLIC_POSTHOG_ID, host: env.PUBLIC_POSTHOG_HOST });
-  }, [env?.PUBLIC_POSTHOG_ID, env?.PUBLIC_POSTHOG_HOST]);
+    initAnalytics({
+      id: env.PUBLIC_POSTHOG_ID,
+      host: env.PUBLIC_POSTHOG_HOST,
+      proxy: env.PUBLIC_POSTHOG_PROXY_ENABLED,
+    });
+  }, [
+    env?.PUBLIC_POSTHOG_ID,
+    env?.PUBLIC_POSTHOG_HOST,
+    env?.PUBLIC_POSTHOG_PROXY_ENABLED,
+  ]);
 
   useEffect(() => {
     if (!env?.PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL) {

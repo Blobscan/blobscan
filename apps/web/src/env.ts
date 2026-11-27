@@ -25,6 +25,9 @@ const clientEnvVars = {
   PUBLIC_SENTRY_DSN_WEB: z.string().url().optional(),
   PUBLIC_POSTHOG_ID: z.string().optional(),
   PUBLIC_POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
+  // Send PostHog requests through `/api/relay` on this site, so that ad
+  // blockers that block the PostHog host do not drop them.
+  PUBLIC_POSTHOG_PROXY_ENABLED: booleanSchema.default(true),
   PUBLIC_VERCEL_ANALYTICS_ENABLED: booleanSchema.default(false),
   PUBLIC_MATOMO_TAG_MANAGER_CONTAINER_URL: z.string().url().optional(),
 };
@@ -126,6 +129,7 @@ export const env = createEnv({
     PUBLIC_NETWORK_NAME: process.env.PUBLIC_NETWORK_NAME,
     PUBLIC_POSTHOG_HOST: process.env.PUBLIC_POSTHOG_HOST,
     PUBLIC_POSTHOG_ID: process.env.PUBLIC_POSTHOG_ID,
+    PUBLIC_POSTHOG_PROXY_ENABLED: process.env.PUBLIC_POSTHOG_PROXY_ENABLED,
     PUBLIC_SENTRY_DSN_WEB: process.env.PUBLIC_SENTRY_DSN_WEB,
     PUBLIC_VERCEL_ANALYTICS_ENABLED:
       process.env.NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED,

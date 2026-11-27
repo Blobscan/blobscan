@@ -1,5 +1,7 @@
 import type { PostHog } from "posthog-js";
 
+import { getPostHogUiHost, POSTHOG_PROXY_PATH } from "./posthog-hosts";
+
 /**
  * PostHog, loaded after the page with a dynamic import. It was removed in #968
  * to cut the bundle size; the dynamic import keeps it out of the main bundle,
@@ -64,9 +66,12 @@ const pendingEvents: {
 export function initAnalytics({
   id,
   host,
+  proxy,
 }: {
   id: string;
   host: string;
+  // Send the requests through the relay of this site instead of to `host`.
+  proxy: boolean;
 }): Promise<void> | undefined {
   if (typeof window === "undefined" || loading) {
     return loading;
@@ -75,7 +80,9 @@ export function initAnalytics({
   loading = import("posthog-js")
     .then(({ default: posthog }) => {
       posthog.init(id, {
-        api_host: host,
+        ...(proxy
+          ? { api_host: POSTHOG_PROXY_PATH, ui_host: getPostHogUiHost(host) }
+          : { api_host: host }),
         person_profiles: "identified_only",
         // Next.js changes pages without a page load: count each URL change.
         capture_pageview: "history_change",
