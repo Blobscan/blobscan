@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
 import { DetailsValueSkeleton } from "~/components/DetailsValueSkeleton";
+import { Skeleton } from "~/components/Skeleton";
 import ErrorPage from "~/pages/_error";
 import "react-loading-skeleton/dist/skeleton.css";
 import { skipToken, useQuery } from "@tanstack/react-query";
@@ -269,6 +270,11 @@ const Blob: NextPage = function () {
 
   if (blob) {
     const isUnique = blob.transactionCount === 1;
+    // The blob and its transactions are two requests: the fields that come
+    // from the transactions keep their skeletons until the list arrives.
+    const transactionsLoading =
+      !transactions.length && !transactionsError && blob.transactionCount > 0;
+    const textSkeleton = <Skeleton width="50%" height={15} />;
 
     detailsFields.push({
       name: "Versioned Hash",
@@ -285,6 +291,21 @@ const Blob: NextPage = function () {
         name: "Status",
         value: <BlockStatusBadge blockNumber={transactions[0].blockNumber} />,
       });
+    } else if (transactionsLoading) {
+      detailsFields.push({
+        name: "Status",
+        value: <DetailsValueSkeleton variant="badge" />,
+      });
+    }
+
+    if (isUnique && transactionsLoading) {
+      detailsFields.push(
+        { name: "Block", value: textSkeleton },
+        { name: "Transaction", value: textSkeleton },
+        { name: "Timestamp", value: textSkeleton },
+        { name: "Category", value: <DetailsValueSkeleton variant="badge" /> },
+        { name: "Position In Transaction", value: textSkeleton }
+      );
     }
 
     if (isUnique && transactions[0]) {
