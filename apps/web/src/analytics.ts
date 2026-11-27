@@ -9,15 +9,27 @@ import type { PostHog, Properties } from "posthog-js";
 
 let client: PostHog | undefined;
 let loading: Promise<void> | undefined;
+// Set when PostHog could not load: events are dropped from then on.
+let failed = false;
 
 // Events captured before PostHog has loaded. Bounded, so that a load that never
 // ends does not keep them forever.
 const MAX_PENDING_EVENTS = 50;
 const pendingEvents: [string, Properties][] = [];
 
-export function initAnalytics({ id, host }: { id: string; host: string }) {
+/**
+ * Loads PostHog once. Returns the load, which never rejects, so that callers
+ * (and tests) can wait for it.
+ */
+export function initAnalytics({
+  id,
+  host,
+}: {
+  id: string;
+  host: string;
+}): Promise<void> | undefined {
   if (typeof window === "undefined" || loading) {
-    return;
+    return loading;
   }
 
   loading = import("posthog-js")
@@ -41,9 +53,13 @@ export function initAnalytics({ id, host }: { id: string; host: string }) {
       }
     })
     .catch(() => {
-      // Blocked by an ad blocker or offline: analytics must never break the page.
+      // Blocked by an ad blocker or offline: analytics must never break the
+      // page.
+      failed = true;
       pendingEvents.length = 0;
     });
+
+  return loading;
 }
 
 export function captureEvent(event: string, properties: Properties = {}) {
@@ -53,7 +69,7 @@ export function captureEvent(event: string, properties: Properties = {}) {
     return;
   }
 
-  if (loading && pendingEvents.length < MAX_PENDING_EVENTS) {
+  if (loading && !failed && pendingEvents.length < MAX_PENDING_EVENTS) {
     pendingEvents.push([event, properties]);
   }
 }

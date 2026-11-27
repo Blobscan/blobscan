@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 import { skipToken, useQueryClient } from "@tanstack/react-query";
@@ -22,13 +22,13 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrow } from "~/components/NavArrow";
-import type { NavArrowProps } from "~/components/NavArrow";
 import { OptimismCard } from "~/components/OptimismCard";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { Separator } from "~/components/Separator";
 import { TransactionFeeDistribution } from "~/components/TransactionFeeDistribution";
-import { captureNavArrowClick } from "~/analytics";
 import { api } from "~/api-client";
+import { useAdjacentNavigation } from "~/hooks/useAdjacentNavigation";
+import type { GetAdjacent } from "~/hooks/useAdjacentNavigation";
 import { useIsMainnet } from "~/hooks/useIsMainnet";
 import ErrorPage from "~/pages/_error";
 import { routes } from "~/routes";
@@ -118,84 +118,53 @@ const Tx: NextPage = () => {
     hash ? toSenderAdjacentTxInput(hash, "next") : skipToken,
     cacheOnlyOptions
   );
-  const [adjacentTxLoading, setAdjacentTxLoading] = useState(false);
-  const [adjacentTxError, setAdjacentTxError] = useState<Error>();
+  const getAdjacentTx = useMemo<GetAdjacent | undefined>(() => {
+    if (!hash) {
+      return;
+    }
 
-  const handleNavClick = useCallback<NavArrowProps["onClick"]>(
-    async (direction) => {
-      if (!hash) {
-        return;
+    return async (direction) => {
+      const adjacentInput = toSenderAdjacentTxInput(hash, direction);
+      const adjacentTx = await utils.tx.getSenderAdjacentTx.ensureData(
+        adjacentInput,
+        { staleTime: TX_STALE_TIME }
+      );
+
+      if (!adjacentTx) {
+        return null;
       }
 
-      setAdjacentTxLoading(true);
-      setAdjacentTxError(undefined);
+      // Put the adjacent transaction in the cache of its page, so that the
+      // page does not send a second request. The cache entry keeps the time
+      // of the request, so that an old transaction does not show as new.
+      //
+      // Do not put the current transaction in the cache as the adjacent
+      // transaction of the new page in the opposite direction. The search in
+      // the opposite direction does not return a transaction in a reorged
+      // block. The response does not tell if the block of the current
+      // transaction is reorged.
+      const adjacentUpdatedAt = queryClient.getQueryState(
+        getQueryKey(api.tx.getSenderAdjacentTx, adjacentInput, "query")
+      )?.dataUpdatedAt;
 
-      const startedAt = performance.now();
+      utils.tx.getByHash.setData(
+        { hash: adjacentTx.hash, expand: TX_EXPAND },
+        adjacentTx,
+        { updatedAt: adjacentUpdatedAt }
+      );
 
-      try {
-        const adjacentInput = toSenderAdjacentTxInput(hash, direction);
-        const adjacentTx = await utils.tx.getSenderAdjacentTx.ensureData(
-          adjacentInput,
-          { staleTime: TX_STALE_TIME }
-        );
-
-        if (!adjacentTx) {
-          captureNavArrowClick({
-            page: "tx",
-            direction,
-            outcome: "none",
-            startedAt,
-          });
-
-          return;
-        }
-
-        // Put the adjacent transaction in the cache of its page, so that the
-        // page does not send a second request. The cache entry keeps the time
-        // of the request, so that an old transaction does not show as new.
-        //
-        // Do not put the current transaction in the cache as the adjacent
-        // transaction of the new page in the opposite direction. The search in
-        // the opposite direction does not return a transaction in a reorged
-        // block. The response does not tell if the block of the current
-        // transaction is reorged.
-        const adjacentUpdatedAt = queryClient.getQueryState(
-          getQueryKey(api.tx.getSenderAdjacentTx, adjacentInput, "query")
-        )?.dataUpdatedAt;
-
-        utils.tx.getByHash.setData(
-          { hash: adjacentTx.hash, expand: TX_EXPAND },
-          adjacentTx,
-          { updatedAt: adjacentUpdatedAt }
-        );
-
-        const navigated = await router?.push(routes.tx(adjacentTx.hash));
-
-        captureNavArrowClick({
-          page: "tx",
-          direction,
-          // `push` resolves `false` when another navigation cancels it.
-          outcome: navigated === false ? "cancelled" : "navigated",
-          startedAt,
-        });
-      } catch (err) {
-        captureNavArrowClick({
-          page: "tx",
-          direction,
-          outcome: "error",
-          startedAt,
-        });
-        setAdjacentTxError(
-          err instanceof Error
-            ? err
-            : new Error("Could not get the adjacent transaction")
-        );
-      } finally {
-        setAdjacentTxLoading(false);
-      }
-    },
-    [hash, queryClient, router, utils]
-  );
+      return { route: routes.tx(adjacentTx.hash) };
+    };
+  }, [hash, queryClient, utils]);
+  const {
+    navigate: handleNavClick,
+    loading: adjacentTxLoading,
+    error: adjacentTxError,
+  } = useAdjacentNavigation({
+    page: "tx",
+    getAdjacent: getAdjacentTx,
+    errorMessage: "Could not get the adjacent transaction",
+  });
 
   if (error) {
     return (

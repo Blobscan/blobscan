@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
 import { skipToken } from "@tanstack/react-query";
@@ -19,11 +19,11 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrow } from "~/components/NavArrow";
-import type { NavArrowProps } from "~/components/NavArrow";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { TransactionFeeDistribution } from "~/components/TransactionFeeDistribution";
-import { captureNavArrowClick } from "~/analytics";
 import { api } from "~/api-client";
+import { useAdjacentNavigation } from "~/hooks/useAdjacentNavigation";
+import type { GetAdjacent } from "~/hooks/useAdjacentNavigation";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { useChain } from "~/hooks/useChain";
 import { useExternalExplorers } from "~/hooks/useExternalExplorers";
@@ -67,8 +67,6 @@ const Block: NextPage = function () {
   const isMainnet = useIsMainnet();
   const utils = api.useUtils();
   const { buildResourceUrl } = useExternalExplorers("consensus");
-  const [adjacentBlockLoading, setAdjacentBlockLoading] = useState(false);
-  const [adjacentBlockError, setAdjacentBlockError] = useState<Error>();
 
   const isReady = router?.isReady;
   const blockNumberOrHash = router?.query.id as string | undefined;
@@ -115,87 +113,56 @@ const Block: NextPage = function () {
     ADJACENT_BLOCK_CACHE_ONLY_OPTIONS
   );
 
-  const handleNavClick = useCallback<NavArrowProps["onClick"]>(
-    async function (direction) {
-      if (!blockData) {
-        return;
-      }
+  const getAdjacentBlock = useMemo<GetAdjacent | undefined>(() => {
+    if (!blockData) {
+      return;
+    }
 
-      setAdjacentBlockLoading(true);
-      setAdjacentBlockError(undefined);
-
-      const currentBlockNumber = blockData.number;
-      const startedAt = performance.now();
-
-      try {
-        const adjacentBlock = await utils.block.getAdjacentBlock.ensureData(
-          {
-            blockNumber: currentBlockNumber,
-            direction,
-            expand: EXPAND_QUERY_PARAM,
-          },
-          {
-            staleTime: Infinity,
-          }
-        );
-
-        if (!adjacentBlock) {
-          captureNavArrowClick({
-            page: "block",
-            direction,
-            outcome: "none",
-            startedAt,
-          });
-
-          return;
+    return async (direction) => {
+      const adjacentBlock = await utils.block.getAdjacentBlock.ensureData(
+        {
+          blockNumber: blockData.number,
+          direction,
+          expand: EXPAND_QUERY_PARAM,
+        },
+        {
+          staleTime: Infinity,
         }
+      );
 
-        utils.block.getByBlockId.setData(
-          {
-            id: adjacentBlock.number.toString(),
-            expand: EXPAND_QUERY_PARAM,
-          },
-          adjacentBlock
-        );
-
-        utils.block.getAdjacentBlock.setData(
-          {
-            blockNumber: adjacentBlock.number,
-            direction: direction === "next" ? "prev" : "next",
-            expand: EXPAND_QUERY_PARAM,
-          },
-          blockData
-        );
-
-        const navigated = await router?.push(
-          routes.block(adjacentBlock.number)
-        );
-
-        captureNavArrowClick({
-          page: "block",
-          direction,
-          // `push` resolves `false` when another navigation cancels it.
-          outcome: navigated === false ? "cancelled" : "navigated",
-          startedAt,
-        });
-      } catch (err) {
-        captureNavArrowClick({
-          page: "block",
-          direction,
-          outcome: "error",
-          startedAt,
-        });
-        setAdjacentBlockError(
-          err instanceof Error
-            ? err
-            : new Error("Could not get the adjacent block")
-        );
-      } finally {
-        setAdjacentBlockLoading(false);
+      if (!adjacentBlock) {
+        return null;
       }
-    },
-    [utils, router, blockData]
-  );
+
+      utils.block.getByBlockId.setData(
+        {
+          id: adjacentBlock.number.toString(),
+          expand: EXPAND_QUERY_PARAM,
+        },
+        adjacentBlock
+      );
+
+      utils.block.getAdjacentBlock.setData(
+        {
+          blockNumber: adjacentBlock.number,
+          direction: direction === "next" ? "prev" : "next",
+          expand: EXPAND_QUERY_PARAM,
+        },
+        blockData
+      );
+
+      return { route: routes.block(adjacentBlock.number) };
+    };
+  }, [blockData, utils]);
+  const {
+    navigate: handleNavClick,
+    loading: adjacentBlockLoading,
+    error: adjacentBlockError,
+  } = useAdjacentNavigation({
+    page: "block",
+    getAdjacent: getAdjacentBlock,
+    errorMessage: "Could not get the adjacent block",
+  });
 
   if (error) {
     const blockId = hashSchema.safeParse(blockNumberOrHash).success
