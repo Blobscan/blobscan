@@ -7,7 +7,7 @@
 
 Bounded the transactions returned for a blob (a blob in 38,624 transactions made a 54 MB response) and moved the cursor-paginated routes to `/v2`.
 
-- **Breaking:** renamed `/v1/blocks`, `/v1/blobs` and `/v1/transactions` to `/v2/...`. The `/v2` routes are tagged `beta` in the OpenAPI document, so that they are grouped together in the Swagger UI.
+- Renamed `/v1/blocks`, `/v1/blobs` and `/v1/transactions` to `/v2/...` (`/v1` was never announced, so no alias is kept). The `/v2` routes are tagged `beta` in the OpenAPI document, so that they are grouped together in the Swagger UI, and can still change.
 - Added `GET /v2/blobs/{id}` (`blob.getByBlobIdV2`): the blob with `transactionCount` (transactions in canonical blocks) and no transaction list.
 - Added `GET /v2/blobs/{id}/transactions` (`blob.getTransactionsByBlobId`): the transactions of a blob with cursor pagination (`ps`, `cursor`, `count`, `sort`, `type`, `expand`). The rows do not repeat the blob.
 - **Breaking:** `GET /blobs/{id}` (`blob.getByBlobId`) returns at most `transactionsLimit` transactions (default 100, maximum 1000), newest first, and adds `transactionCount` with the total.
