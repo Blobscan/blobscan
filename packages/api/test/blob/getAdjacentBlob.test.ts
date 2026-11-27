@@ -217,4 +217,25 @@ describe("getAdjacentBlob", () => {
       ).rejects.toMatchObject({ code: "NOT_FOUND" });
     });
   });
+
+  describe("when limiting the transactions of the blob", () => {
+    it("should return the blob as getByBlobId with the same limit", async () => {
+      const result = await blobCaller.getAdjacentBlob({
+        txHash: "txHash001",
+        index: 1,
+        direction: "prev",
+        expand: "transaction",
+        transactionsLimit: 2,
+      });
+
+      expect(result?.blob.transactions).toHaveLength(2);
+      expect(result?.blob).toEqual(
+        await blobCaller.getByBlobId({
+          id: "blobHash001",
+          expand: "transaction",
+          transactionsLimit: 2,
+        })
+      );
+    });
+  });
 });

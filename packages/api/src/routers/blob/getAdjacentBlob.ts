@@ -14,7 +14,11 @@ import {
   normalize,
 } from "../../utils";
 import { senderAdjacentTxSql } from "../tx/helpers";
-import { findResponseBlob, responseBlobSchema } from "./helpers";
+import {
+  blobTransactionsPageSchema,
+  findResponseBlob,
+  responseBlobSchema,
+} from "./helpers";
 
 const blobPositionSchema = z.object({
   txHash: z.string(),
@@ -25,6 +29,8 @@ const inputSchema = blobPositionSchema
   .extend({
     direction: adjacentDirectionSchema,
   })
+  // A limit but no offset: the client shows the blob from its first page.
+  .merge(blobTransactionsPageSchema.pick({ transactionsLimit: true }))
   .merge(createExpandsSchema(["transaction", "block"]));
 
 const outputSchema = blobPositionSchema
@@ -50,9 +56,9 @@ type AdjacentBlobRow = {
  * transactions of reorged blocks. Returns `null` if there is no blob in that
  * direction.
  *
- * The blob has the format of `blob.getByBlobId` with the same `expand`. Thus
- * the client can put it in the `getByBlobId` cache, and the page of the blob
- * does not send a second request.
+ * The blob has the format of `blob.getByBlobId` with the same `expand` and
+ * `transactionsLimit`. Thus the client can put it in the `getByBlobId` cache,
+ * and the page of the blob does not send a second request.
  *
  * One statement gets the adjacent position in the requested direction. Each
  * `LATERAL` subquery gets the values of the current position as parameters,
@@ -71,7 +77,7 @@ export const getAdjacentBlob = publicProcedure
   .query(
     async ({
       ctx: { expands, prisma },
-      input: { txHash, index, direction },
+      input: { txHash, index, direction, transactionsLimit },
     }) => {
       const { operator, order } = adjacentSqlParts(direction);
 
@@ -130,7 +136,8 @@ export const getAdjacentBlob = publicProcedure
       const blob = await findResponseBlob(
         prisma,
         expands,
-        adjacent.versionedHash
+        adjacent.versionedHash,
+        { transactionsLimit }
       );
 
       if (!blob) {

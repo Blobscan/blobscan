@@ -19,6 +19,7 @@ import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
 import type { BlobViewMode } from "~/components/BlobViewer";
 import { ErrorMessage } from "~/components/BlobViewer/ErrorMessage";
+import { Button } from "~/components/Button";
 import { Card } from "~/components/Cards/Card";
 import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { Copyable } from "~/components/Copyable";
@@ -32,13 +33,15 @@ import { Listbox } from "~/components/Selects";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
 import {
-  BLOB_EXPAND,
   BLOB_STALE_TIME,
+  BLOB_TRANSACTIONS_LIMIT,
+  toBlobPageQueryInput,
   useAdjacentBlobNavigation,
 } from "~/hooks/useAdjacentBlobNavigation";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { routes } from "~/routes";
 import { versionedHashSchema } from "~/schemas/utils";
+import type { Blob as BlobEntity } from "~/types";
 import {
   formatBytes,
   formatTimestamp,
@@ -80,34 +83,91 @@ const Blob: NextPage = function () {
     dataUpdatedAt: blobUpdatedAt,
     isFetching: blobFetching,
     error,
-  } = api.blob.getByBlobId.useQuery(
-    {
-      id: id,
-      expand: BLOB_EXPAND,
-    },
-    {
-      enabled: router?.isReady,
-      staleTime: BLOB_STALE_TIME,
-      retry: false,
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
-    }
+  } = api.blob.getByBlobId.useQuery(toBlobPageQueryInput(id), {
+    enabled: router?.isReady,
+    staleTime: BLOB_STALE_TIME,
+    retry: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
+  });
+  const utils = api.useUtils();
+  // The query gets the newest BLOB_TRANSACTIONS_LIMIT transactions; the user
+  // loads the others page by page.
+  const [moreTransactions, setMoreTransactions] = useState<
+    BlobEntity["transactions"]
+  >([]);
+  const [moreTransactionsLoading, setMoreTransactionsLoading] = useState(false);
+  const [moreTransactionsError, setMoreTransactionsError] = useState<Error>();
+
+  useEffect(() => {
+    setMoreTransactions([]);
+    setMoreTransactionsError(undefined);
+  }, [blob?.versionedHash]);
+
+  const transactions = useMemo(
+    () => [...(blob?.transactions ?? []), ...moreTransactions],
+    [blob?.transactions, moreTransactions]
   );
+
+  async function loadMoreTransactions() {
+    if (!blob) {
+      return;
+    }
+
+    setMoreTransactionsLoading(true);
+    setMoreTransactionsError(undefined);
+
+    try {
+      const page = await utils.blob.getByBlobId.fetch({
+        ...toBlobPageQueryInput(blob.versionedHash),
+        transactionsOffset: transactions.length,
+      });
+
+      setMoreTransactions((loaded) => [...loaded, ...page.transactions]);
+    } catch (err) {
+      setMoreTransactionsError(
+        err instanceof Error ? err : new Error("Could not get the transactions")
+      );
+    } finally {
+      setMoreTransactionsLoading(false);
+    }
+  }
+
   // A blob can be in more than one transaction, and more than one time in the
   // same transaction. Thus the navigation uses the position in the URL. If the
   // URL has no position, the navigation uses the first position in the list of
   // the blob. The list starts with the newest block.
   const position = useMemo(() => {
-    const blobOnTx =
-      blob?.transactions.find(
-        ({ txHash, index }) =>
-          txHash === positionTxHash && index === positionIndex
-      ) ?? blob?.transactions[0];
+    if (!blob) {
+      return undefined;
+    }
 
-    return typeof blobOnTx?.index === "number"
-      ? { txHash: blobOnTx.txHash, index: blobOnTx.index }
+    const blobOnTx = transactions.find(
+      ({ txHash, index }) =>
+        txHash === positionTxHash && index === positionIndex
+    );
+
+    if (typeof blobOnTx?.index === "number") {
+      return { txHash: blobOnTx.txHash, index: blobOnTx.index };
+    }
+
+    // The URL position can be in a transaction that is not loaded yet.
+    // `getAdjacentBlob` fails if the position does not exist.
+    if (
+      positionTxHash &&
+      positionIndex !== undefined &&
+      Number.isInteger(positionIndex) &&
+      transactions.length < blob.transactionCount
+    ) {
+      return { txHash: positionTxHash, index: positionIndex };
+    }
+
+    const newest = transactions[0];
+
+    return typeof newest?.index === "number"
+      ? { txHash: newest.txHash, index: newest.index }
       : undefined;
-  }, [blob, positionTxHash, positionIndex]);
+  }, [blob, transactions, positionTxHash, positionIndex]);
   const {
     prevBlob,
     nextBlob,
@@ -207,7 +267,7 @@ const Blob: NextPage = function () {
   const detailsFields: DetailsLayoutProps["fields"] = [];
 
   if (blob) {
-    const isUnique = blob.transactions.length === 1;
+    const isUnique = blob.transactionCount === 1;
 
     detailsFields.push({
       name: "Versioned Hash",
@@ -321,18 +381,18 @@ const Blob: NextPage = function () {
     }
 
     if (!isUnique) {
-      const rollupTxsExist = blob.transactions.find((tx) => !!tx.rollup);
+      const rollupTxsExist = transactions.find((tx) => !!tx.rollup);
 
       detailsFields.push({
         name: (
           <div className="flex flex-wrap items-center gap-2">
             Blocks And Transactions
-            <CountBadge count={blob.transactions.length} size="sm" />
+            <CountBadge count={blob.transactionCount} size="sm" />
           </div>
         ),
         value: (
           <div className="flex flex-col gap-6 md:gap-3">
-            {blob.transactions.map(
+            {transactions.map(
               ({ txHash, blockNumber, blockTimestamp, rollup }) => (
                 <div
                   key={`${txHash}-${blockNumber}`}
@@ -376,6 +436,32 @@ const Blob: NextPage = function () {
                   )}
                 </div>
               )
+            )}
+            {transactions.length < blob.transactionCount && (
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-contentSecondary-light dark:text-surfaceContentSecondary-dark">
+                  Showing {transactions.length.toLocaleString()} of{" "}
+                  {blob.transactionCount.toLocaleString()}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={moreTransactionsLoading}
+                  onClick={() => void loadMoreTransactions()}
+                >
+                  {moreTransactionsLoading
+                    ? "Loading..."
+                    : `Show ${Math.min(
+                        BLOB_TRANSACTIONS_LIMIT,
+                        blob.transactionCount - transactions.length
+                      ).toLocaleString()} more`}
+                </Button>
+                {moreTransactionsError && (
+                  <span className="text-error-600 dark:text-error-300">
+                    {moreTransactionsError.message}
+                  </span>
+                )}
+              </div>
             )}
           </div>
         ),

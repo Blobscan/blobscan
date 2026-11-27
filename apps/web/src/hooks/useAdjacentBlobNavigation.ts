@@ -8,11 +8,28 @@ import { routes } from "~/routes";
 import type { Blob, BlobPosition, GetAdjacentBlobInput } from "~/types";
 
 export const BLOB_EXPAND = "transaction";
+// The blob page gets the newest transactions of the blob and the others only
+// on request. Some blobs are in tens of thousands of transactions, and the
+// response with all of them was 54 MB.
+export const BLOB_TRANSACTIONS_LIMIT = 100;
 // The blob responses can have signed storage URLs that expire after one hour,
 // so the page does not use a cached blob that is older than this time.
 export const BLOB_STALE_TIME = 5 * 60 * 1000;
 
 type Direction = GetAdjacentBlobInput["direction"];
+
+/**
+ * The input of the `getByBlobId` query of the blob page. `getAdjacentBlob`
+ * returns the blob in the same format, so its result goes in the cache entry
+ * of this input.
+ */
+export function toBlobPageQueryInput(id: string) {
+  return {
+    id,
+    expand: BLOB_EXPAND,
+    transactionsLimit: BLOB_TRANSACTIONS_LIMIT,
+  } as const;
+}
 
 // The page gets an adjacent blob only when the user clicks an arrow. These
 // queries do not send a request. They only read the cache that the click
@@ -23,7 +40,13 @@ function toAdjacentBlobInput(
   { txHash, index }: BlobPosition,
   direction: Direction
 ): GetAdjacentBlobInput {
-  return { txHash, index, direction, expand: BLOB_EXPAND };
+  return {
+    txHash,
+    index,
+    direction,
+    expand: BLOB_EXPAND,
+    transactionsLimit: BLOB_TRANSACTIONS_LIMIT,
+  };
 }
 
 /**
@@ -83,7 +106,7 @@ export function useAdjacentBlobNavigation({
         )?.dataUpdatedAt;
 
         utils.blob.getByBlobId.setData(
-          { id: adjacent.blob.versionedHash, expand: BLOB_EXPAND },
+          toBlobPageQueryInput(adjacent.blob.versionedHash),
           adjacent.blob,
           { updatedAt: adjacentUpdatedAt }
         );
