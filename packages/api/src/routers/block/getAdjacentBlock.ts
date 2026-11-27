@@ -1,5 +1,3 @@
-import { TRPCError } from "@trpc/server";
-
 import { blockNumberSchema } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
@@ -23,7 +21,8 @@ const inputSchema = z
   })
   .merge(createExpandsSchema(["transaction", "blob"]));
 
-const outputSchema = responseBlockSchema.transform(normalize);
+// `null` when there is no block in that direction.
+const outputSchema = responseBlockSchema.transform(normalize).nullable();
 
 export const getAdjacentBlock = publicProcedure
   .input(inputSchema)
@@ -54,10 +53,7 @@ export const getAdjacentBlock = publicProcedure
       ]);
 
       if (!adjacentBlock) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `No ${direction} block found for block ${blockNumber}`,
-        });
+        return null;
       }
 
       return toResponseBlock(adjacentBlock, ethUsdPrice?.price);

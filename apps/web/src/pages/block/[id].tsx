@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
+import { skipToken } from "@tanstack/react-query";
 
 import { getBlockBlobTransactionFees } from "~/utils/block-fees";
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
@@ -56,6 +57,10 @@ const FIELD_HELP = {
 };
 
 const EXPAND_QUERY_PARAM = "transaction,blob";
+const ADJACENT_BLOCK_CACHE_ONLY_OPTIONS = {
+  enabled: false,
+  staleTime: Infinity,
+} as const;
 
 const Block: NextPage = function () {
   const router = useRouter();
@@ -63,6 +68,7 @@ const Block: NextPage = function () {
   const utils = api.useUtils();
   const { buildResourceUrl } = useExternalExplorers("consensus");
   const [adjacentBlockLoading, setAdjacentBlockLoading] = useState(false);
+  const [adjacentBlockError, setAdjacentBlockError] = useState<Error>();
 
   const isReady = router?.isReady;
   const blockNumberOrHash = router?.query.id as string | undefined;
@@ -94,6 +100,20 @@ const Block: NextPage = function () {
     blockNumber && chain ? blockNumber <= chain.firstBlobBlock.number : false;
   const isLatestBlock =
     blockNumber && latestBlock ? blockNumber >= latestBlock.number : false;
+  // These queries do not send a request. They only read the cache that a click
+  // fills, so an arrow becomes disabled when its result is `null`.
+  const { data: prevBlock } = api.block.getAdjacentBlock.useQuery(
+    blockNumber
+      ? { blockNumber, direction: "prev", expand: EXPAND_QUERY_PARAM }
+      : skipToken,
+    ADJACENT_BLOCK_CACHE_ONLY_OPTIONS
+  );
+  const { data: nextBlock } = api.block.getAdjacentBlock.useQuery(
+    blockNumber
+      ? { blockNumber, direction: "next", expand: EXPAND_QUERY_PARAM }
+      : skipToken,
+    ADJACENT_BLOCK_CACHE_ONLY_OPTIONS
+  );
 
   const handleNavClick = useCallback<NavArrowProps["onClick"]>(
     async function (direction) {
@@ -102,6 +122,7 @@ const Block: NextPage = function () {
       }
 
       setAdjacentBlockLoading(true);
+      setAdjacentBlockError(undefined);
 
       const currentBlockNumber = blockData.number;
       const startedAt = performance.now();
@@ -117,6 +138,17 @@ const Block: NextPage = function () {
             staleTime: Infinity,
           }
         );
+
+        if (!adjacentBlock) {
+          captureNavArrowClick({
+            page: "block",
+            direction,
+            outcome: "none",
+            startedAt,
+          });
+
+          return;
+        }
 
         utils.block.getByBlockId.setData(
           {
@@ -135,12 +167,15 @@ const Block: NextPage = function () {
           blockData
         );
 
-        router?.push(routes.block(adjacentBlock.number));
+        const navigated = await router?.push(
+          routes.block(adjacentBlock.number)
+        );
 
         captureNavArrowClick({
           page: "block",
           direction,
-          outcome: "navigated",
+          // `push` resolves `false` when another navigation cancels it.
+          outcome: navigated === false ? "cancelled" : "navigated",
           startedAt,
         });
       } catch (err) {
@@ -150,8 +185,11 @@ const Block: NextPage = function () {
           outcome: "error",
           startedAt,
         });
-
-        throw err;
+        setAdjacentBlockError(
+          err instanceof Error
+            ? err
+            : new Error("Could not get the adjacent block")
+        );
       } finally {
         setAdjacentBlockLoading(false);
       }
@@ -416,7 +454,12 @@ const Block: NextPage = function () {
                 handleNavClick("prev");
               }}
               tooltip="Prev Block"
-              disabled={isFirstBlock || adjacentBlockLoading || !blockNumber}
+              disabled={
+                isFirstBlock ||
+                prevBlock === null ||
+                adjacentBlockLoading ||
+                !blockNumber
+              }
             />
             Block Details
             <NavArrow
@@ -424,8 +467,18 @@ const Block: NextPage = function () {
               size="lg"
               onClick={() => handleNavClick("next")}
               tooltip="Next Block"
-              disabled={isLatestBlock || adjacentBlockLoading || !blockNumber}
+              disabled={
+                isLatestBlock ||
+                nextBlock === null ||
+                adjacentBlockLoading ||
+                !blockNumber
+              }
             />
+            {adjacentBlockError && (
+              <span className="text-sm font-normal text-error-600 dark:text-error-300">
+                Couldn&apos;t load the adjacent block
+              </span>
+            )}
           </div>
         }
         resource={

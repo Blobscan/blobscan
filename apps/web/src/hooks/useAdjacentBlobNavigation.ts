@@ -126,12 +126,15 @@ export function useAdjacentBlobNavigation({
           );
         }
 
-        await router?.push(routes.blob(adjacent.blob.versionedHash, adjacent));
+        const navigated = await router?.push(
+          routes.blob(adjacent.blob.versionedHash, adjacent)
+        );
 
         captureNavArrowClick({
           page: "blob",
           direction,
-          outcome: "navigated",
+          // `push` resolves `false` when another navigation cancels it.
+          outcome: navigated === false ? "cancelled" : "navigated",
           startedAt,
           properties: {
             // Within the transaction, or to another transaction of the sender.

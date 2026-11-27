@@ -65,6 +65,8 @@ export type NavArrowOutcome =
   | "navigated"
   // There is no entity in that direction (the arrow becomes disabled).
   | "none"
+  // Another navigation cancelled the page change.
+  | "cancelled"
   | "error";
 
 /**

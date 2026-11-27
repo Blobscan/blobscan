@@ -169,12 +169,13 @@ const Tx: NextPage = () => {
           { updatedAt: adjacentUpdatedAt }
         );
 
-        await router?.push(routes.tx(adjacentTx.hash));
+        const navigated = await router?.push(routes.tx(adjacentTx.hash));
 
         captureNavArrowClick({
           page: "tx",
           direction,
-          outcome: "navigated",
+          // `push` resolves `false` when another navigation cancels it.
+          outcome: navigated === false ? "cancelled" : "navigated",
           startedAt,
         });
       } catch (err) {
