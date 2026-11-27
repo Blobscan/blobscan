@@ -10,6 +10,15 @@ vi.mock("posthog-js", () => ({ default: posthog }));
 
 const CONFIG = { id: "phc_test", host: "https://posthog.example" };
 
+function navEvent(durationMs: number) {
+  return {
+    page: "block",
+    direction: "next",
+    outcome: "navigated",
+    duration_ms: durationMs,
+  } as const;
+}
+
 // `analytics` keeps its state in the module: import a fresh copy per test.
 function importAnalytics() {
   return import("../src/analytics");
@@ -35,7 +44,7 @@ describe("analytics", () => {
     const { initAnalytics, captureEvent } = await importAnalytics();
 
     expect(initAnalytics(CONFIG)).toBeUndefined();
-    captureEvent("event");
+    captureEvent("nav_arrow_click", navEvent(1));
 
     expect(posthog.init).not.toHaveBeenCalled();
     expect(posthog.capture).not.toHaveBeenCalled();
@@ -44,7 +53,7 @@ describe("analytics", () => {
   it("drops events when PostHog is not initialized", async () => {
     const { captureEvent, initAnalytics } = await importAnalytics();
 
-    captureEvent("before_init");
+    captureEvent("nav_arrow_click", navEvent(1));
     await initAnalytics(CONFIG);
 
     expect(posthog.capture).not.toHaveBeenCalled();
@@ -62,6 +71,9 @@ describe("analytics", () => {
       expect.objectContaining({
         api_host: CONFIG.host,
         capture_pageview: "history_change",
+        persistence: "localStorage",
+        autocapture: false,
+        disable_session_recording: true,
       })
     );
   });
@@ -70,16 +82,16 @@ describe("analytics", () => {
     const { captureEvent, initAnalytics } = await importAnalytics();
 
     const loading = initAnalytics(CONFIG);
-    captureEvent("first", { a: 1 });
-    captureEvent("second");
+    captureEvent("nav_arrow_click", navEvent(1));
+    captureEvent("nav_arrow_click", navEvent(2));
 
     expect(posthog.capture).not.toHaveBeenCalled();
 
     await loading;
 
     expect(posthog.capture.mock.calls).toEqual([
-      ["first", { a: 1 }],
-      ["second", {}],
+      ["nav_arrow_click", navEvent(1)],
+      ["nav_arrow_click", navEvent(2)],
     ]);
   });
 
@@ -89,22 +101,28 @@ describe("analytics", () => {
     const loading = initAnalytics(CONFIG);
 
     for (let i = 0; i < 60; i++) {
-      captureEvent("event", { i });
+      captureEvent("nav_arrow_click", navEvent(i));
     }
 
     await loading;
 
     expect(posthog.capture).toHaveBeenCalledTimes(50);
-    expect(posthog.capture).toHaveBeenLastCalledWith("event", { i: 49 });
+    expect(posthog.capture).toHaveBeenLastCalledWith(
+      "nav_arrow_click",
+      navEvent(49)
+    );
   });
 
   it("sends events directly once PostHog has loaded", async () => {
     const { captureEvent, initAnalytics } = await importAnalytics();
 
     await initAnalytics(CONFIG);
-    captureEvent("after_load", { b: 2 });
+    captureEvent("nav_arrow_click", navEvent(3));
 
-    expect(posthog.capture).toHaveBeenCalledWith("after_load", { b: 2 });
+    expect(posthog.capture).toHaveBeenCalledWith(
+      "nav_arrow_click",
+      navEvent(3)
+    );
   });
 
   it("drops the events when PostHog cannot load", async () => {
@@ -114,11 +132,11 @@ describe("analytics", () => {
     const { captureEvent, initAnalytics } = await importAnalytics();
 
     const loading = initAnalytics(CONFIG);
-    captureEvent("queued");
+    captureEvent("nav_arrow_click", navEvent(1));
 
     await expect(loading).resolves.toBeUndefined();
 
-    captureEvent("after_failure");
+    captureEvent("nav_arrow_click", navEvent(2));
 
     expect(posthog.init).not.toHaveBeenCalled();
     expect(posthog.capture).not.toHaveBeenCalled();

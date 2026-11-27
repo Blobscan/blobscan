@@ -1,17 +1,20 @@
 import { useCallback, useState } from "react";
 import { useRouter } from "next/compat/router";
-import type { Properties } from "posthog-js";
 
 import { captureNavArrowClick } from "~/analytics";
-import type { NavArrowPage } from "~/analytics";
+import type {
+  NavArrowDirection,
+  NavArrowExtraProperties,
+  NavArrowPage,
+} from "~/analytics";
 
-export type AdjacentDirection = "prev" | "next";
+export type AdjacentDirection = NavArrowDirection;
 
 export interface AdjacentTarget {
   // The page of the adjacent entity.
   route: string;
   // Extra properties of the `nav_arrow_click` event.
-  properties?: Properties;
+  properties?: NavArrowExtraProperties;
 }
 
 /**

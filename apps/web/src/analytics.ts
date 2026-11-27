@@ -1,4 +1,4 @@
-import type { PostHog, Properties } from "posthog-js";
+import type { PostHog } from "posthog-js";
 
 /**
  * PostHog, loaded after the page with a dynamic import. It was removed in #968
@@ -6,6 +6,44 @@ import type { PostHog, Properties } from "posthog-js";
  * so the page does not wait for it. Every function here does nothing when
  * `PUBLIC_POSTHOG_ID` is not set.
  */
+
+export type NavArrowPage = "blob" | "block" | "tx";
+
+export type NavArrowDirection = "prev" | "next";
+
+export type NavArrowOutcome =
+  // The page changed to the adjacent entity.
+  | "navigated"
+  // There is no entity in that direction (the arrow becomes disabled).
+  | "none"
+  // Another navigation cancelled the page change.
+  | "cancelled"
+  | "error";
+
+// Properties that only some pages send.
+export type NavArrowExtraProperties = {
+  // Blob: within the transaction, or to another transaction of the sender.
+  same_transaction?: boolean;
+  // Blob: how many transactions carry the blob the user leaves.
+  blob_transaction_count?: number;
+};
+
+/**
+ * Every event that the app sends, with its properties. Add an event here
+ * before capturing it. Use type aliases, not interfaces: PostHog needs
+ * properties with an index signature.
+ */
+export type AnalyticsEvents = {
+  nav_arrow_click: {
+    page: NavArrowPage;
+    direction: NavArrowDirection;
+    outcome: NavArrowOutcome;
+    // From the click to the new page.
+    duration_ms: number;
+  } & NavArrowExtraProperties;
+};
+
+export type AnalyticsEvent = keyof AnalyticsEvents;
 
 let client: PostHog | undefined;
 let loading: Promise<void> | undefined;
@@ -15,7 +53,9 @@ let failed = false;
 // Events captured before PostHog has loaded. Bounded, so that a load that never
 // ends does not keep them forever.
 const MAX_PENDING_EVENTS = 50;
-const pendingEvents: [string, Properties][] = [];
+const pendingEvents: {
+  [E in AnalyticsEvent]: [E, AnalyticsEvents[E]];
+}[AnalyticsEvent][] = [];
 
 /**
  * Loads PostHog once. Returns the load, which never rejects, so that callers
@@ -39,6 +79,22 @@ export function initAnalytics({
         person_profiles: "identified_only",
         // Next.js changes pages without a page load: count each URL change.
         capture_pageview: "history_change",
+        // No cookie: the anonymous id is kept in localStorage only.
+        persistence: "localStorage",
+        // Only the page views and the events that the app sends. These
+        // features record what the user does on the page, or load extra
+        // scripts, whatever the PostHog project settings say.
+        autocapture: false,
+        rageclick: false,
+        capture_dead_clicks: false,
+        capture_heatmaps: false,
+        disable_session_recording: true,
+        disable_surveys: true,
+        disable_product_tours: true,
+        disable_conversations: true,
+        disable_web_experiments: true,
+        // Sentry reports the errors.
+        capture_exceptions: false,
         loaded: (instance) => {
           if (window.location.hostname.includes("localhost")) {
             instance.debug();
@@ -62,7 +118,10 @@ export function initAnalytics({
   return loading;
 }
 
-export function captureEvent(event: string, properties: Properties = {}) {
+export function captureEvent<E extends AnalyticsEvent>(
+  event: E,
+  properties: AnalyticsEvents[E]
+) {
   if (client) {
     client.capture(event, properties);
 
@@ -74,20 +133,9 @@ export function captureEvent(event: string, properties: Properties = {}) {
   }
 }
 
-export type NavArrowPage = "blob" | "block" | "tx";
-
-export type NavArrowOutcome =
-  // The page changed to the adjacent entity.
-  | "navigated"
-  // There is no entity in that direction (the arrow becomes disabled).
-  | "none"
-  // Another navigation cancelled the page change.
-  | "cancelled"
-  | "error";
-
 /**
- * One event per click on a previous/next arrow of a details page, with what
- * the click did and how long it took (request plus page change).
+ * Captures one event per click on a previous/next arrow of a details page,
+ * with what the click did and how long it took (request plus page change).
  */
 export function captureNavArrowClick({
   page,
@@ -97,10 +145,10 @@ export function captureNavArrowClick({
   properties = {},
 }: {
   page: NavArrowPage;
-  direction: "prev" | "next";
+  direction: NavArrowDirection;
   outcome: NavArrowOutcome;
   startedAt: number;
-  properties?: Properties;
+  properties?: NavArrowExtraProperties;
 }) {
   captureEvent("nav_arrow_click", {
     page,
