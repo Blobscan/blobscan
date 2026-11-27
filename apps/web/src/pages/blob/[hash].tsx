@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/compat/router";
 
 import { DetailsValueSkeleton } from "~/components/DetailsValueSkeleton";
@@ -31,6 +31,9 @@ import type { SelectOption } from "~/components/Selects";
 import { Listbox } from "~/components/Selects";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
+import { getBlobCanonicalUrl } from "~/canonical";
+import { env } from "~/env";
+import { BLOBSCAN_EXPLORERS } from "~/explorers";
 import {
   BLOB_EXPAND,
   BLOB_STALE_TIME,
@@ -66,7 +69,28 @@ const FIELD_HELP = {
   Storages: "The storage services that provide a copy of this blob data.",
 };
 
-const Blob: NextPage = function () {
+type BlobPageProps = {
+  canonicalUrl: string | null;
+};
+
+// The server makes the canonical URL from the route id, so the URL is in the
+// HTML before the blob loads. For a blob in many transactions the load can
+// take more time than a crawler waits.
+export const getServerSideProps: GetServerSideProps<BlobPageProps> =
+  async function ({ params }) {
+    const id = typeof params?.hash === "string" ? params.hash : undefined;
+    const origin = BLOBSCAN_EXPLORERS.find(
+      ({ id: network }) => network === env.PUBLIC_NETWORK_NAME
+    )?.url;
+
+    return {
+      props: {
+        canonicalUrl: getBlobCanonicalUrl(id, origin) ?? null,
+      },
+    };
+  };
+
+const Blob: NextPage<BlobPageProps> = function ({ canonicalUrl }) {
   const router = useRouter();
   const breakpoint = useBreakpoint();
   const id = (router?.query.hash as string | undefined) ?? "0";
@@ -390,7 +414,7 @@ const Blob: NextPage = function () {
         description={`Explore blob details${
           blob ? ` for ${blob.versionedHash}` : ""
         } on Blobscan.`}
-        canonicalPath={blob ? routes.blob(blob.versionedHash) : undefined}
+        canonicalUrl={canonicalUrl ?? undefined}
       />
       <DetailsLayout
         header={

@@ -1,0 +1,6 @@
+# A blob page has one URL for each position of the blob (`?tx=&index=`), but
+# the content is the same. A blob in many transactions thus has many URLs, and
+# each one loads all the transactions of the blob. Crawlers must use only
+# `/blob/<versioned hash>`, which is the canonical URL.
+User-agent: *
+Disallow: /blob/*?

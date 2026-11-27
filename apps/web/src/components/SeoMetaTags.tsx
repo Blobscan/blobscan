@@ -6,17 +6,17 @@ type SeoMetaTagsProps = {
   title?: string;
   description?: string;
   /**
-   * Root-relative path of the canonical URL (e.g. `/blob/0x01...`), for pages
-   * reachable under several URLs. Leave it unset until the path is known: a
-   * wrong canonical is worse than none.
+   * Absolute canonical URL (for example `https://blobscan.com/blob/0x01...`),
+   * for pages that have more than one URL. Leave it unset if you do not know
+   * the correct URL: an incorrect canonical URL is worse than none.
    */
-  canonicalPath?: string;
+  canonicalUrl?: string;
 };
 
 export function SeoMetaTags({
   title,
   description,
-  canonicalPath,
+  canonicalUrl,
 }: SeoMetaTagsProps = {}) {
   const fullTitle = title ? `${title} | ${DEFAULT_TITLE}` : DEFAULT_TITLE;
 
@@ -40,8 +40,8 @@ export function SeoMetaTags({
       )}
       <meta property="og:title" content={fullTitle} key="og:title" />
       <meta name="twitter:title" content={fullTitle} key="twitter:title" />
-      {canonicalPath && (
-        <link rel="canonical" href={canonicalPath} key="canonical" />
+      {canonicalUrl && (
+        <link rel="canonical" href={canonicalUrl} key="canonical" />
       )}
     </Head>
   );
