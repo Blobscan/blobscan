@@ -390,6 +390,7 @@ const Blob: NextPage = function () {
         description={`Explore blob details${
           blob ? ` for ${blob.versionedHash}` : ""
         } on Blobscan.`}
+        canonicalPath={blob ? routes.blob(blob.versionedHash) : undefined}
       />
       <DetailsLayout
         header={

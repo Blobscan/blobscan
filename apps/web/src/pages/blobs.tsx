@@ -18,7 +18,7 @@ import type { TimestampFormat } from "~/components/Toggles";
 import { api } from "~/api-client";
 import { useListPageParams } from "~/hooks/useListPageParams";
 import ErrorPage from "~/pages/_error";
-import { routes } from "~/routes";
+import { BLOB_POSITION_LINK_REL, routes } from "~/routes";
 import type { BlobWithExpandedTransaction, Pagination } from "~/types";
 import type { ByteUnit } from "~/utils";
 import { formatTimestamp, shortenHash } from "~/utils";
@@ -117,6 +117,7 @@ const Blobs: NextPage = function () {
                     >
                       <Link
                         href={routes.blob(versionedHash, { txHash, index })}
+                        rel={BLOB_POSITION_LINK_REL}
                       >
                         {shortenHash(versionedHash, 8)}
                       </Link>

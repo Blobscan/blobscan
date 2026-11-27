@@ -8,6 +8,7 @@ type LinkProps = {
   href: string;
   hideExternalIcon?: boolean;
   isExternal?: boolean;
+  rel?: string;
 };
 
 export const Link: React.FC<LinkProps> = function ({
@@ -15,11 +16,13 @@ export const Link: React.FC<LinkProps> = function ({
   href,
   isExternal = false,
   hideExternalIcon = false,
+  rel,
 }) {
   return (
     <NextLink
       href={href}
       target={isExternal ? "_blank" : "_self"}
+      rel={rel}
       className="inline-flex max-w-full items-center truncate text-link-light hover:underline dark:text-link-dark"
     >
       <div className="truncate">{children}</div>

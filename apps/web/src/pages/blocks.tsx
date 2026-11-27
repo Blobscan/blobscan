@@ -23,7 +23,7 @@ import { api } from "~/api-client";
 import { useChain } from "~/hooks/useChain";
 import { useListPageParams } from "~/hooks/useListPageParams";
 import ErrorPage from "~/pages/_error";
-import { routes } from "~/routes";
+import { BLOB_POSITION_LINK_REL, routes } from "~/routes";
 import type {
   BlockWithExpandedBlobsAndTransactions,
   Pagination,
@@ -315,6 +315,7 @@ const Blocks: NextPage = function () {
                               txHash: transactionHash,
                               index: blobIndex,
                             })}
+                            rel={BLOB_POSITION_LINK_REL}
                           >
                             {shortenHash(blobVersionedHash, 27)}
                           </Link>
