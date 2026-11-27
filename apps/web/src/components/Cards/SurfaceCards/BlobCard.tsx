@@ -7,7 +7,7 @@ import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Separator } from "~/components/Separator";
 import { Skeleton } from "~/components/Skeleton";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
-import { routes } from "~/routes";
+import { BLOB_POSITION_LINK_REL, routes } from "~/routes";
 import type { Blob, BlobPosition, Rollup } from "~/types";
 import { Link } from "../../Link";
 import { CardField } from "../Card";
@@ -61,7 +61,10 @@ const BlobCard: FC<BlobCardProps> = ({
                 <span className="text-contentSecondary-light dark:text-surfaceContentSecondary-dark">
                   Blob
                 </span>
-                <Link href={routes.blob(versionedHash, position)}>
+                <Link
+                  href={routes.blob(versionedHash, position)}
+                  rel={position ? BLOB_POSITION_LINK_REL : undefined}
+                >
                   {versionedHash}
                 </Link>
               </div>

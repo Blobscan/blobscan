@@ -4,7 +4,7 @@ import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Copyable } from "~/components/Copyable";
 import { Link } from "~/components/Link";
 import { Table } from "~/components/Table";
-import { routes } from "~/routes";
+import { BLOB_POSITION_LINK_REL, routes } from "~/routes";
 import type { Blob } from "~/types";
 import { calculatePercentage, formatBytes } from "~/utils";
 
@@ -84,6 +84,7 @@ export const TransactionBlobsTable: FC<TransactionBlobsTableProps> = function ({
                             versionedHash,
                             txHash ? { txHash, index: i } : undefined
                           )}
+                          rel={txHash ? BLOB_POSITION_LINK_REL : undefined}
                         >
                           {versionedHash}
                         </Link>
