@@ -17,6 +17,7 @@ exports[`getByBlobId > should get a blob by kzg commitment 1`] = `
   ],
   "proof": "proof004",
   "size": 1300,
+  "transactionCount": 3,
   "transactions": [
     {
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
@@ -66,6 +67,7 @@ exports[`getByBlobId > should get a blob by versioned hash 1`] = `
   ],
   "proof": "proof004",
   "size": 1300,
+  "transactionCount": 3,
   "transactions": [
     {
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",

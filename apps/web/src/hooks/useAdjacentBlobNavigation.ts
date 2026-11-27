@@ -5,14 +5,28 @@ import { getQueryKey } from "@trpc/react-query";
 
 import { api } from "~/api-client";
 import { routes } from "~/routes";
-import type { Blob, BlobPosition, GetAdjacentBlobInput } from "~/types";
+import type { BlobPosition, BlobV2, GetAdjacentBlobInput } from "~/types";
 
 export const BLOB_EXPAND = "transaction";
+// The blob page lists the transactions of the blob with cursor pagination
+// (`/v2/blobs/{id}/transactions`), this many at a time (the maximum of `ps`). Some blobs
+// are in tens of thousands of transactions; the page with all of them was a
+// 54 MB response.
+export const BLOB_TRANSACTIONS_PAGE_SIZE = 100;
 // The blob responses can have signed storage URLs that expire after one hour,
 // so the page does not use a cached blob that is older than this time.
 export const BLOB_STALE_TIME = 5 * 60 * 1000;
 
 type Direction = GetAdjacentBlobInput["direction"];
+
+/**
+ * The input of the `getByBlobIdV2` query of the blob page. `getAdjacentBlob`
+ * returns the blob in the same format, so its result goes in the cache entry
+ * of this input.
+ */
+export function toBlobPageQueryInput(id: string) {
+  return { id };
+}
 
 // The page gets an adjacent blob only when the user clicks an arrow. These
 // queries do not send a request. They only read the cache that the click
@@ -23,7 +37,7 @@ function toAdjacentBlobInput(
   { txHash, index }: BlobPosition,
   direction: Direction
 ): GetAdjacentBlobInput {
-  return { txHash, index, direction, expand: BLOB_EXPAND };
+  return { txHash, index, direction };
 }
 
 /**
@@ -35,7 +49,7 @@ export function useAdjacentBlobNavigation({
   blobUpdatedAt,
   position,
 }: {
-  blob: Blob | undefined;
+  blob: BlobV2 | undefined;
   blobUpdatedAt: number;
   position: BlobPosition | undefined;
 }) {
@@ -82,8 +96,8 @@ export function useAdjacentBlobNavigation({
           getQueryKey(api.blob.getAdjacentBlob, adjacentInput, "query")
         )?.dataUpdatedAt;
 
-        utils.blob.getByBlobId.setData(
-          { id: adjacent.blob.versionedHash, expand: BLOB_EXPAND },
+        utils.blob.getByBlobIdV2.setData(
+          toBlobPageQueryInput(adjacent.blob.versionedHash),
           adjacent.blob,
           { updatedAt: adjacentUpdatedAt }
         );

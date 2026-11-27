@@ -3,10 +3,6 @@ import { TRPCError } from "@trpc/server";
 import { z } from "@blobscan/zod";
 
 import { withBlobSignedUrls } from "../../middlewares/withBlobSignedUrls";
-import {
-  createExpandsSchema,
-  withExpands,
-} from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
 import {
   adjacentDirectionSchema,
@@ -14,22 +10,20 @@ import {
   normalize,
 } from "../../utils";
 import { senderAdjacentTxSql } from "../tx/helpers";
-import { findResponseBlob, responseBlobSchema } from "./helpers";
+import { findResponseBlobV2, responseBlobV2Schema } from "./helpers";
 
 const blobPositionSchema = z.object({
   txHash: z.string(),
   index: z.number().int().nonnegative(),
 });
 
-const inputSchema = blobPositionSchema
-  .extend({
-    direction: adjacentDirectionSchema,
-  })
-  .merge(createExpandsSchema(["transaction", "block"]));
+const inputSchema = blobPositionSchema.extend({
+  direction: adjacentDirectionSchema,
+});
 
 const outputSchema = blobPositionSchema
   .extend({
-    blob: responseBlobSchema.transform(normalize),
+    blob: responseBlobV2Schema.transform(normalize),
   })
   .nullable();
 
@@ -50,9 +44,9 @@ type AdjacentBlobRow = {
  * transactions of reorged blocks. Returns `null` if there is no blob in that
  * direction.
  *
- * The blob has the format of `blob.getByBlobId` with the same `expand`. Thus
- * the client can put it in the `getByBlobId` cache, and the page of the blob
- * does not send a second request.
+ * The blob has the format of `blob.getByBlobIdV2`, so the client can put it in
+ * that cache and the page of the blob does not request it again. The page gets
+ * the transactions of the blob from `blob.getTransactionsByBlobId`.
  *
  * One statement gets the adjacent position in the requested direction. Each
  * `LATERAL` subquery gets the values of the current position as parameters,
@@ -65,17 +59,12 @@ type AdjacentBlobRow = {
  */
 export const getAdjacentBlob = publicProcedure
   .input(inputSchema)
-  .use(withExpands)
   .output(outputSchema)
   .use(withBlobSignedUrls)
-  .query(
-    async ({
-      ctx: { expands, prisma },
-      input: { txHash, index, direction },
-    }) => {
-      const { operator, order } = adjacentSqlParts(direction);
+  .query(async ({ ctx: { prisma }, input: { txHash, index, direction } }) => {
+    const { operator, order } = adjacentSqlParts(direction);
 
-      const [adjacent] = await prisma.$queryRaw<AdjacentBlobRow[]>`
+    const [adjacent] = await prisma.$queryRaw<AdjacentBlobRow[]>`
         SELECT
           COALESCE(in_tx.tx_hash, in_sender_tx.tx_hash) AS "txHash",
           COALESCE(in_tx.index, in_sender_tx.index) AS "index",
@@ -112,34 +101,29 @@ export const getAdjacentBlob = publicProcedure
         ) in_sender_tx ON true
       `;
 
-      if (!adjacent) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `No blob at index ${index} of transaction '${txHash}'.`,
-        });
-      }
-
-      if (
-        adjacent.txHash === null ||
-        adjacent.index === null ||
-        adjacent.versionedHash === null
-      ) {
-        return null;
-      }
-
-      const blob = await findResponseBlob(
-        prisma,
-        expands,
-        adjacent.versionedHash
-      );
-
-      if (!blob) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `No blob with versioned hash '${adjacent.versionedHash}'.`,
-        });
-      }
-
-      return { txHash: adjacent.txHash, index: adjacent.index, blob };
+    if (!adjacent) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: `No blob at index ${index} of transaction '${txHash}'.`,
+      });
     }
-  );
+
+    if (
+      adjacent.txHash === null ||
+      adjacent.index === null ||
+      adjacent.versionedHash === null
+    ) {
+      return null;
+    }
+
+    const blob = await findResponseBlobV2(prisma, adjacent.versionedHash);
+
+    if (!blob) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: `No blob with versioned hash '${adjacent.versionedHash}'.`,
+      });
+    }
+
+    return { txHash: adjacent.txHash, index: adjacent.index, blob };
+  });

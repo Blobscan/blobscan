@@ -37,7 +37,15 @@ export async function setUpOpenApiTRPC(app: Express): Promise<void> {
     version: "1.0.0",
     baseUrl: `${env.BLOBSCAN_API_BASE_URL}`,
     docsUrl: "https://docs.blobscan.com/",
-    tags: ["blobs", "transactions", "blocks", "stats", "indexer", "system"],
+    tags: [
+      "blobs",
+      "transactions",
+      "blocks",
+      "stats",
+      "indexer",
+      "system",
+      "beta",
+    ],
     openApiVersion: "3.0.3",
     options: {
       override: openApiOverride,

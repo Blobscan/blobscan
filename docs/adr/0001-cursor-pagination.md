@@ -17,3 +17,5 @@ Store `cursor`, `ps`, and the display-only `page` number in the web page URL. Ne
 Each request uses the current database state. Do not preserve a fixed snapshot between requests. Continue from the encoded position if its record was removed. First clears the cursor and loads the latest records in the selected order.
 
 Infer the opposite page from the cursor direction instead of querying for it. A `next` cursor means a previous page is available; a `previous` cursor means a next page is available. Fetch one extra row to check for another page in the requested direction. If matching records change, the inferred page can be empty. Keep inclusive recovery cursors for empty pages and the First control to restart navigation.
+
+Update (2026-11-27): the cursor routes moved from `/v1` to `/v2`, tagged `beta` in the OpenAPI document so that they are grouped together while they can still change. `GET /v2/blobs/{id}/transactions` pages through the transactions of one blob with the same cursor pagination.

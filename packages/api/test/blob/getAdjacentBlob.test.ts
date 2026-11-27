@@ -189,18 +189,14 @@ describe("getAdjacentBlob", () => {
     });
   });
 
-  describe("when an expand is given", () => {
-    it("should return the blob in the same format as getByBlobId", async () => {
+  describe("when the blob is returned", () => {
+    it("should return the blob in the same format as getByBlobIdV2", async () => {
       const result = await blobCaller.getAdjacentBlob({
         txHash: "txHash001",
         index: 1,
         direction: "next",
-        expand: "transaction",
       });
-      const blob = await blobCaller.getByBlobId({
-        id: "blobHash003",
-        expand: "transaction",
-      });
+      const blob = await blobCaller.getByBlobIdV2({ id: "blobHash003" });
 
       expect(result?.blob).toEqual(blob);
     });

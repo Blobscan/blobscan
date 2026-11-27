@@ -20,12 +20,12 @@ This is what the `SECRET_KEY` environment variable is for.
 
 The `/blocks`, `/transactions`, and `/blobs` endpoints keep page-number pagination. Use `p` for the page number (default 1) and `ps` for the page size (default 50). Their request parameters and response fields are unchanged.
 
-## Cursor pagination (v1)
+## Cursor pagination (v2)
 
-The `/v1/blocks`, `/v1/transactions`, and `/v1/blobs` endpoints use cursor pagination. To get the first page, omit `cursor`:
+The `/v2/blocks`, `/v2/transactions`, `/v2/blobs`, and `/v2/blobs/{id}/transactions` endpoints use cursor pagination. To get the first page, omit `cursor`:
 
 ```http
-GET /v1/transactions?ps=50
+GET /v2/transactions?ps=50
 ```
 
 The response includes the resource list and a `pagination` object:
@@ -44,10 +44,22 @@ A cursor is a string that the client can use to request another page. Pass that 
 
 Keep the resource, filters, and sort order the same when you use a cursor. If you change them, start with the first page. The server checks the cursor structure and position values. It does not check whether the query settings have changed. The cursor format is internal to the server; clients must not decode or construct tokens.
 
-The `ps` parameter sets the page size. Its default is 50. It must be an integer from 1 to 100. The v1 routes do not accept `p`; requests that include it return an error. Use the existing unversioned routes if your client needs page-number pagination.
+The `ps` parameter sets the page size. Its default is 50. It must be an integer from 1 to 100. The v2 routes do not accept `p`; requests that include it return an error. Use the existing unversioned routes if your client needs page-number pagination.
 
 Total counts are optional. Use `count=true` to include the resource total. Pagination does not require a total count.
 
 Each request uses the current database state. A cursor records a position, so it can still work if the record at that position was removed. Results can change after a chain reorganization. Pagination does not preserve a fixed snapshot between requests.
 
 The server infers the opposite page from the cursor direction instead of querying for it. A request with a next cursor returns a previous cursor; a request with a previous cursor returns a next cursor. If matching records change, that inferred page can be empty. Empty pages return an inclusive recovery cursor in the opposite direction. Clients can also omit the cursor to restart from the first page.
+
+## v2 endpoints (beta)
+
+The `/v2` endpoints are grouped under the **beta** tag in the Swagger UI. They can still change in incompatible ways.
+
+## Blobs and their transactions
+
+A blob is normally in one transaction, but the same blob can be posted again: some blobs are in tens of thousands of transactions.
+
+- `GET /v2/blobs/{id}` returns the blob (by versioned hash or KZG commitment) and `transactionCount`, the number of its transactions in canonical blocks. It does not list them, so its size does not depend on the blob.
+- `GET /v2/blobs/{id}/transactions` lists them with cursor pagination, newest first. It accepts `ps`, `cursor`, `count`, `sort`, `type` (`canonical` by default, or `reorged`) and `expand` (`transaction`, `block`). The rows do not repeat the blob.
+- `GET /blobs/{id}` returns at most `transactionsLimit` transactions (default 100, maximum 1000), newest first, and `transactionCount` with the total. Use `GET /v2/blobs/{id}/transactions` for the others.
