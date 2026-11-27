@@ -5,13 +5,14 @@ import { getQueryKey } from "@trpc/react-query";
 
 import { api } from "~/api-client";
 import { routes } from "~/routes";
-import type { Blob, BlobPosition, GetAdjacentBlobInput } from "~/types";
+import type { BlobPosition, BlobV1, GetAdjacentBlobInput } from "~/types";
 
 export const BLOB_EXPAND = "transaction";
-// The blob page gets the newest transactions of the blob and the others only
-// on request. Some blobs are in tens of thousands of transactions, and the
-// response with all of them was 54 MB.
-export const BLOB_TRANSACTIONS_LIMIT = 100;
+// The blob page lists the transactions of the blob with cursor pagination
+// (`/v1/blobs?blob=`), this many at a time (the maximum of `ps`). Some blobs
+// are in tens of thousands of transactions; the page with all of them was a
+// 54 MB response.
+export const BLOB_TRANSACTIONS_PAGE_SIZE = 100;
 // The blob responses can have signed storage URLs that expire after one hour,
 // so the page does not use a cached blob that is older than this time.
 export const BLOB_STALE_TIME = 5 * 60 * 1000;
@@ -19,16 +20,12 @@ export const BLOB_STALE_TIME = 5 * 60 * 1000;
 type Direction = GetAdjacentBlobInput["direction"];
 
 /**
- * The input of the `getByBlobId` query of the blob page. `getAdjacentBlob`
+ * The input of the `getByBlobIdV1` query of the blob page. `getAdjacentBlob`
  * returns the blob in the same format, so its result goes in the cache entry
  * of this input.
  */
 export function toBlobPageQueryInput(id: string) {
-  return {
-    id,
-    expand: BLOB_EXPAND,
-    transactionsLimit: BLOB_TRANSACTIONS_LIMIT,
-  } as const;
+  return { id };
 }
 
 // The page gets an adjacent blob only when the user clicks an arrow. These
@@ -40,13 +37,7 @@ function toAdjacentBlobInput(
   { txHash, index }: BlobPosition,
   direction: Direction
 ): GetAdjacentBlobInput {
-  return {
-    txHash,
-    index,
-    direction,
-    expand: BLOB_EXPAND,
-    transactionsLimit: BLOB_TRANSACTIONS_LIMIT,
-  };
+  return { txHash, index, direction };
 }
 
 /**
@@ -58,7 +49,7 @@ export function useAdjacentBlobNavigation({
   blobUpdatedAt,
   position,
 }: {
-  blob: Blob | undefined;
+  blob: BlobV1 | undefined;
   blobUpdatedAt: number;
   position: BlobPosition | undefined;
 }) {
@@ -105,7 +96,7 @@ export function useAdjacentBlobNavigation({
           getQueryKey(api.blob.getAdjacentBlob, adjacentInput, "query")
         )?.dataUpdatedAt;
 
-        utils.blob.getByBlobId.setData(
+        utils.blob.getByBlobIdV1.setData(
           toBlobPageQueryInput(adjacent.blob.versionedHash),
           adjacent.blob,
           { updatedAt: adjacentUpdatedAt }

@@ -189,18 +189,14 @@ describe("getAdjacentBlob", () => {
     });
   });
 
-  describe("when an expand is given", () => {
-    it("should return the blob in the same format as getByBlobId", async () => {
+  describe("when the blob is returned", () => {
+    it("should return the blob in the same format as getByBlobIdV1", async () => {
       const result = await blobCaller.getAdjacentBlob({
         txHash: "txHash001",
         index: 1,
         direction: "next",
-        expand: "transaction",
       });
-      const blob = await blobCaller.getByBlobId({
-        id: "blobHash003",
-        expand: "transaction",
-      });
+      const blob = await blobCaller.getByBlobIdV1({ id: "blobHash003" });
 
       expect(result?.blob).toEqual(blob);
     });
@@ -215,27 +211,6 @@ describe("getAdjacentBlob", () => {
           direction: "next",
         })
       ).rejects.toMatchObject({ code: "NOT_FOUND" });
-    });
-  });
-
-  describe("when limiting the transactions of the blob", () => {
-    it("should return the blob as getByBlobId with the same limit", async () => {
-      const result = await blobCaller.getAdjacentBlob({
-        txHash: "txHash001",
-        index: 1,
-        direction: "prev",
-        expand: "transaction",
-        transactionsLimit: 2,
-      });
-
-      expect(result?.blob.transactions).toHaveLength(2);
-      expect(result?.blob).toEqual(
-        await blobCaller.getByBlobId({
-          id: "blobHash001",
-          expand: "transaction",
-          transactionsLimit: 2,
-        })
-      );
     });
   });
 });

@@ -104,11 +104,13 @@ export type CompletedPrismaBlobOnTransaction = Prettify<
 >;
 
 export function createBlobListWhere({
+  blobHash,
   blockFilters = {},
   blockType,
   transactionFilters,
 }: Filters): Prisma.BlobsOnTransactionsWhereInput {
   return {
+    blobHash,
     blockNumber: blockFilters.number,
     blockTimestamp: blockFilters.timestamp,
     block: {
@@ -120,29 +122,27 @@ export function createBlobListWhere({
 }
 
 /**
- * The page of a blob's transactions to return. A blob is normally in one
+ * How many transactions `blob.getByBlobId` returns. A blob is normally in one
  * transaction, but a blob can be posted again: mainnet has 2024 blobs in tens
  * of thousands of transactions (0x01f3ee17...: 38,624, a 54 MB response that
- * took 77 s and ~800 MiB to build). Without a limit every transaction is
- * returned, as before; `transactionCount` always has the total.
+ * took 77 s and ~800 MiB to build). `transactionCount` has the total; the
+ * others are in `blob.getAllByCursor` (`GET /v1/blobs?blob=<versioned hash>`).
  */
+export const DEFAULT_BLOB_TRANSACTIONS_LIMIT = 100;
 export const MAX_BLOB_TRANSACTIONS_LIMIT = 1000;
 
-export const blobTransactionsPageSchema = z.object({
+export const blobTransactionsLimitSchema = z.object({
   transactionsLimit: z
     .number()
     .int()
     .positive()
     .max(MAX_BLOB_TRANSACTIONS_LIMIT)
-    .optional(),
-  transactionsOffset: z.number().int().nonnegative().optional(),
+    .default(DEFAULT_BLOB_TRANSACTIONS_LIMIT),
 });
-
-export type BlobTransactionsPage = z.infer<typeof blobTransactionsPageSchema>;
 
 export function createBlobSelect(
   expands: Expands,
-  { transactionsLimit, transactionsOffset }: BlobTransactionsPage = {}
+  transactionsLimit: number = DEFAULT_BLOB_TRANSACTIONS_LIMIT
 ) {
   const blockExpand = expands.block ? { block: expands.block } : {};
   const txExpand = expands.transaction
@@ -169,8 +169,8 @@ export function createBlobSelect(
         ...blockExpand,
         ...txExpand,
       },
-      // Newest first. The other keys make the order total, so that the pages
-      // of a blob with many transactions in one block do not overlap.
+      // Newest first. The other keys make the order total, so that the same
+      // transactions are returned every time.
       orderBy: [
         { blockNumber: "desc" },
         { txIndex: "asc" },
@@ -178,7 +178,6 @@ export function createBlobSelect(
         { txHash: "asc" },
       ],
       take: transactionsLimit,
-      skip: transactionsOffset,
     },
     _count: {
       select: { transactions: true },
@@ -443,12 +442,12 @@ export async function findResponseBlob(
   prisma: BlobscanPrismaClient,
   expands: Expands,
   id: string,
-  transactionsPage: BlobTransactionsPage = {}
+  transactionsLimit: number = DEFAULT_BLOB_TRANSACTIONS_LIMIT
 ): Promise<ResponseBlob | null> {
   const isExpandEnabled = !!expands.block || !!expands.transaction;
 
   const prismaBlob = (await prisma.blob.findFirst({
-    select: createBlobSelect(expands, transactionsPage),
+    select: createBlobSelect(expands, transactionsLimit),
     where: {
       OR: [{ versionedHash: id }, { commitment: id }],
     },
@@ -463,6 +462,60 @@ export async function findResponseBlob(
     : [];
 
   return toResponseBlob(prismaBlob, ethUsdPrices);
+}
+
+/**
+ * The blob of `GET /v1/blobs/{id}`: no transactions, only how many there are.
+ * They are listed, with cursor pagination, by `blob.getAllByCursor`
+ * (`GET /v1/blobs?blob=<versioned hash>`), so the size of the response does
+ * not depend on the blob.
+ */
+export const responseBlobV1Schema = baseBlobSchema.extend({
+  // Transactions in canonical blocks, as `GET /v1/blobs?blob=` lists by
+  // default (`type=canonical`).
+  transactionCount: z.number().int().nonnegative(),
+});
+
+export type ResponseBlobV1 = z.input<typeof responseBlobV1Schema>;
+
+/**
+ * Gets a blob by its versioned hash or KZG commitment, in the response format
+ * of `blob.getByBlobIdV1`. Returns `null` if the blob does not exist.
+ */
+export async function findResponseBlobV1(
+  prisma: BlobscanPrismaClient,
+  id: string
+): Promise<ResponseBlobV1 | null> {
+  const prismaBlob = await prisma.blob.findFirst({
+    select: {
+      ...baseBlobSelect,
+      dataStorageReferences: extendedBlobDataStorageReferenceArgs,
+      _count: {
+        select: {
+          transactions: {
+            where: { block: { transactionForks: { none: {} } } },
+          },
+        },
+      },
+    },
+    where: {
+      OR: [{ versionedHash: id }, { commitment: id }],
+    },
+  });
+
+  if (!prismaBlob) {
+    return null;
+  }
+
+  const { _count, dataStorageReferences, ...blob } = prismaBlob;
+
+  return {
+    ...blob,
+    dataStorageReferences: normalizePrismaBlobDataStorageReferencesFields(
+      dataStorageReferences as ExtendedBlobDataStorageReference[]
+    ),
+    transactionCount: _count.transactions,
+  };
 }
 
 /**

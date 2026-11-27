@@ -12,6 +12,7 @@ import {
 } from "../../middlewares/withExpands";
 import {
   withAllFiltersSchema,
+  withBlobFilterSchema,
   withFilters,
 } from "../../middlewares/withFilters";
 import { paginate, paginationResponseSchema } from "../../pagination";
@@ -45,7 +46,7 @@ export const getAllByCursor = publicProcedure
   })
   .input(withCursorPaginationSchema)
   .use(withCursorPagination)
-  .input(withAllFiltersSchema)
+  .input(withAllFiltersSchema.merge(withBlobFilterSchema))
   .use(withFilters)
   .input(createExpandsSchema(["transaction", "block"]))
   .use(withExpands)

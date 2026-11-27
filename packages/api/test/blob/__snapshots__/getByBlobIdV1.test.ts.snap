@@ -1,0 +1,26 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`getByBlobIdV1 > should return the blob without its transactions, with their count 1`] = `
+{
+  "commitment": "commitment001",
+  "dataStorageReferences": [
+    {
+      "storage": "google",
+      "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+    },
+    {
+      "storage": "swarm",
+      "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+    },
+    {
+      "storage": "ipfs",
+      "url": "http://ipfs.gateway/ipfs/bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm?filename=bafkreidszvxiiiwea75w2cmgsdyrgc355v7mf57v4hjqxwovehybknrxsm.bin",
+    },
+  ],
+  "proof": "proof001",
+  "size": 1000,
+  "transactionCount": 12,
+  "usageSize": 1000,
+  "versionedHash": "blobHash001",
+}
+`;

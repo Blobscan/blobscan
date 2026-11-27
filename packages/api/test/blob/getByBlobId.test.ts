@@ -62,23 +62,6 @@ describe("getByBlobId", () => {
       );
     });
 
-    it("should return every transaction once across the pages", async () => {
-      const all = await blobCaller.getByBlobId({ id: "blobHash001" });
-      const pages = await Promise.all(
-        [0, 5, 10].map((transactionsOffset) =>
-          blobCaller.getByBlobId({
-            id: "blobHash001",
-            transactionsLimit: 5,
-            transactionsOffset,
-          })
-        )
-      );
-
-      expect(pages.flatMap((page) => page.transactions.map(position))).toEqual(
-        all.transactions.map(position)
-      );
-    });
-
     it("should order the positions of one transaction by blob index", async () => {
       // blobHash004 is three times in txHash015.
       const { transactions } = await blobCaller.getByBlobId({

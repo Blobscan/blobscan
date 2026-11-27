@@ -30,6 +30,8 @@ export type ToAddressFilter = {
 };
 
 export type Filters = Partial<{
+  // The versioned hash of a blob: the list has only its transactions.
+  blobHash: string;
   blockType: Prisma.TransactionForkListRelationFilter;
   blockFilters: Partial<{
     number: NumberRangeFilter;
@@ -102,6 +104,20 @@ export const withAddressFilterSchema = z.object({
     ),
 });
 
+/**
+ * Blob lists only: the transactions of one blob, to page through them (a blob
+ * can be in tens of thousands of transactions). Not in `withAllFiltersSchema`,
+ * so block and transaction lists do not accept it.
+ */
+export const withBlobFilterSchema = z.object({
+  blob: z
+    .string()
+    .optional()
+    .describe(
+      "Returns only the transactions of the blob with this versioned hash."
+    ),
+});
+
 export const withSortFilterSchema = z.object({
   sort: sortSchema.default("desc"),
 });
@@ -150,7 +166,8 @@ export const withFilters = t.middleware(
       from,
       to,
       address,
-    } = input as FiltersOutputSchema;
+      blob,
+    } = input as FiltersOutputSchema & { blob?: string };
 
     const blockRangeExists = startBlock !== undefined || endBlock !== undefined;
     const dateRangeExists = startDate !== undefined || endDate !== undefined;
@@ -212,6 +229,10 @@ export const withFilters = t.middleware(
       transactionFilters.from = {
         rollup: categories === "ROLLUP" ? { not: null } : null,
       };
+    }
+
+    if (blob) {
+      filters.blobHash = blob;
     }
 
     filters.blockType = type === "reorged" ? { some: {} } : { none: {} };

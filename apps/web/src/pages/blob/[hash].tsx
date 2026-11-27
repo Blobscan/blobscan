@@ -5,7 +5,7 @@ import { useRouter } from "next/compat/router";
 import { DetailsValueSkeleton } from "~/components/DetailsValueSkeleton";
 import ErrorPage from "~/pages/_error";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useQuery } from "@tanstack/react-query";
+import { skipToken, useQuery } from "@tanstack/react-query";
 import classNames from "classnames";
 
 import type { Decoder } from "@blobscan/blob-decoder";
@@ -33,15 +33,15 @@ import { Listbox } from "~/components/Selects";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { api } from "~/api-client";
 import {
+  BLOB_EXPAND,
   BLOB_STALE_TIME,
-  BLOB_TRANSACTIONS_LIMIT,
+  BLOB_TRANSACTIONS_PAGE_SIZE,
   toBlobPageQueryInput,
   useAdjacentBlobNavigation,
 } from "~/hooks/useAdjacentBlobNavigation";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { routes } from "~/routes";
 import { versionedHashSchema } from "~/schemas/utils";
-import type { Blob as BlobEntity } from "~/types";
 import {
   formatBytes,
   formatTimestamp,
@@ -83,55 +83,60 @@ const Blob: NextPage = function () {
     dataUpdatedAt: blobUpdatedAt,
     isFetching: blobFetching,
     error,
-  } = api.blob.getByBlobId.useQuery(toBlobPageQueryInput(id), {
+  } = api.blob.getByBlobIdV1.useQuery(toBlobPageQueryInput(id), {
     enabled: router?.isReady,
     staleTime: BLOB_STALE_TIME,
     retry: false,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
   });
-  const utils = api.useUtils();
-  // The query gets the newest BLOB_TRANSACTIONS_LIMIT transactions; the user
-  // loads the others page by page.
-  const [moreTransactions, setMoreTransactions] = useState<
-    BlobEntity["transactions"]
-  >([]);
-  const [moreTransactionsLoading, setMoreTransactionsLoading] = useState(false);
-  const [moreTransactionsError, setMoreTransactionsError] = useState<Error>();
-
-  useEffect(() => {
-    setMoreTransactions([]);
-    setMoreTransactionsError(undefined);
-  }, [blob?.versionedHash]);
-
-  const transactions = useMemo(
-    () => [...(blob?.transactions ?? []), ...moreTransactions],
-    [blob?.transactions, moreTransactions]
+  // The transactions of the blob, BLOB_TRANSACTIONS_PAGE_SIZE at a time, newest
+  // first. `blob.transactionCount` has the total. The list filters by versioned
+  // hash: when the URL has one, the list starts with the blob request; when it
+  // has a KZG commitment, after it.
+  const listBlobHash =
+    blob?.versionedHash ??
+    (router?.isReady && versionedHashSchema.safeParse(id).success
+      ? id
+      : undefined);
+  const {
+    data: transactionPages,
+    error: transactionsError,
+    fetchNextPage: fetchMoreTransactions,
+    hasNextPage: hasMoreTransactions,
+    isFetchingNextPage: moreTransactionsLoading,
+  } = api.blob.getAllByCursor.useInfiniteQuery(
+    listBlobHash
+      ? {
+          blob: listBlobHash,
+          expand: BLOB_EXPAND,
+          ps: BLOB_TRANSACTIONS_PAGE_SIZE,
+        }
+      : skipToken,
+    {
+      getNextPageParam: ({ pagination }) => pagination.nextCursor ?? undefined,
+      staleTime: BLOB_STALE_TIME,
+      retry: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+    }
   );
-
-  async function loadMoreTransactions() {
-    if (!blob) {
-      return;
-    }
-
-    setMoreTransactionsLoading(true);
-    setMoreTransactionsError(undefined);
-
-    try {
-      const page = await utils.blob.getByBlobId.fetch({
-        ...toBlobPageQueryInput(blob.versionedHash),
-        transactionsOffset: transactions.length,
-      });
-
-      setMoreTransactions((loaded) => [...loaded, ...page.transactions]);
-    } catch (err) {
-      setMoreTransactionsError(
-        err instanceof Error ? err : new Error("Could not get the transactions")
-      );
-    } finally {
-      setMoreTransactionsLoading(false);
-    }
-  }
+  const transactions = useMemo(
+    () =>
+      (transactionPages?.pages ?? []).flatMap(({ blobs }) =>
+        blobs.map(
+          ({ txHash, index, blockNumber, blockTimestamp, transaction }) => ({
+            txHash,
+            index,
+            blockNumber,
+            blockTimestamp,
+            rollup: transaction?.rollup,
+            category: transaction?.category,
+          })
+        )
+      ),
+    [transactionPages]
+  );
 
   // A blob can be in more than one transaction, and more than one time in the
   // same transaction. Thus the navigation uses the position in the URL. If the
@@ -142,22 +147,18 @@ const Blob: NextPage = function () {
       return undefined;
     }
 
-    const blobOnTx = transactions.find(
-      ({ txHash, index }) =>
-        txHash === positionTxHash && index === positionIndex
-    );
-
-    if (typeof blobOnTx?.index === "number") {
-      return { txHash: blobOnTx.txHash, index: blobOnTx.index };
-    }
-
-    // The URL position can be in a transaction that is not loaded yet.
+    // The URL position can be in a transaction that is not loaded yet, so it
+    // is used unless the whole list is loaded and does not have it.
     // `getAdjacentBlob` fails if the position does not exist.
     if (
       positionTxHash &&
       positionIndex !== undefined &&
       Number.isInteger(positionIndex) &&
-      transactions.length < blob.transactionCount
+      (transactions.length < blob.transactionCount ||
+        transactions.some(
+          ({ txHash, index }) =>
+            txHash === positionTxHash && index === positionIndex
+        ))
     ) {
       return { txHash: positionTxHash, index: positionIndex };
     }
@@ -222,7 +223,7 @@ const Blob: NextPage = function () {
   });
   const [selectedBlobViewMode, setSelectedBlobViewMode] =
     useState<BlobViewMode>("Raw");
-  const decoder = blob?.transactions.find(
+  const decoder = transactions.find(
     ({ rollup }) => rollup && isValidDecoder(rollup)
   )?.rollup as Decoder | undefined;
   const blobViewModes: BlobViewMode[] = [
@@ -279,18 +280,16 @@ const Blob: NextPage = function () {
       ),
     });
 
-    if (blob.transactions[0]) {
+    if (transactions[0]) {
       detailsFields.push({
         name: "Status",
-        value: blob.transactions[0] && (
-          <BlockStatusBadge blockNumber={blob.transactions[0].blockNumber} />
-        ),
+        value: <BlockStatusBadge blockNumber={transactions[0].blockNumber} />,
       });
     }
 
-    if (isUnique && blob.transactions[0]) {
+    if (isUnique && transactions[0]) {
       const { blockNumber, blockTimestamp, txHash, index, rollup, category } =
-        blob.transactions[0];
+        transactions[0];
 
       detailsFields.push(
         {
@@ -437,28 +436,33 @@ const Blob: NextPage = function () {
                 </div>
               )
             )}
-            {transactions.length < blob.transactionCount && (
+            {(transactions.length < blob.transactionCount ||
+              transactionsError) && (
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-contentSecondary-light dark:text-surfaceContentSecondary-dark">
-                  Showing {transactions.length.toLocaleString()} of{" "}
-                  {blob.transactionCount.toLocaleString()}
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={moreTransactionsLoading}
-                  onClick={() => void loadMoreTransactions()}
-                >
-                  {moreTransactionsLoading
-                    ? "Loading..."
-                    : `Show ${Math.min(
-                        BLOB_TRANSACTIONS_LIMIT,
-                        blob.transactionCount - transactions.length
-                      ).toLocaleString()} more`}
-                </Button>
-                {moreTransactionsError && (
+                {transactions.length > 0 && (
+                  <span className="text-contentSecondary-light dark:text-surfaceContentSecondary-dark">
+                    Showing {transactions.length.toLocaleString()} of{" "}
+                    {blob.transactionCount.toLocaleString()}
+                  </span>
+                )}
+                {hasMoreTransactions && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={moreTransactionsLoading}
+                    onClick={() => void fetchMoreTransactions()}
+                  >
+                    {moreTransactionsLoading
+                      ? "Loading..."
+                      : `Show ${Math.min(
+                          BLOB_TRANSACTIONS_PAGE_SIZE,
+                          blob.transactionCount - transactions.length
+                        ).toLocaleString()} more`}
+                  </Button>
+                )}
+                {transactionsError && (
                   <span className="text-error-600 dark:text-error-300">
-                    {moreTransactionsError.message}
+                    {transactionsError.message}
                   </span>
                 )}
               </div>

@@ -10,7 +10,7 @@ import {
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import {
-  blobTransactionsPageSchema,
+  blobTransactionsLimitSchema,
   findResponseBlob,
   responseBlobSchema,
 } from "./helpers";
@@ -19,7 +19,7 @@ const inputSchema = z
   .object({
     id: z.string(),
   })
-  .merge(blobTransactionsPageSchema)
+  .merge(blobTransactionsLimitSchema)
   .merge(createExpandsSchema(["transaction", "block"]));
 
 const outputSchema = responseBlobSchema.transform(normalize);
@@ -39,14 +39,13 @@ export const getByBlobId = publicProcedure
   .output(outputSchema)
   .use(withBlobSignedUrls)
   .query(
-    async ({
-      ctx: { expands, prisma },
-      input: { id, transactionsLimit, transactionsOffset },
-    }) => {
-      const blob = await findResponseBlob(prisma, expands, id, {
-        transactionsLimit,
-        transactionsOffset,
-      });
+    async ({ ctx: { expands, prisma }, input: { id, transactionsLimit } }) => {
+      const blob = await findResponseBlob(
+        prisma,
+        expands,
+        id,
+        transactionsLimit
+      );
 
       if (!blob) {
         throw new TRPCError({
