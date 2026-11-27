@@ -125,10 +125,6 @@ export const env = createEnv({
         // Every hour
         .default("0 * * * *"),
       BLOB_RECONCILER_ENABLED: booleanSchema.default(false),
-      // PostHog
-      POSTHOG_ID: z.string().optional(),
-      POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
-
       // Matomo
       MATOMO_ENABLED: booleanSchema.default(false),
       MATOMO_URL: z

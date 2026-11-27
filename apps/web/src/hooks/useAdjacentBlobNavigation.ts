@@ -1,11 +1,12 @@
-import { useCallback, useState } from "react";
-import { useRouter } from "next/compat/router";
+import { useMemo } from "react";
 import { skipToken, useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
 
 import { api } from "~/api-client";
 import { routes } from "~/routes";
 import type { BlobPosition, BlobV2, GetAdjacentBlobInput } from "~/types";
+import { useAdjacentNavigation } from "./useAdjacentNavigation";
+import type { GetAdjacent } from "./useAdjacentNavigation";
 
 export const BLOB_EXPAND = "transaction";
 // The blob page lists the transactions of the blob with cursor pagination
@@ -53,7 +54,6 @@ export function useAdjacentBlobNavigation({
   blobUpdatedAt: number;
   position: BlobPosition | undefined;
 }) {
-  const router = useRouter();
   const utils = api.useUtils();
   const queryClient = useQueryClient();
   const { data: prevBlob } = api.blob.getAdjacentBlob.useQuery(
@@ -64,69 +64,66 @@ export function useAdjacentBlobNavigation({
     position ? toAdjacentBlobInput(position, "next") : skipToken,
     CACHE_ONLY_OPTIONS
   );
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error>();
 
-  const navigate = useCallback(
-    async (direction: Direction) => {
-      if (!blob || !position) {
-        return;
+  const getAdjacent = useMemo<GetAdjacent | undefined>(() => {
+    if (!blob || !position) {
+      return;
+    }
+
+    return async (direction) => {
+      const adjacentInput = toAdjacentBlobInput(position, direction);
+      // `fetch` sends a request if the cached result is older than
+      // `BLOB_STALE_TIME`. Do not use `ensureData`: it always returns the
+      // cached result, also when it is old.
+      const adjacent = await utils.blob.getAdjacentBlob.fetch(adjacentInput, {
+        staleTime: BLOB_STALE_TIME,
+      });
+
+      if (!adjacent) {
+        return null;
       }
 
-      setLoading(true);
-      setError(undefined);
+      // Put the adjacent blob in the cache of its page, so that the page does
+      // not send a second request. The cache entries keep the time of the
+      // request, so that an old blob does not show as new.
+      const adjacentUpdatedAt = queryClient.getQueryState(
+        getQueryKey(api.blob.getAdjacentBlob, adjacentInput, "query")
+      )?.dataUpdatedAt;
 
-      try {
-        const adjacentInput = toAdjacentBlobInput(position, direction);
-        // `fetch` sends a request if the cached result is older than
-        // `BLOB_STALE_TIME`. Do not use `ensureData`: it always returns the
-        // cached result, also when it is old.
-        const adjacent = await utils.blob.getAdjacentBlob.fetch(adjacentInput, {
-          staleTime: BLOB_STALE_TIME,
-        });
-
-        if (!adjacent) {
-          return;
-        }
-
-        // Put the adjacent blob in the cache of its page, so that the page
-        // does not send a second request. The cache entries keep the time of
-        // the request, so that an old blob does not show as new.
-        const adjacentUpdatedAt = queryClient.getQueryState(
-          getQueryKey(api.blob.getAdjacentBlob, adjacentInput, "query")
-        )?.dataUpdatedAt;
-
-        utils.blob.getByBlobIdV2.setData(
-          toBlobPageQueryInput(adjacent.blob.versionedHash),
-          adjacent.blob,
-          { updatedAt: adjacentUpdatedAt }
+      utils.blob.getByBlobIdV2.setData(
+        toBlobPageQueryInput(adjacent.blob.versionedHash),
+        adjacent.blob,
+        { updatedAt: adjacentUpdatedAt }
+      );
+      // In the same transaction, the current blob is the adjacent blob of the
+      // new page in the opposite direction. Do not do this for a different
+      // transaction: if the current transaction is in a reorged block, the
+      // search in the opposite direction does not return it.
+      if (adjacent.txHash === position.txHash) {
+        utils.blob.getAdjacentBlob.setData(
+          toAdjacentBlobInput(adjacent, direction === "next" ? "prev" : "next"),
+          { ...position, blob },
+          { updatedAt: blobUpdatedAt }
         );
-        // In the same transaction, the current blob is the adjacent blob of
-        // the new page in the opposite direction. Do not do this for a
-        // different transaction: if the current transaction is in a reorged
-        // block, the search in the opposite direction does not return it.
-        if (adjacent.txHash === position.txHash) {
-          utils.blob.getAdjacentBlob.setData(
-            toAdjacentBlobInput(
-              adjacent,
-              direction === "next" ? "prev" : "next"
-            ),
-            { ...position, blob },
-            { updatedAt: blobUpdatedAt }
-          );
-        }
-
-        await router?.push(routes.blob(adjacent.blob.versionedHash, adjacent));
-      } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error("Could not get the blob")
-        );
-      } finally {
-        setLoading(false);
       }
-    },
-    [blob, blobUpdatedAt, position, queryClient, router, utils]
-  );
+
+      return {
+        route: routes.blob(adjacent.blob.versionedHash, adjacent),
+        properties: {
+          // Within the transaction, or to another transaction of the sender.
+          same_transaction: adjacent.txHash === position.txHash,
+          // How many transactions carry the blob the user leaves.
+          blob_transaction_count: blob.transactionCount,
+        },
+      };
+    };
+  }, [blob, blobUpdatedAt, position, queryClient, utils]);
+
+  const { navigate, loading, error } = useAdjacentNavigation({
+    page: "blob",
+    getAdjacent,
+    errorMessage: "Could not get the blob",
+  });
 
   return { prevBlob, nextBlob, loading, error, navigate };
 }

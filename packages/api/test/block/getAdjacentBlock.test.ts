@@ -1,7 +1,4 @@
-import { TRPCError } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
-
-import { testValidError } from "@blobscan/test";
 
 import type { TRPCContext } from "../../src";
 import { createTestContext, runExpandsTestsSuite } from "../helpers";
@@ -50,22 +47,17 @@ describe("getAdjacentBlock", () => {
       direction: "next",
     });
 
-    expect(nextBlock.hash).toBe(
+    expect(nextBlock?.hash).toBe(
       "0x8000000000000000000000000000000000000000000000000000000000000000"
     );
   });
 
-  testValidError(
-    "should fail when no adjacent block was found",
-    async () => {
-      await caller.getAdjacentBlock({
-        blockNumber: 1001,
-        direction: "prev",
-      });
-    },
-    TRPCError,
-    {
-      checkCause: true,
-    }
-  );
+  it("should return null when no adjacent block was found", async () => {
+    const previousBlock = await caller.getAdjacentBlock({
+      blockNumber: 1001,
+      direction: "prev",
+    });
+
+    expect(previousBlock).toBeNull();
+  });
 });

@@ -1,9 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`getAdjacentBlock > should fail when no adjacent block was found 1`] = `"No prev block found for block 1001"`;
-
-exports[`getAdjacentBlock > should fail when no adjacent block was found 2`] = `undefined`;
-
 exports[`getAdjacentBlock > should get a next block 1`] = `
 {
   "baseFeePerGas": null,

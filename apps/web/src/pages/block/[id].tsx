@@ -1,6 +1,7 @@
-import { useCallback, useState } from "react";
+import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/compat/router";
+import { skipToken } from "@tanstack/react-query";
 
 import { getBlockBlobTransactionFees } from "~/utils/block-fees";
 import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
@@ -18,10 +19,11 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrow } from "~/components/NavArrow";
-import type { NavArrowProps } from "~/components/NavArrow";
 import { SeoMetaTags } from "~/components/SeoMetaTags";
 import { TransactionFeeDistribution } from "~/components/TransactionFeeDistribution";
 import { api } from "~/api-client";
+import { useAdjacentNavigation } from "~/hooks/useAdjacentNavigation";
+import type { GetAdjacent } from "~/hooks/useAdjacentNavigation";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import { useChain } from "~/hooks/useChain";
 import { useExternalExplorers } from "~/hooks/useExternalExplorers";
@@ -55,13 +57,16 @@ const FIELD_HELP = {
 };
 
 const EXPAND_QUERY_PARAM = "transaction,blob";
+const ADJACENT_BLOCK_CACHE_ONLY_OPTIONS = {
+  enabled: false,
+  staleTime: Infinity,
+} as const;
 
 const Block: NextPage = function () {
   const router = useRouter();
   const isMainnet = useIsMainnet();
   const utils = api.useUtils();
   const { buildResourceUrl } = useExternalExplorers("consensus");
-  const [adjacentBlockLoading, setAdjacentBlockLoading] = useState(false);
 
   const isReady = router?.isReady;
   const blockNumberOrHash = router?.query.id as string | undefined;
@@ -93,52 +98,71 @@ const Block: NextPage = function () {
     blockNumber && chain ? blockNumber <= chain.firstBlobBlock.number : false;
   const isLatestBlock =
     blockNumber && latestBlock ? blockNumber >= latestBlock.number : false;
-
-  const handleNavClick = useCallback<NavArrowProps["onClick"]>(
-    async function (direction) {
-      if (!blockData) {
-        return;
-      }
-
-      setAdjacentBlockLoading(true);
-
-      const currentBlockNumber = blockData.number;
-      try {
-        const adjacentBlock = await utils.block.getAdjacentBlock.ensureData(
-          {
-            blockNumber: currentBlockNumber,
-            direction,
-            expand: EXPAND_QUERY_PARAM,
-          },
-          {
-            staleTime: Infinity,
-          }
-        );
-
-        utils.block.getByBlockId.setData(
-          {
-            id: adjacentBlock.number.toString(),
-            expand: EXPAND_QUERY_PARAM,
-          },
-          adjacentBlock
-        );
-
-        utils.block.getAdjacentBlock.setData(
-          {
-            blockNumber: adjacentBlock.number,
-            direction: direction === "next" ? "prev" : "next",
-            expand: EXPAND_QUERY_PARAM,
-          },
-          blockData
-        );
-
-        router?.push(routes.block(adjacentBlock.number));
-      } finally {
-        setAdjacentBlockLoading(false);
-      }
-    },
-    [utils, router, blockData]
+  // These queries do not send a request. They only read the cache that a click
+  // fills, so an arrow becomes disabled when its result is `null`.
+  const { data: prevBlock } = api.block.getAdjacentBlock.useQuery(
+    blockNumber
+      ? { blockNumber, direction: "prev", expand: EXPAND_QUERY_PARAM }
+      : skipToken,
+    ADJACENT_BLOCK_CACHE_ONLY_OPTIONS
   );
+  const { data: nextBlock } = api.block.getAdjacentBlock.useQuery(
+    blockNumber
+      ? { blockNumber, direction: "next", expand: EXPAND_QUERY_PARAM }
+      : skipToken,
+    ADJACENT_BLOCK_CACHE_ONLY_OPTIONS
+  );
+
+  const getAdjacentBlock = useMemo<GetAdjacent | undefined>(() => {
+    if (!blockData) {
+      return;
+    }
+
+    return async (direction) => {
+      const adjacentBlock = await utils.block.getAdjacentBlock.ensureData(
+        {
+          blockNumber: blockData.number,
+          direction,
+          expand: EXPAND_QUERY_PARAM,
+        },
+        {
+          staleTime: Infinity,
+        }
+      );
+
+      if (!adjacentBlock) {
+        return null;
+      }
+
+      utils.block.getByBlockId.setData(
+        {
+          id: adjacentBlock.number.toString(),
+          expand: EXPAND_QUERY_PARAM,
+        },
+        adjacentBlock
+      );
+
+      utils.block.getAdjacentBlock.setData(
+        {
+          blockNumber: adjacentBlock.number,
+          direction: direction === "next" ? "prev" : "next",
+          expand: EXPAND_QUERY_PARAM,
+        },
+        blockData
+      );
+
+      return { route: routes.block(adjacentBlock.number) };
+    };
+  }, [blockData, utils]);
+  const {
+    navigate: handleNavClick,
+    loading: adjacentBlockLoading,
+    error: adjacentBlockError,
+  } = useAdjacentNavigation({
+    page: "block",
+    getAdjacent: getAdjacentBlock,
+    errorMessage: "Could not get the adjacent block",
+  });
 
   if (error) {
     const blockId = hashSchema.safeParse(blockNumberOrHash).success
@@ -397,7 +421,12 @@ const Block: NextPage = function () {
                 handleNavClick("prev");
               }}
               tooltip="Prev Block"
-              disabled={isFirstBlock || adjacentBlockLoading || !blockNumber}
+              disabled={
+                isFirstBlock ||
+                prevBlock === null ||
+                adjacentBlockLoading ||
+                !blockNumber
+              }
             />
             Block Details
             <NavArrow
@@ -405,8 +434,18 @@ const Block: NextPage = function () {
               size="lg"
               onClick={() => handleNavClick("next")}
               tooltip="Next Block"
-              disabled={isLatestBlock || adjacentBlockLoading || !blockNumber}
+              disabled={
+                isLatestBlock ||
+                nextBlock === null ||
+                adjacentBlockLoading ||
+                !blockNumber
+              }
             />
+            {adjacentBlockError && (
+              <span className="text-sm font-normal text-error-600 dark:text-error-300">
+                Couldn&apos;t load the adjacent block
+              </span>
+            )}
           </div>
         }
         resource={
